@@ -18,13 +18,19 @@ package org.openengsb.connector.maven.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -54,15 +60,26 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     private DeployDomainEvents deployEvents;
 
     private Executor executor = Executors.newSingleThreadExecutor();
+    private ExecutorService outputReaderPool = Executors.newCachedThreadPool();
 
     private boolean synchronous = false;
+
+    private boolean useLogFile = true;
 
     private ContextCurrentService contextService;
 
     private String command;
+    private File logDir;
 
     public MavenServiceImpl(String id) {
         super(id);
+        String karafData = System.getProperty("karaf.data");
+        logDir = new File(karafData, "log");
+        if (!logDir.exists()) {
+            logDir.mkdir();
+        } else if (!logDir.isDirectory()) {
+            throw new IllegalStateException("cannot access log-directory");
+        }
     }
 
     private static String addSystemEnding() {
@@ -249,22 +266,47 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         log.info("running '" + command + "' in directory '" + dir.getPath() + "'");
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
-
-        StreamReader output = new StreamReader(process.getInputStream());
-        StreamReader error = new StreamReader(process.getErrorStream());
-        output.start();
-        error.start();
-
-        boolean result = process.waitFor() == 0;
-        output.join();
-        error.join();
-
-        String errorOutput = error.getString();
-        if (!errorOutput.isEmpty()) {
-            log.warn("Maven connector error stream output: " + errorOutput);
+        ProcessOutputReader output;
+        if (useLogFile) {
+            File logFile = getNewLogFile();
+            output = new ProcessOutputReader(process.getInputStream(), logFile);
+        } else {
+            output = new ProcessOutputReader(process.getInputStream());
         }
-        log.debug("output: " + output.getString());
-        return new MavenResult(result, output.getString());
+        ProcessOutputReader error = new ProcessOutputReader(process.getErrorStream());
+        Future<String> outputFuture = outputReaderPool.submit(output);
+        Future<String> errorFuture = outputReaderPool.submit(error);
+
+        boolean processResultCode = process.waitFor() == 0;
+        String outputResult;
+        try {
+            outputResult = outputFuture.get();
+        } catch (ExecutionException e) {
+            log.error(e.getCause());
+            outputResult = ExceptionUtils.getFullStackTrace(e);
+        }
+
+        String errorResult;
+        try {
+            errorResult = errorFuture.get();
+        } catch (ExecutionException e) {
+            log.error(e.getCause());
+            errorResult = ExceptionUtils.getFullStackTrace(e);
+        }
+
+        if (!errorResult.isEmpty()) {
+            log.warn("Maven connector error stream output: " + errorResult);
+        }
+        log.info("maven exited with status " + processResultCode);
+        return new MavenResult(processResultCode, outputResult);
+    }
+
+    private File getNewLogFile() throws IOException {
+        String dateString = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
+        String fileName = String.format("maven.%s.log", dateString);
+        File logFile = new File(logDir, fileName);
+        logFile.createNewFile();
+        return logFile;
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {
@@ -293,6 +335,10 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    public void setUseLogFile(boolean useLogFile) {
+        this.useLogFile = useLogFile;
     }
 
     private class MavenResult {

@@ -17,18 +17,28 @@
 package org.openengsb.connector.maven.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.domain.build.BuildDomainEvents;
@@ -51,6 +61,8 @@ public class MavenServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty("karaf.data", ".");
+        deleteLogFile();
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
         this.mavenService = new MavenServiceImpl("42");
@@ -62,6 +74,12 @@ public class MavenServiceTest {
         mavenService.setDeployEvents(deployEvents);
         mavenService.setContextService(mock(ContextCurrentService.class));
         mavenService.setSynchronous(true);
+        mavenService.setUseLogFile(false);
+    }
+
+    @After
+    public void deleteLogFile() throws IOException {
+        FileUtils.deleteDirectory(new File("log"));
     }
 
     @Test
@@ -69,8 +87,13 @@ public class MavenServiceTest {
         mavenService.setProjectPath(getPath("test-unit-success"));
         mavenService.setCommand("clean compile");
         String id = mavenService.build();
+        ArgumentCaptor<BuildSuccessEvent> argumentCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+
         verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
-        verify(buildEvents).raiseEvent(refEq(new BuildSuccessEvent(id, null), "output"));
+        verify(buildEvents).raiseEvent(argumentCaptor.capture());
+        BuildSuccessEvent event = argumentCaptor.getValue();
+        assertThat(event.getBuildId(), is(id));
+        assertThat(event.getOutput(), containsString("SUCCESS"));
     }
 
     @Test
@@ -140,6 +163,110 @@ public class MavenServiceTest {
     public void testGetAliveStateWrongPath_shouldReturnOffline() {
         mavenService.setProjectPath("pathThatDoesForSureNotExistBecauseItIsStrange");
         assertThat(mavenService.getAliveState(), is(AliveState.OFFLINE));
+    }
+
+    @Test
+    public void build_shouldWriteLogFile() throws Exception {
+        mavenService.setUseLogFile(true);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        mavenService.build();
+        ArgumentCaptor<BuildSuccessEvent> argumentCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+
+        verify(buildEvents).raiseEvent(argumentCaptor.capture());
+        BuildSuccessEvent event = argumentCaptor.getValue();
+        String output = event.getOutput();
+        @SuppressWarnings("unchecked")
+        Collection<File> logFiles = FileUtils.listFiles(new File("log"), new String[]{ "log", }, false);
+        File logFile = logFiles.iterator().next();
+        assertThat(logFile, notNullValue());
+        String fileContent = FileUtils.readFileToString(logFile);
+        assertThat(fileContent, is(output));
+    }
+
+    @Test
+    public void asyncBuild_shouldRaiseBuildSuccessEvent() throws Exception {
+        final Object sync = new Object();
+        mavenService.setSynchronous(false);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        ArgumentCaptor<BuildSuccessEvent> eventCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (sync) {
+                    sync.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(eventCaptor.capture());
+        Thread waitForBuildEnd = startWaiterThread(sync);
+        mavenService.build();
+        waitForBuildEnd.join();
+        BuildSuccessEvent event = eventCaptor.getValue();
+        assertThat(event.getOutput(), containsString("SUCCESS"));
+    }
+
+    @Ignore("OPENENGSB-881: buildStartEvent is raised too early")
+    @Test
+    public void build_shouldCreateLogFileAndThrowItAway() throws Exception {
+        final Object syncFinish = new Object();
+        final Object syncStart = new Object();
+        mavenService.setSynchronous(false);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        makeNotifyAnswerForBuildStart(syncStart);
+        makeNotifyAnswerForBuildSuccess(syncFinish);
+        Thread waitForBuildStart = startWaiterThread(syncStart);
+        Thread waitForBuildEnd = startWaiterThread(syncFinish);
+        mavenService.build();
+        waitForBuildStart.join();
+        @SuppressWarnings("unchecked")
+        Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
+        assertThat("no logfile was created", listFiles.isEmpty(), is(false));
+        waitForBuildEnd.join();
+        assertThat(listFiles.isEmpty(), is(true));
+    }
+
+    private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (syncFinish) {
+                    syncFinish.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(any(BuildSuccessEvent.class));
+    }
+
+    private void makeNotifyAnswerForBuildStart(final Object syncFinish) {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (syncFinish) {
+                    syncFinish.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(any(BuildStartEvent.class));
+    }
+
+    private Thread startWaiterThread(final Object sync) {
+        final Thread thread = new Thread() {
+            @Override
+            public void run() {
+                synchronized (sync) {
+                    try {
+                        sync.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        };
+        thread.start();
+        return thread;
     }
 
     private String getPath(String folder) {
