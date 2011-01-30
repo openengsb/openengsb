@@ -28,14 +28,19 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.DomainMethodExecutionException;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 
+    private Log log = LogFactory.getLog(JavaxMailAbstraction.class);
+
     private AliveState aliveState = AliveState.OFFLINE;
 
     private Session createSession(final MailPropertiesImp properties) {
+        log.debug("creating session");
         Session session = Session.getDefaultInstance(properties.getProperties(), new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -53,6 +58,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
             }
             MailPropertiesImp props = (MailPropertiesImp) properties;
             if (!(this.aliveState == AliveState.ONLINE)) {
+                log.info("State is OFFLINE, connecting...");
                 connect(props);
             }
             Session session = createSession(props);
@@ -76,19 +82,24 @@ public class JavaxMailAbstraction implements MailAbstraction {
         }
         Session session = createSession((MailPropertiesImp) properties);
         MailPropertiesImp props = (MailPropertiesImp) properties;
+
         String smtpHost = (String) props.getProperties().get("mail.smtp.host");
         String username = props.getUsername();
         String password = props.getPassword();
+        log.info(String.format("sending as %s via %s", username, smtpHost));
         Transport tr = null;
         try {
             tr = session.getTransport("smtp");
+            log.debug("connecting smtp-transport " + tr);
             tr.connect(smtpHost, username, password);
             if (tr.isConnected()) {
                 this.aliveState = AliveState.ONLINE;
             } else {
                 this.aliveState = AliveState.OFFLINE;
             }
+            log.debug("State is now " + this.aliveState);
         } catch (MessagingException e) {
+            log.error("could not connect transport ", e);
             this.aliveState = AliveState.OFFLINE;
             throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or"
                     + " mail server unavailable) ");
@@ -96,6 +107,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
     }
 
     private String buildSubject(MailPropertiesImp properties, String subject) {
+        log.debug("building subject");
         if (properties.getPrefix() == null) {
             return subject;
         }
@@ -103,7 +115,9 @@ public class JavaxMailAbstraction implements MailAbstraction {
     }
 
     private void send(Message message) throws MessagingException {
+        log.info("sending email-message");
         Transport.send(message);
+        log.info("email has been sent");
     }
 
     @Override
