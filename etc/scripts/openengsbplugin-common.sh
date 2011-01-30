@@ -17,9 +17,6 @@
 
 INVOCATION_DIR=`pwd`
 
-PLUGIN_VERSION="1.2.0-SNAPSHOT"
-PLUGIN_ARTIFACT_ID="openengsb-maven-plugin"
-
 ABSPATH=$(cd "$(dirname "${0}")"; pwd)
 
 echo "Invoking openengsb-maven-plugin"

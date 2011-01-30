@@ -19,7 +19,5 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
-GOAL="licenseFormat"
-
-mvn org.openengsb.tooling:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn openengsb:licenseFormat
 

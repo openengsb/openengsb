@@ -26,8 +26,6 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
-GOAL="provision"
-
 mvn install -Dmaven.test.skip=true
-mvn org.openengsb.tooling:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn openengsb:provision
 

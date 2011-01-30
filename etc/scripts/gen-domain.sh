@@ -19,6 +19,4 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $INVOCATION_DIR
 
-GOAL="genDomain"
-
-mvn org.openengsb.tooling:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn openengsb:genDomain
