@@ -21,17 +21,8 @@
 	xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
 	xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
-	<reference id="memoryauditingService" interface="org.openengsb.core.common.ServiceManager"
-		filter="(connector=memory-auditing)" />
-	<reference id="domainService" availability="mandatory"
-		interface="org.openengsb.core.common.service.DomainService" />
-	<reference id="proxyFactory" availability="mandatory"
-		interface="org.openengsb.core.common.proxy.ProxyFactory" />
-
 	<service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
-		<bean class="org.openengsb.core.deployer.connector.ConnectorDeployer">
-			<property name="domainService" ref="domainService" />
-			<property name="proxyFactory" ref="proxyFactory" />
+		<bean class="org.openengsb.core.deployer.connector.ConnectorDeployerService">
 			<property name="bundleContext" ref="blueprintBundleContext" />
 		</bean>
 	</service>
