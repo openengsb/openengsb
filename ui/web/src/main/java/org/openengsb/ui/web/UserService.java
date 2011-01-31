@@ -75,7 +75,6 @@ public class UserService extends BasePage {
             }
         };
 
-
         usernameField = new RequiredTextField<String>("username");
         passwordField = new PasswordTextField("password");
         passwordVerficationField = new PasswordTextField("passwordVerification");
@@ -193,7 +192,6 @@ public class UserService extends BasePage {
 
     }
 
-
     private class UserInput implements Serializable {
 
         private String passwordVerification;
@@ -239,8 +237,11 @@ public class UserService extends BasePage {
     }
 
     private List<GrantedAuthority> authoritiesFromCommaSeparatedList(String roleListString) {
-        String[] roles = roleListString.split(",");
         List<GrantedAuthority> result = new ArrayList<GrantedAuthority>();
+        if (roleListString == null) {
+            return result;
+        }
+        String[] roles = roleListString.split(",");
         for (String role : roles) {
             result.add(new GrantedAuthorityImpl(role.trim()));
         }
