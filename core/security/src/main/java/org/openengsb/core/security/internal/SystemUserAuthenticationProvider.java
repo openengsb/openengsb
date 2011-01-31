@@ -34,6 +34,9 @@ public class SystemUserAuthenticationProvider implements AuthenticationProvider 
     private static final Collection<GrantedAuthority> AUTHORITIES = Arrays
         .asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_ADMIN"), });
 
+    /*
+     * For now, all bundles are allowed to do everything (using any API-key)
+     */
     @Override
     public Authentication authenticate(Authentication authentication) {
         BundleAuthenticationToken token = (BundleAuthenticationToken) authentication;

@@ -25,7 +25,8 @@ import org.springframework.security.core.GrantedAuthority;
  * used internally to authenticate external bundles as actors bundles may perform administrative tasks, and are trusted
  * to handle this securely. When passed to the AuthenticationManager, authentication takes place.
  *
- * For now, all bundles are allowed to do everything (using any API-key)
+ * SystemUserAuthenticationProvider takes care of authenticating such a token.
+ * @see org.openengsb.core.security.internal.SystemUserAuthenticationProvider
  */
 public class BundleAuthenticationToken extends AbstractAuthenticationToken {
 
