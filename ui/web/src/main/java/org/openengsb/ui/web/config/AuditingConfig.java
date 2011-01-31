@@ -25,9 +25,9 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -50,8 +50,7 @@ public class AuditingConfig {
     }
 
     public void init() {
-        Authentication authentication =
-            authManager.authenticate(new UsernamePasswordAuthenticationToken("admin", "password"));
+        Authentication authentication = authManager.authenticate(new BundleAuthenticationToken("web-ui", ""));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
             ruleManager.addImport(AuditingDomain.class.getCanonicalName());
