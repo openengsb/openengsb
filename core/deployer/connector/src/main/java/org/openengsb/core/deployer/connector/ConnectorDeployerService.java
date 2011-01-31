@@ -28,14 +28,24 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.BundleContext;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
     private static Log log = LogFactory.getLog(ConnectorDeployerService.class);
 
     private BundleContext bundleContext;
+    private AuthenticationManager authenticationManager;
 
     private static final String CONNECTOR_EXTENSION = ".connector";
+    
+    public void init() {
+        authenticate("admin", "password");
+    }
 
     @Override
     public boolean canHandle(File artifact) {
@@ -70,7 +80,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                     newConfig.getConnectorType()));
             return;
         }
-
+        
+        log.debug(String.format("Retrieved ServiceManager %s", serviceManager.getInstanceId()));
+        
         Map<String, String> attributes = new HashMap<String, String>();
         MultipleAttributeValidationResult validationResult = serviceManager
                 .update(newConfig.getServiceId(), attributes);
@@ -107,6 +119,21 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         // TODO Auto-generated method stub
 
     }
+    
+    public boolean authenticate(String username, String password) {
+        boolean authenticated = false;
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    username, password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            authenticated = authentication.isAuthenticated();
+            log.info(String.format("Connector deployer succesfully authenticated: %b", authenticated));
+        } catch (AuthenticationException e) {
+            log.warn(String.format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
+            authenticated = false;
+        }
+        return authenticated;
+    }
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
@@ -114,6 +141,14 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     public BundleContext getBundleContext() {
         return bundleContext;
+    }
+
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    public AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
     }
 
 }
