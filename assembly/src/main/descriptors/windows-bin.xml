@@ -70,6 +70,12 @@
       <lineEnding>dos</lineEnding>
       <fileMode>0644</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>target/classes/config</directory>
+      <outputDirectory>/config/</outputDirectory>
+      <lineEnding>dos</lineEnding>
+      <fileMode>0644</fileMode>
+    </fileSet>
 
     <!-- Copy openengsb system repo -->
     <fileSet>
