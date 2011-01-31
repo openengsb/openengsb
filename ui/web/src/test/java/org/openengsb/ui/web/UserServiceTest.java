@@ -95,6 +95,20 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testUserCreationWithoutRoles_ShouldWork() {
+        tester.startPage(UserService.class);
+
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        verify(userManager, times(1)).createUser(new User("user1", "password"));
+
+    }
+
+    @Test
     public void testErrorMessage_shouldReturnUserExists() {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
