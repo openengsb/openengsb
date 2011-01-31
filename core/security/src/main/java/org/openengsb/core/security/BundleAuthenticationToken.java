@@ -21,6 +21,12 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * used internally to authenticate external bundles as actors bundles may perform administrative tasks, and are trusted
+ * to handle this securely. When passed to the AuthenticationManager, authentication takes place.
+ *
+ * For now, all bundles are allowed to do everything (using any API-key)
+ */
 public class BundleAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = 7968314028088833529L;
