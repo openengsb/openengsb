@@ -22,8 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When annotated methods are invoked, the roles in the value are added to the list auf authorized authorities
- *
+ * When annotated methods are invoked, the roles in the value are added to the list of authorized authorities
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
