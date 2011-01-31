@@ -17,8 +17,6 @@
 package org.openengsb.core.deployer.connector;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,16 +34,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
+    private static final String AUTH_PASSWORD = "password";
+    private static final String AUTH_USER = "admin";
+    private static final String CONNECTOR_EXTENSION = ".connector";
+
     private static Log log = LogFactory.getLog(ConnectorDeployerService.class);
 
     private BundleContext bundleContext;
     private AuthenticationManager authenticationManager;
-
-    private static final String CONNECTOR_EXTENSION = ".connector";
-    
-    public void init() {
-        authenticate("admin", "password");
-    }
 
     @Override
     public boolean canHandle(File artifact) {
@@ -55,7 +51,6 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             log.info("Found a .connector file to deploy.");
             return true;
         }
-
         return false;
     }
 
@@ -63,31 +58,41 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     public void install(File artifact) throws Exception {
         log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
 
-        ConnectorConfiguration newConfig = ConnectorConfiguration.loadFromFile(new ConnectorFile(artifact));
+        try {
 
-        if (!isConfigValid(newConfig)) {
-            logConfigErrors(newConfig, artifact);
-            return;
-        }
+            ConnectorConfiguration newConfig = ConnectorConfiguration.loadFromFile(new ConnectorFile(artifact));
 
-        log.info(String.format("Loading instance %s of connector %s", newConfig.getServiceId(),
-                newConfig.getConnectorType()));
-        ServiceManager serviceManager = OsgiServiceUtils.getService(bundleContext, ServiceManager.class,
-                String.format("(connector=%s)", newConfig.getConnectorType()));
-        if (serviceManager == null) {
-            log.info(String.format(
-                    "Retrieving ServiceManager for connector %s failed, cannot create connector instance",
+            if (!isConfigValid(newConfig)) {
+                logConfigErrors(newConfig, artifact);
+                return;
+            }
+            authenticate(AUTH_USER, AUTH_PASSWORD);
+
+            log.info(String.format("Loading instance %s of connector %s", newConfig.getServiceId(),
                     newConfig.getConnectorType()));
-            return;
+            ServiceManager serviceManager = getServiceManagerFor(newConfig);
+            if (serviceManager == null) {
+                log.info(String.format(
+                        "Retrieving ServiceManager for connector %s failed, cannot create connector instance",
+                        newConfig.getConnectorType()));
+                return;
+            }
+
+            MultipleAttributeValidationResult validationResult = serviceManager.update(newConfig.getServiceId(),
+                    newConfig.getAttributes());
+            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(),
+                    newConfig.getServiceId(), validationResult.isValid()));
+        } catch (Exception e) {
+            log.error(String.format("Installing connector failed: %s", e));
         }
-        
-        log.debug(String.format("Retrieved ServiceManager %s", serviceManager.getInstanceId()));
-        
-        Map<String, String> attributes = new HashMap<String, String>();
-        MultipleAttributeValidationResult validationResult = serviceManager
-                .update(newConfig.getServiceId(), attributes);
-        log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(),
-                newConfig.getServiceId(), validationResult.isValid()));
+    }
+
+    private ServiceManager getServiceManagerFor(ConnectorConfiguration newConfig) {
+        return OsgiServiceUtils.getService(bundleContext, ServiceManager.class, getFilterFor(newConfig));
+    }
+
+    private String getFilterFor(ConnectorConfiguration newConfig) {
+        return String.format("(connector=%s)", newConfig.getConnectorType());
     }
 
     private void logConfigErrors(ConnectorConfiguration newConfig, File artifact) {

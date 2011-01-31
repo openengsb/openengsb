@@ -24,7 +24,7 @@
 	<reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager"/>
 	
 	<service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
-		<bean class="org.openengsb.core.deployer.connector.ConnectorDeployerService" init-method="init">
+		<bean class="org.openengsb.core.deployer.connector.ConnectorDeployerService">
 			<property name="authenticationManager" ref="authenticationManager" />
 			<property name="bundleContext" ref="blueprintBundleContext" />
 		</bean>

@@ -27,7 +27,7 @@ import java.util.Properties;
 public class ConnectorFile {
     
     private static final String PROPERTY_CONNECTOR = "connector";
-    private static final String PROPERTY_SERVICE_ID = "service.id";
+    private static final String PROPERTY_SERVICE_ID = "id";
 
     private File connectorFile;
 
@@ -61,7 +61,6 @@ public class ConnectorFile {
             instanceAttributes.put(propertyName, props.getProperty(propertyName));
         }
         instanceAttributes.remove(PROPERTY_CONNECTOR);
-        instanceAttributes.remove(PROPERTY_SERVICE_ID);
         return instanceAttributes;
     }
 
