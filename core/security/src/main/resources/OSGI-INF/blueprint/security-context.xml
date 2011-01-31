@@ -61,6 +61,7 @@
                 <property name="persistenceManager" ref="persistenceManager" />
                 <property name="bundleContext" ref="blueprintBundleContext" />
               </bean>
+              <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>
         </bean>
