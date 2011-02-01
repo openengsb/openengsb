@@ -41,6 +41,7 @@ import org.openengsb.core.common.security.UserExistsException;
 import org.openengsb.core.common.security.UserManagementException;
 import org.openengsb.core.common.security.UserManager;
 import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.test.LocalisedTest;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
