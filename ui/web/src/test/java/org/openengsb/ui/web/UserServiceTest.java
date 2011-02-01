@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -57,6 +58,7 @@ public class UserServiceTest {
 
     @Before
     public void setup() {
+        Locale.setDefault(Locale.ENGLISH);
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
@@ -75,8 +77,8 @@ public class UserServiceTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Test
@@ -111,15 +113,14 @@ public class UserServiceTest {
     @Test
     public void testErrorMessage_shouldReturnUserExists() {
         tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).
-            when(userManager).createUser(new User("user1", "password"));
+        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ "User already exists" });
+        tester.assertErrorMessages(new String[]{"User already exists"});
         verify(userManager, times(1)).createUser(new User("user1", "password"));
 
     }
@@ -143,29 +144,28 @@ public class UserServiceTest {
     @Test
     public void testErrorMessage_ShouldReturnWrongSecondPassword() {
         tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).
-            when(userManager).createUser(new User("user1", "password"));
+        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ "Invalid password" });
+        tester.assertErrorMessages(new String[]{"Invalid password"});
         verify(userManager, times(0)).createUser(new User("user1", "password"));
     }
 
     @Test
     public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
         tester.startPage(UserService.class);
-        doThrow(new UserManagementException("database error")).
-            when(userManager).createUser(new User("user1", "password"));
+        doThrow(new UserManagementException("database error")).when(userManager).createUser(
+            new User("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ "Database error occurred" });
+        tester.assertErrorMessages(new String[]{"Database error occurred"});
     }
 
     @Test
@@ -184,4 +184,3 @@ public class UserServiceTest {
         assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
     }
 }
-
