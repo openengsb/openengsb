@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -47,7 +46,7 @@ import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public class UserServiceTest {
+public class UserServiceTest extends LocalisedTest {
 
     private WicketTester tester;
 
@@ -58,7 +57,6 @@ public class UserServiceTest {
 
     @Before
     public void setup() {
-        Locale.setDefault(Locale.ENGLISH);
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
@@ -120,7 +118,7 @@ public class UserServiceTest {
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"User already exists"});
+        tester.assertErrorMessages(new String[]{localization("userExistError")});
         verify(userManager, times(1)).createUser(new User("user1", "password"));
 
     }
@@ -136,7 +134,7 @@ public class UserServiceTest {
             }
         });
         tester.startPage(UserService.class);
-        tester.assertContains("Existing Users");
+        tester.assertContains(localization("existingUser.title"));
         tester.assertContains("admin");
         tester.assertContains("delete");
     }
@@ -150,7 +148,7 @@ public class UserServiceTest {
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"Invalid password"});
+        tester.assertErrorMessages(new String[]{localization("passwordError")});
         verify(userManager, times(0)).createUser(new User("user1", "password"));
     }
 
@@ -165,7 +163,7 @@ public class UserServiceTest {
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"Database error occurred"});
+        tester.assertErrorMessages(new String[]{localization("userManagementExceptionError")});
     }
 
     @Test

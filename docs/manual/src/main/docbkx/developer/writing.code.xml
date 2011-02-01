@@ -88,7 +88,14 @@
        <para>This will import all the dependencies with the correct versions into the dependencyManagement section.
          You can now define the dependencies shared between your project and OPENENGSB in your dependencies 
          section without setting the version.</para>
-  </section>
+     </section>
+     <section>
+       <title>Making UI Tests Localizable</title>
+       <para>If you want to test if specific text is shown in the UI extend LocalisedTest in your UI Test. The
+         constructor automatically loads the correct ResourceBundle and via localization(String resourcename) you
+         can load a localized version of a specific resource string. The default locale is used as to match the locale
+       used by WicketTester.</para>
+     </section>
 
 </chapter>
 
