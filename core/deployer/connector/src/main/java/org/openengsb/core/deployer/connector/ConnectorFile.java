@@ -50,7 +50,9 @@ public class ConnectorFile {
 
     private Properties loadProperties() throws IOException, FileNotFoundException {
         Properties props = new Properties();
-        props.load(new FileInputStream(connectorFile.getAbsoluteFile()));
+        FileInputStream inputStream = new FileInputStream(connectorFile.getAbsoluteFile());
+        props.load(inputStream);
+        inputStream.close();
         return props;
     }
 
