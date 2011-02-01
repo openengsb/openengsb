@@ -170,6 +170,12 @@ public class MethodInterceptorTest {
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
+    @Test
+    public void testAccessAnnotatedMethod() throws Exception {
+        authenticate(DEFAULT_USER, "password");
+        service2.publicTest();
+    }
+
     private void authenticate(String user, String password) {
         Authentication authentication =
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));

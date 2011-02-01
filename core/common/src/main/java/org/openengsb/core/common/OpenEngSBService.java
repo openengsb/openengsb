@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.security.AuthorizedRoles;
+
 /**
  * Every service published within the OpenEngSB context creates an instanceId, which identifies itself unique in the
  * system. Those unique values are also interested directly from the code to identify which OpenEngSB someone is working
@@ -26,6 +28,8 @@ public interface OpenEngSBService {
     /**
      * Each created service in the OpenEngSB has its own unique id which could be resolved from code by this method.
      */
+    @AuthorizedRoles("ROLE_USER")
     String getInstanceId();
 
 }
+

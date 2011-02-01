@@ -17,10 +17,14 @@
 package org.openengsb.core.security;
 
 import org.openengsb.core.common.OpenEngSBService;
+import org.openengsb.core.common.security.AuthorizedRoles;
 
 public interface DummyService extends OpenEngSBService {
 
     int getTheAnswerToLifeTheUniverseAndEverything();
 
     int test();
+
+    @AuthorizedRoles("ROLE_USER")
+    int publicTest();
 }
