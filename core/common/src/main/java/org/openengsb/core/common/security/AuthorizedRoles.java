@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package ${package}.internal;
+package org.openengsb.core.common.security;
 
-import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import ${domainPackage}.${domainInterface};
-
-public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implements ${domainInterface} {
-
-    private String attr;
-
-    public ${connectorName}ServiceImpl() {
-    }
-
-    void setAttr(String attr) {
-        this.attr = attr;
-    }
-    
-    @Override
-    public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
-    }
-    
-    // TODO implement domain methods here
+/**
+ * When annotated methods are invoked, the roles in the value are added to the list of authorized authorities
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface AuthorizedRoles {
+    String[] value();
 }

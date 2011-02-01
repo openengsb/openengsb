@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.security.AuthorizedRoles;
+
 /**
  * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
  */
@@ -26,6 +28,7 @@ public interface Domain extends OpenEngSBService {
      *
      * @see org.openengsb.core.common.AliveState
      */
+    @AuthorizedRoles("ROLE_USER")
     AliveState getAliveState();
 
 }

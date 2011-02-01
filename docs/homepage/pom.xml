@@ -130,6 +130,16 @@
         <includes>
           <include>**/*</include>
         </includes>
+        <excludes>
+          <exclude>**/*.pdf</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/site</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.pdf</include>
+        </includes>
       </resource>
     </resources>
     <plugins>

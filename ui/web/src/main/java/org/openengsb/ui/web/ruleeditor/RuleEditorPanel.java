@@ -24,6 +24,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -45,7 +46,7 @@ public class RuleEditorPanel extends Panel {
     private DropDownChoice<RuleBaseElementType> typeChoice;
     private AjaxButton newButton;
     private AjaxButton cancelButton;
-    private AjaxButton saveButton;
+    private IndicatingAjaxButton saveButton;
     private boolean newRuleMode;
     private Form<Object> form;
     private FeedbackPanel feedbackPanel;
@@ -101,9 +102,10 @@ public class RuleEditorPanel extends Panel {
     }
 
     private void initButtons(Form<Object> form) {
-        saveButton = new AjaxButton("save") {
+        saveButton = new IndicatingAjaxButton("save") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(textArea);
                 if (newRuleMode) {
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
                             newRuleTextField.getModelObject());
@@ -236,8 +238,10 @@ public class RuleEditorPanel extends Panel {
             textArea.setModel(new Model<String>(""));
         }
         newButton.setEnabled(false);
-
+        saveButton.setEnabled(true);
+        cancelButton.setEnabled(true);
         target.addComponent(form);
+        target.addComponent(newRuleTextField);
         target.addComponent(newRuleTextField);
         target.addComponent(ruleChoice);
         target.addComponent(textArea);

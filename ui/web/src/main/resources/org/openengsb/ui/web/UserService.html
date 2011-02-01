@@ -40,6 +40,10 @@
               <div class="createUserFormField"> <wicket:message key="rePassword.title">[password]</wicket:message></div>
               <div class="formField"><input type="password" wicket:id="passwordVerification"/></div>
             </li>
+            <li>
+              <div class="createUserFormField"> <wicket:message key="roles.title">[roles]</wicket:message></div>
+              <div class="formField"><input wicket:id="roles"/></div>
+            </li>
             <input type="submit" wicket:message="value:createButton,title:createButton"/>
             <button wicket:id="resetbutton" ><wicket:message key="resetButton"/></button>
           </ol>

@@ -16,6 +16,8 @@
 
 package org.openengsb.ui.web;
 
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,6 +33,7 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -40,6 +43,8 @@ import org.openengsb.core.common.security.UserManager;
 import org.openengsb.core.common.security.model.User;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class UserServiceTest {
 
@@ -82,6 +87,21 @@ public class UserServiceTest {
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
+        formTester.setValue("roles", "admin,user");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        verify(userManager, times(1)).createUser(new User("user1", "password"));
+
+    }
+
+    @Test
+    public void testUserCreationWithoutRoles_ShouldWork() {
+        tester.startPage(UserService.class);
+
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertNoErrorMessage();
         verify(userManager, times(1)).createUser(new User("user1", "password"));
@@ -96,6 +116,7 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ "User already exists" });
@@ -141,10 +162,26 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"Database error occurred"});
+        tester.assertErrorMessages(new String[]{ "Database error occurred" });
     }
 
+    @Test
+    public void testShowUserAuthorities() throws Exception {
+        tester.startPage(UserService.class);
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.setValue("roles", "ROLE_ADMIN");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userManager, times(1)).createUser(argCaptor.capture());
+        User userCreated = argCaptor.getValue();
+        assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
+    }
 }
 
