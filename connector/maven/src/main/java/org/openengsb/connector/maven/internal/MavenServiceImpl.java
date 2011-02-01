@@ -17,7 +17,6 @@
 package org.openengsb.connector.maven.internal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -289,7 +288,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         return outputReaderPool.submit(error);
     }
 
-    private Future<String> configureProcessOutputReader(Process process) throws IOException, FileNotFoundException {
+    private Future<String> configureProcessOutputReader(Process process) throws IOException {
         ProcessOutputReader output;
         if (useLogFile) {
             File logFile = getNewLogFile();
