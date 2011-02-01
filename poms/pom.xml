@@ -760,7 +760,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.openengsb.tooling.pluginsuite</groupId>
+            <groupId>org.openengsb.tooling</groupId>
             <artifactId>openengsb-maven-plugin</artifactId>
             <version>${project.version}</version>
             <executions>

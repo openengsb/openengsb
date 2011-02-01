@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package ${package}.internal;
+package org.openengsb.core.test;
 
-import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
+import java.util.ResourceBundle;
 
-import ${domainPackage}.${domainInterface};
+public class LocalisedTest {
 
-public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implements ${domainInterface} {
+    private final ResourceBundle resources;
 
-    private String attr;
-
-    public ${connectorName}ServiceImpl() {
+    public LocalisedTest() {
+        String name = this.getClass().getName();
+        resources = ResourceBundle.getBundle(name.substring(0, name.length() - 4));
     }
 
-    void setAttr(String attr) {
-        this.attr = attr;
+    protected String localization(String resourceName) {
+        if (resources != null) {
+            return this.resources.getString(resourceName);
+        } else {
+            return null;
+        }
+
     }
-    
-    @Override
-    public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
-    }
-    
-    // TODO implement domain methods here
+
 }

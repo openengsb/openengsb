@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
@@ -14,19 +15,17 @@
 # limitations under the License.
 #
 
-createUser.title = Neuen Benutzer anlegen
-usernameError = Bitte geben Sie einen Benutzernamen ein
-passwordError = Ung\u00fcltiges Password
-success = Benutzer erfolgreich angeleget
-userExistError = Benutzer existiert bereits
-existingUser.title = Existierende Benutzer
-delete.user = Entfernen
-update.user = Aktualisieren
+# Script used to build the entire servicebus and run it directly from maven. This
+# script actually using the jbi:servicemix maven command therefore. In future
+# version, when the project is embedded in an webserver this script is for
+# change.
 
-username.title=Benutzername
-password.title=Password
-rePassword.title = Erneut eingeben
-roles.title = Roles
-createButton = Ok
-resetButton = Reset
-userManagementExceptionError=Datenbank Fehler aufgetreten
+echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
+
+source $(dirname $0)/openengsbplugin-common.sh
+
+cd $ABSPATH/../../
+
+mvn install -Dmaven.test.skip=true -P!docs
+mvn openengsb:provision
+

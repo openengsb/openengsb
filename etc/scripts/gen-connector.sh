@@ -19,6 +19,4 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $INVOCATION_DIR
 
-GOAL="genConnector"
-
-mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn openengsb:genConnector

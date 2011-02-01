@@ -25,9 +25,9 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -50,21 +50,19 @@ public class AuditingConfig {
     }
 
     public void init() {
-        Authentication authentication =
-            authManager.authenticate(new UsernamePasswordAuthenticationToken("admin", "password"));
+        Authentication authentication = authManager.authenticate(new BundleAuthenticationToken("web-ui", ""));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         try {
             ruleManager.addImport(AuditingDomain.class.getCanonicalName());
-            try {
-                ruleManager.addGlobal(AuditingDomain.class.getCanonicalName(), "auditing");
-            } catch (RuntimeException e) {
-                // thrown if there is already one global auditing... fine then, go on
-            }
-            addRule("auditEvent");
-            memoryauditingService.update("auditing", new HashMap<String, String>());
+            ruleManager.addGlobalIfNotPresent(AuditingDomain.class.getCanonicalName(), "auditing");
         } catch (RuleBaseException e) {
-            // well we know that this can fail if these entries already exist...
+            throw new RuntimeException(e);
         }
+
+        addRule("auditEvent");
+        memoryauditingService.update("auditing", new HashMap<String, String>());
+
     }
 
     private void addRule(String rule) {
@@ -73,7 +71,7 @@ public class AuditingConfig {
             is = getClass().getClassLoader().getResourceAsStream(rule + ".rule");
             String ruleText = IOUtils.toString(is);
             RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, rule);
-            ruleManager.add(id, ruleText);
+            ruleManager.addOrUpdate(id, ruleText);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

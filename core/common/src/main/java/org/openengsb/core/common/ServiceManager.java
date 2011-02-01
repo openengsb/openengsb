@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.security.AuthorizedRoles;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 
 /**
@@ -29,6 +30,7 @@ public interface ServiceManager extends OpenEngSBService {
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.
      */
+    @AuthorizedRoles("ROLE_USER")
     ServiceDescriptor getDescriptor();
 
     /**
