@@ -30,6 +30,10 @@ import java.util.concurrent.Callable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Utility class writing an inputStream (mostly from an process) always into a string and optionally into a log file, if
+ * you use the {@link #ProcessOutputReader(InputStream, File)} constructor.
+ */
 public class ProcessOutputReader implements Callable<String> {
 
     private Log log = LogFactory.getLog(getClass());
@@ -55,15 +59,33 @@ public class ProcessOutputReader implements Callable<String> {
     public String call() throws IOException {
         log.debug("starting reading inputstream");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            writer.append(line + "\n");
-            if (logFileWriter != null) {
-                logFileWriter.write(line + "\n");
-                logFileWriter.flush();
-            }
-        }
+        readInputStream(bufferedReader);
+        closeResources();
         log.debug("inputstream has ended. returning result");
         return writer.toString();
     }
+
+    private void readInputStream(BufferedReader bufferedReader) throws IOException {
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            writer.append(line + "\n");
+            readToLogFile(line);
+        }
+    }
+
+    private void readToLogFile(String line) throws IOException {
+        if (logFileWriter != null) {
+            logFileWriter.write(line + "\n");
+            logFileWriter.flush();
+        }
+    }
+
+    private void closeResources() throws IOException {
+        log.debug("Input stream has ended. cleanup resources");
+        writer.close();
+        if (logFileWriter != null) {
+            logFileWriter.close();
+        }
+    }
+
 }

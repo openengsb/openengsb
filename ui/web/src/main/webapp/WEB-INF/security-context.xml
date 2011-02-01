@@ -34,5 +34,6 @@
 
   <osgi:reference id="userManager" interface="org.openengsb.core.common.security.UserManager" />
   <osgi:reference id="userAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" />
+  <osgi:reference id="osgiAuthenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </beans:beans>
