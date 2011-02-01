@@ -17,6 +17,7 @@
 package org.openengsb.connector.maven.internal;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -264,8 +265,31 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private MavenResult runMaven(File dir, List<String> command) throws IOException, InterruptedException {
         log.info("running '" + command + "' in directory '" + dir.getPath() + "'");
+        Process process = configureProcess(dir, command);
+        Future<String> outputFuture = configureProcessOutputReader(process);
+        Future<String> errorFuture = configureProcessErrorReader(process);
+        boolean processResultCode = process.waitFor() == 0;
+        String outputResult = readResultFromFuture(outputFuture);
+        String errorResult = readResultFromFuture(errorFuture);
+        if (!errorResult.isEmpty()) {
+            log.warn("Maven connector error stream output: " + errorResult);
+        }
+        log.info("maven exited with status " + processResultCode);
+        return new MavenResult(processResultCode, outputResult);
+    }
+
+    private Process configureProcess(File dir, List<String> command) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
+        return process;
+    }
+
+    private Future<String> configureProcessErrorReader(Process process) {
+        ProcessOutputReader error = new ProcessOutputReader(process.getErrorStream());
+        return outputReaderPool.submit(error);
+    }
+
+    private Future<String> configureProcessOutputReader(Process process) throws IOException, FileNotFoundException {
         ProcessOutputReader output;
         if (useLogFile) {
             File logFile = getNewLogFile();
@@ -273,32 +297,18 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         } else {
             output = new ProcessOutputReader(process.getInputStream());
         }
-        ProcessOutputReader error = new ProcessOutputReader(process.getErrorStream());
-        Future<String> outputFuture = outputReaderPool.submit(output);
-        Future<String> errorFuture = outputReaderPool.submit(error);
+        return outputReaderPool.submit(output);
+    }
 
-        boolean processResultCode = process.waitFor() == 0;
-        String outputResult;
+    private String readResultFromFuture(Future<String> future) throws InterruptedException {
+        String result;
         try {
-            outputResult = outputFuture.get();
+            result = future.get();
         } catch (ExecutionException e) {
             log.error(e.getCause());
-            outputResult = ExceptionUtils.getFullStackTrace(e);
+            result = ExceptionUtils.getFullStackTrace(e);
         }
-
-        String errorResult;
-        try {
-            errorResult = errorFuture.get();
-        } catch (ExecutionException e) {
-            log.error(e.getCause());
-            errorResult = ExceptionUtils.getFullStackTrace(e);
-        }
-
-        if (!errorResult.isEmpty()) {
-            log.warn("Maven connector error stream output: " + errorResult);
-        }
-        log.info("maven exited with status " + processResultCode);
-        return new MavenResult(processResultCode, outputResult);
+        return result;
     }
 
     private File getNewLogFile() throws IOException {
