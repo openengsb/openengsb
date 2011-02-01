@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.deployer.connector;
+package org.openengsb.core.deployer.connector.internal;
 
 import java.io.File;
 import java.io.FileInputStream;

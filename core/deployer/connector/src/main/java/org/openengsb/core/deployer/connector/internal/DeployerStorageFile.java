@@ -1,0 +1,90 @@
+package org.openengsb.core.deployer.connector.internal;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+public class DeployerStorageFile implements DeployerStorage {
+    
+    private static final String STORAGE_FILE_NAME = "connector";
+    private static final String KEY_CONNECTOR = STORAGE_FILE_NAME;
+    private static final String KEY_SERVICE_ID = "serviceId";
+    File storageDir;
+    
+    public DeployerStorageFile(File storageDir) {
+        this.storageDir = storageDir;
+    }
+
+    @Override
+    public void put(File file, ConnectorConfiguration config) throws IOException {
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+        getStorageFile().createNewFile();
+        Properties props = loadProperties();
+        props.setProperty(getServiceKeyOf(file), config.getServiceId());
+        props.setProperty(getConnectorKeyOf(file), config.getConnectorType());
+        storeProperties(props);
+    }
+
+    @Override
+    public String getServiceId(File file) throws IOException {
+        return readProperty(getServiceKeyOf(file));
+    }
+
+    @Override
+    public String getConnectorType(File file) throws IOException {
+        return readProperty(getConnectorKeyOf(file));
+    }
+    
+    @Override
+    public void remove(File file) throws IOException {
+        if (!getStorageFile().exists()) {
+            return;
+        }
+    
+        Properties props = loadProperties();
+        props.remove(getServiceKeyOf(file));
+        props.remove(getConnectorKeyOf(file));
+        storeProperties(props);
+    }
+
+    private String readProperty(String propertyKey) throws IOException {
+        if (!getStorageFile().exists()) {
+            return null;
+        }
+        Properties props = loadProperties();
+        return props.getProperty(propertyKey);
+    }
+
+    private Properties loadProperties() throws FileNotFoundException, IOException {
+        Properties props = new Properties();
+        FileInputStream fis;
+        fis = new FileInputStream(getStorageFile());
+        props.load(fis);    
+        fis.close();
+        return props;
+    }
+    
+    private File getStorageFile() {
+        return new File(storageDir, STORAGE_FILE_NAME);
+    }
+
+    private void storeProperties(Properties props) throws FileNotFoundException, IOException {
+        FileOutputStream fos = new FileOutputStream(getStorageFile());
+        props.store(fos, "");    
+        fos.close();
+    }
+
+    private String getServiceKeyOf(File file) {
+        return String.format("%s.%s", file.getName(), KEY_SERVICE_ID);
+    }
+
+    private String getConnectorKeyOf(File file) {
+        return String.format("%s.%s", file.getName(), KEY_CONNECTOR);
+    }
+
+}
