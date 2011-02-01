@@ -30,6 +30,10 @@ openengsb-1.1.0.RELEASE
   * openengsb-maven-plugin mojo for assembly-mojo
   * More util methods for registering and using openengsb core services
   * Upgrade of jgit, maven-bundle-plugin
+  * New internal system user for connector/domain setup
+  * Granting authorities via annotations
+  * Maven connector writes seperate log file
+  * Usermanagement handles roles now
 
 ### Details
 
