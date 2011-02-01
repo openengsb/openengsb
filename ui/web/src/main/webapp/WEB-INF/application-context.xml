@@ -41,7 +41,7 @@
 
   <bean class="org.openengsb.ui.web.config.AuditingConfig" id="auditingConfig" init-method="init">
     <property name="ruleManager" ref="ruleManager" />
-    <property name="authManager" ref="authenticationManager" />
+    <property name="authManager" ref="osgiAuthenticationManager" />
     <property name="memoryauditingService" ref="memoryauditingService" />
   </bean>
 
