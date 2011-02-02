@@ -73,6 +73,7 @@
   <service interface="org.openengsb.core.common.workflow.EventRegistrationService">
     <bean class="org.openengsb.core.workflow.internal.RegistrationServiceImpl">
       <property name="ruleManager" ref="ruleManager" />
+      <property name="instanceId" value="registrationService" />
     </bean>
   </service>
 

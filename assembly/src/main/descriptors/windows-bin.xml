@@ -50,6 +50,8 @@
       <includes>
         <include>LICENSE</include>
         <include>NOTICE</include>
+        <include>CHANGELOG.md</include>
+        <include>KNOWN_ISSUES.md</include>
       </includes>
       <lineEnding>dos</lineEnding>
       <fileMode>0644</fileMode>
@@ -79,6 +81,20 @@
 
   <files>
     <file>
+      <source>${basedir}/../CHANGELOG.md</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>CHANGELOG</destName>
+      <fileMode>0644</fileMode>
+      <lineEnding>dos</lineEnding>
+    </file>
+    <file>
+      <source>${basedir}/../KNOWN_ISSUES.md</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>KNOWN_ISSUES</destName>
+      <fileMode>0644</fileMode>
+      <lineEnding>dos</lineEnding>
+    </file>
+    <file>
       <source>${basedir}/target/dependencies/win/apache-karaf-${karaf.version}/bin/karaf.bat</source>
       <outputDirectory>/bin/</outputDirectory>
       <destName>openengsb.bat</destName>
@@ -93,7 +109,7 @@
       <lineEnding>dos</lineEnding>
     </file>
     <file>
-      <source>${basedir}/src/main/distribution/README.txt</source>
+      <source>${basedir}/target/classes/README.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>README</destName>
       <fileMode>0644</fileMode>
@@ -104,7 +120,6 @@
       <outputDirectory>/</outputDirectory>
       <destName>openengsb-manual.pdf</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
     </file>
   </files>
 

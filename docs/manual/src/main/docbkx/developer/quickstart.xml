@@ -322,11 +322,24 @@
       <command>licenseCheck</command>
     </para>
     <para>
-      Performs a check if appropriate license headers are available in every source file. A large part of the default
+      Performs a check if appropriate license headers are available in every source file. The licenseCheck mojo wraps
+      the com.mycila.maven-license-plugin. A large part of the default
       behavior of this mojo can be changed in
-      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseCheck</filename>. See 
+      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseMojo/licenseCheckConfig.xml</filename>. See 
       <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
-      for available configuration options.
+      for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its default
+      behavior.
+    </para>
+     <para>
+      <command>licenseFormat</command>
+    </para>
+    <para>
+      Adds a license header to files where the license header is missing.
+      A large part of the default behavior of this mojo can be changed in
+      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseMojo/licenseFormatConfig.xml</filename>. See 
+      <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
+      for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its default
+      behavior.
     </para>
   </section>
   </section>

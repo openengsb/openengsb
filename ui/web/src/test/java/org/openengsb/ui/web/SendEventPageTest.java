@@ -168,15 +168,14 @@ public class SendEventPageTest {
 
     @Test
     public void openSite_shouldShowAuditLog() {
-        tester.assertVisible("audits");
-        tester.assertVisible("audits:0:audit");
-        tester.assertVisible("audits:1:audit");
+        tester.assertVisible("auditsContainer:audits");
+        tester.assertVisible("auditsContainer:audits:0:audit");
+        tester.assertVisible("auditsContainer:audits:1:audit");
         int i = 0;
         for (String string : this.domain.getAudits()) {
-            tester.assertLabel("audits:" + i + ":audit", string);
+            tester.assertLabel("auditsContainer:audits:" + i + ":audit", string);
             i++;
         }
 
     }
 }
-

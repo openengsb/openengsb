@@ -26,7 +26,7 @@
   <title>Writing Code</title>
 
   <para>This chapter is intended for developers. There are no special prerequisites. Each part describes what a
-  developer has to look at in specific for the OpenEngSB.</para>
+    developer has to look at in specific for the OpenEngSB.</para>
 
   <section>
     <title>Maven POM files in the OpenEngSB</title>
@@ -48,26 +48,54 @@
     </itemizedlist>
     <para>The following listings shows an example of these params for a typical OpenEngSB pom.</para>
     <programlisting><![CDATA[<modelVersion>4.0.0</modelVersion>
-<groupId>org.openengsb.core</groupId>
-<artifactId>openengsb-core-parent</artifactId>
-<version>1.1.0-SNAPSHOT</version>
-<name>OpenEngSB :: Core :: Parent</name>
-<packaging>pom</packaging>
-<description>Parent project for all OpenEngSB Core classes</description>
-<url>http://www.openengsb.org</url>
-<licenses>
-  <license>
-    <name>Apache 2</name>
-    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    <distribution>repo</distribution>
-  </license>
-</licenses>
-<scm>
-  <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
-  <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
-  <url>http://github.com/openengsb/openengsb</url>
-</scm>]]></programlisting>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-parent</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <name>OpenEngSB :: Core :: Parent</name>
+      <packaging>pom</packaging>
+      <description>Parent project for all OpenEngSB Core classes</description>
+      <url>http://www.openengsb.org</url>
+      <licenses>
+        <license>
+          <name>Apache 2</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+        <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+        <url>http://github.com/openengsb/openengsb</url>
+    </scm>]]></programlisting>
   </section>
+  <section>
+    <title>Using the same dependencies as the OPENENGSB</title>
+    <para>To use the same dependencies as the OPENENGSB project you have to import the shared-plugin-settings project
+      into your dependency management section:</para>
+    <programlisting> <![CDATA[
+     <dependencyManagement>
+       <dependencies>
+         <dependency>
+           <groupId>org.openengsb.build</groupId>
+           <artifactId>shared-plugin-settings</artifactId>
+           <version>Version of OPENENGSB you use</version>
+           <type>pom</type>
+           <scope>import</scope>
+         </dependency>
+       </dependencies>
+     </dependencyManagement>
+     ]]> </programlisting>
+       <para>This will import all the dependencies with the correct versions into the dependencyManagement section.
+         You can now define the dependencies shared between your project and OPENENGSB in your dependencies 
+         section without setting the version.</para>
+     </section>
+     <section>
+       <title>Making UI Tests Localizable</title>
+       <para>If you want to test if specific text is shown in the UI extend LocalisedTest in your UI Test. The
+         constructor automatically loads the correct ResourceBundle and via localization(String resourcename) you
+         can load a localized version of a specific resource string. The default locale is used as to match the locale
+       used by WicketTester.</para>
+     </section>
 
 </chapter>
 

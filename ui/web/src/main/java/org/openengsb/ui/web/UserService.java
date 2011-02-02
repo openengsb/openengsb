@@ -18,8 +18,10 @@ package org.openengsb.ui.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -32,6 +34,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -44,6 +47,8 @@ import org.openengsb.core.common.security.UserExistsException;
 import org.openengsb.core.common.security.UserManagementException;
 import org.openengsb.core.common.security.UserManager;
 import org.openengsb.core.common.security.model.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 public class UserService extends BasePage {
@@ -57,6 +62,7 @@ public class UserService extends BasePage {
     @SpringBean
     private UserManager userManager;
     private boolean editMode = false;
+    private TextField<String> rolesField;
 
     public UserService() {
         final WebMarkupContainer usermanagementContainer = new WebMarkupContainer("usermanagementContainer");
@@ -69,7 +75,6 @@ public class UserService extends BasePage {
             }
         };
 
-
         usernameField = new RequiredTextField<String>("username");
         passwordField = new PasswordTextField("password");
         passwordVerficationField = new PasswordTextField("passwordVerification");
@@ -77,9 +82,13 @@ public class UserService extends BasePage {
         passwordField.setOutputMarkupId(true);
         passwordVerficationField.setOutputMarkupId(true);
 
+        rolesField = new TextField<String>("roles");
+        rolesField.setOutputMarkupId(true);
+
         userForm.add(usernameField);
         userForm.add(passwordField);
         userForm.add(passwordVerficationField);
+        userForm.add(rolesField);
 
         userForm.setModel(new CompoundPropertyModel<UserInput>(input));
 
@@ -94,6 +103,7 @@ public class UserService extends BasePage {
                 input.setPassword("");
                 input.setUsername("");
                 input.setPasswordVerification("");
+                input.setRoles("");
                 form.clearInput();
                 usernameField.setEnabled(true);
                 editMode = false;
@@ -137,6 +147,7 @@ public class UserService extends BasePage {
                         input.setUsername(userListItem.getModelObject().getUsername());
                         input.setPassword(userListItem.getModelObject().getPassword());
                         input.setPasswordVerification(userListItem.getModelObject().getPassword());
+                        input.setRoles(makeCommaSeparatedList(userListItem.getModelObject().getAuthorities()));
                         editMode = true;
                         usernameField.setEnabled(false);
                         ajaxRequestTarget.addComponent(usermanagementContainer);
@@ -159,7 +170,8 @@ public class UserService extends BasePage {
                 error(new StringResourceModel("passwordError", this, null).getString());
             } else {
                 try {
-                    User user = new User(input.getUsername(), input.getPassword());
+                    List<GrantedAuthority> authorities = authoritiesFromCommaSeparatedList(input.getRoles());
+                    User user = new User(input.getUsername(), input.getPassword(), authorities);
                     if (editMode) {
                         userManager.updateUser(user);
                     } else {
@@ -180,12 +192,12 @@ public class UserService extends BasePage {
 
     }
 
-
     private class UserInput implements Serializable {
 
         private String passwordVerification;
         private String password;
         private String username;
+        private String roles;
 
         public String getPasswordVerification() {
             return passwordVerification;
@@ -210,6 +222,30 @@ public class UserService extends BasePage {
         public void setUsername(String username) {
             this.username = username;
         }
+
+        public String getRoles() {
+            return this.roles;
+        }
+
+        public void setRoles(String roles) {
+            this.roles = roles;
+        }
+    }
+
+    private String makeCommaSeparatedList(Collection<GrantedAuthority> authorities) {
+        return StringUtils.join(authorities, ",");
+    }
+
+    private List<GrantedAuthority> authoritiesFromCommaSeparatedList(String roleListString) {
+        List<GrantedAuthority> result = new ArrayList<GrantedAuthority>();
+        if (roleListString == null) {
+            return result;
+        }
+        String[] roles = roleListString.split(",");
+        for (String role : roles) {
+            result.add(new GrantedAuthorityImpl(role.trim()));
+        }
+        return result;
     }
 
 }

@@ -22,12 +22,14 @@ import java.util.UUID;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
- * A Task is based on a {@link ProcessBag} and used for human interaction. It contains all data needed for human
- * interaction i.e. the properties relevant to the user, a unique identifier and the tasks type used to categorize all
+ * A Task is based on a {@link ProcessBag} and used for human interaction. It
+ * contains all data needed for human interaction i.e. the properties relevant
+ * to the user, a unique identifier and the tasks type used to categorize all
  * tasks of a certain kind.
  * 
- * Each time a workflow needs user interaction, such task is created from the workflows ProcessBag. It is also used to
- * pass data back to the workflow after user interaction. The old ProcessBag is then replaced with this new one.
+ * Each time a workflow needs user interaction, such task is created from the
+ * workflows ProcessBag. It is also used to pass data back to the workflow after
+ * user interaction. The old ProcessBag is then replaced with this new one.
  */
 public class Task extends ProcessBag {
     public Task() {
@@ -36,7 +38,8 @@ public class Task extends ProcessBag {
     }
 
     /**
-     * Generates an empty task to be used for persistence queries (to get all tasks).
+     * Generates an empty task to be used for persistence queries (to get all
+     * tasks).
      */
     public static Task createTaskWithAllValuesSetToNull() {
         Task emptyTask = new Task();
@@ -51,8 +54,12 @@ public class Task extends ProcessBag {
     }
 
     private void init() {
-        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
-        addOrReplaceProperty("taskCreationTimestamp", new Date());
+        if (!containsProperty("taskId")) {
+            addOrReplaceProperty("taskId", UUID.randomUUID().toString());
+        }
+        if (!containsProperty("taskCreationTimestamp")) {
+            addOrReplaceProperty("taskCreationTimestamp", new Date());
+        }
     }
 
     public String getTaskId() {
@@ -89,5 +96,9 @@ public class Task extends ProcessBag {
 
     public Date getTaskCreationTimestamp() {
         return (Date) getProperty("taskCreationTimestamp");
+    }
+
+    public void setTaskCreationTimestamp(Date taskCreationTimestamp) {
+        addOrReplaceProperty("taskCreationTimestamp", taskCreationTimestamp);
     }
 }

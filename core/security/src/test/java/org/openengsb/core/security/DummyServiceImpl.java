@@ -33,4 +33,9 @@ public class DummyServiceImpl extends AbstractOpenEngSBService implements DummyS
     public int test() {
         return -1;
     }
+
+    @Override
+    public int publicTest() {
+        return 21;
+    }
 }

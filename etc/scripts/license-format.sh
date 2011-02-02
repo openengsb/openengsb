@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../..
-mvn clean validate -Plicense-format
+source $(dirname $0)/openengsbplugin-common.sh
+
+cd $ABSPATH/../../
+
+mvn openengsb:licenseFormat
 

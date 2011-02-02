@@ -23,6 +23,10 @@ body {
   font-size: 13px;
   padding: 0px;
 }
+h1 {
+	margin:0px;
+}
+
 td, select, input, li{
   font-family: Verdana, Helvetica, Arial, sans-serif;
   font-size: 12px;

@@ -61,7 +61,7 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
     <bundle>mvn:javax.el/com.springsource.javax.el/${el.version}</bundle>
-    <bundle>mvn:commons-collections/commons-collections/${commons.collection.version}</bundle>
+    <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:javax.servlet/com.springsource.javax.servlet/2.5.0</bundle>
     <bundle>mvn:org.springframework/spring-core/${spring.version}</bundle>

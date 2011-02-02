@@ -28,7 +28,7 @@
   <para>Each project in the OpenEngSB has its own context to store meta information necessary for running inside of the
     OpenEngSB. The context basically is represented as a tree structure with key-value pairs as leafs.</para>
 
-  <para>The context in which a workflow is executed, a rule fired or another action happens can be compared to the 
+  <para>The context in which a workflow is executed, a rule fired or another action happens can be compared to the
   project in which the respective action happens. The context store therefore offers the possibility to perform
   project specific configurations.</para>
 
@@ -36,10 +36,18 @@
   can be used to query the context and to insert, update or delete values. Note that under a specific name either a node or a leaf can be found, but not both. That means that
   the context can be compared to a file system, where context nodes are directories and context leaves files. The leaves in the context contain string key-value pairs.
   </para>
-  
+
   <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
-    extends the context service and provides additional methods for the management of the current context of a thread and the creation of new root context entries (which correspond to projects).
+    extends the context service and provides additional methods for the management new root context entries (which correspond to projects).
   </para>
+
+  <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextHolder.java">ContextHolder</link>
+    keeps track of the current threads' contexts. Invoking the set- and get-method always manipulate the context of the
+    current Thread. When a new Thread is spawned it inherits the context from the parent thread.
+  </para>
+
+
+
 
 </chapter>
 
