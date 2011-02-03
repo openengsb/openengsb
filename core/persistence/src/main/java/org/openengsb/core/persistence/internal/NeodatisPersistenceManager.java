@@ -67,7 +67,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     }
 
     private String getFileName(Bundle bundle) {
-        return bundle.getSymbolicName().hashCode() + "_" + bundle.getVersion().hashCode() + ".data";
+        return bundle.getSymbolicName() + ".data";
     }
 
     public void setPersistenceRootDir(String persistenceRootDir) {
