@@ -1,0 +1,182 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.openengsb.ui.web.userService;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
+import org.apache.wicket.util.tester.WicketTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.security.UserExistsException;
+import org.openengsb.core.common.security.UserManagementException;
+import org.openengsb.core.common.security.UserManager;
+import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.test.LocalisedTest;
+import org.openengsb.ui.web.index.Index;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
+import org.osgi.framework.BundleContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+
+public class UserServiceTest extends LocalisedTest {
+
+    private WicketTester tester;
+
+    private ApplicationContextMock context;
+    private FormTester formTester;
+    private BundleContext bundleContext;
+    private UserManager userManager;
+
+    @Before
+    public void setup() {
+        tester = new WicketTester();
+        context = new ApplicationContextMock();
+        context.putBean(mock(ContextCurrentService.class));
+        bundleContext = mock(BundleContext.class);
+        context.putBean(bundleContext);
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        userManager = mock(UserManager.class);
+        context.putBean("userManager", userManager);
+        setupTesterWithSpringMockContext();
+    }
+
+    @Test
+    public void testLinkAppearsWithCaptionUserManagement() throws Exception {
+        tester.startPage(Index.class);
+        tester.assertContains("User Management");
+    }
+
+    private void setupTesterWithSpringMockContext() {
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
+    }
+
+    @Test
+    public void testUserCreation_ShouldWork() {
+        tester.startPage(UserService.class);
+
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.setValue("roles", "admin,user");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        verify(userManager, times(1)).createUser(new User("user1", "password"));
+
+    }
+
+    @Test
+    public void testUserCreationWithoutRoles_ShouldWork() {
+        tester.startPage(UserService.class);
+
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        verify(userManager, times(1)).createUser(new User("user1", "password"));
+
+    }
+
+    @Test
+    public void testErrorMessage_shouldReturnUserExists() {
+        tester.startPage(UserService.class);
+        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{localization("userExistError")});
+        verify(userManager, times(1)).createUser(new User("user1", "password"));
+
+    }
+
+    @Test
+    public void testShowCreatedUser_ShouldShowAdmin() {
+        when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
+            @Override
+            public List<User> answer(InvocationOnMock invocationOnMock) {
+                List<User> users = new ArrayList<User>();
+                users.add(new User("admin", "password"));
+                return users;
+            }
+        });
+        tester.startPage(UserService.class);
+        tester.assertContains(localization("existingUser.title"));
+        tester.assertContains("admin");
+        tester.assertContains("delete");
+    }
+
+    @Test
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
+        tester.startPage(UserService.class);
+        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password2");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{localization("passwordError")});
+        verify(userManager, times(0)).createUser(new User("user1", "password"));
+    }
+
+    @Test
+    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
+        tester.startPage(UserService.class);
+        doThrow(new UserManagementException("database error")).when(userManager).createUser(
+            new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{localization("userManagementExceptionError")});
+    }
+
+    @Test
+    public void testShowUserAuthorities() throws Exception {
+        tester.startPage(UserService.class);
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.setValue("roles", "ROLE_ADMIN");
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userManager, times(1)).createUser(argCaptor.capture());
+        User userCreated = argCaptor.getValue();
+        assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
+    }
+}

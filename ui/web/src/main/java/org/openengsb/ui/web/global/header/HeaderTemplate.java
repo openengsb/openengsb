@@ -32,15 +32,15 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.ui.web.ContextSetPage;
-import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.SendEventPage;
-import org.openengsb.ui.web.ServiceListPage;
-import org.openengsb.ui.web.TaskOverview;
-import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.UserService;
+import org.openengsb.ui.web.contextSetPage.ContextSetPage;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
+import org.openengsb.ui.web.index.Index;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
+import org.openengsb.ui.web.sendEventPage.SendEventPage;
+import org.openengsb.ui.web.serviceListPage.ServiceListPage;
+import org.openengsb.ui.web.taskOverview.TaskOverview;
+import org.openengsb.ui.web.testClient.TestClient;
+import org.openengsb.ui.web.userService.UserService;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
