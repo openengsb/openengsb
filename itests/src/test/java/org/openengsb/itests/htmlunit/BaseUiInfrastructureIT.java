@@ -40,7 +40,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl =
-        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
+        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.loginPage.LoginPage";
 
     @Before
     public void setUp() throws Exception {
