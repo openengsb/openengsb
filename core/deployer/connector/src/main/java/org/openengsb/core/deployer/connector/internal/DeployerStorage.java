@@ -2,7 +2,6 @@ package org.openengsb.core.deployer.connector.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 public interface DeployerStorage {
     
