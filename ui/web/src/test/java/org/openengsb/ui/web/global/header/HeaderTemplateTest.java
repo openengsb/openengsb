@@ -39,12 +39,13 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.SendEventPage;
-import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.global.footer.ImprintPage;
+import org.openengsb.ui.web.global.footer.imprintPage.ImprintPage;
+import org.openengsb.ui.web.index.Index;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
+import org.openengsb.ui.web.sendEventPage.SendEventPage;
+import org.openengsb.ui.web.testClient.TestClient;
 import org.osgi.framework.BundleContext;
+
 
 public class HeaderTemplateTest {
 

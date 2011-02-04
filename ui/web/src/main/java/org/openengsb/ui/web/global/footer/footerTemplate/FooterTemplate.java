@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.web.global.footer.footerTemplate;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.WebPage;
-import org.openengsb.ui.common.wicket.OpenEngSBWicketApplication;
-import org.openengsb.ui.web.index.Index;
-import org.openengsb.ui.web.loginPage.LoginPage;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.ui.web.global.footer.imprintPage.ImprintPage;
 
-public class WicketApplication extends OpenEngSBWicketApplication {
-    @Override
-    public Class<? extends Page> getHomePage() {
-        return Index.class;
+@SuppressWarnings("serial")
+public class FooterTemplate extends Panel {
+    public FooterTemplate(String id) {
+        super(id);
+        add(new BookmarkablePageLink<ImprintPage>("imprint", ImprintPage.class));
     }
 
-    @Override
-    protected Class<? extends WebPage> getSignInPageClass() {
-        return LoginPage.class;
-    }
 }

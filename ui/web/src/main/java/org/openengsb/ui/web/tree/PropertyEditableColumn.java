@@ -33,6 +33,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.ui.web.tree.dropDownPanel.DropDownPanel;
+import org.openengsb.ui.web.tree.editablePanel.EditablePanel;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
