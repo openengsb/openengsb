@@ -14,22 +14,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.common.model;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.WebPage;
-import org.openengsb.ui.common.OpenEngSBWicketApplication;
-import org.openengsb.ui.web.index.Index;
-import org.openengsb.ui.web.loginPage.LoginPage;
+import org.apache.wicket.model.IModel;
 
-public class WicketApplication extends OpenEngSBWicketApplication {
-    @Override
-    public Class<? extends Page> getHomePage() {
-        return Index.class;
+@SuppressWarnings("serial")
+public class BoolToStringModel implements IModel<Boolean> {
+    private final IModel<String> model;
+
+    public BoolToStringModel(IModel<String> model) {
+        this.model = model;
+        if ("".equals(model.getObject())) {
+            setObject(false);
+        }
     }
 
     @Override
-    protected Class<? extends WebPage> getSignInPageClass() {
-        return LoginPage.class;
+    public Boolean getObject() {
+        String v = model.getObject();
+        return "1".equals(v) || "true".equals(v) || "on".equals(v);
+    }
+
+    @Override
+    public void setObject(Boolean object) {
+        model.setObject(object.toString());
+    }
+
+    @Override
+    public void detach() {
+        // noop
     }
 }

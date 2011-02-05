@@ -19,7 +19,7 @@ package org.openengsb.ui.web.taskOverview;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.ui.common.wicket.taskbox.WebTaskboxService;
+import org.openengsb.ui.common.taskbox.WebTaskboxService;
 import org.openengsb.ui.web.basePage.BasePage;
 
 @AuthorizeInstantiation("ROLE_USER")

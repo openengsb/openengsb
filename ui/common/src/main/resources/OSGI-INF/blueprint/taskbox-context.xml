@@ -20,12 +20,12 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
 
-  <service interface="org.openengsb.ui.common.wicket.taskbox.WebTaskboxService">
+  <service interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="webtaskbox" />
     </service-properties>
-    <bean class="org.openengsb.ui.common.wicket.taskbox.WebTaskboxServiceImpl" init-method="init">
+    <bean class="org.openengsb.ui.common.taskbox.WebTaskboxServiceImpl" init-method="init">
       <property name="workflowService" ref="workflowService" />
       <property name="persistenceManager" ref="persistenceManager" />
       <property name="bundleContext" ref="blueprintBundleContext" />

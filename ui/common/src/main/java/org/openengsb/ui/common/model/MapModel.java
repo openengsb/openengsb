@@ -14,22 +14,38 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.common.model;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.WebPage;
-import org.openengsb.ui.common.OpenEngSBWicketApplication;
-import org.openengsb.ui.web.index.Index;
-import org.openengsb.ui.web.loginPage.LoginPage;
+import java.util.Map;
 
-public class WicketApplication extends OpenEngSBWicketApplication {
-    @Override
-    public Class<? extends Page> getHomePage() {
-        return Index.class;
+import org.apache.wicket.model.IModel;
+
+/**
+ * Model that represents a specific entry "key" in a map "map"
+ */
+@SuppressWarnings("serial")
+public class MapModel<K, V> implements IModel<V> {
+    private final Map<K, V> map;
+    private final K key;
+
+    public MapModel(Map<K, V> map, K key) {
+        this.map = map;
+        this.key = key;
+
     }
 
     @Override
-    protected Class<? extends WebPage> getSignInPageClass() {
-        return LoginPage.class;
+    public V getObject() {
+        return map.get(key);
+    }
+
+    @Override
+    public void setObject(V object) {
+        map.put(key, object);
+    }
+
+    @Override
+    public void detach() {
+        // nop
     }
 }

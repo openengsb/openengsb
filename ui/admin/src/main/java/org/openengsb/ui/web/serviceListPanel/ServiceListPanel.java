@@ -39,7 +39,7 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
+import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.openengsb.ui.web.connectorEditorPage.ConnectorEditorPage;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

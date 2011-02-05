@@ -44,8 +44,8 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
-import org.openengsb.ui.common.wicket.editor.NumberValidator;
-import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
+import org.openengsb.ui.common.editor.NumberValidator;
+import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 import org.openengsb.ui.web.serviceEditor.ServiceEditor;
 
 @SuppressWarnings("serial")

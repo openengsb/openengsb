@@ -25,8 +25,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.ui.common.wicket</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.ui.common.wicket</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.ui.common</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.ui.common</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

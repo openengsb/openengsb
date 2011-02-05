@@ -62,7 +62,7 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
+import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.openengsb.ui.web.basePage.BasePage;
 import org.openengsb.ui.web.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.web.methodArgumentPanel.MethodArgumentPanel;

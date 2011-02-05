@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.common.inject;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.WebPage;
-import org.openengsb.ui.common.OpenEngSBWicketApplication;
-import org.openengsb.ui.web.index.Index;
-import org.openengsb.ui.web.loginPage.LoginPage;
+import org.apache.wicket.injection.ConfigurableInjector;
+import org.apache.wicket.injection.IFieldValueFactory;
 
-public class WicketApplication extends OpenEngSBWicketApplication {
-    @Override
-    public Class<? extends Page> getHomePage() {
-        return Index.class;
+public class OsgiAnnotationSpringInjector extends ConfigurableInjector {
+
+    private IFieldValueFactory factory;
+
+    public OsgiAnnotationSpringInjector(OsgiSpringBeanReceiverLocator springBeanReceiverLocator) {
+        factory = new OsgiAnnotationProxyFieldValueFactory(springBeanReceiverLocator);
     }
 
     @Override
-    protected Class<? extends WebPage> getSignInPageClass() {
-        return LoginPage.class;
+    protected IFieldValueFactory getFieldValueFactory() {
+        return factory;
     }
+
 }

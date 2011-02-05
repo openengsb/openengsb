@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
+import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.openengsb.ui.web.basePage.BasePage;
 import org.openengsb.ui.web.index.Index;
 import org.openengsb.ui.web.model.OpenEngSBVersion;

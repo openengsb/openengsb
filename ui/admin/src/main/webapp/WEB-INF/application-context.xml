@@ -55,5 +55,5 @@
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" />
   <osgi:reference id="proxyFactory" interface="org.openengsb.core.common.proxy.ProxyFactory" />
   <osgi:reference id="taskboxService" interface="org.openengsb.core.common.taskbox.TaskboxService" />
-  <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.wicket.taskbox.WebTaskboxService" />
+  <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
 </beans>

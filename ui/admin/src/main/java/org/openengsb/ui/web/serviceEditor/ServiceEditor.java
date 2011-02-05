@@ -27,8 +27,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FormValidator;
-import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
-import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
+import org.openengsb.ui.common.editor.ServiceEditorPanel;
+import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {

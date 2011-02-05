@@ -19,7 +19,7 @@ package org.openengsb.ui.web.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.openengsb.ui.common.wicket.util.MethodUtil;
+import org.openengsb.ui.common.util.MethodUtil;
 
 @SuppressWarnings("serial")
 public class Argument implements Serializable {
