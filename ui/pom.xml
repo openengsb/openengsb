@@ -52,7 +52,7 @@
 
   <modules>
     <module>common</module>
-    <module>web</module>
+    <module>admin</module>
   </modules>
 
 </project>
