@@ -32,12 +32,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
-  <artifactId>openengsb-ui-web</artifactId>
+  <artifactId>openengsb-ui-admin</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: User Interface :: Web Administration</name>
+  <name>OpenEngSB :: User Interface :: Administration</name>
 
-  <description>Web Administration Interface for the OpenEngSB</description>
+  <description>Administration Interface for the OpenEngSB</description>
 
   <packaging>war</packaging>
 
@@ -113,8 +113,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.ui.common</groupId>
-      <artifactId>openengsb-ui-common-wicket</artifactId>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>openengsb-ui-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -190,3 +190,4 @@
   </dependencies>
 
 </project>
+
