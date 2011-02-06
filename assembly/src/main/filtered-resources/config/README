@@ -14,6 +14,12 @@
 # limitations under the License.
 #
 
-This folder can be used to store configuration files for OpenEngSB
-that are loaded by the deployer services.
+Files in this directory are handled by the OpenEngSB deployer services.
+These services listen for new/changed/deleted files and automatically
+update the corresponding configuration in OpenEngSB.
 
+For detailed information please check the manual.
+
+Supported file types
+--------------------
+.connector (property file) - Connector instance configuration
