@@ -16,11 +16,10 @@
 
 package org.openengsb.core.deployer.connector.internal;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-public class ConnectorConfiguration {
+public final class ConnectorConfiguration {
 
     private String connectorType;
     private String serviceId;
@@ -29,8 +28,7 @@ public class ConnectorConfiguration {
     private ConnectorConfiguration() {
     }
 
-    public static ConnectorConfiguration loadFromFile(ConnectorFile configFile) throws FileNotFoundException,
-            IOException {
+    public static ConnectorConfiguration loadFromFile(ConnectorFile configFile) throws IOException {
         ConnectorConfiguration config = new ConnectorConfiguration();
 
         config.connectorType = configFile.getConnectorName();
@@ -39,7 +37,7 @@ public class ConnectorConfiguration {
 
         return config;
     }
-    
+
     public String getConnectorType() {
         return connectorType;
     }

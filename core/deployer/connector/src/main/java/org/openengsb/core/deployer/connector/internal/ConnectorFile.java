@@ -18,14 +18,13 @@ package org.openengsb.core.deployer.connector.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class ConnectorFile {
-    
+
     private static final String PROPERTY_CONNECTOR = "connector";
     private static final String PROPERTY_SERVICE_ID = "id";
 
@@ -34,21 +33,21 @@ public class ConnectorFile {
     public ConnectorFile(File connectorFile) {
         this.connectorFile = connectorFile;
     }
-    
-    public String getConnectorName() throws IOException, FileNotFoundException {
+
+    public String getConnectorName() throws IOException {
         return readProperty(PROPERTY_CONNECTOR);
     }
 
-    public String getServiceId() throws IOException, FileNotFoundException {
+    public String getServiceId() throws IOException {
         return readProperty(PROPERTY_SERVICE_ID);
     }
 
-    private String readProperty(String propertyId) throws IOException, FileNotFoundException {
+    private String readProperty(String propertyId) throws IOException {
         Properties props = loadProperties();
         return props.getProperty(propertyId);
     }
 
-    private Properties loadProperties() throws IOException, FileNotFoundException {
+    private Properties loadProperties() throws IOException {
         Properties props = new Properties();
         FileInputStream inputStream = new FileInputStream(connectorFile.getAbsoluteFile());
         props.load(inputStream);
@@ -56,7 +55,7 @@ public class ConnectorFile {
         return props;
     }
 
-    public Map<String, String> getAttributes() throws IOException, FileNotFoundException {
+    public Map<String, String> getAttributes() throws IOException {
         Properties props = loadProperties();
         Map<String, String> instanceAttributes = new HashMap<String, String>();
         for (String propertyName : props.stringPropertyNames()) {

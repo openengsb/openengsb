@@ -1,19 +1,34 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.core.deployer.connector.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class DeployerStorageFile implements DeployerStorage {
-    
+
     private static final String STORAGE_FILE_NAME = "connector";
     private static final String KEY_CONNECTOR = STORAGE_FILE_NAME;
     private static final String KEY_SERVICE_ID = "serviceId";
     File storageDir;
-    
+
     public DeployerStorageFile(File storageDir) {
         this.storageDir = storageDir;
     }
@@ -39,13 +54,13 @@ public class DeployerStorageFile implements DeployerStorage {
     public String getConnectorType(File file) throws IOException {
         return readProperty(getConnectorKeyOf(file));
     }
-    
+
     @Override
     public void remove(File file) throws IOException {
         if (!getStorageFile().exists()) {
             return;
         }
-    
+
         Properties props = loadProperties();
         props.remove(getServiceKeyOf(file));
         props.remove(getConnectorKeyOf(file));
@@ -60,22 +75,22 @@ public class DeployerStorageFile implements DeployerStorage {
         return props.getProperty(propertyKey);
     }
 
-    private Properties loadProperties() throws FileNotFoundException, IOException {
+    private Properties loadProperties() throws IOException {
         Properties props = new Properties();
         FileInputStream fis;
         fis = new FileInputStream(getStorageFile());
-        props.load(fis);    
+        props.load(fis);
         fis.close();
         return props;
     }
-    
+
     private File getStorageFile() {
         return new File(storageDir, STORAGE_FILE_NAME);
     }
 
-    private void storeProperties(Properties props) throws FileNotFoundException, IOException {
+    private void storeProperties(Properties props) throws IOException {
         FileOutputStream fos = new FileOutputStream(getStorageFile());
-        props.store(fos, "");    
+        props.store(fos, "");
         fos.close();
     }
 

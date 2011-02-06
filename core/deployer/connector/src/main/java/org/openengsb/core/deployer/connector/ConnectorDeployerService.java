@@ -72,14 +72,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             authenticate(AUTH_USER, AUTH_PASSWORD);
 
             DeployerStorage storage = createFileStorage();
-            
-            String serviceId = storage.getServiceId(artifact); 
+
+            String serviceId = storage.getServiceId(artifact);
             if (serviceId == null) {
                 serviceId = newConfig.getServiceId();
             }
 
-            log.info(String.format("Loading instance %s of connector %s", serviceId,
-                    newConfig.getConnectorType()));
+            log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
             ServiceManager serviceManager = getServiceManagerFor(newConfig.getConnectorType());
             if (serviceManager == null) {
                 log.info(String.format(
@@ -93,8 +92,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             if (validationResult.isValid()) {
                 storage.put(artifact, newConfig);
             }
-            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(),
-                    serviceId, validationResult.isValid()));
+            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
+                    validationResult.isValid()));
         } catch (Exception e) {
             log.error(String.format("Installing connector failed: %s", e));
         }
@@ -135,7 +134,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             log.error(String.format("Removing connector failed: %s", e));
         }
     }
-    
+
     private DeployerStorage createFileStorage() throws IOException {
         String karafDataDirectory = System.getProperty("karaf.data");
         String storageFile = String.format("%s/openengsb/deployer/connector", karafDataDirectory);
