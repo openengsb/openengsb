@@ -66,7 +66,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     }
 
     private String getFileName(Bundle bundle) {
-        final String name = bundle.getSymbolicName().hashCode() + "_" + bundle.getVersion().hashCode() + ".data";
+        final String name = bundle.getSymbolicName() + ".data";
         log.info("generated persitence-filename: " + name);
         return name;
     }
