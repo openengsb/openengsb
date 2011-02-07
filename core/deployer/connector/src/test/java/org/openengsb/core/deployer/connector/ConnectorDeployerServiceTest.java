@@ -17,46 +17,107 @@
 package org.openengsb.core.deployer.connector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 public class ConnectorDeployerServiceTest {
-    
+
     private ConnectorDeployerService connectorDeployerService;
-    
+    private AuthenticationManager authManagerMock;
+    private Authentication authMock;
+    private BundleContext bundleContextMock;
+    private List<ServiceReference> serviceReferenceMocks;
+    private ServiceManager serviceManagerMock;
+
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
-        
+        authManagerMock = mock(AuthenticationManager.class);
+        authMock = mock(Authentication.class);
+        bundleContextMock = mock(BundleContext.class);
+        serviceReferenceMocks = Arrays.asList(mock(ServiceReference.class));
+        serviceManagerMock = mock(ServiceManager.class);
+
+        when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
+        when(bundleContextMock.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferenceMocks.toArray(new ServiceReference[0]));
+        when(bundleContextMock.getService(any(ServiceReference.class))).thenReturn(serviceManagerMock);
+
+        connectorDeployerService.setAuthenticationManager(authManagerMock);
+        connectorDeployerService.setBundleContext(bundleContextMock);
+
         FileUtils.touch(new File("example.connector"));
         FileUtils.touch(new File("other.txt"));
     }
-    
+
     @After
     public void tearDown() {
         FileUtils.deleteQuietly(new File("example.connector"));
         FileUtils.deleteQuietly(new File("other.txt"));
     }
-    
+
     @Test
-    public void deployer_canHandleConnectorFiles(){
+    public void deployer_canHandleConnectorFiles() {
         File connectorFile = new File("example.connector");
 
         assertThat(connectorDeployerService.canHandle(connectorFile), is(true));
     }
 
     @Test
-    public void deployer_cannotHandleUnknownFiles(){
+    public void deployer_cannotHandleUnknownFiles() {
         File otherFile = new File("other.txt");
-        
+
         assertThat(connectorDeployerService.canHandle(otherFile), is(false));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void deployer_canInstallFile() throws Exception {
+        File connectorFile = new File("example.connector");
+        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+        
+        when(updateResult.isValid()).thenReturn(true);
+        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+        
+        connectorDeployerService.install(connectorFile);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void deployer_canUpdateFile() throws Exception {
+        File connectorFile = new File("example.connector");
+        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+        
+        when(updateResult.isValid()).thenReturn(true);
+        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+        
+        connectorDeployerService.update(connectorFile);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void deployer_canUninstallFile() throws Exception {
+        File connectorFile = new File("example.connector");
+        
+        connectorDeployerService.uninstall(connectorFile);
     }
 
 }
