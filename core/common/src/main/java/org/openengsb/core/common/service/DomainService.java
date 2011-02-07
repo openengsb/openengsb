@@ -23,16 +23,47 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Domain service helping to work with domain services
+ */
 public interface DomainService {
+
+    /**
+     * Method to retrieve all {@link DomainProvider} in the entire OpenEngSB
+     */
     List<DomainProvider> domains();
 
+    /**
+     * Method to retrieve the {@link ServiceManager} for a specific connector which can be used to create, update or
+     * destroy instances of a specific type. E.g. this method can be used to retrieve the jira service manager and add
+     * instances or remove them.
+     */
+    ServiceManager serviceManagerForConnector(String connectorName);
+
+    /**
+     * Retrieves the {@link ServiceManager} instances for a specific {@link Domain} for all connectors available in the
+     * OpenEngSB.
+     */
     List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain);
 
+    /**
+     * Retrieves the osgi {@link ServiceReference} matching all instances implementing a specific {@link Domain}
+     */
     List<ServiceReference> serviceReferencesForDomain(Class<? extends Domain> domain);
 
+    /**
+     * Retrieves the {@link ServiceReference} which can be used to retrieve all instances of connectors identified by
+     * implementing the base {@link Domain} interface.
+     */
     List<? extends ServiceReference> getAllServiceInstances();
 
+    /**
+     * Returns the service for {@link ServiceReference}
+     */
     Object getService(ServiceReference serviceReference);
 
+    /**
+     * Returns the service object for a specific service class and id.
+     */
     Object getService(String serviceClass, String serviceId);
 }

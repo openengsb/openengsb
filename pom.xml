@@ -43,8 +43,6 @@
     <mvn.core.version>3.0</mvn.core.version>
     <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
     <paxrunner.version>1.5.0</paxrunner.version>
-    <commons.io.version>1.4</commons.io.version>
-    <commons.compress.version>1.1</commons.compress.version>
     <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
@@ -129,6 +127,11 @@
         <groupId>org.openengsb.tooling</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <version>${openengsb.maven.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>features-maven-plugin</artifactId>
+        <version>${karaf.version}</version>
       </plugin>
     </plugins>
   </build>
@@ -291,6 +294,128 @@
       </build>
     </profile>
   </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-example</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-memoryauditing</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-events</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-persistence</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-security</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-workflow</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-auditing</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-build</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-deploy</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-example</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-issue</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-notification</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-report</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-scm</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb</artifactId>
+        <version>${project.version}</version>
+        <type>xml</type>
+        <classifier>features</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.ui</groupId>
+        <artifactId>openengsb-ui-common</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.ui</groupId>
+        <artifactId>openengsb-ui-admin</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.wrapped</groupId>
+        <artifactId>net.sourceforge.htmlunit-all</artifactId>
+        <version>${htmlunit.wrapped.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <repositories>
     <repository> <!-- Additional Repositories for Karaf -->
