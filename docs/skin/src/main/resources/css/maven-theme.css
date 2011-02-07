@@ -23,8 +23,9 @@ body {
   font-size: 13px;
   padding: 0px;
 }
-h1 {
+h1, h2 {
 	margin:0px;
+	padding:5px 0;
 }
 
 td, select, input, li{
@@ -299,4 +300,12 @@ body {
 	box-shadow: 2px 2px 4px #999;
 	width: 170px;
 	font-weight: normal;
+}
+
+#contentBox {
+	padding-bottom:14px;
+}
+
+#contentBox .title {
+	clear: none !important;
 }
