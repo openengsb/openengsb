@@ -29,8 +29,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,6 +47,7 @@ public class ConnectorDeployerServiceTest {
     private BundleContext bundleContextMock;
     private List<ServiceReference> serviceReferenceMocks;
     private ServiceManager serviceManagerMock;
+    private DeployerStorage storageMock;
 
     @Before
     public void setUp() throws Exception {
@@ -54,13 +57,16 @@ public class ConnectorDeployerServiceTest {
         bundleContextMock = mock(BundleContext.class);
         serviceReferenceMocks = Arrays.asList(mock(ServiceReference.class));
         serviceManagerMock = mock(ServiceManager.class);
+        storageMock = mock(DeployerStorage.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
-        when(bundleContextMock.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferenceMocks.toArray(new ServiceReference[0]));
+        when(bundleContextMock.getServiceReferences(anyString(), anyString())).thenReturn(
+                serviceReferenceMocks.toArray(new ServiceReference[0]));
         when(bundleContextMock.getService(any(ServiceReference.class))).thenReturn(serviceManagerMock);
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setBundleContext(bundleContextMock);
+        connectorDeployerService.setDeployerStorage(storageMock);
 
         FileUtils.touch(new File("example.connector"));
         FileUtils.touch(new File("other.txt"));
@@ -92,11 +98,13 @@ public class ConnectorDeployerServiceTest {
         File connectorFile = new File("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-        
+
         when(updateResult.isValid()).thenReturn(true);
         when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-        
+
         connectorDeployerService.install(connectorFile);
+
+        verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
     }
 
     @Test
@@ -105,19 +113,30 @@ public class ConnectorDeployerServiceTest {
         File connectorFile = new File("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-        
+
         when(updateResult.isValid()).thenReturn(true);
         when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-        
+
         connectorDeployerService.update(connectorFile);
+
+        verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void deployer_canUninstallFile() throws Exception {
         File connectorFile = new File("example.connector");
-        
+
+        when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
+
         connectorDeployerService.uninstall(connectorFile);
+
+        verify(serviceManagerMock).delete("service-id");
+    }
+
+    class IsSomething extends ArgumentMatcher<Map<String, String>> {
+        public boolean matches(Object o) {
+            return true;
+        }
     }
 
 }
