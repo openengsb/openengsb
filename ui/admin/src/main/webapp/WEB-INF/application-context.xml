@@ -33,13 +33,13 @@
 
   <context:property-placeholder properties-ref="settings" />
 
-  <bean id="openengsbVersion" class="org.openengsb.ui.web.model.OpenEngSBVersion">
+  <bean id="openengsbVersion" class="org.openengsb.ui.admin.model.OpenEngSBVersion">
     <property name="versionNumber" value="${openengsb.version.number}" />
     <property name="nameAdjective" value="${openengsb.version.name.adjective}" />
     <property name="nameNoun" value="${openengsb.version.name.noun}" />
   </bean>
 
-  <bean class="org.openengsb.ui.web.config.AuditingConfig" id="auditingConfig" init-method="init">
+  <bean class="org.openengsb.ui.admin.config.AuditingConfig" id="auditingConfig" init-method="init">
     <property name="ruleManager" ref="ruleManager" />
     <property name="authManager" ref="osgiAuthenticationManager" />
     <property name="memoryauditingService" ref="memoryauditingService" />

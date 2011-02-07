@@ -26,8 +26,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.ui.web</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.ui.web</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.ui.admin</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.ui.admin</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

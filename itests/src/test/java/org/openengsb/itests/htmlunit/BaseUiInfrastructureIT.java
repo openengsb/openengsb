@@ -40,7 +40,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl =
-        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.loginPage.LoginPage";
+        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.admin.loginPage.LoginPage";
 
     @Before
     public void setUp() throws Exception {
@@ -74,7 +74,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
-        assertTrue(taskOverviewPage.asText().contains(("Task-Overview")));
+        assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
     }
 
     @Test
