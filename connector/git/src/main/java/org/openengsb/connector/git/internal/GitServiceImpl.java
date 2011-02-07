@@ -29,6 +29,7 @@ import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.RmCommand;
+import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.errors.NotSupportedException;
 import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -42,6 +43,7 @@ import org.eclipse.jgit.lib.Tree;
 import org.eclipse.jgit.lib.WorkDirCheckout;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -50,6 +52,7 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.openengsb.connector.git.domain.GitCommitRef;
+import org.openengsb.connector.git.domain.GitTagRef;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.DomainMethodNotImplementedException;
@@ -240,6 +243,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     @Override
+    public File get(String file) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public boolean exists(String arg0, CommitRef arg1) {
         try {
             AnyObjectId id = repository.resolve(arg1.getStringRepresentation());
@@ -256,6 +265,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     @Override
+    public File get(String file, CommitRef ref) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public void checkout(String repository, CommitRef version, File directory, boolean recursive) {
         throw new DomainMethodNotImplementedException();
     }
@@ -267,21 +282,21 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public CommitRef getHead() {
-        GitCommitRef head = null;
-        if (repository == null) {
-            prepareWorkspace();
-            try {
+        try {
+            if (repository == null) {
+                prepareWorkspace();
                 initRepository();
-                head = new GitCommitRef(repository.resolve(Constants.HEAD));
-            } catch (IOException e) {
-                if (repository != null) {
-                    repository.close();
-                    repository = null;
-                }
-                throw new ScmException(e);
             }
+            AnyObjectId id = repository.resolve(Constants.HEAD);
+            RevCommit commit = new RevWalk(repository).parseCommit(id);
+            return new GitCommitRef(commit);
+        } catch (IOException e) {
+            if (repository != null) {
+                repository.close();
+                repository = null;
+            }
+            throw new ScmException(e);
         }
-        return head;
     }
 
     @Override
@@ -365,18 +380,49 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     @Override
-    public TagRef tagRepo() {
-        return null;
+    public TagRef tagRepo(String tagName) {
+        TagCommand tag = new Git(repository).tag();
+        try {
+            return new GitTagRef(tag.setName(tagName).call());
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
     }
 
     @Override
-    public TagRef tagRepo(CommitRef ref) {
-        return null;
+    public TagRef tagRepo(String tagName, CommitRef ref) {
+        try {
+            AnyObjectId commitRef = repository.resolve(ref.getStringRepresentation());
+            if (commitRef == null) {
+                return null;
+            }
+            RevWalk walk = new RevWalk(repository);
+            RevCommit revCommit = walk.parseCommit(commitRef);
+            TagCommand tag = new Git(repository).tag();
+            tag.setName(tagName).setObjectId(revCommit);
+            return new GitTagRef(tag.call());
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
     }
 
     @Override
     public CommitRef getCommitRefForTag(TagRef ref) {
-        return null;
+        try {
+            AnyObjectId tagRef = repository.resolve(ref.getStringRepresentation());
+            if (tagRef == null) {
+                return null;
+            }
+            RevWalk walk = new RevWalk(repository);
+            RevTag revTag = walk.parseTag(tagRef);
+            CommitRef commitRef = null;
+            if (revTag.getObject() instanceof RevCommit) {
+                commitRef = new GitCommitRef((RevCommit) revTag.getObject());
+            }
+            return commitRef;
+        } catch (IOException e) {
+            throw new ScmException(e);
+        }
     }
 
 }

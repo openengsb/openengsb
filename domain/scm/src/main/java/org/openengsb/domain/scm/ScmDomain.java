@@ -49,6 +49,10 @@ public interface ScmDomain extends Domain {
      */
     boolean exists(String file);
 
+    File get(String file);
+
+    File get(String file, CommitRef ref);
+
     /**
      * Check if given {@code version} of a {@code file} exists in repository.
      * 
@@ -105,12 +109,12 @@ public interface ScmDomain extends Domain {
     /**
      * Tags the actual HEAD of the repository.
      */
-    TagRef tagRepo();
+    TagRef tagRepo(String tagName);
 
     /**
      * Tags the commit of the repository identified by the reference.
      */
-    TagRef tagRepo(CommitRef ref);
+    TagRef tagRepo(String tagName, CommitRef ref);
 
     /**
      * Resolved the {@link CommitRef} for a specific tag name.

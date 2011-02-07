@@ -22,9 +22,17 @@ package org.openengsb.domain.scm;
 public interface TagRef {
 
     /**
+     * Gets this tag-ref name.
+     * 
+     * @return Name of this tag-ref
+     */
+    String getTagName();
+
+    /**
      * Gets this tag-ref value String representation.
      * 
      * @return String representation of this tag-ref value
      */
     String getStringRepresentation();
+
 }
