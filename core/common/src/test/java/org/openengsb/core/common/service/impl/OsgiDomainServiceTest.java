@@ -50,6 +50,7 @@ public class OsgiDomainServiceTest {
     private ServiceReference serviceManagerReferenceMock;
     private ServiceManager serviceManagerMock;
     private NullDomain serviceMock;
+    private String connectorName = "nullConnector";
 
     private ServiceReference[] getServiceReferenceArray() {
         return allServices.toArray(new ServiceReference[allServices.size()]);
@@ -74,6 +75,7 @@ public class OsgiDomainServiceTest {
         String filter = String.format("(domain=%s)", NullDomain.class.getName());
         when(contextMock.getAllServiceReferences(NullDomain.class.getName(), filter)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
+
         when(contextMock.getAllServiceReferences(NullDomain.class.getName(), null)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
         when(contextMock.getAllServiceReferences(Domain.class.getName(), null)).thenReturn(
@@ -90,6 +92,9 @@ public class OsgiDomainServiceTest {
                 new ServiceReference[]{ serviceManagerReferenceMock });
         serviceManagerMock = mock(ServiceManager.class);
         when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
+        String filterConnector = String.format("(connector=%s)", connectorName);
+        when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filterConnector)).thenReturn(
+                new ServiceReference[]{ serviceManagerReferenceMock });
     }
 
     @Test
@@ -97,6 +102,13 @@ public class OsgiDomainServiceTest {
         List<DomainProvider> domains = service.domains();
         assertThat(domains, not(sameInstance(providerList)));
         assertThat(domains.get(0).getId(), equalTo(providerList.get(0).getId()));
+    }
+
+    @Test
+    public void testServiceManagersForConnectorName_shouldReturnServiceManagerForRegisterdConnector()
+        throws InvalidSyntaxException {
+        ServiceManager serviceManagers = service.serviceManagerForConnector(connectorName);
+        assertThat(serviceManagers, is(serviceManagerMock));
     }
 
     @Test
