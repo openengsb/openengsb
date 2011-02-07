@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.errors.NotSupportedException;
 import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -55,6 +56,7 @@ import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.domain.scm.CommitRef;
 import org.openengsb.domain.scm.ScmDomain;
 import org.openengsb.domain.scm.ScmException;
+import org.openengsb.domain.scm.TagRef;
 
 @SuppressWarnings("deprecation")
 public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomain {
@@ -226,7 +228,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(Constants.HEAD);
             RevCommit commit = new RevWalk(repository).parseCommit(id);
-            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[]{ commit.getTree() });
+            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
@@ -242,93 +244,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(arg1.getStringRepresentation());
             RevCommit commit = new RevWalk(repository).parseCommit(id);
-            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[]{ commit.getTree() });
+            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
             return !objectId.equals(ObjectId.zeroId());
-        } catch (Exception e) {
-            throw new ScmException(e);
-        }
-    }
-
-    @Override
-    public void add(File file) {
-        throw new DomainMethodNotImplementedException("Use commit instead.");
-    }
-
-    @Override
-    public void add(File directory, boolean recursive) {
-        throw new DomainMethodNotImplementedException("Use commit instead.");
-    }
-
-    @Override
-    public CommitRef commit(File file, String comment) {
-        if (repository == null) {
-            prepareWorkspace();
-            try {
-                initRepository();
-            } catch (IOException e) {
-                throw new ScmException(e);
-            }
-        }
-        if (!file.exists() || !file.isFile()) {
-            throw new ScmException(file.getName() + " is not a file");
-        }
-        String repoPath = repository.getWorkTree().getAbsolutePath();
-        String filePath = file.getAbsolutePath();
-        if (!filePath.startsWith(repoPath)) {
-            throw new ScmException("File " + file.getName() + " not within working directory.");
-        }
-        String filepattern = filePath.substring(repoPath.length() + 1);
-        Git git = new Git(repository);
-        try {
-            git.add().addFilepattern(filepattern).call();
-            return new GitCommitRef(git.commit().setMessage(comment).call());
-        } catch (Exception e) {
-            throw new ScmException(e);
-        }
-    }
-
-    @Override
-    public CommitRef commit(File directory, String comment, boolean recursive) {
-        if (repository == null) {
-            prepareWorkspace();
-            try {
-                initRepository();
-            } catch (IOException e) {
-                throw new ScmException(e);
-            }
-        }
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new ScmException(directory.getName() + " is not a directory.");
-        }
-        String repoPath = repository.getWorkTree().getAbsolutePath();
-        String filePath = directory.getAbsolutePath();
-        if (!filePath.startsWith(repoPath)) {
-            throw new ScmException("Directory " + directory.getName() + " not within working directory.");
-        }
-        String filepattern = filePath.substring(repoPath.length() + 1);
-        Git git = new Git(repository);
-        AddCommand addCommand = git.add();
-        if (!recursive) {
-            boolean filesInDirectory = false;
-            for (File file : directory.listFiles()) {
-                if (file.isFile()) {
-                    filesInDirectory = true;
-                    addCommand.addFilepattern(file.getName());
-                }
-            }
-            if (!filesInDirectory) {
-                return null;
-            }
-        } else {
-            addCommand.addFilepattern(directory.getAbsolutePath() + "/.");
-        }
-        try {
-            git.add().addFilepattern(filepattern).call();
-            return new GitCommitRef(git.commit().setMessage(comment).call());
         } catch (Exception e) {
             throw new ScmException(e);
         }
@@ -342,6 +263,120 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     @Override
     public void checkout(String path, File directory, boolean recursive) {
         throw new DomainMethodNotImplementedException();
+    }
+
+    @Override
+    public CommitRef getHead() {
+        GitCommitRef head = null;
+        if (repository == null) {
+            prepareWorkspace();
+            try {
+                initRepository();
+                head = new GitCommitRef(repository.resolve(Constants.HEAD));
+            } catch (IOException e) {
+                if (repository != null) {
+                    repository.close();
+                    repository = null;
+                }
+                throw new ScmException(e);
+            }
+        }
+        return head;
+    }
+
+    @Override
+    public CommitRef add(String comment, File... file) {
+        if (file.length == 0) {
+            return null;
+        }
+        if (repository == null) {
+            prepareWorkspace();
+            try {
+                initRepository();
+            } catch (IOException e) {
+                if (repository != null) {
+                    repository.close();
+                    repository = null;
+                }
+                throw new ScmException(e);
+            }
+        }
+
+        Git git = new Git(repository);
+        AddCommand add = git.add();
+        String repoPath = repository.getWorkTree().getAbsolutePath();
+        for (File toCommit : file) {
+            if (!toCommit.exists() || !toCommit.isFile()) {
+                throw new ScmException("File " + toCommit + " is not a valid file to commit.");
+            }
+            String filePath = toCommit.getAbsolutePath();
+            if (!filePath.startsWith(repoPath)) {
+                throw new ScmException("File " + toCommit + " is not in working directory.");
+            }
+            String filepattern = filePath.substring(repoPath.length() + 1);
+            add.addFilepattern(filepattern);
+        }
+        try {
+            add.call();
+            return new GitCommitRef(git.commit().setMessage(comment).call());
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
+    }
+
+    @Override
+    public CommitRef remove(String comment, File... file) {
+        if (file.length == 0) {
+            return null;
+        }
+        if (repository == null) {
+            prepareWorkspace();
+            try {
+                initRepository();
+            } catch (IOException e) {
+                if (repository != null) {
+                    repository.close();
+                    repository = null;
+                }
+                throw new ScmException(e);
+            }
+        }
+
+        Git git = new Git(repository);
+        RmCommand rm = git.rm();
+        String repoPath = repository.getWorkTree().getAbsolutePath();
+        for (File toCommit : file) {
+            if (!toCommit.exists() || !toCommit.isFile()) {
+                throw new ScmException("File " + toCommit + " is not a valid file to commit.");
+            }
+            String filePath = toCommit.getAbsolutePath();
+            if (!filePath.startsWith(repoPath)) {
+                throw new ScmException("File " + toCommit + " is not in working directory.");
+            }
+            String filepattern = filePath.substring(repoPath.length() + 1);
+            rm.addFilepattern(filepattern);
+        }
+        try {
+            rm.call();
+            return new GitCommitRef(git.commit().setMessage(comment).call());
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
+    }
+
+    @Override
+    public TagRef tagRepo() {
+        return null;
+    }
+
+    @Override
+    public TagRef tagRepo(CommitRef ref) {
+        return null;
+    }
+
+    @Override
+    public CommitRef getCommitRefForTag(TagRef ref) {
+        return null;
     }
 
 }

@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.git.domain;
+package org.openengsb.domain.scm;
 
-import org.eclipse.jgit.lib.AnyObjectId;
-import org.openengsb.domain.scm.CommitRef;
+/**
+ * An abstraction for tag reference (tag-ref) to a tag id in SCM.
+ */
+public interface TagRef {
 
-public class GitCommitRef implements CommitRef {
-    private AnyObjectId commitRef;
-
-    public GitCommitRef(AnyObjectId commitRef) {
-        this.commitRef = commitRef;
-    }
-
-    @Override
-    public String getStringRepresentation() {
-        if (commitRef == null) {
-            return null;
-        }
-        return commitRef.name();
-    }
+    /**
+     * Gets this tag-ref value String representation.
+     * 
+     * @return String representation of this tag-ref value
+     */
+    String getStringRepresentation();
 }

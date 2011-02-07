@@ -22,88 +22,99 @@ import org.openengsb.core.common.Domain;
 
 /**
  * ScmDomain is an abstraction for working with SCM tools.
- *
+ * 
  */
 public interface ScmDomain extends Domain {
 
     /**
-     * Polls the represented repository for updates. Returns true if there have been changes since the last poll.
+     * Polls the represented repository for updates. Returns true if there have
+     * been changes since the last poll.
      */
     boolean poll();
 
     /**
      * Exports the current head of the repository to the specified directory.
-     *
-     * @param directory if the directory is non-existent, it'll be created. if the directory already exists it must not
-     *        contain any files.
+     * 
+     * @param directory if the directory is non-existent, it'll be created. if
+     *        the directory already exists it must not contain any files.
      */
     void export(File directory);
 
     /**
      * Check if HEAD revision of a {@code file} exists in repository.
-     *
+     * 
      * @param file relative repository path to file
-     *
+     * 
      * @return true if item exists in repository, otherwise false
      */
     boolean exists(String file);
 
     /**
      * Check if given {@code version} of a {@code file} exists in repository.
-     *
+     * 
      * @param file relative repository path to file
      * @param version file version
-     *
+     * 
      * @return true if file exists in repository, otherwise false
      */
     boolean exists(String file, CommitRef version);
 
     /**
-     * Adds new working {@code file} to index.
-     *
-     * @throws {@link ScmException} if working {@code file} does not exist or is not accessible.
-     */
-    void add(File file);
-
-    /**
-     * Adds new working {@code directory} to index.
-     *
-     * @throws {@link ScmException} if working {@code directory} does not exist or is not accessible.
-     */
-    void add(File directory, boolean recursive);
-
-    /**
-     * Commit changes of working {@code file} to repository.
-     *
-     * @throws {@link ScmException} if working {@code file} does not exist or is not accessible.
-     * @return version number, see {@link CommitRef}
-     */
-    CommitRef commit(File file, String comment);
-
-    /**
-     * Commit working {@code directory} changes to repository.
-     *
-     * @throws {@link ScmException} if working {@code directory} does not exist or is not accessible.
-     * @return version number, see {@link CommitRef}
-     */
-    CommitRef commit(File directory, String comment, boolean recursive);
-
-    /**
-     * Checkout {@code version} of repository {@code path} to specified working {@code directory}. To checkout folder
-     * with all its children set the {@code recursive} flag.
-     *
-     *
-     * @throws {@link ScmException} if working {@code directory} is not accessible or can not be created.
+     * Checkout {@code version} of repository {@code path} to specified working
+     * {@code directory}. To checkout folder with all its children set the
+     * {@code recursive} flag.
+     * 
+     * 
+     * @throws {@link ScmException} if working {@code directory} is not
+     *         accessible or can not be created.
      */
     void checkout(String repository, CommitRef version, File directory, boolean recursive);
 
     /**
-     * Checkout HEAD version of repository {@code path} to specified working {@code directory}. To checkout folder with
-     * all its children set the {@code recursive} flag.
-     *
-     *
-     * @throws {@link ScmException} if working {@code directory} is not accessible or can not be created.
+     * Checkout HEAD version of repository {@code path} to specified working
+     * {@code directory}. To checkout folder with all its children set the
+     * {@code recursive} flag.
+     * 
+     * 
+     * @throws {@link ScmException} if working {@code directory} is not
+     *         accessible or can not be created.
      */
     void checkout(String path, File directory, boolean recursive);
+
+    /**
+     * Returns the current HEAD of the repository as {@link CommitRef}.
+     */
+    CommitRef getHead();
+
+    /**
+     * Adds one or more working files to the repository and commits them.
+     * 
+     * @throws {@link ScmException} if one of the files doesn't exist in working
+     *         directory.
+     */
+    CommitRef add(String comment, File... file);
+
+    /**
+     * Removes one or more working files to the repository and commits them.
+     * 
+     * @throws {@link ScmException} if one of the files doesn't exist in working
+     *         directory.
+     */
+    CommitRef remove(String comment, File... file);
+
+    /**
+     * Tags the actual HEAD of the repository.
+     */
+    TagRef tagRepo();
+
+    /**
+     * Tags the commit of the repository identified by the reference.
+     */
+    TagRef tagRepo(CommitRef ref);
+
+    /**
+     * Resolved the {@link CommitRef} for a specific tag name.
+     */
+    CommitRef getCommitRefForTag(TagRef ref);
 
 }
