@@ -43,8 +43,6 @@
     <mvn.core.version>3.0</mvn.core.version>
     <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
     <paxrunner.version>1.5.0</paxrunner.version>
-    <commons.io.version>1.4</commons.io.version>
-    <commons.compress.version>1.1</commons.compress.version>
     <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
