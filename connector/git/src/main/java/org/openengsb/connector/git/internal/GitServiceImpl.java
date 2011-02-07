@@ -18,7 +18,9 @@ package org.openengsb.connector.git.internal;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -244,8 +246,28 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public File get(String file) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            AnyObjectId id = repository.resolve(Constants.HEAD);
+            RevCommit commit = new RevWalk(repository).parseCommit(id);
+            TreeWalk treeWalk = TreeWalk.forPath(repository, file, new AnyObjectId[] { commit.getTree() });
+            if (treeWalk == null) {
+                return null;
+            }
+            ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
+            if (objectId == ObjectId.zeroId()) {
+                return null;
+            }
+            String fileName = getFilename(file);
+            String ext = getExtension(fileName);
+            File tmp = File.createTempFile(fileName, ext);
+            tmp.deleteOnExit();
+            OutputStream os = new FileOutputStream(tmp);
+            os.write(repository.open(objectId).getCachedBytes());
+            os.close();
+            return tmp;
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
     }
 
     @Override
@@ -266,8 +288,48 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public File get(String file, CommitRef ref) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            AnyObjectId id = repository.resolve(ref.getStringRepresentation());
+            RevCommit commit = new RevWalk(repository).parseCommit(id);
+            TreeWalk treeWalk = TreeWalk.forPath(repository, file, new AnyObjectId[] { commit.getTree() });
+            if (treeWalk == null) {
+                return null;
+            }
+            ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
+            if (objectId == ObjectId.zeroId()) {
+                return null;
+            }
+            String fileName = getFilename(file);
+            String ext = getExtension(fileName);
+            File tmp = File.createTempFile(fileName, ext);
+            tmp.deleteOnExit();
+            OutputStream os = new FileOutputStream(tmp);
+            os.write(repository.open(objectId).getCachedBytes());
+            os.close();
+            return tmp;
+        } catch (Exception e) {
+            throw new ScmException(e);
+        }
+    }
+
+    private String getFilename(String path) {
+        String fileName;
+        if (path.contains("/")) {
+            fileName = path.substring(path.lastIndexOf("/") + 1);
+        } else {
+            fileName = path;
+        }
+        return fileName;
+    }
+
+    private String getExtension(String fileName) {
+        String ext;
+        if (fileName.contains(".")) {
+            ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            ext = "";
+        }
+        return ext;
     }
 
     @Override
