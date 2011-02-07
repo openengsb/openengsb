@@ -17,7 +17,6 @@
 package org.openengsb.core.deployer.connector;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +28,6 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.deployer.connector.internal.ConnectorConfiguration;
 import org.openengsb.core.deployer.connector.internal.ConnectorFile;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
-import org.openengsb.core.deployer.connector.internal.DeployerStorageFile;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,6 +45,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private BundleContext bundleContext;
     private AuthenticationManager authenticationManager;
+    private DeployerStorage deployerStorage;
 
     @Override
     public boolean canHandle(File artifact) {
@@ -71,9 +70,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             }
             authenticate(AUTH_USER, AUTH_PASSWORD);
 
-            DeployerStorage storage = createFileStorage();
-
-            String serviceId = storage.getServiceId(artifact);
+            String serviceId = deployerStorage.getServiceId(artifact);
             if (serviceId == null) {
                 serviceId = newConfig.getServiceId();
             }
@@ -90,7 +87,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             MultipleAttributeValidationResult validationResult = serviceManager.update(serviceId,
                     newConfig.getAttributes());
             if (validationResult.isValid()) {
-                storage.put(artifact, newConfig);
+                deployerStorage.put(artifact, newConfig);
             }
             log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
                     validationResult.isValid()));
@@ -112,12 +109,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         try {
             authenticate(AUTH_USER, AUTH_PASSWORD);
 
-            DeployerStorage storage = createFileStorage();
-            String serviceId = storage.getServiceId(artifact);
+            String serviceId = deployerStorage.getServiceId(artifact);
             if (serviceId == null) {
                 return;
             }
-            String connectorType = storage.getConnectorType(artifact);
+            String connectorType = deployerStorage.getConnectorType(artifact);
 
             log.info(String.format("Removing instance %s of connector %s", serviceId, connectorType));
             ServiceManager serviceManager = getServiceManagerFor(connectorType);
@@ -129,17 +125,10 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             }
 
             serviceManager.delete(serviceId);
-            storage.remove(artifact);
+            deployerStorage.remove(artifact);
         } catch (Exception e) {
             log.error(String.format("Removing connector failed: %s", e));
         }
-    }
-
-    private DeployerStorage createFileStorage() throws IOException {
-        String karafDataDirectory = System.getProperty("karaf.data");
-        String storageFile = String.format("%s/openengsb/deployer/connector", karafDataDirectory);
-        DeployerStorage storage = new DeployerStorageFile(new File(storageFile));
-        return storage;
     }
 
     private ServiceManager getServiceManagerFor(String connectorType) {
@@ -196,6 +185,14 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     public AuthenticationManager getAuthenticationManager() {
         return authenticationManager;
+    }
+
+    public void setDeployerStorage(DeployerStorage deployerStorage) {
+        this.deployerStorage = deployerStorage;
+    }
+
+    public DeployerStorage getDeployerStorage() {
+        return this.deployerStorage;
     }
 
 }
