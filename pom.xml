@@ -124,7 +124,7 @@
     </extensions>
     <plugins>
       <plugin>
-        <groupId>org.openengsb.tooling</groupId>
+        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <version>${openengsb.maven.plugin.version}</version>
       </plugin>

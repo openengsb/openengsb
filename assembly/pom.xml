@@ -235,7 +235,7 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.openengsb.tooling</groupId>
+        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <configuration>
           <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
