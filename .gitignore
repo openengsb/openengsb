@@ -109,4 +109,5 @@ velocity.log*
 #vi tmp files
 #================
 *.swp
+*~
 
