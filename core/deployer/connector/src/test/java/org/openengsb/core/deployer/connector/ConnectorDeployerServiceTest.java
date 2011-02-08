@@ -18,7 +18,13 @@ package org.openengsb.core.deployer.connector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Arrays;
@@ -79,14 +85,14 @@ public class ConnectorDeployerServiceTest {
     }
 
     @Test
-    public void deployer_canHandleConnectorFiles() {
+    public void testConnectorFiles_shouldBeHandledByDeployer() {
         File connectorFile = new File("example.connector");
 
         assertThat(connectorDeployerService.canHandle(connectorFile), is(true));
     }
 
     @Test
-    public void deployer_cannotHandleUnknownFiles() {
+    public void testUnknownFiles_shouldNotBeHandledByDeplyoer() {
         File otherFile = new File("other.txt");
 
         assertThat(connectorDeployerService.canHandle(otherFile), is(false));
@@ -94,7 +100,7 @@ public class ConnectorDeployerServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void deployer_canInstallFile() throws Exception {
+    public void testConnectorFile_souldBeInstalled() throws Exception {
         File connectorFile = new File("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
@@ -109,7 +115,7 @@ public class ConnectorDeployerServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void deployer_canUpdateFile() throws Exception {
+    public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
         File connectorFile = new File("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
@@ -123,7 +129,7 @@ public class ConnectorDeployerServiceTest {
     }
 
     @Test
-    public void deployer_canUninstallFile() throws Exception {
+    public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
         File connectorFile = new File("example.connector");
 
         when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
@@ -134,6 +140,7 @@ public class ConnectorDeployerServiceTest {
     }
 
     class IsSomething extends ArgumentMatcher<Map<String, String>> {
+        @Override
         public boolean matches(Object o) {
             return true;
         }
