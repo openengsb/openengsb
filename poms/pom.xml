@@ -757,7 +757,6 @@
           <plugin>
             <groupId>org.openengsb</groupId>
             <artifactId>openengsb-maven-plugin</artifactId>
-            <version>${project.version}</version>
             <executions>
               <execution>
                 <id>check-headers</id>
