@@ -93,7 +93,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         
         if (this.getTasksForExample(t).size() > 0) {
             try {
-                persistence.delete(this.getTasksForExample(t).get(0));
+                persistence.delete(t);
             } catch (PersistenceException e) {
                 throw new WorkflowException(e);
             }
