@@ -51,13 +51,13 @@
     <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
     <!-- Internal root versions -->
-    <openengsb.maven.plugin.version>1.2.0-SNAPSHOT</openengsb.maven.plugin.version>
+    <openengsb.maven.plugin.version>1.2.0</openengsb.maven.plugin.version>
   </properties>
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>7-SNAPSHOT</version>
+    <version>7</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
