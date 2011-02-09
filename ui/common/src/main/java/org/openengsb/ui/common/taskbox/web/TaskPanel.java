@@ -78,6 +78,7 @@ public class TaskPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
+                    setResponsePage(getPage().getClass());
                 } catch (WorkflowException e) {
                     LOG.error("Cant finish task", e);
                 }
