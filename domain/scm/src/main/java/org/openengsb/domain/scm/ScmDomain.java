@@ -17,6 +17,7 @@
 package org.openengsb.domain.scm;
 
 import java.io.File;
+import java.util.List;
 
 import org.openengsb.core.common.Domain;
 
@@ -32,6 +33,8 @@ public interface ScmDomain extends Domain {
      */
     boolean poll();
 
+    List<CommitRef> update();
+
     /**
      * Exports the current head of the repository to the specified directory.
      * 
@@ -39,6 +42,10 @@ public interface ScmDomain extends Domain {
      *        the directory already exists it must not contain any files.
      */
     void export(File directory);
+
+    File export();
+
+    File export(CommitRef ref);
 
     /**
      * Check if HEAD revision of a {@code file} exists in repository.
@@ -51,8 +58,6 @@ public interface ScmDomain extends Domain {
 
     File get(String file);
 
-    File get(String file, CommitRef ref);
-
     /**
      * Check if given {@code version} of a {@code file} exists in repository.
      * 
@@ -62,6 +67,8 @@ public interface ScmDomain extends Domain {
      * @return true if file exists in repository, otherwise false
      */
     boolean exists(String file, CommitRef version);
+
+    File get(String file, CommitRef ref);
 
     /**
      * Checkout {@code version} of repository {@code path} to specified working

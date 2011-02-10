@@ -110,6 +110,20 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         return true;
     }
 
+    @Override
+    public List<CommitRef> update() {
+        try {
+            if (repository == null) {
+                prepareWorkspace();
+                initRepository();
+            }
+            AnyObjectId id = repository.resolve(Constants.HEAD);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void prepareWorkspace() {
         if (localWorkspace == null) {
             throw new ScmException("Local workspace not set.");
@@ -198,6 +212,16 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         } catch (IOException e) {
             throw new ScmException(e);
         }
+    }
+
+    @Override
+    public File export() {
+        return null;
+    }
+
+    @Override
+    public File export(CommitRef ref) {
+        return null;
     }
 
     public void setRemoteLocation(String remoteLocation) {
