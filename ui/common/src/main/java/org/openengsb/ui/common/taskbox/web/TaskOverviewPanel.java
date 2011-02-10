@@ -107,7 +107,8 @@ public class TaskOverviewPanel extends Panel {
                     }
                 }
             };
-            link.add(new Label("linkLabel", task.getName() + "(" + task.getTaskType() + ")"));
+            link.add(new Label("linkLabel", String.format("%s (%s)", task == null ? "null" : task.getName(),
+                task == null ? "null" : task.getTaskType())));
             add(link);
         }
 
