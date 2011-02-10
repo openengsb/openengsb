@@ -99,9 +99,11 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
                 Method method = interfaze.getMethod(methodName, arguments);
                 addRolesFromMethodAnnotation(result, method);
             } catch (SecurityException e) {
+                // This exception should not happen and points to a real problem somewhere
                 log.error("error while looping through interfaces: ", e);
             } catch (NoSuchMethodException e) {
-                log.error("error while looping through interfaces: ", e);
+                // Well, this exception istn't really an error and should be logged at trace-level
+                log.trace("error while looping through interfaces: ", e);
             }
         }
         return result;
