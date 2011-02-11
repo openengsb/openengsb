@@ -50,8 +50,6 @@
       <includes>
         <include>LICENSE</include>
         <include>NOTICE</include>
-        <include>CHANGELOG.md</include>
-        <include>KNOWN_ISSUES.md</include>
       </includes>
       <lineEnding>dos</lineEnding>
       <fileMode>0644</fileMode>
