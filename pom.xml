@@ -52,6 +52,8 @@
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
+    <!-- Internal root versions -->
+    <openengsb.maven.plugin.version>1.2.0</openengsb.maven.plugin.version>
   </properties>
 
   <parent>
