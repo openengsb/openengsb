@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common.wicket.taskbox.web;
+package org.openengsb.ui.common.taskbox.web;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.ui.common.wicket.taskbox.WebTaskboxService;
+import org.openengsb.ui.common.taskbox.WebTaskboxService;
 
 @SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
@@ -107,10 +107,12 @@ public class TaskOverviewPanel extends Panel {
                     }
                 }
             };
-            link.add(new Label("linkLabel", task.getName() + "(" + task.getTaskType() + ")"));
+            link.add(new Label("linkLabel", String.format("%s (%s)", task == null ? "null" : task.getName(),
+                task == null ? "null" : task.getTaskType())));
             add(link);
         }
 
     }
 
 }
+
