@@ -71,4 +71,18 @@ public class DomainProxyFactoryTest {
         assertTrue(s == obj.nullMethod(s));
     }
 
+    @Test
+    public void testSelectCorrectToString_shouldCallOnObjectSelf() throws Exception {
+        DefaultDomainProxyFactoryBean factory = new DefaultDomainProxyFactoryBean();
+        factory.setDomainInterface(NullDomain.class);
+        factory.setContext(contextMock);
+        factory.setDomainName("testDomain");
+        factory.setBundleContext(bundleContextMock);
+
+        NullDomain obj = (NullDomain) factory.getObject();
+
+        String s = "org.openengsb.core.common.ForwardHandler@";
+        assertTrue(obj.toString().startsWith(s));
+    }
+
 }

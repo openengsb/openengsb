@@ -18,6 +18,7 @@ package org.openengsb.core.common;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * The OpenEngSB, and its projects can contain quite complex proxing of methods. This abstract class handles some of the
@@ -40,10 +41,11 @@ public abstract class AbstractOpenEngSBInvocationHandler implements InvocationHa
         if (handleObjectMethodsItself) {
             for (Method objectMethod : Object.class.getMethods()) {
                 if (objectMethod.getName().equals(method.getName())) {
-                    if (proxy instanceof AbstractOpenEngSBInvocationHandler) {
-                        return null;
+                    if (Proxy.isProxyClass(proxy.getClass())) {
+                        if (Proxy.getInvocationHandler(proxy) instanceof AbstractOpenEngSBInvocationHandler) {
+                            return method.invoke(Proxy.getInvocationHandler(proxy), args);
+                        }
                     }
-                    return method.invoke(proxy, args);
                 }
             }
         }
