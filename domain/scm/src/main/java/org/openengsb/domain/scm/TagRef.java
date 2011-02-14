@@ -27,5 +27,4 @@ public interface TagRef extends CommitRef {
      * @return Name of this tag-ref
      */
     String getTagName();
-
 }

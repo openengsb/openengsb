@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -29,21 +30,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.api.TagCommand;
-import org.eclipse.jgit.errors.NotSupportedException;
-import org.eclipse.jgit.errors.TransportException;
+import org.eclipse.jgit.dircache.DirCacheCheckout;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.GitIndex;
 import org.eclipse.jgit.lib.NullProgressMonitor;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
-import org.eclipse.jgit.lib.Tree;
-import org.eclipse.jgit.lib.WorkDirCheckout;
-import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -57,7 +53,6 @@ import org.openengsb.connector.git.domain.GitCommitRef;
 import org.openengsb.connector.git.domain.GitTagRef;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.domain.scm.CommitRef;
 import org.openengsb.domain.scm.ScmDomain;
 import org.openengsb.domain.scm.ScmException;
@@ -82,46 +77,44 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     @Override
-    public boolean poll() {
+    public List<CommitRef> update() {
+        List<CommitRef> commits = new ArrayList<CommitRef>();
         try {
             if (repository == null) {
                 prepareWorkspace();
                 initRepository();
             }
-            FetchResult result = doRemoteUpdate();
-            if (result.getTrackingRefUpdate(Constants.R_REMOTES + "origin/" + watchBranch) == null) {
-                return false;
-            }
-            if (repository.resolve(Constants.R_HEADS + watchBranch) == null) {
-                checkoutWatchBranch(result);
-                return true;
-            }
-            ObjectId remote = repository.resolve(Constants.R_REMOTES + "origin/" + watchBranch);
             Git git = new Git(repository);
-            MergeCommand merge = git.merge().include("remote", remote).setStrategy(MergeStrategy.OURS);
-            merge.call();
-        } catch (Exception e) {
-            if (repository != null) {
-                repository.close();
-                repository = null;
+            AnyObjectId oldHead = repository.resolve(Constants.HEAD);
+            if (oldHead == null) {
+                FetchResult fetchResult = doRemoteUpdate();
+                if (fetchResult.getTrackingRefUpdate(Constants.R_REMOTES + "origin/" + watchBranch) == null) {
+                    return null;
+                }
+                doCheckout(fetchResult);
+            } else {
+                git.pull().call();
             }
+            AnyObjectId newHead = repository.resolve(Constants.HEAD);
+            if (newHead == null) {
+                return null;
+            }
+            if (newHead != oldHead) {
+                LogCommand logCommand = git.log();
+                if (oldHead == null) {
+                    logCommand.add(newHead);
+                } else {
+                    logCommand.addRange(oldHead, newHead);
+                }
+                Iterable<RevCommit> revisions = logCommand.call();
+                for (RevCommit revision : revisions) {
+                    commits.add(new GitCommitRef(revision));
+                }
+            }
+        } catch (Exception e) {
             throw new ScmException(e);
         }
-        return true;
-    }
-
-    @Override
-    public List<CommitRef> update() {
-        try {
-            if (repository == null) {
-                prepareWorkspace();
-                initRepository();
-            }
-            AnyObjectId id = repository.resolve(Constants.HEAD);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return commits;
     }
 
     private void prepareWorkspace() {
@@ -146,46 +139,6 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
     }
 
-    protected boolean checkoutWatchBranch(FetchResult result) throws IOException {
-        Ref head = result.getAdvertisedRef(Constants.R_HEADS + watchBranch);
-        if (head == null) {
-            return false;
-        }
-
-        if (!Constants.HEAD.equals(head.getName())) {
-            RefUpdate u = repository.updateRef(Constants.HEAD);
-            u.disableRefLog();
-            u.link(head.getName());
-        }
-
-        final RevWalk rw = new RevWalk(repository);
-        final RevCommit commit;
-        try {
-            commit = rw.parseCommit(head.getObjectId());
-        } finally {
-            rw.release();
-        }
-        RefUpdate u = repository.updateRef(Constants.HEAD);
-        u.setNewObjectId(commit);
-        u.forceUpdate();
-
-        final GitIndex index = new GitIndex(repository);
-        final Tree tree = repository.mapTree(commit.getTree());
-        final WorkDirCheckout co;
-
-        co = new WorkDirCheckout(repository, repository.getWorkTree(), index, tree);
-        co.checkout();
-        index.write();
-        return true;
-    }
-
-    protected FetchResult doRemoteUpdate() throws URISyntaxException, NotSupportedException, TransportException {
-        List<RemoteConfig> remoteConfig = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
-        Transport transport = Transport.open(repository, remoteConfig.get(0));
-        FetchResult result = transport.fetch(NullProgressMonitor.INSTANCE, null);
-        return result;
-    }
-
     private void initRepository() throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         builder.setWorkTree(localWorkspace);
@@ -197,6 +150,46 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             repository.getConfig().setString("branch", watchBranch, "remote", "origin");
             repository.getConfig().setString("branch", watchBranch, "merge", "refs/heads/" + watchBranch);
             repository.getConfig().save();
+        }
+    }
+
+    protected void doCheckout(FetchResult fetchResult) throws IOException {
+        final Ref head = fetchResult.getAdvertisedRef(Constants.R_HEADS + watchBranch);
+        final RevWalk rw = new RevWalk(repository);
+        final RevCommit mapCommit;
+        try {
+            mapCommit = rw.parseCommit(head.getObjectId());
+        } finally {
+            rw.release();
+        }
+
+        final RefUpdate u;
+
+        boolean detached = !head.getName().startsWith(Constants.R_HEADS);
+        u = repository.updateRef(Constants.HEAD, detached);
+        u.setNewObjectId(mapCommit.getId());
+        u.forceUpdate();
+
+        DirCacheCheckout dirCacheCheckout = new DirCacheCheckout(repository, null, repository.lockDirCache(), mapCommit
+                .getTree());
+        dirCacheCheckout.setFailOnConflict(true);
+        boolean checkoutResult = dirCacheCheckout.checkout();
+        if (!checkoutResult)
+            throw new IOException("Internal error occured on checking out files");
+    }
+
+    protected FetchResult doRemoteUpdate() throws IOException {
+        List<RemoteConfig> remoteConfig = null;
+        try {
+            remoteConfig = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+        } catch (URISyntaxException e) {
+            throw new ScmException(e);
+        }
+        Transport transport = Transport.open(repository, remoteConfig.get(0));
+        try {
+            return transport.fetch(NullProgressMonitor.INSTANCE, null);
+        } finally {
+            transport.close();
         }
     }
 
@@ -354,16 +347,6 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             ext = "";
         }
         return ext;
-    }
-
-    @Override
-    public void checkout(String repository, CommitRef version, File directory, boolean recursive) {
-        throw new DomainMethodNotImplementedException();
-    }
-
-    @Override
-    public void checkout(String path, File directory, boolean recursive) {
-        throw new DomainMethodNotImplementedException();
     }
 
     @Override
