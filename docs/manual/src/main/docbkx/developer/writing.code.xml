@@ -88,7 +88,66 @@
        <para>This will import all the dependencies with the correct versions into the dependencyManagement section.
          You can now define the dependencies shared between your project and OPENENGSB in your dependencies 
          section without setting the version.</para>
-  </section>
-
+     </section>
+     <section>
+       <title>Making UI Tests Localizable</title>
+       <para>If you want to test if specific text is shown in the UI extend LocalisedTest in your UI Test. The
+         constructor automatically loads the correct ResourceBundle and via localization(String resourcename) you
+         can load a localized version of a specific resource string. The default locale is used as to match the locale
+       used by WicketTester.</para>
+     </section>
+     <section>
+       <title>How to write tests</title>
+       <para>The following listings show how to write tests according to the OpenEngSB coding style</para>
+       <section>The name of the test method has to describe what is going to be tested. After the "_"
+         is described what are the expected results.
+<programlisting>
+@Test
+public void testBehaviorX_shouldReturnY() {
+  //CODE
+}
+      </programlisting>
+In addition to the normal behaviour the coder should also provide a test for the failure behavior.
+      <programlisting>
+@Test(expected = BehaviorException.class)
+public void testBehaviorX_shouldThrowException() {
+//CODE
+}
+</programlisting>
+       </section>
+       <section>
+         <title>Technologies for writing test, and how to use them</title>
+         <para>The OpenEngSB developers decided to use following testing tools:</para>
+         <caution>Instead of using Assert.assertThat(....) or Mockito.mock(...) we use the static import variant:
+           assertThat(...) and mock(...)</caution>
+         <itemizedlist>
+           <listitem>Asserts: We use  <link xlink:href="http://code.google.com/p/hamcrest/wiki/Tutorial">
+             Hamcrest</link> instead of JUnit.
+             A simple example how to use Hamcrest assertions is given in the following listing:
+<programlisting>
+ import static org.hamcrest.MatcherAssert.assertThat;
+ import static org.hamcrest.MatcherAssert.is;
+ [...]
+ assertThat(realValue, is(expectedValue));
+</programlisting>
+           </listitem>
+           <listitem>Mocking: We use <link xlink:href="http://code.google.com/p/mockito/">mockito</link>. A simple
+             example how to use Mockito in a correct way is given in the following listing:
+<programlisting>
+ import static org.mockito.Mockito.mock;
+ import static org.mockito.Mockito.when;
+ import static org.mockito.Mockito.times;
+ [...]
+ //mocking code
+ ExampleMock exampleMock = mock(ExampleMock.class);
+ when(exampleMock.methodX()).thenReturn(y);
+ [...] //testing code
+ //verification
+ verify(manager, times(1).methodX(Y);
+</programlisting>
+           </listitem>
+         </itemizedlist>
+       </section>
+     </section>
 </chapter>
 

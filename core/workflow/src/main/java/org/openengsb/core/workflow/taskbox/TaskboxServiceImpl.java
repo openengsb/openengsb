@@ -86,18 +86,23 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     }
 
     @Override
-    public void finishTask(Task task) throws WorkflowException {
+    public synchronized void finishTask(Task task) throws WorkflowException {
         InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
-        try {
-            persistence.delete(t);
-        } catch (PersistenceException e) {
-            throw new WorkflowException(e);
+        
+        if (this.getTasksForExample(t).size() > 0) {
+            try {
+                persistence.delete(t);
+            } catch (PersistenceException e) {
+                throw new WorkflowException(e);
+            }
+    
+            workflowService.processEvent(finishedEvent);
+            log.info("finished task " + task.getTaskId());
+        } else {
+            log.warn("tried to finish task " + task.getTaskId() + " BUT there is no such task.");
         }
-
-        workflowService.processEvent(finishedEvent);
-        log.info("finished task " + task.getTaskId());
     }
 }
 

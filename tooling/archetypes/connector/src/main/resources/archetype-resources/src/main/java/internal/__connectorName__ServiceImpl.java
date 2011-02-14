@@ -16,11 +16,12 @@
 
 package ${package}.internal;
 
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
 
 import ${domainPackage}.${domainInterface};
 
-public class ${connectorName}ServiceImpl implements ${domainInterface} {
+public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implements ${domainInterface} {
 
     private String attr;
 

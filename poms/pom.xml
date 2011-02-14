@@ -106,7 +106,9 @@
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
     <commons.collections.version>3.2.1</commons.collections.version>
+    <commons.io.version>2.0.1</commons.io.version>
     <commons.lang.version>2.5</commons.lang.version>
+    <commons.compress.version>1.1</commons.compress.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
@@ -127,7 +129,7 @@
     <pax.logging.version>1.5.2</pax.logging.version>
     <aries.version>0.2-incubating</aries.version>
     <felix.configadmin.version>1.2.8</felix.configadmin.version>
-    <felix.fileinstall.version>3.0.2</felix.fileinstall.version>
+    <felix.fileinstall.version>3.1.10</felix.fileinstall.version>
     <felix.prefs.version>1.0.4</felix.prefs.version>
     <felix.gogo.version>0.4.0</felix.gogo.version>
     <felix.version>3.0.2</felix.version>
@@ -279,6 +281,11 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.main</artifactId>
         <version>3.0.1</version>
+      </dependency>
+      <dependency>
+	<groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.fileinstall</artifactId>
+	<version>${felix.fileinstall.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
@@ -439,121 +446,6 @@
         <groupId>org.neodatis.odb</groupId>
         <artifactId>neodatis-odb</artifactId>
         <version>${odb.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.connector</groupId>
-        <artifactId>openengsb-connector-example</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.connector</groupId>
-        <artifactId>openengsb-connector-memoryauditing</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-events</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-persistence</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-security</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-workflow</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-auditing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-build</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-deploy</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-example</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-issue</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-notification</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-report</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-scm</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb</artifactId>
-        <version>${project.version}</version>
-        <type>xml</type>
-        <classifier>features</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-toolabstraction-twitter</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.ui.common</groupId>
-        <artifactId>openengsb-ui-common-wicket</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.wrapped</groupId>
-        <artifactId>net.sourceforge.htmlunit-all</artifactId>
-        <version>${htmlunit.wrapped.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
@@ -762,9 +654,8 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.openengsb.tooling.pluginsuite</groupId>
+            <groupId>org.openengsb</groupId>
             <artifactId>openengsb-maven-plugin</artifactId>
-            <version>${project.version}</version>
             <executions>
               <execution>
                 <id>check-headers</id>

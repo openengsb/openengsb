@@ -257,93 +257,184 @@
   </section>
 
   <section xml:id="developer.quickstart.tools">
-  <title>Useful Tools</title>
-  <section xml:id="developer.quickstart.tools.mavenplugin">
-    <title>openengsb-maven-plugin</title>
-    <para>
-      The openengsb-maven-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
-      domains or connectors, building a release artifact of the whole project etc.) when developing for the OpenEngSB.
-      It is automatically installed into your local maven repository when doing a
-      <command>mvn clean install</command>
-      of the whole project for the first time. You can also install the plugin separately by invoking
-      <command>mvn clean install</command> within <filename>tooling/openengsb-maven-plugin/</filename>.
-    </para>
-    <para>
-      The plugin can be invoked by
-      <command>mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:&lt;goal&gt;</command>
-      where <replaceable>version</replaceable> is the current version of the OpenEngSB and
-      <replaceable>goal</replaceable> denotes the mojo you want to execute.
-    </para>
-    <para>
-      If the current version is no SNAPSHOT version, you can abbreviate this long command by following
-      configuration:
-    </para>
-    <para>
-      Create <filename>~/.m2/settings.xml</filename> with the following content:
-    </para>
-    <programlisting>
-      &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-      &lt;settings xmlns="http://maven.apache.org/settings/1.0.0" 
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
-        &lt;pluginGroups&gt;
-          &lt;pluginGroup&gt;org.openengsb.tooling.pluginsuite&lt;/pluginGroup&gt;
-        &lt;/pluginGroups&gt;
-      &lt;/settings&gt;
-    </programlisting>
-    <para>
-      With this configuration above the plugin can be invoked by <command>mvn openengsb:&lt;goal&gt;</command>. But
-      note that this will only work if a <emphasis>non</emphasis>-SNAPSHOT version is available.
-    </para>
-  <section>
-    <title>Goals</title>
-    <para>
-      <command>assemble</command>
-    </para>
-    <para>
-      Installs the OpenEngSB. Is equivalent to executing <command>mvn install -Prelease,nightly
-      -Dmaven.test.skip=true</command>
-    </para>
-    <para>
-      <command>genConnector</command>
-    </para>
-    <para>
-      Guides interactively through the creation of a connector and generates the artifact via the connector archetype.
-      For additional info how to create a connector see <xref linkend="developer.howto.internal.connector" />
-    </para>
-    <para>
-      <command>genDomain</command>
-    </para>
-    <para>
-      Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
-      For additional info how to create a domain see <xref linkend="developer.howto.internal.domain" />
-    </para>
-    <para>
-      <command>licenseCheck</command>
-    </para>
-    <para>
-      Performs a check if appropriate license headers are available in every source file. The licenseCheck mojo wraps
-      the com.mycila.maven-license-plugin. A large part of the default
-      behavior of this mojo can be changed in
-      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseMojo/licenseCheckConfig.xml</filename>. See 
-      <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
-      for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its default
-      behavior.
-    </para>
-     <para>
-      <command>licenseFormat</command>
-    </para>
-    <para>
-      Adds a license header to files where the license header is missing.
-      A large part of the default behavior of this mojo can be changed in
-      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseMojo/licenseFormatConfig.xml</filename>. See 
-      <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
-      for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its default
-      behavior.
-    </para>
+    <title>Useful Tools</title>
+    <section xml:id="developer.quickstart.tools.mavenplugin">
+      <title>openengsb-maven-plugin</title>
+      <para>
+        The openengsb-maven-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
+        domains or connectors, building a release artifact of the whole project etc.) when developing based on the
+        OpenEngSB.
+      </para>
+      <section>
+        <title>Configuring the openengsb-maven-plugin for your project</title>
+        <para>
+          To use the openengsb-maven-plugin in your project add the following configuration to your project's pom.xml:
+        </para>
+        <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+  ...
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.openengsb&lt;/groupId&gt;
+        &lt;artifactId&gt;openengsb-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${openengsb.maven.plugin.version}&lt;/version&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+  ...
+&lt;/project&gt;       
+        </programlisting>
+        <para>
+          The plugin can now be invoked via <command>mvn openengsb:&lt;goal&gt;</command>
+        </para>
+      </section>
+      <section>
+        <title>Available Goals</title>
+        <para>
+          <command>assemble</command>
+        </para>
+        <para>
+          Installs the OpenEngSB and skips tests. Furthermore a <emphasis>nightly</emphasis> profile is activated if available
+          in your poms.
+        </para>
+        <para>
+          <command>genConnector</command>
+        </para>
+        <para>
+          Guides interactively through the creation of a connector and generates the artifact via the connector
+          archetype.
+          For additional info how to create a connector see
+          <xref linkend="developer.howto.internal.connector" />
+        </para>
+        <para>
+          <command>genDomain</command>
+        </para>
+        <para>
+          Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
+          For
+          additional info how to create a domain see
+          <xref linkend="developer.howto.internal.domain" />
+        </para>
+        <para>
+          <command>licenseCheck</command>
+        </para>
+        <para>
+          Performs a check if appropriate license headers are available in every source file. The licenseCheck mojo
+          wraps
+          the com.mycila.maven-license-plugin. A large part of the default
+          behavior of this mojo can be changed in
+          <filename>src/main/resources/licenseMojo/licenseCheckConfig.xml</filename>.
+          See <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
+          for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
+          default behavior.
+        </para>
+        <para>
+          <command>licenseFormat</command>
+        </para>
+        <para>
+          Adds a license header to files where the license header is missing.
+          A large part of the default behavior of
+          this mojo can be changed in
+          <filename>src/main/resources/licenseMojo/licenseFormatConfig.xml</filename>.
+          See
+          <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
+          for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
+          default  behavior.
+        </para>
+        <para>
+          <command>pushVersion</command>
+        </para>
+        <para>
+          Updates the development version.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>developmentVersion</emphasis></para>
+            <para>
+              Default version to use for new local working copy.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>provision</command>
+        </para>
+        <para>
+         Equivalent to execute karaf or karaf.bat per hand after build by mvn clean
+         install in a (typically) assembly directory.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>provisionPathUnix</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+       	    to point to the final directory where the karaf system, etc configs and
+      	    so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathUnix</emphasis></para>
+            <para>
+              The path to the executable in the unix archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathUnix</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+   	        <emphasis>provisionExecutionPathUnix</emphasis> execute other files which have to
+   	        made executable to work correctly on themselves. Those files should be
+   	        specified here.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionPathWindows</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+   	        to point to the final directory where the karaf system, etc configs and
+   	        so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathWindows</emphasis></para>
+            <para>
+              The path to the executable in the windows archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathWindows</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+   	        <emphasis>provisionExecutionPathWindows</emphasis> execute other files which have to
+   	        made executable to work correctly on themselves. Those files should be
+   	        specified here.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>releaseNightly</command>
+        </para>
+        <para>
+          Mojo to perform nightly releases. This mojo activates the <emphasis>nightly</emphasis> profile
+	      in the project, where you can put your additional configuration for nightly releases.
+        </para>
+        <para>
+          <command>releaseXXX</command>
+        </para>
+        <para>
+          TBD
+        </para>
+      </section>
+    </section>
   </section>
-  </section>
-</section>
 
 </chapter>
 

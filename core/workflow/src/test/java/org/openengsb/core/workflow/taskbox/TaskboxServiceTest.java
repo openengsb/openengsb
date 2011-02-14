@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.taskbox;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -128,14 +129,38 @@ public class TaskboxServiceTest {
     @Test
     public void testFinishTask_shouldProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
+        List<Task> result = new ArrayList<Task>();
+        result.add(task);
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+        
         service.finishTask(task);
         verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
+    }
+    
+    @Test
+    public void testFinishTaskTwice_shouldProcessEventOnlyOnce() throws PersistenceException, WorkflowException {
+        Task task = new Task();
+        List<Task> result = new ArrayList<Task>();
+        result.add(task);
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+        service.finishTask(task);
+        
+        result = new ArrayList<Task>();
+        //mocking Persistence-Behaviour again, since the task
+        //would have been deleted by the TaskBoxService
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+        service.finishTask(task);
+        
+        verify(workflowService, times(1)).processEvent(any(InternalWorkflowEvent.class));
     }
 
     @Test
     public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
-
+        List<Task> result = new ArrayList<Task>();
+        result.add(task);
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+        
         ProcessBag bag = new ProcessBag(task);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("processBag", bag);

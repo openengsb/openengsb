@@ -16,13 +16,9 @@
 
 Setup Project and Kick Off
 ==========================
-Execute ./etc/scripts/build.sh
+Execute "mvn install"
 
-Now run mvn eclipse:eclipse and import the projects into eclipse. If you simply want to run the openengsb execute ./etc/scripts/run.sh
-
-Create Project
---------------
-Execute etc/scripts/create-project.sh with groupId and artifactId as params to create the base proejct structure.
+Now run "mvn eclipse:eclipse" and import the projects into eclipse. If you simply want to run the openengsb execute "mvn install openengsb:provision"
 
 Scripts
 -------
@@ -30,11 +26,11 @@ Scripts which help you to create projects, run the workspace and so on are store
 
 Full Test
 ---------
-Before a push, run the following command:
+Before creating a pull request, run the following command:
 
-etc/scripts/pre-push.sh
+etc/scripts/pre-push.sh (or "mvn clean install -Plicense-check,integration-test,checkstyle")
 
 Further Information
 -------------------
-This readme gives only the most important information for developer. General information about this project is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
+This readme gives only the most important information for developer. General information about this project is located at http://openengsb.org. The detailed developer and user documentation is located at http://openengsb.org/manual/index.html.
 

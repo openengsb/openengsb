@@ -177,7 +177,6 @@
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>features-maven-plugin</artifactId>
-        <version>${karaf.version}</version>
         <executions>
           <execution>
             <id>add-features-to-repo</id>
@@ -250,9 +249,8 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.openengsb.tooling.pluginsuite</groupId>
+        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
-        <version>${project.version}</version>
         <configuration>
           <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
           <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>

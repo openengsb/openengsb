@@ -41,7 +41,22 @@ public class OsgiDomainService implements DomainService, BundleContextAware {
 
     @Override
     public List<DomainProvider> domains() {
-        return new ArrayList<DomainProvider>(this.domains);
+        return new ArrayList<DomainProvider>(domains);
+    }
+
+    @Override
+    public ServiceManager serviceManagerForConnector(String connectorName) {
+        try {
+            String filter = "(connector=" + connectorName + ")";
+            ServiceReference[] serviceReferences =
+                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+            if (serviceReferences == null || serviceReferences.length == 0) {
+                throw new IllegalStateException("No ServiceManager could be retrieved for domain");
+            }
+            return (ServiceManager) bundleContext.getService(serviceReferences[0]);
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override

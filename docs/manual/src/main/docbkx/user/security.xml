@@ -92,5 +92,19 @@ OpenEngSBService securedService = (OpenEngSBService) factory.getProxy();]]></pro
       There is one exception: Users with "ROLE_ADMIN" are always granted access.</para>
   </section>
 
+  <section>
+    <title>Authentication</title>
+    <para>This chapter describes how to deal with security in internal bundles and client projects</para>
+    <para>For authentication the OpenEngSB provides an AuthenticationProvider as a service. It's obtainable via
+      blueprint. <programlisting><![CDATA[
+        <reference interface="org.springframework.security.authentication.AuthenticationManager" />]]>
+      </programlisting>
+      This service is able to authenticate users
+      (org.springframework.security.authentication.UsernamePasswordAuthenticationToken) and bundles
+      (org.openengsb.core.security.BundleAuthenticationToken). The use of the former is pretty obvious. The latter is
+      used for authentication for internal actions, that require elevated privilages. This authentication should be
+      used with caution, and never be exposed externally for security reasons.</para>
+  </section>
+
 </chapter>
 

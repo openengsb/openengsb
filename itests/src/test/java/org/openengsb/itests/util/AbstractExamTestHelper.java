@@ -74,7 +74,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
         }
-        waitForBundle("org.openengsb.ui.web", SetupType.SPRING);
+        waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
         authenticateAsAdmin();
     }
 

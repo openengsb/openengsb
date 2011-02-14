@@ -16,19 +16,24 @@
 
 package org.openengsb.core.security;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.security.AuthorizedRoles;
 import org.openengsb.core.common.security.model.ServiceAuthorizedList;
 import org.openengsb.core.common.security.model.User;
 import org.osgi.framework.BundleContext;
@@ -57,6 +62,8 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         List<ServiceAuthorizedList> query = persistence.query(new ServiceAuthorizedList(instanceId));
         Collection<GrantedAuthority> allowedAuthorities = new HashSet<GrantedAuthority>();
         allowedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+        allowedAuthorities.addAll(retrieveAnnotations(invocation));
+
         for (ServiceAuthorizedList l : query) {
             allowedAuthorities.addAll(l.getAuthorities());
         }
@@ -65,17 +72,7 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         }
 
         Object user = authentication.getPrincipal();
-        Collection<GrantedAuthority> userAuthorities = null;
-        if (user instanceof User) {
-            User castUser = (User) user;
-            log.info(String.format("authenticated as %s", castUser.getUsername()));
-            userAuthorities = castUser.getAuthorities();
-        } else if (user instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User castUser =
-                (org.springframework.security.core.userdetails.User) user;
-            log.info(String.format("authenticated as %s", castUser.getUsername()));
-            userAuthorities = castUser.getAuthorities();
-        }
+        Collection<GrantedAuthority> userAuthorities = getAuthorities(user);
         if (userAuthorities == null) {
             log.error("No authorities could be found");
             return ACCESS_DENIED;
@@ -90,6 +87,61 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
             return ACCESS_GRANTED;
         }
         return ACCESS_DENIED;
+    }
+
+    private List<GrantedAuthority> retrieveAnnotations(MethodInvocation invocation) {
+        List<GrantedAuthority> result = new ArrayList<GrantedAuthority>();
+        addRolesFromMethodAnnotation(result, invocation.getMethod());
+        String methodName = invocation.getMethod().getName();
+        Class<?>[] arguments = invocation.getMethod().getParameterTypes();
+        for (Class<?> interfaze : getAllInterfaces(invocation.getThis().getClass())) {
+            try {
+                Method method = interfaze.getMethod(methodName, arguments);
+                addRolesFromMethodAnnotation(result, method);
+            } catch (SecurityException e) {
+                // This exception should not happen and points to a real problem somewhere
+                log.error("error while looping through interfaces: ", e);
+            } catch (NoSuchMethodException e) {
+                // Well, this exception istn't really an error and should be logged at trace-level
+                log.trace("error while looping through interfaces: ", e);
+            }
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Class<?>> getAllInterfaces(Class<? extends Object> clazz) {
+        return ClassUtils.getAllInterfaces(clazz);
+    }
+
+    private void addRolesFromMethodAnnotation(List<GrantedAuthority> result, Method method) {
+        AuthorizedRoles annotation = method.getAnnotation(AuthorizedRoles.class);
+        result.addAll(getRolesFromAnnotation(annotation));
+    }
+
+    private Set<GrantedAuthority> getRolesFromAnnotation(AuthorizedRoles annotation) {
+        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        if (annotation != null) {
+            for (String role : annotation.value()) {
+                authorities.add(new GrantedAuthorityImpl(role));
+            }
+        }
+        return authorities;
+    }
+
+    private Collection<GrantedAuthority> getAuthorities(Object user) {
+        Collection<GrantedAuthority> userAuthorities = null;
+        if (user instanceof User) {
+            User castUser = (User) user;
+            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            userAuthorities = castUser.getAuthorities();
+        } else if (user instanceof org.springframework.security.core.userdetails.User) {
+            org.springframework.security.core.userdetails.User castUser =
+                (org.springframework.security.core.userdetails.User) user;
+            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            userAuthorities = castUser.getAuthorities();
+        }
+        return userAuthorities;
     }
 
     @Override

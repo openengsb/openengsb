@@ -39,8 +39,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
-    private String loginPageEntryUrl =
-        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
+    private final String loginPageEntryUrl =
+        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.admin.loginPage.LoginPage";
 
     @Before
     public void setUp() throws Exception {
@@ -69,11 +69,12 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage contextPage = testClient.getAnchorByText("Context").click();
         assertTrue(contextPage.asText().contains("Current Project"));
         HtmlPage servicePage = testClient.getAnchorByText("Services").click();
+        webClient.waitForBackgroundJavaScript(1000);
         assertTrue(servicePage.asText().contains("Services with state = Connecting"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
-        assertTrue(taskOverviewPage.asText().contains(("Task-Overview")));
+        assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
     }
 
     @Test

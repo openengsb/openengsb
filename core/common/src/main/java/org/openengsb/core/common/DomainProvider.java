@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 import java.util.List;
 
 import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.security.AuthorizedRoles;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the OpenEngSB has to create an implementation
@@ -30,16 +31,19 @@ public interface DomainProvider {
      * Returns the global identifier for this domain. This should be either the package name of this domain, or the full
      * class name of the provided Domain interface.
      */
+    @AuthorizedRoles("ROLE_USER")
     String getId();
 
     /**
      * Returns the localizable name.
      */
+    @AuthorizedRoles("ROLE_USER")
     LocalizableString getName();
 
     /**
      * Returns the localizable description.
      */
+    @AuthorizedRoles("ROLE_USER")
     LocalizableString getDescription();
 
     /**
