@@ -19,7 +19,7 @@ package org.openengsb.domain.scm;
 /**
  * An abstraction for tag reference (tag-ref) to a tag id in SCM.
  */
-public interface TagRef {
+public interface TagRef extends CommitRef {
 
     /**
      * Gets this tag-ref name.
@@ -27,12 +27,5 @@ public interface TagRef {
      * @return Name of this tag-ref
      */
     String getTagName();
-
-    /**
-     * Gets this tag-ref value String representation.
-     * 
-     * @return String representation of this tag-ref value
-     */
-    String getStringRepresentation();
 
 }
