@@ -29,9 +29,9 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.openengsb.domain.report.model.FileReportPart;
 import org.openengsb.domain.report.model.Report;
 import org.openengsb.domain.report.model.ReportPart;
-import org.openengsb.domain.report.model.SimpleReportPart;
 
 public class FileSystemReportStore implements ReportStore {
 
@@ -168,8 +168,7 @@ public class FileSystemReportStore implements ReportStore {
         String partName = partFile.getName();
         int partIndex = Integer.parseInt(partName.split("[.]")[0]);
         Properties metadata = readMetadata(new File(partFile.getParentFile(), partIndex + ".meta"));
-        byte[] content = FileUtils.readFileToByteArray(partFile);
-        return new SimpleReportPart(metadata.getProperty("partName"), metadata.getProperty("contentType"), content);
+        return new FileReportPart(metadata.getProperty("partName"), metadata.getProperty("contentType"), partFile);
     }
 
     private Properties readMetadata(File file) throws IOException {
