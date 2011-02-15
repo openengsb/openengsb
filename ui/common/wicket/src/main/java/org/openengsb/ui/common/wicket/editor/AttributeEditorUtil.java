@@ -88,7 +88,7 @@ public final class AttributeEditorUtil {
         WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
         fields.add(row);
         boolean editable = true;
-        if ("id".equals(a.getId()) && !"".equals(values.get("id"))) {
+        if ("id".equals(a.getId()) && !"".equals(values.get("id")) && values.get("id") != null) {
             editable = false;
         }
         row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a, editable));
