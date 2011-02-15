@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.util;
+package org.openengsb.ui.common.wicket.util;
 
 import java.io.IOException;
 
