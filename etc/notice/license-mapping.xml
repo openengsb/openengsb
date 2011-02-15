@@ -669,4 +669,95 @@
         <artifactId>velocity-dep</artifactId>
         <license>Apache License, Version 2.0</license>
     </artifact>
+    <artifact>
+        <groupId>com.sun.xml</groupId>
+        <artifactId>com.springsource.com.sun.xml.fastinfoset</artifactId>
+        <license>ASL 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
+        <license>BSD</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.activation</groupId>
+        <artifactId>com.springsource.javax.activation</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.ejb</groupId>
+        <artifactId>com.springsource.javax.ejb</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.el</groupId>
+        <artifactId>com.springsource.javax.el</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.jms</groupId>
+        <artifactId>com.springsource.javax.jms</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.portlet</groupId>
+        <artifactId>com.springsource.javax.portlet</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.servlet</groupId>
+        <artifactId>com.springsource.javax.servlet</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.xml.rpc</groupId>
+        <artifactId>com.springsource.javax.xml.rpc</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.xml.soap</groupId>
+        <artifactId>com.springsource.javax.xml.soap</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>javax.xml.stream</groupId>
+        <artifactId>stax-api</artifactId>
+        <license>Commons Development and Distribution License, Version 1.0</license>
+    </artifact>
+    <artifact>
+        <groupId>org.antlr</groupId>
+        <artifactId>com.springsource.org.antlr.runtime</artifactId>
+        <license>BSD</license>
+    </artifact>
+    <artifact>
+        <groupId>org.aopalliance</groupId>
+        <artifactId>com.springsource.org.aopalliance</artifactId>
+        <license>Public Domain</license>
+    </artifact>
+    <artifact>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>com.springsource.javax.management.j2ee</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>org.apache.jasper</groupId>
+        <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt</artifactId>
+        <license>LGPL</license>
+    </artifact>
+    <artifact>
+        <groupId>org.aspectj</groupId>
+        <artifactId>com.springsource.org.aspectj.weaver</artifactId>
+        <license>Public Domain</license>
+    </artifact>
+    <artifact>
+        <groupId>org.jvnet.staxex</groupId>
+        <artifactId>com.springsource.org.jvnet.staxex</artifactId>
+        <license>(CDDL)Version 1.1</license>
+    </artifact>
+    <artifact>
+        <groupId>org.xmlpull</groupId>
+        <artifactId>com.springsource.org.xmlpull</artifactId>
+        <license>Apache License 1.1</license>
+    </artifact>
+
 </license-lookup>
