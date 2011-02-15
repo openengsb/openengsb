@@ -34,7 +34,6 @@ public class FileReportPart extends ReportPart {
         try {
             return FileUtils.readFileToByteArray(fileName);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }
