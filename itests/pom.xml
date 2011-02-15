@@ -89,13 +89,13 @@
 
     <!-- Feature File Dependencies -->
     <dependency>
-      <groupId>org.apache.karaf.features.assembly</groupId>
+      <groupId>org.apache.karaf.assemblies.features</groupId>
       <artifactId>standard</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf.features.assembly</groupId>
+      <groupId>org.apache.karaf.assemblies.features</groupId>
       <artifactId>enterprise</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
