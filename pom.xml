@@ -26,7 +26,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
     <karaf.version>2.1.99-SNAPSHOT</karaf.version>
-    <aries.blueprint.version>0.3-SNAPSHOT</aries.blueprint.version>
+    <aries.blueprint.version>0.3</aries.blueprint.version>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Mighty</openengsb.version.name.adjective>
