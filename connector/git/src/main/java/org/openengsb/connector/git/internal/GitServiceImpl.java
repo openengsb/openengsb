@@ -24,24 +24,23 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.errors.NotSupportedException;
-import org.eclipse.jgit.errors.TransportException;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.dircache.DirCacheCheckout;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.GitIndex;
 import org.eclipse.jgit.lib.NullProgressMonitor;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Tree;
 import org.eclipse.jgit.lib.WorkDirCheckout;
-import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.transport.Transport;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.scm.ScmDomain;
@@ -72,18 +71,24 @@ public class GitServiceImpl implements ScmDomain {
             if (repository == null) {
                 initRepository();
             }
-            FetchResult result = doRemoteUpdate();
-            if (result.getTrackingRefUpdate(Constants.R_REMOTES + "origin/" + watchBranch) == null) {
-                return false;
-            }
-            if (repository.resolve(Constants.R_HEADS + watchBranch) == null) {
-                checkoutWatchBranch(result);
-                return true;
-            }
-            ObjectId remote = repository.resolve(Constants.R_REMOTES + "origin/" + watchBranch);
             Git git = new Git(repository);
-            MergeCommand merge = git.merge().include("remote", remote).setStrategy(MergeStrategy.OURS);
-            merge.call();
+            AnyObjectId oldHead = repository.resolve(Constants.HEAD);
+            if (oldHead == null) {
+                FetchResult fetchResult = doRemoteUpdate();
+                if (fetchResult.getTrackingRefUpdate(Constants.R_REMOTES + "origin/" + watchBranch) == null) {
+                    return false;
+                }
+                doCheckout(fetchResult);
+            } else {
+                PullResult pull = git.pull().call();
+                TrackingRefUpdate fetchRef = pull.getFetchResult().getTrackingRefUpdate(
+                        Constants.R_REMOTES + "origin/" + watchBranch);
+                TrackingRefUpdate mergeRef = pull.getFetchResult().getTrackingRefUpdate(
+                        Constants.R_REMOTES + "origin/" + watchBranch);
+                if (fetchRef == null && mergeRef == null) {
+                    return false;
+                }
+            }
         } catch (Exception e) {
             if (repository != null) {
                 repository.close();
@@ -95,15 +100,41 @@ public class GitServiceImpl implements ScmDomain {
     }
 
     private void tryCreateLocalWorkspace() {
-        if (!this.localWorkspace.exists()) {
-            this.localWorkspace.mkdirs();
+        if (!localWorkspace.exists()) {
+            localWorkspace.mkdirs();
         }
-        if (!this.localWorkspace.exists()) {
+        if (!localWorkspace.exists()) {
             throw new ScmException("Local workspace directory '" + localWorkspace
                     + "' does not exist and cannot be created.");
         }
-        if (!this.localWorkspace.isDirectory()) {
+        if (!localWorkspace.isDirectory()) {
             throw new ScmException("Local workspace directory '" + localWorkspace + "' is not a valid directory.");
+        }
+    }
+
+    protected void doCheckout(FetchResult fetchResult) throws IOException {
+        final Ref head = fetchResult.getAdvertisedRef(Constants.R_HEADS + watchBranch);
+        final RevWalk rw = new RevWalk(repository);
+        final RevCommit mapCommit;
+        try {
+            mapCommit = rw.parseCommit(head.getObjectId());
+        } finally {
+            rw.release();
+        }
+
+        final RefUpdate u;
+
+        boolean detached = !head.getName().startsWith(Constants.R_HEADS);
+        u = repository.updateRef(Constants.HEAD, detached);
+        u.setNewObjectId(mapCommit.getId());
+        u.forceUpdate();
+
+        DirCacheCheckout dirCacheCheckout = new DirCacheCheckout(repository, null, repository.lockDirCache(), mapCommit
+                .getTree());
+        dirCacheCheckout.setFailOnConflict(true);
+        boolean checkoutResult = dirCacheCheckout.checkout();
+        if (!checkoutResult) {
+            throw new IOException("Internal error occured on checking out files");
         }
     }
 
@@ -140,11 +171,19 @@ public class GitServiceImpl implements ScmDomain {
         return true;
     }
 
-    protected FetchResult doRemoteUpdate() throws URISyntaxException, NotSupportedException, TransportException {
-        List<RemoteConfig> remoteConfig = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+    protected FetchResult doRemoteUpdate() throws IOException {
+        List<RemoteConfig> remoteConfig = null;
+        try {
+            remoteConfig = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+        } catch (URISyntaxException e) {
+            throw new ScmException(e);
+        }
         Transport transport = Transport.open(repository, remoteConfig.get(0));
-        FetchResult result = transport.fetch(NullProgressMonitor.INSTANCE, null);
-        return result;
+        try {
+            return transport.fetch(NullProgressMonitor.INSTANCE, null);
+        } finally {
+            transport.close();
+        }
     }
 
     private void initRepository() throws IOException {
