@@ -66,8 +66,18 @@ public class GitServiceImplTest {
         assertThat(service.poll(), is(true));
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
-        assertThat(remote,
-            is(remoteRepository.resolve("refs/heads/master")));
+        assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
+    }
+
+    @Test
+    public void pollWithEmptyWorkspace_shouldCloneSSHRemoteRepository() throws IOException {
+        service.setRemoteLocation("git@github.com:Mercynary/myTestRepo.git");
+        assertThat(service.poll(), is(true));
+        localRepository = service.getRepository();
+        AnyObjectId id = localRepository.resolve(Constants.HEAD);
+        assertThat(id, notNullValue());
+        assertThat(id.name(), is("2f610959a14c8f26549bee563ad4da8c65e1ee8b"));
+
     }
 
     @Test
@@ -109,7 +119,7 @@ public class GitServiceImplTest {
         assertThat(new File(exportDirectory, "testfile").isFile(), is(true));
         assertThat(new File(exportDirectory, ".git").isDirectory(), is(false));
     }
-    
+
     @Test
     public void commitFile_shouldReturnHeadReference() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -119,7 +129,7 @@ public class GitServiceImplTest {
         localRepository = service.getRepository();
         assertThat(commitRef.getStringRepresentation(), is(localRepository.resolve(Constants.HEAD).name()));
     }
-    
+
     @Test
     public void commitNonExistingFile_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -129,7 +139,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitFileNotAFile_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -140,7 +150,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitFileNotInWorkingfolder_shouldRaiseException() throws IOException {
         File toCommit = tempFolder.newFile("testfile");
@@ -150,7 +160,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitDirectoryNotADirectory_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -161,7 +171,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitDirectoryRecursive_shouldReturnHeadReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -181,7 +191,7 @@ public class GitServiceImplTest {
         RevCommit commit = new RevWalk(localRepository).parseCommit(id);
         assertThat("testcomment", is(commit.getFullMessage()));
     }
-    
+
     @Test
     public void commitDirectoryNonRecursiveWoFilesAtToplevel_shouldReturnNullReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -196,7 +206,7 @@ public class GitServiceImplTest {
         CommitRef commitRef = service.commit(folderTest, "testcomment", false);
         assertThat(null, is(commitRef));
     }
-    
+
     @Test
     public void commitDirectoryNonRecursiveWithFilesAtToplevel_shouldReturnHeadReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -215,7 +225,7 @@ public class GitServiceImplTest {
         RevCommit commit = new RevWalk(localRepository).parseCommit(id);
         assertThat("testcomment", is(commit.getFullMessage()));
     }
-    
+
     @Test
     public void existsFilenameInHeadCommit_shouldReturnTrue() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -226,7 +236,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitOne"), is(true));
     }
-    
+
     @Test
     public void existsFilenameInReferencedCommit_shouldReturnTrue() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -237,7 +247,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitOne", commitRefOne), is(true));
     }
-    
+
     @Test
     public void existsFilenameOfNotExistingFile_shouldReturnFalse() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -248,7 +258,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitThree"), is(false));
     }
-    
+
     @Test
     public void existsFilenameInPriorCommitToFilecommit_shouldReturnFalse() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
