@@ -65,7 +65,7 @@ public class MavenServiceTest {
         deleteLogFile();
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
-        this.mavenService = new MavenServiceImpl();
+        mavenService = new MavenServiceImpl();
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);
         deployEvents = mock(DeployDomainEvents.class);
@@ -193,7 +193,7 @@ public class MavenServiceTest {
         ArgumentCaptor<BuildSuccessEvent> eventCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
         doAnswer(new Answer<Void>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Exception {
                 synchronized (sync) {
                     sync.notifyAll();
                 }
@@ -231,7 +231,7 @@ public class MavenServiceTest {
     private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
         doAnswer(new Answer<Void>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Exception {
                 synchronized (syncFinish) {
                     syncFinish.notifyAll();
                 }
@@ -243,7 +243,7 @@ public class MavenServiceTest {
     private void makeNotifyAnswerForBuildStart(final Object syncFinish) {
         doAnswer(new Answer<Void>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Exception {
                 synchronized (syncFinish) {
                     syncFinish.notifyAll();
                 }
