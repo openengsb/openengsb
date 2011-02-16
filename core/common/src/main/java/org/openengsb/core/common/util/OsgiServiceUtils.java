@@ -17,38 +17,81 @@
 package org.openengsb.core.common.util;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 public final class OsgiServiceUtils {
 
-    public static Object getService(BundleContext bundleContext, String className, String filter) {
-        ServiceReference[] allServiceReferences;
+    private static final long DEFAULT_TIMEOUT = 30000L;
+
+    public static <T> T getService(BundleContext bundleContext, Class<T> clazz) {
+        return getService(bundleContext, clazz, DEFAULT_TIMEOUT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getService(BundleContext bundleContext, Class<T> clazz, long timeout) {
+        ServiceTracker t = new ServiceTracker(bundleContext, clazz.getName(), null);
+        T result;
         try {
-            allServiceReferences = bundleContext.getServiceReferences(className, filter);
+            result = (T) t.waitForService(timeout);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (result == null) {
+            throw new RuntimeException("service not available");
+        }
+        return result;
+    }
+
+    public static <T> T getService(BundleContext bundleContext, String filterString) {
+        return getService(bundleContext, filterString, DEFAULT_TIMEOUT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getService(BundleContext bundleContext, String filterString, long timeout) {
+        Filter filter;
+        try {
+            filter = bundleContext.createFilter(filterString);
         } catch (InvalidSyntaxException e1) {
-            throw new RuntimeException(e1);
+            throw new IllegalArgumentException(e1);
         }
-        if (allServiceReferences == null) {
-            throw new IllegalArgumentException("service with filter " + filter + " not found");
+        ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
+        t.open();
+        Object result;
+        try {
+            result = t.waitForService(timeout);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        if (allServiceReferences.length != 1) {
-            throw new IllegalStateException("mutliple services matching " + filter);
+        if (result == null) {
+            throw new RuntimeException("service not available");
         }
-        return bundleContext.getService(allServiceReferences[0]);
+        return (T) result;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T getService(BundleContext bundleContext, Class<? extends T> clazz, String filter) {
-        return (T) getService(bundleContext, clazz.getName(), filter);
-    }
-
-    @SuppressWarnings("unchecked")
     public static <T> T getServiceWithId(BundleContext bundleContext, Class<? extends T> clazz, String id) {
-        String filter = String.format("(id=%s)", id);
-        return (T) getService(bundleContext, clazz.getName(), filter);
+        return getServiceWithId(bundleContext, clazz, id, DEFAULT_TIMEOUT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getServiceWithId(BundleContext bundleContext, Class<? extends T> clazz, String id,
+            long timeout) {
+        return (T) getServiceWithId(bundleContext, clazz.getName(), id, timeout);
+    }
+
+    public static Object getServiceWithId(BundleContext bundleContext, String className, String id) {
+        return getServiceWithId(bundleContext, className, id, DEFAULT_TIMEOUT);
+    }
+
+    public static Object getServiceWithId(BundleContext bundleContext, String className, String id, long timeout) {
+        String filter = String.format("(&(%s=%s)(id=%s))", Constants.OBJECTCLASS, className, id);
+        filter = String.format("(id=%s)", id);
+        return getService(bundleContext, filter, timeout);
     }
 
     private OsgiServiceUtils() {
     }
+
 }

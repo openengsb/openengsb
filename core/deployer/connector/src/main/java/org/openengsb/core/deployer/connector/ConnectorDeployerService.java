@@ -29,6 +29,7 @@ import org.openengsb.core.deployer.connector.internal.ConnectorConfiguration;
 import org.openengsb.core.deployer.connector.internal.ConnectorFile;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -132,11 +133,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     private ServiceManager getServiceManagerFor(String connectorType) {
-        return OsgiServiceUtils.getService(bundleContext, ServiceManager.class, getFilterFor(connectorType));
+        return OsgiServiceUtils.getService(bundleContext, getFilterFor(connectorType));
     }
 
     private String getFilterFor(String connectorType) {
-        return String.format("(connector=%s)", connectorType);
+        return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS, ServiceManager.class.getName(),
+            connectorType);
     }
 
     private void logConfigErrors(ConnectorConfiguration newConfig, File artifact) {

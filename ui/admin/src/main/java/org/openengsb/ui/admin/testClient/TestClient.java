@@ -62,6 +62,7 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -427,8 +428,7 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) {
-        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
-        return serviceObject;
+        return OsgiServiceUtils.getServiceWithId(bundleContext, service.getServiceClass(), service.getServiceId());
     }
 
     private Method findMethod() {
