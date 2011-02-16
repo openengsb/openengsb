@@ -28,7 +28,9 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -207,11 +209,11 @@ public class MavenServiceTest {
         assertThat(event.getOutput(), containsString("SUCCESS"));
     }
 
-    @Ignore("OPENENGSB-881: buildStartEvent is raised too early")
     @Test
-    public void build_shouldCreateLogFileAndThrowItAway() throws Exception {
+    public void asyncBuild_shouldCreateLogFile() throws Exception {
         final Object syncFinish = new Object();
         final Object syncStart = new Object();
+        mavenService.setUseLogFile(true);
         mavenService.setSynchronous(false);
         mavenService.setProjectPath(getPath("test-unit-success"));
         mavenService.setCommand("clean compile");
@@ -221,11 +223,9 @@ public class MavenServiceTest {
         Thread waitForBuildEnd = startWaiterThread(syncFinish);
         mavenService.build();
         waitForBuildStart.join();
-        @SuppressWarnings("unchecked")
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat("no logfile was created", listFiles.isEmpty(), is(false));
         waitForBuildEnd.join();
-        assertThat(listFiles.isEmpty(), is(true));
     }
 
     private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
