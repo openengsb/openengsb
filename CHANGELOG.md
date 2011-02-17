@@ -1,3 +1,31 @@
+openengsb-1.0.6.RELEASE
+-----------------------
+
+This support release contains a new version of jgit with ssh support and contains some minor fixes and improvements.
+
+### Hightlights
+  * SSH support for git repositories
+  * Backward compatibility of neodatis databases
+  * Lazyloading in report domain
+
+### Details
+** Bug
+    * [OPENENGSB-680] - data backward compatibility stored in neodatis backend
+    * [OPENENGSB-965] - openengsb-maven-connector does not fit checkstyle validation rules
+
+** Improvement
+    * [OPENENGSB-915] - git-connector should support ssh-key-authentication
+
+** Library Upgrade
+    * [OPENENGSB-964] - Upgrade jgit to 0.10.1
+
+** New Feature
+    * [OPENENGSB-954] - Report-domain should support "list"-method
+
+** Task
+    * [OPENENGSB-433] - automatically create notice and license parts/files
+    * [OPENENGSB-920] - Provide release notes for openengsb-1.0.6.RELEASE
+
 openengsb-1.0.5.RELEASE
 -----------------------
 
