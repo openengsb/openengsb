@@ -24,12 +24,12 @@
     <relativePath>../poms/nonosgi/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>non-osgi-settings</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6.RELEASE</version>
   </parent>
 
   <groupId>org.openengsb.integrationtest</groupId>
   <artifactId>openengsb-integrationtest-parent</artifactId>
-  <version>1.0.6-SNAPSHOT</version>
+  <version>1.0.6.RELEASE</version>
   <name>OpenEngSB :: Integration Tests :: Parent</name>
 
   <packaging>pom</packaging>

@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6.RELEASE</version>
   </parent>
 
 
@@ -32,7 +32,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>openengsb-connector-email</artifactId>
-  <version>1.0.6-SNAPSHOT</version>
+  <version>1.0.6.RELEASE</version>
 
   <name>OpenEngSB :: Connector :: Email</name>
 

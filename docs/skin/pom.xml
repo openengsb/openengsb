@@ -25,7 +25,7 @@ under the License.
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6.RELEASE</version>
   </parent>
 
   <artifactId>openengsb-docs-skin</artifactId>
