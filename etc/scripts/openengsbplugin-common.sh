@@ -17,49 +17,7 @@
 
 INVOCATION_DIR=`pwd`
 
-M2_REPO=~/.m2/repository
-
-PLUGIN_VERSION="1.1.0-SNAPSHOT"
-PLUGIN_GROUP_ID_PATH="org/openengsb/tooling/pluginsuite"
-PLUGIN_ARTIFACT_ID="openengsb-maven-plugin"
-
 ABSPATH=$(cd "$(dirname "${0}")"; pwd)
 
-PLUGINDIR=$ABSPATH/../../tooling/$PLUGIN_ARTIFACT_ID
-
-function check_m2_userdir(){
-  if [ -d $M2_REPO ]; then
-    echo 0
-  else
-    echo 1
-  fi
-}
-
-function check_for_plugin(){
-  if [ -f $M2_REPO/$PLUGIN_GROUP_ID_PATH/$PLUGIN_ARTIFACT_ID/$PLUGIN_VERSION/"$PLUGIN_ARTIFACT_ID-$PLUGIN_VERSION.jar" ]; then
-    echo 0
-  else
-    echo 1
-  fi
-}
-
-function install_plugin(){
-  cd $PLUGINDIR
-  echo "Installing $PLUGIN_ARTIFACT_ID!"
-  mvn clean install
-}
-
-if [ $1 ]; then
-  M2_REPO=$1
-fi
-
-if [ ! `check_m2_userdir` -eq 0 ]; then
-  echo "ERROR: Couldn't find $M2_REPO! If your local mvn repository is located anywhere else you can specify it by assemble.sh <path/to/repo>"
-  exit 1
-fi
-
-if [ ! `check_for_plugin` -eq 0 ]; then
-  install_plugin
-fi
-
 echo "Invoking openengsb-maven-plugin"
+
