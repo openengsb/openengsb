@@ -31,7 +31,8 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getService(BundleContext bundleContext, Class<T> clazz) throws OsgiServiceNotAvailableException {
+    public static <T> T getService(BundleContext bundleContext, Class<T> clazz)
+        throws OsgiServiceNotAvailableException {
         return getService(bundleContext, clazz, DEFAULT_TIMEOUT);
     }
 
@@ -43,18 +44,22 @@ public final class OsgiServiceUtils {
     @SuppressWarnings("unchecked")
     public static <T> T getService(BundleContext bundleContext, Class<T> clazz, long timeout)
         throws OsgiServiceNotAvailableException {
-        ServiceTracker t = new ServiceTracker(bundleContext, clazz.getName(), null);
-        T result;
-        try {
-            result = (T) t.waitForService(timeout);
-        } catch (InterruptedException e) {
-            throw new OsgiServiceNotAvailableException(e);
-        }
+        ServiceTracker tracker = new ServiceTracker(bundleContext, clazz.getName(), null);
+        Object result = getServiceFromTracker(tracker, timeout);
         if (result == null) {
             throw new OsgiServiceNotAvailableException(String.format("no service of type %s available at the time",
                 clazz.getName()));
         }
-        return result;
+        return (T) result;
+    }
+
+    private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
+        throws OsgiServiceNotAvailableException {
+        try {
+            return tracker.waitForService(timeout);
+        } catch (InterruptedException e) {
+            throw new OsgiServiceNotAvailableException(e);
+        }
     }
 
     public static <T> T getService(BundleContext bundleContext, String filterString)
@@ -78,12 +83,7 @@ public final class OsgiServiceUtils {
         }
         ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
         t.open();
-        Object result;
-        try {
-            result = t.waitForService(timeout);
-        } catch (InterruptedException e) {
-            throw new OsgiServiceNotAvailableException(e);
-        }
+        Object result = getServiceFromTracker(t, timeout);
         if (result == null) {
             throw new OsgiServiceNotAvailableException(String.format(
                 "no service matching filter \"%s\" available at the time", filterString));
@@ -113,6 +113,7 @@ public final class OsgiServiceUtils {
     }
 
     /**
+     * retrieves the highest ranked service that exports the given interface and the has the given instanceid
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
@@ -122,6 +123,7 @@ public final class OsgiServiceUtils {
     }
 
     /**
+     * retrieves the highest ranked service that exports the given interface and the has the given instanceid
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
