@@ -28,9 +28,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -67,7 +65,7 @@ public class MavenServiceTest {
         deleteLogFile();
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
-        this.mavenService = new MavenServiceImpl("42");
+        mavenService = new MavenServiceImpl("42");
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);
         deployEvents = mock(DeployDomainEvents.class);
@@ -223,25 +221,26 @@ public class MavenServiceTest {
         Thread waitForBuildEnd = startWaiterThread(syncFinish);
         mavenService.build();
         waitForBuildStart.join();
+        @SuppressWarnings("unchecked")
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat("no logfile was created", listFiles.isEmpty(), is(false));
         waitForBuildEnd.join();
     }
-    
+
     @Test
     public void build_shouldAssertLogLimit() throws Exception {
-    	
-    	final Object syncFinish = new Object();
-    	
-    	int max = mavenService.getLogLimit();
-    	
-    	for(int i = 1; i <= max; i++){
-    		String fileName = "dummyFile"+i;
-    		File dummyFile = new File("log", fileName);
-    		dummyFile.createNewFile();
-    		int tresh = 1000*i;
-    		dummyFile.setLastModified(System.currentTimeMillis()-tresh);	
-    	}
+
+        final Object syncFinish = new Object();
+
+        int max = mavenService.getLogLimit();
+
+        for (int i = 1; i <= max; i++) {
+            String fileName = "dummyFile" + i;
+            File dummyFile = new File("log", fileName);
+            dummyFile.createNewFile();
+            int tresh = 1000 * i;
+            dummyFile.setLastModified(System.currentTimeMillis() - tresh);
+        }
 
         mavenService.setUseLogFile(true);
         mavenService.setSynchronous(false);
@@ -250,11 +249,12 @@ public class MavenServiceTest {
         mavenService.build();
         makeNotifyAnswerForBuildSuccess(syncFinish);
         Thread waitForBuildEnd = startWaiterThread(syncFinish);
-        
+
         waitForBuildEnd.join();
+        @SuppressWarnings("unchecked")
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat(listFiles.size(), is(max));
-        assertThat(listFiles.contains(new File("dummyFile"+max)), is(false));
+        assertThat(listFiles.contains(new File("dummyFile" + max)), is(false));
     }
 
     private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
