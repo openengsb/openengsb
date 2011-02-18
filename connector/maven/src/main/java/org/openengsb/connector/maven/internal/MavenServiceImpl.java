@@ -106,13 +106,13 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String runTests() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        testEvents.raiseEvent(new TestStartEvent(id));
         Runnable runTests = new Runnable() {
 
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                testEvents.raiseEvent(new TestStartEvent(id));
                 if (result.isSuccess()) {
                     testEvents.raiseEvent(new TestSuccessEvent(id, result.getOutput()));
                 } else {
@@ -127,12 +127,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     @Override
     public void runTests(final long processId) {
         final String contextId = contextService.getThreadLocalContext();
-        testEvents.raiseEvent(new TestStartEvent(processId));
         Runnable runTests = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                testEvents.raiseEvent(new TestStartEvent(processId));
                 if (result.isSuccess()) {
                     testEvents.raiseEvent(new TestSuccessEvent(processId, result.getOutput()));
                 } else {
@@ -147,12 +147,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String build() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        buildEvents.raiseEvent(new BuildStartEvent(id));
         Runnable doBuild = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                buildEvents.raiseEvent(new BuildStartEvent(id));
                 if (result.isSuccess()) {
                     buildEvents.raiseEvent(new BuildSuccessEvent(id, result.getOutput()));
                 } else {
@@ -166,15 +166,15 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     @Override
     public void build(final long processId) {
-        BuildStartEvent buildStartEvent = new BuildStartEvent();
-        buildStartEvent.setProcessId(processId);
-        buildEvents.raiseEvent(buildStartEvent);
         final String contextId = contextService.getThreadLocalContext();
         Runnable doBuild = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                BuildStartEvent buildStartEvent = new BuildStartEvent();
+                buildStartEvent.setProcessId(processId);
+                buildEvents.raiseEvent(buildStartEvent);
                 if (result.isSuccess()) {
                     buildEvents.raiseEvent(new BuildSuccessEvent(processId, result.getOutput()));
                 } else {
@@ -198,13 +198,13 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String deploy() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        deployEvents.raiseEvent(new DeployStartEvent(id));
         Runnable doDeploy = new Runnable() {
 
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                deployEvents.raiseEvent(new DeployStartEvent(id));
                 if (result.isSuccess()) {
                     deployEvents.raiseEvent(new DeploySuccessEvent(id, result.getOutput()));
                 } else {
@@ -219,12 +219,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     @Override
     public void deploy(final long processId) {
         final String contextId = contextService.getThreadLocalContext();
-        deployEvents.raiseEvent(new DeployStartEvent(processId));
         Runnable doDeploy = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                deployEvents.raiseEvent(new DeployStartEvent(processId));
                 if (result.isSuccess()) {
                     deployEvents.raiseEvent(new DeploySuccessEvent(processId, result.getOutput()));
                 } else {
