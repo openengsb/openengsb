@@ -15,10 +15,6 @@ limitations under the License.
 This project includes:
   ActiveIO :: Core under The Apache Software License, Version 2.0
   ActiveMQ :: Core under The Apache Software License, Version 2.0
-  Aether :: API under The Apache Software License, Version 2.0
-  Aether :: Implementation under The Apache Software License, Version 2.0
-  Aether :: SPI under The Apache Software License, Version 2.0
-  Aether :: Utilities under The Apache Software License, Version 2.0
   Antlr 3 Runtime under Apache License, Version 2.0
   AOP alliance under Public Domain
   Apache Aries Blueprint Bundle under The Apache Software License, Version 2.0
@@ -87,7 +83,6 @@ This project includes:
   com.springsource.org.codehaus.janino under BSD license
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
-  Commons Compress under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Commons Logging under The Apache Software License, Version 2.0
@@ -119,15 +114,6 @@ This project includes:
   Log4j under The Apache Software License, Version 2.0
   Logging under The Apache Software License, Version 2.0
   logkit under Apache License, Version 2.0
-  Maven Aether Provider under The Apache Software License, Version 2.0
-  Maven Artifact under The Apache Software License, Version 2.0
-  Maven Core under The Apache Software License, Version 2.0
-  Maven Model under The Apache Software License, Version 2.0
-  Maven Model Builder under The Apache Software License, Version 2.0
-  Maven Plugin API under The Apache Software License, Version 2.0
-  Maven Repository Metadata Model under The Apache Software License, Version 2.0
-  Maven Settings under The Apache Software License, Version 2.0
-  Maven Settings Builder under The Apache Software License, Version 2.0
   Mockito under The MIT License
   mvel under Apache License, Version 2.0
   Neko HTML under The Apache Software License, Version 2.0
@@ -178,7 +164,6 @@ This project includes:
   OpenEngSB :: Tooling :: Archetypes :: Parent under Apache 2
   OpenEngSB :: Tooling :: Checkstyle under Apache 2
   OpenEngSB :: Tooling :: Parent under Apache 2
-  OpenEngSB :: Tooling :: Pluginsuite :: OpenEngSB-Maven-Plugin under Apache 2
   OpenEngSB :: User Interface :: Common :: Parent under Apache 2
   OpenEngSB :: User Interface :: Common :: Wicket under Apache 2
   OpenEngSB :: User Interface :: Parent under Apache 2
@@ -195,9 +180,6 @@ This project includes:
   OPS4J Base - Monitors under ALv2
   OPS4J Base - Net under ALv2
   OPS4J Base - Store under ALv2
-  OPS4J Base - Util - Collections under ALv2
-  OPS4J Base - Util - Property under ALv2
-  OPS4J Base - Util - XML under ALv2
   OPS4J Pax Exam - API under Apache License, Version 2.0
   OPS4J Pax Exam - Default Container (Pax Runner) under Apache License, Version 2.0
   OPS4J Pax Exam - JUnit Extender API under Apache License, Version 2.0
@@ -209,14 +191,11 @@ This project includes:
   OPS4J Pax Exam - SPI under Apache License, Version 2.0
   OPS4J Pax Logging - API under ALv2
   OPS4J Pax Logging - Service under ALv2
-  OPS4J Pax Runner - Commons under ALv2
   OPS4J Pax Runner - Core - No JCL under ALv2
-  OPS4J Pax Runner - Platform Extender under ALv2
   OPS4J Pax Swissbox :: Extender under ALv2
   OPS4J Pax Swissbox :: Lifecycle under ALv2
   OPS4J Pax Swissbox :: Optional JCL under ALv2
   OPS4J Pax Swissbox :: OSGi Core under ALv2
-  OPS4J Pax Swissbox :: Property under ALv2
   OPS4J Pax Url - mvn: under ALv2
   OPS4J Pax Url - wrap: under ALv2
   org.osgi.compendium under Apache License, Version 2.0
@@ -225,18 +204,9 @@ This project includes:
   OSGi OBR Service API under The Apache Software License, Version 2.0
   OSGi R4 Compendium Bundle under The Apache Software License, Version 2.0
   OSGi R4 Core Bundle under The Apache Software License, Version 2.0
-  Plexus :: Component Annotations under The Apache Software License, Version 2.0
-  Plexus Cipher: encryption/decryption Component under Apache Public License 2.0
-  Plexus Classworlds under The Apache Software License, Version 2.0
-  Plexus Common Utilities under The Apache Software License, Version 2.0
-  Plexus Interpolation API under The Apache Software License, Version 2.0
-  Plexus Security Dispatcher Component under Apache Public License 2.0
   Servlet 2.5 under The Apache Software License, Version 2.0
   servlet-api under Commons Development and Distribution License, Version 1.0
   Simple API for CSS under The W3C Software License
-  Sisu - Guice under The Apache Software License, Version 2.0
-  Sisu - Inject (JSR330 bean support) under The Apache Software License, Version 2.0
-  Sisu - Inject (Plexus bean support) under The Apache Software License, Version 2.0
   SLF4J API Module under MIT License
   SLF4J LOG4J-12 Binding under MIT License
   SLF4J Simple Binding under MIT license
