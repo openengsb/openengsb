@@ -31,43 +31,17 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.domain.scm.CommitRef;
 
-public class GitServiceImplTest {
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
-    private File remoteDirectory;
-    private File localDirectory;
-    private FileRepository remoteRepository;
-    private FileRepository localRepository;
-
-    private GitServiceImpl service;
-
-    @Before
-    public void setup() throws Exception {
-        remoteDirectory = tempFolder.newFolder("remote");
-        localDirectory = tempFolder.newFolder("local");
-        remoteRepository = RepositoryFixture.createRepository(remoteDirectory);
-        service = new GitServiceImpl("42");
-        service.setLocalWorkspace(localDirectory.getAbsolutePath());
-        service.setRemoteLocation(remoteDirectory.toURI().toURL().toExternalForm().replace("%20", " "));
-        service.setWatchBranch("master");
-    }
+public class GitServiceImplTest extends AbstractGitServiceImpl {
 
     @Test
     public void pollWithEmptyWorkspace_shouldCloneRemoteRepository() throws IOException {
         assertThat(service.poll(), is(true));
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
-        assertThat(remote,
-            is(remoteRepository.resolve("refs/heads/master")));
+        assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
     }
 
     @Test
