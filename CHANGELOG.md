@@ -1,5 +1,54 @@
-openengsb-1.1.0.RELEASE
------------------------
+openengsb-1.1.0.RC2 2011-02-18
+-----------------------------------------------------
+
+This release contains further stabilisations toward openengsb-1.1.0.RELEASE
+
+### Highlights
+  * Also using dedicated openengsb-maven-plugin
+  * Karaf 2.1.4
+  * Many fixes and minor improvements in various connectors
+
+### Details
+** Bug
+    * [OPENENGSB-680] - data backward compatibility stored in neodatis backend
+    * [OPENENGSB-837] - Strange HUGE spaces between headings in generated html from docbook
+    * [OPENENGSB-872] - refresh page OverviewPanel for Tasks
+    * [OPENENGSB-881] - maven-connector throws *StartEvent too early
+    * [OPENENGSB-944] - null-task is not rendered correctly
+    * [OPENENGSB-949] - AbstractOpenEngSBInvocationHandler does not work correctly on proxies
+    * [OPENENGSB-950] - KNOWN_ISSUES and CHANGELOG duplicated in windows distribution
+    * [OPENENGSB-952] - Git connector uses the wrong domain
+    * [OPENENGSB-953] - Empty ServiceId names are not editable
+    * [OPENENGSB-966] - failing unit-test for jgit
+
+** Improvement
+    * [OPENENGSB-808] - Add helper methods to retrieve servicemanagers in code
+    * [OPENENGSB-915] - git-connector should support ssh-key-authentication
+    * [OPENENGSB-945] - lower log-level for error during annotation retrieving
+    * [OPENENGSB-955] - Use equinox instead of felix
+    * [OPENENGSB-958] - Maximum number of logfiles for maven-connector
+    * [OPENENGSB-969] - Also use dedicated openengsb-maven-plugin
+
+** Library Upgrade
+    * [OPENENGSB-933] - Upgrade to openengsb-maven-plugin 1.2.0
+    * [OPENENGSB-957] - Upgrade karaf 2.1.3 to 2.1.4
+
+** New Feature
+    * [OPENENGSB-954] - Report-domain should support "list"-method
+
+** Task
+    * [OPENENGSB-433] - automatically create notice and license parts/files
+    * [OPENENGSB-597] - document test naming schema and coding style
+    * [OPENENGSB-800] - port archetypes to use blueprint instead of spring-dm
+    * [OPENENGSB-900] - release openengsb-1.1.0.RC2
+    * [OPENENGSB-923] - Move openengsb-maven-plugin to org.openengsb namespace
+    * [OPENENGSB-936] - remove unnecessary openengsb-maven-plugin version from license-check profile in poms/pom
+    * [OPENENGSB-959] - move ContextIdFilter to ui-common
+
+openengsb-1.1.0.RC1 2011-02-01
+-----------------------------------------------------
+
+Changes by now...
 
 ### Highlights
   * Downgrade spring-dm to 1.x and switch to blueprint instead of spring
@@ -34,6 +83,4 @@ openengsb-1.1.0.RELEASE
   * Granting authorities via annotations
   * Maven connector writes seperate log file
   * Usermanagement handles roles now
-
-### Details
 
