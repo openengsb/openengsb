@@ -53,7 +53,7 @@ import org.openengsb.domain.test.TestSuccessEvent;
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
     private static final String MVN_COMMAND = "mvn" + addSystemEnding();
-	private static final int MAX_LOG_FILES = 5;
+    private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
 
@@ -313,25 +313,25 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     private File getNewLogFile() throws IOException {
-    	if(logDir.list().length+1 > MAX_LOG_FILES){
-    		assertLogLimit();
-    	}
+        if (logDir.list().length + 1 > MAX_LOG_FILES) {
+            assertLogLimit();
+        }
         String dateString = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
         String fileName = String.format("maven.%s.log", dateString);
         File logFile = new File(logDir, fileName);
         logFile.createNewFile();
         return logFile;
     }
-    
+
     private boolean assertLogLimit() {
-    	File[] logFiles = logDir.listFiles();
-    	Arrays.sort(logFiles, new Comparator<File>(){
-    		public int compare(File f1, File f2)
-    		{
-    			return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
-    		} 
-    	});
-    	return logFiles[0].delete();
+        File[] logFiles = logDir.listFiles();
+        Arrays.sort(logFiles, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+            }
+        });
+        return logFiles[0].delete();
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {
@@ -365,9 +365,9 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public void setUseLogFile(boolean useLogFile) {
         this.useLogFile = useLogFile;
     }
-    
-    public int getLogLimit(){
-    	return MAX_LOG_FILES;
+
+    public int getLogLimit() {
+        return MAX_LOG_FILES;
     }
 
     private class MavenResult {
