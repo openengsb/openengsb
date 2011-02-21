@@ -33,6 +33,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -69,6 +70,7 @@ public class GitServiceImplTest {
         assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
     }
 
+    @Ignore
     @Test
     public void pollWithEmptyWorkspace_shouldCloneSSHRemoteRepository() throws IOException {
         service.setRemoteLocation("git@github.com:Mercynary/myTestRepo.git");

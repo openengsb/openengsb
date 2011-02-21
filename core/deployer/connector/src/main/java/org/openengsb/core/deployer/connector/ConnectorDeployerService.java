@@ -95,6 +95,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                     validationResult.isValid()));
         } catch (Exception e) {
             log.error(String.format("Installing connector failed: %s", e));
+            throw e;
         }
     }
 
@@ -130,6 +131,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             deployerStorage.remove(artifact);
         } catch (Exception e) {
             log.error(String.format("Removing connector failed: %s", e));
+            throw e;
         }
     }
 

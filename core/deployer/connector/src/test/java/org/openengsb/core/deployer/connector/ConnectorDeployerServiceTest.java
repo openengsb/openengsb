@@ -27,8 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -39,39 +37,34 @@ import org.mockito.ArgumentMatcher;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-public class ConnectorDeployerServiceTest {
+public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private ConnectorDeployerService connectorDeployerService;
     private AuthenticationManager authManagerMock;
     private Authentication authMock;
-    private BundleContext bundleContextMock;
-    private List<ServiceReference> serviceReferenceMocks;
     private ServiceManager serviceManagerMock;
     private DeployerStorage storageMock;
 
+    @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         connectorDeployerService = new ConnectorDeployerService();
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
-        bundleContextMock = mock(BundleContext.class);
-        serviceReferenceMocks = Arrays.asList(mock(ServiceReference.class));
         serviceManagerMock = mock(ServiceManager.class);
         storageMock = mock(DeployerStorage.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
-        when(bundleContextMock.getServiceReferences(anyString(), anyString())).thenReturn(
-                serviceReferenceMocks.toArray(new ServiceReference[0]));
-        when(bundleContextMock.getService(any(ServiceReference.class))).thenReturn(serviceManagerMock);
+        registerService(serviceManagerMock, ServiceManager.class, "(connector=a-connector )");
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setBundleContext(bundleContextMock);
+        connectorDeployerService.setBundleContext(bundleContext);
         connectorDeployerService.setDeployerStorage(storageMock);
 
         FileUtils.touch(new File("example.connector"));
@@ -132,6 +125,7 @@ public class ConnectorDeployerServiceTest {
     public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
         File connectorFile = new File("example.connector");
 
+        when(storageMock.getConnectorType(connectorFile)).thenReturn("a-connector ");
         when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
 
         connectorDeployerService.uninstall(connectorFile);

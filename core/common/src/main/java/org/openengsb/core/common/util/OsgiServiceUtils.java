@@ -104,7 +104,7 @@ public final class OsgiServiceUtils {
         throws OsgiServiceNotAvailableException {
         Filter filter;
         try {
-            filter = bundleContext.createFilter(filterString);
+            filter = FrameworkUtil.createFilter(filterString);
         } catch (InvalidSyntaxException e1) {
             throw new IllegalArgumentException(e1);
         }
