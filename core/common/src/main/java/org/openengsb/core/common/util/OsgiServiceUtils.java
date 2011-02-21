@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -138,7 +139,12 @@ public final class OsgiServiceUtils {
      */
     public static Object getServiceWithId(BundleContext bundleContext, String className, String id, long timeout)
         throws OsgiServiceNotAvailableException {
-        String filter = String.format("(&(%s=%s)(id=%s))", Constants.OBJECTCLASS, className, id);
+        Filter filter;
+        try {
+            filter = makeFilter(className, String.format("(id=%s)", id));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
         return getService(bundleContext, filter, timeout);
     }
 
@@ -153,6 +159,26 @@ public final class OsgiServiceUtils {
                     return method.invoke(service, args);
                 }
             });
+    }
+
+    public static Filter makeFilterForClass(Class<?> clazz) {
+        return makeFilterForClass(clazz.getName());
+    }
+
+    public static Filter makeFilterForClass(String className) {
+        try {
+            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static Filter makeFilter(Class<?> clazz, String otherFilter) throws InvalidSyntaxException {
+        return makeFilter(clazz.getName(), otherFilter);
+    }
+
+    public static Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
+        return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
     }
 
     private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
