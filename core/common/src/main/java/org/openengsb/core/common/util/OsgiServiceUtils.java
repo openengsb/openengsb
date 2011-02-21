@@ -58,11 +58,21 @@ public final class OsgiServiceUtils {
         return (T) result;
     }
 
+    /**
+     * retrieve the highest ranked service that matches the given filter
+     *
+     * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
+     */
     public static <T> T getService(BundleContext bundleContext, Filter filter)
         throws OsgiServiceNotAvailableException {
         return getService(bundleContext, filter, DEFAULT_TIMEOUT);
     }
 
+    /**
+     * retrieve the highest ranked service that matches the given filter
+     *
+     * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
+     */
     @SuppressWarnings("unchecked")
     public static <T> T getService(BundleContext bundleContext, Filter filter, long timeout)
         throws OsgiServiceNotAvailableException {
@@ -148,6 +158,11 @@ public final class OsgiServiceUtils {
         return getService(bundleContext, filter, timeout);
     }
 
+    /**
+     * returns a proxy that looks up an OSGi-service with the given Filter as soon as a method is called. Note that the
+     * returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within 30
+     * seconds
+     */
     @SuppressWarnings("unchecked")
     public static <T> T getOsgiServiceProxy(final BundleContext bundleContext, final Filter filter,
             Class<T> targetClass) {
@@ -161,10 +176,16 @@ public final class OsgiServiceUtils {
             });
     }
 
+    /**
+     * creates a filter that matches all services exporting the class as interface
+     */
     public static Filter makeFilterForClass(Class<?> clazz) {
         return makeFilterForClass(clazz.getName());
     }
 
+    /**
+     * creates a filter that matches all services exporting the class as interface
+     */
     public static Filter makeFilterForClass(String className) {
         try {
             return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
@@ -173,10 +194,18 @@ public final class OsgiServiceUtils {
         }
     }
 
+    /**
+     *
+     * creates a filter that matches all services exporting the class as interface and applies to the other Filter
+     */
     public static Filter makeFilter(Class<?> clazz, String otherFilter) throws InvalidSyntaxException {
         return makeFilter(clazz.getName(), otherFilter);
     }
 
+    /**
+     *
+     * creates a filter that matches all services exporting the class as interface and applies to the other Filter
+     */
     public static Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
         return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
     }
