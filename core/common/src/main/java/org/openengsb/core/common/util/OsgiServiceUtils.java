@@ -53,15 +53,28 @@ public final class OsgiServiceUtils {
         return (T) result;
     }
 
-    private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
+    public static <T> T getService(BundleContext bundleContext, Filter filter)
         throws OsgiServiceNotAvailableException {
-        try {
-            return tracker.waitForService(timeout);
-        } catch (InterruptedException e) {
-            throw new OsgiServiceNotAvailableException(e);
-        }
+        return getService(bundleContext, filter, DEFAULT_TIMEOUT);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T getService(BundleContext bundleContext, Filter filter, long timeout)
+        throws OsgiServiceNotAvailableException {
+        ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
+        Object result = getServiceFromTracker(t, timeout);
+        if (result == null) {
+            throw new OsgiServiceNotAvailableException(String.format(
+                "no service matching filter \"%s\" available at the time", filter.toString()));
+        }
+        return (T) result;
+    }
+
+    /**
+     * retrieve the highest ranked service that matches the given filter
+     *
+     * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
+     */
     public static <T> T getService(BundleContext bundleContext, String filterString)
         throws OsgiServiceNotAvailableException {
         return getService(bundleContext, filterString, DEFAULT_TIMEOUT);
@@ -72,7 +85,6 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    @SuppressWarnings("unchecked")
     public static <T> T getService(BundleContext bundleContext, String filterString, long timeout)
         throws OsgiServiceNotAvailableException {
         Filter filter;
@@ -81,14 +93,7 @@ public final class OsgiServiceUtils {
         } catch (InvalidSyntaxException e1) {
             throw new IllegalArgumentException(e1);
         }
-        ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
-        t.open();
-        Object result = getServiceFromTracker(t, timeout);
-        if (result == null) {
-            throw new OsgiServiceNotAvailableException(String.format(
-                "no service matching filter \"%s\" available at the time", filterString));
-        }
-        return (T) result;
+        return getService(bundleContext, filter, timeout);
     }
 
     /**
@@ -131,6 +136,18 @@ public final class OsgiServiceUtils {
         throws OsgiServiceNotAvailableException {
         String filter = String.format("(&(%s=%s)(id=%s))", Constants.OBJECTCLASS, className, id);
         return getService(bundleContext, filter, timeout);
+    }
+
+    private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
+        throws OsgiServiceNotAvailableException {
+        tracker.open();
+        try {
+            return tracker.waitForService(timeout);
+        } catch (InterruptedException e) {
+            throw new OsgiServiceNotAvailableException(e);
+        } finally {
+            tracker.close();
+        }
     }
 
     private OsgiServiceUtils() {
