@@ -62,6 +62,7 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -357,7 +358,13 @@ public class TestClient extends BasePage {
     }
 
     protected void performCall() {
-        Object service = getService(call.getService());
+        Object service;
+        try {
+            service = getService(call.getService());
+        } catch (OsgiServiceNotAvailableException e1) {
+            handleExceptionWithFeedback(e1);
+            return;
+        }
         MethodId mid = call.getMethod();
         Method m;
         try {
@@ -375,19 +382,23 @@ public class TestClient extends BasePage {
                 log.info("result: " + result);
             }
         } catch (IllegalAccessException e) {
-            String stackTrace = ExceptionUtils.getFullStackTrace(e);
-            error(stackTrace);
-            log.error(stackTrace);
+            handleExceptionWithFeedback(e);
         } catch (InvocationTargetException e) {
-            String stackTrace = ExceptionUtils.getFullStackTrace(e.getCause());
-            error(stackTrace);
-            log.error(stackTrace);
+            handleExceptionWithFeedback(e.getCause());
         }
     }
 
     protected void populateArgumentList() {
         argumentList.removeAll();
-        Method m = findMethod();
+        ServiceId service = call.getService();
+        Object serviceObject;
+        try {
+            serviceObject = getService(service);
+        } catch (OsgiServiceNotAvailableException e) {
+            handleExceptionWithFeedback(e);
+            return;
+        }
+        Method m = findMethod(serviceObject.getClass(), call.getMethod());
         List<Argument> arguments = new ArrayList<Argument>();
         call.setArguments(arguments);
         int i = 0;
@@ -399,6 +410,12 @@ public class TestClient extends BasePage {
             i++;
         }
         call.setArguments(arguments);
+    }
+
+    private void handleExceptionWithFeedback(Throwable e) {
+        String stackTrace = ExceptionUtils.getFullStackTrace(e);
+        error(stackTrace);
+        log.error(e);
     }
 
     private void populateMethodList() {
@@ -427,15 +444,11 @@ public class TestClient extends BasePage {
         return methods;
     }
 
-    private Object getService(ServiceId service) {
+    private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         return OsgiServiceUtils.getServiceWithId(bundleContext, service.getServiceClass(), service.getServiceId());
     }
 
-    private Method findMethod() {
-        ServiceId service = call.getService();
-        Object serviceObject = getService(service);
-        Class<?> serviceClass = serviceObject.getClass();
-        MethodId methodId = call.getMethod();
+    private Method findMethod(Class<?> serviceClass, MethodId methodId) {
         try {
             return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
         } catch (SecurityException e) {

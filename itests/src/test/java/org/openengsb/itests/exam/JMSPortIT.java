@@ -29,7 +29,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 public class JMSPortIT extends AbstractExamTestHelper {
 
     @Test
-    public void jmsPort_shouldBeExportedWithCorrectId() {
+    public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OsgiServiceUtils.getServiceWithId(getBundleContext(), OutgoingPort.class, "jms-json");
         System.out.println("ServiceID:" + serviceWithId);

@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.deployer.connector.internal.ConnectorConfiguration;
@@ -132,7 +133,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
     }
 
-    private ServiceManager getServiceManagerFor(String connectorType) {
+    private ServiceManager getServiceManagerFor(String connectorType) throws OsgiServiceNotAvailableException {
         return OsgiServiceUtils.getService(bundleContext, getFilterFor(connectorType));
     }
 
