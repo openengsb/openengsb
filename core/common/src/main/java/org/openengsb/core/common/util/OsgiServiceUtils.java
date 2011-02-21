@@ -16,6 +16,10 @@
 
 package org.openengsb.core.common.util;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -136,6 +140,19 @@ public final class OsgiServiceUtils {
         throws OsgiServiceNotAvailableException {
         String filter = String.format("(&(%s=%s)(id=%s))", Constants.OBJECTCLASS, className, id);
         return getService(bundleContext, filter, timeout);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getOsgiServiceProxy(final BundleContext bundleContext, final Filter filter,
+            Class<T> targetClass) {
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+            new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    Object service = OsgiServiceUtils.getService(bundleContext, filter);
+                    return method.invoke(service, args);
+                }
+            });
     }
 
     private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
