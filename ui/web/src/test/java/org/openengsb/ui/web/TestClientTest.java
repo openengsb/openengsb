@@ -70,6 +70,7 @@ import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.ui.common.wicket.OpenEngSBPage;
 import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
@@ -582,7 +583,7 @@ public class TestClientTest {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put("context", "foo");
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, "foo");
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
