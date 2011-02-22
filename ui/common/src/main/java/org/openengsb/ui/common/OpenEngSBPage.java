@@ -35,6 +35,8 @@ import org.openengsb.core.common.context.ContextHolder;
  */
 public class OpenEngSBPage extends WebPage {
 
+    public static final String CONTEXT_PARAM = "context";
+
     private Log log = LogFactory.getLog(OpenEngSBPage.class);
 
     @SpringBean
@@ -46,7 +48,7 @@ public class OpenEngSBPage extends WebPage {
 
     public OpenEngSBPage(PageParameters parameters) {
         super(parameters);
-        String contextId = (String) parameters.get("context");
+        String contextId = (String) parameters.get(CONTEXT_PARAM);
         if (contextId != null) {
             ContextHolder.get().setCurrentContextId(contextId);
         }

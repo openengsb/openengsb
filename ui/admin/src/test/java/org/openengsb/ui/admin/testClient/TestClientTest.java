@@ -77,6 +77,7 @@ import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
@@ -585,7 +586,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put("context", "foo");
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, "foo");
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
