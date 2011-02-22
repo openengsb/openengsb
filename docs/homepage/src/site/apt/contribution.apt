@@ -25,7 +25,7 @@ Contributions
 
  [[a]] Clone the source from {{{http://github.com/openengsb/openengsb}github}}
 
- [[b]] Test the OpenEngSB by running mvn clean install pax:provision
+ [[b]] Test the OpenEngSB by running mvn clean install openengsb:provision
 
  [[c]] Use mvn eclipse:eclipse to create the required Eclipse files and import them into Eclipse
 
