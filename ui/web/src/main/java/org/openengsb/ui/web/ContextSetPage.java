@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -54,16 +55,25 @@ public class ContextSetPage extends BasePage {
     @SpringBean
     private DomainService domainService;
 
-    private final TreeTable tree;
+    private TreeTable tree;
 
-    private final TextField<String> pathTextField;
+    private TextField<String> pathTextField;
 
-    private final TextField<String> valueTextField;
+    private TextField<String> valueTextField;
 
-    private final FeedbackPanel feedbackPanel;
+    private FeedbackPanel feedbackPanel;
+
+    public ContextSetPage() {
+        initContent();
+    }
+
+    public ContextSetPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
 
     @SuppressWarnings("serial")
-    public ContextSetPage() {
+    private void initContent() {
         add(new AjaxLink<String>("expandAll") {
             @Override
             public void onClick(AjaxRequestTarget target) {
