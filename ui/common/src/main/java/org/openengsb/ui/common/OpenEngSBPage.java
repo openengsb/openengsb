@@ -48,9 +48,9 @@ public class OpenEngSBPage extends WebPage {
 
     public OpenEngSBPage(PageParameters parameters) {
         super(parameters);
-        String contextId = (String) parameters.get(CONTEXT_PARAM);
-        if (contextId != null) {
-            ContextHolder.get().setCurrentContextId(contextId);
+        Object object = parameters.get(CONTEXT_PARAM);
+        if (object != null && object instanceof String[]) {
+            ContextHolder.get().setCurrentContextId(((String[]) object)[0]);
         }
     }
 
