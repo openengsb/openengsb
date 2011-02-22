@@ -16,9 +16,12 @@
 
 package org.openengsb.core.common.util;
 
+/**
+ * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
+ * or even never come back.
+ */
+@SuppressWarnings("serial")
 public class OsgiServiceNotAvailableException extends Exception {
-
-    private static final long serialVersionUID = -5193424397834887053L;
 
     public OsgiServiceNotAvailableException() {
     }
