@@ -450,7 +450,7 @@ mail.smtp.host.outputMode.description = Specifies the SMTP Hostname
     <para>After implementing and testing your connector locally you can try to start up the OpenEngSB with your new connector.
     Enter the following commands in the root directory of the OpenEngSB to build and start the OpenEngSB in development mode:</para>
     <programlisting>mvn clean install
-mvn pax:provision
+mvn openengsb:provision
     </programlisting>
     <para>Now you can enter "list" into the karaf console to check whether your new connector was installed and
       started.</para>
