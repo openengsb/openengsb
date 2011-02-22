@@ -19,7 +19,9 @@ package org.openengsb.ui.admin.global.header;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -121,20 +124,20 @@ public class ProjectTest {
     @Test
     public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test
     public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
 
         verify(contextService).setThreadLocalContext("foo");
 
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
 
         // simulated page reload...
         tester.startPage(new BasePage());

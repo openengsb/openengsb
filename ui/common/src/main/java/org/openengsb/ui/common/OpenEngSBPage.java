@@ -62,7 +62,10 @@ public class OpenEngSBPage extends WebPage {
     }
 
     protected final void initContextForCurrentThread() {
-        String sessionContextId = getSessionContextId();
+        String sessionContextId = ContextHolder.get().getCurrentContextId();
+        if (sessionContextId == null) {
+            sessionContextId = "foo";
+        }
         try {
             if (contextService != null) {
                 contextService.setThreadLocalContext(sessionContextId);
@@ -75,24 +78,6 @@ public class OpenEngSBPage extends WebPage {
             contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
             contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
             contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
-        }
-    }
-
-    public String getSessionContextId() {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session == null) {
-            return "foo";
-        }
-        if (session.getThreadContextId() == null) {
-            setThreadLocalContext("foo");
-        }
-        return session.getThreadContextId();
-    }
-
-    protected void setThreadLocalContext(String threadLocalContext) {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session != null) {
-            session.setThreadContextId(threadLocalContext);
         }
     }
 
