@@ -98,7 +98,7 @@ public class TestClientTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     private WicketTester tester;
@@ -385,7 +385,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -545,7 +545,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
@@ -582,8 +582,8 @@ public class TestClientTest {
     public void testStartWithContextAsParam() throws Exception {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
-        Map<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, "foo");
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
