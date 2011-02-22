@@ -47,6 +47,7 @@ import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
+import org.openengsb.core.common.context.ContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -123,20 +124,20 @@ public class ProjectTest {
     @Test
     public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test
     public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
 
         verify(contextService).setThreadLocalContext("foo");
 
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
 
         // simulated page reload...
         tester.startPage(new BasePage());

@@ -32,6 +32,7 @@ import org.openengsb.ui.common.wicket.OpenEngSBPage;
 import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
+import org.openengsb.core.common.context.ContextHolder;
 
 @SuppressWarnings("serial")
 public class BasePage extends OpenEngSBPage {
@@ -103,7 +104,7 @@ public class BasePage extends OpenEngSBPage {
 
             @Override
             public void setObject(String object) {
-                setThreadLocalContext(object);
+                ContextHolder.get().setCurrentContextId(object);
             }
 
             @Override
@@ -133,24 +134,17 @@ public class BasePage extends OpenEngSBPage {
         return this.getClass().getSimpleName();
     }
 
-    @Override
     public String getSessionContextId() {
         OpenEngSBWebSession session = OpenEngSBWebSession.get();
         if (session == null) {
             return "foo";
         }
-        if (session.getThreadContextId() == null) {
-            setThreadLocalContext("foo");
+        String contextId = ContextHolder.get().getCurrentContextId();
+        if (contextId == null) {
+            ContextHolder.get().setCurrentContextId("foo");
+            return contextId;
         }
-        return session.getThreadContextId();
-    }
-
-    @Override
-    public void setThreadLocalContext(String threadLocalContext) {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session != null) {
-            session.setThreadContextId(threadLocalContext);
-        }
+        return contextId;
     }
 
     @Override
