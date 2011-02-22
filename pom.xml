@@ -27,6 +27,8 @@
     <!-- core versions -->
     <karaf.version>2.1.99-SNAPSHOT</karaf.version>
     <aries.blueprint.version>0.3</aries.blueprint.version>
+    <aries.proxy.version>0.3</aries.proxy.version>
+    <aries.util.version>0.3</aries.util.version>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Mighty</openengsb.version.name.adjective>
