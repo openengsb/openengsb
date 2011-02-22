@@ -16,6 +16,7 @@
 
 package org.openengsb.ui.admin.taskOverview;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -28,7 +29,17 @@ public class TaskOverview extends BasePage {
     private WebTaskboxService taskboxService;
 
     public TaskOverview() {
+        initContent();
+    }
+
+    public TaskOverview(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
         Panel p = taskboxService.getOverviewPanel();
         this.add(p);
     }
+
 }
