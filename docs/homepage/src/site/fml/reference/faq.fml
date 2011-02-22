@@ -102,7 +102,7 @@
       <question>Can I debug the OpenEngSB source?</question>
       <answer>
         <p>
-          Yes; the moment you startup the OpenEngSB using maven pax:provision (or one of the scripts using this command, such as the run script) you can attach a 
+          Yes; the moment you startup the OpenEngSB using maven openengsb:provision (or one of the scripts using this command, such as the run script) you can attach a 
           remote debugger to localhost:5005 (from Eclipse, or any other IDE of your choice). That's it.
         </p>
       </answer>
