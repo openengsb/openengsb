@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -82,6 +83,15 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private final ValueConverter valueConverter = new ValueConverter();
 
     public SendEventPage() {
+        initContent();
+    }
+
+    public SendEventPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
         classes.add(Event.class);
         for (DomainProvider domain : domainService.domains()) {

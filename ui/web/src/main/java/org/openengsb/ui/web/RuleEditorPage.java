@@ -16,6 +16,7 @@
 
 package org.openengsb.ui.web;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -29,6 +30,15 @@ public class RuleEditorPage extends BasePage implements RuleManagerProvider {
     private RuleManager ruleManager;
 
     public RuleEditorPage() {
+        initContent();
+    }
+
+    public RuleEditorPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
@@ -36,4 +46,5 @@ public class RuleEditorPage extends BasePage implements RuleManagerProvider {
     public RuleManager getRuleManager() {
         return ruleManager;
     }
+
 }
