@@ -33,7 +33,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -68,18 +67,6 @@ public class GitServiceImplTest {
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
         assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
-    }
-
-    @Ignore
-    @Test
-    public void pollWithEmptyWorkspace_shouldCloneSSHRemoteRepository() throws IOException {
-        service.setRemoteLocation("git@github.com:Mercynary/myTestRepo.git");
-        assertThat(service.poll(), is(true));
-        localRepository = service.getRepository();
-        AnyObjectId id = localRepository.resolve(Constants.HEAD);
-        assertThat(id, notNullValue());
-        assertThat(id.name(), is("2f610959a14c8f26549bee563ad4da8c65e1ee8b"));
-
     }
 
     @Test
