@@ -1,3 +1,53 @@
+openengsb-1.2.0.M2 2011-02-23
+--------------------------------------------
+
+Alhough a milestone release it only contains small changes with an upgrade to karaf-2.1.4, upgrade to equinox instead of felix and some minor enhancements and bugfixes.
+
+### Highlights
+  * Use Equinox instead of Felix
+  * Karaf 2.1.4
+  * SSH support for git connector
+
+### Details
+** Bug
+    * [OPENENGSB-872] - refresh page OverviewPanel for Tasks
+    * [OPENENGSB-873] - TaskId mapping
+    * [OPENENGSB-881] - maven-connector throws *StartEvent too early
+    * [OPENENGSB-944] - null-task is not rendered correctly
+    * [OPENENGSB-946] - Latest felix-fileinstall version only in karaf-2.2; therefore filedeployer fails to start
+    * [OPENENGSB-949] - AbstractOpenEngSBInvocationHandler does not work correctly on proxies
+    * [OPENENGSB-950] - KNOWN_ISSUES and CHANGELOG duplicated in windows distribution
+    * [OPENENGSB-952] - Git connector uses the wrong domain
+    * [OPENENGSB-953] - Empty ServiceId names are not editable
+    * [OPENENGSB-966] - failing unit-test for jgit
+    * [OPENENGSB-977] - Internal config listener conflicts with karaf
+
+** Improvement
+    * [OPENENGSB-915] - git-connector should support ssh-key-authentication
+    * [OPENENGSB-945] - lower log-level for error during annotation retrieving
+    * [OPENENGSB-955] - Use equinox instead of felix
+    * [OPENENGSB-958] - Maximum number of logfiles for maven-connector
+
+** Library Upgrade
+    * [OPENENGSB-957] - Upgrade karaf 2.1.3 to 2.1.4
+    * [OPENENGSB-982] - Upgrade to openengsb-root-8
+
+** New Feature
+    * [OPENENGSB-725] - Add filters to directly retrieve specific connectors
+    * [OPENENGSB-954] - Report-domain should support "list"-method
+
+** Task
+    * [OPENENGSB-378] - reevaluate if jgit api supports high level calls
+    * [OPENENGSB-433] - automatically create notice and license parts/files
+    * [OPENENGSB-901] - Define release name using M M
+    * [OPENENGSB-902] - release openengsb-1.2.0.M2
+    * [OPENENGSB-936] - remove unnecessary openengsb-maven-plugin version from license-check profile in poms/pom
+    * [OPENENGSB-956] - Set the connector deployment service listening on the etc folder and the config folder
+    * [OPENENGSB-959] - move ContextIdFilter to ui-common
+    * [OPENENGSB-970] - Add Stefan Paula as contributor
+    * [OPENENGSB-975] - Identify PAX as optional in Contribution how-to
+
+
 openengsb-1.2.0.M1 2011-02-09
 --------------------------------------------
 
