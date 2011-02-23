@@ -63,7 +63,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getService(BundleContext bundleContext, Filter filter)
+    public static Object getService(BundleContext bundleContext, Filter filter)
         throws OsgiServiceNotAvailableException {
         return getService(bundleContext, filter, DEFAULT_TIMEOUT);
     }
@@ -73,8 +73,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T getService(BundleContext bundleContext, Filter filter, long timeout)
+    public static Object getService(BundleContext bundleContext, Filter filter, long timeout)
         throws OsgiServiceNotAvailableException {
         ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
         Object result = getServiceFromTracker(t, timeout);
@@ -82,7 +81,7 @@ public final class OsgiServiceUtils {
             throw new OsgiServiceNotAvailableException(String.format(
                 "no service matching filter \"%s\" available at the time", filter.toString()));
         }
-        return (T) result;
+        return result;
     }
 
     /**
@@ -90,7 +89,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getService(BundleContext bundleContext, String filterString)
+    public static Object getService(BundleContext bundleContext, String filterString)
         throws OsgiServiceNotAvailableException {
         return getService(bundleContext, filterString, DEFAULT_TIMEOUT);
     }
@@ -100,7 +99,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    public static <T> T getService(BundleContext bundleContext, String filterString, long timeout)
+    public static Object getService(BundleContext bundleContext, String filterString, long timeout)
         throws OsgiServiceNotAvailableException {
         Filter filter;
         try {
