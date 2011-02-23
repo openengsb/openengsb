@@ -22,13 +22,13 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.2.0.M2</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.branding</groupId>
   <artifactId>openengsb-branding-parent</artifactId>
-  <version>1.2.0.M2</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Branding :: Parent</name>
 
