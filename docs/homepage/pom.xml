@@ -82,7 +82,7 @@
       <id>rc</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -96,7 +96,7 @@
       <id>final</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -110,7 +110,7 @@
       <id>support</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
