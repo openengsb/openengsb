@@ -136,7 +136,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     private void createService(String id, Map<String, String> attributes) {
         InstanceType instance = factory.createServiceInstance(id, attributes);
-        Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+        Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id, attributes);
         final String[] interfaces =
             new String[]{getDomainInterface().getName(), Domain.class.getName(), OpenEngSBService.class.getName()};
         ServiceRegistration registration =
