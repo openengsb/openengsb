@@ -39,8 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
-    private final String loginPageEntryUrl =
-        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.admin.loginPage.LoginPage";
+    private final String loginPageEntryUrl = "http://localhost:8090/openengsb/LoginPage/";
 
     @Before
     public void setUp() throws Exception {
