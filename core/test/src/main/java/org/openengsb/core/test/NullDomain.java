@@ -17,9 +17,11 @@
 package org.openengsb.core.test;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Raises;
 
 public interface NullDomain extends Domain {
 
+    @Raises(NullEvent.class)
     void nullMethod();
 
     Object nullMethod(Object o);

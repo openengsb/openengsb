@@ -41,6 +41,7 @@ import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
@@ -79,9 +80,8 @@ public class HeaderTemplate extends Panel {
         if (openengsbVersion == null) {
             openengsbVersion = new OpenEngSBVersion();
         }
-        add(new Label("version", openengsbVersion.getVersionNumber() + " \""
-                + openengsbVersion.getNameAdjective() + " "
-                + openengsbVersion.getNameNoun() + "\""));
+        add(new Label("version", openengsbVersion.getVersionNumber() + " \"" + openengsbVersion.getNameAdjective()
+                + " " + openengsbVersion.getNameNoun() + "\""));
     }
 
     private void initMainMenuItems() {
@@ -92,7 +92,8 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title", "");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
-        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");        
+        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
+        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", "");
     }
 
     private void initializeMenu() {
@@ -137,7 +138,7 @@ public class HeaderTemplate extends Panel {
      * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
      * should be displayed and authority defines who is authorized to see the link
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
