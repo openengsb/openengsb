@@ -37,11 +37,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,7 +61,7 @@ public class ConnectorDeployerServiceTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    
+
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
@@ -122,6 +124,66 @@ public class ConnectorDeployerServiceTest {
         connectorDeployerService.update(connectorFile);
 
         verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRootService_shouldHaveLowerRanking() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+
+        when(updateResult.isValid()).thenReturn(true);
+        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+
+        connectorDeployerService.update(connectorFile);
+
+        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
+        assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("-1"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+
+        when(updateResult.isValid()).thenReturn(true);
+        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+
+        connectorDeployerService.update(connectorFile);
+
+        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(false));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOverridenRanking_shouldNotBeAltered() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, "connector=a-connector\nid=service-id\na-key=a-value\n"
+                + Constants.SERVICE_RANKING + "=24");
+        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+
+        when(updateResult.isValid()).thenReturn(true);
+        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+
+        connectorDeployerService.update(connectorFile);
+
+        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
+        assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("24"));
     }
 
     @Test
