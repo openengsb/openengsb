@@ -38,8 +38,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @SuppressWarnings("serial")
 public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
-    private String threadContextId;
-
     private Log log = LogFactory.getLog(AuthenticatedWebSession.class);
 
     @SpringBean(name = "authenticationManager")
@@ -49,15 +47,6 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
         super(request);
         injectDependencies();
         ensureDependenciesNotNull();
-    }
-
-    public void setThreadContextId(String threadContextId) {
-        this.threadContextId = threadContextId;
-        dirty();
-    }
-
-    public String getThreadContextId() {
-        return threadContextId;
     }
 
     public static OpenEngSBWebSession get() {

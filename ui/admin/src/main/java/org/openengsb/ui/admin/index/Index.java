@@ -16,10 +16,16 @@
 
 package org.openengsb.ui.admin.index;
 
+import org.apache.wicket.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
 
 public class Index extends BasePage {
     public Index() {
 
     }
+
+    public Index(PageParameters parameters) {
+        super(parameters);
+    }
+
 }

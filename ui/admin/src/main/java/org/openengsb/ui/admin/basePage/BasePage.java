@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -27,8 +28,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;
@@ -38,13 +38,20 @@ import org.openengsb.ui.common.OpenEngSBWebSession;
 
 @SuppressWarnings("serial")
 public class BasePage extends OpenEngSBPage {
-    @SpringBean
-    private ContextCurrentService contextService;
 
     public BasePage() {
+        initCommonContent();
+    }
+
+    private void initCommonContent() {
         initializeHeader();
         initializeLoginLogoutTemplate();
         initializeFooter();
+    }
+
+    public BasePage(PageParameters parameters) {
+        super(parameters);
+        initCommonContent();
     }
 
     private void initializeFooter() {
@@ -99,7 +106,7 @@ public class BasePage extends OpenEngSBPage {
 
             @Override
             public void setObject(String object) {
-                setThreadLocalContext(object);
+                ContextHolder.get().setCurrentContextId(object);
             }
 
             @Override
@@ -129,24 +136,17 @@ public class BasePage extends OpenEngSBPage {
         return this.getClass().getSimpleName();
     }
 
-    @Override
     public String getSessionContextId() {
         OpenEngSBWebSession session = OpenEngSBWebSession.get();
         if (session == null) {
             return "foo";
         }
-        if (session.getThreadContextId() == null) {
-            setThreadLocalContext("foo");
+        String contextId = ContextHolder.get().getCurrentContextId();
+        if (contextId == null) {
+            ContextHolder.get().setCurrentContextId("foo");
+            return contextId;
         }
-        return session.getThreadContextId();
-    }
-
-    @Override
-    public void setThreadLocalContext(String threadLocalContext) {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session != null) {
-            session.setThreadContextId(threadLocalContext);
-        }
+        return contextId;
     }
 
     @Override

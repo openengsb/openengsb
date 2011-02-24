@@ -31,6 +31,7 @@ import javax.swing.tree.TreeNode;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -90,15 +91,15 @@ public class TestClient extends BasePage {
     @SpringBean
     private ProxyFactory proxyFactory;
 
-    private final DropDownChoice<MethodId> methodList;
+    private DropDownChoice<MethodId> methodList;
 
     private final MethodCall call = new MethodCall();
 
-    private final RepeatingView argumentList;
+    private RepeatingView argumentList;
 
-    private final WebMarkupContainer argumentListContainer;
+    private WebMarkupContainer argumentListContainer;
 
-    private final LinkTree serviceList;
+    private LinkTree serviceList;
 
     private FeedbackPanel feedbackPanel;
 
@@ -106,8 +107,18 @@ public class TestClient extends BasePage {
 
     private ServiceId lastServiceId;
 
-    @SuppressWarnings("serial")
     public TestClient() {
+        super();
+        initContent();
+    }
+
+    public TestClient(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    @SuppressWarnings("serial")
+    private void initContent() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);

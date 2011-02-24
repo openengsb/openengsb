@@ -31,13 +31,16 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -61,6 +64,7 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
@@ -73,6 +77,7 @@ import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
@@ -575,4 +580,15 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
     }
+
+    @Test
+    public void testStartWithContextAsParam() throws Exception {
+        setupTestClientPage();
+        ContextHolder.get().setCurrentContextId("foo2");
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
+        tester.startPage(TestClient.class, new PageParameters(parameterMap));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
+    }
+
 }
