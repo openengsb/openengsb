@@ -36,10 +36,8 @@ public class WicketApplication extends OpenEngSBWicketApplication {
     public WicketApplication() {
         @SuppressWarnings("unchecked")
         Class<? extends Page>[] pages =
-            new Class[]{ OpenEngSBPage.class, BasePage.class, Index.class, TestClient.class,
-                ContextSetPage.class, LoginPage.class, ServiceListPage.class, TaskOverview.class, UserService.class,
-                SendEventPage.class,
-        };
+            new Class[]{ OpenEngSBPage.class, BasePage.class, Index.class, TestClient.class, ContextSetPage.class,
+                LoginPage.class, ServiceListPage.class, TaskOverview.class, UserService.class, SendEventPage.class };
         for (Class<? extends Page> page : pages) {
             mount(new MixedParamUrlCodingStrategy(page.getSimpleName(), page, new String[0]));
         }
