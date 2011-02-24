@@ -41,7 +41,7 @@ public class WicketApplication extends OpenEngSBWicketApplication {
                 SendEventPage.class,
         };
         for (Class<? extends Page> page : pages) {
-            mount(new MixedParamUrlCodingStrategy(page.getSimpleName(), page, null));
+            mount(new MixedParamUrlCodingStrategy(page.getSimpleName(), page, new String[0]));
         }
     }
 
