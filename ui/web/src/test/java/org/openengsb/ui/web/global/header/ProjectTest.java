@@ -63,6 +63,10 @@ public class ProjectTest {
 
     @Before
     public void setup() {
+        /*
+         * this line should be reconsidered as soon as the root-context is implemented [OPENENGSB-974]
+         */
+        ContextHolder.get().setCurrentContextId(null);
         contextService = mock(ContextCurrentService.class);
         appContext = new ApplicationContextMock();
         appContext.putBean(contextService);
@@ -124,13 +128,13 @@ public class ProjectTest {
     @Test
     public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
     @Test
     public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(ContextHolder.get().getCurrentContextId()));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
 
         verify(contextService).setThreadLocalContext("foo");
 
