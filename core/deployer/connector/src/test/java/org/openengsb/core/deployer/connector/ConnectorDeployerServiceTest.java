@@ -27,14 +27,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentMatcher;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
@@ -55,6 +57,9 @@ public class ConnectorDeployerServiceTest {
     private ServiceManager serviceManagerMock;
     private DeployerStorage storageMock;
 
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
@@ -73,35 +78,26 @@ public class ConnectorDeployerServiceTest {
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setBundleContext(bundleContextMock);
         connectorDeployerService.setDeployerStorage(storageMock);
-
-        FileUtils.touch(new File("example.connector"));
-        FileUtils.touch(new File("other.txt"));
-    }
-
-    @After
-    public void tearDown() {
-        FileUtils.deleteQuietly(new File("example.connector"));
-        FileUtils.deleteQuietly(new File("other.txt"));
     }
 
     @Test
-    public void testConnectorFiles_shouldBeHandledByDeployer() {
-        File connectorFile = new File("example.connector");
+    public void testConnectorFiles_shouldBeHandledByDeployer() throws IOException {
+        File connectorFile = temporaryFolder.newFile("example.connector");
 
         assertThat(connectorDeployerService.canHandle(connectorFile), is(true));
     }
 
     @Test
-    public void testUnknownFiles_shouldNotBeHandledByDeplyoer() {
-        File otherFile = new File("other.txt");
+    public void testUnknownFiles_shouldNotBeHandledByDeplyoer() throws IOException {
+        File otherFile = temporaryFolder.newFile("other.txt");
 
         assertThat(connectorDeployerService.canHandle(otherFile), is(false));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testConnectorFile_souldBeInstalled() throws Exception {
-        File connectorFile = new File("example.connector");
+    public void testConnectorFile_shouldBeInstalled() throws Exception {
+        File connectorFile = temporaryFolder.newFile("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
 
@@ -116,7 +112,7 @@ public class ConnectorDeployerServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
-        File connectorFile = new File("example.connector");
+        File connectorFile = temporaryFolder.newFile("example.connector");
         FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
         MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
 
@@ -130,7 +126,7 @@ public class ConnectorDeployerServiceTest {
 
     @Test
     public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
-        File connectorFile = new File("example.connector");
+        File connectorFile = temporaryFolder.newFile("example.connector");
 
         when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
 
