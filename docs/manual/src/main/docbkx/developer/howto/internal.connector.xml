@@ -34,25 +34,24 @@
     <title>Prerequisites</title>
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
       <xref linkend="architecture.concept.tooldomains" /> is a good starting point. If there's already a matching domain for
-      this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created. This
-      is also described in <xref linkend="developer.howto.internal.domain" />.</para>
+      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="developer.howto.internal.domain" />.</para>
   </section>
 
   <section>
     <title>Creating a new connector project</title>
 
-    <para>To take the burden of the developer creating the initial boilerplate code and configuration, a Maven archetype
+    <para>To take burden off the developer of creating the initial boilerplate code and configuration a Maven archetype
       is provided for creating the initial project structure. Furthermore, if the new connector is developed inside of
       the OpenEngSB repository, the <literal>openengsb-maven-plugin</literal>
       (see <xref linkend="developer.quickstart.tools.mavenplugin"/>)
       (or the <literal>etc/scripts/gen-connector.sh</literal> script, which wraps the invocation of the maven plugin)
-      should be used for assisted creation of a new connector project.</para>
+      can be used for assisted creation of a new connector project.</para>
 
    <section>
       <title>Using the Maven Archetype</title>
 
       <para>It is not recommended to use the maven archetype directly, because the <literal>genConnector</literal> goal
-      of the openengsb-maven-plugin executes additional tasks, like the renaming of the resulting project. Furthermore
+      of the openengsb-maven-plugin executes additional tasks, I.e. renaming of the resulting project. Furthermore,
       it tries to make sure that the new project is consistent with the naming conventions of the
       OpenEngSB project.</para>
       
@@ -63,8 +62,8 @@
           <listitem>archetypeVersion - the current version of the OpenEngSB connector archetype.</listitem>
         </itemizedlist>
       </para>
-      <para>The following parameters have to be defined for the parent of the new connector, which is not only parent
-      of the connector, but also for the implementation of the domain and all other connectors of this domain. 
+      <para>The following parameters have to be defined for the parent of the new connector. It is not solely parent
+      of the connector itself, but parent of the implementation of the domain and all other connectors of this domain too. 
         <itemizedlist>
           <listitem>parentArtifactId - the artifactId of the project parent.</listitem>
         </itemizedlist>
@@ -118,10 +117,10 @@
 <command>Version [1.0.0-SNAPSHOT]: </command>&lt;Enter>
 <command>Project Name [OpenEngSB :: Domains :: Notification :: Twitter]: </command>&lt;Enter></literallayout>
 
-      <para>Only the domain and connector name was set, everything else has been guessed correctly. After this inputs
-        the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
-        each time, because the values have been already set by the mojo. If it finishes successfully the new
-        connector project has been created and you may start implementing.</para>
+      <para>Only the domain and connector name was set, everything else has been guessed correctly. After these inputs
+        are provided the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
+        each time to acknowledge standard values. If it finishes successfully the new
+        connector project is created and you may start implementing.</para>
     </section>
   </section>
 
@@ -164,13 +163,13 @@
       persists the configuration of each connector, so that the connector instances can be restored after a system
       restart.</para>
 
-    <para>The spring setup in the resources folder contains the setup of the service manager. Here additional bean setup and
-    dependency injection can be configured.</para>
+    <para>The spring setup in the resources folder contains the setup of the service manager. Additional bean setup and
+    dependency injection can be configured there.</para>
 
-    <para>The OpenEngSB has been built with localization in mind. The Maven Archetype already generates two
+    <para>The OpenEngSB has been designed with localization in mind. The Maven Archetype already generates two
         <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
       (bundle_de.properties) language. Each connector has to provide localization through the properties files for
-      service and attributes text values. This includes localization for names, descriptions, attribute validators,
+      service and attributes text values. This includes localization for names, descriptions, attribute validation,
       option values and more. For convenience the <literal>BundleStrings</literal> class is provided on all method calls
       where text is needed for user representation for a specific locale.</para>
   </section>
