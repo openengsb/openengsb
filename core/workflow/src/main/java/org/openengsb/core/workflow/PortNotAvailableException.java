@@ -16,11 +16,9 @@
 
 package org.openengsb.core.workflow;
 
-import org.openengsb.core.common.communication.IncomingPort;
-import org.openengsb.core.common.communication.OutgoingPort;
-
 /**
- * is thrown when the service backing an {@link IncomingPort} or {@link OutgoingPort} is not available
+ * is thrown when the service backing an {@link org.openengsb.core.common.communication.IncomingPort} or
+ * {@link org.openengsb.core.common.communication.OutgoingPort} is not available
  */
 @SuppressWarnings("serial")
 public class PortNotAvailableException extends Exception {
