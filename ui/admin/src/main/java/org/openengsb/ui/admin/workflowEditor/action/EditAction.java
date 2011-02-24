@@ -40,7 +40,7 @@ import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 @AuthorizeInstantiation("ROLE_USER")
 public class EditAction extends BasePage {
 
-    transient private Method actionMethod;
+    private transient Method actionMethod;
 
     @SpringBean
     private DomainService domainService;

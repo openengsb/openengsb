@@ -20,13 +20,13 @@ import java.util.List;
 
 public interface WorkflowEditorService {
 
-    public List<String> getWorkflowNames();
+    List<String> getWorkflowNames();
 
-    public Workflow loadWorkflow(String name);
+    Workflow loadWorkflow(String name);
 
-    public Workflow getCurrentWorkflow();
+    Workflow getCurrentWorkflow();
 
-    public void saveCurrentWorkflow();
+    void saveCurrentWorkflow();
 
-    public void createWorkflow(String name);
+    void createWorkflow(String name);
 }

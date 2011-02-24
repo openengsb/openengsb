@@ -17,7 +17,6 @@
 package org.openengsb.core.common.workflow.editor;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
