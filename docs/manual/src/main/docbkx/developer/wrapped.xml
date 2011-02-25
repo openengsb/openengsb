@@ -111,7 +111,7 @@ javax.servlet;version="[2.5.0, 3.0.0)",\
     can occur. This section summarizes good tips and ideas how to wrap bundles within the OpenEngSB.</para>
     <itemizedlist>
       <listitem>The best workflow to wrap a bundle is according to our experiences, to execute the previously described steps
-      and simply start the OpenEngSB (pax:provision). Either it works or creates a huge stack of exceptions with missing import
+      and simply start the OpenEngSB (openengsb:provision). Either it works or creates a huge stack of exceptions with missing import
       statements. Simply try to fulfill one problem, than start again till all references are resolved.</listitem>
       <listitem>Embedding artifacts is nothing bad. Although it is recommended to use all references artifacts of a bundle
       directly as OSGi components it can be such a pain sometimes. Some references are simply not required by any other bundle

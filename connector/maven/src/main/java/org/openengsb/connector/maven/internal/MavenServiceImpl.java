@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +53,7 @@ import org.openengsb.domain.test.TestSuccessEvent;
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
     private static final String MVN_COMMAND = "mvn" + addSystemEnding();
+    private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
 
@@ -106,13 +108,13 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String runTests() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        testEvents.raiseEvent(new TestStartEvent(id));
         Runnable runTests = new Runnable() {
 
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                testEvents.raiseEvent(new TestStartEvent(id));
                 if (result.isSuccess()) {
                     testEvents.raiseEvent(new TestSuccessEvent(id, result.getOutput()));
                 } else {
@@ -127,12 +129,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     @Override
     public void runTests(final long processId) {
         final String contextId = contextService.getThreadLocalContext();
-        testEvents.raiseEvent(new TestStartEvent(processId));
         Runnable runTests = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                testEvents.raiseEvent(new TestStartEvent(processId));
                 if (result.isSuccess()) {
                     testEvents.raiseEvent(new TestSuccessEvent(processId, result.getOutput()));
                 } else {
@@ -147,12 +149,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String build() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        buildEvents.raiseEvent(new BuildStartEvent(id));
         Runnable doBuild = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                buildEvents.raiseEvent(new BuildStartEvent(id));
                 if (result.isSuccess()) {
                     buildEvents.raiseEvent(new BuildSuccessEvent(id, result.getOutput()));
                 } else {
@@ -166,15 +168,15 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     @Override
     public void build(final long processId) {
-        BuildStartEvent buildStartEvent = new BuildStartEvent();
-        buildStartEvent.setProcessId(processId);
-        buildEvents.raiseEvent(buildStartEvent);
         final String contextId = contextService.getThreadLocalContext();
         Runnable doBuild = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                BuildStartEvent buildStartEvent = new BuildStartEvent();
+                buildStartEvent.setProcessId(processId);
+                buildEvents.raiseEvent(buildStartEvent);
                 if (result.isSuccess()) {
                     buildEvents.raiseEvent(new BuildSuccessEvent(processId, result.getOutput()));
                 } else {
@@ -198,13 +200,13 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public String deploy() {
         final String id = createId();
         final String contextId = contextService.getThreadLocalContext();
-        deployEvents.raiseEvent(new DeployStartEvent(id));
         Runnable doDeploy = new Runnable() {
 
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                deployEvents.raiseEvent(new DeployStartEvent(id));
                 if (result.isSuccess()) {
                     deployEvents.raiseEvent(new DeploySuccessEvent(id, result.getOutput()));
                 } else {
@@ -219,12 +221,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     @Override
     public void deploy(final long processId) {
         final String contextId = contextService.getThreadLocalContext();
-        deployEvents.raiseEvent(new DeployStartEvent(processId));
         Runnable doDeploy = new Runnable() {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
+                deployEvents.raiseEvent(new DeployStartEvent(processId));
                 if (result.isSuccess()) {
                     deployEvents.raiseEvent(new DeploySuccessEvent(processId, result.getOutput()));
                 } else {
@@ -311,11 +313,25 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     private File getNewLogFile() throws IOException {
+        if (logDir.list().length + 1 > MAX_LOG_FILES) {
+            assertLogLimit();
+        }
         String dateString = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
         String fileName = String.format("maven.%s.log", dateString);
         File logFile = new File(logDir, fileName);
         logFile.createNewFile();
         return logFile;
+    }
+
+    private boolean assertLogLimit() {
+        File[] logFiles = logDir.listFiles();
+        Arrays.sort(logFiles, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+            }
+        });
+        return logFiles[0].delete();
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {
@@ -348,6 +364,10 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void setUseLogFile(boolean useLogFile) {
         this.useLogFile = useLogFile;
+    }
+
+    public int getLogLimit() {
+        return MAX_LOG_FILES;
     }
 
     private class MavenResult {

@@ -17,10 +17,12 @@
 package org.openengsb.core.common;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 public abstract class AbstractServiceManagerParent implements BundleContextAware {
 
@@ -44,12 +46,17 @@ public abstract class AbstractServiceManagerParent implements BundleContextAware
         strings = new BundleStrings(bundleContext.getBundle());
     }
 
-    protected Hashtable<String, String> createNotificationServiceProperties(String id) {
+    protected Hashtable<String, String> createNotificationServiceProperties(String id, Map<String, String> attributes) {
         Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
         serviceProperties.put("id", id);
         serviceProperties.put("domain", getDomainInterface().getName());
         serviceProperties.put("class", getImplementationClass().getName());
         serviceProperties.put("managerId", getDescriptor().getId());
+
+        if (attributes.containsKey(Constants.SERVICE_RANKING)) {
+            serviceProperties.put(Constants.SERVICE_RANKING, attributes.get(Constants.SERVICE_RANKING));
+        }
+
         return serviceProperties;
     }
 

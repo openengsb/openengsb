@@ -181,8 +181,9 @@
     <para>Performing a release is quite simple, because of the maven release plugin and some scripts. Simple
     follow these steps:</para>
     <itemizedlist>
-      <listitem>1) Execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
-      <listitem>Now that the artifacts are available for sync to maven central you have to push them from the
+      <listitem>First of all make sure that the NOTICE file is up-to-date using notice:generate</listitem>
+      <listitem>Now execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
+      <listitem>After the artifacts are available for sync to maven central you have to push them from the
       staging to the final repository. Therefore follow the steps as explained
       <link xlink:href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">
       here</link></listitem>

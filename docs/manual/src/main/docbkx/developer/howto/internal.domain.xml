@@ -145,7 +145,7 @@
       also a resources folder, which contains the spring setup and property files for internationalization.</para>
 
       <para>Although the generated domain does in effect nothing, you can already start the OpenEngSB for testing with
-          <literal>mvn clean install pax:provision</literal> and the domain will be automatically be picked up and started.</para>
+          <literal>mvn clean install openengsb:provision</literal> and the domain will be automatically be picked up and started.</para>
 
       <para>The spring setup in the resources folder already contains the necessary setup for this domain to work in the
       OpenEngSB environment. Furthermore the default implementation proxies for the domain interface, which forwards all

@@ -54,7 +54,7 @@
 
   <filter>
     <filter-name>contextFilterChain</filter-name>
-    <filter-class>org.openengsb.ui.admin.util.ContextIdFilter</filter-class>
+    <filter-class>org.openengsb.ui.common.util.ContextIdFilter</filter-class>
   </filter>
 
   <filter-mapping>

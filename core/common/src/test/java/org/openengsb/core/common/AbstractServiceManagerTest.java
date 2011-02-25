@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -51,6 +52,7 @@ import org.openengsb.core.common.support.NullDomainImpl;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 public class AbstractServiceManagerTest {
@@ -142,6 +144,22 @@ public class AbstractServiceManagerTest {
 
         ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
         Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
+    }
+
+    @Test
+    public void testServiceRanking_ShouldBePassedToServiceRegistry() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        HashMap<String, String> attributes = new HashMap<String, String>();
+        NullDomainImpl instance = new NullDomainImpl();
+
+        DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        attributes.put(Constants.SERVICE_RANKING, "23");
+        manager.update("test", attributes);
+
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<Dictionary> captor = ArgumentCaptor.forClass(Dictionary.class);
+        Mockito.verify(bundleContextMock).registerService(any(String[].class), any(NullDomain.class), captor.capture());
+        assertThat(captor.getValue().get(Constants.SERVICE_RANKING).toString(), is("23"));
     }
 
     @Test

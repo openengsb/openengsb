@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.index;
+package org.openengsb.domain.report.model;
 
-import org.apache.wicket.PageParameters;
-import org.openengsb.ui.admin.basePage.BasePage;
+import java.io.File;
+import java.io.IOException;
 
-public class Index extends BasePage {
-    public Index() {
+import org.apache.commons.io.FileUtils;
 
+public class FileReportPart extends ReportPart {
+    private File fileName;
+
+    public FileReportPart(String partName, String contentType, File content) {
+        super(partName, contentType);
+        this.fileName = content;
     }
 
-    public Index(PageParameters parameters) {
-        super(parameters);
+    @Override
+    public byte[] getContent() {
+        try {
+            return FileUtils.readFileToByteArray(fileName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
 }

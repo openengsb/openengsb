@@ -23,12 +23,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.deployer.connector.internal.ConnectorConfiguration;
 import org.openengsb.core.deployer.connector.internal.ConnectorFile;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -93,6 +95,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                     validationResult.isValid()));
         } catch (Exception e) {
             log.error(String.format("Installing connector failed: %s", e));
+            throw e;
         }
     }
 
@@ -128,15 +131,17 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             deployerStorage.remove(artifact);
         } catch (Exception e) {
             log.error(String.format("Removing connector failed: %s", e));
+            throw e;
         }
     }
 
-    private ServiceManager getServiceManagerFor(String connectorType) {
-        return OsgiServiceUtils.getService(bundleContext, ServiceManager.class, getFilterFor(connectorType));
+    private ServiceManager getServiceManagerFor(String connectorType) throws OsgiServiceNotAvailableException {
+        return (ServiceManager) OsgiServiceUtils.getService(bundleContext, getFilterFor(connectorType));
     }
 
     private String getFilterFor(String connectorType) {
-        return String.format("(connector=%s)", connectorType);
+        return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS, ServiceManager.class.getName(),
+            connectorType);
     }
 
     private void logConfigErrors(ConnectorConfiguration newConfig, File artifact) {

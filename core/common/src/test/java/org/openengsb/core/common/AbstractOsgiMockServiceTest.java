@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.common;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

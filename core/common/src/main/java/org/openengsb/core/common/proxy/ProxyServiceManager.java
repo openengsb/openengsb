@@ -91,7 +91,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                 ServiceRegistration registration =
                     getBundleContext().registerService(
                         new String[]{getDomainInterface().getName(), Domain.class.getName()}, newProxyInstance,
-                        createNotificationServiceProperties(id));
+                        createNotificationServiceProperties(id, attributes));
                 services.put(id, registration);
             }
         }

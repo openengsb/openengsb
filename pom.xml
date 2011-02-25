@@ -59,7 +59,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>7</version>
+    <version>8</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -134,6 +134,17 @@
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>features-maven-plugin</artifactId>
         <version>${karaf.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>maven-notice-plugin</artifactId>
+        <version>1.0.4</version>
+        <configuration>
+          <noticeTemplate>etc/notice/NOTICE.template</noticeTemplate>
+          <licenseMapping>
+            <param>etc/notice/license-mapping.xml</param>
+          </licenseMapping>
+        </configuration>
       </plugin>
     </plugins>
   </build>

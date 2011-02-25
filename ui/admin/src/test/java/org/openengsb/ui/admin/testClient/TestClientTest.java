@@ -31,13 +31,16 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -61,25 +64,27 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class TestClientTest {
+public class TestClientTest extends AbstractOsgiMockServiceTest {
     private DomainService managedServicesMock;
 
     public interface TestInterface extends Domain {
@@ -95,7 +100,7 @@ public class TestClientTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     private WicketTester tester;
@@ -104,14 +109,13 @@ public class TestClientTest {
     private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
-    private BundleContext bundleContext;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        super.setUp();
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
-        bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(mock(ProxyFactory.class));
@@ -382,7 +386,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -422,14 +426,14 @@ public class TestClientTest {
         assertThat(argList.size(), is(0));
     }
 
-    private List<ServiceReference> setupAndStartTestClientPage() {
+    private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
         final List<ServiceReference> expected = setupTestClientPage();
         tester.startPage(TestClient.class);
         formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 
-    private List<ServiceReference> setupTestClientPage() {
+    private List<ServiceReference> setupTestClientPage() throws InvalidSyntaxException {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = mock(ServiceReference.class);
         when(serviceReferenceMock.getProperty("id")).thenReturn("test");
@@ -476,6 +480,8 @@ public class TestClientTest {
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         testService = mock(TestInterface.class);
+        registerService(testService, TestInterface.class, "(id=test)");
+
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
@@ -496,7 +502,7 @@ public class TestClientTest {
     }
 
     @Test
-    public void testListToCreateNewServices() {
+    public void testListToCreateNewServices() throws Exception {
         setupAndStartTestClientPage();
         tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
@@ -520,7 +526,7 @@ public class TestClientTest {
     }
 
     @Test
-    public void showEditLink() {
+    public void showEditLink() throws Exception {
         List<ServiceReference> expected = setupAndStartTestClientPage();
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -536,13 +542,13 @@ public class TestClientTest {
     }
 
     @Test
-    public void testTargetLocationOfEditButton() {
+    public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
         try {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
@@ -574,4 +580,15 @@ public class TestClientTest {
         ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
     }
+
+    @Test
+    public void testStartWithContextAsParam() throws Exception {
+        setupTestClientPage();
+        ContextHolder.get().setCurrentContextId("foo2");
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
+        tester.startPage(TestClient.class, new PageParameters(parameterMap));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
+    }
+
 }

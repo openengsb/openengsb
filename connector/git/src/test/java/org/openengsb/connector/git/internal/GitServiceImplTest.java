@@ -31,43 +31,17 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.domain.scm.CommitRef;
 
-public class GitServiceImplTest {
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
-    private File remoteDirectory;
-    private File localDirectory;
-    private FileRepository remoteRepository;
-    private FileRepository localRepository;
-
-    private GitServiceImpl service;
-
-    @Before
-    public void setup() throws Exception {
-        remoteDirectory = tempFolder.newFolder("remote");
-        localDirectory = tempFolder.newFolder("local");
-        remoteRepository = RepositoryFixture.createRepository(remoteDirectory);
-        service = new GitServiceImpl("42");
-        service.setLocalWorkspace(localDirectory.getAbsolutePath());
-        service.setRemoteLocation(remoteDirectory.toURI().toURL().toExternalForm().replace("%20", " "));
-        service.setWatchBranch("master");
-    }
+public class GitServiceImplTest extends AbstractGitServiceImpl {
 
     @Test
     public void pollWithEmptyWorkspace_shouldCloneRemoteRepository() throws IOException {
         assertThat(service.poll(), is(true));
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
-        assertThat(remote,
-            is(remoteRepository.resolve("refs/heads/master")));
+        assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
     }
 
     @Test
@@ -109,7 +83,7 @@ public class GitServiceImplTest {
         assertThat(new File(exportDirectory, "testfile").isFile(), is(true));
         assertThat(new File(exportDirectory, ".git").isDirectory(), is(false));
     }
-    
+
     @Test
     public void commitFile_shouldReturnHeadReference() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -119,7 +93,7 @@ public class GitServiceImplTest {
         localRepository = service.getRepository();
         assertThat(commitRef.getStringRepresentation(), is(localRepository.resolve(Constants.HEAD).name()));
     }
-    
+
     @Test
     public void commitNonExistingFile_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -129,7 +103,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitFileNotAFile_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -140,7 +114,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitFileNotInWorkingfolder_shouldRaiseException() throws IOException {
         File toCommit = tempFolder.newFile("testfile");
@@ -150,7 +124,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitDirectoryNotADirectory_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
@@ -161,7 +135,7 @@ public class GitServiceImplTest {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void commitDirectoryRecursive_shouldReturnHeadReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -181,7 +155,7 @@ public class GitServiceImplTest {
         RevCommit commit = new RevWalk(localRepository).parseCommit(id);
         assertThat("testcomment", is(commit.getFullMessage()));
     }
-    
+
     @Test
     public void commitDirectoryNonRecursiveWoFilesAtToplevel_shouldReturnNullReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -196,7 +170,7 @@ public class GitServiceImplTest {
         CommitRef commitRef = service.commit(folderTest, "testcomment", false);
         assertThat(null, is(commitRef));
     }
-    
+
     @Test
     public void commitDirectoryNonRecursiveWithFilesAtToplevel_shouldReturnHeadReference() throws IOException {
         File folderTest = new File(localDirectory, "testfolder");
@@ -215,7 +189,7 @@ public class GitServiceImplTest {
         RevCommit commit = new RevWalk(localRepository).parseCommit(id);
         assertThat("testcomment", is(commit.getFullMessage()));
     }
-    
+
     @Test
     public void existsFilenameInHeadCommit_shouldReturnTrue() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -226,7 +200,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitOne"), is(true));
     }
-    
+
     @Test
     public void existsFilenameInReferencedCommit_shouldReturnTrue() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -237,7 +211,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitOne", commitRefOne), is(true));
     }
-    
+
     @Test
     public void existsFilenameOfNotExistingFile_shouldReturnFalse() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");
@@ -248,7 +222,7 @@ public class GitServiceImplTest {
         service.commit(commitTwo, "testcomment");
         assertThat(service.exists("commitThree"), is(false));
     }
-    
+
     @Test
     public void existsFilenameInPriorCommitToFilecommit_shouldReturnFalse() throws IOException {
         File commitOne = new File(localDirectory, "commitOne");

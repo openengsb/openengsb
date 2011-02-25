@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.util;
+package org.openengsb.ui.common.util;
 
 import java.io.IOException;
 

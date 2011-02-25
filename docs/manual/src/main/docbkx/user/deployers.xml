@@ -28,6 +28,8 @@
   <para>The OpenEngSB supports file-based configuration through its deployer services. These services are constantly checking the "config/" directory for new/changed/deleted configuration files.</para>
   <para>If a new file is created, its configuration is loaded into the OpenEngSB. When the file changes the configuration is updated and when it is deleted the configuration is unloaded. Each deployer handles a different type of configuration file represented by different file name extensions. Details and structure of these files are covered in this section.
   </para>
+  <para>It should be noted that the OpenEngSB itself uses deployer services for internal configuration. For this purpose the deployer services also listen for configuration files in "etc/". These config files however are essential for the correct operation of the OpenEngSB and should not be modified.
+  </para>
 
   <section xml:id="user.deployers.connector">
     <title>Connector configuration</title>

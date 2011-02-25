@@ -19,6 +19,7 @@ package org.openengsb.ui.admin.serviceListPage;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -41,13 +42,21 @@ public class ServiceListPage extends BasePage {
     private List<ServiceManager> serviceManager;
 
     public ServiceListPage() {
-        add(new AjaxLazyLoadPanel("lazy") {
+        initContent();
+    }
 
+    public ServiceListPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    @SuppressWarnings("serial")
+    private void initContent() {
+        add(new AjaxLazyLoadPanel("lazy") {
             @Override
             public Component getLazyLoadComponent(String markupId) {
                 return new ServiceListPanel(markupId, bundleContext, services, serviceManager);
             }
         });
-
     }
 }

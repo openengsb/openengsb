@@ -121,7 +121,7 @@
     </literallayout>
     <para>Now start the OpenEngSB by executing</para>
     <literallayout>
-      <command>mvn clean install pax:provision</command>
+      <command>mvn clean install openengsb:provision</command>
     </literallayout>
     <para>This command builds, tests and runs the OpenEngSB right from your command-line. Executing the following command
       will shutdown it again:</para>

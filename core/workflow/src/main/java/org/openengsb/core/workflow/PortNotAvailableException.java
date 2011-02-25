@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.index;
+package org.openengsb.core.workflow;
 
-import org.apache.wicket.PageParameters;
-import org.openengsb.ui.admin.basePage.BasePage;
+/**
+ * is thrown when the service backing an {@link org.openengsb.core.common.communication.IncomingPort} or
+ * {@link org.openengsb.core.common.communication.OutgoingPort} is not available
+ */
+@SuppressWarnings("serial")
+public class PortNotAvailableException extends Exception {
 
-public class Index extends BasePage {
-    public Index() {
-
+    public PortNotAvailableException() {
+        super();
     }
 
-    public Index(PageParameters parameters) {
-        super(parameters);
+    public PortNotAvailableException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PortNotAvailableException(String message) {
+        super(message);
+    }
+
+    public PortNotAvailableException(Throwable cause) {
+        super(cause);
     }
 
 }

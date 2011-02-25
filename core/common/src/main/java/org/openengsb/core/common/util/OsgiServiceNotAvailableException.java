@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.index;
+package org.openengsb.core.common.util;
 
-import org.apache.wicket.PageParameters;
-import org.openengsb.ui.admin.basePage.BasePage;
+/**
+ * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
+ * or even never come back.
+ */
+@SuppressWarnings("serial")
+public class OsgiServiceNotAvailableException extends Exception {
 
-public class Index extends BasePage {
-    public Index() {
-
+    public OsgiServiceNotAvailableException() {
     }
 
-    public Index(PageParameters parameters) {
-        super(parameters);
+    public OsgiServiceNotAvailableException(String message) {
+        super(message);
+    }
+
+    public OsgiServiceNotAvailableException(Throwable cause) {
+        super(cause);
+    }
+
+    public OsgiServiceNotAvailableException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

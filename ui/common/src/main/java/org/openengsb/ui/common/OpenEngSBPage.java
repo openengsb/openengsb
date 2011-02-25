@@ -19,9 +19,13 @@ package org.openengsb.ui.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
@@ -31,11 +35,23 @@ import org.openengsb.core.common.context.ContextCurrentService;
  */
 public class OpenEngSBPage extends WebPage {
 
+    public static final String CONTEXT_PARAM = "context";
+
+    private Log log = LogFactory.getLog(OpenEngSBPage.class);
+
     @SpringBean
     protected ContextCurrentService contextService;
 
     public OpenEngSBPage() {
         initContextForCurrentThread();
+    }
+
+    public OpenEngSBPage(PageParameters parameters) {
+        super(parameters);
+        Object object = parameters.get(CONTEXT_PARAM);
+        if (object != null && object instanceof String[]) {
+            ContextHolder.get().setCurrentContextId(((String[]) object)[0]);
+        }
     }
 
     protected List<String> getAvailableContexts() {
@@ -46,7 +62,10 @@ public class OpenEngSBPage extends WebPage {
     }
 
     protected final void initContextForCurrentThread() {
-        String sessionContextId = getSessionContextId();
+        String sessionContextId = ContextHolder.get().getCurrentContextId();
+        if (sessionContextId == null) {
+            sessionContextId = "foo";
+        }
         try {
             if (contextService != null) {
                 contextService.setThreadLocalContext(sessionContextId);
@@ -59,24 +78,6 @@ public class OpenEngSBPage extends WebPage {
             contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
             contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
             contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
-        }
-    }
-
-    public String getSessionContextId() {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session == null) {
-            return "foo";
-        }
-        if (session.getThreadContextId() == null) {
-            setThreadLocalContext("foo");
-        }
-        return session.getThreadContextId();
-    }
-
-    protected void setThreadLocalContext(String threadLocalContext) {
-        OpenEngSBWebSession session = OpenEngSBWebSession.get();
-        if (session != null) {
-            session.setThreadContextId(threadLocalContext);
         }
     }
 
