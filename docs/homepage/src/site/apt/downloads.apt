@@ -14,16 +14,38 @@
 ~~ limitations under the License.
 ~~
 
-Latest Release
+Downloads
 
-  The latest releases of the OpenEngSB are in the version ${project.version} available to
- dowload for windows and linux.
+  OpenEngSB comes in two flavors as it is under active development. Stable
+  releases and development builds.
 
-  * {{{${latestWin}}OpenEngSB ${project.version} for Microsoft Windows}}
+  If you're looking at deploying OpenEngSB on scale you'll likely want to use
+  the stable release. If you require newest features and performance
+  improvements you may want the development version. The development version
+  is considered stable usually, you might encounter minor issues however.
 
-  * {{{${latestUnix}}OpenEngSB ${project.version} for Linux and Mac}}
+* Stable (${stable.version})
 
-Other Releases
+  The latest stable release of OpenEngSB is ${stable.version}.
 
-  Older versions of the OpenEngSB are always available {{{${older}}here for download}}.
+  * {{{${stable.win}}OpenEngSB ${stable.version} (stable) for Windows}}
+
+  * {{{${stable.unix}}OpenEngSB ${stable.version} (stable) for Linux and Mac}}
+
+  * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, 
+    {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
+
+* Development (${latest.version})
+
+  The latest development release of the OpenEngSB is ${latest.version}.
+
+  * {{{${latestWin}}OpenEngSB ${latest.version} (dev) for Windows}}
+
+  * {{{${latestUnix}}OpenEngSB ${latest.version} (dev) for Linux and Mac}}
+
+  * Download OpenEngSB ${latest.version} source. ({{{${latest.source}}browse tags}})
+
+* Archive
+
+  Older versions of the OpenEngSB are always available {{{${older}}for download here}}.
 
