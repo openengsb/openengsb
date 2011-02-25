@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<document>
+  <properties>
+    <title>Index</title>
+  </properties>
+  <body>
+    <section name="Welcome to OpenEngSB!">
+
+      <p>
+        The Open Engineering Service Bus (OpenEngSB) project provides an easy-to-use
+        platform for engineering tool integration. It offers domain-based workflow
+        design for reoccurring integration tasks, freeing an engineer's time for
+        creative work.
+      </p>
+
+      <hr/>
+
+      <div class="linkblock">
+        <a href="about.html"><img src="images/about.png" alt="about"/></a>
+        <span><b>ABOUT</b><br />Read the introduction and still no idea? Get an in-depth look on what OpenEngSB can offer in the <a href="about.html">About</a> section.</span>
+      </div>
+
+      <div class="linkblock">
+        <a href="downloads.html"><img src="images/download.png" alt="download"/></a>
+        <span><b>DOWNLOAD</b><br />Looking for the latest version of OpenEngSB? <a href="downloads.html">Download</a> the the package for your plattform of choice here.</span>
+      </div>
+
+      <div class="linkblock">
+        <a href="manual/index.html"><img src="images/learn.png" alt="learn"/></a>
+        <span><b>DOCUMENTATION</b><br />Interested in using OpenEngSB? Get answers to <a href="reference/faq.html">frequently asked questions</a>, access handy <a href="howto/howto_setup.html">HowTo's and tutorials</a> or read the <a href="manual/index.html">online documentation</a>.</span>
+      </div>
+
+      <div class="linkblock">
+        <a href="source-repository.html"><img src="images/contribute.png" alt="contribute"/></a>
+        <span><b>CONTRIBUTE</b><br />OpenEngSB is <a href="team-list.html">actively being developed</a> and there are many opportunities to get involved. See the <a href="source-repository.html">source repository</a> and <a href="issue-tracking.html">issue tracker</a> for hard facts.</span>
+      </div>
+
+      <div class="linkblock">
+        <a href="community/mailinglists.html"><img src="images/social.png" alt="social"/></a>
+        <span><b>SOCIAL</b><br />Looking for OpenEngSB's growing community? Take a look on the <a href="community/mailinglists.html">mailing lists</a>. Also, you may want to follow us on <a href="http://www.facebook.com/group.php?gid=208312030232">Facebook</a> and <a href="http://twitter.com/openEngSB">Twitter</a> for updates and latest news.</span>
+      </div>
+
+    </section>
+  </body>
+</document>
