@@ -10,6 +10,7 @@
     <karaf.version>2.1.4</karaf.version>
     <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
     <!-- Version Informtations -->
+    <openengsb.version.stable>1.1.0.RC2</openengsb.version.stable>
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Kind</openengsb.version.name.adjective>
     <openengsb.version.name.noun>Kenny</openengsb.version.name.noun>
@@ -34,6 +35,7 @@
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
+    <repos.source>http://github.com</repos.source>
     <!-- Internal root versions -->
     <openengsb.maven.plugin.version>1.2.0</openengsb.maven.plugin.version>
   </properties>
