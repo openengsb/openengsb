@@ -1,3 +1,10 @@
+First of all you require the karaf-2.2.0 final build. Therefore
+
+1) install princexml
+2) svn checkout http://svn.apache.org/repos/asf/karaf/tags/karaf-2.2.0/
+3) build manual
+4) mvn clean install
+
 To build this branch you require the latest version of pax-exam. Therefore do the following steps:
 
 git clone git://github.com/ops4j/org.ops4j.pax.scanner.git
