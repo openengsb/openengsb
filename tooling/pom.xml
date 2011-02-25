@@ -27,7 +27,6 @@
   </parent>
 
   <modules>
-    <module>checkstyle</module>
     <module>archetypes</module>
   </modules>
 
