@@ -26,25 +26,25 @@ public final class DomainEndpointFactory {
 
     private static BundleContext bundleContext;
 
-    public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
+    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
         return OsgiServiceUtils.getOsgiServiceProxy(bundleContext, filter, domainType);
     }
 
-    public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
+    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
         throw new UnsupportedOperationException("NYI");
     }
 
-    public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
+    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
         return OsgiServiceUtils.getOsgiServiceProxy(bundleContext, filter, domainType);
     }
 
-    public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
+    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
         throw new UnsupportedOperationException("NYI");
     }
 
-    public void setBundleContext(BundleContext context) {
+    public static void setBundleContext(BundleContext context) {
         bundleContext = context;
     }
 
