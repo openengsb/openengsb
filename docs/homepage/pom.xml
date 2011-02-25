@@ -49,6 +49,20 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
+  <properties>
+    <!-- stable releases -->
+    <stable.version>${openengsb.version.stable}</stable.version>
+    <stable.win>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.zip</stable.win>
+    <stable.unix>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.tar.gz</stable.unix>
+    <stable.source>${repos.source}/openengsb/openengsb/downloads</stable.source>
+    <stable.source.zip>${repos.source}/openengsb/openengsb/zipball/openengsb-${stable.version}</stable.source.zip>
+    <stable.source.tar>${repos.source}/openengsb/openengsb/tarball/openengsb-${stable.version}</stable.source.tar>
+
+    <!-- development releases -->
+    <latest.version>${openengsb.version.number}</latest.version>
+    <latest.source>${repos.source}/openengsb/openengsb/downloads</latest.source>
+  </properties>
+
   <profiles>
     <profile>
       <id>nightly</id>
