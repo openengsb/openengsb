@@ -17,13 +17,20 @@
 div.linkblock {
   margin: 10px;
   padding: 0;
-  max-width: 400px;
+  min-width: 400px;
+  width: 400px;
+  min-height: 100px;
+  height: 100px;
+
   float: left;
 
   border: 1px solid grey;
 }
 div.linkblock span {
   margin: 10px;
-  max-width: 280px;
-  float: right;
+  display: block;
 }
+div.linkblock img {
+  float: left;
+}
+
