@@ -426,7 +426,6 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         log.info("populating globals");
         if (missingGlobals.contains("osgiHelper")) {
             OsgiHelper osgiHelper = new OsgiHelper();
-            osgiHelper.setBundleContext(bundleContext);
             session.setGlobal("osgiHelper", osgiHelper);
             missingGlobals.remove("osgiHelper");
         }

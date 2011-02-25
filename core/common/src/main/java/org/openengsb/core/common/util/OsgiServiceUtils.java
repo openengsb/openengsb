@@ -36,14 +36,16 @@ public final class OsgiServiceUtils {
 
     private static final long DEFAULT_TIMEOUT = 30000L;
 
+    private static BundleContext bundleContext;
+
     /**
      * retrieves the highest ranked service exporting the given interface.
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getService(BundleContext bundleContext, Class<T> clazz)
+    public static <T> T getService(Class<T> clazz)
         throws OsgiServiceNotAvailableException {
-        return getService(bundleContext, clazz, DEFAULT_TIMEOUT);
+        return getService(clazz, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -52,7 +54,7 @@ public final class OsgiServiceUtils {
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getService(BundleContext bundleContext, Class<T> clazz, long timeout)
+    public static <T> T getService(Class<T> clazz, long timeout)
         throws OsgiServiceNotAvailableException {
         ServiceTracker tracker = new ServiceTracker(bundleContext, clazz.getName(), null);
         Object result = getServiceFromTracker(tracker, timeout);
@@ -68,9 +70,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static Object getService(BundleContext bundleContext, Filter filter)
+    public static Object getService(Filter filter)
         throws OsgiServiceNotAvailableException {
-        return getService(bundleContext, filter, DEFAULT_TIMEOUT);
+        return getService(filter, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -78,7 +80,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    public static Object getService(BundleContext bundleContext, Filter filter, long timeout)
+    public static Object getService(Filter filter, long timeout)
         throws OsgiServiceNotAvailableException {
         ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
         log.debug("getting service for filter " + filter + " from tracker");
@@ -95,9 +97,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static Object getService(BundleContext bundleContext, String filterString)
+    public static Object getService(String filterString)
         throws OsgiServiceNotAvailableException {
-        return getService(bundleContext, filterString, DEFAULT_TIMEOUT);
+        return getService(filterString, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -105,7 +107,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    public static Object getService(BundleContext bundleContext, String filterString, long timeout)
+    public static Object getService(String filterString, long timeout)
         throws OsgiServiceNotAvailableException {
         Filter filter;
         try {
@@ -113,7 +115,7 @@ public final class OsgiServiceUtils {
         } catch (InvalidSyntaxException e1) {
             throw new IllegalArgumentException(e1);
         }
-        return getService(bundleContext, filter, timeout);
+        return getService(filter, timeout);
     }
 
     /**
@@ -121,9 +123,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getServiceWithId(BundleContext bundleContext, Class<? extends T> clazz, String id)
+    public static <T> T getServiceWithId(Class<? extends T> clazz, String id)
         throws OsgiServiceNotAvailableException {
-        return getServiceWithId(bundleContext, clazz, id, DEFAULT_TIMEOUT);
+        return getServiceWithId(clazz, id, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -132,9 +134,9 @@ public final class OsgiServiceUtils {
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getServiceWithId(BundleContext bundleContext, Class<? extends T> clazz, String id,
+    public static <T> T getServiceWithId(Class<? extends T> clazz, String id,
             long timeout) throws OsgiServiceNotAvailableException {
-        return (T) getServiceWithId(bundleContext, clazz.getName(), id, timeout);
+        return (T) getServiceWithId(clazz.getName(), id, timeout);
     }
 
     /**
@@ -142,9 +144,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static Object getServiceWithId(BundleContext bundleContext, String className, String id)
+    public static Object getServiceWithId(String className, String id)
         throws OsgiServiceNotAvailableException {
-        return getServiceWithId(bundleContext, className, id, DEFAULT_TIMEOUT);
+        return getServiceWithId(className, id, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -152,7 +154,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
-    public static Object getServiceWithId(BundleContext bundleContext, String className, String id, long timeout)
+    public static Object getServiceWithId(String className, String id, long timeout)
         throws OsgiServiceNotAvailableException {
         Filter filter;
         try {
@@ -160,7 +162,7 @@ public final class OsgiServiceUtils {
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-        return getService(bundleContext, filter, timeout);
+        return getService(filter, timeout);
     }
 
     /**
@@ -169,13 +171,13 @@ public final class OsgiServiceUtils {
      * seconds
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getOsgiServiceProxy(final BundleContext bundleContext, final Filter filter,
+    public static <T> T getOsgiServiceProxy(final Filter filter,
             Class<T> targetClass) {
         return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    Object service = OsgiServiceUtils.getService(bundleContext, filter);
+                    Object service = OsgiServiceUtils.getService(filter);
                     return method.invoke(service, args);
                 }
             });
@@ -222,10 +224,10 @@ public final class OsgiServiceUtils {
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getServiceForLocation(BundleContext bundleContext, Class<T> clazz, String location,
+    public static <T> T getServiceForLocation(Class<T> clazz, String location,
             String context) throws OsgiServiceNotAvailableException {
         Filter compiled = getFilterForLocation(clazz, location, context);
-        return (T) getService(bundleContext, compiled);
+        return (T) getService(compiled);
     }
 
     /**
@@ -278,9 +280,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 secondss
      */
-    public static Object getServiceForLocation(BundleContext bundleContext, String location,
+    public static Object getServiceForLocation(String location,
             String context) throws OsgiServiceNotAvailableException {
-        return getService(bundleContext, getFilterForLocation(location, context));
+        return getService(getFilterForLocation(location, context));
     }
 
     /**
@@ -289,10 +291,10 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static Object getServiceForLocation(BundleContext bundleContext, String location)
+    public static Object getServiceForLocation(String location)
         throws OsgiServiceNotAvailableException {
         log.debug("retrieve service for location: " + location);
-        return getService(bundleContext, getFilterForLocation(location));
+        return getService(getFilterForLocation(location));
     }
 
     /**
@@ -301,9 +303,9 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getServiceForLocation(BundleContext bundleContext, Class<T> clazz, String location)
+    public static <T> T getServiceForLocation(Class<T> clazz, String location)
         throws OsgiServiceNotAvailableException {
-        return getServiceForLocation(bundleContext, clazz, location, ContextHolder.get().getCurrentContextId());
+        return getServiceForLocation(clazz, location, ContextHolder.get().getCurrentContextId());
     }
 
     private static Object getServiceFromTracker(ServiceTracker tracker, long timeout)
@@ -316,6 +318,10 @@ public final class OsgiServiceUtils {
         } finally {
             tracker.close();
         }
+    }
+
+    public static void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.bundleContext = bundleContext;
     }
 
     private OsgiServiceUtils() {

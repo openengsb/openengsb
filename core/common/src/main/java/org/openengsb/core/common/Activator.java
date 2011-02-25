@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -23,7 +24,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        DomainEndpointFactory.setBundleContext(context);
+        OsgiServiceUtils.setBundleContext(context);
     }
 
     @Override

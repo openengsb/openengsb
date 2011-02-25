@@ -31,7 +31,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
-            OsgiServiceUtils.getServiceWithId(getBundleContext(), OutgoingPort.class, "jms-json");
+            OsgiServiceUtils.getServiceWithId(OutgoingPort.class, "jms-json");
         System.out.println("ServiceID:" + serviceWithId);
         assertNotNull(serviceWithId);
     }

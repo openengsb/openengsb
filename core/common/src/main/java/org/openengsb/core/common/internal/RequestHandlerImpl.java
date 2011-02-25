@@ -41,7 +41,7 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
         }
         OpenEngSBService service;
         try {
-            service = OsgiServiceUtils.getServiceWithId(bundleContext, OpenEngSBService.class, serviceId);
+            service = OsgiServiceUtils.getServiceWithId(OpenEngSBService.class, serviceId);
         } catch (OsgiServiceNotAvailableException e) {
             throw new IllegalStateException(e);
         }

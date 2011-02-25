@@ -39,6 +39,7 @@ public abstract class AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         bundleContext = mock(BundleContext.class);
+        OsgiServiceUtils.setBundleContext(bundleContext);
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override

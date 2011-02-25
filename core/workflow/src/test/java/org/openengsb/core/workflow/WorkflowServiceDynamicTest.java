@@ -194,7 +194,6 @@ public class WorkflowServiceDynamicTest {
         workflowService.setCurrentContextService(currentContext);
         workflowService.setBundleContext(bundleContext);
         OsgiHelper osgiHelper = new OsgiHelper();
-        osgiHelper.setBundleContext(bundleContext);
         Map<String, Object> services = new HashMap<String, Object>();
         services.put("osgiHelper", osgiHelper);
         workflowService.setServices(services);

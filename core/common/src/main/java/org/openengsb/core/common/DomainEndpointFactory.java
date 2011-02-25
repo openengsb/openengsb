@@ -19,16 +19,13 @@ package org.openengsb.core.common;
 import java.util.List;
 
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 
 public final class DomainEndpointFactory {
 
-    private static BundleContext bundleContext;
-
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
-        return OsgiServiceUtils.getOsgiServiceProxy(bundleContext, filter, domainType);
+        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
@@ -37,15 +34,11 @@ public final class DomainEndpointFactory {
 
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
-        return OsgiServiceUtils.getOsgiServiceProxy(bundleContext, filter, domainType);
+        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
         throw new UnsupportedOperationException("NYI");
-    }
-
-    public static void setBundleContext(BundleContext context) {
-        bundleContext = context;
     }
 
     private DomainEndpointFactory() {

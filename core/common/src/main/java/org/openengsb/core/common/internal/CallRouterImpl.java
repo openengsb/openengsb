@@ -67,7 +67,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     }
 
     private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {
-        final OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
+        final OutgoingPort port = OsgiServiceUtils.getServiceWithId(OutgoingPort.class, portId);
         return port;
     }
 
