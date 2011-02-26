@@ -36,7 +36,6 @@
 
   <bean id="workflowService" class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
     <property name="rulemanager" ref="ruleManager" />
-    <property name="currentContextService" ref="contextService" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 

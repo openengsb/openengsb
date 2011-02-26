@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+DynamicImport-Package: *
+
 Import-Package: org.drools; bundle-symbolic-name="org.drools.core",\
 org.drools.event; bundle-symbolic-name="org.drools.core",\
 org.drools.rule, org.drools.compiler,\
