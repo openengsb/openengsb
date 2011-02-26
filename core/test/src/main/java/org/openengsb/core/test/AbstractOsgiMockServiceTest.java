@@ -26,8 +26,10 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.common.Activator;
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -39,7 +41,15 @@ public abstract class AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         bundleContext = mock(BundleContext.class);
-        OsgiServiceUtils.setBundleContext(bundleContext);
+        new Activator().start(bundleContext);
+        Bundle bundleMock = mock(Bundle.class);
+        when(bundleContext.getBundle()).thenReturn(bundleMock);
+        when(bundleMock.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
+            @Override
+            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
+                return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
+            }
+        });
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override
@@ -60,6 +70,9 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected void registerSerivce(Object service, Class<?>[] interfaces, String... validQueries)
         throws InvalidSyntaxException {
+        if(service == null) {
+            throw new IllegalArgumentException("service must not be null");
+        }
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
         ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock, };
         for (Class<?> serviceClass : interfaces) {
@@ -67,8 +80,8 @@ public abstract class AbstractOsgiMockServiceTest {
             for (String query : validQueries) {
                 mockQueriesForString(mockAsArray, serviceClass, query);
             }
-            when(bundleContext.getService(serviceRefMock)).thenReturn(service);
         }
+        when(bundleContext.getService(serviceRefMock)).thenReturn(service);
     }
 
     protected void registerService(Object service, Class<?> interfaze, String... validQueries)

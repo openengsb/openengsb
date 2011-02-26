@@ -180,6 +180,7 @@ public final class OsgiServiceUtils {
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    log.info("dynamically resolving service for filter : " + filter);
                     Object service = OsgiServiceUtils.getService(filter);
                     return method.invoke(service, args);
                 }

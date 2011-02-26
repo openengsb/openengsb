@@ -109,7 +109,6 @@ public class WorkflowServiceDynamicTest {
     @Test(expected = WorkflowException.class)
     public void processEventBetweenServiceEvents_shouldThrowWorkflowException() throws Exception {
         setupWorkflowService();
-        workflowService.setTimeout(100);
         simulateServiceStart(exampleReference);
         workflowService.processEvent(new Event("42"));
     }
@@ -170,7 +169,7 @@ public class WorkflowServiceDynamicTest {
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
             new ServiceReference[]{ reference });
         if (workflowService != null) {
-            workflowService.serviceChanged(setupServiceEventMock(reference));
+            // workflowService.serviceChanged(setupServiceEventMock(reference));
         }
     }
 
@@ -181,7 +180,7 @@ public class WorkflowServiceDynamicTest {
         when(bundleContext.getAllServiceReferences(Mockito.any(String.class), Mockito.eq(filter))).thenReturn(
             new ServiceReference[]{ reference });
         if (workflowService != null) {
-            workflowService.serviceChanged(setupServiceEventMock(reference));
+            // workflowService.serviceChanged(setupServiceEventMock(reference));
         }
     }
 
@@ -191,12 +190,12 @@ public class WorkflowServiceDynamicTest {
         workflowService.setRulemanager(manager);
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getThreadLocalContext()).thenReturn("42");
-        workflowService.setCurrentContextService(currentContext);
+        // workflowService.setCurrentContextService(currentContext);
         workflowService.setBundleContext(bundleContext);
         OsgiHelper osgiHelper = new OsgiHelper();
         Map<String, Object> services = new HashMap<String, Object>();
         services.put("osgiHelper", osgiHelper);
-        workflowService.setServices(services);
+        // workflowService.setServices(services);
 
     }
 

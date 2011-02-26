@@ -26,15 +26,16 @@ import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 
-public class OsgiHelper  {
+public class OsgiHelper {
 
     private ContextCurrentService contextService;
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e) throws PortNotAvailableException {
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
+        throws PortNotAvailableException {
         sendRemoteEvent(portId, destination, e, new HashMap<String, String>());
     }
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
         throws PortNotAvailableException {
         OutgoingPort port;
         try {
@@ -46,7 +47,7 @@ public class OsgiHelper  {
         port.send(destination, call);
     }
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
         throws PortNotAvailableException {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", serviceId);

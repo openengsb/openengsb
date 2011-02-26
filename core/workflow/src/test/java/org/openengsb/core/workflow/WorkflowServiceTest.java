@@ -50,6 +50,16 @@ import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
+    private DummyExampleDomain logService;
+    private DummyNotificationDomain notification;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        logService = (DummyExampleDomain) domains.get("example");
+        notification = (DummyNotificationDomain) domains.get("notification");
+    }
+
     @Test
     public void testProcessEvent() throws Exception {
         Event event = new Event();
@@ -68,7 +78,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         Event event = new Event();
         service.processEvent(event);
         verify(notification, atLeast(1)).notify("Hello");
-        verify(logService, atLeast(1)).doSomething("Hello World");
+        verify((DummyExampleDomain) domains.get("example"), atLeast(1)).doSomething("Hello World");
         verify(myservice, atLeast(1)).call();
     }
 
@@ -168,9 +178,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             }
         });
         service.waitForFlowToFinish(id);
-        verify(report, times(1)).collectData();
+        verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
-        verify(deploy, times(1)).deployProject();
+        verify((DummyDeploy) domains.get("deploy"), times(1)).deployProject();
     }
 
     @Test
