@@ -94,13 +94,13 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "foo");
+        properties.put("location.root", "<foo>");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "foo");
+        properties.put("location.foo", "<foo>");
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
@@ -123,5 +123,21 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
 
         serviceForLocation = OsgiServiceUtils.getServiceForLocation(ExampleDomain.class, "foo");
         assertThat(serviceForLocation.getInstanceId(), is("test"));
+    }
+
+    @Test
+    public void testMutlipleLocations() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.root", "<main/foo> <main/foo2>");
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        ExampleDomain fooService = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo");
+        assertThat(fooService.getInstanceId(), is("test"));
+
+        ExampleDomain foo2Service = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo2");
+        assertThat(foo2Service.getInstanceId(), is("test"));
     }
 }

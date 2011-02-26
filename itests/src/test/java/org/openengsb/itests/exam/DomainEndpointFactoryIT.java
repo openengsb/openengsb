@@ -17,7 +17,9 @@
 package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.ArrayList;
@@ -72,7 +74,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "foo");
+        properties.put("location.root", "<foo>");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -82,7 +84,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "foo2");
+        properties.put("location.foo", "<foo2>");
         properties.put(Constants.SERVICE_RANKING, 1);
 
         /* create the proxy before the service is registered */
@@ -98,13 +100,20 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.foo", "main/foo");
+        properties.put("location.foo", "<test/foo> <main/foo> <main/bla>");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "main/foo2");
+        properties.put("location.foo", "<main/foo2>");
+        properties.put(Constants.SERVICE_RANKING, 1);
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        service = new DummyService("test3");
+        properties = new Hashtable<String, Object>();
+        properties.put("id", "test3");
+        properties.put("location.foo", "<test/foo>");
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
@@ -115,5 +124,6 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
             ids.add(endpoint.getInstanceId());
         }
         assertThat(ids, hasItems("test", "test2"));
+        assertThat(ids, not(hasItem("test3")));
     }
 }

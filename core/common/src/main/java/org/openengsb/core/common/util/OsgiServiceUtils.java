@@ -36,6 +36,9 @@ public final class OsgiServiceUtils {
 
     private static final long DEFAULT_TIMEOUT = 30000L;
 
+    public static final Character LOCATION_START = '<';
+    public static final Character LOCATION_END = '>';
+
     private static BundleContext bundleContext;
 
     /**
@@ -271,7 +274,12 @@ public final class OsgiServiceUtils {
     }
 
     private static String makeLocationFilterString(String location, String context) {
-        return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
+        location = encloseWithDelemiters(location);
+        return String.format("(|(location.%s=*%s*)(location.root=*%s*))", context, location, location);
+    }
+
+    private static String encloseWithDelemiters(String location) {
+        return LOCATION_START + location + LOCATION_END;
     }
 
     /**
