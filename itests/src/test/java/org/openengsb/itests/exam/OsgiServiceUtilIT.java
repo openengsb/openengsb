@@ -22,7 +22,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Hashtable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -39,7 +38,6 @@ import org.osgi.framework.Constants;
 @RunWith(JUnit4TestRunner.class)
 public class OsgiServiceUtilIT extends AbstractExamTestHelper {
 
-    @Ignore
     @Test
     public void testOsgiServiceUtilMethods() throws Exception {
         ServiceManager service = OsgiServiceUtils.getService(ServiceManager.class);
@@ -54,7 +52,6 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         assertThat(service2.getInstanceId(), is(service.getInstanceId()));
     }
 
-    @Ignore
     @Test
     public void testOsgiServiceProxy() throws Exception {
         ServiceManager proxy =

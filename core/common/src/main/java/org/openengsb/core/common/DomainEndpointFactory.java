@@ -16,12 +16,19 @@
 
 package org.openengsb.core.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 public final class DomainEndpointFactory {
+
+    private static BundleContext bundleContext;
 
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
@@ -29,7 +36,7 @@ public final class DomainEndpointFactory {
     }
 
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
-        throw new UnsupportedOperationException("NYI");
+        return getDomainEndpoints(domainType, location, ContextHolder.get().getCurrentContextId());
     }
 
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
@@ -38,7 +45,30 @@ public final class DomainEndpointFactory {
     }
 
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
-        throw new UnsupportedOperationException("NYI");
+        Filter filterForLocation = OsgiServiceUtils.getFilterForLocation(domainType, location);
+        System.out.println("Filter: " + filterForLocation);
+        ServiceReference[] allServiceReferences;
+        try {
+            allServiceReferences =
+                bundleContext.getAllServiceReferences(domainType.getName(), filterForLocation.toString());
+        } catch (InvalidSyntaxException e) {
+            // this can never happen, because the filter has been compiled before
+            throw new RuntimeException(e);
+        }
+        List<T> result = new ArrayList<T>();
+        if (allServiceReferences == null) {
+
+            return result;
+        }
+        for (ServiceReference ref : allServiceReferences) {
+            String refLocation = (String) ref.getProperty("location." + context);
+            result.add(getDomainEndpoint(domainType, refLocation));
+        }
+        return result;
+    }
+
+    public static void setBundleContext(BundleContext bundleContext) {
+        DomainEndpointFactory.bundleContext = bundleContext;
     }
 
     private DomainEndpointFactory() {

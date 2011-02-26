@@ -18,8 +18,11 @@ package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,5 +90,30 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         assertThat(domainEndpoint2.getInstanceId(), is("test2"));
+    }
+
+    @Test
+    public void testListMethod() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.foo", "main/foo");
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        service = new DummyService("test2");
+        properties = new Hashtable<String, Object>();
+        properties.put("id", "test2");
+        properties.put("location.foo", "main/foo2");
+        properties.put(Constants.SERVICE_RANKING, 1);
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        ContextHolder.get().setCurrentContextId("foo");
+        List<ExampleDomain> domainEndpoints = DomainEndpointFactory.getDomainEndpoints(ExampleDomain.class, "main/*");
+        List<String> ids = new ArrayList<String>();
+        for (ExampleDomain endpoint : domainEndpoints) {
+            ids.add(endpoint.getInstanceId());
+        }
+        assertThat(ids, hasItems("test", "test2"));
     }
 }
