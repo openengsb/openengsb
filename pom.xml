@@ -29,8 +29,8 @@
     <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Mighty</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Mouse</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Nifty</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Nelson</openengsb.version.name.noun>
     <!-- maven plugin versions -->
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
