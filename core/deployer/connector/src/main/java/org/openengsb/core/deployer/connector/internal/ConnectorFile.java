@@ -23,8 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.osgi.framework.Constants;
+
 public class ConnectorFile {
 
+    private static final String DEFAULT_ROOT_SERVICE_RANKING = "-1";
     private static final String PROPERTY_CONNECTOR = "connector";
     private static final String PROPERTY_SERVICE_ID = "id";
 
@@ -57,12 +60,28 @@ public class ConnectorFile {
 
     public Map<String, String> getAttributes() throws IOException {
         Properties props = loadProperties();
+        Map<String, String> instanceAttributes = createMapFrom(props);
+        instanceAttributes.remove(PROPERTY_CONNECTOR);
+        if (!instanceAttributes.containsKey(Constants.SERVICE_RANKING) && isRootService(connectorFile)) {
+            instanceAttributes.put(Constants.SERVICE_RANKING, DEFAULT_ROOT_SERVICE_RANKING);
+        }
+        return instanceAttributes;
+    }
+
+    private static Map<String, String> createMapFrom(Properties props) {
         Map<String, String> instanceAttributes = new HashMap<String, String>();
         for (String propertyName : props.stringPropertyNames()) {
             instanceAttributes.put(propertyName, props.getProperty(propertyName));
         }
-        instanceAttributes.remove(PROPERTY_CONNECTOR);
         return instanceAttributes;
+    }
+
+    public static Boolean isRootService(File connectorFile) {
+        return isRootServiceDirectory(connectorFile.getParentFile());
+    }
+
+    private static Boolean isRootServiceDirectory(File directory) {
+        return directory.isDirectory() && directory.getName().equals("etc");
     }
 
 }
