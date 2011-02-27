@@ -43,7 +43,7 @@ Downloads
 
   * {{{${latestUnix}}OpenEngSB ${latest.version} (dev) for Linux and Mac}}
 
-  * Download OpenEngSB ${latest.version} source. ({{{${latest.source}}browse tags}})
+  * {{{./source-repository.html}OpenEngSB ${latest.version} sources}}
 
 * Archive
 
