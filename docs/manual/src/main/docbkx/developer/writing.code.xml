@@ -89,7 +89,6 @@
          You can now define the dependencies shared between your project and OPENENGSB in your dependencies 
          section without setting the version.</para>
      </section>
-
      <section>
        <title>Making UI Tests Localizable</title>
        <para>If you want to test if specific text is shown in the UI extend LocalisedTest in your UI Test. The
@@ -150,6 +149,8 @@ public void testBehaviorX_shouldThrowException() {
          </itemizedlist>
        </section>
      </section>
+=======
+>>>>>>> 69bc4d9... OPENENGSB-905/localised tests
 
 </chapter>
 
