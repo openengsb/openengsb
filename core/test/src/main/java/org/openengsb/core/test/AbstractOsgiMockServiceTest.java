@@ -70,7 +70,7 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected void registerSerivce(Object service, Class<?>[] interfaces, String... validQueries)
         throws InvalidSyntaxException {
-        if(service == null) {
+        if (service == null) {
             throw new IllegalArgumentException("service must not be null");
         }
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
