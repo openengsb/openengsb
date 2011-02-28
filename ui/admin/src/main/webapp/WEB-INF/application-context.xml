@@ -39,12 +39,6 @@
     <property name="nameNoun" value="${openengsb.version.name.noun}" />
   </bean>
 
-  <bean class="org.openengsb.ui.admin.config.AuditingConfig" id="auditingConfig" init-method="init">
-    <property name="ruleManager" ref="ruleManager" />
-    <property name="authManager" ref="osgiAuthenticationManager" />
-    <property name="memoryauditingService" ref="memoryauditingService" />
-  </bean>
-
   <osgi:reference id="memoryauditingService" interface="org.openengsb.core.common.ServiceManager" 
     filter="(connector=memory-auditing)" />
   <osgi:list id="services" cardinality="0..N" interface="org.openengsb.core.common.ServiceManager" />

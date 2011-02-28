@@ -172,7 +172,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         } catch (InterruptedException e) {
             throw new WorkflowException(e);
         } catch (ExecutionException e) {
-            throw new WorkflowException(e.getCause());
+            throw new WorkflowException("unable to start workflow " + processId, e.getCause());
         }
     }
 
