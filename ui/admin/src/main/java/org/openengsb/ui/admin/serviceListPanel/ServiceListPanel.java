@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
@@ -39,9 +40,11 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
@@ -137,47 +140,52 @@ public class ServiceListPanel extends Panel {
 
     @SuppressWarnings("serial")
     private ListView<ServiceReference> createServiceListView(final IModel<List<ServiceReference>> serviceLoadableModel,
-        final String id, final Label noServicesLabel, final WebMarkupContainer serviceWebMarkupContainer) {
+            final String id, final Label noServicesLabel, final WebMarkupContainer serviceWebMarkupContainer) {
         return new ListView<ServiceReference>(id, serviceLoadableModel) {
 
             @Override
             protected void populateItem(final ListItem<ServiceReference> item) {
                 final ServiceReference serv = item.getModelObject();
-                final ServiceManager sm = getServiceManager((String) serv.getProperty("managerId"));
+                final String connector = (String) serv.getProperty("connector");
                 final String id = (String) serv.getProperty("id");
                 LocalizableString description = new PassThroughLocalizableString("");
+                ServiceManager sm = getServiceManager(connector);
                 if (sm != null) {
                     ServiceDescriptor desc = sm.getDescriptor();
                     description = desc.getDescription();
                 }
                 item.add(new Label("service.name", id));
                 item.add(new Label("service.description", new LocalizableStringModel(this, description)));
-                item.add(new AjaxLink<ServiceManager>("updateService", createServiceManagerModel(sm)) {
+                item.add(new AjaxLink<String>("updateService", new Model<String>(connector)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        setResponsePage(new ConnectorEditorPage(getModelObject(), id));
+                        ServiceManager sm = getServiceManager(getModelObject());
+                        setResponsePage(new ConnectorEditorPage(sm, id));
                     }
                 });
-                item.add(new AjaxLink<ServiceManager>("deleteService", createServiceManagerModel(sm)) {
+                item.add(new AjaxLink<String>("deleteService", new Model<String>(connector)) {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         getList().remove(item.getModelObject());
-                        sm.delete(id);
+                        ServiceManager manager = getServiceManager(getModelObject());
+                        manager.delete(id);
                         noServicesLabel.setVisible(getList().size() <= 0);
                         target.addComponent(noServicesLabel);
                         target.addComponent(serviceWebMarkupContainer);
                     }
                 });
             }
-        };
-    }
 
-    @SuppressWarnings("serial")
-    private LoadableDetachableModel<ServiceManager> createServiceManagerModel(final ServiceManager sm) {
-        return new LoadableDetachableModel<ServiceManager>() {
-            @Override
-            protected ServiceManager load() {
+            private ServiceManager getServiceManager(String connector) {
+                Filter filter;
+                try {
+                    filter =
+                        OsgiServiceUtils.makeFilter(ServiceManager.class, String.format("(connector=%s)", connector));
+                } catch (InvalidSyntaxException e) {
+                    throw new IllegalStateException(e);
+                }
+                ServiceManager sm = OsgiServiceUtils.getOsgiServiceProxy(filter, ServiceManager.class);
                 return sm;
             }
         };
