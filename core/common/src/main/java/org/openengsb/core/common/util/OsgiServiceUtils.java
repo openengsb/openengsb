@@ -36,8 +36,8 @@ public final class OsgiServiceUtils {
 
     private static final long DEFAULT_TIMEOUT = 30000L;
 
-    public static final Character LOCATION_START = '<';
-    public static final Character LOCATION_END = '>';
+    public static final Character LOCATION_START = '[';
+    public static final Character LOCATION_END = ']';
 
     private static BundleContext bundleContext;
 

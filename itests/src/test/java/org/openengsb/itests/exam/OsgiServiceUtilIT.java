@@ -47,8 +47,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
                 "(connector=example)"));
         assertThat(service, notNullValue());
 
-        ServiceManager service2 =
-            (ServiceManager) OsgiServiceUtils.getService("(connector=example)");
+        ServiceManager service2 = (ServiceManager) OsgiServiceUtils.getService("(connector=example)");
         assertThat(service2.getInstanceId(), is(service.getInstanceId()));
     }
 
@@ -94,13 +93,13 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "<foo>");
+        properties.put("location.root", "[foo]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "<foo>");
+        properties.put("location.foo", "[foo]");
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
@@ -113,8 +112,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         assertThat(serviceForLocation.getInstanceId(), is("test2"));
 
         ContextHolder.get().setCurrentContextId("foo2");
-        serviceForLocation =
-            (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
+        serviceForLocation = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
         assertThat(serviceForLocation.getInstanceId(), is("test"));
 
         serviceForLocation =
@@ -131,7 +129,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "<main/foo> <main/foo2>");
+        properties.put("location.root", "[main/foo] [main/foo2]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ExampleDomain fooService = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo");
