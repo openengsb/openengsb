@@ -26,9 +26,9 @@ import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 
-public class OsgiHelper {
+public final class OsgiHelper {
 
-    private ContextCurrentService contextService;
+    private static ContextCurrentService contextService;
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
         throws PortNotAvailableException {
@@ -54,8 +54,11 @@ public class OsgiHelper {
         sendRemoteEvent(portId, destination, e, metaData);
     }
 
-    public void setContextService(ContextCurrentService contextService) {
-        this.contextService = contextService;
+    public static void setContextService(ContextCurrentService contextService) {
+        OsgiHelper.contextService = contextService;
+    }
+
+    private OsgiHelper() {
     }
 
 }
