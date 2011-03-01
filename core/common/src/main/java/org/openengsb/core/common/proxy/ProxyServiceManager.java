@@ -60,12 +60,12 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             ServiceDescriptor.builder(getStrings()).id(provider.getId()).serviceType(getDomainInterface())
                 .implementationType(getDomainInterface())
                 .name("proxy.name", provider.getName().getString(Locale.getDefault())).description("proxy.description");
-        builder.attribute(builder.newAttribute().id("proxyId").name("proxy.id").description("proxy.id.description")
-            .build());
-        builder.attribute(builder.newAttribute().id("destination").name("destination.name")
-            .description("destination.description").build());
-        builder.attribute(builder.newAttribute().id("serviceId").name("serviceId.name")
-            .description("serviceId.description").build());
+        builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
+            .description("proxy.port.description").build());
+        builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
+            .description("proxy.destination.description").build());
+        builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
+            .description("proxy.serviceId.description").build());
         return builder.build();
     }
 
@@ -80,7 +80,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             if (!services.containsKey(id)) {
                 ProxyConnector handler = new ProxyConnector();
                 handler.setCallRouter(router);
-                handler.setPortId(attributes.get("proxyId"));
+                handler.setPortId(attributes.get("portId"));
                 String destination = attributes.get("destination");
                 String serviceId = attributes.get("serviceId");
                 handler.addMetadata("serviceId", serviceId);

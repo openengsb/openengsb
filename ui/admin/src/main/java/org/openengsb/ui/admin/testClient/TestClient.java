@@ -140,7 +140,6 @@ public class TestClient extends BasePage {
                     @Override
                     public void onClick() {
                         ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
-                        serviceManager.setBundleContext(bundleContext);
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });
