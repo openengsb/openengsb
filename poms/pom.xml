@@ -648,29 +648,5 @@
     </pluginManagement>
   </build>
 
-  <profiles>
-    <profile>
-      <id>license-check</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.openengsb</groupId>
-            <artifactId>openengsb-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check-headers</id>
-                <inherited>false</inherited>
-                <phase>validate</phase>
-                <goals>
-                  <goal>licenseCheck</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 </project>
 
