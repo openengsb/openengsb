@@ -18,11 +18,10 @@ package org.openengsb.core.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.map.AbstractReferenceMap;
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextHolder;
@@ -31,6 +30,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * provides utility-methods for retrieving domain-services
@@ -41,8 +42,7 @@ public final class DomainEndpointFactory {
     private static Log log = LogFactory.getLog(DomainEndpointFactory.class);
 
     private static BundleContext bundleContext;
-    private static ReferenceMap cachedPatterns = new ReferenceMap(AbstractReferenceMap.HARD,
-        AbstractReferenceMap.SOFT);
+    private static ConcurrentMap<String, Pattern> cachedPatterns = new MapMaker().softValues().makeMap();
 
     /**
      * returns the domain-service for the corresponding location in the current context. If no service with that
@@ -109,7 +109,7 @@ public final class DomainEndpointFactory {
     }
 
     private static Pattern getCompiledPattern(String pattern) {
-        Pattern result = (Pattern) cachedPatterns.get(pattern);
+        Pattern result = cachedPatterns.get(pattern);
         if (result == null) {
             log.debug("pattern-cache miss: " + pattern);
             result = makeCompiledPattern(pattern);
