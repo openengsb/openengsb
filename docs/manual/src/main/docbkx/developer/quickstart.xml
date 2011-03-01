@@ -144,7 +144,9 @@
       to <filename>~/.m2/repository</filename>. Now use <guimenu>File</guimenu>, <guimenu>Import...</guimenu>, 
       <guilabel>Existing Projects into Workspace</guilabel>. As the root directory select the root of the OpenEngSB source. 
       Eclipse will list several projects and for now it's best to import them all by clicking <guibutton>Finish</guibutton>.</para>
-    <para>At <filename>openengsb/etc/eclipse/</filename> eclipse configuration files for formatting and Checkstyle can be found.
+    <para>At <filename>openengsb/etc/eclipse/</filename> eclipse configuration files for formatting can found. Checkstyle configuration filess
+      are part of the openengsb-maven-plugin and can be found
+      <link xlink:href="${checkstyleconfig}">here</link>.
       These files should be used.</para>
   </section>
 

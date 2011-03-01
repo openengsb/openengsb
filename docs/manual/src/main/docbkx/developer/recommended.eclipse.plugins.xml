@@ -50,8 +50,9 @@
     integrates checkstyle into Eclipse. Conformance with checkstyle criteria has to be checked before each push to 
     the repository, so integrating the check into the IDE helps developers to already conform to the checkstyle 
     criteria during development. You have to configure the plug-in to use our checkstyle configuration file, which
-    can be found <link xlink:href="${github}/tooling/checkstyle/src/main/resources/checkstyle.xml">here</link> and
-    at /tooling/checkstyle/src/main/resources/checkstyle.xml starting from the root directory of the OpenEngSB.</para>
+    can be found
+    <link xlink:href="${checkstyleconfig}">here</link>
+    </para>
   </section>
 
   <section>

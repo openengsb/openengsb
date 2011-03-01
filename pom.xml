@@ -50,6 +50,7 @@
     <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
+    <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current />
