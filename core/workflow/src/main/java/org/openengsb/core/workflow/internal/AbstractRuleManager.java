@@ -62,7 +62,6 @@ public abstract class AbstractRuleManager implements RuleManager {
         return listGlobals().isEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     private void readGlobals() throws RuleBaseException {
         URL globalURL = this.getClass().getClassLoader().getResource("rulebase/globals");
         File globalFile = copyFileToTemp(globalURL);
@@ -79,7 +78,6 @@ public abstract class AbstractRuleManager implements RuleManager {
         FileUtils.deleteQuietly(globalFile);
     }
 
-    @SuppressWarnings("unchecked")
     private void readImports() throws RuleBaseException {
         URL importsURL = this.getClass().getClassLoader().getResource("rulebase/imports");
         File importsFile = copyFileToTemp(importsURL);
