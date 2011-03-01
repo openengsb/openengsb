@@ -51,6 +51,7 @@
     <title>Using JMS proxying</title>
     <para>The current JMS Connector allows for internal method calls being redirected via JMS as well as internal
       services being called.</para>
+    <para>For resources regarding JMS please take a look at the according <link xlink:href="http://en.wikipedia.org/wiki/Java_Message_Service">Wikipedia Page</link> and for specific language bindings take a look at <link xlink:href="http://activemq.apache.org/connectivity.html">ActiveMQ</link></para>
     <section>
       <title>Proxying internal Connector calls</title>
       <para>Whenever now a method is sent through the JMS Port the call is marshalled and sent via JMS to a queue named "receive"". 
