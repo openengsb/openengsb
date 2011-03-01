@@ -28,24 +28,44 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * provides utility-methods for retrieving domain-services
+ *
+ */
 public final class DomainEndpointFactory {
 
     private static BundleContext bundleContext;
 
+    /**
+     * returns the domain-service for the corresponding location in the current context. If no service with that
+     * location is found in the current context, the root-context is tried.
+     */
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
         return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
+    /**
+     * returns domain-services for all domains registered at the given location in the current context and the
+     * root-context. If no service is found an empty list is returned.
+     */
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
         return getDomainEndpoints(domainType, location, ContextHolder.get().getCurrentContextId());
     }
 
+    /**
+     * returns the domain-service for the corresponding location in the given context. If no service with that location
+     * is found in the given context, the root-context is tried.
+     */
     public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
         return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
+    /**
+     * returns domain-services for all domains registered at the given location in the given context and the
+     * root-context. If no service is found an empty list is returned.
+     */
     public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
         Filter filterForLocation = OsgiServiceUtils.getFilterForLocation(domainType, location);
         ServiceReference[] allServiceReferences;
