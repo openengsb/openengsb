@@ -39,48 +39,51 @@
     parent thread. This way connector-implementations always can handle actions according to the current context.
   </para>
 
-  <para>The context is also used to handle the wiring of services in workflows. The workflow-engine declares global
-    variables that are used in rules and processes. A variable is resolved by looking up the service with the same
-    name in the current context. If no service with that name is available in the context it is looked up in the
-    "root"-context.</para>
+  <section xml:id="developer.context.wiring">
+    <title>Wiring services</title>
 
-  <para>In detail the wiring is handled via the service-properties. Services contain properties where the key is of
-    the format "location.&lt;contextid&gt;". The value is a list of "locations" where each location is delimited by
-    square brackets ("[" and "]"). So a service may have several locations in several contexts.</para>
+    <para>The context is also used to handle the wiring of services in workflows. The workflow-engine declares global
+      variables that are used in rules and processes. A variable is resolved by looking up the service with the same
+      name in the current context. If no service with that name is available in the context it is looked up in the
+      "root"-context.</para>
 
-  <para>When a global variable is accessed during the execution of an action (from a process or rule), the
-    osgi-context is queried for the correspinding service. The service wired to this variable must have location
-    with the same name as the variable. The service is searched in the current context and the root-context. If no
-    service is found, the action is stalled for 30 seconds. If there is still no service found an Exception is thrown.
-    Internally this is handled using proxies. When the workflow service is started, all globals are populated with
-    proxies, that automatically resolve the service with the corresponding location when a method is invoked.</para>
+    <para>In detail the wiring is handled via the service-properties. Services contain properties where the key is of
+      the format "location.&lt;contextid&gt;". The value is a list of "locations" where each location is delimited by
+      square brackets ("[" and "]"). So a service may have several locations in several contexts.</para>
 
- <para>Example: The auditing-service is registered with the interface AuditingDomain. The service has property
-   "location.root" with value "[auditing]". The workflow engine contains a global named "auditing" and a rule that
-   invokes a method on every Event that is processed. When the rule fires and the consequence is executed, the proxy
-   representing "auditing"-global queries for a service with the location.currentContext or the location.root
-   containing "[auditing]". Since root-services get a service-ranking of "-1" by default, the service current context's
-   would supersede the service located in the root-context.</para>
+    <para>When a global variable is accessed during the execution of an action (from a process or rule), the
+      osgi-context is queried for the correspinding service. The service wired to this variable must have location
+      with the same name as the variable. The service is searched in the current context and the root-context. If no
+      service is found, the action is stalled for 30 seconds. If there is still no service found an Exception is thrown.
+      Internally this is handled using proxies. When the workflow service is started, all globals are populated with
+      proxies, that automatically resolve the service with the corresponding location when a method is invoked.</para>
 
-  <!-- TODO where is it stored? contextstore or domains? <para>Each project in the OpenEngSB has its own context to store meta information necessary for running inside of the
-    OpenEngSB. The context basically is represented as a tree structure with key-value pairs as leafs.</para> -->
+    <para>Example: The auditing-service is registered with the interface AuditingDomain. The service has property
+    "location.root" with value "[auditing]". The workflow engine contains a global named "auditing" and a rule that
+    invokes a method on every Event that is processed. When the rule fires and the consequence is executed, the proxy
+    representing "auditing"-global queries for a service with the location.currentContext or the location.root
+    containing "[auditing]". Since root-services get a service-ranking of "-1" by default, the service current context's
+    would supersede the service located in the root-context.</para>
+  </section>
 
-  <para>The context in which a workflow is executed, a rule fired or another action happens can be compared to the
-  project in which the respective action happens. The context store therefore offers the possibility to perform
-  project specific configurations.</para>
+  <section xml:id="developer.context.store">
+    <title>Contextstore</title>
+    <para>Each context also has an associated context-store to store meta information necessary for running inside of the
+      OpenEngSB. The context store is represented as a tree structure with key-value pairs as leafs.</para>
 
-  <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextService.java">context service</link>
-  can be used to query the context and to insert, update or delete values. Note that under a specific name either a node or a leaf can be found, but not both. That means that
-  the context can be compared to a file system, where context nodes are directories and context leaves files. The leaves in the context contain string key-value pairs.
-  </para>
+    <para>The context in which a workflow is executed, a rule fired or another action happens can be compared to the
+    project in which the respective action happens. The context store therefore offers the possibility to perform
+    project specific configurations.</para>
 
-  <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
-    extends the context service and provides additional methods for the management new root context entries (which correspond to projects).
-  </para>
+    <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextService.java">context service</link>
+    can be used to query the context and to insert, update or delete values. Note that under a specific name either a node or a leaf can be found, but not both. That means that
+    the context can be compared to a file system, where context nodes are directories and context leaves files. The leaves in the context contain string key-value pairs.
+    </para>
 
-
-
-
+    <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
+      extends the context service and provides additional methods for the management new root context entries (which correspond to projects).
+    </para>
+  </section>
 
 </chapter>
 
