@@ -70,7 +70,7 @@ Features
 
   * Very modular, powerful and reusable system based on OSGi.
 
-  * Fully control over the system using console and ssh to connect to it; thanks to Apache Karaf
+  * Full control over the system using console and ssh to connect to it; thanks to Apache Karaf
 
 Further Information
 
