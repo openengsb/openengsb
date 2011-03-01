@@ -301,6 +301,12 @@
           in your poms.
         </para>
         <para>
+          <command>checkstyle</command>
+        </para>
+        <para>
+          Performs a Checkstyle check of the project.
+        </para>
+        <para>
           <command>genConnector</command>
         </para>
         <para>
@@ -326,7 +332,7 @@
           wraps
           the com.mycila.maven-license-plugin. A large part of the default
           behavior of this mojo can be changed in
-          <filename>src/main/resources/licenseMojo/licenseCheckConfig.xml</filename>.
+          <filename>src/main/resources/license/licenseConfig.xml</filename>.
           See <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
           for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
           default behavior.
@@ -338,11 +344,75 @@
           Adds a license header to files where the license header is missing.
           A large part of the default behavior of
           this mojo can be changed in
-          <filename>src/main/resources/licenseMojo/licenseFormatConfig.xml</filename>.
-          See
-          <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
-          for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
-          default  behavior.
+          <filename>src/main/resources/license/licenseConfig.xml</filename> (The licenseCheck and licenseFormat mojo share the same configuration file).
+        </para>
+        <para>
+          <command>prePush</command>
+        </para>
+        <para>
+          Builds and installs the openengsb, checks for license headers, performs a Checkstyle check and runs the integration tests.
+        </para>
+        <para>
+          <command>provision</command>
+        </para>
+        <para>
+         Equivalent to execute karaf or karaf.bat per hand after build by mvn clean
+         install in a (typically) assembly directory.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>provisionPathUnix</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+            to point to the final directory where the karaf system, etc configs and
+            so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathUnix</emphasis></para>
+            <para>
+              The path to the executable in the unix archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathUnix</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+            <emphasis>provisionExecutionPathUnix</emphasis> execute other files which have to
+            made executable to work correctly on themselves. Those files should be
+            specified here.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionPathWindows</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+            to point to the final directory where the karaf system, etc configs and
+            so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathWindows</emphasis></para>
+            <para>
+              The path to the executable in the windows archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathWindows</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+            <emphasis>provisionExecutionPathWindows</emphasis> execute other files which have to
+            made executable to work correctly on themselves. Those files should be
+            specified here.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          These parameters are typically configured in the pom of your assembly project
+          (<filename>/assembly/pom.xml</filename> for the OpenEngSB)).
         </para>
         <para>
           <command>pushVersion</command>
@@ -362,64 +432,6 @@
           </listitem>
         </itemizedlist>
         <para>
-          <command>provision</command>
-        </para>
-        <para>
-         Equivalent to execute karaf or karaf.bat per hand after build by mvn clean
-         install in a (typically) assembly directory.
-        </para>
-        <para>
-          Parameters:
-        </para>
-        <itemizedlist>
-          <listitem>
-            <para><emphasis>provisionPathUnix</emphasis></para>
-            <para>
-              This setting should be done in the one of the assembly folders and have
-       	    to point to the final directory where the karaf system, etc configs and
-      	    so on consist.
-            </para>
-          </listitem>
-          <listitem>
-            <para><emphasis>provisionExecutionPathUnix</emphasis></para>
-            <para>
-              The path to the executable in the unix archive file
-            </para>
-          </listitem>
-          <listitem>
-            <para><emphasis>additionalRequiredExecutionPathUnix</emphasis></para>
-            <para>
-              Sometimes it's required that some executable files, provided in
-   	        <emphasis>provisionExecutionPathUnix</emphasis> execute other files which have to
-   	        made executable to work correctly on themselves. Those files should be
-   	        specified here.
-            </para>
-          </listitem>
-          <listitem>
-            <para><emphasis>provisionPathWindows</emphasis></para>
-            <para>
-              This setting should be done in the one of the assembly folders and have
-   	        to point to the final directory where the karaf system, etc configs and
-   	        so on consist.
-            </para>
-          </listitem>
-          <listitem>
-            <para><emphasis>provisionExecutionPathWindows</emphasis></para>
-            <para>
-              The path to the executable in the windows archive file
-            </para>
-          </listitem>
-          <listitem>
-            <para><emphasis>additionalRequiredExecutionPathWindows</emphasis></para>
-            <para>
-              Sometimes it's required that some executable files, provided in
-   	        <emphasis>provisionExecutionPathWindows</emphasis> execute other files which have to
-   	        made executable to work correctly on themselves. Those files should be
-   	        specified here.
-            </para>
-          </listitem>
-        </itemizedlist>
-        <para>
           <command>releaseNightly</command>
         </para>
         <para>
@@ -429,9 +441,37 @@
         <para>
           <command>releaseXXX</command>
         </para>
-        <para>
-          TBD
-        </para>
+        <para>Performs a release and activates the <emphasis>&lt;XXX&gt;</emphasis> profile.</para>
+        <para>Parameters:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>connectionUrl</emphasis></para>
+            <para>
+              The SCM URL to checkout from. If omitted, the one from the
+              release.properties file is used, followed by the URL from the current
+      	      POM.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>Goals:</para>
+        <itemizedlist>
+            <listitem>
+              <para><command>releaseFinal</command></para>
+              <para>profile = <emphasis>final</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseMilestone</command></para>
+              <para>profile = <emphasis>milestone</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseRC</command></para>
+              <para>profile = <emphasis>rc</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseSupport</command></para>
+              <para>profile = <emphasis>support</emphasis></para>
+            </listitem>
+        </itemizedlist>
       </section>
     </section>
   </section>
