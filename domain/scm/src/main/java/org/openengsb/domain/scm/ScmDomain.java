@@ -42,14 +42,6 @@ public interface ScmDomain extends Domain {
     List<CommitRef> update();
 
     /**
-     * Exports the current head of the repository to the specified directory.
-     * 
-     * @param directory if the directory is non-existent, it'll be created. if
-     *        the directory already exists it must not contain any files.
-     */
-    void export(File directory);
-
-    /**
      * Exports the state of the repository representing the latest commit in a
      * compressed format without its SCM specific files and folders.
      * 
