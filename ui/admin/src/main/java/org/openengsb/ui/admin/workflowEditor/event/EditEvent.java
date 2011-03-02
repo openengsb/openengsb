@@ -50,7 +50,9 @@ public class EditEvent extends BasePage {
                             action.getDomain().getMethod(action.getMethodName(),
                                 methodParameters.toArray(new Class[methodParameters.size()]));
                         Raises annotation = method.getAnnotation(Raises.class);
-                        return Arrays.asList(annotation.value());
+                        if (annotation != null) {
+                            return Arrays.asList(annotation.value());
+                        }
                     } catch (SecurityException e) {
                         e.printStackTrace();
                     } catch (NoSuchMethodException e) {
