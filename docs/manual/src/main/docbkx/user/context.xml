@@ -25,27 +25,41 @@
 
   <title>Context Management</title>
 
-  <para>The OpenEngSB is capable of managing multiple contexts. Each context has its own metadata that may be read in
-    UIs and workflows. This is important for the reuse of workflows in multiple projects (but offers also other
-    possibilities).
-    </para>
+  <para>The context is one of the most important core concepts of the openengsb. It allows to reuse predefined
+    workflows in several contexts. A context may often represent a project or subproject. So it is possible to execute
+    the same workflow with the project-specific tool-instances and other metadata (like contact-information).
 
-  <para>The
+  <para>To determine in which context an action should be executed a thread-local variable is used. The
     <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextHolder.java">
       ContextHolder
     </link>
-    keeps track of the current threads' context. Invoking the set- and get-method will always
+    keeps track of this variable (the current threads' context). Invoking the set- and get-method will always
     manipulate the context of the current Thread. When a new Thread is spawned it inherits the context from the
-    parent thread. This way connector-implementations always can handle actions according to the current context.
+    parent thread.
+  </para>
+
+  <para>
+   This way connector-implementations and other client projects always can handle actions according to the current
+   context, and execute actions in specific a specific context. So when a person with a certain role in the project
+   (e.g. project manager) needs to be notified of some event, the value of his contact-address is specific to the
+   context of the project(s) he is managing.
   </para>
 
   <section xml:id="developer.context.wiring">
     <title>Wiring services</title>
 
-    <para>The context is also used to handle the wiring of services in workflows. The workflow-engine declares global
-      variables that are used in rules and processes. A variable is resolved by looking up the service with the same
-      name in the current context. If no service with that name is available in the context it is looked up in the
-      "root"-context.</para>
+    <para>The context is also used to handle the wiring of services in workflows. Suppose there are two projects that
+      use their own SCM-repositories and for both repositories connector-instances were created to poll them. When
+      executing a workflow contains an action that polls the SCM, the correct service ca be picked by looking up the
+      current thread's context.</para>
+
+    <para>In general workflows have references to several domains and other services which they interact with during
+      execution. Each project might have their own tools behind these domains, so these references must be resolved
+      at runtime depending on the current context.
+
+    <para>For this to work the workflow-engine declares global variables that are used in rules and processes. A variable is resolved by
+      looking up the service with the same name in the current context. If no service with that name is available in
+      the context it is looked up in the "root"-context.</para>
 
     <para>In detail the wiring is handled via the service-properties. Services contain properties where the key is of
       the format "location.&lt;contextid&gt;". The value is a list of "locations" where each location is delimited by
@@ -59,11 +73,11 @@
       proxies, that automatically resolve the service with the corresponding location when a method is invoked.</para>
 
     <para>Example: The auditing-service is registered with the interface AuditingDomain. The service has property
-    "location.root" with value "[auditing]". The workflow engine contains a global named "auditing" and a rule that
-    invokes a method on every Event that is processed. When the rule fires and the consequence is executed, the proxy
-    representing "auditing"-global queries for a service with the location.currentContext or the location.root
-    containing "[auditing]". Since root-services get a service-ranking of "-1" by default, the service current context's
-    would supersede the service located in the root-context.</para>
+      "location.root" with value "[auditing]". The workflow engine contains a global named "auditing" and a rule that
+      invokes a method on every Event that is processed. When the rule fires and the consequence is executed, the proxy
+      representing "auditing"-global queries for a service with the location.currentContext or the location.root
+      containing "[auditing]". Since root-services get a service-ranking of "-1" by default, the service current
+      context's would supersede the service located in the root-context.</para>
   </section>
 
   <section xml:id="developer.context.store">
