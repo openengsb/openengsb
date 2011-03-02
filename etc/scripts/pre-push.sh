@@ -15,30 +15,9 @@
 # limitations under the License.
 #
 
-MVN_COMMAND="mvn clean install -Plicense-check,integration-test,checkstyle"
+source $(dirname $0)/openengsbplugin-common.sh
 
-function check_for_maven_3(){
-	mvn --version | grep "^Apache Maven 3\." > /dev/null
-}
+cd $ABSPATH/../../
 
-function exec_mvn(){
-	$MVN_COMMAND $@
-}
-
-function exec_mvn3(){
-	exec_mvn -rf ":$1"
-}
-
-cd $(dirname $0)/../..
-
-if [ -z "$1" ]; then
-	exec_mvn
-else
-	if check_for_maven_3; then
-		exec_mvn3 $1
-	else
-		echo "WARNING: Maven 3.0+ is required to specify an entrypoint"
-		exec_mvn
-	fi
-fi
+mvn openengsb:prePush
 
