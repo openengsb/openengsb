@@ -28,6 +28,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -309,5 +310,15 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             }
         };
         return task;
+    }
+
+    @Test
+    public void testExecuteWorkflow() throws Exception {
+        Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Process);
+        System.out.println(list);
+        ProcessBag result = service.executeWorkflow("simpleFlow", new ProcessBag());
+        assertThat((Integer) result.getProperty("test"), is(42));
+        assertThat((String) result.getProperty("alternativeName"),
+            is("The answer to life the universe and everything"));
     }
 }
