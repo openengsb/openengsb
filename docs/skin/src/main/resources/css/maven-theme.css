@@ -19,12 +19,12 @@ body {
   font-family: Verdana, Helvetica, Arial, sans-serif;
   margin-left: auto;
   margin-right: auto;
-  background-repeat: repeat-y;
   font-size: 13px;
   padding: 0px;
 }
-h1 {
+h1, h2 {
 	margin:0px;
+	padding:5px 0;
 }
 
 td, select, input, li{
@@ -164,8 +164,8 @@ table {
   font-size: 10px;
   border: 1px solid #850000;
 }
-.xright a:link, .xright a:visited, .xright a:active {
-  color: #666;
+.xright a:link, .xright a:visited, .xright a:active, .xright a:hover {
+  color: #333333;
 }
 .xright a:hover {
   color: #003300;
@@ -223,31 +223,34 @@ table {
 /*** openEngSB Design ***/
 body {
 	background-image: url('../images/design/background.jpg');
+	background-attachment:fixed;
 }
 
 #header {
-	background-color: #000000;
+/*	background-color: #FFFFFF;	*/
+	background-image: url('../images/design/headerBackground.png');
+	background-repeat:repeat-x;
 }
 
 #banner {
 	color: #FFFFFF;
-	height: 126px !important;
+	height: 100px !important;
 }
 
 #bannerLeft img {
-	top: 30px;
+	top: 15px;
 	left: 10%;
 }
 
 #breadcrumbs {
-	background-color: #1D1D1D;
-	border-width: 1px 1px 0 1px;
-	border-color: #767676;
+	background-color: #F2F2F2;
+	border-width: 1px 1px 12px 1px;
+	border-color: #767676 #767676 #8C0000 #767676;
 	border-style: solid;
 }
 
 #breadcrumbs, #breadcrumbs a {
-	color: #EEEEEE;
+	color: #444444;
 }
 
 #breadcrumbs a.externalLink {
@@ -255,18 +258,13 @@ body {
 	padding-right: 0;
 }
 
-#content, #breadcrumbs, #footer {
+#body, #breadcrumbs, #footer {
 	margin: 0 10% 0 10%;
 }
 
-#body {
-	padding-top: 12px;
-	background-image: url('../images/design/mainBackground.png');
-	background-repeat:repeat-x;
-}
-
 #content {
-	background-color: #F2F2F2;
+	/* background-color: #F2F2F2;	*/
+	background-image: url('../images/design/contentBackground.png');
 	border-width: 0 1px 1px 1px;
 	border-style: solid;
 	border-color: #ABAAAA;
@@ -274,6 +272,7 @@ body {
 
 #leftColumn {
 	overflow: visible;
+	background-color: #F2F2F2;
 }
 
 #navcolumn .menuItem {
@@ -299,4 +298,12 @@ body {
 	box-shadow: 2px 2px 4px #999;
 	width: 170px;
 	font-weight: normal;
+}
+
+#contentBox {
+	padding-bottom:14px;
+}
+
+#contentBox .title {
+	clear: none !important;
 }
