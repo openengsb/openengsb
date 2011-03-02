@@ -28,11 +28,11 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.ui.common.wicket.OpenEngSBPage;
 import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
-import org.openengsb.core.common.context.ContextHolder;
 
 @SuppressWarnings("serial")
 public class BasePage extends OpenEngSBPage {
