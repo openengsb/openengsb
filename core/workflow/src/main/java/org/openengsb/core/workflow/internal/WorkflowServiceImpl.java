@@ -166,6 +166,19 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
+    public ProcessBag executeWorkflow(String processId, ProcessBag parameters) throws WorkflowException {
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("processBag", parameters);
+        long id = startFlow(processId, parameterMap);
+        try {
+            waitForFlowToFinish(id);
+        } catch (InterruptedException e) {
+            throw new WorkflowException(e);
+        }
+        return parameters;
+    }
+
+    @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         try {
             return startFlowInBackground(processId, parameterMap).get();
