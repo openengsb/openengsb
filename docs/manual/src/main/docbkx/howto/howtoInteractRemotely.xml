@@ -97,8 +97,13 @@
     <section>
       <title>Calling internal Services</title>
       <para>To call an internal Service send a methodcall as described before to the "receive" queue on the server you want to call.
-        The service works exactly as defined before.</para>
-      <para>By default a JMS Broker is started on port 6549.</para>
+        The service works exactly as defined before. For example if you want to execute a workflow via the WorkflowService send</para>
+      <code>{"callId":"12345","answer":true,"classes":["java.lang.String", "org.openengsb.core.common.workflow.model.ProcessBag"],"
+        "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService", "contextId":"foo"},"args":["simpleFlow", {}]}</code>
+      <para>to the receive queue on the OPENENGSB JMS Port which is started by default on Port 6549. Make sure that classes and args
+        has the same number of arguments. If you just want an object to be instantiated, but have no corresponding values that should
+        be set for the object simply add {} (as in the example above) which will instantiate the object but recognize, that no values
+        have to be set on the object. {"name" : "SomeName"} would on the other hand call the setName method with SomeName.</para>
     </section>
     <section>
       <title>Examples</title>
