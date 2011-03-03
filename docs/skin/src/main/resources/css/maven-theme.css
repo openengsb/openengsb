@@ -19,7 +19,6 @@ body {
   font-family: Verdana, Helvetica, Arial, sans-serif;
   margin-left: auto;
   margin-right: auto;
-  background-repeat: repeat-x;
   font-size: 13px;
   padding: 0px;
 }
@@ -224,10 +223,13 @@ table {
 /*** openEngSB Design ***/
 body {
 	background-image: url('../images/design/background.jpg');
+	background-attachment:fixed;
 }
 
 #header {
 /*	background-color: #FFFFFF;	*/
+	background-image: url('../images/design/headerBackground.png');
+	background-repeat:repeat-x;
 }
 
 #banner {
@@ -242,8 +244,8 @@ body {
 
 #breadcrumbs {
 	background-color: #F2F2F2;
-	border-width: 1px 1px 0 1px;
-	border-color: #767676;
+	border-width: 1px 1px 12px 1px;
+	border-color: #767676 #767676 #8C0000 #767676;
 	border-style: solid;
 }
 
@@ -258,12 +260,6 @@ body {
 
 #body, #breadcrumbs, #footer {
 	margin: 0 10% 0 10%;
-}
-
-#body {
-	padding-top: 12px;
-	background-image: url('../images/design/mainBackground.png');
-	background-repeat:repeat-x;
 }
 
 #content {
