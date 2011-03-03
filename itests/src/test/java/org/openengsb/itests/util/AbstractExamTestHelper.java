@@ -54,7 +54,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -176,10 +176,10 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Helper.getDefaultOptions(),
             Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
             Helper.setLogLevel("WARN"),
-            mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
-                .versionAsInProject()),
+            // Helper.activateDebugging("5005"),
+            mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util").versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
-                    .versionAsInProject()),
+                .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
