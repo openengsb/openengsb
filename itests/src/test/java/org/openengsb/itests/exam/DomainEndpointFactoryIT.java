@@ -17,18 +17,21 @@
 package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.DomainEndpointFactory;
 import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractExamTestHelper;
@@ -36,29 +39,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Constants;
 
 @RunWith(JUnit4TestRunner.class)
-public class OsgiServiceUtilIT extends AbstractExamTestHelper {
-
-    @Test
-    public void testOsgiServiceUtilMethods() throws Exception {
-        ServiceManager service = OsgiServiceUtils.getService(ServiceManager.class);
-        assertThat(service, notNullValue());
-        service =
-            (ServiceManager) OsgiServiceUtils.getService(OsgiServiceUtils.makeFilter(ServiceManager.class,
-                "(connector=example)"));
-        assertThat(service, notNullValue());
-
-        ServiceManager service2 = (ServiceManager) OsgiServiceUtils.getService("(connector=example)");
-        assertThat(service2.getInstanceId(), is(service.getInstanceId()));
-    }
-
-    @Test
-    public void testOsgiServiceProxy() throws Exception {
-        ServiceManager proxy =
-            OsgiServiceUtils.getOsgiServiceProxy(
-                OsgiServiceUtils.makeFilter(ServiceManager.class, "(connector=example)"), ServiceManager.class);
-        assertThat(proxy.getInstanceId(), is("org.openengsb.connector.example.LogServiceManager"));
-    }
-
+public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
     private static class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
 
         public DummyService(String instanceId) {
@@ -88,7 +69,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testLocationUtils() throws Exception {
+    public void testSingleMethodProxies() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
@@ -96,46 +77,53 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         properties.put("location.root", "[foo]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
+        ContextHolder.get().setCurrentContextId("foo");
+        ExampleDomain domainEndpoint = DomainEndpointFactory.getDomainEndpoint(ExampleDomain.class, "foo");
+        assertThat(domainEndpoint.getInstanceId(), is("test"));
+
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "[foo]");
+        properties.put("location.foo", "[foo2]");
         properties.put(Constants.SERVICE_RANKING, 1);
+
+        /* create the proxy before the service is registered */
+        ExampleDomain domainEndpoint2 = DomainEndpointFactory.getDomainEndpoint(ExampleDomain.class, "foo2");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ExampleDomain service2 = OsgiServiceUtils.getService(ExampleDomain.class);
-        assertThat(service2.getInstanceId(), is("test2"));
-
-        ContextHolder.get().setCurrentContextId("foo");
-        ExampleDomain serviceForLocation =
-            (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
-        assertThat(serviceForLocation.getInstanceId(), is("test2"));
-
-        ContextHolder.get().setCurrentContextId("foo2");
-        serviceForLocation = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
-        assertThat(serviceForLocation.getInstanceId(), is("test"));
-
-        serviceForLocation =
-            (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo", "foo");
-        assertThat(serviceForLocation.getInstanceId(), is("test2"));
-
-        serviceForLocation = OsgiServiceUtils.getServiceForLocation(ExampleDomain.class, "foo");
-        assertThat(serviceForLocation.getInstanceId(), is("test"));
+        assertThat(domainEndpoint2.getInstanceId(), is("test2"));
     }
 
     @Test
-    public void testMutlipleLocations() throws Exception {
+    public void testListMethod() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "[main/foo] [main/foo2]");
+        properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ExampleDomain fooService = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo");
-        assertThat(fooService.getInstanceId(), is("test"));
+        service = new DummyService("test2");
+        properties = new Hashtable<String, Object>();
+        properties.put("id", "test2");
+        properties.put("location.foo", "[main/foo2]");
+        properties.put(Constants.SERVICE_RANKING, 1);
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ExampleDomain foo2Service = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo2");
-        assertThat(foo2Service.getInstanceId(), is("test"));
+        service = new DummyService("test3");
+        properties = new Hashtable<String, Object>();
+        properties.put("id", "test3");
+        properties.put("location.foo", "[test/foo]");
+        properties.put(Constants.SERVICE_RANKING, 1);
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        ContextHolder.get().setCurrentContextId("foo");
+        List<ExampleDomain> domainEndpoints = DomainEndpointFactory.getDomainEndpoints(ExampleDomain.class, "main/*");
+        List<String> ids = new ArrayList<String>();
+        for (ExampleDomain endpoint : domainEndpoints) {
+            ids.add(endpoint.getInstanceId());
+        }
+        assertThat(ids, hasItems("test", "test2"));
+        assertThat(ids, not(hasItem("test3")));
     }
 }

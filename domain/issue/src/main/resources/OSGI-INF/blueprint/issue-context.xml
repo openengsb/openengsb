@@ -28,27 +28,6 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.domain.issue.IssueDomain</value>
-      <value>org.openengsb.core.common.Domain</value>
-    </interfaces>
-    <service-properties>
-      <entry key="id" value="domain.issue" />
-      <entry key="openengsb.service.type" value="domain" />
-    </service-properties>
-    <bean factory-ref="domainProxyFactory" factory-method="getObject" />
-  </service>
-
-  <bean id="domainProxyFactory" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
-    <property name="domainInterface">
-      <value>org.openengsb.domain.issue.IssueDomain</value>
-    </property>
-    <property name="domainName" value="IssueDomain" />
-    <property name="context" ref="contextService" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
-
-  <service>
-    <interfaces>
       <value>org.openengsb.domain.issue.IssueDomainEvents</value>
       <value>org.openengsb.core.common.DomainEvents</value>
     </interfaces>

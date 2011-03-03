@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.config;
+package org.openengsb.domain.auditing.internal;
 
 import java.io.InputStream;
-import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
@@ -35,7 +33,6 @@ public class AuditingConfig {
 
     private RuleManager ruleManager;
     private AuthenticationManager authManager;
-    private ServiceManager memoryauditingService;
 
     public final void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
@@ -45,12 +42,8 @@ public class AuditingConfig {
         this.authManager = authManager;
     }
 
-    public void setMemoryauditingService(ServiceManager memoryauditingService) {
-        this.memoryauditingService = memoryauditingService;
-    }
-
     public void init() {
-        Authentication authentication = authManager.authenticate(new BundleAuthenticationToken("web-ui", ""));
+        Authentication authentication = authManager.authenticate(new BundleAuthenticationToken("auditing-domain", ""));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         try {
@@ -59,10 +52,7 @@ public class AuditingConfig {
         } catch (RuleBaseException e) {
             throw new RuntimeException(e);
         }
-
         addRule("auditEvent");
-        memoryauditingService.update("auditing", new HashMap<String, String>());
-
     }
 
     private void addRule(String rule) {

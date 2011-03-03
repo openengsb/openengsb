@@ -25,23 +25,21 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class OsgiHelper implements BundleContextAware {
+public final class OsgiHelper {
 
-    private BundleContext bundleContext;
-    private ContextCurrentService contextService;
+    private static ContextCurrentService contextService;
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e) throws PortNotAvailableException {
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
+        throws PortNotAvailableException {
         sendRemoteEvent(portId, destination, e, new HashMap<String, String>());
     }
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
         throws PortNotAvailableException {
         OutgoingPort port;
         try {
-            port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
+            port = OsgiServiceUtils.getServiceWithId(OutgoingPort.class, portId);
         } catch (OsgiServiceNotAvailableException e1) {
             throw new PortNotAvailableException("Port with id " + portId + " not available", e1);
         }
@@ -49,20 +47,18 @@ public class OsgiHelper implements BundleContextAware {
         port.send(destination, call);
     }
 
-    public void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
+    public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
         throws PortNotAvailableException {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", serviceId);
         sendRemoteEvent(portId, destination, e, metaData);
     }
 
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public static void setContextService(ContextCurrentService contextService) {
+        OsgiHelper.contextService = contextService;
     }
 
-    public void setContextService(ContextCurrentService contextService) {
-        this.contextService = contextService;
+    private OsgiHelper() {
     }
 
 }

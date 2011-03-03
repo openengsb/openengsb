@@ -140,7 +140,6 @@ public class TestClient extends BasePage {
                     @Override
                     public void onClick() {
                         ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
-                        serviceManager.setBundleContext(bundleContext);
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });
@@ -456,7 +455,7 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
-        return OsgiServiceUtils.getServiceWithId(bundleContext, service.getServiceClass(), service.getServiceId());
+        return OsgiServiceUtils.getServiceWithId(service.getServiceClass(), service.getServiceId());
     }
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {

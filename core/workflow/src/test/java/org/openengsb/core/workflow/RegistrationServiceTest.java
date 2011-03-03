@@ -133,7 +133,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
-        verify(logService).doSomething("it works");
+        verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
     }
 
     @Test
@@ -151,6 +151,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
-        verify(logService).doSomething("it works");
+        verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
     }
 }
