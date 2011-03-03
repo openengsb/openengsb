@@ -61,7 +61,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>8</version>
+    <version>9-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -140,7 +140,6 @@
       <plugin>
         <groupId>org.jasig.maven</groupId>
         <artifactId>maven-notice-plugin</artifactId>
-        <version>1.0.4</version>
         <configuration>
           <noticeTemplate>etc/notice/NOTICE.template</noticeTemplate>
           <licenseMapping>
