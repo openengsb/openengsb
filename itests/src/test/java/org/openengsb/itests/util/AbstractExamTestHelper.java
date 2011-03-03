@@ -53,6 +53,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
+    private static final String LOG_LEVEL = "WARN";
+    /**
+     * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached.
+     * Look for "Listening for transport dt_socket at address: <DEBUG_PORT>"
+     */
+    private static final boolean DEBUG = false;
+    private static final String DEBUG_PORT = "5005";
+
     public enum SetupType {
             BLUEPRINT, SPRING, START_ONLY
     }
@@ -172,14 +180,18 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Configuration
     public static Option[] configuration() throws Exception {
+        Option[] baseOptions = Helper.getDefaultOptions();
+        if (DEBUG) {
+            baseOptions = combine(baseOptions, Helper.activateDebugging(DEBUG_PORT));
+        }
         return combine(
-            Helper.getDefaultOptions(),
+            baseOptions,
             Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
-            Helper.setLogLevel("WARN"),
+            Helper.setLogLevel(LOG_LEVEL),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
-                    .versionAsInProject()),
+                .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
