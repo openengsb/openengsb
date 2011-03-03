@@ -136,7 +136,7 @@
       the following command creates the required Eclipse project files:</para>
     <literallayout>
       <command>mvn</command> install
-      <command>mvn</command> eclipse:eclipse
+      <command>mvn</command> openengsb:eclipse
     </literallayout>
     <para>Start Eclipse and select any workspace. The folder  <filename>eclipse-workspace</filename> is ignored in the 
       OpenEngSB project structure for this purpose. But you can choose any other directory if you prefer. At the preference
@@ -144,10 +144,12 @@
       to <filename>~/.m2/repository</filename>. Now use <guimenu>File</guimenu>, <guimenu>Import...</guimenu>, 
       <guilabel>Existing Projects into Workspace</guilabel>. As the root directory select the root of the OpenEngSB source. 
       Eclipse will list several projects and for now it's best to import them all by clicking <guibutton>Finish</guibutton>.</para>
-    <para>At <filename>openengsb/etc/eclipse/</filename> eclipse configuration files for formatting can found. Checkstyle configuration filess
-      are part of the openengsb-maven-plugin and can be found
-      <link xlink:href="${checkstyleconfig}">here</link>.
-      These files should be used.</para>
+    <para>At <filename>openengsb/etc/eclipse/</filename> eclipse configuration files for formatting can found. Checkstyle configuration files
+      are part of the openengsb-maven-plugin (<xref linkend="developer.quickstart.tools.mavenplugin"/>) and can be found
+      <link xlink:href="${checkstyleconfig}">here</link>. The mvn openengsb:eclipse goal configures your eclipse project to
+      download and use the provided checkstyle configuration file, so no manual steps are necessary here (however the formatter
+      still needs to and should be configured manually).
+    </para>
   </section>
 
   <section xml:id="developer.quickstart.noneclipse">
@@ -209,8 +211,8 @@
         <replaceable>BRANCH</replaceable> is the point where you like to start your work. If you like to contribute to the head this will be typically
         integration, but could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches 
         and we'll really appreciate if you work according to it.</para>
-      <para>Now hack, commit and push as you like. If you think you're finished execute the 
-        <filename>etc/scripts/pre-push.sh</filename> script validating your code, tests, licenses and so on. If 
+      <para>Now hack, commit and push as you like. If you think you're finished invoke <command>mvn openengsb:prePush</command> (or
+        use <filename>etc/scripts/pre-push.sh</filename>) to validate your code, tests, licenses and so on. If 
         everything works without errors create a Github pull request on Github, between the master or integration
         branch (depending on where you've created your branch on) and your branch. This process is also explained at
         help.github.com (<link xlink:href="http://help.github.com/pull-requests/">here</link>). In addition it will help 
@@ -294,68 +296,85 @@
         </para>
       </section>
       <section>
+        <title>Purpose of the openengsb-maven-plugin</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Changing the default configuration of the mojos</title>
+        <para>TBD</para>
+      </section>
+      <section>
         <title>Available Goals</title>
         <para>
-          <command>assemble</command>
+          <command>assemble</command> or <filename>etc/scripts/assemble.sh</filename>
         </para>
         <para>
           Installs the OpenEngSB and skips tests. Furthermore a <emphasis>nightly</emphasis> profile is activated if available
           in your poms.
         </para>
         <para>
+          <command>eclipse</command> or <filename>etc/scripts/eclipse.sh</filename>
+        </para>
+        <para>
+          Generates eclipse configuration file for the module where it is invoked from and all submodules. The generated
+          eclipse projects are also configured to use the checkstyle rules shipped with the plugin (see checkstyle mojo).
+        </para>
+        <para>
           <command>checkstyle</command>
         </para>
         <para>
-          Performs a Checkstyle check of the project.
+          Performs a Checkstyle check of the project. The checkstyle configuration file which is used for the check can be found
+          <link xlink:href="https://github.com/openengsb/openengsb-maven-plugin/blob/master/src/main/resources/checkstyle/checkstyle.xml">here</link>.
+          We ship this configuration file with the plugin (and changes need to be done there) because we think it may be useful for other
+          OpenEngSB related projects. Setting up eclipse projects with configured checkstyle becomes very easy that way (simply mvn openengsb:eclipse).
         </para>
         <para>
-          <command>genConnector</command>
+          <command>genConnector</command> or <filename>etc/scripts/gen-connector.sh</filename> (For additional info how to create a connector see
+          <xref linkend="developer.howto.internal.connector"/>)
         </para>
         <para>
           Guides interactively through the creation of a connector and generates the artifact via the connector
           archetype.
-          For additional info how to create a connector see
-          <xref linkend="developer.howto.internal.connector" />
         </para>
         <para>
-          <command>genDomain</command>
+          <command>genDomain</command> or <filename>etc/scripts/gen-domain.sh</filename> (For
+          additional info how to create a domain see <xref linkend="developer.howto.internal.domain"/>)
         </para>
         <para>
           Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
-          For
-          additional info how to create a domain see
-          <xref linkend="developer.howto.internal.domain" />
         </para>
         <para>
-          <command>licenseCheck</command>
+          <command>licenseCheck</command> or <filename>etc/scripts/license-check.sh</filename>
         </para>
         <para>
           Performs a check if appropriate license headers are available in every source file. The licenseCheck mojo
-          wraps
-          the com.mycila.maven-license-plugin. A large part of the default
-          behavior of this mojo can be changed in
+          wraps the com.mycila.maven-license-plugin.
+          A large part of the default behavior of this mojo can be changed in
           <filename>src/main/resources/license/licenseConfig.xml</filename>.
           See <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
           for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
           default behavior.
         </para>
         <para>
-          <command>licenseFormat</command>
+          <emphasis>NOTE: pom.xml files are excluded from license check</emphasis>
         </para>
         <para>
-          Adds a license header to files where the license header is missing.
-          A large part of the default behavior of
-          this mojo can be changed in
-          <filename>src/main/resources/license/licenseConfig.xml</filename> (The licenseCheck and licenseFormat mojo share the same configuration file).
+          <command>licenseFormat</command> or <filename>etc/scripts/license-format.sh</filename>
         </para>
         <para>
-          <command>prePush</command>
+          Adds a license header to files where the license header is missing. Regarding the configuration for this mojo the same applies as for licenseCheck.
+        </para>
+        <para>
+          <emphasis>NOTE: pom.xml files are excluded from license format</emphasis>
+        </para>
+        <para>
+          <command>prePush</command> or <filename>etc/scripts/pre-push.sh</filename>
         </para>
         <para>
           Builds and installs the openengsb, checks for license headers, performs a Checkstyle check and runs the integration tests.
         </para>
         <para>
-          <command>provision</command>
+          <command>provision</command> or <filename>etc/scripts/run.sh</filename> / <filename>etc/scripts/quickrun.sh</filename>
         </para>
         <para>
          Equivalent to execute karaf or karaf.bat per hand after build by mvn clean
@@ -417,7 +436,7 @@
           (<filename>/assembly/pom.xml</filename> for the OpenEngSB)).
         </para>
         <para>
-          <command>pushVersion</command>
+          <command>pushVersion</command> or <filename>etc/scripts/push-version.sh</filename>
         </para>
         <para>
           Updates the development version.
@@ -429,48 +448,75 @@
           <listitem>
             <para><emphasis>developmentVersion</emphasis></para>
             <para>
-              Default version to use for new local working copy.
+              The new SNAPSHOT version.
             </para>
           </listitem>
         </itemizedlist>
         <para>
-          <command>releaseNightly</command>
+          <command>releaseNightly</command> or <filename>etc/scripts/release-nightly.sh</filename>
         </para>
         <para>
           Mojo to perform nightly releases. This mojo activates the <emphasis>nightly</emphasis> profile
-	      in the project, where you can put your additional configuration for nightly releases.
+	      in the project, where you can put your additional configuration for nightly releases (To see what these profiles
+          can be necessary for please read the descript of the other release mojos).
         </para>
         <para>
-          <command>releaseXXX</command>
+          <command>release&lt;XXX&gt;</command> (You can find a detailed description of the OpenEngSB release process
+          in <xref linkend="developer.release"/>)
         </para>
-        <para>Performs a release and activates the <emphasis>&lt;XXX&gt;</emphasis> profile.</para>
+        <para>
+        The release&lt;XXX&gt; mojos (except Nightly) wrap the
+        <link xlink:href="http://code.google.com/p/maven-license-plugin/">maven-license-plugin</link>, basically just
+        invoking <literal>mvn release:prepare</literal> and then <literal>mvn release:perforn</literal> with some
+        useful default configuration which can be reused for other projects related to the openengsb.
+        These mojos perform a release and activate the <emphasis>&lt;XXX&gt;</emphasis> profile. These release profiles
+        are important and are required to ..</para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              .. select the appropriate passphrase for the maven release repository from your <filename>settings.xml</filename>.
+              For additional information on this topic see <xref linkend="developer.release.configuremaven"/>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              .. set links depending on the release type. For examples please see the profiles in
+              <link xlink:href="https://github.com/openengsb/openengsb/blob/master/pom.xml">the pom</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              .. configure distribution management of the project site, depending on the release type. For examples see
+              profiles in <link xlink:href="https://github.com/openengsb/openengsb/blob/master/docs/homepage/pom.xml">docs/homepage/pom</link>
+            </para>
+          </listitem>
+        </itemizedlist>
         <para>Parameters:</para>
         <itemizedlist>
           <listitem>
             <para><emphasis>connectionUrl</emphasis></para>
             <para>
-              The SCM URL to checkout from. If omitted, the one from the
-              release.properties file is used, followed by the URL from the current
-      	      POM.
+              URL to your SCM repository (e.g. scm:git:file://~/openengsb). During the release process changes
+              (version updates, etc) are commited into your SCM.
             </para>
           </listitem>
         </itemizedlist>
         <para>Goals:</para>
         <itemizedlist>
             <listitem>
-              <para><command>releaseFinal</command></para>
+              <para><command>releaseFinal</command> or <filename>etc/scripts/release-final.sh</filename></para>
               <para>profile = <emphasis>final</emphasis></para>
             </listitem>
             <listitem>
-              <para><command>releaseMilestone</command></para>
+              <para><command>releaseMilestone</command> or <filename>etc/scripts/release-milestone.sh</filename></para>
               <para>profile = <emphasis>milestone</emphasis></para>
             </listitem>
             <listitem>
-              <para><command>releaseRC</command></para>
+              <para><command>releaseRC</command> or <filename>etc/scripts/release-rc.sh</filename></para>
               <para>profile = <emphasis>rc</emphasis></para>
             </listitem>
             <listitem>
-              <para><command>releaseSupport</command></para>
+              <para><command>releaseSupport</command> or <filename>etc/scripts/release-support.sh</filename></para>
               <para>profile = <emphasis>support</emphasis></para>
             </listitem>
         </itemizedlist>

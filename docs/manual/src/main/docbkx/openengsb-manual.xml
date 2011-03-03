@@ -61,7 +61,7 @@
     <title>OpenEngSB Framework</title>
     <partintro>
       <para>
-      This part gives an introduction into the OpenEngSB project and explains its base usage environment and the
+        This part gives an introduction into the OpenEngSB project and explains its base usage environment and the
         concepts, such as Domains, Connectors, Workflows and similar important ideas. Furthermore this part covers
         installation, configuration and usage of the administration interface to implement a tool environment according
         to your needs.</para>
