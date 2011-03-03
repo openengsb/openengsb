@@ -25,10 +25,10 @@ import org.openengsb.core.common.workflow.ProcessBagException;
 
 /**
  * The ProcessBag is a workflow property that contains all neccessary information and workflow metadata.
- * 
+ *
  * It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow creates its own
  * new ProcessBag when none is passed on workflow start.
- * 
+ *
  * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
 public class ProcessBag implements Serializable {
@@ -96,7 +96,7 @@ public class ProcessBag implements Serializable {
 
     /**
      * Adds a new property only if it does not exist already
-     * 
+     *
      * @throws ProcessBagException if the key is already present
      */
     public void addProperty(String key, Object value) throws ProcessBagException {
@@ -145,4 +145,16 @@ public class ProcessBag implements Serializable {
     protected void setEmpty() {
         empty = true;
     }
+
+    /*
+     * need these for jackson
+     */
+    public Map<String, Object> getProperties() {
+        return this.properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
 }
