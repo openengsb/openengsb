@@ -456,7 +456,7 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
-        return OsgiServiceUtils.getServiceWithId(bundleContext, service.getServiceClass(), service.getServiceId());
+        return OsgiServiceUtils.getServiceWithId(service.getServiceClass(), service.getServiceId());
     }
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {

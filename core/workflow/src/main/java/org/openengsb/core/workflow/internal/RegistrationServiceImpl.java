@@ -39,9 +39,9 @@ public class RegistrationServiceImpl extends AbstractOpenEngSBService implements
             + "then\n"
             + "RemoteEvent re = new RemoteEvent(event.getType());\n"
             + "%s\n";
-    private static final String OSGI_HELPER_TEMPLATE1 = "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re);";
+    private static final String OSGI_HELPER_TEMPLATE1 = "OsgiHelper.sendRemoteEvent(\"%s\", \"%s\", re);";
     private static final String OSGI_HELPER_TEMPLATE2 =
-        "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re, \"%s\");";
+        "OsgiHelper.sendRemoteEvent(\"%s\", \"%s\", re, \"%s\");";
 
     private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
 

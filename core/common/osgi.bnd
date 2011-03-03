@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+Bundle-Activator: org.openengsb.core.common.Activator
 Import-Package: org.springframework.osgi.service.importer,\
 org.aopalliance.aop,\
 org.aopalliance.intercept,\

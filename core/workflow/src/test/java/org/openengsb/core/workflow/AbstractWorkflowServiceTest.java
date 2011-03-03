@@ -17,18 +17,17 @@
 package org.openengsb.core.workflow;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
@@ -36,19 +35,14 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.osgi.framework.InvalidSyntaxException;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
     protected WorkflowServiceImpl service;
     protected RuleManager manager;
-    protected DummyExampleDomain logService;
-    protected DummyNotificationDomain notification;
-    protected DummyBuild build;
-    protected DummyDeploy deploy;
-    protected DummyReport report;
-    protected DummyIssue issue;
-    protected DummyTest test;
     protected DummyService myservice;
+    protected HashMap<String, Domain> domains;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -62,9 +56,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         setupRulemanager();
         service = new WorkflowServiceImpl();
         service.setRulemanager(manager);
-        ContextCurrentService currentContext = mock(ContextCurrentService.class);
-        when(currentContext.getThreadLocalContext()).thenReturn("42");
-        service.setCurrentContextService(currentContext);
+        ContextHolder.get().setCurrentContextId("42");
         service.setBundleContext(bundleContext);
         registerService(service, "workflowService", WorkflowService.class);
         setupDomainsAndOtherServices();
@@ -78,32 +70,30 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
-    private void setupDomainsAndOtherServices() {
-        Map<String, Object> services = new HashMap<String, Object>();
-        Map<String, Domain> domains = createDomainMocks();
-        services.putAll(domains);
+    private void setupDomainsAndOtherServices() throws InvalidSyntaxException {
+        createDomainMocks();
         myservice = mock(DummyService.class);
-        services.put("myservice", myservice);
-        service.setServices(services);
+        registerService(myservice, DummyService.class, OsgiServiceUtils.getFilterForLocation("myservice", "42")
+            .toString());
     }
 
-    private Map<String, Domain> createDomainMocks() {
-        Map<String, Domain> domains = new HashMap<String, Domain>();
-        logService = mock(DummyExampleDomain.class);
-        domains.put("example", logService);
-        notification = mock(DummyNotificationDomain.class);
-        domains.put("notification", notification);
-        build = mock(DummyBuild.class);
-        domains.put("build", build);
-        deploy = mock(DummyDeploy.class);
-        domains.put("deploy", deploy);
-        report = mock(DummyReport.class);
-        domains.put("report", report);
-        issue = mock(DummyIssue.class);
-        domains.put("issue", issue);
-        test = mock(DummyTest.class);
-        domains.put("test", test);
-        return domains;
+    private void createDomainMocks() throws InvalidSyntaxException {
+        domains = new HashMap<String, Domain>();
+        registerDummyConnector(DummyExampleDomain.class, "example");
+        registerDummyConnector(DummyNotificationDomain.class, "notification");
+        registerDummyConnector(DummyBuild.class, "build");
+        registerDummyConnector(DummyDeploy.class, "deploy");
+        registerDummyConnector(DummyReport.class, "report");
+        registerDummyConnector(DummyIssue.class, "issue");
+        registerDummyConnector(DummyTest.class, "test");
+    }
+
+    private void registerDummyConnector(Class<? extends Domain> domainClass, String name)
+        throws InvalidSyntaxException {
+        Domain mock2 = mock(domainClass);
+        registerSerivce(mock2, new Class<?>[]{ domainClass, Domain.class },
+            OsgiServiceUtils.getFilterForLocation(name, "42").toString());
+        domains.put(name, mock2);
     }
 
     @After

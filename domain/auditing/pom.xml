@@ -50,6 +50,11 @@
       <artifactId>openengsb-core-events</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-security</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>

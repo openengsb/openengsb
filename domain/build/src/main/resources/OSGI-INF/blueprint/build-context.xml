@@ -20,33 +20,11 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
 
-
   <service interface="org.openengsb.core.common.DomainProvider">
     <bean class="org.openengsb.domain.build.BuildDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-
-  <service>
-    <interfaces>
-      <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domain.build.BuildDomain</value>
-    </interfaces>
-    <service-properties>
-      <entry key="id" value="domain.build" />
-      <entry key="openengsb.service.type" value="domain" />
-    </service-properties>
-    <bean factory-ref="domainProxyFactory" factory-method="getObject" />
-  </service>
-
-  <bean id="domainProxyFactory" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
-    <property name="domainInterface">
-      <value>org.openengsb.domain.build.BuildDomain</value>
-    </property>
-    <property name="domainName" value="BuildDomain" />
-    <property name="context" ref="contextService" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
 
   <service>
     <interfaces>

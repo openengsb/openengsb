@@ -16,8 +16,10 @@
 
 package org.openengsb.connector.jira.internal;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -25,7 +27,6 @@ import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraDynamicProxy;
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;

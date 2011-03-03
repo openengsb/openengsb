@@ -58,7 +58,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
         if (!contextService.getAvailableContexts().contains("it-taskbox")) {
             contextService.createContext("it-taskbox");
             contextService.setThreadLocalContext("it-taskbox");
-            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         } else {
             contextService.setThreadLocalContext("it-taskbox");
         }

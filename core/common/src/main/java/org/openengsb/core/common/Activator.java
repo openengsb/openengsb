@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.exam;
+package org.openengsb.core.common;
 
-import static junit.framework.Assert.assertNotNull;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.itests.util.AbstractExamTestHelper;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-@RunWith(JUnit4TestRunner.class)
-public class JMSPortIT extends AbstractExamTestHelper {
+public class Activator implements BundleActivator {
 
-    @Test
-    public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OsgiServiceUtils.getServiceWithId(OutgoingPort.class, "jms-json");
-        System.out.println("ServiceID:" + serviceWithId);
-        assertNotNull(serviceWithId);
+    @Override
+    public void start(BundleContext context) throws Exception {
+        OsgiServiceUtils.setBundleContext(context);
+        DomainEndpointFactory.setBundleContext(context);
     }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        // do nothing
+    }
+
 }

@@ -42,13 +42,14 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class ServicesListPageTest {
+public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
     private ServiceManager serviceManagerMock;
     private WicketTester tester;
@@ -63,6 +64,7 @@ public class ServicesListPageTest {
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
         serviceManagerMock = mock(ServiceManager.class);
+        registerService(serviceManagerMock, ServiceManager.class, "(connector=bla)");
         domainServiceMock = mock(DomainService.class);
         ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();
@@ -100,6 +102,7 @@ public class ServicesListPageTest {
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
+        when(serRef.getProperty("connector")).thenReturn("bla");
         addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
@@ -244,7 +247,7 @@ public class ServicesListPageTest {
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
+        when(serRef.getProperty("connector")).thenReturn("bla");
         addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);

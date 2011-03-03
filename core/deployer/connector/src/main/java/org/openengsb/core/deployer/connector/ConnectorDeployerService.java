@@ -136,7 +136,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     private ServiceManager getServiceManagerFor(String connectorType) throws OsgiServiceNotAvailableException {
-        return (ServiceManager) OsgiServiceUtils.getService(bundleContext, getFilterFor(connectorType));
+        return (ServiceManager) OsgiServiceUtils.getService(getFilterFor(connectorType));
     }
 
     private String getFilterFor(String connectorType) {

@@ -16,8 +16,9 @@
 
 package org.openengsb.connector.jira.internal.models.xmlrpc;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Hashtable;
 
@@ -32,16 +33,16 @@ public class JiraRpcConverterTest {
     @Test
     public void projectIsInitializedCorrectly() {
         JiraRpcConverter converter = new JiraRpcConverter("aProject");
-        
+
         assertEquals("aProject", converter.getJiraProject());
     }
 
     @Test
     public void projectIsSetCorrectly() {
         JiraRpcConverter converter = new JiraRpcConverter("aProject");
-        
+
         converter.setJiraProject("anotherProject");
-        
+
         assertEquals("anotherProject", converter.getJiraProject());
     }
 
@@ -56,7 +57,7 @@ public class JiraRpcConverterTest {
         when(testIssue.getStatus()).thenReturn(Status.ASSIGNED);
 
         Hashtable<String, Object> convertedIssueTable = converter.convertIssueForCreation(testIssue);
-        
+
         assertEquals("theSummary", convertedIssueTable.get(JiraIssueField.SUMMARY.toString()));
         assertEquals("theDescription", convertedIssueTable.get(JiraIssueField.DESCRIPTION.toString()));
         assertEquals("aProject", convertedIssueTable.get(JiraIssueField.PROJECT.toString()));

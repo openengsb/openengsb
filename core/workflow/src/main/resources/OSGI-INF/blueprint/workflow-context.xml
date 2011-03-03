@@ -36,7 +36,6 @@
 
   <bean id="workflowService" class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
     <property name="rulemanager" ref="ruleManager" />
-    <property name="currentContextService" ref="contextService" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
@@ -59,6 +58,7 @@
   <service interface="org.openengsb.core.workflow.taskbox.TaskboxServiceInternal">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="location.root" value="[taskboxinternal]" />
       <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
     </service-properties>
     <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceInternalImpl" init-method="init">
