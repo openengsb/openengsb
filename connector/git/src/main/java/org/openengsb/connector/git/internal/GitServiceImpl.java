@@ -90,23 +90,29 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             Git git = new Git(repository);
             AnyObjectId oldHead = repository.resolve(Constants.HEAD);
             if (oldHead == null) {
+                log.debug("Local repository is empty. Fetching remote repository.");
                 FetchResult fetchResult = doRemoteUpdate();
                 if (fetchResult.getTrackingRefUpdate(Constants.R_REMOTES + "origin/" + watchBranch) == null) {
+                    log.debug("Nothing to fetch from remote repository.");
                     return null;
                 }
                 doCheckout(fetchResult);
             } else {
+                log.debug("Local repository exists. Pulling remote repository.");
                 git.pull().call();
             }
             AnyObjectId newHead = repository.resolve(Constants.HEAD);
             if (newHead == null) {
+                log.debug("New HEAD of local repository doesnt exist.");
                 return null;
             }
             if (newHead != oldHead) {
                 LogCommand logCommand = git.log();
                 if (oldHead == null) {
+                    log.debug("Retrieving revisions from HEAD [" + newHead.name() + "] on");
                     logCommand.add(newHead);
                 } else {
+                    log.debug("Retrieving revisions in range [" + newHead.name() + ", " + oldHead.name() + "]");
                     logCommand.addRange(oldHead, newHead);
                 }
                 Iterable<RevCommit> revisions = logCommand.call();
@@ -120,6 +126,10 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         return commits;
     }
 
+    /**
+     * Checks if the {@code localWorkspace} is set and creates the relevant
+     * directories if necessary.
+     */
     private void prepareWorkspace() {
         if (localWorkspace == null) {
             throw new ScmException("Local workspace not set.");
@@ -129,6 +139,9 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
     }
 
+    /**
+     * Creates the directories necessary for the workspace.
+     */
     private void tryCreateLocalWorkspace() {
         if (!localWorkspace.exists()) {
             localWorkspace.mkdirs();
@@ -142,6 +155,10 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
     }
 
+    /**
+     * Initializes the {@link FileRepository} or creates a new own if it does
+     * not exist.
+     */
     private void initRepository() throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         builder.setWorkTree(localWorkspace);
@@ -161,6 +178,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         final RevWalk rw = new RevWalk(repository);
         final RevCommit mapCommit;
         try {
+            log.debug("Mapping received reference to respective commit.");
             mapCommit = rw.parseCommit(head.getObjectId());
         } finally {
             rw.release();
@@ -169,6 +187,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         final RefUpdate u;
 
         boolean detached = !head.getName().startsWith(Constants.R_HEADS);
+        log.debug("Updating HEAD reference to revision [" + mapCommit.getId().name() + "]");
         u = repository.updateRef(Constants.HEAD, detached);
         u.setNewObjectId(mapCommit.getId());
         u.forceUpdate();
@@ -177,19 +196,25 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                 .getTree());
         dirCacheCheckout.setFailOnConflict(true);
         boolean checkoutResult = dirCacheCheckout.checkout();
-        if (!checkoutResult)
+        log.debug("Checked out new repository revision to working directory");
+        if (!checkoutResult) {
             throw new IOException("Internal error occured on checking out files");
+        }
     }
 
     protected FetchResult doRemoteUpdate() throws IOException {
         List<RemoteConfig> remoteConfig = null;
         try {
+            log.debug("Fetching remote configurtations from repository configuration");
             remoteConfig = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
         } catch (URISyntaxException e) {
             throw new ScmException(e);
         }
+
+        log.debug("Opening transport to " + remoteConfig.get(0).getName());
         Transport transport = Transport.open(repository, remoteConfig.get(0));
         try {
+            log.debug("Fetching content from remote repository");
             return transport.fetch(NullProgressMonitor.INSTANCE, null);
         } finally {
             if (transport != null) {
@@ -204,6 +229,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             if (repository == null) {
                 initRepository();
             }
+
+            log.debug("Exporting repository to archive");
             File tmp = File.createTempFile("repository", ".zip");
             ZipArchiveOutputStream zos = new ZipArchiveOutputStream(tmp);
             packRepository(localWorkspace, zos);
@@ -223,22 +250,26 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                 initRepository();
             }
 
+            log.debug("Resolving HEAD and reference [" + ref.getStringRepresentation() + "]");
             AnyObjectId headId = repository.resolve(Constants.HEAD);
             AnyObjectId refId = repository.resolve(ref.getStringRepresentation());
             if (headId == null || refId == null) {
-                throw new ScmException("Reference doesn't exist.");
+                throw new ScmException("HEAD or reference [" + ref.getStringRepresentation() + "] doesn't exist.");
             }
             rw = new RevWalk(repository);
             RevCommit head = rw.parseCommit(headId);
             RevCommit commit = rw.parseCommit(refId);
 
+            log.debug("Checking out working copy of revision");
             checkoutIndex(commit);
 
             tmp = File.createTempFile("repository", ".zip");
+            log.debug("Exporting repository to archive");
             ZipArchiveOutputStream zos = new ZipArchiveOutputStream(tmp);
             packRepository(localWorkspace, zos);
             zos.close();
 
+            log.debug("Checking out working copy of former HEAD revision");
             checkoutIndex(head);
         } catch (IOException e) {
             throw new ScmException(e);
@@ -250,6 +281,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         return tmp;
     }
 
+    /**
+     * Packs the files and directories of a passed {@link File} to a passed
+     * {@link ArchiveOutputStream}.
+     * 
+     * @throws IOException
+     */
     private void packRepository(File source, ArchiveOutputStream aos) throws IOException {
         int bufferSize = 2048;
         byte[] readBuffer = new byte[bufferSize];
@@ -328,11 +365,13 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(Constants.HEAD);
             RevCommit commit = new RevWalk(repository).parseCommit(id);
+            log.debug("Looking up file " + arg0 + " in HEAD revision");
             TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
+            log.debug("File " + arg0 + " received commit id " + objectId.name() + " at commit");
             return !objectId.equals(ObjectId.zeroId());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -347,15 +386,18 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             AnyObjectId id = repository.resolve(Constants.HEAD);
             RevCommit commit = new RevWalk(repository).parseCommit(id);
+            log.debug("Looking up file " + file + " in HEAD revision");
             TreeWalk treeWalk = TreeWalk.forPath(repository, file, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return null;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
             if (objectId == ObjectId.zeroId()) {
+                log.debug("File " + file + " couldnt be found in HEAD revision");
                 return null;
             }
             String fileName = getFilename(file);
+            log.debug("Creating file from saved repository content");
             File tmp = File.createTempFile(fileName, null);
             tmp.deleteOnExit();
             OutputStream os = new FileOutputStream(tmp);
@@ -372,11 +414,13 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(arg1.getStringRepresentation());
             RevCommit commit = new RevWalk(repository).parseCommit(id);
+            log.debug("Looking up file " + arg0 + " in revision " + arg1.getStringRepresentation());
             TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
+            log.debug("File " + arg0 + " received commit id " + objectId.name() + " at commit");
             return !objectId.equals(ObjectId.zeroId());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -391,6 +435,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             AnyObjectId id = repository.resolve(ref.getStringRepresentation());
             RevCommit commit = new RevWalk(repository).parseCommit(id);
+            log.debug("Looking up file " + file + " in revision " + ref.getStringRepresentation());
             TreeWalk treeWalk = TreeWalk.forPath(repository, file, new AnyObjectId[] { commit.getTree() });
             if (treeWalk == null) {
                 return null;
@@ -400,6 +445,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                 return null;
             }
             String fileName = getFilename(file);
+            log.debug("Creating file from saved repository content");
             File tmp = File.createTempFile(fileName, null);
             tmp.deleteOnExit();
             OutputStream os = new FileOutputStream(tmp);
@@ -411,6 +457,9 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
     }
 
+    /**
+     * Returns the name of a file from a passed repository path.
+     */
     private String getFilename(String path) {
         String fileName;
         if (path.contains("/")) {
@@ -429,6 +478,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             AnyObjectId id = repository.resolve(Constants.HEAD);
             RevCommit commit = new RevWalk(repository).parseCommit(id);
+            log.debug("Resolved HEAD to commit " + commit.getId().name());
             return new GitCommitRef(commit);
         } catch (IOException e) {
             if (repository != null) {
@@ -442,6 +492,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     @Override
     public CommitRef add(String comment, File... file) {
         if (file.length == 0) {
+            log.debug("No files to add in list");
             return null;
         }
         if (repository == null) {
@@ -466,10 +517,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                     throw new ScmException("File " + toCommit + " is not a valid file to commit.");
                 }
                 String filepattern = getRelativePath(toCommit.getAbsolutePath());
+                log.debug("Adding file " + filepattern + " in working directory to repository");
                 add.addFilepattern(filepattern);
             }
 
             add.call();
+            log.debug("Committing added files with comment '" + comment + "'");
             return new GitCommitRef(git.commit().setMessage(comment).call());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -477,11 +530,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     /**
-     * Returns the relative path of a file from the working directory of the
-     * repository.
-     * 
-     * @param filePath path of the file within the OS
-     * @return path of the file relative to the working directory
+     * Returns the relative path of an absolute {@code filePath} in comparison
+     * to the working directory of the repository.
      */
     private String getRelativePath(String filePath) throws ScmException {
         final String repoPath = repository.getWorkTree().getAbsolutePath();
@@ -495,6 +545,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     @Override
     public CommitRef remove(String comment, File... file) {
         if (file.length == 0) {
+            log.debug("No files to add in list");
             return null;
         }
         if (repository == null) {
@@ -518,10 +569,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                     throw new ScmException("File " + toCommit + " is not a valid file to commit.");
                 }
                 String filepattern = getRelativePath(toCommit.getAbsolutePath());
+                log.debug("Removing file " + filepattern + " in working directory from repository");
                 rm.addFilepattern(filepattern);
             }
 
             rm.call();
+            log.debug("Committing removed files with comment '" + comment + "'");
             return new GitCommitRef(git.commit().setMessage(comment).call());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -535,6 +588,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                 initRepository();
             }
             TagCommand tag = new Git(repository).tag();
+            log.debug("Tagging HEAD with name '" + tagName + "'");
             return new GitTagRef(tag.setName(tagName).call());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -549,12 +603,14 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             AnyObjectId commitRef = repository.resolve(ref.getStringRepresentation());
             if (commitRef == null) {
+                log.debug("Couldnt resolve reference " + ref.getStringRepresentation() + " in repository");
                 return null;
             }
             RevWalk walk = new RevWalk(repository);
             RevCommit revCommit = walk.parseCommit(commitRef);
             TagCommand tag = new Git(repository).tag();
             tag.setName(tagName).setObjectId(revCommit);
+            log.debug("Tagging revision " + ref.getStringRepresentation() + " with name '" + tagName + "'");
             return new GitTagRef(tag.call());
         } catch (Exception e) {
             throw new ScmException(e);
@@ -569,6 +625,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             AnyObjectId tagRef = repository.resolve(ref.getStringRepresentation());
             if (tagRef == null) {
+                log.debug("Couldnt resolve reference " + ref.getStringRepresentation() + " in repository");
                 return null;
             }
             RevWalk walk = new RevWalk(repository);
@@ -576,6 +633,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             CommitRef commitRef = null;
             if (revTag.getObject() instanceof RevCommit) {
                 commitRef = new GitCommitRef((RevCommit) revTag.getObject());
+                log.debug("Resolved reference " + ref.getStringRepresentation() + " to commit "
+                        + commitRef.getStringRepresentation());
             }
             return commitRef;
         } catch (IOException e) {

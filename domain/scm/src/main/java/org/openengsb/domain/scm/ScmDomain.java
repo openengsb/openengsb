@@ -28,106 +28,90 @@ import org.openengsb.core.common.Domain;
 public interface ScmDomain extends Domain {
 
     /**
-     * Looks up changes in a remote repository and updates or checks out a local
-     * repository. Check outs are performed if the local repository doesn't yet
-     * exist. Updates are performed if the local repository already exists.
-     * 
-     * @return a list of {@link CommitRef} representing the commits. If a check
-     *         out was performed the whole history is included. If an update was
-     *         performed the list contains the changes since the last update.
-     *         {@code null} if there where no changes since the last update or
-     *         the branch reference couldn't be resolved in the remote
-     *         repository.
+     * Looks up changes in a remote repository and updates the local repository
+     * or checks out a new local repository and returns a list of
+     * {@link CommitRef} with the revisions produced since the last update or
+     * <code>null</code>.
      */
     List<CommitRef> update();
 
     /**
-     * Exports the state of the repository representing the latest commit in a
-     * compressed format without its SCM specific files and folders.
-     * 
-     * @return a compressed file with the contents of the latest commit
+     * Exports the files and directories of the HEAD revision from a repository
+     * without the SCM specific data in a compressed format.
      */
     File export();
 
     /**
-     * Exports the state of the repository representing the given commit ref in
-     * a compressed format without its SCM specific files and folders.
-     * 
-     * @param ref that represents a commit in the repository
-     * @return a compressed file with the contents of the given commit ref
+     * Exports the files and directories of a revision identified by the
+     * {@link CommitRef} from a repository without the SCM specific data in a
+     * compressed format.
      */
     File export(CommitRef ref);
 
     /**
-     * Check if HEAD revision of a {@code file} exists in repository.
-     * 
-     * @param file relative repository path to file
-     * 
-     * @return true if item exists in repository, otherwise false
+     * Check if file identified by its {@code fileName} exists in the HEAD
+     * revision and returns <code>true</code> if it does.
      */
     boolean exists(String file);
 
     /**
-     * Retrieves a single file from a repository if it exists in the lastest
-     * revision.
-     * 
-     * @param file relative repository path to file
-     * 
-     * @return the file with its name and extension without the folder
-     *         structure. {@code null} if it doesn't exist in the latest
-     *         revision.
+     * Retrieves a single {@link File} from a repository identified by its
+     * {@code fileName} if it exists in the HEAD revision. If the file does not
+     * exist in the revision <code>null</code> will be returned.
      */
     File get(String file);
 
     /**
-     * Check if given {@code version} of a {@code file} exists in repository.
-     * 
-     * @param file relative repository path to file
-     * @param version file version
-     * 
-     * @return true if file exists in repository, otherwise false
+     * Check if file identified by its {@code fileName} exists in a revision
+     * identified by the {@link CommitRef} and returns <code>true</code> if it
+     * does.
      */
-    boolean exists(String file, CommitRef version);
+    boolean exists(String fileName, CommitRef version);
 
     /**
-     * Retrieves a single file from a repository if it exists in a given
-     * revision.
-     * 
-     * @param file relative repository path to file
-     * @param ref reference to the revision where file is in
-     * @return the file with its name and extension without the folder
-     *         structure. {@code null} if it doesn't exist in the given
-     *         revision.
+     * Retrieves a single {@link File} from a repository identified by its
+     * {@code fileName} if it exists in the revision identified by the
+     * {@link CommitRef}. If the file does not exist in the revision
+     * <code>null</code> will be returned.
      */
-    File get(String file, CommitRef ref);
+    File get(String fileName, CommitRef ref);
 
     /**
-     * Returns the current HEAD of the repository as {@link CommitRef}.
+     * Returns the {@link CommitRef} of the current HEAD in the repository or
+     * <code>null</code>.
      */
     CommitRef getHead();
 
     /**
-     * Adds one or more working files to the repository and commits them.
+     * Adds one or more {@link File} existing in the working directory to the
+     * repository and commits them with the passed {@code comment}. Returns the
+     * {@link CommitRef} of the commit triggered.
      */
     CommitRef add(String comment, File... file);
 
     /**
-     * Removes one or more working files to the repository and commits them.
+     * Removes one or more {@link File} from the working directory of the
+     * repository and commits them with a passed {@code comment}. Returns the
+     * {@link CommitRef} of the commit triggered.
      */
     CommitRef remove(String comment, File... file);
 
     /**
-     * Tags the actual HEAD of the repository.
+     * Tags the actual HEAD of the repository with the passed {@code tagName}
+     * and returns the corresponding {@link TagRef} or <code>null</code>.
      */
     TagRef tagRepo(String tagName);
 
     /**
-     * Tags the commit of the repository identified by the reference.
+     * Tags the commit of the repository identified by the {@link CommitRef}
+     * with the passed {@code tagName} and returns the corresponding
+     * {@link TagRef} or <code>null</code>.
      */
     TagRef tagRepo(String tagName, CommitRef ref);
 
     /**
-     * Resolved the {@link CommitRef} for a specific tag name.
+     * Resolves and returns the {@link CommitRef} for a {@link TagRef} or
+     * <code>null</code> if the reference does not exist.
      */
     CommitRef getCommitRefForTag(TagRef ref);
 
