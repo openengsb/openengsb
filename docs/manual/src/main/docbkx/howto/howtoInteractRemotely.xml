@@ -106,7 +106,7 @@
         have to be set on the object. {"name" : "SomeName"} would on the other hand call the setName method with SomeName.</para>
     </section>
     <section>
-      <title>Non-Java Examples</title
+      <title>Non-Java Examples</title>
 	  <para>
 		We provide examples in different languages how to connect to the OpenEngSB. The examples are grouped according to language
 		and the documentation to the different examples are directly done in the code of the examples. We try to keep those examples
