@@ -15,6 +15,7 @@
  */
 
 using System;
+using Apache.NMS;
 
 // TODO: Provide and explain this example
 
@@ -29,7 +30,65 @@ namespace Workflow
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			string queueId = "12345";
+			string requestMessage = ""
+				+ "{"
+				+ "    \"callId\": \"" + queueId + "\","
+				+ "    \"answer\": true,"
+				+ "    \"classes\": ["
+				+ "        \"java.lang.String\","
+				+ "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
+				+ "    ],"
+				+ "    \"methodName\": \"executeWorkflow\","
+				+ "    \"metaData\": {"
+				+ "        \"serviceId\": \"workflowService\","
+				+ "        \"contextId\": \"foo\""
+				+ "    },"
+				+ "    \"args\": ["
+				+ "        \"simpleFlow\","
+				+ "        {"
+				+ "        }"
+				+ "    ]"
+				+ "}";
+			
+			Uri connecturi = new Uri("activemq:tcp://localhost:6549");
+			
+			Console.WriteLine("About to connect to " + connecturi);
+
+			// NOTE: ensure the nmsprovider-activemq.config file exists in the executable folder.
+			IConnectionFactory factory = new NMSConnectionFactory(connecturi);
+
+			using(IConnection connection = factory.CreateConnection())
+				using(ISession session = connection.CreateSession())
+			{
+				IDestination destination = session.GetDestination("receive");
+				Console.WriteLine("Using destination for sending: " + destination);
+
+				
+				using(IMessageProducer producer = session.CreateProducer(destination))
+				{
+					connection.Start();
+					producer.DeliveryMode = MsgDeliveryMode.Persistent;
+					ITextMessage request = session.CreateTextMessage(requestMessage);
+					producer.Send(request);
+				}
+				
+				IDestination receiveDest = session.GetDestination(queueId);
+				Console.WriteLine("Using destination for receiving: " + receiveDest);
+				
+				using(IMessageConsumer consumer = session.CreateConsumer(receiveDest)) {
+					ITextMessage message = consumer.Receive() as ITextMessage;
+					if(message == null)
+					{
+						Console.WriteLine("No message received!");
+					}
+					else
+					{
+						Console.WriteLine("Received message with text: " + message.Text);
+					}
+				}
+			}
+			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
