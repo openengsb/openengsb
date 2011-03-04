@@ -16,6 +16,7 @@
     limitations under the License.
 
 -->
+
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectGuid>{F7BD77D2-B671-4F9A-8B36-474A5A409E57}</ProjectGuid>
