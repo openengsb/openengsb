@@ -20,6 +20,13 @@ using Apache.NMS;
 // TODO: Provide and explain this example
 
 /*
+ * Be careful! This code (should) work, but does not have to be best-practice in any way. TBH
+ * it should simply show you how the basics work. For a real application we would suggest to
+ * use Spring.net-NMS since it handles the entire caching and other issues which may be a problem
+ * for a real application.
+ */
+
+/*
  * The example shown in the manual, explaining how an Workflow can be called at the OpenEngSB
  * is implemented here in csharp showing how such an implementation could finally look like.
  */

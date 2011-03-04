@@ -18,6 +18,13 @@ using System;
 using Apache.NMS;
 
 /*
+ * Be careful! This code (should) work, but does not have to be best-practice in any way. TBH
+ * it should simply show you how the basics work. For a real application we would suggest to
+ * use Spring.net-NMS since it handles the entire caching and other issues which may be a problem
+ * for a real application.
+ */
+
+/*
  * This example has nothing to do with the OpenEngSB directly but rather simply shows 
  * how to communicate via NMS. You need to start AMQ(http://activemq.apache.org/download.html)
  * first. If you do not change any ports and run AMQ on the same computer as this example you do

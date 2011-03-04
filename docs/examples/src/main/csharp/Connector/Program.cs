@@ -19,6 +19,13 @@ using System;
 // TODO: Provide and explain this example
 
 /*
+ * Be careful! This code (should) work, but does not have to be best-practice in any way. TBH
+ * it should simply show you how the basics work. For a real application we would suggest to
+ * use Spring.net-NMS since it handles the entire caching and other issues which may be a problem
+ * for a real application.
+ */
+
+/*
  * The connector example shows how you could provide a connector for an OpenEngSB
  * domain and how to connect and use the connector from the OpenEngSB.
  */
