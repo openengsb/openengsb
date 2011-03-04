@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.common.util.IgnoreInQueries;
 import org.openengsb.core.common.workflow.ProcessBagException;
 
 /**
@@ -115,6 +116,9 @@ public class ProcessBag implements Serializable {
     }
 
     public Object getProperty(String key) {
+        if (properties == null) {
+            return null;
+        }
         return properties.get(key);
     }
 
@@ -149,6 +153,7 @@ public class ProcessBag implements Serializable {
     /*
      * need these for jackson
      */
+    @IgnoreInQueries
     public Map<String, Object> getProperties() {
         return this.properties;
     }

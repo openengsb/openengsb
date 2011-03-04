@@ -35,6 +35,7 @@ import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.util.IgnoreInQueries;
 import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceService implements PersistenceService {
@@ -209,8 +210,10 @@ public class NeodatisPersistenceService implements PersistenceService {
         BeanInfo info = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] properties = info.getPropertyDescriptors();
         for (PropertyDescriptor property : properties) {
-            if (property.getReadMethod() != null && Modifier.isPublic(property.getReadMethod().getModifiers())) {
-                methods.add(property.getReadMethod());
+            final Method getter = property.getReadMethod();
+            if (getter != null && Modifier.isPublic(getter.getModifiers())
+                    && getter.getAnnotation(IgnoreInQueries.class) == null) {
+                methods.add(getter);
             }
         }
 
