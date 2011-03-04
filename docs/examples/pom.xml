@@ -85,17 +85,17 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>target/openengsb-docs-examples-${project.version}-csharp-connector.zip</file>
+                  <file>target/openengsb-docs-examples-${project.version}-csharp.zip</file>
                   <type>zip</type>
                   <classifier>csharp-connector</classifier>
                 </artifact>
                 <artifact>
-                  <file>target/openengsb-docs-examples-${project.version}-python-connector.zip</file>
+                  <file>target/openengsb-docs-examples-${project.version}-python.zip</file>
                   <type>zip</type>
                   <classifier>python-connector</classifier>
                 </artifact>
                 <artifact>
-                  <file>target/openengsb-docs-examples-${project.version}-perl-connector.zip</file>
+                  <file>target/openengsb-docs-examples-${project.version}-perl.zip</file>
                   <type>zip</type>
                   <classifier>perl-connector</classifier>
                 </artifact>

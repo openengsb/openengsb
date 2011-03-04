@@ -106,28 +106,32 @@
         have to be set on the object. {"name" : "SomeName"} would on the other hand call the setName method with SomeName.</para>
     </section>
     <section>
-      <title>Examples</title>
+      <title>Non-Java Examples</title
+	  <para>
+		We provide examples in different languages how to connect to the OpenEngSB. The examples are grouped according to language
+		and the documentation to the different examples are directly done in the code of the examples. We try to keep those examples
+		as good as possible up-to-date, but do not gurantee that they all work as expected since we can't add them to our integration
+		tests. If you want to provide examples in different languages you're always welcomed to provide them.
+	  </para>
       <section>
         <title>Connect With Python</title>
         <para>To test the OPENENGSB JMS implementation with Python please follow the
-          <link xlink:href="${github}/docs/examples/connectors/python/PythonClient.txt">instructions</link>
+          <link xlink:href="${github}/docs/examples/src/main/python/PythonClient.txt">instructions</link>
         </para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-python-connector.zip">here</link></para>
+        <para>The example can be downloaded <link xlink:href="${repos.example}-python.zip">here</link></para>
       </section>
       <section xml:id="developer.plugins.csharp">
         <title>Connect With CSharp</title>
-        <para>The CSharp connector is written on basis of the Apache ActiveMQ JMS connector and with help of the Spring
-          JmsTemplate. The code is checked into the repository and could be found in <literal>nonjava/csharp</literal>.
-          There an EngSB.sln file. This project file has been developed with SharpDevelop 3, but is also tested with
-          VisualStudio 2008 CSharp Express Edition with the .Net Framework 3.5.</para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-csharp-connector.zip">here</link></para>
+        <para>The CSharp connector is written on basis of the Apache ActiveMQ JMS connector. There an EngSB.sln file. This project
+		  file has been developed with SharpDevelop 4, but is also tested with VisualStudio 2008 CSharp Express Edition 
+		  with the .Net Framework 4.</para>
+        <para>The example can be downloaded <link xlink:href="${repos.example}-csharp.zip">here</link></para>
       </section>
       <section xml:id="developer.plugins.perl">
         <title>Connect With Perl</title>
         <para>As shown in this example you can connect to the OpenEngSB in a similar way as with Python or CSharp.</para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-perl-connector.zip">here</link></para>
+        <para>The example can be downloaded <link xlink:href="${repos.example}-perl.zip">here</link></para>
       </section>
     </section>
   </section>
 </chapter>
-
