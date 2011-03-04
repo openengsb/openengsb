@@ -17,8 +17,6 @@
 using System;
 using Apache.NMS;
 
-// TODO: Provide and explain this example
-
 /*
  * Be careful! This code (should) work, but does not have to be best-practice in any way. TBH
  * it should simply show you how the basics work. For a real application we would suggest to
@@ -29,6 +27,12 @@ using Apache.NMS;
 /*
  * The example shown in the manual, explaining how an Workflow can be called at the OpenEngSB
  * is implemented here in csharp showing how such an implementation could finally look like.
+ * For this example two conditions are important:
+ * 
+ * 1) The OpenEngSB have to be up and running
+ * 2) The default port of the JMS OpenEngSB Connector should be used (otherwise this sample has
+ *  to be adapte)
+ * 3) the simpleFlow has to be deployed at the OpenEngSB
  */
 
 namespace Workflow
@@ -37,27 +41,40 @@ namespace Workflow
 	{
 		public static void Main(string[] args)
 		{
-			string queueId = "12345";
+			// This ID is important since it will be also the queue a response will be sent.
+			string queueId = Guid.NewGuid();
+			// This message which should be send to the server
 			string requestMessage = ""
 				+ "{"
+				// the call ID; this will also be the queue a response will be sent. Be careful to make it unqiue
 				+ "    \"callId\": \"" + queueId + "\","
+				// if the server should answer or not
 				+ "    \"answer\": true,"
+				// of which type the sent data is; this have to be the required java types
 				+ "    \"classes\": ["
 				+ "        \"java.lang.String\","
 				+ "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
 				+ "    ],"
+				// the method which should be executed
 				+ "    \"methodName\": \"executeWorkflow\","
+				// the "header-data" of the message; this is not the header of JMS to use eg stomp too
 				+ "    \"metaData\": {"
+				// the ID of the internal service to be called
 				+ "        \"serviceId\": \"workflowService\","
+				// the context in which the service should be called
 				+ "        \"contextId\": \"foo\""
 				+ "    },"
+				// the arguments with which the workflowService method should be called
 				+ "    \"args\": ["
+				// the name of the workflow to be executed
 				+ "        \"simpleFlow\","
+				// the params which should be put into the prcoess bag initially
 				+ "        {"
 				+ "        }"
 				+ "    ]"
 				+ "}";
 			
+			// the OpenEngSB connection URL
 			Uri connecturi = new Uri("activemq:tcp://localhost:6549");
 			
 			Console.WriteLine("About to connect to " + connecturi);
