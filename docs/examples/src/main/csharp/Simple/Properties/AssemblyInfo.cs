@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-﻿#region Using directives
+#region Using directives
 
 using System;
 using System.Reflection;
@@ -25,11 +25,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OpenEngSB")]
+[assembly: AssemblyTitle("Simple")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OpenEngSB")]
+[assembly: AssemblyProduct("Simple")]
 [assembly: AssemblyCopyright("Copyright 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -15,23 +15,96 @@
  */
 
 using System;
-
-// TODO: Provide and explain this example
+using Apache.NMS;
 
 /*
- * The Simple example should show what is required to connect to an activeMQ server.
- * Therefore download the latest activeMQ server for your platform and start it. If
- * you're running the activeMQ server on the default ports no changes should be required
- * to run this example.
+ * This example has nothing to do with the OpenEngSB directly but rather simply shows 
+ * how to communicate via NMS. You need to start AMQ(http://activemq.apache.org/download.html)
+ * first. If you do not change any ports and run AMQ on the same computer as this example you do
+ * not have to change anything else. The sources for this example are copied from
+ * 
+ *  https://cwiki.apache.org/NMS/nms-simple-synchornous-consumer-example.html
+ * 
  */
 
-namespace OpenEngSB
+namespace Simple
 {
 	class Program
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			// Example connection strings:
+			//    activemq:tcp://activemqhost:61616
+			//    stomp:tcp://activemqhost:61613
+			//    ems:tcp://tibcohost:7222
+			//    msmq://localhost
+
+			Uri connecturi = new Uri("activemq:tcp://localhost:61616");
+			
+			Console.WriteLine("About to connect to " + connecturi);
+
+			// NOTE: ensure the nmsprovider-activemq.config file exists in the executable folder.
+			IConnectionFactory factory = new NMSConnectionFactory(connecturi);
+
+			using(IConnection connection = factory.CreateConnection())
+				using(ISession session = connection.CreateSession())
+			{
+				// Examples for getting a destination:
+				//
+				// Hard coded destinations:
+				//    IDestination destination = session.GetQueue("FOO.BAR");
+				//    Debug.Assert(destination is IQueue);
+				//    IDestination destination = session.GetTopic("FOO.BAR");
+				//    Debug.Assert(destination is ITopic);
+				//
+				// Embedded destination type in the name:
+				//    IDestination destination = SessionUtil.GetDestination(session, "queue://FOO.BAR");
+				//    Debug.Assert(destination is IQueue);
+				//    IDestination destination = SessionUtil.GetDestination(session, "topic://FOO.BAR");
+				//    Debug.Assert(destination is ITopic);
+				//
+				// Defaults to queue if type is not specified:
+				//    IDestination destination = SessionUtil.GetDestination(session, "FOO.BAR");
+				//    Debug.Assert(destination is IQueue);
+				//
+				// .NET 3.5 Supports Extension methods for a simplified syntax:
+				//    IDestination destination = session.GetDestination("queue://FOO.BAR");
+				//    Debug.Assert(destination is IQueue);
+				//    IDestination destination = session.GetDestination("topic://FOO.BAR");
+				//    Debug.Assert(destination is ITopic);
+
+				IDestination destination = session.GetDestination("queue://FOO.BAR");
+				Console.WriteLine("Using destination: " + destination);
+
+				// Create a consumer and producer
+				using(IMessageConsumer consumer = session.CreateConsumer(destination))
+					using(IMessageProducer producer = session.CreateProducer(destination))
+				{
+					// Start the connection so that messages will be processed.
+					connection.Start();
+					producer.DeliveryMode = MsgDeliveryMode.Persistent;
+					
+					// Send a message
+					ITextMessage request = session.CreateTextMessage("Hello World!");
+					request.NMSCorrelationID = "abc";
+					request.Properties["NMSXGroupID"] = "cheese";
+					request.Properties["myHeader"] = "Cheddar";
+
+					producer.Send(request);
+
+					// Consume a message
+					ITextMessage message = consumer.Receive() as ITextMessage;
+					if(message == null)
+					{
+						Console.WriteLine("No message received!");
+					}
+					else
+					{
+						Console.WriteLine("Received message with ID:   " + message.NMSMessageId);
+						Console.WriteLine("Received message with text: " + message.Text);
+					}
+				}
+			}
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
