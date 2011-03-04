@@ -16,6 +16,13 @@
 
 using System;
 
+// TODO: Provide and explain this example
+
+/*
+ * The example shown in the manual, explaining how an Workflow can be called at the OpenEngSB
+ * is implemented here in csharp showing how such an implementation could finally look like.
+ */
+
 namespace Workflow
 {
 	class Program
@@ -23,9 +30,6 @@ namespace Workflow
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("Hello World!");
-			
-			// TODO: Implement Functionality Here
-			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}

@@ -16,6 +16,13 @@
 
 using System;
 
+// TODO: Provide and explain this example
+
+/*
+ * The connector example shows how you could provide a connector for an OpenEngSB
+ * domain and how to connect and use the connector from the OpenEngSB.
+ */
+
 namespace Connector
 {
 	class Program
@@ -23,9 +30,6 @@ namespace Connector
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("Hello World!");
-			
-			// TODO: Implement Functionality Here
-			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}

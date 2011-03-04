@@ -16,6 +16,15 @@
 
 using System;
 
+// TODO: Provide and explain this example
+
+/*
+ * The Simple example should show what is required to connect to an activeMQ server.
+ * Therefore download the latest activeMQ server for your platform and start it. If
+ * you're running the activeMQ server on the default ports no changes should be required
+ * to run this example.
+ */
+
 namespace OpenEngSB
 {
 	class Program
@@ -23,9 +32,6 @@ namespace OpenEngSB
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("Hello World!");
-			
-			// TODO: Implement Functionality Here
-			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
