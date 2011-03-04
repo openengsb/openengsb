@@ -62,7 +62,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     private static final String DEBUG_PORT = "5005";
 
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -190,6 +190,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Helper.setLogLevel(LOG_LEVEL),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
+            // Helper.activateDebugging("5005"),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")

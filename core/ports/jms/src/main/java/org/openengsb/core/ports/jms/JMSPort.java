@@ -33,6 +33,7 @@ import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.communication.RequestHandler;
+import org.openengsb.core.common.context.ContextHolder;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -121,6 +122,7 @@ public class JMSPort implements IncomingPort, OutgoingPort {
                         RequestMapping readValue =
                             mapper.readValue(new StringReader(textMessage.getText()), RequestMapping.class);
                         readValue.resetArgs();
+                        ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
                         MethodReturn handleCall = requestHandler.handleCall(readValue);
                         StringWriter stringWriter = new StringWriter();
                         mapper.writeValue(stringWriter, handleCall);

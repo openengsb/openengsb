@@ -32,8 +32,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
 
     // @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OsgiServiceUtils.getServiceWithId(OutgoingPort.class, "jms-json");
+        OutgoingPort serviceWithId = OsgiServiceUtils.getServiceWithId(OutgoingPort.class, "jms-json");
         System.out.println("ServiceID:" + serviceWithId);
         assertNotNull(serviceWithId);
     }
@@ -46,7 +45,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
         // template.setReceiveTimeout(4000);
         String request =
             "{\"callId\":\"12345\",\"answer\":true,\"classes\":[\"java.lang.String\", \"org.openengsb.core.common.workflow.model.ProcessBag\"],"
-                    + "\"methodName\":\"executeWorkflow\",\"metaData\":{\"serviceId\":\"workflowService\"},\"args\":[\"simpleFlow\", {}]}";
+                    + "\"methodName\":\"executeWorkflow\",\"metaData\":{\"serviceId\":\"workflowService\", \"contextId\":\"foo\"},\"args\":[\"simpleFlow\", {}]}";
         System.out.println("Seding request");
         template.convertAndSend("receive", request);
         Object receiveAndConvert = template.receiveAndConvert("12345");
