@@ -31,6 +31,9 @@
   </service>
 
   <service interface="org.openengsb.core.common.workflow.WorkflowService">
+    <service-properties>
+      <entry key="id" value="workflow"/>
+    </service-properties>
     <ref component-id="workflowService" />
   </service>
 
