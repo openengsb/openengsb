@@ -143,15 +143,15 @@ table.bodyTable tr.a:hover, table.bodyTable tr.b:hover {
   border: 1px solid #999;
   overflow:auto
 }
-dt {
+/*
+ * Replaced <dt> properties to enable correct online
+ * manual formatting.
+ */
+span.term, span.part {
   padding: 4px 4px 4px 24px;
   color: #333333;
-  background-color: #ccc;
   font-weight: bold;
   font-size: 14px;
-  background-image: url(../images/h3.jpg);
-  background-repeat: no-repeat;
-  background-position: left bottom;
 }
 .subsectionTitle {
   font-size: 13px;
