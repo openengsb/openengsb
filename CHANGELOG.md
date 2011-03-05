@@ -1,3 +1,48 @@
+openengsb-1.1.0.RC3 2011-03-06
+-----------------------------------------------------
+
+This release contains further stabilisations toward openengsb-1.1.0.RELEASE
+
+### Highlights
+  * Corrected Homepage Design
+  * Increase Documentation
+  * Fix various bugs
+
+### Details
+** Bug
+    * [OPENENGSB-971] - Download page linux and windows link both point to windows distributions
+    * [OPENENGSB-994] - Typo: Website Download
+    * [OPENENGSB-1004] - Show icons side-by-side with text on openengsb.org
+    * [OPENENGSB-1016] - background looks odd when displaying manual
+    * [OPENENGSB-1027] - Quickstart example points to src releases, not binary releases
+    * [OPENENGSB-1034] - Export Worfklowservice with correct interfaces
+    * [OPENENGSB-1043] - Example at openengsb.org does not include that it has to be installed first
+    * [OPENENGSB-1045] - JMS Ports implementation does not use dynamic import
+    * [OPENENGSB-1046] - Workflow service is not exported with correct interfaces
+
+** Improvement
+    * [OPENENGSB-797] - Homepage Design: Black Header
+    * [OPENENGSB-854] - Eye catcher - Graphical overview
+    * [OPENENGSB-857] - Explain usefulness of OpenEngSB on frontpage
+    * [OPENENGSB-859] - Layout - Smoothen OpenEngSB logo on Frontpage
+    * [OPENENGSB-860] - Online manual usability
+    * [OPENENGSB-862] - Layout - Update OpenEngSB logo on Facebook
+    * [OPENENGSB-864] - Spellcheck user manual
+    * [OPENENGSB-905] - make UI Tests localizable
+    * [OPENENGSB-1000] - Add source download option to download page
+    * [OPENENGSB-1018] - Document proxy creation
+    * [OPENENGSB-1029] - Remove subprojects part from menu to single page
+
+** Library Upgrade
+    * [OPENENGSB-982] - Upgrade to openengsb-root-8
+    * [OPENENGSB-992] - upgrade wicket to 1.4.16
+
+** Task
+    * [OPENENGSB-968] - release openengsb-1.1.0.RC3
+    * [OPENENGSB-970] - Add Stefan Paula as contributor
+    * [OPENENGSB-975] - Identify PAX as optional in Contribution how-to
+    * [OPENENGSB-1063] - Upgrade copyright in manual to 2009-2011
+
 openengsb-1.1.0.RC2 2011-02-18
 -----------------------------------------------------
 
