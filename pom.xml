@@ -1,19 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -25,17 +29,21 @@
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
-    <karaf.version>2.1.3</karaf.version>
-    <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
+    <karaf.version>2.2.0</karaf.version>
+    <aries.blueprint.version>0.3</aries.blueprint.version>
+    <aries.proxy.version>0.3</aries.proxy.version>
+    <aries.util.version>0.3</aries.util.version>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Labouring</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Luigi</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Nifty</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Nelson</openengsb.version.name.noun>
+    <openengsb.version.stable>1.1.0.RC2</openengsb.version.stable>
     <!-- maven plugin versions -->
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
     <maven.plugin.release.version>2.1</maven.plugin.release.version>
+    <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
     <!-- Dependency Versions -->
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <junit.version>4.8.2</junit.version>
@@ -43,23 +51,23 @@
     <mvn.core.version>3.0</mvn.core.version>
     <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
     <paxrunner.version>1.5.0</paxrunner.version>
-    <commons.io.version>1.4</commons.io.version>
-    <commons.compress.version>1.1</commons.compress.version>
     <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
+    <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current />
+    <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
+    <repos.source>http://github.com</repos.source>
     <!-- Internal root versions -->
-    <openengsb.maven.plugin.version>1.2.0-SNAPSHOT</openengsb.maven.plugin.version>
+    <openengsb.maven.plugin.version>1.3.0</openengsb.maven.plugin.version>
   </properties>
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>7-SNAPSHOT</version>
+    <version>9</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -126,9 +134,24 @@
     </extensions>
     <plugins>
       <plugin>
-        <groupId>org.openengsb.tooling</groupId>
+        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <version>${openengsb.maven.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>features-maven-plugin</artifactId>
+        <version>${karaf.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>maven-notice-plugin</artifactId>
+        <configuration>
+          <noticeTemplate>etc/notice/NOTICE.template</noticeTemplate>
+          <licenseMapping>
+            <param>etc/notice/license-mapping.xml</param>
+          </licenseMapping>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -200,7 +223,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
       <build>
         <plugins>
@@ -225,7 +248,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
       <build>
         <plugins>
@@ -270,27 +293,234 @@
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>integration-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>*</exclude>
-              </excludes>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <profile><id>6343fa17-9805-4e0e-903a-cbf3060367a8</id><build><plugins>
+  <plugin>
+    <inherited>false</inherited>
+    <groupId>com.mycila.maven-license-plugin</groupId>
+    <artifactId>maven-license-plugin</artifactId>
+    <version>1.8.0</version>
+    <configuration>
+      <!-- header is added dynamically -->
+      <failIfMissing>true</failIfMissing>
+      <aggregate>true</aggregate>
+      <strictCheck>true</strictCheck>
+      <excludes>
+        <!-- openengs-maven-plugin test resources -->
+        <exclude>src/main/resources/license/header.txt</exclude>
+        <eclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
+        <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
+        <!-- #################################### -->
+        <exclude>docs/examples/**/*.config</exclude>
+        <exclude>etc/eclipse/checkstyle.xml</exclude>
+        <exclude>license.txt</exclude>
+        <exclude>**/*.vm</exclude>
+        <exclude>**/license.txt</exclude>
+        <exclude>runner/**</exclude>
+        <exclude>assembly/runner/**</exclude>
+        <exclude>features/**</exclude>
+        <exclude>NOTICE</exclude>
+        <exclude>**/*.3pm</exclude>
+        <exclude>**/*.dll</exclude>
+        <exclude>**/*.pdb</exclude>
+        <exclude>**/*.pdf</exclude>
+        <exclude>**/LICENSE</exclude>
+        <exclude>**/*checkstyle.xml</exclude>
+        <exclude>**/*.log.*</exclude>
+        <exclude>**/*.log</exclude>
+        <exclude>**/*.packlist</exclude>
+        <exclude>**/*.pod</exclude>
+        <exclude>**/imports</exclude>
+        <exclude>**/globals</exclude>
+        <exclude>**/.keep</exclude>
+        <exclude>**/EngSB.sln</exclude>
+        <exclude>**/nb-configuration.xml</exclude>
+        <exclude>**/*.checkstyle</exclude>
+        <exclude>**/*.rf</exclude>
+      </excludes>
+      <mapping>
+        <bnd>SCRIPT_STYLE</bnd>
+        <drl>SCRIPT_STYLE</drl>
+        <index>SCRIPT_STYLE</index>
+        <gitignore>SCRIPT_STYLE</gitignore>
+        <cfg>SCRIPT_STYLE</cfg>
+        <wsdl>XML_STYLE</wsdl>
+        <csproj>XML_STYLE</csproj>
+        <rf>XML_STYLE</rf>
+        <composite>SCRIPT_STYLE</composite>
+        <config>XML_STYLE</config>
+        <script>DOUBLESLASH_STYLE</script>
+        <rule>SCRIPT_STYLE</rule>
+      </mapping>
+    <header>/tmp/d71df698-7ac7-4e1d-b95f-68c58664d0301817720399134277020.txt</header></configuration>
+    <executions>
+      <execution>
+        <id>check-headers</id>
+        <phase>validate</phase>
+        <goals>
+          <!-- the goal (check/format) is added dynamically -->
+        <goal>check</goal></goals>
+      </execution>
+    </executions>
+  </plugin>
+
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-checkstyle-plugin</artifactId>
+    <version>${maven.plugin.checkstyle.version}</version>
+    <configuration>
+      <!-- the config location is added dynamically by the mojo -->
+      <consoleOutput>true</consoleOutput>
+      <enableRulesSummary>true</enableRulesSummary>
+      <failsOnError>true</failsOnError>
+      <includeTestSourceDirectory>true</includeTestSourceDirectory>
+    <configLocation>file:/tmp/ded4ece8-ff17-49d0-a994-ea57e5eab1bc4880715881534529489.xml</configLocation></configuration>
+    <executions>
+      <execution>
+        <id>check</id>
+        <phase>verify</phase>
+        <goals>
+          <goal>checkstyle</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+      <excludes>
+        <exclude>*</exclude>
+      </excludes>
+      <includes>
+        <include>**/*Test.java</include>
+        <include>**/*IT.java</include>
+      </includes>
+    </configuration>
+  </plugin>
+</plugins></build></profile></profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-example</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-memoryauditing</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-events</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-persistence</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-security</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-workflow</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-auditing</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-build</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-deploy</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-example</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-issue</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-notification</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-report</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-scm</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb</artifactId>
+        <version>${project.version}</version>
+        <type>xml</type>
+        <classifier>features</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.ui</groupId>
+        <artifactId>openengsb-ui-common</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.ui</groupId>
+        <artifactId>openengsb-ui-admin</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.wrapped</groupId>
+        <artifactId>net.sourceforge.htmlunit-all</artifactId>
+        <version>${htmlunit.wrapped.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <repositories>
     <repository> <!-- Additional Repositories for Karaf -->

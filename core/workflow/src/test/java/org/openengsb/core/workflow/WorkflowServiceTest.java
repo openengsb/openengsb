@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.workflow;
@@ -28,6 +32,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -50,6 +55,16 @@ import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
+    private DummyExampleDomain logService;
+    private DummyNotificationDomain notification;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        logService = (DummyExampleDomain) domains.get("example");
+        notification = (DummyNotificationDomain) domains.get("notification");
+    }
+
     @Test
     public void testProcessEvent() throws Exception {
         Event event = new Event();
@@ -68,7 +83,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         Event event = new Event();
         service.processEvent(event);
         verify(notification, atLeast(1)).notify("Hello");
-        verify(logService, atLeast(1)).doSomething("Hello World");
+        verify((DummyExampleDomain) domains.get("example"), atLeast(1)).doSomething("Hello World");
         verify(myservice, atLeast(1)).call();
     }
 
@@ -168,9 +183,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             }
         });
         service.waitForFlowToFinish(id);
-        verify(report, times(1)).collectData();
+        verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
-        verify(deploy, times(1)).deployProject();
+        verify((DummyDeploy) domains.get("deploy"), times(1)).deployProject();
     }
 
     @Test
@@ -309,5 +324,15 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             }
         };
         return task;
+    }
+
+    @Test
+    public void testExecuteWorkflow() throws Exception {
+        Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Process);
+        System.out.println(list);
+        ProcessBag result = service.executeWorkflow("simpleFlow", new ProcessBag());
+        assertThat((Integer) result.getProperty("test"), is(42));
+        assertThat((String) result.getProperty("alternativeName"),
+            is("The answer to life the universe and everything"));
     }
 }

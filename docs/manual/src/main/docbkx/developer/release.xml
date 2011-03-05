@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -111,7 +115,7 @@
 	</section>
   </section>
 
-  <section>
+  <section xml:id="developer.release.configuremaven">
     <title>Configure Maven</title>
     <para>For the right rights to deploy to maven central and upload maven site to openengsb.org the following
     entries are required in your ~/.m2/settings.xml file:
@@ -181,8 +185,12 @@
     <para>Performing a release is quite simple, because of the maven release plugin and some scripts. Simple
     follow these steps:</para>
     <itemizedlist>
-      <listitem>1) Execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
-      <listitem>Now that the artifacts are available for sync to maven central you have to push them from the
+      <listitem>First of all make sure that the NOTICE file is up-to-date using notice:generate</listitem>
+      <listitem>
+        Now invoke <command>mvn openengsb:release{Final|Milestone|Support|RC} -DconnectionUrl=path/to/your/repo</command>
+        (e.g. mvn openengsb:releaseMilestone -DconnectionUrl=scm:git:file://~/openengsb)
+      </listitem>
+      <listitem>After the artifacts are available for sync to maven central you have to push them from the
       staging to the final repository. Therefore follow the steps as explained
       <link xlink:href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">
       here</link></listitem>

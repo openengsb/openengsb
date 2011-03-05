@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -26,9 +30,8 @@
   <title>External Domains and Connectors</title>
 
   <para>Since tools are mostly neither developed for the OpenEngSB nor written in any way that they can be directly
-  deployed in the OpenEngSB environment a way is required to connect via different programming languages than Java
-  and from multible protocols. This section covers the examples in different languages and protocols, how such
-  a thing can be achived.</para>
+    deployed in the OpenEngSB environment a way is required to connect via different programming languages than Java
+    and from multible protocols.</para>
 
   <section xml:id="developer.plugins.proxy">
     <title>Proxying</title>
@@ -43,55 +46,7 @@
         The service id is added as metadata do identify the service that shold get called on the remote server. It may not
         be needed for certain implementations.</para>
       <para>The proxy calls the CallRouter which redirects the methodcall to the respective Port. Security is implemented
-      in this layer.</para>
-    </section>
-  </section>
-
-  <section xml:id="developer.ports.jms">
-    <title>Using JMS proxying</title>
-    <para>The current JMS Connector allows for internal method calls being redirected via JMS as well as internal
-    services being called.</para>
-    <section>
-      <title>Proxying internal Connector calls</title>
-      <para>Whenever now a method is sent through the JMS Port the call is marshalled and sent via JMS to a queue named "receive"". 
-        The marshalling is done via JSON. The mapping has the parameters methodName, args, classes, metadata and potentially answer 
-        and callId. methodName gives the name of the method to call. Args are the serialised parameters of the method. classes are 
-        the types of the arguments. This way it is easy to unmarshall the args into the appropriate classes. metadata is a simple Map
-        which stores key value pairs. answer can simply be yes or no and denotes if the methodcall wants an answer to the call. callId
-        gives the return queue the caller will listen to for an answer.
-      </para>
-      <para>An answer can have the type, arg, className and metaData properties. type can be Object, Exception or Void. arg is the serialised
-        form of the return argument. className is the runtime class of the arg for deserialisation. metadata is a simple key value store.
-      </para>
-    </section>
-    <section>
-      <title>Calling internal Services</title>
-      <para>To call an internal Service send a methodcall as described before to the "receive" queue on the on the server you want to call.
-       The service works exactly as defined before.</para>
-      <para>By default a JMS Broker is started on port 6549.</para>
-    </section>
-    <section>
-      <title>Examples</title>
-      <section>
-        <title>Connect With Python</title>
-        <para>To test the OPENENGSB JMS implementation with Python please follow the
-          <link xlink:href="${github}/docs/examples/connectors/python/PythonClient.txt">instructions</link>
-        </para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-python-connector.zip">here</link></para>
-      </section>
-      <section xml:id="developer.plugins.csharp">
-        <title>Connect With CSharp</title>
-        <para>The CSharp connector is written on basis of the Apache ActiveMQ NMS connector and with help of the Spring
-        NmsTemplate. The code is checked into the repository and could be found in <literal>nonjava/csharp</literal>.
-        There an EngSB.sln file. This project file has been developed with SharpDevelop 3, but is also tested with
-        VisualStudio 2008 CSharp Express Edition with the .Net Framework 3.5.</para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-csharp-connector.zip">here</link></para>
-      </section>
-      <section xml:id="developer.plugins.perl">
-        <title>Connect With Perl</title>
-        <para>As shown in this example you can connect to the OpenEngSB in a similar way as with Python or CSharp.</para>
-        <para>The example can be downloaded <link xlink:href="${repos.example}-perl-connector.zip">here</link></para>
-      </section>
+        in this layer.</para>
     </section>
   </section>
 </chapter>

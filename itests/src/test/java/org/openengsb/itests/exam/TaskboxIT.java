@@ -1,23 +1,29 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -58,7 +64,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
         if (!contextService.getAvailableContexts().contains("it-taskbox")) {
             contextService.createContext("it-taskbox");
             contextService.setThreadLocalContext("it-taskbox");
-            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         } else {
             contextService.setThreadLocalContext("it-taskbox");
         }
@@ -78,19 +83,22 @@ public class TaskboxIT extends AbstractExamTestHelper {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
 
         workflowService.startFlow("TaskDemoWorkflow", parameterMap);
-
+        System.out.println("workflow started, getting processId");
         assertNotNull(processBag.getProcessId());
-        assertTrue(taskboxService.getOpenTasks().size() == 1);
+        System.out.println("got processId");
+        assertThat(taskboxService.getOpenTasks().size(), is(1));
+        System.out.println("opentasks is 1");
 
         Task task = taskboxService.getOpenTasks().get(0);
+        System.out.println("got task");
         assertEquals(task.getProcessId(), processBag.getProcessId());
         assertEquals(task.getProperty("test"), "test");
         assertEquals(task.getTaskType(), "demo");
         assertNotNull(task.getTaskId());
-
+        System.out.println("task correct, finishing");
         taskboxService.finishTask(task);
         assertTrue(taskboxService.getOpenTasks().size() == 0);
     }
@@ -99,17 +107,17 @@ public class TaskboxIT extends AbstractExamTestHelper {
     public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException, IOException, RuleBaseException {
         addWorkflow("TaskDemoWorkflow");
 
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
 
         workflowService.startFlow("TaskDemoWorkflow");
-        assertTrue(taskboxService.getOpenTasks().size() == 1);
+        assertThat(taskboxService.getOpenTasks().size(), is(1));
 
         Task task = taskboxService.getOpenTasks().get(0);
         assertNotNull(task.getProcessId());
         assertNotNull(task.getTaskId());
 
         taskboxService.finishTask(task);
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
     }
 
     @Test
@@ -117,12 +125,12 @@ public class TaskboxIT extends AbstractExamTestHelper {
         TaskboxException {
         addWorkflow("TaskDemoWorkflow");
 
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));;
 
         long id = workflowService.startFlow("TaskDemoWorkflow");
         long id2 = workflowService.startFlow("TaskDemoWorkflow");
 
-        assertTrue(taskboxService.getOpenTasks().size() == 2);
+        assertThat(taskboxService.getOpenTasks().size(), is(2));;
 
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 1);
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);
@@ -131,12 +139,12 @@ public class TaskboxIT extends AbstractExamTestHelper {
         Task task2 = taskboxService.getTasksForProcessId(String.valueOf(id2)).get(0);
 
         taskboxService.finishTask(task1);
-        assertTrue(taskboxService.getOpenTasks().size() == 1);
+        assertThat(taskboxService.getOpenTasks().size(), is(1));
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 0);
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);
 
         taskboxService.finishTask(task2);
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 0);
     }
 
@@ -158,7 +166,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
         assertEquals(task.getTaskType(), "step2");
 
         taskboxService.finishTask(task);
-        assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
     }
 
     private void addWorkflow(String workflow) throws IOException, RuleBaseException {

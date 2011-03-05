@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.common.proxy;
@@ -60,12 +64,12 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             ServiceDescriptor.builder(getStrings()).id(provider.getId()).serviceType(getDomainInterface())
                 .implementationType(getDomainInterface())
                 .name("proxy.name", provider.getName().getString(Locale.getDefault())).description("proxy.description");
-        builder.attribute(builder.newAttribute().id("proxyId").name("proxy.id").description("proxy.id.description")
-            .build());
-        builder.attribute(builder.newAttribute().id("destination").name("destination.name")
-            .description("destination.description").build());
-        builder.attribute(builder.newAttribute().id("serviceId").name("serviceId.name")
-            .description("serviceId.description").build());
+        builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
+            .description("proxy.port.description").build());
+        builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
+            .description("proxy.destination.description").build());
+        builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
+            .description("proxy.serviceId.description").build());
         return builder.build();
     }
 
@@ -80,7 +84,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             if (!services.containsKey(id)) {
                 ProxyConnector handler = new ProxyConnector();
                 handler.setCallRouter(router);
-                handler.setPortId(attributes.get("proxyId"));
+                handler.setPortId(attributes.get("portId"));
                 String destination = attributes.get("destination");
                 String serviceId = attributes.get("serviceId");
                 handler.addMetadata("serviceId", serviceId);
@@ -91,7 +95,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                 ServiceRegistration registration =
                     getBundleContext().registerService(
                         new String[]{getDomainInterface().getName(), Domain.class.getName()}, newProxyInstance,
-                        createNotificationServiceProperties(id));
+                        createNotificationServiceProperties(id, attributes));
                 services.put(id, registration);
             }
         }

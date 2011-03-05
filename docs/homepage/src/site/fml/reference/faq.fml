@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -21,21 +25,25 @@
   <part id="General">
     <title>General questions about the OpenEngSB</title>
     <faq id="What">
-      <question>What is the OpenEngSB</question>
+      <question>What is OpenEngSB?</question>
       <answer>
         A short introduction can be found <a href="http://openengsb.org/about.html">here</a>.
         For further information please consult the <a href="http://openengsb.org/manual/index.html">user manual</a>.
       </answer>
     </faq>
     <faq id="why">
-      <question>Why is the OpenEngSB developed as a free project?</question>
+      <question>Why is OpenEngSB developed as open-source project?</question>
       <answer>
         <p>
-          The OpenEngSB is developed as a FOSS project to provide developers with a free and adaptable platform for the
-          integration of different engineering tools. As typical for frameworks which are used in heterogeneous systems a
-          flexible and adaptable solution is required, allowing developers to directly review and adapt the base framework
-          they are using. Commercial projects and licenses does not give the freedom to developer to do what they wish and
-          what is best for their project. The OpenEngSB gives them, using the liberal Apache2 license, this freedom back.
+          OpenEngSB is developed as a FOSS (Free and open-source software)
+          project to provide developers with a transparent and adaptable
+          framework for integration of engineering tools. As usual for
+          successful plattforms in heterogeneous systems open source-access
+          allows developers to directly review and adapt the base framework
+          to their needs. Closed-source licenses do not provide this kind of
+          freedom and prevent framework users from doing what is best for their
+          project. OpenEngSB uses the liberal Apache License 2.0 and ensures
+          sustained transparency.
         </p>
       </answer>
     </faq>
@@ -49,20 +57,22 @@
       </answer>
     </faq>
     <faq id="platforms">
-      <question>What platforms does the OpenEngSB support?</question>
+      <question>What platforms does OpenEngSB support?</question>
       <answer>
         <p>
-          The OpenEngSB is developed completely in Java, which makes it platform independent. Nevertheless, most of the OpenEngSB developers
-          are using various Linux distributions or Microsoft windows. While the OpenEngSB is also tested on Mac regularly we can use developer
-          and tester using different platforms more intensive  (Solaris, Macintosh, ...) which provide us with feedback.
+          OpenEngSB is written in Java entirely which makes it platform
+          independent and made a broad variety of plattforms prominent among
+          developers and users. Typically used are Debian-Linux distributions,
+          Microsoft Windows and Mac OS. This way OpenEngSB's plattform
+          independence is actively tested on a regular basis.
         </p>
       </answer>
     </faq>
     <faq id="license">
-      <question>What is the license?</question>
+      <question>What license is used?</question>
       <answer>
         <p>
-          The OpenEngSB is licensed under the business friendly Apache License, Version 2.0.
+          OpenEngSB is licensed under the business friendly open-source Apache License, Version 2.0.
         </p>
       </answer>
     </faq>
@@ -70,19 +80,23 @@
       <question>Where can I find the source code?</question>
       <answer>
         <p>
-          The source code is available at <a href="http://github.com/openengsb/openengsb">http://github.com/openengsb/openengsb</a>.
+          The source code is available at GitHub <a href="http://github.com/openengsb/openengsb">(http://github.com/openengsb/openengsb)</a>.
           For more information see <a href="http://openengsb.org/source-repository.html">http://openengsb.org/source-repository.html</a>.
         </p>
       </answer>
     </faq>
     <faq id="issues">
-      <question>Where can I file an issue?</question>
+      <question>Where can I file a bug report or feature request?</question>
       <answer>
         <p>
-          <a href="http://openengsb.org/issue-tracking.html">Here</a> is information about our issue tracking process. Please feel free
-          to let us know about any bugs, issues or other problems you encounter. We are especially happy about feedback regarding the
-          documentation of the OpenEngSB project. If you have ideas how to improve the OpenEngSB please contact us via the 
-          <a href="http://openengsb.org/community/mailinglists.html">mailing list</a> or feel free to create an issue.
+          <a href="http://openengsb.org/issue-tracking.html">Here</a> is
+          information about our issue tracking process. Please feel free
+          to let us know about any bugs, issues or other problems you
+          encounter. We are especially happy about feedback regarding the
+          documentation of the OpenEngSB project. If you have ideas on
+          improving OpenEngSB please contact us via the
+          <a href="http://openengsb.org/community/mailinglists.html">mailing
+          lists</a>.
         </p>
       </answer>
     </faq>
@@ -99,11 +113,13 @@
       </answer>
     </faq>
     <faq id="contribute">
-      <question>Can I debug the OpenEngSB source?</question>
+      <question>Can I debug OpenEngSB with source-code?</question>
       <answer>
         <p>
-          Yes; the moment you startup the OpenEngSB using maven pax:provision (or one of the scripts using this command, such as the run script) you can attach a 
-          remote debugger to localhost:5005 (from Eclipse, or any other IDE of your choice). That's it.
+          Yes. The moment you startup the OpenEngSB using "maven
+          openengsb:provision" (or one of the scripts using this command, such
+          as the run script) you can attach a remote debugger to localhost:5005
+          (from Eclipse, or any other IDE of your choice). That's it.
         </p>
       </answer>
     </faq>

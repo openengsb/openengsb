@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.workflow.internal;
@@ -27,10 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -56,9 +58,9 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.RemoteEventProcessor;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -69,15 +71,11 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.OsgiHelper;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Filter;
 
 public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor,
-        BundleContextAware, ServiceListener {
+        BundleContextAware {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
         " )\nthen\n  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
@@ -90,15 +88,11 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private static final String FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD = ", %s == \"%s\"";
 
     private RuleManager rulemanager;
-    private ContextCurrentService currentContextService;
     private BundleContext bundleContext;
-
-    private Map<String, Object> services = new HashMap<String, Object>();
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
     private ExecutorService executor = Executors.newCachedThreadPool();
 
-    private long timeout = 10000;
     private Lock workflowLock = new ReentrantLock();
 
     @Override
@@ -176,13 +170,26 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     @Override
+    public ProcessBag executeWorkflow(String processId, ProcessBag parameters) throws WorkflowException {
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("processBag", parameters);
+        long id = startFlow(processId, parameterMap);
+        try {
+            waitForFlowToFinish(id);
+        } catch (InterruptedException e) {
+            throw new WorkflowException(e);
+        }
+        return parameters;
+    }
+
+    @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         try {
             return startFlowInBackground(processId, parameterMap).get();
         } catch (InterruptedException e) {
             throw new WorkflowException(e);
         } catch (ExecutionException e) {
-            throw new WorkflowException(e.getCause());
+            throw new WorkflowException("unable to start workflow " + processId, e.getCause());
         }
     }
 
@@ -294,7 +301,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
-        String currentContextId = currentContextService.getThreadLocalContext();
+        String currentContextId = ContextHolder.get().getCurrentContextId();
         if (currentContextId == null) {
             throw new IllegalStateException("contextID must not be null");
         }
@@ -309,68 +316,6 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
         sessions.put(currentContextId, session);
         return session;
-    }
-
-    private Collection<String> findMissingGlobals() {
-        Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
-        globalsToProcess.remove("flowHelper");
-        globalsToProcess.removeAll(services.keySet());
-        return discoverNewGlobalValues(globalsToProcess);
-    }
-
-    private Collection<String> discoverNewGlobalValues(Collection<String> globalsToProcess) {
-        for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {
-            String g = iterator.next();
-            if (findGlobal(g)) {
-                iterator.remove();
-            }
-        }
-        return globalsToProcess;
-    }
-
-    private boolean findGlobal(String name) {
-        return findDomainGlobal(name) || findNonDomainGlobal(name);
-    }
-
-    private boolean findDomainGlobal(String name) {
-        String clazz = Domain.class.getName();
-        String filter = String.format("(&(openengsb.service.type=domain)(id=domain.%s))", name);
-        ServiceReference ref = findGlobalReference(name, clazz, filter);
-        if (ref == null) {
-            return false;
-        }
-        Object service = bundleContext.getService(ref);
-        services.put(name, service);
-        return true;
-    }
-
-    private ServiceReference findGlobalReference(String name, String clazz, String filter) {
-        ServiceReference[] allServiceReferences;
-        try {
-            allServiceReferences = bundleContext.getAllServiceReferences(clazz, filter);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalStateException(e);
-        }
-        if (allServiceReferences == null) {
-            return null;
-        }
-        if (allServiceReferences.length != 1) {
-            throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
-        }
-        return allServiceReferences[0];
-    }
-
-    private boolean findNonDomainGlobal(String name) {
-        String clazz = rulemanager.listGlobals().get(name);
-        String filter =
-            String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", name);
-        ServiceReference ref = findGlobalReference(name, clazz, filter);
-        if (ref == null) {
-            return false;
-        }
-        Object service = bundleContext.getService(ref);
-        services.put(name, service);
-        return true;
     }
 
     protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
@@ -422,72 +367,18 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
-        Collection<String> missingGlobals = findMissingGlobals();
-        log.info("populating globals");
-        if (missingGlobals.contains("osgiHelper")) {
-            OsgiHelper osgiHelper = new OsgiHelper();
-            osgiHelper.setBundleContext(bundleContext);
-            session.setGlobal("osgiHelper", osgiHelper);
-            missingGlobals.remove("osgiHelper");
-        }
-        if (!missingGlobals.isEmpty()) {
-            log.info("there are still some globals missing. waiting for: ");
-            log.info(missingGlobals);
-            waitForGlobals(missingGlobals);
-            if (!missingGlobals.isEmpty()) {
-                throw new WorkflowException("there are unassigned globals, maybe some service is missing "
-                        + missingGlobals);
-            }
-        }
-        for (Entry<String, Object> entry : services.entrySet()) {
-            session.setGlobal(entry.getKey(), entry.getValue());
-        }
-    }
-
-    private void waitForGlobals(Collection<String> missingGlobals) throws WorkflowException {
-        boolean hasChanged = true;
-        while (hasChanged && !missingGlobals.isEmpty()) {
+        Map<String, String> globals = rulemanager.listGlobals();
+        for (Map.Entry<String, String> global : globals.entrySet()) {
+            Class<?> globalClass;
             try {
-                synchronized (services) {
-                    services.wait(timeout);
-                }
-            } catch (InterruptedException e) {
-                throw new WorkflowException(e);
+                globalClass = bundleContext.getBundle().loadClass(global.getValue());
+            } catch (ClassNotFoundException e) {
+                throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
-            hasChanged = missingGlobals.removeAll(services.keySet());
+            Filter filter = OsgiServiceUtils.getFilterForLocation(globalClass, global.getKey());
+            Object osgiServiceProxy = OsgiServiceUtils.getOsgiServiceProxy(filter, globalClass);
+            session.setGlobal(global.getKey(), osgiServiceProxy);
         }
-    }
-
-    @Override
-    public void serviceChanged(ServiceEvent event) {
-        if (event.getType() == ServiceEvent.REGISTERED) {
-            ServiceReference serviceReference = event.getServiceReference();
-            if (serviceReference.getProperty("openengsb.service.type").equals("domain")) {
-                String id = (String) serviceReference.getProperty("id");
-                String name = id.replaceFirst("domain.", "");
-                Domain service = (Domain) bundleContext.getService(serviceReference);
-                synchronized (services) {
-                    services.put(name, service);
-                    services.notify();
-                }
-            } else if (serviceReference.getProperty("openengsb.service.type").equals("workflow-service")) {
-                String name = (String) serviceReference.getProperty("openengsb.workflow.globalid");
-                Object service = bundleContext.getService(serviceReference);
-                synchronized (services) {
-                    services.put(name, service);
-                    services.notify();
-                }
-            }
-        }
-
-    }
-
-    public void setCurrentContextService(ContextCurrentService currentContextService) {
-        this.currentContextService = currentContextService;
-    }
-
-    public void setServices(Map<String, Object> services) {
-        this.services = services;
     }
 
     @Override
@@ -497,10 +388,6 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     public void setRulemanager(RuleManager rulemanager) {
         this.rulemanager = rulemanager;
-    }
-
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
     }
 
 }

@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.common.internal;
@@ -24,6 +28,7 @@ import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.RequestHandler;
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
@@ -38,7 +43,12 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
         if (serviceId == null) {
             throw new IllegalArgumentException("missing definition of serviceid in methodcall");
         }
-        OpenEngSBService service = OsgiServiceUtils.getServiceWithId(bundleContext, OpenEngSBService.class, serviceId);
+        OpenEngSBService service;
+        try {
+            service = OsgiServiceUtils.getServiceWithId(OpenEngSBService.class, serviceId);
+        } catch (OsgiServiceNotAvailableException e) {
+            throw new IllegalStateException(e);
+        }
 
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(args));

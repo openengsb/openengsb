@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.common.service.impl;
@@ -50,6 +54,7 @@ public class OsgiDomainServiceTest {
     private ServiceReference serviceManagerReferenceMock;
     private ServiceManager serviceManagerMock;
     private NullDomain serviceMock;
+    private String connectorName = "nullConnector";
 
     private ServiceReference[] getServiceReferenceArray() {
         return allServices.toArray(new ServiceReference[allServices.size()]);
@@ -74,6 +79,7 @@ public class OsgiDomainServiceTest {
         String filter = String.format("(domain=%s)", NullDomain.class.getName());
         when(contextMock.getAllServiceReferences(NullDomain.class.getName(), filter)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
+
         when(contextMock.getAllServiceReferences(NullDomain.class.getName(), null)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
         when(contextMock.getAllServiceReferences(Domain.class.getName(), null)).thenReturn(
@@ -90,6 +96,9 @@ public class OsgiDomainServiceTest {
                 new ServiceReference[]{ serviceManagerReferenceMock });
         serviceManagerMock = mock(ServiceManager.class);
         when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
+        String filterConnector = String.format("(connector=%s)", connectorName);
+        when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filterConnector)).thenReturn(
+                new ServiceReference[]{ serviceManagerReferenceMock });
     }
 
     @Test
@@ -97,6 +106,13 @@ public class OsgiDomainServiceTest {
         List<DomainProvider> domains = service.domains();
         assertThat(domains, not(sameInstance(providerList)));
         assertThat(domains.get(0).getId(), equalTo(providerList.get(0).getId()));
+    }
+
+    @Test
+    public void testServiceManagersForConnectorName_shouldReturnServiceManagerForRegisterdConnector()
+        throws InvalidSyntaxException {
+        ServiceManager serviceManagers = service.serviceManagerForConnector(connectorName);
+        assertThat(serviceManagers, is(serviceManagerMock));
     }
 
     @Test

@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.itests.util;
@@ -53,8 +57,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
+    private static final String LOG_LEVEL = "WARN";
+    /**
+     * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached.
+     * Look for "Listening for transport dt_socket at address: <DEBUG_PORT>"
+     */
+    private static final boolean DEBUG = false;
+    private static final String DEBUG_PORT = "5005";
+
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -74,7 +86,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
         }
-        waitForBundle("org.openengsb.ui.web", SetupType.SPRING);
+        waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
         authenticateAsAdmin();
     }
 
@@ -172,10 +184,19 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Configuration
     public static Option[] configuration() throws Exception {
+        Option[] baseOptions = Helper.getDefaultOptions();
+        if (DEBUG) {
+            baseOptions = combine(baseOptions, Helper.activateDebugging(DEBUG_PORT));
+        }
         return combine(
-            Helper.getDefaultOptions(),
-            Helper.loadKarafFeatures("config", "ssh", "management", "wrapper", "obr"),
-            Helper.setLogLevel("WARN"),
+            baseOptions,
+            Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
+            Helper.setLogLevel(LOG_LEVEL),
+            mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
+                .versionAsInProject()),
+            // Helper.activateDebugging("5005"),
+            mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
+                .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")

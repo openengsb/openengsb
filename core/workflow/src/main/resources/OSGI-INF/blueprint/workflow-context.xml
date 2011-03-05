@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="us-ascii" ?>
 <!--
 
-    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -30,13 +34,19 @@
     <ref component-id="ruleManager" />
   </service>
 
-  <service interface="org.openengsb.core.common.workflow.WorkflowService">
+  <service>
+  <interfaces>
+    <value>org.openengsb.core.common.workflow.WorkflowService</value>
+    <value>org.openengsb.core.common.OpenEngSBService</value>
+  </interfaces>
+    <service-properties>
+      <entry key="id" value="workflowService"/>
+    </service-properties>
     <ref component-id="workflowService" />
   </service>
 
   <bean id="workflowService" class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
     <property name="rulemanager" ref="ruleManager" />
-    <property name="currentContextService" ref="contextService" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
@@ -59,6 +69,7 @@
   <service interface="org.openengsb.core.workflow.taskbox.TaskboxServiceInternal">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="location.root" value="[taskboxinternal]" />
       <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
     </service-properties>
     <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceInternalImpl" init-method="init">

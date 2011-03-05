@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
 
@@ -36,26 +40,28 @@
 
     <section>
         <title>Writing Domains for the OpenEngSB</title>
-        <para>To crate a new Domain run <emphasis>../etc/scripts/gen-domain.sh</emphasis> in the <emphasis>domain</emphasis> folder.
-        The script will ask you for the name of your domain. Enter the domain name starting with a lower case letter.
+        <para>To create a new Domain run <emphasis>mvn openengsb:genDomain</emphasis>
+        (or use <filename>../etc/scripts/gen-domain.sh</filename>)
+        in the <filename>domain</filename> folder.
+        You will be asked for the name of your domain. Enter the domain name starting with a lower case letter.
         For the other questions valid defaults are given.
         </para>
-        <para>The new domain project will be added as a submodule. You eventually want to run <emphasis>mvn eclipse:eclipse</emphasis> and import the new project in eclipse.</para>
+        <para>The new domain project will be added as a submodule. You eventually want to run <emphasis>mvn openengsb:eclipse</emphasis> and import the new project in eclipse.</para>
         <para>
         Add the methods your domain supplies to the domain interface.
         If your domain raises any events add methods like<programlisting>void raiseEvent(YourEvent event);</programlisting> (your event class subtype of Event as single parameter) to the events interface.
-        
         </para>
     </section>
 
     <section xml:id="user.quickstart.connectors">
         <title>Writing Connectors for the OpenEngSB</title>
-        <para>To crate a new Connector run <emphasis>../etc/scripts/gen-connector.sh</emphasis> in the <emphasis>connector</emphasis> folder.
-        The script will ask you for the name of the domain you want to implement. Enter the domain name starting with a lower case letter.
+        <para>To create a new Connector run <emphasis>mvn openengsb:genConnector</emphasis>
+        (or use <filename>../etc/scripts/gen-connector.sh</filename>) in the <filename>connector</filename> folder.
+        You will be asked for the name of the domain you want to implement. Enter the domain name starting with a lower case letter.
         You may adapt the name of the implemented domain interface if you it does not match the naming convention.
         Supply the name of the connector staring with a lower case letter.
         </para>
-        <para>The new domain project will be added as a submodule. You eventually want to run <emphasis>mvn eclipse:eclipse</emphasis> and import the new project in eclipse.</para>
+        <para>The new domain project will be added as a submodule. You eventually want to run <emphasis>mvn openengsb:eclipse</emphasis> and import the new project in eclipse.</para>
 		<para>Implement the domain interface in the supplied class (unfortunately no method stubs are generated).</para>
         <para>Unimplemented domain methods should always throw an exception rather than return default value or do nothing.
             Therefore each domain method without body must throw DomainMethodNotImplementedException to indicate that requested domain functionality is not implemented.      

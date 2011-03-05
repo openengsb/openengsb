@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.core.common.workflow.model;
@@ -21,14 +25,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.common.util.IgnoreInQueries;
 import org.openengsb.core.common.workflow.ProcessBagException;
 
 /**
  * The ProcessBag is a workflow property that contains all neccessary information and workflow metadata.
- * 
+ *
  * It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow creates its own
  * new ProcessBag when none is passed on workflow start.
- * 
+ *
  * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
 public class ProcessBag implements Serializable {
@@ -96,7 +101,7 @@ public class ProcessBag implements Serializable {
 
     /**
      * Adds a new property only if it does not exist already
-     * 
+     *
      * @throws ProcessBagException if the key is already present
      */
     public void addProperty(String key, Object value) throws ProcessBagException {
@@ -115,6 +120,9 @@ public class ProcessBag implements Serializable {
     }
 
     public Object getProperty(String key) {
+        if (properties == null) {
+            return null;
+        }
         return properties.get(key);
     }
 
@@ -145,4 +153,17 @@ public class ProcessBag implements Serializable {
     protected void setEmpty() {
         empty = true;
     }
+
+    /*
+     * need these for jackson
+     */
+    @IgnoreInQueries
+    public Map<String, Object> getProperties() {
+        return this.properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
 }

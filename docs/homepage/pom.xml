@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+    Licensed to the Austrian Association for
+    Software Tool Integration (AASTI) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
@@ -48,6 +53,20 @@
     <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
+
+  <properties>
+    <!-- stable releases -->
+    <stable.version>${openengsb.version.stable}</stable.version>
+    <stable.win>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.zip</stable.win>
+    <stable.unix>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.tar.gz</stable.unix>
+    <stable.source>${repos.source}/openengsb/openengsb/downloads</stable.source>
+    <stable.source.zip>${repos.source}/openengsb/openengsb/zipball/openengsb-${stable.version}</stable.source.zip>
+    <stable.source.tar>${repos.source}/openengsb/openengsb/tarball/openengsb-${stable.version}</stable.source.tar>
+
+    <!-- development releases -->
+    <latest.version>${openengsb.version.number}</latest.version>
+    <latest.source>${repos.source}/openengsb/openengsb/downloads</latest.source>
+  </properties>
 
   <profiles>
     <profile>
@@ -82,7 +101,7 @@
       <id>rc</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -96,7 +115,7 @@
       <id>final</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -110,7 +129,7 @@
       <id>support</id>
       <properties>
         <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>

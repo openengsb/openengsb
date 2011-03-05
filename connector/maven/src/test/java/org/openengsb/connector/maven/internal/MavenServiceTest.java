@@ -1,17 +1,21 @@
 /**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.openengsb.connector.maven.internal;
@@ -65,7 +69,7 @@ public class MavenServiceTest {
         deleteLogFile();
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
-        this.mavenService = new MavenServiceImpl("42");
+        mavenService = new MavenServiceImpl("42");
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);
         deployEvents = mock(DeployDomainEvents.class);
@@ -207,11 +211,11 @@ public class MavenServiceTest {
         assertThat(event.getOutput(), containsString("SUCCESS"));
     }
 
-    @Ignore("OPENENGSB-881: buildStartEvent is raised too early")
     @Test
-    public void build_shouldCreateLogFileAndThrowItAway() throws Exception {
+    public void asyncBuild_shouldCreateLogFile() throws Exception {
         final Object syncFinish = new Object();
         final Object syncStart = new Object();
+        mavenService.setUseLogFile(true);
         mavenService.setSynchronous(false);
         mavenService.setProjectPath(getPath("test-unit-success"));
         mavenService.setCommand("clean compile");
@@ -225,7 +229,36 @@ public class MavenServiceTest {
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat("no logfile was created", listFiles.isEmpty(), is(false));
         waitForBuildEnd.join();
-        assertThat(listFiles.isEmpty(), is(true));
+    }
+
+    @Test
+    public void build_shouldAssertLogLimit() throws Exception {
+
+        final Object syncFinish = new Object();
+
+        int max = mavenService.getLogLimit();
+
+        for (int i = 1; i <= max; i++) {
+            String fileName = "dummyFile" + i;
+            File dummyFile = new File("log", fileName);
+            dummyFile.createNewFile();
+            int tresh = 1000 * i;
+            dummyFile.setLastModified(System.currentTimeMillis() - tresh);
+        }
+
+        mavenService.setUseLogFile(true);
+        mavenService.setSynchronous(false);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        mavenService.build();
+        makeNotifyAnswerForBuildSuccess(syncFinish);
+        Thread waitForBuildEnd = startWaiterThread(syncFinish);
+
+        waitForBuildEnd.join();
+        @SuppressWarnings("unchecked")
+        Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
+        assertThat(listFiles.size(), is(max));
+        assertThat(listFiles.contains(new File("dummyFile" + max)), is(false));
     }
 
     private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
