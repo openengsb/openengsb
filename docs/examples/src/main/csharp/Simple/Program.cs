@@ -53,8 +53,8 @@ namespace Simple
 			// NOTE: ensure the nmsprovider-activemq.config file exists in the executable folder.
 			IConnectionFactory factory = new NMSConnectionFactory(connecturi);
 
-			using(IConnection connection = factory.CreateConnection())
-				using(ISession session = connection.CreateSession())
+			using (IConnection connection = factory.CreateConnection())
+				using (ISession session = connection.CreateSession())
 			{
 				// Examples for getting a destination:
 				//
@@ -84,8 +84,8 @@ namespace Simple
 				Console.WriteLine("Using destination: " + destination);
 
 				// Create a consumer and producer
-				using(IMessageConsumer consumer = session.CreateConsumer(destination))
-					using(IMessageProducer producer = session.CreateProducer(destination))
+				using (IMessageConsumer consumer = session.CreateConsumer(destination))
+					using (IMessageProducer producer = session.CreateProducer(destination))
 				{
 					// Start the connection so that messages will be processed.
 					connection.Start();

@@ -42,7 +42,7 @@ namespace Workflow
 		public static void Main(string[] args)
 		{
 			// This ID is important since it will be also the queue a response will be sent.
-			string queueId = Guid.NewGuid();
+			string queueId = Guid.NewGuid().ToString();
 			// This message which should be send to the server
 			string requestMessage = ""
 				+ "{"
@@ -82,14 +82,14 @@ namespace Workflow
 			// NOTE: ensure the nmsprovider-activemq.config file exists in the executable folder.
 			IConnectionFactory factory = new NMSConnectionFactory(connecturi);
 
-			using(IConnection connection = factory.CreateConnection())
-				using(ISession session = connection.CreateSession())
+			using (IConnection connection = factory.CreateConnection())
+				using (ISession session = connection.CreateSession())
 			{
 				IDestination destination = session.GetDestination("receive");
 				Console.WriteLine("Using destination for sending: " + destination);
 
 				
-				using(IMessageProducer producer = session.CreateProducer(destination))
+				using (IMessageProducer producer = session.CreateProducer(destination))
 				{
 					connection.Start();
 					producer.DeliveryMode = MsgDeliveryMode.Persistent;
@@ -100,7 +100,8 @@ namespace Workflow
 				IDestination receiveDest = session.GetDestination(queueId);
 				Console.WriteLine("Using destination for receiving: " + receiveDest);
 				
-				using(IMessageConsumer consumer = session.CreateConsumer(receiveDest)) {
+				using (IMessageConsumer consumer = session.CreateConsumer(receiveDest)) 
+				{
 					ITextMessage message = consumer.Receive() as ITextMessage;
 					if(message == null)
 					{
