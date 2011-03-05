@@ -57,7 +57,7 @@
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
     <repos.source>http://github.com</repos.source>
     <!-- Internal root versions -->
-    <openengsb.maven.plugin.version>1.3.0-SNAPSHOT</openengsb.maven.plugin.version>
+    <openengsb.maven.plugin.version>1.3.0</openengsb.maven.plugin.version>
   </properties>
 
   <parent>
