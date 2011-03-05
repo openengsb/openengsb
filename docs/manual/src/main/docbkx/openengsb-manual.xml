@@ -29,7 +29,8 @@
     <copyright>
       <year>2009</year>
       <year>2010</year>
-      <holder>OpenEngSB Division, Vienna University of Technology</holder>
+      <year>2011</year>
+      <holder>Austrian Association for Software Tool Integration (AASTI)</holder>
     </copyright>
     <subtitle>${project.version} "${openengsb.version.name.adjective} ${openengsb.version.name.noun}"</subtitle>
     <author>
