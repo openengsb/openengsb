@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../../
-mvn clean install deploy -Prelease,nightly -Dmaven.test.skip=true
+source $(dirname $0)/openengsbplugin-common.sh
+
+cd $ABSPATH/../../
+
+mvn openengsb:releaseNightly
 

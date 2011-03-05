@@ -15,11 +15,14 @@
 # limitations under the License.
 #
 
+source $(dirname $0)/openengsbplugin-common.sh
+
 if [ -z "$1" ]; then
   echo "The new version is required as parameter."
   exit 0
 fi
 
-cd $(dirname $0)/../../
-mvn --batch-mode release:update-versions -DautoVersionSubmodules=true -DdevelopmentVersion=$1
+cd $ABSPATH/../../
+
+mvn openengsb:pushVersion -DdevelopmentVersion=$1
 
