@@ -50,9 +50,10 @@
   <section>
     <title>Step 1 - Use the archetype</title>
     <para> As the development of a connector is a recurring task the OpenEngSB developer team has prepared
-    Maven archetypes and useful scripts, which provide support for the initial creation of a connector.
-    The script for creating a new connector can be found at "/etc/scripts/gen-connector.sh".</para>
-    <para>Go into the directory "/connector" and run from there the "gen-connector.sh" script. The script
+    Maven archetypes and useful mojos, which provide support for the initial creation of a connector. A new connector
+    can be created by invoking <command>mvn openengsb:genConnector</command> (or using
+    <filename>/etc/scripts/gen-connector.sh</filename>)</para>
+    <para>Go into the directory "/connector" and invoke the mojo from there. It
     generates the result in the directory from where it is started, therefore it is recommended to run it
     from the "/connector" directory. You can also run it from a different directory and copy the results into
     the "/connector" directory. Fill in the following values (if no input is provided the default value is kept):</para>
@@ -140,7 +141,7 @@ name: OpenEngSB :: Connector :: Email
     <title>Step 3 - Configure the connector</title>
     <para>To configure the connector as part of the OpenEngSB two more things are necessary. At first
     we have to add the connector to the modules section of its parent pom if it is not already present there.
-    If you have run the "gen-connector" script in the "connector" directory this step should have already been performed
+    If you have run openengsb:genConnector in the "connector" directory this step should have already been performed
     automatically for you. To check or manually add the entry, open the file "/connector/pom.xml" and add the
     new connector to the modules section:</para>
 
@@ -174,7 +175,7 @@ name: OpenEngSB :: Connector :: Email
     <title>Step 4 - Implement the connector</title>
     <para>Now you can run the following command in the root folder of the OpenEngSB to create an eclipse
     project for the new connector: </para>
-    <programlisting>mvn eclipse:eclipse</programlisting>
+    <programlisting>mvn openengsb:eclipse</programlisting>
     <para>Now import the connector project into Eclipse and implement the email service by implementing
     the classes EmailServiceImpl.java and EmailServiceInstanceFactory.java. We won't go into detail about
     the actual mail implementation here, so we encapsulated the mailing functionality in a mail

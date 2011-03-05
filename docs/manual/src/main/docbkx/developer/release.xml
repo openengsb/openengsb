@@ -111,7 +111,7 @@
 	</section>
   </section>
 
-  <section>
+  <section xml:id="developer.release.configuremaven">
     <title>Configure Maven</title>
     <para>For the right rights to deploy to maven central and upload maven site to openengsb.org the following
     entries are required in your ~/.m2/settings.xml file:
@@ -182,7 +182,10 @@
     follow these steps:</para>
     <itemizedlist>
       <listitem>First of all make sure that the NOTICE file is up-to-date using notice:generate</listitem>
-      <listitem>Now execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
+      <listitem>
+        Now invoke <command>mvn openengsb:release{Final|Milestone|Support|RC} -DconnectionUrl=path/to/your/repo</command>
+        (e.g. mvn openengsb:releaseMilestone -DconnectionUrl=scm:git:file://~/openengsb)
+      </listitem>
       <listitem>After the artifacts are available for sync to maven central you have to push them from the
       staging to the final repository. Therefore follow the steps as explained
       <link xlink:href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">

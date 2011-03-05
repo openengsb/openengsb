@@ -40,10 +40,10 @@
     <title>Creating a new domain project</title>
 
     <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
-      structure. Furthermore, if the new domain is developed in the OpenEngSB repository, the
+      structure. The
       <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
-      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) should be
-      used for further convenience.
+      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) simplifies
+      the creation of a domain.
     </para>
 
     <section>
@@ -84,21 +84,19 @@
     </section>
 
     <section>
-      <title>Using <literal>openengsb-maven-plugin:genDomain</literal></title>
+      <title>Using <literal>mvn openengsb:genDomain</literal></title>
 
       <para>
-        First, make sure that the plugin is installed in your local maven repository
-        (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
-        Then the <literal>genDomain</literal> mojo should be executed from the domains directory in your OpenEngSB
+        Simply invoke <literal>mvn openengsb:genDomain</literal> from the domains directory in your OpenEngSB
         repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> script can be used which invokes the
         openengsb-maven-plugin for you).
       </para>
 
       <literallayout>
-        <command>domains $</command> mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:genDomain
+        <command>domains $</command> mvn openengsb:genDomain
       </literallayout>
 
-      <para>You'll be asked to fill in a few variables the script needs to create the initial project structure. Based on
+      <para>You'll be asked to fill in a few variables which are needed to create the initial project structure. Based on
         your input, the mojo tries to guess further values. Guessed values are displayed in brackets. If the guess is
         correct, simply acknowledge with <literal>Return</literal>. As example, the following output has been recorded
         while creating the Test domain:</para>

@@ -55,7 +55,6 @@
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.antrun.version>1.5</maven.plugin.antrun.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
-    <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
     <maven.plugin.dependency.version>2.1</maven.plugin.dependency.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.plugin.rat.version>0.6</maven.plugin.rat.version>
@@ -648,65 +647,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <profiles>
-    <profile>
-      <id>license-check</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.openengsb</groupId>
-            <artifactId>openengsb-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check-headers</id>
-                <inherited>false</inherited>
-                <phase>validate</phase>
-                <goals>
-                  <goal>licenseCheck</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>checkstyle</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>${maven.plugin.checkstyle.version}</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.openengsb.tooling</groupId>
-                <artifactId>openengsb-tooling-checkstyle</artifactId>
-                <version>${project.version}</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <consoleOutput>true</consoleOutput>
-              <enableRulesSummary>true</enableRulesSummary>
-              <configLocation>checkstyle.xml</configLocation>
-              <failsOnError>true</failsOnError>
-              <includeTestSourceDirectory>true</includeTestSourceDirectory>
-            </configuration>
-            <executions>
-              <execution>
-                <id>check</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>checkstyle</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
 
