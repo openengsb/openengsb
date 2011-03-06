@@ -218,7 +218,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
                 .getIssuesFromJqlSearch(authToken, "fixVersion in (\"" + releaseId + "\") and status in (closed)",
                     1000);
             for (RemoteIssue issue : issues) {
-                if ("closed".equals(issue.getStatus())) {
+                if ("closed".equals(issue.getStatus()) || "6".equals(issue.getStatus())) {
                     List<String> issueList = new ArrayList<String>();
                     if (reports.containsKey(issue.getType())) {
                         issueList = reports.get(issue.getType());
