@@ -21,6 +21,13 @@
 package org.openengsb.domain.issue.models;
 
 public class Issue {
+    public String getDueVersion() {
+        return dueVersion;
+    }
+
+    public void setDueVersion(String dueVersion) {
+        this.dueVersion = dueVersion;
+    }
 
     public enum Priority implements IssueAttribute {
             IMMEDIATE,
@@ -53,6 +60,7 @@ public class Issue {
     private String reporter;
     private Priority priority;
     private Status status;
+    private String dueVersion;
 
     public String getId() {
         return id;
