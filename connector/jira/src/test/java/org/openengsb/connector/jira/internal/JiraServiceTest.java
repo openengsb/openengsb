@@ -1,4 +1,4 @@
-package org.openengsb.connector.jira_soapclient.internal;
+package org.openengsb.connector.jira.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.Before;
@@ -86,7 +87,7 @@ public class JiraServiceTest {
     }
 
     @Test
-    public void testDelayIssue() throws Exception {
+    public void testMoveIssues() throws Exception {
         RemoteVersion[] versions = new RemoteVersion[1];
         RemoteVersion version = mock(RemoteVersion.class);
         when(version.getId()).thenReturn("id2");
@@ -95,14 +96,14 @@ public class JiraServiceTest {
         RemoteIssue[] values = new RemoteIssue[1];
         RemoteIssue issue = mock(RemoteIssue.class);
         values[0] = issue;
-        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"Test Version 1\") ", 300))
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"id1\") ", 1000))
             .thenReturn(values);
         jiraClient.moveIssuesFromReleaseToRelease("id1", "id2");
         verify(jiraSoapService, atLeastOnce()).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
     }
 
     @Test
-    public void testCloseRelease() throws java.rmi.RemoteException, RemoteAuthenticationException {
+    public void testCloseRelease() throws java.rmi.RemoteException {
         RemoteVersion[] versions = new RemoteVersion[1];
         RemoteVersion version = mock(RemoteVersion.class);
         when(version.getName()).thenReturn("versionName");
@@ -111,6 +112,36 @@ public class JiraServiceTest {
 
         jiraClient.closeRelease("versionName");
         verify(jiraSoapService).releaseVersion(authToken, "projectKey", version);
+    }
+
+    @Test
+    public void testGenerateReleaseReport() throws java.rmi.RemoteException {
+        RemoteIssue[] values = new RemoteIssue[2];
+        RemoteIssue issue = mock(RemoteIssue.class);
+        when(issue.getKey()).thenReturn("issue1Key");
+        when(issue.getDescription()).thenReturn("issue1Description");
+        when(issue.getType()).thenReturn("issue1Type");
+        when(issue.getStatus()).thenReturn("closed");
+        values[0] = issue;
+        RemoteIssue issue2 = mock(RemoteIssue.class);
+        when(issue2.getKey()).thenReturn("issue2Key");
+        when(issue2.getDescription()).thenReturn("issue2Description");
+        when(issue2.getType()).thenReturn("issue2Type");
+        when(issue2.getStatus()).thenReturn("closed");
+        values[1] = issue2;
+
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (closed)",
+            1000)).thenReturn(values);
+        ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
+        ArrayList<String> expectedReport = new ArrayList<String>();
+
+        expectedReport.add("** issue2Type\n");
+        expectedReport.add("\t * [issue2Key] - issue2Description");
+        expectedReport.add("\n");
+        expectedReport.add("** issue1Type\n");
+        expectedReport.add("\t * [issue1Key] - issue1Description");
+        expectedReport.add("\n");
+        assertThat(report.toString(), is(expectedReport.toString()));
     }
 
     private Issue createIssue(String id) {

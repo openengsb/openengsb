@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.jira_soapclient;
+package org.openengsb.connector.jira;
 
-import org.openengsb.connector.jira_soapclient.internal.JiraService;
-import org.openengsb.connector.jira_soapclient.internal.JiraServiceInstanceFactory;
+import org.openengsb.connector.jira.internal.JiraService;
+import org.openengsb.connector.jira.internal.JiraServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domain.issue.IssueDomain;
 

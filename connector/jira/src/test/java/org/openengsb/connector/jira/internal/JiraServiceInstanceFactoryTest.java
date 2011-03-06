@@ -1,4 +1,4 @@
-package org.openengsb.connector.jira_soapclient.internal;
+package org.openengsb.connector.jira.internal;
 
 import java.util.HashMap;
 import java.util.Map;

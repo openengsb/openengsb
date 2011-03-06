@@ -20,6 +20,7 @@
 
 package org.openengsb.domain.issue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.openengsb.core.common.Domain;
@@ -54,4 +55,9 @@ public interface IssueDomain extends Domain {
      * close a release specified by his id
      */
     void closeRelease(String id);
+
+    /**
+     * generates an report for all closed issues belonging the the specified release
+     */
+    ArrayList<String> generateReleaseReport(String releaseId);
 }

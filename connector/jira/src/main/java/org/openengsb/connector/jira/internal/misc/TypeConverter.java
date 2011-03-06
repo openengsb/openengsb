@@ -1,4 +1,4 @@
-package org.openengsb.connector.jira_soapclient.internal.misc;
+package org.openengsb.connector.jira.internal.misc;
 
 import org.openengsb.domain.issue.models.Issue;
 

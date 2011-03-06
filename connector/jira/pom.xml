@@ -33,8 +33,8 @@
   </repositories>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.jira_soapclient</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.jira_soapclient</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connector.jira</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.jira</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

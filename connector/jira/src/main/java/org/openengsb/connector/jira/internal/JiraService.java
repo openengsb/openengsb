@@ -1,17 +1,19 @@
-package org.openengsb.connector.jira_soapclient.internal;
+package org.openengsb.connector.jira.internal;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.connector.jira_soapclient.internal.misc.FieldConverter;
-import org.openengsb.connector.jira_soapclient.internal.misc.PriorityConverter;
-import org.openengsb.connector.jira_soapclient.internal.misc.StatusConverter;
-import org.openengsb.connector.jira_soapclient.internal.misc.TypeConverter;
+import org.openengsb.connector.jira.internal.misc.FieldConverter;
+import org.openengsb.connector.jira.internal.misc.PriorityConverter;
+import org.openengsb.connector.jira.internal.misc.StatusConverter;
+import org.openengsb.connector.jira.internal.misc.TypeConverter;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
@@ -35,6 +37,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     private String jiraPassword;
     private JiraSOAPSession jiraSoapSession;
     private String projectKey;
+
 
     public JiraService(String id, JiraSOAPSession jiraSoapSession, String projectKey) {
         super(id);
@@ -60,7 +63,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             issue = jiraSoapService.createIssue(authToken, issue);
             log.info("Successfully created issue " + issue.getKey());
         } catch (RemoteException e) {
-            log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
+            log.error("Error creating issue " + engsbIssue.getDescription() + ". XMLRPC call failed.");
             return null;
         } finally {
             this.state = AliveState.DISCONNECTED;
@@ -127,7 +130,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             RemoteVersion version = getNextVersion(authToken, jiraSoapService, releaseToId);
 
             RemoteIssue[] issues = jiraSoapService
-                .getIssuesFromJqlSearch(authToken, "fixVersion in (\"Test Version 1\") ", 199);
+                .getIssuesFromJqlSearch(authToken, "fixVersion in (\"" + releaseFromId + "\") ", 1000);
 
             RemoteFieldValue[] changes = new RemoteFieldValue[1];
             RemoteFieldValue change = new RemoteFieldValue();
@@ -173,6 +176,52 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
+    }
+
+    @Override
+    public ArrayList<String> generateReleaseReport(String releaseId) {
+
+        ArrayList<String> report = new ArrayList<String>();
+        Map<String, List<String>> reports = new HashMap<String, List<String>>();
+
+
+        //login
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
+        try {
+            jiraSoapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = jiraSoapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+
+
+            RemoteIssue[] issues = jiraSoapService
+                .getIssuesFromJqlSearch(authToken, "fixVersion in (\"" + releaseId + "\") and status in (closed)", 1000);
+            for (RemoteIssue issue : issues) {
+                if ("closed".equals(issue.getStatus())) {
+                    List<String> issueList = new ArrayList<String>();
+                    if (reports.containsKey(issue.getType())) {
+                        issueList = reports.get(issue.getType());
+                    }
+                    issueList.add("\t * [" + issue.getKey() + "] - " + issue.getDescription());
+                    reports.put(issue.getType(), issueList);
+                }
+            }
+            for (String key : reports.keySet()) {
+                report.add("** " + key + "\n");
+                report.addAll(reports.get(key));
+                report.add("\n");
+            }
+
+        } catch (RemoteException e) {
+            log.error("Error generating release report. XMLRPC call failed. ");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
+        for (String s : report) {
+            log.info(s);
+        }
+        return report;
     }
 
     private RemoteVersion getNextVersion(String authToken, JiraSoapService jiraSoapService, String releaseToId)

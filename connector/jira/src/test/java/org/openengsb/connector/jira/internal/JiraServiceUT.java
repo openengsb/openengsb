@@ -1,6 +1,6 @@
-package org.openengsb.connector.jira_soapclient.internal;
+package org.openengsb.connector.jira.internal;
 
-import java.util.Date;
+import static junit.framework.Assert.assertNotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,40 +9,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.domain.issue.models.Issue;
 
-import com.atlassian.jira.rpc.soap.client.JiraSoapService;
-import com.atlassian.jira.rpc.soap.client.RemoteIssue;
-
 
 public class JiraServiceUT {
-      private static Log log = LogFactory.getLog(JiraServiceUT.class);
+    private static Log log = LogFactory.getLog(JiraServiceUT.class);
     // Login details
     static final String LOGIN_NAME = "soaptester";
     static final String LOGIN_PASSWORD = "soaptester";
 
     // Constants for issue creation
     static final String PROJECT_KEY = "TST";
-    static final String ISSUE_TYPE_ID = "1";
-    static final String SUMMARY_NAME = "An issue created via the JIRA JiraService sample : " + new Date();
-    static final String PRIORITY_ID = "4";
-    static final String COMPONENT_ID = "10240";
-    static final String VERSION_ID = "10330";
-
-    // Constants for issue update
-    static final String NEW_SUMMARY = "New summary";
-    static final String CUSTOM_FIELD_KEY_1 = "customfield_10061";
-    static final String CUSTOM_FIELD_VALUE_1 = "10098";
-    static final String CUSTOM_FIELD_KEY_2 = "customfield_10061:1";
-    static final String CUSTOM_FIELD_VALUE_2 = "10105";
-
-    // Constant for add comment
-    static final String NEW_COMMENT_BODY = "This is a new comment";
 
     // Constant for get filter
-    static final String FILTER_ID_FIXED_FOR_RELEASED_VERSION = "12355"; /// Fixed for released versions
-    static final String SOAP_AS_A_SEARCH_TERM = "JiraService";
-    private static JiraSoapService jiraSoapService;
-    private static String authToken;
-    private static RemoteIssue issue = new RemoteIssue();
     private static JiraService jiraClient;
     private static JiraSOAPSession jiraSoapSession;
 
@@ -71,20 +48,25 @@ public class JiraServiceUT {
 
     @Test
     public void testAddComment() {
-        log.debug("test to add a command to an issue");
-        jiraClient.addComment(issueId, "comment");
-        
+//        log.debug("test to add a command to an issue");
+//        jiraClient.addComment(issueId, "comment");
+
     }
 
     @Test
     public void testMoveAllIssuesFromOneReleaseToAnotherRelease() {
-       jiraClient.moveIssuesFromReleaseToRelease("13203", "11410");
+        jiraClient.moveIssuesFromReleaseToRelease("13203", "11410");
     }
 
     @Ignore("user has no rights to close a release")
     @Test
     public void closeRelease() {
         jiraClient.closeRelease("Version 2.0");
+    }
+
+    @Test
+    public void testGenerateReleaseReport() {
+        assertNotNull(jiraClient.generateReleaseReport("Version 2.0"));
     }
 
     private static Issue createIssue() {
