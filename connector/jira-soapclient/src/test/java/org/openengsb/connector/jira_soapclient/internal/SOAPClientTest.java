@@ -19,9 +19,11 @@ import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
+import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.soap.client.RemoteComment;
 import com.atlassian.jira.rpc.soap.client.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
+import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
 public class SOAPClientTest {
 
@@ -52,9 +54,9 @@ public class SOAPClientTest {
         String id = jiraClient.createIssue(issue);
         verify(soapSession).getJiraSoapService();
         verify(soapSession).getAuthenticationToken();
-        verify(soapSession).connect("user","pwd");
+        verify(soapSession).connect("user", "pwd");
         verify(jiraSoapService).createIssue(anyString(), Mockito.any(RemoteIssue.class));
-        assertThat(id, is("id1"));
+        assertThat(id, is("key"));
     }
 
     @Test
@@ -85,9 +87,24 @@ public class SOAPClientTest {
 
     @Test
     public void testDelayIssue() throws Exception {
+        RemoteVersion[] versions = new RemoteVersion[1];
+        RemoteVersion version = mock(RemoteVersion.class);
+        versions[0] = version;
+        when(jiraSoapService.getVersions(anyString(), anyString())).thenReturn(versions);
+        jiraClient.delayIssue("id1");
+        verify(jiraSoapService, times(1)).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
+    }
 
-//        jiraClient.delayIssue("id1");
-        
+    @Test
+    public void testCloseRelease() throws java.rmi.RemoteException, RemoteAuthenticationException {
+        RemoteVersion[] versions = new RemoteVersion[1];
+        RemoteVersion version = mock(RemoteVersion.class);
+        when(version.getName()).thenReturn("versionName");
+        versions[0] = version;
+        when(jiraSoapService.getVersions(anyString(), anyString())).thenReturn(versions);
+
+        jiraClient.closeRelease("versionName");
+        verify(jiraSoapService).releaseVersion(authToken, "projectKey", version);
     }
 
     private Issue createIssue(String id) {

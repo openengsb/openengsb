@@ -155,6 +155,36 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
             this.state = AliveState.DISCONNECTED;
         }
     }
+    
+    @Override
+    public void closeRelease(String id) {
+        //login
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+        try {
+            soapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+
+            RemoteVersion[] versions = jiraSoapService.getVersions(authToken, projectKey);
+            RemoteVersion version = null;
+            for (RemoteVersion ver : versions) {
+                if (id.equals(ver.getName())) {
+                    version = ver;
+                }
+            }
+            if (version == null) {
+                log.error("Release not found");
+                return;
+            }
+            jiraSoapService.releaseVersion(authToken, projectKey, version);
+        } catch (RemoteException e) {
+            log.error("Error closing release, Remote exception ");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
+    }
 
     private RemoteVersion getNextVersion(String authToken, JiraSoapService jiraSoapService)
         throws RemoteException {

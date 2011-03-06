@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.domain.issue.models.Issue;
 
@@ -64,7 +65,6 @@ public class SOAPClientUT {
         testCreateIssue();
     }
 
-
     public static void testCreateIssue() {
         log.debug("test to create an issue");
         Issue engsbIssue = createIssue();
@@ -82,6 +82,12 @@ public class SOAPClientUT {
     @Test
     public void delayIssue() {
        jiraClient.delayIssue(issueId);
+    }
+
+    @Ignore("user has no rights to close a release")
+    @Test
+    public void closeRelease() {
+        jiraClient.closeRelease("Version 2.0");
     }
 
     private static Issue createIssue() {
