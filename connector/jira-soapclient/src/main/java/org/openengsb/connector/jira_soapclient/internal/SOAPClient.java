@@ -12,6 +12,7 @@ import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
+import com.atlassian.jira.rpc.soap.client.RemoteComment;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
@@ -73,7 +74,26 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
 
     @Override
-    public void addComment(String id, String comment) {
+    public void addComment(String id, String commentString) {
+        //login
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+        try {
+            soapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+
+            // Adding a comment
+            final RemoteComment comment = new RemoteComment();
+            comment.setBody(commentString);
+            RemoteIssue issue = getIssueById(id);
+            jiraSoapService.addComment(authToken, issue.getKey(), comment);
+        } catch (RemoteException e) {
+            log.error("Error commenting issue . XMLRPC call failed. ");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
 
     }
 
@@ -89,32 +109,9 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
     @Override
     public AliveState getAliveState() {
-        return null;
+        return this.state;
     }
 
-    public AliveState getState() {
-        return state;
-    }
-
-    public void setState(AliveState state) {
-        this.state = state;
-    }
-
-    public String getJiraUser() {
-        return jiraUser;
-    }
-
-    public void setJiraUser(String jiraUser) {
-        this.jiraUser = jiraUser;
-    }
-
-    public String getJiraPassword() {
-        return jiraPassword;
-    }
-
-    public void setJiraPassword(String jiraPassword) {
-        this.jiraPassword = jiraPassword;
-    }
 
     private RemoteIssue convertIssue(Issue engsbIssue) {
         RemoteIssue remoteIssue = new RemoteIssue();
@@ -168,7 +165,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
             case NEW_FEATURE:
                 remoteIssue.setType("2");
                 break;
-            case  TASK:
+            case TASK:
                 remoteIssue.setType("3");
                 break;
             case IMPROVEMENT:
@@ -179,7 +176,6 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
         }
 
-
         // Add remote versions
         RemoteVersion version = new RemoteVersion();
         version.setId(engsbIssue.getDueVersion());
@@ -187,5 +183,48 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         remoteIssue.setFixVersions(remoteVersions);
 
         return remoteIssue;
+    }
+
+    private RemoteIssue getIssueById(String id) {
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+        RemoteIssue remoteIssue = null;
+        try {
+            soapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+
+            remoteIssue = jiraSoapService.getIssue(authToken, id);
+        } catch (RemoteException e) {
+            log.error("issue  not found" + id + ". XMLRPC call failed.");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
+        return remoteIssue;
+    }
+
+    public AliveState getState() {
+        return state;
+    }
+
+    public void setState(AliveState state) {
+        this.state = state;
+    }
+
+    public String getJiraUser() {
+        return jiraUser;
+    }
+
+    public void setJiraUser(String jiraUser) {
+        this.jiraUser = jiraUser;
+    }
+
+    public String getJiraPassword() {
+        return jiraPassword;
+    }
+
+    public void setJiraPassword(String jiraPassword) {
+        this.jiraPassword = jiraPassword;
     }
 }

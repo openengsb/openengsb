@@ -4,7 +4,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +16,7 @@ import org.mockito.Mockito;
 import org.openengsb.domain.issue.models.Issue;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
+import com.atlassian.jira.rpc.soap.client.RemoteComment;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 
 public class SOAPClientTest {
@@ -52,6 +55,14 @@ public class SOAPClientTest {
 
     @Test
     public void testAddComment() throws Exception {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        when(jiraSoapService.getIssue(authToken, "id")).thenReturn(remoteIssue);
+        jiraClient.addComment("id", "comment1");
+        verify(soapSession, atLeastOnce()).getJiraSoapService();
+        verify(soapSession, atLeastOnce()).getAuthenticationToken();
+        verify(soapSession, atLeastOnce()).connect("user", "pwd");
+        verify(jiraSoapService, times(1)).addComment(anyString(), anyString(), any(RemoteComment.class));
     }
 
 
