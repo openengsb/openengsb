@@ -40,16 +40,16 @@ public class JiraServiceUT {
     }
 
     public static void testCreateIssue() {
-//        log.debug("test to create an issue");
-//        Issue engsbIssue = createIssue();
-//        issueId = jiraClient.createIssue(engsbIssue);
-//        assertNotNull(issueId);
+        log.debug("test to create an issue");
+        Issue engsbIssue = createIssue();
+        issueId = jiraClient.createIssue(engsbIssue);
+        assertNotNull(issueId);
     }
 
     @Test
     public void testAddComment() {
-//        log.debug("test to add a command to an issue");
-//        jiraClient.addComment(issueId, "comment");
+        log.debug("test to add a command to an issue");
+        jiraClient.addComment(issueId, "comment");
 
     }
 
