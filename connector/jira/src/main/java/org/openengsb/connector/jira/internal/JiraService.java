@@ -105,6 +105,11 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     }
 
     @Override
+    public void delayIssue(String id) {
+
+    }
+
+    @Override
     public AliveState getAliveState() {
         return state;
     }

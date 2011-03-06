@@ -34,6 +34,7 @@ import org.openengsb.connector.trac.internal.models.constants.TracStatusConstant
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
+import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -102,6 +103,11 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
         } catch (XmlRpcException e) {
             log.error("Error updating issue " + id + ". XMLRPC call failed.");
         }
+    }
+
+    @Override
+    public void delayIssue(String id) {
+        throw new DomainMethodNotImplementedException("method not yet implemented");
     }
 
     private Ticket createTicket() {
