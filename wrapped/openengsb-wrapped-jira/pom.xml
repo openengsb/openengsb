@@ -52,9 +52,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-wrapped-axis.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-wrapped-axis.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb-axis</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-wrapped-jira.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-wrapped-jira.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-jira</url>
   </scm>
 
   <dependencies>
