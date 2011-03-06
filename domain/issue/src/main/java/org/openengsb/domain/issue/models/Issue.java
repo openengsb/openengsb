@@ -21,36 +21,30 @@
 package org.openengsb.domain.issue.models;
 
 public class Issue {
-    public String getDueVersion() {
-        return dueVersion;
-    }
 
-    public void setDueVersion(String dueVersion) {
-        this.dueVersion = dueVersion;
-    }
 
     public enum Priority implements IssueAttribute {
-            IMMEDIATE,
-            URGEND,
-            HIGH,
-            NORMAL,
-            LOW,
-            NONE
+        IMMEDIATE,
+        URGEND,
+        HIGH,
+        NORMAL,
+        LOW,
+        NONE
     }
 
     public enum Status implements IssueAttribute {
-            NEW,
-            ASSIGNED,
-            CLOSED
+        NEW,
+        ASSIGNED,
+        CLOSED
     }
 
     public enum Field implements IssueAttribute {
-            SUMMARY,
-            DESCRIPTION,
-            OWNER,
-            REPORTER,
-            PRIORITY,
-            STATUS
+        SUMMARY,
+        DESCRIPTION,
+        OWNER,
+        REPORTER,
+        PRIORITY,
+        STATUS
     }
 
     private String id;
@@ -118,4 +112,11 @@ public class Issue {
         this.status = status;
     }
 
+    public String getDueVersion() {
+        return dueVersion;
+    }
+
+    public void setDueVersion(String dueVersion) {
+        this.dueVersion = dueVersion;
+    }
 }
