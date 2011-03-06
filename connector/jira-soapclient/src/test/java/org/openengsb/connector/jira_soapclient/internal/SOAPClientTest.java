@@ -85,6 +85,9 @@ public class SOAPClientTest {
 
     @Test
     public void testDelayIssue() throws Exception {
+
+//        jiraClient.delayIssue("id1");
+        
     }
 
     private Issue createIssue(String id) {

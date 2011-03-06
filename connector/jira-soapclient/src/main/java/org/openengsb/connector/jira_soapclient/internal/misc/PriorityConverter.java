@@ -2,6 +2,10 @@ package org.openengsb.connector.jira_soapclient.internal.misc;
 
 import org.openengsb.domain.issue.models.Issue;
 
+/**
+ * priority converter from OpenEngSB priority to Jira priority,
+ * see http://docs.atlassian.com/jira/latest/constant-values.html
+ */
 public class PriorityConverter {
 
     public static String fromIssuePriority(Issue.Priority priority) {

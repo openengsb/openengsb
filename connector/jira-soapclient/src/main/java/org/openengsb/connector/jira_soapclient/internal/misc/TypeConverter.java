@@ -2,6 +2,10 @@ package org.openengsb.connector.jira_soapclient.internal.misc;
 
 import org.openengsb.domain.issue.models.Issue;
 
+/**
+ * type converter from OpenEngSB type to Jira type,
+ * see http://docs.atlassian.com/jira/latest/constant-values.html
+ */
 public class TypeConverter {
 
     public static String fromIssueType(Issue.Type type) {

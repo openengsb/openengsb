@@ -2,29 +2,17 @@ package org.openengsb.connector.jira_soapclient.internal;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.rmi.RemoteException;
-import java.text.DecimalFormat;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.domain.issue.models.Issue;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
-import com.atlassian.jira.rpc.soap.client.RemoteComment;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
-import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
 
 public class SOAPClientUT {
@@ -64,6 +52,7 @@ public class SOAPClientUT {
      * testing server provided by jira
      */
     private static String baseUrl = "http://jira.atlassian.com/rpc/soap/jirasoapservice-v2";
+    private static String issueId;
 
 
     @BeforeClass
@@ -72,18 +61,30 @@ public class SOAPClientUT {
         jiraClient = new SOAPClient("id", soapSession, PROJECT_KEY);
         jiraClient.setJiraPassword(LOGIN_PASSWORD);
         jiraClient.setJiraUser(LOGIN_NAME);
+        testCreateIssue();
+    }
+
+
+    public static void testCreateIssue() {
+        log.debug("test to create an issue");
+        Issue engsbIssue = createIssue();
+        issueId = jiraClient.createIssue(engsbIssue);
+        assertNotNull(issueId);
     }
 
     @Test
-    public void testCreateIssue() {
-        Issue engsbIssue = createIssue("muuhID");
-        String issue1 = jiraClient.createIssue(engsbIssue);
-        assertNotNull(issue1);
+    public void testAddComment() {
+        log.debug("test to add a command to an issue");
+        jiraClient.addComment(issueId, "comment");
+        
     }
 
-  
+    @Test
+    public void delayIssue() {
+       jiraClient.delayIssue(issueId);
+    }
 
-    private Issue createIssue(String id) {
+    private static Issue createIssue() {
         Issue issue = new Issue();
         issue.setSummary("summary");
         issue.setDescription("description");

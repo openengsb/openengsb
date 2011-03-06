@@ -2,6 +2,7 @@ package org.openengsb.connector.jira_soapclient.internal;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,12 +79,12 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
-        return issue.getId();
+        return issue.getKey();
     }
 
 
     @Override
-    public void addComment(String id, String commentString) {
+    public void addComment(String issueKey, String commentString) {
         //login
         this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
@@ -96,8 +97,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
             // Adding a comment
             final RemoteComment comment = new RemoteComment();
             comment.setBody(commentString);
-            RemoteIssue issue = getIssueById(id);
-            jiraSoapService.addComment(authToken, issue.getKey(), comment);
+            jiraSoapService.addComment(authToken, issueKey, comment);
         } catch (RemoteException e) {
             log.error("Error commenting issue . XMLRPC call failed. ");
         } finally {
@@ -107,7 +107,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
     }
 
     @Override
-    public void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes) {
+    public void updateIssue(String issueKey, String comment, HashMap<IssueAttribute, String> changes) {
         //login
         this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
@@ -116,15 +116,64 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
             String authToken = soapSession.getAuthenticationToken();
             this.state = AliveState.ONLINE;
-            RemoteIssue issue = getIssueById(id);
 
             RemoteFieldValue[] values = convertChanges(changes);
-            jiraSoapService.updateIssue(authToken, issue.getKey(), values);
+            jiraSoapService.updateIssue(authToken, issueKey, values);
         } catch (RemoteException e) {
             log.error("Error updating the issue . XMLRPC call failed. ");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
+    }
+
+
+    @Override
+    public void delayIssue(String issueKey) {
+        //login
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+        try {
+            soapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+
+            RemoteVersion version = getNextVersion(authToken, jiraSoapService);
+
+
+            RemoteFieldValue[] changes = new RemoteFieldValue[1];
+            RemoteFieldValue change = new RemoteFieldValue();
+            change.setId("fixVersions");
+            change.setValues(new String[]{version.getId()});
+
+            changes[0] = change;
+
+            jiraSoapService.updateIssue(authToken, issueKey, changes);
+        } catch (RemoteException e) {
+            log.error("Error updating the issue . XMLRPC call failed. ");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
+    }
+
+    private RemoteVersion getNextVersion(String authToken, JiraSoapService jiraSoapService)
+        throws RemoteException {
+        RemoteVersion[] versions = jiraSoapService.getVersions(authToken, this.projectKey);
+        Calendar today = Calendar.getInstance();
+        RemoteVersion next = null;
+        for(RemoteVersion version : versions) {
+            if (next != null) {
+                
+            } else {
+               next = version;
+            }
+        }
+        return next;
+    }
+
+    @Override
+    public AliveState getAliveState() {
+        return this.state;
     }
 
     private RemoteFieldValue[] convertChanges(HashMap<IssueAttribute, String> changes) {
@@ -169,16 +218,6 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         RemoteFieldValue[] remoteFieldArray = new RemoteFieldValue[remoteFields.size()];
         remoteFields.toArray(remoteFieldArray);
         return remoteFieldArray;
-    }
-
-    @Override
-    public void delayIssue(String id) {
-
-    }
-
-    @Override
-    public AliveState getAliveState() {
-        return this.state;
     }
 
 
