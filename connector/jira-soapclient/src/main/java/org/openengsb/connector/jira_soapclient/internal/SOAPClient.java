@@ -1,10 +1,17 @@
 package org.openengsb.connector.jira_soapclient.internal;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.connector.jira_soapclient.internal.misc.FieldConverter;
+import org.openengsb.connector.jira_soapclient.internal.misc.PriorityConverter;
+import org.openengsb.connector.jira_soapclient.internal.misc.StatusConverter;
+import org.openengsb.connector.jira_soapclient.internal.misc.TypeConverter;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
@@ -12,7 +19,9 @@ import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
+import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.soap.client.RemoteComment;
+import com.atlassian.jira.rpc.soap.client.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
@@ -99,7 +108,67 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
     @Override
     public void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes) {
+        //login
+        this.state = AliveState.CONNECTING;
+        JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+        try {
+            soapSession.connect(jiraUser, jiraPassword);
 
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+            RemoteIssue issue = getIssueById(id);
+
+            RemoteFieldValue[] values = convertChanges(changes);
+            jiraSoapService.updateIssue(authToken, issue.getKey(), values);
+        } catch (RemoteException e) {
+            log.error("Error updating the issue . XMLRPC call failed. ");
+        } finally {
+            this.state = AliveState.DISCONNECTED;
+        }
+    }
+
+    private RemoteFieldValue[] convertChanges(HashMap<IssueAttribute, String> changes) {
+        Set<IssueAttribute> changedAttributes = new HashSet<IssueAttribute>(changes.keySet());
+        ArrayList<RemoteFieldValue> remoteFields = new ArrayList<RemoteFieldValue>();
+
+        if (changedAttributes.contains(Issue.Field.STATUS)) {
+            Issue.Status status = Issue.Status.valueOf(changes.get(Issue.Field.STATUS));
+            RemoteFieldValue rfv = new RemoteFieldValue();
+            rfv.setId("STATUS");
+            rfv.setValues(new String[]{StatusConverter.fromIssueStatus(status)});
+            changedAttributes.remove(Issue.Field.STATUS);
+            remoteFields.add(rfv);
+        }
+
+        if (changedAttributes.contains(Issue.Field.TYPE)) {
+            Issue.Type type = Issue.Type.valueOf(changes.get(Issue.Field.TYPE));
+            RemoteFieldValue rfv = new RemoteFieldValue();
+            rfv.setId("issuetype");
+            rfv.setValues(new String[]{TypeConverter.fromIssueType(type)});
+            changedAttributes.remove(Issue.Field.TYPE);
+            remoteFields.add(rfv);
+        }
+        if (changedAttributes.contains(Issue.Field.PRIORITY)) {
+            Issue.Priority priority = Issue.Priority.valueOf(changes.get(Issue.Field.PRIORITY));
+            RemoteFieldValue rfv = new RemoteFieldValue();
+            rfv.setId("priority");
+            rfv.setValues(new String[]{PriorityConverter.fromIssuePriority(priority)});
+            changedAttributes.remove(Issue.Field.PRIORITY);
+            remoteFields.add(rfv);
+        }
+
+        for (IssueAttribute attribute : changedAttributes) {
+            String targetField = FieldConverter.fromIssueField((Issue.Field) attribute);
+            if (targetField != null) {
+                RemoteFieldValue rfv = new RemoteFieldValue();
+                rfv.setId("priority");
+                rfv.setValues(new String[]{changes.get(attribute)});
+                remoteFields.add(rfv);
+            }
+        }
+        RemoteFieldValue[] remoteFieldArray = new RemoteFieldValue[remoteFields.size()];
+        remoteFields.toArray(remoteFieldArray);
+        return remoteFieldArray;
     }
 
     @Override
@@ -121,60 +190,9 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         remoteIssue.setAssignee(engsbIssue.getOwner());
         remoteIssue.setProject(projectKey);
 
-        Issue.Priority priority = engsbIssue.getPriority();
-        switch (priority) {
-            case IMMEDIATE:
-                //Blocker
-                remoteIssue.setPriority("1");
-                break;
-            case HIGH:
-                //Critical
-                remoteIssue.setPriority("2");
-                break;
-            case URGEND:
-                //Major
-                remoteIssue.setPriority("3");
-                break;
-            case NONE:
-                //Minor
-                remoteIssue.setPriority("4");
-                break;
-            case LOW:
-                //Trivial
-                remoteIssue.setPriority("5");
-                break;
-            default:
-                remoteIssue.setPriority("4");
-                break;
-        }
-
-        Issue.Status status = engsbIssue.getStatus();
-        switch (status) {
-            case CLOSED:
-                remoteIssue.setStatus("6");
-                break;
-            default:
-                remoteIssue.setStatus("1");
-                break;
-        }
-        Issue.Type type = engsbIssue.getType();
-        switch (type) {
-            case BUG:
-                remoteIssue.setType("1");
-                break;
-            case NEW_FEATURE:
-                remoteIssue.setType("2");
-                break;
-            case TASK:
-                remoteIssue.setType("3");
-                break;
-            case IMPROVEMENT:
-                remoteIssue.setType("4");
-                break;
-            default:
-                remoteIssue.setType("1");
-
-        }
+        remoteIssue.setPriority(PriorityConverter.fromIssuePriority(engsbIssue.getPriority()));
+        remoteIssue.setStatus(StatusConverter.fromIssueStatus(engsbIssue.getStatus()));
+        remoteIssue.setType(TypeConverter.fromIssueType(engsbIssue.getType()));
 
         // Add remote versions
         RemoteVersion version = new RemoteVersion();
@@ -185,7 +203,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         return remoteIssue;
     }
 
-    private RemoteIssue getIssueById(String id) {
+    private RemoteIssue getIssueById(String id) throws RemoteException, RemoteAuthenticationException {
         this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
         RemoteIssue remoteIssue = null;
@@ -196,8 +214,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
             this.state = AliveState.ONLINE;
 
             remoteIssue = jiraSoapService.getIssue(authToken, id);
-        } catch (RemoteException e) {
-            log.error("issue  not found" + id + ". XMLRPC call failed.");
+
         } finally {
             this.state = AliveState.DISCONNECTED;
         }

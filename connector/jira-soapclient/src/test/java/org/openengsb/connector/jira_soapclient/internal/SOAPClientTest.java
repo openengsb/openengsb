@@ -10,13 +10,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.domain.issue.models.Issue;
+import org.openengsb.domain.issue.models.IssueAttribute;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
 import com.atlassian.jira.rpc.soap.client.RemoteComment;
+import com.atlassian.jira.rpc.soap.client.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 
 public class SOAPClientTest {
@@ -68,6 +72,15 @@ public class SOAPClientTest {
 
     @Test
     public void testUpdateIssue() throws Exception {
+
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        when(jiraSoapService.getIssue(authToken, "id1")).thenReturn(remoteIssue);
+        HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
+
+        jiraClient.updateIssue("id1", "comment1", changes);
+        verify(jiraSoapService, times(1)).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
+
     }
 
     @Test
