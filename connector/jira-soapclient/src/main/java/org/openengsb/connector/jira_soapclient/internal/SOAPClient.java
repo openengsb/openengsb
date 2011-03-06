@@ -37,29 +37,29 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
     private String jiraUser;
     private String jiraPassword;
     private SOAPSession soapSession;
-    private String PROJECT_KEY;
+    private String projectKey;
 
-    public SOAPClient(String id, SOAPSession soapSession) {
+    public SOAPClient(String id, SOAPSession soapSession, String projectKey) {
         super(id);
         this.soapSession = soapSession;
+        this.projectKey = projectKey;
     }
 
     @Override
     public String createIssue(Issue engsbIssue) {
         //login
-
+        this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
         String authToken = soapSession.getAuthenticationToken();
+        this.state = AliveState.ONLINE;
         // Create the issue
         RemoteIssue issue = convertIssue(engsbIssue);
         try {
 
             // Run the create issue code
-            RemoteIssue returnedIssue = jiraSoapService.createIssue(authToken, issue);
+            issue = jiraSoapService.createIssue(authToken, issue);
 
-            final String issueKey = returnedIssue.getKey();
-
-            log.info("\tSuccessfully created issue " + issueKey);
+            log.info("Successfully created issue " + issue.getKey());
         } catch (RemoteException e) {
             log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
         } finally {
@@ -75,7 +75,7 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         remoteIssue.setDescription(engsbIssue.getDescription());
         remoteIssue.setReporter(engsbIssue.getReporter());
         remoteIssue.setAssignee(engsbIssue.getOwner());
-        remoteIssue.setProject(PROJECT_KEY);
+        remoteIssue.setProject(projectKey);
 
         Issue.Priority priority = engsbIssue.getPriority();
         switch (priority) {
