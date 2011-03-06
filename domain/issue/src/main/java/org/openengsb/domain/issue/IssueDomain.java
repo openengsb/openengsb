@@ -49,4 +49,9 @@ public interface IssueDomain extends Domain {
      * move an issue, specified by his id to the next release
      */
     void delayIssue(String id);
+
+    /**
+     * close a release specified by his id
+     */
+    void closeRelease(String id);
 }
