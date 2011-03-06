@@ -20,6 +20,7 @@ public class SOAPClientTest {
 
     private SOAPClient jiraClient;
     private JiraSoapService jiraSoapService;
+    private String authToken = "authToken";
     private SOAPSession soapSession;
     private String projectKey = "projectKey";
 
@@ -28,21 +29,15 @@ public class SOAPClientTest {
         soapSession = mock(SOAPSession.class);
         jiraSoapService = mock(JiraSoapService.class);
         when(soapSession.getJiraSoapService()).thenReturn(jiraSoapService);
-        when(soapSession.getAuthenticationToken()).thenReturn(anyString());
+        when(soapSession.getAuthenticationToken()).thenReturn(authToken);
         jiraClient = new SOAPClient("id", soapSession, projectKey);
+        jiraClient.setJiraPassword("pwd");
+        jiraClient.setJiraUser("user");
     }
 
     @Test
     public void testCreateIssue() throws Exception {
-        Issue issue = new Issue();
-        issue.setId("id1");
-        issue.setSummary("summary");
-        issue.setDescription("description");
-        issue.setReporter("reporter");
-        issue.setOwner("owner");
-        issue.setPriority(Issue.Priority.NONE);
-        issue.setStatus(Issue.Status.NEW);
-        issue.setDueVersion("versionID1");
+        Issue issue = createIssue("id1");
         RemoteIssue remoteIssue = mock(RemoteIssue.class);
         when(remoteIssue.getKey()).thenReturn("key");
         when(remoteIssue.getId()).thenReturn("id1");
@@ -50,15 +45,15 @@ public class SOAPClientTest {
         String id = jiraClient.createIssue(issue);
         verify(soapSession).getJiraSoapService();
         verify(soapSession).getAuthenticationToken();
+        verify(soapSession).connect("user","pwd");
         verify(jiraSoapService).createIssue(anyString(), Mockito.any(RemoteIssue.class));
         assertThat(id, is("id1"));
     }
 
-
-
     @Test
     public void testAddComment() throws Exception {
     }
+
 
     @Test
     public void testUpdateIssue() throws Exception {
@@ -66,5 +61,20 @@ public class SOAPClientTest {
 
     @Test
     public void testDelayIssue() throws Exception {
+    }
+
+    private Issue createIssue(String id) {
+        Issue issue = new Issue();
+        issue.setId(id);
+        issue.setSummary("summary");
+        issue.setDescription("description");
+        issue.setReporter("reporter");
+        issue.setOwner("owner");
+        issue.setPriority(Issue.Priority.NONE);
+        issue.setStatus(Issue.Status.NEW);
+        issue.setDueVersion("versionID1");
+        issue.setType(Issue.Type.BUG);
+
+        return issue;
     }
 }

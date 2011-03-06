@@ -50,78 +50,27 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
         //login
         this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
-        String authToken = soapSession.getAuthenticationToken();
-        this.state = AliveState.ONLINE;
-        // Create the issue
-        RemoteIssue issue = convertIssue(engsbIssue);
+        RemoteIssue issue = null;
         try {
+            soapSession.connect(jiraUser, jiraPassword);
+
+            String authToken = soapSession.getAuthenticationToken();
+            this.state = AliveState.ONLINE;
+            // Create the issue
+            issue = convertIssue(engsbIssue);
 
             // Run the create issue code
             issue = jiraSoapService.createIssue(authToken, issue);
-
             log.info("Successfully created issue " + issue.getKey());
         } catch (RemoteException e) {
             log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
+            return null;
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
         return issue.getId();
     }
 
-    private RemoteIssue convertIssue(Issue engsbIssue) {
-        RemoteIssue remoteIssue = new RemoteIssue();
-        remoteIssue.setId(engsbIssue.getId());
-        remoteIssue.setSummary(engsbIssue.getSummary());
-        remoteIssue.setDescription(engsbIssue.getDescription());
-        remoteIssue.setReporter(engsbIssue.getReporter());
-        remoteIssue.setAssignee(engsbIssue.getOwner());
-        remoteIssue.setProject(projectKey);
-
-        Issue.Priority priority = engsbIssue.getPriority();
-        switch (priority) {
-            case IMMEDIATE:
-                //Blocker
-                remoteIssue.setPriority("1");
-                break;
-            case HIGH:
-                //Critical
-                remoteIssue.setPriority("2");
-                break;
-            case URGEND:
-                //Major
-                remoteIssue.setPriority("3");
-                break;
-            case NONE:
-                //Minor
-                remoteIssue.setPriority("4");
-                break;
-            case LOW:
-                //Trivial
-                remoteIssue.setPriority("5");
-                break;
-            default:
-                remoteIssue.setPriority("4");
-                break;
-        }
-
-        Issue.Status status = engsbIssue.getStatus();
-        switch (status) {
-            case CLOSED:
-                remoteIssue.setStatus("6");
-                break;
-            default:
-                remoteIssue.setStatus("1");
-                break;
-        }
-
-        // Add remote versions
-        RemoteVersion version = new RemoteVersion();
-        version.setId(engsbIssue.getDueVersion());
-        RemoteVersion[] remoteVersions = new RemoteVersion[]{version};
-        remoteIssue.setFixVersions(remoteVersions);
-
-        return remoteIssue;
-    }
 
     @Override
     public void addComment(String id, String comment) {
@@ -165,5 +114,78 @@ public class SOAPClient extends AbstractOpenEngSBService implements IssueDomain 
 
     public void setJiraPassword(String jiraPassword) {
         this.jiraPassword = jiraPassword;
+    }
+
+    private RemoteIssue convertIssue(Issue engsbIssue) {
+        RemoteIssue remoteIssue = new RemoteIssue();
+        remoteIssue.setSummary(engsbIssue.getSummary());
+        remoteIssue.setDescription(engsbIssue.getDescription());
+        remoteIssue.setReporter(engsbIssue.getReporter());
+        remoteIssue.setAssignee(engsbIssue.getOwner());
+        remoteIssue.setProject(projectKey);
+
+        Issue.Priority priority = engsbIssue.getPriority();
+        switch (priority) {
+            case IMMEDIATE:
+                //Blocker
+                remoteIssue.setPriority("1");
+                break;
+            case HIGH:
+                //Critical
+                remoteIssue.setPriority("2");
+                break;
+            case URGEND:
+                //Major
+                remoteIssue.setPriority("3");
+                break;
+            case NONE:
+                //Minor
+                remoteIssue.setPriority("4");
+                break;
+            case LOW:
+                //Trivial
+                remoteIssue.setPriority("5");
+                break;
+            default:
+                remoteIssue.setPriority("4");
+                break;
+        }
+
+        Issue.Status status = engsbIssue.getStatus();
+        switch (status) {
+            case CLOSED:
+                remoteIssue.setStatus("6");
+                break;
+            default:
+                remoteIssue.setStatus("1");
+                break;
+        }
+        Issue.Type type = engsbIssue.getType();
+        switch (type) {
+            case BUG:
+                remoteIssue.setType("1");
+                break;
+            case NEW_FEATURE:
+                remoteIssue.setType("2");
+                break;
+            case  TASK:
+                remoteIssue.setType("3");
+                break;
+            case IMPROVEMENT:
+                remoteIssue.setType("4");
+                break;
+            default:
+                remoteIssue.setType("1");
+
+        }
+
+
+        // Add remote versions
+        RemoteVersion version = new RemoteVersion();
+        version.setId(engsbIssue.getDueVersion());
+        RemoteVersion[] remoteVersions = new RemoteVersion[]{version};
+        remoteIssue.setFixVersions(remoteVersions);
+
+        return remoteIssue;
     }
 }
