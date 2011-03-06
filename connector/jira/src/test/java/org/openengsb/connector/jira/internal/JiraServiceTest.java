@@ -1,3 +1,22 @@
+/**
+ * Licensed to the Austrian Association for
+ * Software Tool Integration (AASTI) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.openengsb.connector.jira.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +39,6 @@ import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
-import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.soap.client.RemoteComment;
 import com.atlassian.jira.rpc.soap.client.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
@@ -96,8 +114,7 @@ public class JiraServiceTest {
         RemoteIssue[] values = new RemoteIssue[1];
         RemoteIssue issue = mock(RemoteIssue.class);
         values[0] = issue;
-        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"id1\") ", 1000))
-            .thenReturn(values);
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"id1\") ", 1000)).thenReturn(values);
         jiraClient.moveIssuesFromReleaseToRelease("id1", "id2");
         verify(jiraSoapService, atLeastOnce()).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
     }
