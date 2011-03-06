@@ -23,6 +23,7 @@ package org.openengsb.domain.issue.models;
 public class Issue {
 
 
+
     public enum Priority implements IssueAttribute {
         IMMEDIATE,
         URGEND,
@@ -47,6 +48,13 @@ public class Issue {
         STATUS
     }
 
+    public enum Type implements IssueAttribute {
+        BUG,
+        TASK,
+        NEW_FEATURE,
+        IMPROVEMENT
+    }
+
     private String id;
     private String summary;
     private String description;
@@ -55,6 +63,7 @@ public class Issue {
     private Priority priority;
     private Status status;
     private String dueVersion;
+    private Type type;
 
     public String getId() {
         return id;
@@ -118,5 +127,13 @@ public class Issue {
 
     public void setDueVersion(String dueVersion) {
         this.dueVersion = dueVersion;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }
