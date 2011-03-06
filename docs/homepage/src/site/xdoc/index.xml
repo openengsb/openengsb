@@ -43,27 +43,27 @@
 
       <div class="linkblock">
         <a href="about.html"><img src="images/about.png" alt="about"/></a>
-        <span><b>ABOUT</b><br />Read the introduction and still no idea? Get an in-depth look on what OpenEngSB can offer in the <a href="about.html">About</a> section.</span>
+        <div><b>ABOUT</b><br />Read the introduction and still no idea? Get an in-depth look on what OpenEngSB can offer in the <a href="about.html">About</a> section.</div>
       </div>
 
       <div class="linkblock">
         <a href="downloads.html"><img src="images/download.png" alt="download"/></a>
-        <span><b>DOWNLOAD</b><br />Looking for the latest version of OpenEngSB? <a href="downloads.html">Download</a> the the package for your plattform of choice here.</span>
+        <div><b>DOWNLOAD</b><br />Looking for the latest version of OpenEngSB? <a href="downloads.html">Download</a> the the package for your plattform of choice here.</div>
       </div>
 
       <div class="linkblock">
         <a href="manual/index.html"><img src="images/learn.png" alt="learn"/></a>
-        <span><b>DOCUMENTATION</b><br />Interested in using OpenEngSB? Get answers to <a href="reference/faq.html">frequently asked questions</a>, access handy <a href="howto/howto_setup.html">HowTo's and tutorials</a> or read the <a href="manual/index.html">online docs</a>.</span>
+        <div><b>DOCUMENTATION</b><br />Interested in using OpenEngSB? Get answers to <a href="reference/faq.html">frequently asked questions</a>, access handy <a href="howto/howto_setup.html">HowTo's and tutorials</a> or read the <a href="manual/index.html">online docs</a>.</div>
       </div>
 
       <div class="linkblock">
         <a href="source-repository.html"><img src="images/contribute.png" alt="contribute"/></a>
-        <span><b>CONTRIBUTE</b><br />OpenEngSB is <a href="team-list.html">actively being developed</a> and there are many opportunities to get involved. See the <a href="source-repository.html">source repository</a> and <a href="issue-tracking.html">issue tracker</a> for hard facts.</span>
+        <div><b>CONTRIBUTE</b><br />OpenEngSB is <a href="team-list.html">actively being developed</a> and there are many opportunities to get involved. See the <a href="source-repository.html">source repository</a> and <a href="issue-tracking.html">issue tracker</a> for hard facts.</div>
       </div>
 
       <div class="linkblock">
         <a href="community/mailinglists.html"><img src="images/social.png" alt="social"/></a>
-        <span><b>SOCIAL</b><br />Looking for OpenEngSB's growing community? Take a look on the <a href="community/mailinglists.html">mailing lists</a>. Also, visit us on <a href="http://www.facebook.com/group.php?gid=208312030232">Facebook</a> and <a href="http://twitter.com/openEngSB">Twitter</a>.</span>
+        <div><b>SOCIAL</b><br />Looking for OpenEngSB's growing community? Take a look on the <a href="community/mailinglists.html">mailing lists</a>. Also, visit us on <a href="http://www.facebook.com/group.php?gid=208312030232">Facebook</a> and <a href="http://twitter.com/openEngSB">Twitter</a>.</div>
       </div>
 
     </section>
