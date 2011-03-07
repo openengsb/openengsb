@@ -335,4 +335,11 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat((String) result.getProperty("alternativeName"),
             is("The answer to life the universe and everything"));
     }
+
+    @Test
+    public void testCancelWorkflow() throws Exception {
+        long pid = service.startFlow("ci");
+        service.cancelFlow(pid);
+        service.waitForFlowToFinish(pid, 5000);
+    }
 }

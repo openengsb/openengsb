@@ -390,4 +390,9 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         this.rulemanager = rulemanager;
     }
 
+    @Override
+    public void cancelFlow(Long processInstanceId) throws WorkflowException {
+        getSessionForCurrentContext().abortProcessInstance(processInstanceId);
+    }
+
 }
