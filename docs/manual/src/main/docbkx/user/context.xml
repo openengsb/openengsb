@@ -27,7 +27,7 @@
 
   <para>The context is one of the most important core concepts of the openengsb. It allows to reuse predefined
     workflows in several contexts. A context may often represent a project or subproject. So it is possible to execute
-    the same workflow with the project-specific tool-instances and other metadata (like contact-information).
+    the same workflow with the project-specific tool-instances and other metadata (like contact-information).</para>
 
   <para>To determine in which context an action should be executed a thread-local variable is used. The
     <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextHolder.java">
@@ -55,7 +55,7 @@
 
     <para>In general workflows have references to several domains and other services which they interact with during
       execution. Each project might have their own tools behind these domains, so these references must be resolved
-      at runtime depending on the current context.
+      at runtime depending on the current context.</para>
 
     <para>For this to work the workflow-engine declares global variables that are used in rules and processes. A variable is resolved by
       looking up the service with the same name in the current context. If no service with that name is available in
