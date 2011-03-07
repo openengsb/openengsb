@@ -71,16 +71,6 @@ public final class JiraValueConverter {
         } catch (Exception ignore) {
             //ignore
         }
-        try {
-            return convert(Issue.Type.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
-        }
-        try {
-            return convert(Issue.Field.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
-        }
         return null;
     }
 }
