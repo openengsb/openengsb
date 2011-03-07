@@ -68,46 +68,49 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
-        editor =
-            new ServiceEditor("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
-                @Override
-                public void onSubmit() {
-                    boolean checkBoxValue = isValidating();
-                    if (checkBoxValue) {
-                        MultipleAttributeValidationResult updateWithValidation =
-                            serviceManager.update(getValues().get("id"), getValues());
-                        if (!updateWithValidation.isValid()) {
-                            Map<String, String> attributeErrorMessages =
-                                updateWithValidation.getAttributeErrorMessages();
-                            for (String value : attributeErrorMessages.values()) {
-                                error(new StringResourceModel(value, this, null).getString());
-                            }
-                        } else {
-                            returnToTestClient();
+        editor = new ServiceEditor("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
+            @Override
+            public void onSubmit() {
+                boolean checkBoxValue = isValidating();
+                if (checkBoxValue) {
+                    MultipleAttributeValidationResult updateWithValidation =
+                        serviceManager.update(getValues().get("id"), getValues());
+                    if (!updateWithValidation.isValid()) {
+                        Map<String, String> attributeErrorMessages = updateWithValidation.getAttributeErrorMessages();
+                        for (String value : attributeErrorMessages.values()) {
+                            error(new StringResourceModel(value, this, null).getString());
                         }
                     } else {
-                        serviceManager.updateWithoutValidation(getValues().get("id"), getValues());
                         returnToTestClient();
                     }
+                } else {
+                    serviceManager.updateWithoutValidation(getValues().get("id"), getValues());
+                    returnToTestClient();
                 }
+            }
 
-                private void returnToTestClient() {
-                    String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
-                    String id = getValues().get("id");
-                    ServiceId reference = new ServiceId(serviceClass, id);
-                    setResponsePage(new TestClient(reference));
-                }
-            };
+            private void returnToTestClient() {
+                String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
+                String id = getValues().get("id");
+                ServiceId reference = new ServiceId(serviceClass, id);
+                setResponsePage(new TestClient(reference));
+            }
+        };
         add(editor);
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
         Builder builder = AttributeDefinition.builder(new WicketStringLocalizer(this));
-        AttributeDefinition id = builder.id("id").name("attribute.id.name").description("attribute.id.description")
+        AttributeDefinition id =
+            builder.id("id").name("attribute.id.name").description("attribute.id.description").required().build();
+        builder = AttributeDefinition.builder(new WicketStringLocalizer(this));
+        AttributeDefinition location =
+            builder.id("location").name("attribute.location.name").description("attribute.location.description")
                 .required().build();
         ServiceDescriptor descriptor = service.getDescriptor();
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         attributes.add(id);
+        attributes.add(location);
         attributes.addAll(descriptor.getAttributes());
         return attributes;
     }

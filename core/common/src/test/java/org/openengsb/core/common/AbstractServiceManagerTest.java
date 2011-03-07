@@ -44,6 +44,7 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.l10n.BundleStringsTest;
@@ -127,15 +128,18 @@ public class AbstractServiceManagerTest {
     public void testAddNewOne() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
+        attributes.put("location", "location, foo/location2");
+        ContextHolder.get().setCurrentContextId("locationTest");
         NullDomainImpl instance = new NullDomainImpl();
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
+        props.put("location.locationTest", "[location][foo/location2]");
 
         Mockito.verify(bundleContextMock).registerService(
-            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
+            eq(new String[]{NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName()}),
             any(NullDomain.class), eq(props));
 
         ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
@@ -177,9 +181,13 @@ public class AbstractServiceManagerTest {
 
         HashMap<String, String> verificationAttributes = new HashMap<String, String>();
         verificationAttributes.put("foo", "bar");
+        verificationAttributes.put("location", "location, foo/location2");
+        ContextHolder.get().setCurrentContextId("locationTest");
         manager.update("test", verificationAttributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
+        verificationAttributes.remove("location");
+        verificationAttributes.put("location.locationTest", "[location][foo/location2]");
 
         ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(captor.capture(), any(Proxy.class),

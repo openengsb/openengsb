@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
@@ -41,6 +42,7 @@ public abstract class AbstractServiceManagerParent implements BundleContextAware
         return bundleContext;
     }
 
+    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         strings = new BundleStrings(bundleContext.getBundle());
@@ -52,12 +54,24 @@ public abstract class AbstractServiceManagerParent implements BundleContextAware
         serviceProperties.put("domain", getDomainInterface().getName());
         serviceProperties.put("class", getImplementationClass().getName());
         serviceProperties.put("managerId", getDescriptor().getId());
-
+        createLocation(attributes, serviceProperties);
         if (attributes.containsKey(Constants.SERVICE_RANKING)) {
             serviceProperties.put(Constants.SERVICE_RANKING, attributes.get(Constants.SERVICE_RANKING));
         }
 
         return serviceProperties;
+    }
+
+    protected void createLocation(Map<String, String> attributes, Map<String, String> serviceProperties) {
+        if (attributes.containsKey("location")) {
+            String[] split = attributes.get("location").split(",");
+            StringBuilder builder = new StringBuilder();
+            for (String string : split) {
+                builder.append("[" + string.trim() + "]");
+            }
+            serviceProperties.put("location." + ContextHolder.get().getCurrentContextId(), builder.toString());
+            attributes.remove("location");
+        }
     }
 
     protected abstract ServiceDescriptor getDescriptor();
