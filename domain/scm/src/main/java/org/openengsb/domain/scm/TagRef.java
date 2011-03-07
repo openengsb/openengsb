@@ -18,23 +18,17 @@
  * under the License.
  */
 
-package org.openengsb.connector.git.domain;
+package org.openengsb.domain.scm;
 
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.openengsb.domain.scm.CommitRef;
+/**
+ * An abstraction for tag reference (tag-ref) to a tag id in SCM.
+ */
+public interface TagRef extends CommitRef {
 
-public class GitCommitRef implements CommitRef {
-    private RevCommit commitRef;
-
-    public GitCommitRef(RevCommit commitRef) {
-        this.commitRef = commitRef;
-    }
-
-    @Override
-    public String getStringRepresentation() {
-        if (commitRef == null) {
-            return null;
-        }
-        return commitRef.name();
-    }
+    /**
+     * Gets this tag-ref name.
+     *
+     * @return Name of this tag-ref
+     */
+    String getTagName();
 }

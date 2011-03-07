@@ -20,21 +20,30 @@
 
 package org.openengsb.connector.git.domain;
 
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.openengsb.domain.scm.CommitRef;
+import org.eclipse.jgit.revwalk.RevTag;
+import org.openengsb.domain.scm.TagRef;
 
-public class GitCommitRef implements CommitRef {
-    private RevCommit commitRef;
+public class GitTagRef implements TagRef {
+    private RevTag tagRef;
 
-    public GitCommitRef(RevCommit commitRef) {
-        this.commitRef = commitRef;
+    public GitTagRef(RevTag tagRef) {
+        this.tagRef = tagRef;
+    }
+
+    @Override
+    public String getTagName() {
+        if (tagRef == null) {
+            return null;
+        }
+        return tagRef.getTagName();
     }
 
     @Override
     public String getStringRepresentation() {
-        if (commitRef == null) {
+        if (tagRef == null) {
             return null;
         }
-        return commitRef.name();
+        return tagRef.name();
     }
+
 }
