@@ -25,12 +25,13 @@ import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
 
+import com.dolby.jira.net.soap.jira.JiraSoapService;
+import com.dolby.jira.net.soap.jira.JiraSoapServiceService;
+import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.atlassian.jira.rpc.soap.client.JiraSoapService;
-import com.atlassian.jira.rpc.soap.client.JiraSoapServiceService;
-import com.atlassian.jira.rpc.soap.client.JiraSoapServiceServiceLocator;
+
 
 /**
  * This represents a SOAP session with JIRA including that state of being logged in or not
