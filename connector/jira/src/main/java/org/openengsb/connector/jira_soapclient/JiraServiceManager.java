@@ -16,14 +16,14 @@
 
 package org.openengsb.connector.jira_soapclient;
 
-import org.openengsb.connector.jira_soapclient.internal.JiraSoapServiceInstanceFactory;
-import org.openengsb.connector.jira_soapclient.internal.SOAPClient;
+import org.openengsb.connector.jira_soapclient.internal.JiraService;
+import org.openengsb.connector.jira_soapclient.internal.JiraServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domain.issue.IssueDomain;
 
-public class JiraServiceManager extends AbstractServiceManager<IssueDomain, SOAPClient> {
+public class JiraServiceManager extends AbstractServiceManager<IssueDomain, JiraService> {
 
-    public JiraServiceManager(JiraSoapServiceInstanceFactory jiraServiceFactory) {
+    public JiraServiceManager(JiraServiceInstanceFactory jiraServiceFactory) {
         super(jiraServiceFactory);
     }
 

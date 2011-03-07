@@ -19,51 +19,52 @@ package org.openengsb.connector.jira_soapclient.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.issue.IssueDomain;
 
-public class JiraSoapServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, SOAPClient> {
+public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, JiraService> {
 
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
 
-        builder.attribute(builder.newAttribute().id("jira.user").name("jira.user.name")
-                .description("jira.user.description").build());
+        builder.attribute(
+            builder.newAttribute().id("jira.user").name("jira.user.name").description("jira.user.description").build());
         builder.attribute(builder.newAttribute().id("jira.password").name("jira.password.name")
-                .description("jira.password.description").defaultValue("").asPassword().build());
-        builder.attribute(builder.newAttribute().id("jira.project").name("jira.project.name")
-                .description("jira.project.description").defaultValue("").required().build());
-        builder.attribute(builder.newAttribute().id("jira.uri").name("jira.uri.name")
-                .description("jira.uri.description").defaultValue("").required().build());
+            .description("jira.password.description").defaultValue("").asPassword().build());
+        builder.attribute(
+            builder.newAttribute().id("jira.project").name("jira.project.name").description("jira.project.description")
+                .defaultValue("").required().build());
+        builder.attribute(
+            builder.newAttribute().id("jira.uri").name("jira.uri.name").description("jira.uri.description")
+                .defaultValue("").required().build());
 
         return builder.build();
     }
 
     @Override
-    public void updateServiceInstance(SOAPClient instance, Map<String, String> attributes) {
+    public void updateServiceInstance(JiraService instance, Map<String, String> attributes) {
         instance.setJiraUser(attributes.get("jira.user"));
         instance.setJiraPassword(attributes.get("jira.password"));
 
-        instance.getProxyFactory().setJiraURI(attributes.get("jira.uri"));
-        instance.getRpcConverter().setJiraProject(attributes.get("jira.project"));
+        instance.getSoapSession().updateJiraURI(attributes.get("jira.uri"));
+        instance.setProjectKey(attributes.get("jira.project"));
     }
 
     @Override
-    public MultipleAttributeValidationResult updateValidation(SOAPClient instance, Map<String, String> attributes) {
+    public MultipleAttributeValidationResult updateValidation(JiraService instance, Map<String, String> attributes) {
         return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 
     @Override
-    public SOAPClient createServiceInstance(String id, Map<String, String> attributes) {
-        JiraSoapProxyFactory proxyFactory = new JiraSoapProxyFactory(attributes.get("jira.uri"));
-        SOAPClient jiraConnector = new SOAPClient(id);
-
+    public JiraService createServiceInstance(String id, Map<String, String> attributes) {
+        JiraSOAPSession jiraSoapSession = new JiraSOAPSession(attributes.get("jira.uri"));
+        JiraService jiraConnector = new JiraService(id, jiraSoapSession, attributes.get("jira.project"));
+        jiraConnector.setJiraUser(attributes.get("jira.user"));
+        jiraConnector.setJiraPassword(attributes.get("jira.password"));
         updateServiceInstance(jiraConnector, attributes);
         return jiraConnector;
     }

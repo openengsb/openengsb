@@ -25,21 +25,21 @@ import com.atlassian.jira.rpc.soap.client.RemoteFieldValue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
-public class SOAPClientTest {
+public class JiraServiceTest {
 
-    private SOAPClient jiraClient;
+    private JiraService jiraClient;
     private JiraSoapService jiraSoapService;
     private String authToken = "authToken";
-    private SOAPSession soapSession;
+    private JiraSOAPSession jiraSoapSession;
     private String projectKey = "projectKey";
 
     @Before
     public void setUp() throws Exception {
-        soapSession = mock(SOAPSession.class);
+        jiraSoapSession = mock(JiraSOAPSession.class);
         jiraSoapService = mock(JiraSoapService.class);
-        when(soapSession.getJiraSoapService()).thenReturn(jiraSoapService);
-        when(soapSession.getAuthenticationToken()).thenReturn(authToken);
-        jiraClient = new SOAPClient("id", soapSession, projectKey);
+        when(jiraSoapSession.getJiraSoapService()).thenReturn(jiraSoapService);
+        when(jiraSoapSession.getAuthenticationToken()).thenReturn(authToken);
+        jiraClient = new JiraService("id", jiraSoapSession, projectKey);
         jiraClient.setJiraPassword("pwd");
         jiraClient.setJiraUser("user");
     }
@@ -52,9 +52,9 @@ public class SOAPClientTest {
         when(remoteIssue.getId()).thenReturn("id1");
         when(jiraSoapService.createIssue(anyString(), any(RemoteIssue.class))).thenReturn(remoteIssue);
         String id = jiraClient.createIssue(issue);
-        verify(soapSession).getJiraSoapService();
-        verify(soapSession).getAuthenticationToken();
-        verify(soapSession).connect("user", "pwd");
+        verify(jiraSoapSession).getJiraSoapService();
+        verify(jiraSoapSession).getAuthenticationToken();
+        verify(jiraSoapSession).connect("user", "pwd");
         verify(jiraSoapService).createIssue(anyString(), Mockito.any(RemoteIssue.class));
         assertThat(id, is("key"));
     }
@@ -65,9 +65,9 @@ public class SOAPClientTest {
         when(remoteIssue.getKey()).thenReturn("issueKey");
         when(jiraSoapService.getIssue(authToken, "id")).thenReturn(remoteIssue);
         jiraClient.addComment("id", "comment1");
-        verify(soapSession, atLeastOnce()).getJiraSoapService();
-        verify(soapSession, atLeastOnce()).getAuthenticationToken();
-        verify(soapSession, atLeastOnce()).connect("user", "pwd");
+        verify(jiraSoapSession, atLeastOnce()).getJiraSoapService();
+        verify(jiraSoapSession, atLeastOnce()).getAuthenticationToken();
+        verify(jiraSoapSession, atLeastOnce()).connect("user", "pwd");
         verify(jiraSoapService, times(1)).addComment(anyString(), anyString(), any(RemoteComment.class));
     }
 
@@ -89,10 +89,16 @@ public class SOAPClientTest {
     public void testDelayIssue() throws Exception {
         RemoteVersion[] versions = new RemoteVersion[1];
         RemoteVersion version = mock(RemoteVersion.class);
+        when(version.getId()).thenReturn("id2");
         versions[0] = version;
         when(jiraSoapService.getVersions(anyString(), anyString())).thenReturn(versions);
-        jiraClient.delayIssue("id1");
-        verify(jiraSoapService, times(1)).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
+        RemoteIssue[] values = new RemoteIssue[1];
+        RemoteIssue issue = mock(RemoteIssue.class);
+        values[0] = issue;
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"Test Version 1\") ", 300))
+            .thenReturn(values);
+        jiraClient.moveIssuesFromReleaseToRelease("id1", "id2");
+        verify(jiraSoapService, atLeastOnce()).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
     }
 
     @Test

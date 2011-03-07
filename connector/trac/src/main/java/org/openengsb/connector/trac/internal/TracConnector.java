@@ -106,7 +106,7 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
     }
 
     @Override
-    public void delayIssue(String id) {
+    public void moveIssuesFromReleaseToRelease(String releaseId1) {
         throw new DomainMethodNotImplementedException("method not yet implemented");
     }
 

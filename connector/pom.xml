@@ -64,7 +64,6 @@
     <module>git</module>
     <module>maven</module>
     <module>jira</module>
-    <module>jira-soapclient</module>
     <module>memoryauditing</module>
   </modules>
 
