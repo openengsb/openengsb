@@ -46,9 +46,9 @@ public interface IssueDomain extends Domain {
 
 
     /**
-     * move an issue, specified by his id to the next release
+     * move all issues from one release ( specified by releaseFromId ) to another release ( specified by releaseToId )
      */
-    void delayIssue(String id);
+    void moveIssuesFromReleaseToRelease(String releaseFromId, String releaseToId);
 
     /**
      * close a release specified by his id
