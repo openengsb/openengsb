@@ -41,8 +41,7 @@
         <div>
           <a href="http://opencit.openengsb.org"><b>OpenCIT</b></a><br />
           Efficient continuous integration server. Well-integrated into the
-          service bus environment and used by the OpenEngSB family of
-          projects.
+          OpenEngSB environment and used to build subprojects.
         </div>
       </div>
 
