@@ -25,11 +25,12 @@ import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.dolby.jira.net.soap.jira.JiraSoapService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 
@@ -45,19 +46,15 @@ public class JiraSOAPSession {
     private String url;
 
     public JiraSOAPSession(String url) {
-       this.url = url;
+        this.url = url;
     }
 
     private void setUp(String url) {
         try {
             URL webServicePort = new URL(url);
             jiraSoapServiceLocator = new JiraSoapServiceServiceLocator();
-            if (webServicePort == null) {
-                jiraSoapService = jiraSoapServiceLocator.getJirasoapserviceV2();
-            } else {
-                jiraSoapService = jiraSoapServiceLocator.getJirasoapserviceV2(webServicePort);
-                log.info("SOAP Session service endpoint at " + webServicePort.toExternalForm());
-            }
+            jiraSoapService = jiraSoapServiceLocator.getJirasoapserviceV2(webServicePort);
+            log.info("SOAP Session service endpoint at " + webServicePort.toExternalForm());
         } catch (ServiceException e) {
             throw new RuntimeException("ServiceException during JiraService contruction", e);
         } catch (MalformedURLException e) {

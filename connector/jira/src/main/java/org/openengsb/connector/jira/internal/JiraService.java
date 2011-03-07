@@ -19,7 +19,14 @@
  */
 package org.openengsb.connector.jira.internal;
 
-import com.dolby.jira.net.soap.jira.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.jira.internal.misc.FieldConverter;
@@ -33,8 +40,11 @@ import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
-import java.rmi.RemoteException;
-import java.util.*;
+import com.dolby.jira.net.soap.jira.JiraSoapService;
+import com.dolby.jira.net.soap.jira.RemoteComment;
+import com.dolby.jira.net.soap.jira.RemoteFieldValue;
+import com.dolby.jira.net.soap.jira.RemoteIssue;
+import com.dolby.jira.net.soap.jira.RemoteVersion;
 
 
 public class JiraService extends AbstractOpenEngSBService implements IssueDomain {
@@ -220,7 +230,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     }
 
     private RemoteVersion getNextVersion(String authToken, JiraSoapService jiraSoapService, String releaseToId)
-            throws RemoteException {
+        throws RemoteException {
         RemoteVersion[] versions = jiraSoapService.getVersions(authToken, this.projectKey);
         RemoteVersion next = null;
         for (RemoteVersion version : versions) {
@@ -302,7 +312,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         return remoteIssue;
     }
 
-    private RemoteIssue getIssueById(String id) throws RemoteException, RemoteAuthenticationException {
+    private RemoteIssue getIssueById(String id) throws RemoteException {
         this.state = AliveState.CONNECTING;
         JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
         RemoteIssue remoteIssue = null;
@@ -320,14 +330,15 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         return remoteIssue;
     }
 
-    private JiraSOAPSession login() throws DomainMethodExecutionException {
+    private JiraSOAPSession login() {
         try {
             this.state = AliveState.CONNECTING;
             jiraSoapSession.connect(jiraUser, jiraPassword);
             this.state = AliveState.ONLINE;
             return jiraSoapSession;
         } catch (RemoteException e) {
-            throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username", e);
+            throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username"
+                    , e);
         }
     }
 
