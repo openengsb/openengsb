@@ -1,7 +1,5 @@
 package org.openengsb.connector.jira.internal;
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,11 +8,14 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.junit.Test;
+
 /**
  *
  */
-public class JiraServiceInstanceFactoryTest extends TestCase {
+public class JiraServiceInstanceFactoryTest {
 
+    @Test
     public void testUpdateServiceInstance() throws Exception {
         JiraServiceInstanceFactory jsif = new JiraServiceInstanceFactory();
         Map<String, String> attributes = new HashMap<String, String>();
@@ -22,6 +23,7 @@ public class JiraServiceInstanceFactoryTest extends TestCase {
         assertThat(service.getInstanceId(), is("id"));
     }
 
+    @Test
     public void testUpdateValidation() throws Exception {
         JiraServiceInstanceFactory jsif = new JiraServiceInstanceFactory();
         Map<String, String> attributes = new HashMap<String, String>();
@@ -36,6 +38,6 @@ public class JiraServiceInstanceFactoryTest extends TestCase {
         assertThat(jiraService.getProjectKey(), is("projectKey"));
         assertThat(jiraService.getJiraPassword(), is("pwd"));
         assertThat(jiraService.getJiraUser(), is("user"));
-        verify(sessionMock).updateJiraURI("uri");
+        verify(sessionMock).setJiraURI("uri");
     }
 }

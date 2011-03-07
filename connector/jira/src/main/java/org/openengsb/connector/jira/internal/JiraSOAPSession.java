@@ -43,10 +43,10 @@ public class JiraSOAPSession {
     private JiraSoapServiceService jiraSoapServiceLocator;
     private JiraSoapService jiraSoapService;
     private String token;
-    private String url;
+    private String jiraURI;
 
-    public JiraSOAPSession(String url) {
-        this.url = url;
+    public JiraSOAPSession(String jiraURI) {
+        this.jiraURI = jiraURI;
     }
 
     private void setUp(String url) {
@@ -58,13 +58,13 @@ public class JiraSOAPSession {
         } catch (ServiceException e) {
             throw new RuntimeException("ServiceException during JiraService contruction", e);
         } catch (MalformedURLException e) {
-            log.error("malformed url");
+            log.error("malformed jiraURI");
         }
     }
 
     public void connect(String userName, String password) throws RemoteException {
         log.info("\tSetup started");
-        setUp(url);
+        setUp(jiraURI);
         log.info("\tConnnecting via SOAP as : " + userName);
         token = getJiraSoapService().login(userName, password);
         log.info("\tConnected");
@@ -82,7 +82,7 @@ public class JiraSOAPSession {
         return jiraSoapServiceLocator;
     }
 
-    public void updateJiraURI(String url) {
-        setUp(url);
+    public void setJiraURI(String url) {
+        this.jiraURI = url;
     }
 }

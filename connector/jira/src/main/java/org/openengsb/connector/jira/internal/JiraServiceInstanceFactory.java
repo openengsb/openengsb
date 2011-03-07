@@ -54,7 +54,7 @@ public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueD
         instance.setJiraUser(attributes.get("jira.user"));
         instance.setJiraPassword(attributes.get("jira.password"));
 
-        instance.getSoapSession().updateJiraURI(attributes.get("jira.uri"));
+        instance.getSoapSession().setJiraURI(attributes.get("jira.uri"));
         instance.setProjectKey(attributes.get("jira.project"));
     }
 
