@@ -67,7 +67,7 @@ public class JiraServiceTest {
         jiraSoapService = mock(JiraSoapService.class);
         when(jiraSoapSession.getJiraSoapService()).thenReturn(jiraSoapService);
         when(jiraSoapSession.getAuthenticationToken()).thenReturn(authToken);
-        doThrow(new DomainMethodExecutionException()).when(jiraSoapSession).connect(anyString(), anyString());
+        doThrow(new RemoteException()).when(jiraSoapSession).connect(anyString(), anyString());
         jiraClient = new JiraService("id", jiraSoapSession, projectKey);
         jiraClient.setJiraPassword("pwd");
         jiraClient.setJiraUser("user");
@@ -103,7 +103,7 @@ public class JiraServiceTest {
 
 
     @Test
-    public void testUpdateIssue() throws Exception {
+    public void testUpdateIssue_shouldSuccess() throws Exception {
 
         RemoteIssue remoteIssue = mock(RemoteIssue.class);
         when(remoteIssue.getKey()).thenReturn("issueKey");
@@ -170,6 +170,14 @@ public class JiraServiceTest {
         expectedReport.add("\t * [issue1Key] - issue1Description");
         expectedReport.add("\n");
         assertThat(report.toString(), is(expectedReport.toString()));
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testFailingUpdateIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException() throws Exception  {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        doThrow(new RemoteException()).when(jiraSoapSession).connect(anyString(), anyString());
+        jiraClient.addComment("id", "comment1");
     }
 
     private Issue createIssue(String id) {
