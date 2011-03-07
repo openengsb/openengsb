@@ -124,4 +124,10 @@ public interface WorkflowService {
      */
     ProcessBag executeWorkflow(String processId, ProcessBag parameters) throws WorkflowException;
 
+    /**
+     * cancels a currently ongoing workflow. Use this with caution. There is now error-handling or rollback of any kind.
+     * @throws WorkflowException
+     */
+    void cancelFlow(Long processInstanceId) throws WorkflowException;
+
 }
