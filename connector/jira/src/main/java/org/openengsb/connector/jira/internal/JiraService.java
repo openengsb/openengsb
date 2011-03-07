@@ -327,7 +327,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             this.state = AliveState.ONLINE;
             return jiraSoapSession;
         } catch (RemoteException e) {
-            throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username");
+            throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username", e);
         }
     }
 
