@@ -19,26 +19,23 @@
  */
 package org.openengsb.connector.jira.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.rmi.*;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.dolby.jira.net.soap.jira.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 
 public class JiraServiceTest {
@@ -71,7 +68,7 @@ public class JiraServiceTest {
         jiraClient = new JiraService("id", jiraSoapSession, projectKey);
         jiraClient.setJiraPassword("pwd");
         jiraClient.setJiraUser("user");
-         String id = jiraClient.createIssue(issue);
+        String id = jiraClient.createIssue(issue);
     }
 
     @Test
@@ -159,7 +156,7 @@ public class JiraServiceTest {
         values[1] = issue2;
 
         when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (6)",
-            1000)).thenReturn(values);
+                1000)).thenReturn(values);
         ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
         ArrayList<String> expectedReport = new ArrayList<String>();
 
@@ -173,11 +170,27 @@ public class JiraServiceTest {
     }
 
     @Test(expected = DomainMethodExecutionException.class)
-    public void testFailingUpdateIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException() throws Exception  {
+    public void testFailCommitingIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException() throws Exception {
         RemoteIssue remoteIssue = mock(RemoteIssue.class);
         when(remoteIssue.getKey()).thenReturn("issueKey");
         doThrow(new RemoteException()).when(jiraSoapSession).connect(anyString(), anyString());
         jiraClient.addComment("id", "comment1");
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testFailUpdateIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException() throws Exception {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        doThrow(new RemoteException()).when(jiraSoapService).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
+        when(jiraSoapService.getIssue(authToken, "id1")).thenReturn(remoteIssue);
+        HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
+        jiraClient.updateIssue("id1", "comment1", changes);
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void tesGeneratingReleaseReportCausedByNonExistingRelease_shouldThrowDomainMehtodExecutionException() throws Exception {
+        doThrow(new RemoteException()).when(jiraSoapService).getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (6)",
+                1000);
+        ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
     }
 
     private Issue createIssue(String id) {
