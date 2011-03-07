@@ -31,15 +31,15 @@ import org.eclipse.jgit.lib.Constants;
 import org.junit.Test;
 
 /**
- * This class contains unit-tests which may require a special system setup and should not be run automatically
- * therefore.
+ * This class contains unit-tests which may require a special system setup and
+ * should not be run automatically therefore.
  */
 public class GitServiceImplUT extends AbstractGitServiceImpl {
 
     @Test
     public void pollWithEmptyWorkspace_shouldCloneSSHRemoteRepository() throws IOException {
         service.setRemoteLocation("git@github.com:Mercynary/myTestRepo.git");
-        assertThat(service.poll(), is(true));
+        service.update();
         localRepository = service.getRepository();
         AnyObjectId id = localRepository.resolve(Constants.HEAD);
         assertThat(id, notNullValue());

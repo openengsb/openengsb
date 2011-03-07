@@ -20,19 +20,21 @@
 
 package org.openengsb.connector.git.domain;
 
-import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.openengsb.domain.scm.CommitRef;
 
 public class GitCommitRef implements CommitRef {
-    private AnyObjectId commitRef;
+    private RevCommit commitRef;
 
-    public GitCommitRef(AnyObjectId commitRef) {
+    public GitCommitRef(RevCommit commitRef) {
         this.commitRef = commitRef;
     }
 
     @Override
     public String getStringRepresentation() {
-        return this.commitRef.name();
+        if (commitRef == null) {
+            return null;
+        }
+        return commitRef.name();
     }
 }
-

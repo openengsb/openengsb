@@ -21,177 +21,280 @@
 package org.openengsb.connector.git.internal;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.Test;
+import org.openengsb.connector.git.domain.GitCommitRef;
+import org.openengsb.connector.git.domain.GitTagRef;
 import org.openengsb.domain.scm.CommitRef;
+import org.openengsb.domain.scm.ScmException;
+import org.openengsb.domain.scm.TagRef;
 
 public class GitServiceImplTest extends AbstractGitServiceImpl {
 
     @Test
-    public void pollWithEmptyWorkspace_shouldCloneRemoteRepository() throws IOException {
-        assertThat(service.poll(), is(true));
+    public void updateWithEmptyWorkspace_shouldCloneRemoteRepository() throws Exception {
+        List<CommitRef> commits = service.update();
+        assertThat(commits.size(), is(1));
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
         assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
+        assertThat(commits.get(0).getStringRepresentation(), is(service.getRepository().resolve(Constants.HEAD).name()));
     }
 
     @Test
-    public void pollAgainFromSameRepoState_shouldReturnFalseFromPoll() {
-        assertThat(service.poll(), is(true));
-        assertThat(service.poll(), is(false));
+    public void updateAgainFromSameRepoState_shouldReturnFalseFromPoll() {
+        List<CommitRef> updateOne = service.update();
+        assertThat(updateOne.size(), is(1));
+        List<CommitRef> updateTwo = service.update();
+        assertThat(updateTwo.size(), is(0));
     }
 
     @Test
-    public void poll_shouldPullChangesIntoLocalBranch() {
-        assertThat(service.poll(), is(true));
+    public void update_shouldPullChangesIntoLocalBranch() {
+        List<CommitRef> updateOne = service.update();
+        assertThat(updateOne.size(), is(1));
         assertThat(new File(localDirectory, "testfile").isFile(), is(true));
     }
 
     @Test
-    public void pollFromUpdatedRemote_shouldUpdateLocal() throws Exception {
-        assertThat(service.poll(), is(true));
+    public void updateFromUpdatedRemote_shouldUpdateLocal() throws Exception {
+        List<CommitRef> updateOne = service.update();
+        assertThat(updateOne.size(), is(1));
         Git git = new Git(remoteRepository);
         RepositoryFixture.addFile(git, "second");
         RepositoryFixture.commit(git, "second commit");
         assertThat(new File(localDirectory, "second").isFile(), is(false));
-        assertThat(service.poll(), is(true));
+        List<CommitRef> updateTwo = service.update();
+        assertThat(updateTwo.size(), is(1));
         assertThat(new File(localDirectory, "second").isFile(), is(true));
-        assertThat(service.poll(), is(false));
+        List<CommitRef> updateThree = service.update();
+        assertThat(updateThree.size(), is(0));
     }
 
     @Test
-    public void pollWithNoExistingWatchBranch_shouldReturnFalse() {
+    public void updateWithNoExistingWatchBranch_shouldReturnFalse() {
         service.setWatchBranch("unknown");
-        assertThat(service.poll(), is(false));
+        List<CommitRef> updateOne = service.update();
+        assertThat(updateOne, nullValue());
     }
 
     @Test
-    public void exportRepository_shouldCreateFullCopyOfCurrentRepoState() {
-        service.poll();
-        assertThat(new File(localDirectory, "testfile").isFile(), is(true));
-        File exportDirectory = tempFolder.newFolder("export");
-        service.export(exportDirectory);
-        assertThat(new File(exportDirectory, "testfile").isFile(), is(true));
-        assertThat(new File(exportDirectory, ".git").isDirectory(), is(false));
+    public void exportRepository_shouldReturnZipFileWithRepoEntries() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String dir = "testDirectory";
+        String file = "myTestFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+
+        String pattern = dir + "/" + file;
+        Git git = new Git(localRepository);
+        git.add().addFilepattern(pattern).call();
+        git.commit().setMessage("My msg").call();
+
+        ZipFile zipFile = new ZipFile(service.export());
+        assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
+        assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
+        assertThat(zipFile.getEntry(dir + "\\" + file).getName(), is(dir + "\\" + file));
+    }
+
+    public void exportRepositoryByRef_shouldReturnZipFileWithRepoEntries() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String dir = "testDirectory";
+        String file = "myTestFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+
+        String pattern = dir + "/" + file;
+        Git git = new Git(localRepository);
+        git.add().addFilepattern(pattern).call();
+        git.commit().setMessage("My msg").call();
+
+        AnyObjectId headId = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit head = rw.parseCommit(headId);
+        rw.release();
+
+        ZipFile zipFile = new ZipFile(service.export(new GitCommitRef(head)));
+        assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
+        assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
+        assertThat(zipFile.getEntry(dir + "\\" + file).getName(), is(dir + "\\" + file));
     }
 
     @Test
-    public void commitFile_shouldReturnHeadReference() throws IOException {
+    public void getFileFromHeadCommit_shouldReturnFileWithCorrectContent() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String fileName = "myFile";
+        Git git = new Git(localRepository);
+        RepositoryFixture.addFile(git, fileName);
+        RepositoryFixture.commit(git, "Commited my file");
+
+        File file = service.get(fileName);
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is(fileName));
+    }
+
+    @Test
+    public void getFileFromCommitByRef_shouldReturnFileWithCorrectContent() throws Exception {
+        String fileName = "myFile";
+
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        AnyObjectId head = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit headCommit = rw.parseCommit(head);
+        rw.release();
+        Git git = new Git(localRepository);
+        RepositoryFixture.addFile(git, fileName);
+        RepositoryFixture.commit(git, "Commited my file");
+
+        File file = service.get("testfile", new GitCommitRef(headCommit));
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is("testfile"));
+    }
+
+    @Test(expected = ScmException.class)
+    public void getFileFromCommitByNonExistingRef_shouldThrowSCMException() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        File file = service.get("testfile", new GitCommitRef(null));
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is("testfile"));
+    }
+
+    @Test
+    public void addFile_shouldReturnHeadReference() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
         toCommit.createNewFile();
-        CommitRef commitRef = service.commit(toCommit, "testcomment");
+        CommitRef commitRef = service.add("testcomment", toCommit);
         assertThat(commitRef, notNullValue());
         localRepository = service.getRepository();
         assertThat(commitRef.getStringRepresentation(), is(localRepository.resolve(Constants.HEAD).name()));
     }
 
     @Test
-    public void commitNonExistingFile_shouldRaiseException() throws IOException {
+    public void addNonExistingFile_shouldRaiseException() throws IOException {
         File toCommit = new File(localDirectory, "testfile");
         try {
-            service.commit(toCommit, "testcomment");
+            service.add("testcomment", toCommit);
             Assert.fail("Should have thrown an exception");
         } catch (Exception e) {
         }
     }
 
     @Test
-    public void commitFileNotAFile_shouldRaiseException() throws IOException {
-        File toCommit = new File(localDirectory, "testfile");
-        toCommit.mkdirs();
-        try {
-            service.commit(toCommit, "testcomment");
-            Assert.fail("Should have thrown an exception");
-        } catch (Exception e) {
-        }
+    public void addDirectory_shouldReturnObjectIdForChild() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String dir = "testDirectory";
+        String file = "testFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+
+        CommitRef commitRef = service.add("testComment", parent);
+        assertThat(commitRef, is(notNullValue()));
+
+        AnyObjectId id = localRepository.resolve(Constants.HEAD);
+        RevCommit commit = new RevWalk(localRepository).parseCommit(id);
+        String search = dir + "/" + file;
+        TreeWalk treeWalk = TreeWalk.forPath(localRepository, search, new AnyObjectId[] { commit.getTree() });
+        assertThat(treeWalk, is(notNullValue()));
+
+        ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
+        assertThat(objectId, not(ObjectId.zeroId()));
     }
 
     @Test
-    public void commitFileNotInWorkingfolder_shouldRaiseException() throws IOException {
+    public void addFileNotInWorkingfolder_shouldRaiseException() throws IOException {
         File toCommit = tempFolder.newFile("testfile");
-        try {
-            service.commit(toCommit, "testcomment");
-            Assert.fail("Should have thrown an exception");
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
-    public void commitDirectoryNotADirectory_shouldRaiseException() throws IOException {
-        File toCommit = new File(localDirectory, "testfile");
         toCommit.createNewFile();
         try {
-            service.commit(toCommit, "testcomment", true);
+            service.add("testcomment", toCommit);
             Assert.fail("Should have thrown an exception");
         } catch (Exception e) {
         }
     }
 
     @Test
-    public void commitDirectoryRecursive_shouldReturnHeadReference() throws IOException {
-        File folderTest = new File(localDirectory, "testfolder");
-        File folderOne = new File(folderTest, "subfolder1");
-        File folderTwo = new File(folderTest, "subfolder2");
-        folderOne.mkdirs();
-        folderTwo.mkdirs();
-        File commitOne = new File(folderOne, "commitOne");
-        File commitTwo = new File(folderOne, "commitTwo");
-        commitOne.createNewFile();
-        commitTwo.createNewFile();
-        CommitRef commitRef = service.commit(folderTest, "testcomment", true);
-        assertThat(commitRef, notNullValue());
-        localRepository = service.getRepository();
-        AnyObjectId id = localRepository.resolve(Constants.HEAD);
-        assertThat(id.name(), is(commitRef.getStringRepresentation()));
-        RevCommit commit = new RevWalk(localRepository).parseCommit(id);
-        assertThat("testcomment", is(commit.getFullMessage()));
+    public void removeFileFromRepository_shouldReturnNewCommitRefAndDeleteFile() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        AnyObjectId headId = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit head = rw.parseCommit(headId);
+        rw.release();
+
+        CommitRef ref = service.remove("remove", new File(localDirectory, "testfile"));
+        assertThat(head.name(), not(ref.getStringRepresentation()));
+
+        File removed = new File(localDirectory, "testfile");
+        assertThat(removed.exists(), is(false));
     }
 
     @Test
-    public void commitDirectoryNonRecursiveWoFilesAtToplevel_shouldReturnNullReference() throws IOException {
-        File folderTest = new File(localDirectory, "testfolder");
-        File folderOne = new File(folderTest, "subfolder1");
-        File folderTwo = new File(folderTest, "subfolder2");
-        folderOne.mkdirs();
-        folderTwo.mkdirs();
-        File commitOne = new File(folderOne, "commitOne");
-        File commitTwo = new File(folderOne, "commitTwo");
-        commitOne.createNewFile();
-        commitTwo.createNewFile();
-        CommitRef commitRef = service.commit(folderTest, "testcomment", false);
-        assertThat(null, is(commitRef));
-    }
+    public void removeDirectoryFromRepository_shouldReturnNewCommitRefAndDeleteFiles() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
 
-    @Test
-    public void commitDirectoryNonRecursiveWithFilesAtToplevel_shouldReturnHeadReference() throws IOException {
-        File folderTest = new File(localDirectory, "testfolder");
-        File folderOne = new File(folderTest, "subfolder1");
-        File folderTwo = new File(folderTest, "subfolder2");
-        folderOne.mkdirs();
-        folderTwo.mkdirs();
-        File commitOne = new File(folderTest, "commitOne");
-        File commitTwo = new File(folderOne, "commitTwo");
-        commitOne.createNewFile();
-        commitTwo.createNewFile();
-        CommitRef commitRef = service.commit(folderTest, "testcomment", false);
-        localRepository = service.getRepository();
-        AnyObjectId id = localRepository.resolve(Constants.HEAD);
-        assertThat(id.name(), is(commitRef.getStringRepresentation()));
-        RevCommit commit = new RevWalk(localRepository).parseCommit(id);
-        assertThat("testcomment", is(commit.getFullMessage()));
+        String dir = "testDirectory";
+        String file = "testFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+        assertThat(child.exists(), is(true));
+
+        Git git = new Git(localRepository);
+        git.add().addFilepattern(dir + "/" + file).call();
+        git.commit().setMessage("comment").call();
+
+        AnyObjectId headId = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit head = rw.parseCommit(headId);
+        rw.release();
+
+        CommitRef ref = service.remove("remove", new File(localDirectory, dir));
+        assertThat(head.name(), not(ref.getStringRepresentation()));
+
+        File removed = new File(localDirectory, dir + "/" + file);
+        assertThat(removed.exists(), is(false));
     }
 
     @Test
@@ -200,8 +303,8 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         File commitTwo = new File(localDirectory, "commitTwo");
         commitOne.createNewFile();
         commitTwo.createNewFile();
-        service.commit(commitOne, "testcomment");
-        service.commit(commitTwo, "testcomment");
+        service.add("testcomment", commitOne);
+        service.add("testcomment", commitTwo);
         assertThat(service.exists("commitOne"), is(true));
     }
 
@@ -211,8 +314,8 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         File commitTwo = new File(localDirectory, "commitTwo");
         commitOne.createNewFile();
         commitTwo.createNewFile();
-        CommitRef commitRefOne = service.commit(commitOne, "testcomment");
-        service.commit(commitTwo, "testcomment");
+        CommitRef commitRefOne = service.add("testcomment", commitOne);
+        service.add("testcomment", commitTwo);
         assertThat(service.exists("commitOne", commitRefOne), is(true));
     }
 
@@ -222,8 +325,8 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         File commitTwo = new File(localDirectory, "commitTwo");
         commitOne.createNewFile();
         commitTwo.createNewFile();
-        service.commit(commitOne, "testcomment");
-        service.commit(commitTwo, "testcomment");
+        service.add("testcomment", commitOne);
+        service.add("testcomment", commitTwo);
         assertThat(service.exists("commitThree"), is(false));
     }
 
@@ -233,8 +336,70 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         File commitTwo = new File(localDirectory, "commitTwo");
         commitOne.createNewFile();
         commitTwo.createNewFile();
-        CommitRef commitRefOne = service.commit(commitOne, "testcomment");
-        service.commit(commitTwo, "testcomment");
+        CommitRef commitRefOne = service.add("testcomment", commitOne);
+        service.add("testcomment", commitTwo);
         assertThat(service.exists("commitTwo", commitRefOne), is(false));
+    }
+
+    @Test
+    public void tagHeadWithName_shouldReturnTagRefWithName() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        String tagName = "newTag";
+        TagRef tag = service.tagRepo(tagName);
+        assertThat(tag, notNullValue());
+        assertThat(tagName, is(tag.getTagName()));
+        AnyObjectId tagId = localRepository.resolve(tagName);
+        assertThat(tagId.name(), is(tag.getStringRepresentation()));
+        RevTag revTag = new RevWalk(localRepository).parseTag(tagId);
+        AnyObjectId head = localRepository.resolve(Constants.HEAD);
+        assertThat(revTag.getObject().name(), is(head.name()));
+    }
+
+    @Test(expected = ScmException.class)
+    public void tagHeadAgainWithSameName_shouldThrowSCMException() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        String tagName = "newTag";
+        TagRef tag = service.tagRepo(tagName);
+        assertThat(tag, notNullValue());
+        assertThat(tagName, is(tag.getTagName()));
+        service.tagRepo(tagName);
+    }
+
+    @Test(expected = ScmException.class)
+    public void tagEmptyRepoWithName_shouldThrowSCMException() throws Exception {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        localRepository = builder.setWorkTree(localDirectory).build();
+        localRepository.create();
+        service.tagRepo("newTag");
+    }
+
+    @Test
+    public void tagCommitRefWithName_shouldReturnTagRefWithName() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        RevWalk walk = new RevWalk(localRepository);
+        RevCommit head = walk.lookupCommit(localRepository.resolve(Constants.HEAD));
+        CommitRef ref = new GitCommitRef(head);
+        String tagName = "newTag";
+        TagRef tag = service.tagRepo(tagName, ref);
+        assertThat(tag, notNullValue());
+        assertThat(tagName, is(tag.getTagName()));
+        AnyObjectId tagId = localRepository.resolve(tagName);
+        assertThat(tagId.name(), is(tag.getStringRepresentation()));
+        RevTag revTag = new RevWalk(localRepository).parseTag(tagId);
+        assertThat(revTag.getObject().name(), is(head.name()));
+    }
+
+    @Test
+    public void getCommitRefForTagRef_shouldReturnTaggedCommitRef() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        RevWalk walk = new RevWalk(localRepository);
+        RevCommit head = walk.lookupCommit(localRepository.resolve(Constants.HEAD));
+        String tagName = "newTag";
+        TagCommand tagCommand = new Git(localRepository).tag();
+        TagRef tag = new GitTagRef(tagCommand.setName(tagName).call());
+        assertThat(tag, notNullValue());
+        assertThat(tagName, is(tag.getTagName()));
+        CommitRef commitRef = service.getCommitRefForTag(tag);
+        assertThat(head.name(), is(commitRef.getStringRepresentation()));
     }
 }
