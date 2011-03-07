@@ -18,7 +18,7 @@
  * under the License.
  */
 
-package org.openengsb.core.ports.jms;
+package org.openengsb.ports.jms;
 
 import java.util.ArrayList;
 import java.util.Iterator;

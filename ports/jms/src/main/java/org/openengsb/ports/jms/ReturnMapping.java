@@ -18,15 +18,21 @@
  * under the License.
  */
 
-package org.openengsb.core.ports.jms;
+package org.openengsb.ports.jms;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import org.openengsb.core.common.communication.MethodReturn;
 
-public class JacksonUT {
-    @Test
-    public void testSerializeNested() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+public class ReturnMapping extends MethodReturn {
 
+    private String className;
+
+    @Override
+    public final String getClassName() {
+        return className;
     }
+
+    public final void setClassName(String className) {
+        this.className = className;
+    }
+
 }

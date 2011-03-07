@@ -24,30 +24,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>..</relativePath>
-    <groupId>org.openengsb.core.ports</groupId>
-    <artifactId>openengsb-core-ports-parent</artifactId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>org.openengsb.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <bundle.symbolicName>org.openengsb.core.ports.jms</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.ports.jms</bundle.namespace>
-  </properties>
-
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.core.ports</groupId>
-  <artifactId>openengsb-core-ports-jms</artifactId>
+  <groupId>org.openengsb.ports</groupId>
+  <artifactId>openengsb-ports-parent</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Core :: Ports :: JMS</name>
+  <name>OpenEngSB :: Ports :: Parent</name>
 
-  <packaging>bundle</packaging>
-  
-  <description>
-    OpenEngSB Core classes for sending message calls and receiving messages via JMS.
-    The messages can be of type Call, Return or Exception. The marshalling of the messages is done with JSON.
-  </description>
+  <packaging>pom</packaging>
+
+  <description>Parent project for OpenEngSB Ports, which enables external method calls</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>
@@ -63,36 +55,9 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jms</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>jms</module>
+  </modules>
 
 </project>
 

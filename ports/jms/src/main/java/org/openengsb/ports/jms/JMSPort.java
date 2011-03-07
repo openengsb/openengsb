@@ -18,7 +18,7 @@
  * under the License.
  */
 
-package org.openengsb.core.ports.jms;
+package org.openengsb.ports.jms;
 
 import java.io.IOException;
 import java.io.StringReader;

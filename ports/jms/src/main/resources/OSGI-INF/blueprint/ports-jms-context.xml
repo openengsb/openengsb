@@ -45,9 +45,9 @@
     <ref component-id="portBean"/>
   </service>
   
-  <bean id="portBean" class="org.openengsb.core.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
+  <bean id="portBean" class="org.openengsb.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
       <property name="factory">
-        <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl" />
+        <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
       </property>
       <property name="connectionFactory" ref="jmsFactory" />
       <property name="requestHandler" ref="requestHandler" />

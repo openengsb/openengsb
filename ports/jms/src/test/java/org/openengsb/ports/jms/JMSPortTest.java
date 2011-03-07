@@ -18,7 +18,7 @@
  * under the License.
  */
 
-package org.openengsb.core.ports.jms;
+package org.openengsb.ports.jms;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -56,14 +56,14 @@ public class JMSPortTest {
     private final String begin = "{";
 
     private final String sendText = "\"classes\":[\"java.lang.String\",\"java.lang.Integer\","
-            + "\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\"],"
+            + "\"org.openengsb.ports.jms.JMSPortTest$TestClass\"],"
             + "\"methodName\":\"method\",\"args\":[\"123\",5,{\"test\":\"test\"}],"
             + "\"metaData\":{\"test\":\"test\"}}";
 
     private final String sendTextWithReturn = begin + "\"callId\":\"12345\",\"answer\":true," + sendText;
 
     private final String returnText =
-        "{\"type\":\"Object\",\"className\":\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\","
+        "{\"type\":\"Object\",\"className\":\"org.openengsb.ports.jms.JMSPortTest$TestClass\","
                 + "\"metaData\":{\"test\":\"test\"},\"arg\":{\"test\":\"test\"}}";
 
     private MethodCall call;
@@ -103,7 +103,7 @@ public class JMSPortTest {
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode readTree = new ObjectMapper().readTree(captor.getValue());
         MatcherAssert.assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
-                + "\"java.lang.Integer\"," + "\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\"]"));
+                + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.JMSPortTest$TestClass\"]"));
         MatcherAssert.assertThat(readTree.get("methodName").toString(), Matchers.equalTo("\"method\""));
         MatcherAssert.assertThat(readTree.get("args").toString(), Matchers.equalTo("[\"123\",5,{\"test\":\"test\"}]"));
         MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
@@ -167,7 +167,7 @@ public class JMSPortTest {
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
         JsonNode readTree = new ObjectMapper().readTree(receiveAndConvert);
         MatcherAssert.assertThat(readTree.get("className").toString(),
-            Matchers.equalTo("\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\""));
+            Matchers.equalTo("\"org.openengsb.ports.jms.JMSPortTest$TestClass\""));
         MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
         MatcherAssert.assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
         MatcherAssert.assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
@@ -195,7 +195,7 @@ public class JMSPortTest {
         new ObjectMapper().writeValue(writer, methodReturn);
         JsonNode readTree = new ObjectMapper().readTree(writer.toString());
         MatcherAssert.assertThat(readTree.get("className").toString(),
-            Matchers.equalTo("\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\""));
+            Matchers.equalTo("\"org.openengsb.ports.jms.JMSPortTest$TestClass\""));
         MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
         MatcherAssert.assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
         MatcherAssert.assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
