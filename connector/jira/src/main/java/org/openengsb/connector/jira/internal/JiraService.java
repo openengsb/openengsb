@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.jira.internal.misc.FieldConverter;
+import org.openengsb.connector.jira.internal.misc.JiraValueConverter;
 import org.openengsb.connector.jira.internal.misc.PriorityConverter;
 import org.openengsb.connector.jira.internal.misc.StatusConverter;
 import org.openengsb.connector.jira.internal.misc.TypeConverter;
@@ -250,38 +251,14 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         Set<IssueAttribute> changedAttributes = new HashSet<IssueAttribute>(changes.keySet());
         ArrayList<RemoteFieldValue> remoteFields = new ArrayList<RemoteFieldValue>();
 
-        if (changedAttributes.contains(Issue.Field.STATUS)) {
-            Issue.Status status = Issue.Status.valueOf(changes.get(Issue.Field.STATUS));
-            RemoteFieldValue rfv = new RemoteFieldValue();
-            rfv.setId("STATUS");
-            rfv.setValues(new String[]{StatusConverter.fromIssueStatus(status)});
-            changedAttributes.remove(Issue.Field.STATUS);
-            remoteFields.add(rfv);
-        }
-
-        if (changedAttributes.contains(Issue.Field.TYPE)) {
-            Issue.Type type = Issue.Type.valueOf(changes.get(Issue.Field.TYPE));
-            RemoteFieldValue rfv = new RemoteFieldValue();
-            rfv.setId("issuetype");
-            rfv.setValues(new String[]{TypeConverter.fromIssueType(type)});
-            changedAttributes.remove(Issue.Field.TYPE);
-            remoteFields.add(rfv);
-        }
-        if (changedAttributes.contains(Issue.Field.PRIORITY)) {
-            Issue.Priority priority = Issue.Priority.valueOf(changes.get(Issue.Field.PRIORITY));
-            RemoteFieldValue rfv = new RemoteFieldValue();
-            rfv.setId("priority");
-            rfv.setValues(new String[]{PriorityConverter.fromIssuePriority(priority)});
-            changedAttributes.remove(Issue.Field.PRIORITY);
-            remoteFields.add(rfv);
-        }
-
         for (IssueAttribute attribute : changedAttributes) {
             String targetField = FieldConverter.fromIssueField((Issue.Field) attribute);
-            if (targetField != null) {
+
+            String targetValue = JiraValueConverter.convert(changes.get(attribute));
+            if (targetField != null && targetValue != null) {
                 RemoteFieldValue rfv = new RemoteFieldValue();
-                rfv.setId("priority");
-                rfv.setValues(new String[]{changes.get(attribute)});
+                rfv.setId(targetField);
+                rfv.setValues(new String[]{targetValue});
                 remoteFields.add(rfv);
             }
         }
