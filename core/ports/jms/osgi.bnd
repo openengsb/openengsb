@@ -14,11 +14,5 @@
 # limitations under the License.
 #
 
-proxy.name = Proxy for {0}
-proxy.description = Proxy Connector to call external services 
-proxy.port.id=Port ID
-proxy.port.description=Id for the Port Connector
-proxy.destination.name=Destination
-proxy.destination.description=Destination the call should be routed to
-proxy.serviceId.name=Remote Service Id
-proxy.serviceId.description=Id of Service to call on remote server
+Import-Package: sun.reflect, *
+DynamicImport-Package: *

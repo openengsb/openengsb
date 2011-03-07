@@ -65,11 +65,12 @@
       <item name="Changelog" href="${github}/CHANGELOG.md" />
       <item name="Known Issues" href="${github}/KNOWN_ISSUES.md" />
       <item name="Sponsors" href="sponsors.html" />
+      <item name="Subprojects" href="subprojects.html" />
     </menu>
 
     <menu name="Quickstart" >
       <item name="Installation" href="howto/howto_setup.html" />
-      <item name="Connectors and Domains " href="howto/howto_logging.html" />
+      <item name="Connectors and Domains" href="howto/howto_logging.html" />
       <item name="Events" href="howto/howto_contexteditor.html" />
     </menu>
 
@@ -93,12 +94,6 @@
       <item name="Issues" href="issue-tracking.html"/>
       <item name="CI" href="integration.html"/>
       <item name="Team" href="team-list.html" />
-    </menu>
-
-    <menu name="Subprojects" >
-      <item name="OpenCIT" href="http://opencit.openengsb.org" />
-      <item name="OpenTicket" href="http://openticket.openengsb.org/" />
-     <item name="YASTE" href="http://yaste.openengsb.org/" />
     </menu>
   </body>
 
