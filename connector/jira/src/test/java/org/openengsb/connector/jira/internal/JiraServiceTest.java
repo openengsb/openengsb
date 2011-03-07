@@ -23,19 +23,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import java.rmi.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.dolby.jira.net.soap.jira.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
@@ -58,6 +58,20 @@ public class JiraServiceTest {
         jiraClient = new JiraService("id", jiraSoapSession, projectKey);
         jiraClient.setJiraPassword("pwd");
         jiraClient.setJiraUser("user");
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testCreateIssueAndLoginWithWrongUserdata_shouldFail() throws RemoteException {
+        Issue issue = createIssue("id1");
+        jiraSoapSession = mock(JiraSOAPSession.class);
+        jiraSoapService = mock(JiraSoapService.class);
+        when(jiraSoapSession.getJiraSoapService()).thenReturn(jiraSoapService);
+        when(jiraSoapSession.getAuthenticationToken()).thenReturn(authToken);
+        doThrow(new DomainMethodExecutionException()).when(jiraSoapSession).connect(anyString(), anyString());
+        jiraClient = new JiraService("id", jiraSoapSession, projectKey);
+        jiraClient.setJiraPassword("pwd");
+        jiraClient.setJiraUser("user");
+         String id = jiraClient.createIssue(issue);
     }
 
     @Test

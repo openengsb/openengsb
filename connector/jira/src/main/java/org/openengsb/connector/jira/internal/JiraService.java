@@ -37,6 +37,7 @@ import org.openengsb.connector.jira.internal.misc.StatusConverter;
 import org.openengsb.connector.jira.internal.misc.TypeConverter;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
+import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -76,7 +77,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.info("Successfully created issue " + issue.getKey());
         } catch (RemoteException e) {
             log.error("Error creating issue " + engsbIssue.getDescription() + ". XMLRPC call failed.");
-            return null;
+            throw new DomainMethodExecutionException("RPC called failed");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -98,6 +99,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             jiraSoapService.addComment(authToken, issueKey, comment);
         } catch (RemoteException e) {
             log.error("Error commenting issue . XMLRPC call failed. ");
+            throw new DomainMethodExecutionException("RPC called failed");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -146,6 +148,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             }
         } catch (RemoteException e) {
             log.error("Error updating the issue . XMLRPC call failed. ");
+            throw new DomainMethodExecutionException("RPC called failed");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -173,6 +176,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             jiraSoapService.releaseVersion(authToken, projectKey, version);
         } catch (RemoteException e) {
             log.error("Error closing release, Remote exception ");
+            throw new DomainMethodExecutionException("RPC called failed");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -211,6 +215,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
 
         } catch (RemoteException e) {
             log.error("Error generating release report. XMLRPC call failed. ");
+            throw new DomainMethodExecutionException("RPC called failed");
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -321,11 +326,15 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         return remoteIssue;
     }
 
-    private JiraSOAPSession login() throws RemoteException {
+    private JiraSOAPSession login() throws DomainMethodExecutionException {
+        try {
         this.state = AliveState.CONNECTING;
-        jiraSoapSession.connect(jiraUser, jiraPassword);
-        this.state = AliveState.ONLINE;
-        return jiraSoapSession;
+            jiraSoapSession.connect(jiraUser, jiraPassword);
+            this.state = AliveState.ONLINE;
+            return jiraSoapSession;
+        }  catch (RemoteException e) {
+            throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username");
+        }
     }
 
     public AliveState getState() {
