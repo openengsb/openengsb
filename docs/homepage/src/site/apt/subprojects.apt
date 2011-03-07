@@ -22,6 +22,8 @@ Subprojects
 
 * OpenCIT
 
+[images/opencit.png] OpenCIT logo
+
   Efficient continuous integration server for software development processes. 
   Well-integrated into the service bus environment and used by the whole
   family of OpenEngSB projects.
