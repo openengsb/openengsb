@@ -138,16 +138,16 @@ public class JiraServiceTest {
         when(issue.getKey()).thenReturn("issue1Key");
         when(issue.getDescription()).thenReturn("issue1Description");
         when(issue.getType()).thenReturn("issue1Type");
-        when(issue.getStatus()).thenReturn("closed");
+        when(issue.getStatus()).thenReturn("6");
         values[0] = issue;
         RemoteIssue issue2 = mock(RemoteIssue.class);
         when(issue2.getKey()).thenReturn("issue2Key");
         when(issue2.getDescription()).thenReturn("issue2Description");
         when(issue2.getType()).thenReturn("issue2Type");
-        when(issue2.getStatus()).thenReturn("closed");
+        when(issue2.getStatus()).thenReturn("6");
         values[1] = issue2;
 
-        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (closed)",
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (6)",
             1000)).thenReturn(values);
         ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
         ArrayList<String> expectedReport = new ArrayList<String>();
