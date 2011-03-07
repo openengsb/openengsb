@@ -288,7 +288,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     /**
      * Packs the files and directories of a passed {@link File} to a passed
      * {@link ArchiveOutputStream}.
-     * 
+     *
      * @throws IOException
      */
     private void packRepository(File source, ArchiveOutputStream aos) throws IOException {
@@ -508,8 +508,6 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                     repository.close();
                 }
                 throw new ScmException(e);
-            } finally {
-
             }
         }
 
@@ -537,7 +535,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
      * Returns the relative path of an absolute {@code filePath} in comparison
      * to the working directory of the repository.
      */
-    private String getRelativePath(String filePath) throws ScmException {
+    private String getRelativePath(String filePath) {
         final String repoPath = repository.getWorkTree().getAbsolutePath();
         if (filePath.startsWith(repoPath)) {
             return filePath.substring(repoPath.length() + 1);

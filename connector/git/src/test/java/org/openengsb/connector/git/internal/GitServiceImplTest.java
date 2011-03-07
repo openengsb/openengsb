@@ -32,10 +32,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 import junit.framework.Assert;
 
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -45,7 +45,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.Test;
 import org.openengsb.connector.git.domain.GitCommitRef;
 import org.openengsb.connector.git.domain.GitTagRef;
@@ -62,7 +61,8 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
         assertThat(remote, is(remoteRepository.resolve("refs/heads/master")));
-        assertThat(commits.get(0).getStringRepresentation(), is(service.getRepository().resolve(Constants.HEAD).name()));
+        assertThat(commits.get(0).getStringRepresentation(),
+            is(service.getRepository().resolve(Constants.HEAD).name()));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         ZipFile zipFile = new ZipFile(service.export());
         assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
         assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
-        assertThat(zipFile.getEntry(dir + "\\" + file).getName(), is(dir + "\\" + file));
+        assertThat(zipFile.getEntry(dir + "/" + file).getName(), is(dir + "/" + file));
     }
 
     public void exportRepositoryByRef_shouldReturnZipFileWithRepoEntries() throws Exception {
@@ -213,32 +213,6 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
             Assert.fail("Should have thrown an exception");
         } catch (Exception e) {
         }
-    }
-
-    @Test
-    public void addDirectory_shouldReturnObjectIdForChild() throws Exception {
-        localRepository = RepositoryFixture.createRepository(localDirectory);
-
-        String dir = "testDirectory";
-        String file = "testFile";
-        File parent = new File(localDirectory, dir);
-        parent.mkdirs();
-        File child = new File(parent, file);
-        FileWriter fw = new FileWriter(child);
-        fw.write(file + "\n");
-        fw.close();
-
-        CommitRef commitRef = service.add("testComment", parent);
-        assertThat(commitRef, is(notNullValue()));
-
-        AnyObjectId id = localRepository.resolve(Constants.HEAD);
-        RevCommit commit = new RevWalk(localRepository).parseCommit(id);
-        String search = dir + "/" + file;
-        TreeWalk treeWalk = TreeWalk.forPath(localRepository, search, new AnyObjectId[] { commit.getTree() });
-        assertThat(treeWalk, is(notNullValue()));
-
-        ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
-        assertThat(objectId, not(ObjectId.zeroId()));
     }
 
     @Test
