@@ -1,45 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Licensed to the Austrian Association for
-    Software Tool Integration (AASTI) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-        http://www.apache.org/licenses/LICENSE-2.0
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
+  <repositories>
+    <repository>
+      <id>atlassian-m2-contrib</id>
+      <name>Atlassian Maven 2 Contributor Repository</name>
+      <url>https://maven.atlassian.com/contrib</url>
+    </repository>
+  </repositories>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.jira</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.jira</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connector.jira_soapclient</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.jira_soapclient</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>openengsb-connector-jira</artifactId>
+  <artifactId>openengsb-connector-jira_soapclient</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: Jira</name>
+  <name>OpenEngSB :: Connector :: Jira-Soapclient</name>
 
   <packaging>bundle</packaging>
 
@@ -63,8 +66,38 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
+
   <dependencies>
-    <!-- Pax Logging -->
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-saaj</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-wsdl4j</artifactId>
+      <version>1.5.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.atlassian.jira.plugins</groupId>
+      <artifactId>jira-soapclient</artifactId>
+      <version>4.1.1-1</version>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
@@ -76,14 +109,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlrpc</groupId>
-      <artifactId>xmlrpc-client</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>
