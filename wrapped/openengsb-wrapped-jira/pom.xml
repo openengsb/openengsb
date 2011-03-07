@@ -59,9 +59,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.atlassian.jira.plugins</groupId>
-      <artifactId>jira-soapclient</artifactId>
-      <version>4.1.1-1</version>
+      <groupId>com.dolby.jira.net</groupId>
+      <artifactId>jira-soap</artifactId>
+      <version>4.0</version>
     </dependency>
   </dependencies>
 
