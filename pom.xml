@@ -30,10 +30,11 @@
     <aries.blueprint.version>0.3</aries.blueprint.version>
     <aries.proxy.version>0.3</aries.proxy.version>
     <aries.util.version>0.3</aries.util.version>
-    <!-- Version Informtations -->
+    <!-- Current Branch Version Information -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Nifty</openengsb.version.name.adjective>
     <openengsb.version.name.noun>Nelson</openengsb.version.name.noun>
+    <!-- General Download Version Information -->
     <openengsb.version.stable>1.1.0.RELEASE</openengsb.version.stable>
     <openengsb.version.dev>1.2.0.M2</openengsb.version.dev>
     <openengsb.version.nightly>1.2.0-SNAPSHOT</openengsb.version.nightly>
