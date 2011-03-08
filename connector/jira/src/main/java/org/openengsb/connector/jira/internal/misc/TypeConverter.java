@@ -20,6 +20,8 @@
 
 package org.openengsb.connector.jira.internal.misc;
 
+import java.util.HashMap;
+
 import org.openengsb.domain.issue.models.Issue;
 
 /**
@@ -28,23 +30,24 @@ import org.openengsb.domain.issue.models.Issue;
  */
 public final class TypeConverter {
 
+    private static HashMap<Issue.Type, String> typeMap;
+
     private TypeConverter() {
 
     }
 
     public static String fromIssueType(Issue.Type type) {
-        switch (type) {
-            case BUG:
-                return "1";
-            case NEW_FEATURE:
-                return "2";
-            case TASK:
-                return "3";
-            case IMPROVEMENT:
-                return "4";
-            default:
-                return "1";
-
+        if (typeMap == null) {
+            initMap();
         }
+        return typeMap.get(type);
+    }
+
+    private static void initMap() {
+        typeMap = new HashMap<Issue.Type, String>();
+        typeMap.put(Issue.Type.BUG, "1");
+        typeMap.put(Issue.Type.NEW_FEATURE, "2");
+        typeMap.put(Issue.Type.TASK, "3");
+        typeMap.put(Issue.Type.IMPROVEMENT, "4");
     }
 }

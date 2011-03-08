@@ -29,8 +29,8 @@ public class JiraConverterTest {
 
     @Test
     public void testConvertAllStates() {
-        assertThat(JiraValueConverter.convert(Issue.Status.ASSIGNED),
-            is(StatusConverter.fromIssueStatus(Issue.Status.ASSIGNED)));
+        assertThat(JiraValueConverter.convert(Issue.Status.UNASSIGNED),
+            is(StatusConverter.fromIssueStatus(Issue.Status.UNASSIGNED)));
         assertThat(JiraValueConverter.convert(Issue.Status.CLOSED),
             is(StatusConverter.fromIssueStatus(Issue.Status.CLOSED)));
         assertThat(JiraValueConverter.convert(Issue.Status.NEW), is(StatusConverter.fromIssueStatus(Issue.Status.NEW)));

@@ -19,6 +19,8 @@
  */
 package org.openengsb.connector.jira.internal.misc;
 
+import java.util.HashMap;
+
 import org.openengsb.domain.issue.models.Issue;
 
 /**
@@ -27,26 +29,26 @@ import org.openengsb.domain.issue.models.Issue;
  */
 public final class FieldConverter {
 
+    private static HashMap<Issue.Field, String> issueMap;
+
     private FieldConverter() {
 
     }
 
     public static String fromIssueField(Issue.Field issueField) {
-        switch (issueField) {
-            case SUMMARY:
-                return "summary";
-            case DESCRIPTION:
-                return "description";
-            case OWNER:
-                return "assignee";
-            case REPORTER:
-                return "reporter";
-            case PRIORITY:
-                return "priority";
-            case STATUS:
-                return "status";
-            default:
-                return null;
+        if (issueMap == null) {
+             initMap();
         }
+        return issueMap.get(issueField);
     }
+
+    private static void initMap() {
+        issueMap = new HashMap<Issue.Field, String>();
+        issueMap.put(Issue.Field.SUMMARY, "summary");
+        issueMap.put(Issue.Field.DESCRIPTION, "description");
+        issueMap.put(Issue.Field.OWNER, "owner");
+        issueMap.put(Issue.Field.REPORTER, "reporter");
+        issueMap.put(Issue.Field.STATUS, "status");
+    }
+
 }

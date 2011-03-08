@@ -20,6 +20,8 @@
 
 package org.openengsb.connector.jira.internal.misc;
 
+import java.util.HashMap;
+
 import org.openengsb.domain.issue.models.Issue;
 
 /**
@@ -27,19 +29,25 @@ import org.openengsb.domain.issue.models.Issue;
  * see http://docs.atlassian.com/jira/latest/constant-values.html
  */
 public final class StatusConverter {
+    
+    private static HashMap<Issue.Status, String> statusMap;
 
     private StatusConverter() {
 
     }
 
     public static String fromIssueStatus(Issue.Status status) {
-        switch (status) {
-            case CLOSED:
-                return "6";
-            case NEW:
-                return "1";
-            default:
-                return "1";
+        if (statusMap == null) {
+            initMap();
         }
+        return statusMap.get(status);
     }
+
+    private static void initMap() {
+        statusMap = new HashMap<Issue.Status, String>();
+        statusMap.put(Issue.Status.CLOSED, "6");
+        statusMap.put(Issue.Status.NEW, "1");
+        statusMap.put(Issue.Status.UNASSIGNED, "2");
+    }
+
 }

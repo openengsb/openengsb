@@ -20,6 +20,8 @@
 
 package org.openengsb.connector.jira.internal.misc;
 
+import java.util.HashMap;
+
 import org.openengsb.domain.issue.models.Issue;
 
 /**
@@ -27,30 +29,27 @@ import org.openengsb.domain.issue.models.Issue;
  * see http://docs.atlassian.com/jira/latest/constant-values.html
  */
 public final class PriorityConverter {
+    
+    private static HashMap<Issue.Priority, String> fieldMap;
 
     private PriorityConverter() {
 
     }
 
     public static String fromIssuePriority(Issue.Priority priority) {
-        switch (priority) {
-            case IMMEDIATE:
-                //Blocker
-                return "1";
-            case HIGH:
-                //Critical
-                return "2";
-            case URGEND:
-                //Major
-                return "3";
-            case NONE:
-                //Minor
-                return "4";
-            case LOW:
-                //Trivial
-                return "5";
-            default:
-                return "4";
+        if (fieldMap == null) {
+            initMap();
         }
+        return fieldMap.get(priority);
+    }
+
+
+    private static void initMap() {
+        fieldMap = new HashMap<Issue.Priority, String>();
+        fieldMap.put(Issue.Priority.IMMEDIATE, "1");
+        fieldMap.put(Issue.Priority.HIGH, "2");
+        fieldMap.put(Issue.Priority.URGEND, "3");
+        fieldMap.put(Issue.Priority.NONE, "4");
+        fieldMap.put(Issue.Priority.LOW, "5");
     }
 }
