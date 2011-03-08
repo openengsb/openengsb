@@ -19,31 +19,28 @@ Downloads
   OpenEngSB comes in two flavors as it is under active development. Stable
   releases and development builds.
 
-  If you're looking at deploying OpenEngSB on scale you'll likely want to use
+  If you're looking to deploy OpenEngSB on scale you'll likely want to use
   the stable release. If you require newest features and performance
-  improvements you may want the development version. The development version
-  is considered stable usually, you might encounter minor issues however.
+  improvements the development version is yours. The development version
+  is considered stable, you might encounter minor issues however.
 
 * Stable (${stable.version})
 
   The latest stable release of OpenEngSB is ${stable.version}.
 
-  * {{{${stable.win}}OpenEngSB ${stable.version} (stable) for Windows}}
+  * {{{${stable.binary.win}}OpenEngSB (stable) for Windows}}
 
-  * {{{${stable.unix}}OpenEngSB ${stable.version} (stable) for Linux and Mac}}
+  * {{{${stable.binary.unix}}OpenEngSB (stable) for Linux and Mac}}
 
-  * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, 
-    {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
+  * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
 
-* Development (${latest.version})
+* Nightly (${nightly.version})
 
-  The latest development release of the OpenEngSB is ${latest.version}.
+  The cutting-edge nightly release of the OpenEngSB.
 
-  * {{{${latestWin}}OpenEngSB ${latest.version} (dev) for Windows}}
+  * {{{${nightly.binary.dir}}OpenEngSB (nightly) binary}}
 
-  * {{{${latestUnix}}OpenEngSB ${latest.version} (dev) for Linux and Mac}}
-
-  * {{{./source-repository.html}OpenEngSB ${latest.version} sources}}
+  * {{{./source-repository.html}OpenEngSB (nightly) sources}}
 
 * Archive
 
