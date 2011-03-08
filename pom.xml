@@ -158,34 +158,6 @@
         <repos.current>${repos.snapshot}</repos.current>
         <sitesubtype>nightly</sitesubtype>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>milestone</id>
@@ -194,23 +166,6 @@
         <repos.current>${repos.final}</repos.current>
         <sitesubtype>milestone</sitesubtype>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven.plugin.release.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,milestone -Dmaven.test.skip=true -DpushChanges=false</arguments>
-              <preparationGoals>clean install</preparationGoals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>final</id>
@@ -219,23 +174,6 @@
         <repos.current>${repos.final}</repos.current>
         <sitesubtype/>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven.plugin.release.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,final -Dmaven.test.skip=true -DpushChanges=false</arguments>
-              <preparationGoals>clean install</preparationGoals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>support</id>
@@ -244,23 +182,6 @@
         <repos.current>${repos.final}</repos.current>
         <sitesubtype/>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven.plugin.release.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,support -Dmaven.test.skip=true -DpushChanges=false</arguments>
-              <preparationGoals>clean install</preparationGoals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>rc</id>
@@ -269,23 +190,6 @@
         <repos.current>${repos.final}</repos.current>
         <sitesubtype>rc</sitesubtype>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>   ${maven.plugin.release.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,rc -Dmaven.test.skip=true -DpushChanges=false</arguments>
-              <preparationGoals>clean install</preparationGoals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
   <profile><id>6343fa17-9805-4e0e-903a-cbf3060367a8</id><build><plugins>
   <plugin>
