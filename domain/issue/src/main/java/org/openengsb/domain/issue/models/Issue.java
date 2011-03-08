@@ -36,7 +36,9 @@ public class Issue {
     public enum Status implements IssueAttribute {
         NEW,
         ASSIGNED,
-        CLOSED
+        CLOSED,
+        UNASSIGNED
+
     }
 
     public enum Field implements IssueAttribute {
