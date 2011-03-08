@@ -54,15 +54,20 @@
   <properties>
     <!-- stable releases -->
     <stable.version>${openengsb.version.stable}</stable.version>
-    <stable.win>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.zip</stable.win>
-    <stable.unix>${repos.final}/org/openengsb/openengsb/${stable.version}/openengsb-${stable.version}.tar.gz</stable.unix>
-    <stable.source>${repos.source}/openengsb/openengsb/downloads</stable.source>
-    <stable.source.zip>${repos.source}/openengsb/openengsb/zipball/openengsb-${stable.version}</stable.source.zip>
-    <stable.source.tar>${repos.source}/openengsb/openengsb/tarball/openengsb-${stable.version}</stable.source.tar>
 
-    <!-- development releases -->
-    <latest.version>${openengsb.version.number}</latest.version>
-    <latest.source>${repos.source}/openengsb/openengsb/downloads</latest.source>
+    <stable.binary>${repos.final}/org/openengsb/openengsb/${stable.version}</stable.binary>
+    <stable.binary.win>${stable.binary}/openengsb-${stable.version}.zip</stable.binary.win>
+    <stable.binary.unix>${stable.binary}/openengsb-${stable.version}.tar.gz</stable.binary.unix>
+
+    <stable.source>${repos.source}/openengsb/openengsb</stable.source>
+    <stable.source.dir>${stable.source}/downloads</stable.source.dir>
+    <stable.source.zip>${stable.source}/zipball/openengsb-${stable.version}</stable.source.zip>
+    <stable.source.tar>${stable.source}/tarball/openengsb-${stable.version}</stable.source.tar>
+
+    <!-- nightly releases -->
+    <nightly.version>${openengsb.version.nightly}</nightly.version>
+    <nightly.binary>${repos.snapshot}/org/openengsb/openengsb/${nightly.version}</nightly.binary>
+    <nightly.binary.dir>${nightly.binary}</nightly.binary.dir>
   </properties>
 
   <profiles>
