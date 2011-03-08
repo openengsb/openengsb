@@ -17,7 +17,7 @@
 
 package org.openengsb.itests.exam;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
@@ -64,24 +64,24 @@ public class JMSPortIT extends AbstractExamTestHelper {
         JmsTemplate template = new JmsTemplate(cf);
         // template.setReceiveTimeout(4000);
         String request = ""
-            + "{"
-            + "    \"callId\": \"12345\","
-            + "    \"answer\": true,"
-            + "    \"classes\": ["
-            + "        \"java.lang.String\","
-            + "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
-            + "    ],"
-            + "    \"methodName\": \"executeWorkflow\","
-            + "    \"metaData\": {"
-            + "        \"serviceId\": \"workflowService\","
-            + "        \"contextId\": \"foo\""
-            + "    },"
-            + "    \"args\": ["
-            + "        \"simpleFlow\","
-            + "        {"
-            + "        }"
-            + "    ]"
-            + "}";
+                + "{"
+                + "    \"callId\": \"12345\","
+                + "    \"answer\": true,"
+                + "    \"classes\": ["
+                + "        \"java.lang.String\","
+                + "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
+                + "    ],"
+                + "    \"methodName\": \"executeWorkflow\","
+                + "    \"metaData\": {"
+                + "        \"serviceId\": \"workflowService\","
+                + "        \"contextId\": \"foo\""
+                + "    },"
+                + "    \"args\": ["
+                + "        \"simpleFlow\","
+                + "        {"
+                + "        }"
+                + "    ]"
+                + "}";
         template.convertAndSend("receive", request);
         String result = (String) template.receiveAndConvert("12345");
         assertThat(result, containsString("The answer to life the universe and everything"));
