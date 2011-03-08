@@ -35,9 +35,19 @@ Downloads
 
   * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
 
+* Development (${dev.version})
+
+  The latest development release of OpenEngSB is ${dev.version}.
+
+  * {{{${dev.binary.win}}OpenEngSB (dev) for Windows}}
+
+  * {{{${dev.binary.unix}}OpenEngSB (dev) for Linux and Mac}}
+
+  * Download OpenEngSB ${dev.version} source. ({{{${dev.source.zip}}zip}}, {{{${dev.source.tar}}tar.gz}}, {{{${dev.source}}browse tags}})
+
 * Nightly (${nightly.version})
 
-  The cutting-edge nightly release of the OpenEngSB.
+  The cutting-edge nightly build of OpenEngSB.
 
   * {{{${nightly.binary.dir}}OpenEngSB (nightly) binary}}
 

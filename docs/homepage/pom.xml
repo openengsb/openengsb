@@ -64,6 +64,18 @@
     <stable.source.zip>${stable.source}/zipball/openengsb-${stable.version}</stable.source.zip>
     <stable.source.tar>${stable.source}/tarball/openengsb-${stable.version}</stable.source.tar>
 
+    <!-- development releases -->
+    <dev.version>${openengsb.version.dev}</dev.version>
+
+    <dev.binary>${repos.final}/org/openengsb/openengsb/${dev.version}</dev.binary>
+    <dev.binary.win>${dev.binary}/openengsb-${dev.version}.zip</dev.binary.win>
+    <dev.binary.unix>${dev.binary}/openengsb-${dev.version}.tar.gz</dev.binary.unix>
+
+    <dev.source>${repos.source}/openengsb/openengsb</dev.source>
+    <dev.source.dir>${dev.source}/downloads</dev.source.dir>
+    <dev.source.zip>${dev.source}/zipball/openengsb-${dev.version}</dev.source.zip>
+    <dev.source.tar>${dev.source}/tarball/openengsb-${dev.version}</dev.source.tar>
+
     <!-- nightly releases -->
     <nightly.version>${openengsb.version.nightly}</nightly.version>
     <nightly.binary>${repos.snapshot}/org/openengsb/openengsb/${nightly.version}</nightly.binary>
