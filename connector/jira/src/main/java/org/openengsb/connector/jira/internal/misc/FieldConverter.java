@@ -37,7 +37,7 @@ public final class FieldConverter {
 
     public static String fromIssueField(Issue.Field issueField) {
         if (issueMap == null) {
-             initMap();
+            initMap();
         }
         return issueMap.get(issueField);
     }
