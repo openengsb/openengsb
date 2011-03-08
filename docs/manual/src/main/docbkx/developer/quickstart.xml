@@ -189,6 +189,10 @@
         all questions from the application with "enter" without enter any values. Afterwards the content of the
           <filename>id_rsa.pub</filename> file from your <filename>~/.ssh/</filename> directory should be submitted to
         github (<guilabel>Account Settings</guilabel>/<guilabel>SSH public keys</guilabel>). </para>
+        <para>You may also want to setup the provided git-hooks. Hooks are scripts that automate some small tasks in
+        the git-workflow. To enable them they have to be located in the <filename>.git/hooks</filename> directory.
+        You can achieve this by copying the scripts located in the <filename>etc/git-hooks</filename> directory to
+        <filename>.git/hooks</filename></para>
     </section>
 
     <section>
