@@ -1,4 +1,12 @@
 #!/bin/sh
+
+# This hook automatically prepends commit-messages with the issue-id.
+# The issue-id is derived fromt he current branch. If an issue starts with
+# an issue-id it's automatically prepended to the commit. If not this script
+# does nothing. Example:
+# When on branch OPENENGSB-42/fix-universe every commit-message is prepended
+# with "[OPENENGSB-42] "
+
 PREFIX="OPENENGSB"
 SUMMARY=$(cat "$1" | head -n1)
 ISSUEID=$(git branch | grep "^* $PREFIX" | egrep -o "$PREFIX\-[[:digit:]]+" )
