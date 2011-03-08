@@ -57,6 +57,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     private String jiraPassword;
     private JiraSOAPSession jiraSoapSession;
     private String projectKey;
+    private String authToken;
 
 
     public JiraService(String id, JiraSOAPSession jiraSoapSession, String projectKey) {
@@ -69,14 +70,9 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     public String createIssue(Issue engsbIssue) {
         RemoteIssue issue = null;
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
-            // Create the issue
-            issue = convertIssue(engsbIssue);
+            JiraSoapService jiraSoapService = login();
 
-            // Run the create issue code
+            issue = convertIssue(engsbIssue);
             issue = jiraSoapService.createIssue(authToken, issue);
             log.info("Successfully created issue " + issue.getKey());
         } catch (RemoteException e) {
@@ -92,13 +88,9 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     @Override
     public void addComment(String issueKey, String commentString) {
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
+            JiraSoapService jiraSoapService = login();
 
-            // Adding a comment
-            final RemoteComment comment = new RemoteComment();
+            RemoteComment comment = new RemoteComment();
             comment.setBody(commentString);
             jiraSoapService.addComment(authToken, issueKey, comment);
         } catch (RemoteException e) {
@@ -113,10 +105,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     @Override
     public void updateIssue(String issueKey, String comment, HashMap<IssueAttribute, String> changes) {
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
+            JiraSoapService jiraSoapService = login();
 
             RemoteFieldValue[] values = convertChanges(changes);
             jiraSoapService.updateIssue(authToken, issueKey, values);
@@ -132,10 +121,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     @Override
     public void moveIssuesFromReleaseToRelease(String releaseFromId, String releaseToId) {
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
+            JiraSoapService jiraSoapService = login();
 
             RemoteVersion version = getNextVersion(authToken, jiraSoapService, releaseToId);
 
@@ -162,10 +148,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     @Override
     public void closeRelease(String id) {
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
+            JiraSoapService jiraSoapService = login();
 
             RemoteVersion[] versions = jiraSoapService.getVersions(authToken, projectKey);
             RemoteVersion version = null;
@@ -194,10 +177,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         Map<String, List<String>> reports = new HashMap<String, List<String>>();
 
         try {
-            //login
-            JiraSOAPSession jiraSoapSession = login();
-            JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-            String authToken = jiraSoapSession.getAuthenticationToken();
+            JiraSoapService jiraSoapService = login();
 
             RemoteIssue[] issues = jiraSoapService
                     .getIssuesFromJqlSearch(authToken, "fixVersion in (\"" + releaseId + "\") and status in (6)",
@@ -280,7 +260,6 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         remoteIssue.setStatus(StatusConverter.fromIssueStatus(engsbIssue.getStatus()));
         remoteIssue.setType(TypeConverter.fromIssueType(engsbIssue.getType()));
 
-        // Add remote versions
         RemoteVersion version = new RemoteVersion();
         version.setId(engsbIssue.getDueVersion());
         RemoteVersion[] remoteVersions = new RemoteVersion[]{version};
@@ -289,12 +268,13 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         return remoteIssue;
     }
 
-    private JiraSOAPSession login() {
+    private JiraSoapService login() {
         try {
             this.state = AliveState.CONNECTING;
             jiraSoapSession.connect(jiraUser, jiraPassword);
             this.state = AliveState.ONLINE;
-            return jiraSoapSession;
+            this.authToken = jiraSoapSession.getAuthenticationToken();
+            return jiraSoapSession.getJiraSoapService();
         } catch (RemoteException e) {
             throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username"
                     , e);
