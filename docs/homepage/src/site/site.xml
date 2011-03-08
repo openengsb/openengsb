@@ -54,7 +54,6 @@
 
     <links>
       <item name="Final Release" href="http://openengsb.org/" />
-      <item name="Release Candidate" href="http://openengsb.org/rc" />
       <item name="Milestone Release" href="http://openengsb.org/milestone" />
       <item name="Nightly Release" href="http://openengsb.org/nightly" />
     </links>
