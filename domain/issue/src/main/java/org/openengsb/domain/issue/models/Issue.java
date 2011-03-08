@@ -42,6 +42,7 @@ public class Issue {
     }
 
     public enum Field implements IssueAttribute {
+        Field,
         SUMMARY,
         DESCRIPTION,
         OWNER,

@@ -53,24 +53,21 @@ public final class JiraValueConverter {
         type = type.toUpperCase();
         try {
             return convert(Issue.Field.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
+        } catch (IllegalArgumentException ignore) { //ignore
         }
         try {
             return convert(Issue.Type.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
+        } catch (IllegalArgumentException ignore) { //ignore
         }
         try {
             return convert(Issue.Priority.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
+        } catch (IllegalArgumentException ignore) { //ignore
         }
         try {
             return convert(Issue.Status.valueOf(type));
-        } catch (Exception ignore) {
-            //ignore
+        } catch (IllegalArgumentException ignore) { //ignore
         }
         return null;
     }
+
 }
