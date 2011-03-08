@@ -16,10 +16,16 @@
 
 package org.openengsb.ui.web.global.footer;
 
+import org.apache.wicket.PageParameters;
 import org.openengsb.ui.web.BasePage;
 
 public class ImprintPage extends BasePage {
     public ImprintPage() {
 
     }
+
+    public ImprintPage(PageParameters parameters) {
+        super(parameters);
+    }
+
 }

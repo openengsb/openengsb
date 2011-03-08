@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -65,6 +66,15 @@ public class UserService extends BasePage {
     private TextField<String> rolesField;
 
     public UserService() {
+        initContent();
+    }
+
+    public UserService(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
         final WebMarkupContainer usermanagementContainer = new WebMarkupContainer("usermanagementContainer");
         usermanagementContainer.setOutputMarkupId(true);
 

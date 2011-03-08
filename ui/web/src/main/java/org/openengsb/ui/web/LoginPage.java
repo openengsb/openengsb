@@ -16,6 +16,7 @@
 
 package org.openengsb.ui.web;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -23,14 +24,22 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-
 import org.openengsb.core.common.security.model.User;
 
 public class LoginPage extends BasePage {
     private User user = new User(null);
 
-    @SuppressWarnings("serial")
     public LoginPage() {
+        initContent();
+    }
+
+    public LoginPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
+        @SuppressWarnings("serial")
         Form<User> loginForm = new Form<User>("loginForm") {
             @Override
             protected void onSubmit() {

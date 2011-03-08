@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -61,9 +62,18 @@ public class ServiceListPage extends BasePage {
     @SpringBean(name = "services")
     private List<ServiceManager> serviceManager;
 
-    private final Map<AliveState, List<ServiceReference>> domainServiceMap;
+    private Map<AliveState, List<ServiceReference>> domainServiceMap;
 
     public ServiceListPage() {
+        initContent();
+    }
+
+    public ServiceListPage(PageParameters parameters) {
+        super(parameters);
+        initContent();
+    }
+
+    private void initContent() {
         domainServiceMap = new HashMap<AliveState, List<ServiceReference>>();
         domainServiceMap.put(AliveState.CONNECTING, new ArrayList<ServiceReference>());
         domainServiceMap.put(AliveState.DISCONNECTED, new ArrayList<ServiceReference>());

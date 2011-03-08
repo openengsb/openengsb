@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.Index;
@@ -62,6 +63,10 @@ public class ProjectTest {
 
     @Before
     public void setup() {
+        /*
+         * this line should be reconsidered as soon as the root-context is implemented [OPENENGSB-974]
+         */
+        ContextHolder.get().setCurrentContextId(null);
         contextService = mock(ContextCurrentService.class);
         appContext = new ApplicationContextMock();
         appContext.putBean(contextService);
@@ -123,20 +128,20 @@ public class ProjectTest {
     @Test
     public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
     @Test
     public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
 
         verify(contextService).setThreadLocalContext("foo");
 
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(OpenEngSBWebSession.get().getThreadContextId()));
+        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
 
         // simulated page reload...
         tester.startPage(new BasePage());
