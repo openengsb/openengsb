@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This hook verifies that the commit-message consists of more than just the
+# issue-id. If no real message is found, the automatically added content is
+# deleted, so that the commit fails.
+
+PREFIX="OPENENGSB"
+ISSUEID=$(git branch | egrep -o "^\* $PREFIX-[[:digit:]]*" | sed s/"\* "//)
+if [ -z "$ISSUEID" ]; then
+  exit 0
+fi
+
+CONTENT=$(grep -v "^#" "$1" | sed s/"\[$ISSUEID\][[:space:]]*"// | \
+          sed s/"[[:space:]]"//g)
+if [ -z "$CONTENT" ]; then
+  echo > $1
+fi
