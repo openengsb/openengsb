@@ -289,24 +289,6 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         return remoteIssue;
     }
 
-    private RemoteIssue getIssueById(String id) throws RemoteException {
-        this.state = AliveState.CONNECTING;
-        JiraSoapService jiraSoapService = jiraSoapSession.getJiraSoapService();
-        RemoteIssue remoteIssue = null;
-        try {
-            jiraSoapSession.connect(jiraUser, jiraPassword);
-
-            String authToken = jiraSoapSession.getAuthenticationToken();
-            this.state = AliveState.ONLINE;
-
-            remoteIssue = jiraSoapService.getIssue(authToken, id);
-
-        } finally {
-            this.state = AliveState.DISCONNECTED;
-        }
-        return remoteIssue;
-    }
-
     private JiraSOAPSession login() {
         try {
             this.state = AliveState.CONNECTING;
