@@ -46,6 +46,7 @@ import org.openengsb.core.common.workflow.editor.Workflow;
 import org.openengsb.core.common.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
+import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
 
 @AuthorizeInstantiation("ROLE_USER")
@@ -75,9 +76,11 @@ public class WorkflowEditor extends BasePage {
         Form<Object> createForm = new Form<Object>("workflowCreateForm") {
             @Override
             protected void onSubmit() {
-                workflowEditorService.createWorkflow(name);
-                name = "";
-                setResponsePage(WorkflowEditor.class);
+                if (name != "" && name != null) {
+                    workflowEditorService.createWorkflow(name);
+                    name = "";
+                    setResponsePage(new EditAction(null, workflowEditorService.getCurrentWorkflow().getRoot()));
+                }
             }
         };
         createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
@@ -116,6 +119,7 @@ public class WorkflowEditor extends BasePage {
             label = getString("workflow.create.first");
             node.setUserObject(new Action());
             table.setVisible(false);
+            selectForm.setVisible(false);
         } else {
             label = currentWorkflow.getName();
             node.setUserObject(currentWorkflow.getRoot());
@@ -124,7 +128,7 @@ public class WorkflowEditor extends BasePage {
             addEventsToNode(root.getEvents(), node);
         }
         add(new Label("currentWorkflowName", label));
-
+        table.getTreeState().expandAll();
         add(table);
     }
 

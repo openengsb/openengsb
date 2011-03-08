@@ -62,8 +62,13 @@ public class WorkflowEditorTest {
     }
 
     @Test
-    public void clickAddAction_shouldOpenEditActionPage() {
+    public void withoutWorkflow_partsShouldBeInvisible() {
+        tester.assertInvisible("workflowSelectForm");
         tester.assertInvisible("treeTable");
+    }
+
+    @Test
+    public void clickAddAction_shouldOpenEditActionPage() {
         service.createWorkflow("Workflow");
         tester.startPage(new WorkflowEditor());
         tester.clickLink("treeTable:i:0:middleColumns:links:create-action");
@@ -94,17 +99,22 @@ public class WorkflowEditorTest {
         tester.assertRenderedPage(WorkflowEditor.class);
         tester.assertLabel("currentWorkflowName", string);
         assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
-        tester.clickLink("treeTable:i:0:middleColumns:0:link", true);
-        tester.clickLink("treeTable:i:1:middleColumns:0:link", true);
     }
 
     @Test
     public void callCreateWorkflow_shouldCreateWorkflow() {
+        FormTester createEmptyWorkflow = tester.newFormTester("workflowCreateForm");
+        createEmptyWorkflow.submit();
+        tester.assertRenderedPage(WorkflowEditor.class);
+        assertThat(service.getWorkflowNames().size(), equalTo(0));
+        assertThat(service.getCurrentWorkflow(), equalTo(null));
+
         tester.assertLabel("currentWorkflowName", "Please create Workflow first");
         FormTester createForm = tester.newFormTester("workflowCreateForm");
         createForm.setValue("name", "Name");
         createForm.submit();
         assertThat("Name", equalTo(service.getCurrentWorkflow().getName()));
+        tester.assertRenderedPage(EditAction.class);
     }
 
     @Test
@@ -116,9 +126,15 @@ public class WorkflowEditorTest {
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
         service.getCurrentWorkflow().getRoot().addAction(action);
         tester.startPage(WorkflowEditor.class);
-        tester.clickLink("treeTable:i:0:middleColumns:0:link", true);
         assertThat(service.getCurrentWorkflow().getRoot().getActions().size(), equalTo(1));
         tester.clickLink("treeTable:i:1:middleColumns:links:remove");
         assertThat(service.getCurrentWorkflow().getRoot().getActions().size(), equalTo(0));
+    }
+
+    @Test
+    public void rootNode_shouldNotHaveRemoveLink() {
+        service.createWorkflow("workflow");
+        tester.startPage(WorkflowEditor.class);
+        tester.assertInvisible("treeTable:i:0:middleColumns:links:remove");
     }
 }

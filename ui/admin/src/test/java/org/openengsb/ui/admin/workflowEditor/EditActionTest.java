@@ -17,9 +17,9 @@
 package org.openengsb.ui.admin.workflowEditor;
 
 import static junit.framework.Assert.assertEquals;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,10 +52,13 @@ public class EditActionTest {
 
     private Action action;
 
+    private Action parent;
+
     private ApplicationContextMock mock;
 
     @Before
     public void setup() {
+        parent = new Action();
         action = new Action();
         action.setLocation("test");
         tester = new WicketTester();
@@ -77,12 +80,13 @@ public class EditActionTest {
         mock.putBean("domainService", domainServiceMock);
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
-        tester.startPage(new EditAction(action));
+        tester.startPage(new EditAction(parent, action));
         formTester = tester.newFormTester("actionForm");
     }
 
     @Test
     public void editForm_shouldUpdateAction() {
+        assertThat(parent.getActions().size(), equalTo(0));
         String location = "location";
         assertThat(action.getLocation(), equalTo(formTester.getTextComponentValue(location)));
         tester.dumpPage();
@@ -96,5 +100,14 @@ public class EditActionTest {
         assertThat(action.getLocation(), equalTo(location));
         assertEquals(action.getDomain(), NullDomain.class);
         assertThat(action.getMethodName(), equalTo(NullDomain.class.getMethods()[1].getName()));
+        assertThat(parent.getActions().size(), equalTo(1));
+        assertThat(parent.getActions().get(0), sameInstance(action));
+    }
+
+    @Test
+    public void cancelButton_shouldWhoWorkflowPage() {
+        formTester.submit("cancel-button");
+        assertThat(parent.getActions().size(), equalTo(0));
+        tester.assertRenderedPage(WorkflowEditor.class);
     }
 }

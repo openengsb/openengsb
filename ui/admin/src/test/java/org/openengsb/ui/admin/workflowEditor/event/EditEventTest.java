@@ -18,6 +18,8 @@ package org.openengsb.ui.admin.workflowEditor.event;
 
 import static junit.framework.Assert.assertEquals;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -45,9 +47,11 @@ public class EditEventTest {
 
     private Event event;
 
+    private Action action;
+
     @Before
     public void setup() {
-        Action action = new Action();
+        action = new Action();
         action.setLocation("123");
         action.setDomain(NullDomain.class);
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
@@ -65,10 +69,19 @@ public class EditEventTest {
 
     @Test
     public void selectEvent_ShouldSetEventOnWorkflowEvent() {
+        assertThat(action.getEvents().size(), equalTo(0));
         formTester.select("eventSelect", 0);
         formTester.submit();
         tester.assertRenderedPage(WorkflowEditor.class);
         assertEquals(NullEvent.class, event.getEvent());
+        assertThat(action.getEvents().size(), equalTo(1));
+    }
+
+    @Test
+    public void cancelButton_shouldWhoWorkflowPage() {
+        formTester.submit("cancel-button");
+        assertThat(event.getActions().size(), equalTo(0));
+        tester.assertRenderedPage(WorkflowEditor.class);
     }
 
 }

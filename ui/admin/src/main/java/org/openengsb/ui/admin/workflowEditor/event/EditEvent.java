@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -36,7 +37,7 @@ import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 @AuthorizeInstantiation("ROLE_USER")
 public class EditEvent extends BasePage {
 
-    public EditEvent(Event node, final Action action) {
+    public EditEvent(final Event node, final Action action) {
 
         IModel<List<Class<? extends org.openengsb.core.common.Event>>> eventsModel =
             new AbstractReadOnlyModel<List<Class<? extends org.openengsb.core.common.Event>>>() {
@@ -70,10 +71,24 @@ public class EditEvent extends BasePage {
         Form<Object> form = new Form<Object>("eventForm") {
             @Override
             protected void onSubmit() {
+                if (node.getEvent() != null) {
+                    setResponsePage(WorkflowEditor.class);
+                    if (!action.getEvents().contains(node)) {
+                        action.addEvent(node);
+                    }
+                }
+            }
+        };
+
+        Button cancelButton = new Button("cancel-button") {
+            @Override
+            public void onSubmit() {
                 setResponsePage(WorkflowEditor.class);
             }
         };
+
         form.add(events);
+        form.add(cancelButton);
         add(form);
     }
 }

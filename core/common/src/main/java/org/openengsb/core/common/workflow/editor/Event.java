@@ -25,6 +25,7 @@ public class Event implements Node, Serializable {
 
     private Class<? extends org.openengsb.core.common.Event> event;
 
+    @Override
     public final void addAction(Action action) {
         this.actions.add(action);
     }

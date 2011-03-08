@@ -33,20 +33,18 @@ public class ActionLinks extends Panel {
             @Override
             public void onClick() {
                 Action action2 = new Action();
-                action.addAction(action2);
                 treeNode.add(new DefaultMutableTreeNode(action2));
-                setResponsePage(new EditAction(action2));
+                setResponsePage(new EditAction(action, action2));
             }
         });
         add(new Link<DefaultMutableTreeNode>("create-event") {
             @Override
             public void onClick() {
                 Event event = new Event();
-                action.addEvent(event);
                 setResponsePage(new EditEvent(event, action));
             }
         });
-        add(new Link<DefaultMutableTreeNode>("remove") {
+        Link<DefaultMutableTreeNode> remove = new Link<DefaultMutableTreeNode>("remove") {
             @Override
             public void onClick() {
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) treeNode.getParent();
@@ -59,6 +57,10 @@ public class ActionLinks extends Panel {
                 }
                 setResponsePage(WorkflowEditor.class);
             }
-        });
+        };
+        if (treeNode.getParent() == null) {
+            remove.setVisible(false);
+        }
+        add(remove);
     }
 }

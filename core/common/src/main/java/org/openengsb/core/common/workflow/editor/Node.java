@@ -18,4 +18,6 @@ package org.openengsb.core.common.workflow.editor;
 
 public interface Node {
     String getDescription();
+
+    void addAction(Action action);
 }

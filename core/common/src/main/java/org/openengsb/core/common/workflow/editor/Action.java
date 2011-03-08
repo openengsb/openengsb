@@ -40,6 +40,7 @@ public class Action implements Serializable, Node {
         return events;
     }
 
+    @Override
     public final void addAction(Action action) {
         this.actions.add(action);
     }

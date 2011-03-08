@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -34,6 +35,7 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.editor.Action;
+import org.openengsb.core.common.workflow.editor.Node;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
@@ -45,7 +47,7 @@ public class EditAction extends BasePage {
     @SpringBean
     private DomainService domainService;
 
-    public EditAction(final Action node) {
+    public EditAction(final Node parent, final Action action) {
 
         IModel<List<Class<? extends Domain>>> domainModel = new AbstractReadOnlyModel<List<Class<? extends Domain>>>() {
 
@@ -61,15 +63,15 @@ public class EditAction extends BasePage {
         IModel<List<Method>> methodModel = new AbstractReadOnlyModel<List<Method>>() {
             @Override
             public List<Method> getObject() {
-                if (node.getDomain() != null) {
-                    return Arrays.asList(node.getDomain().getMethods());
+                if (action.getDomain() != null) {
+                    return Arrays.asList(action.getDomain().getDeclaredMethods());
                 } else {
                     return Collections.emptyList();
                 }
             }
         };
 
-        DropDownChoice domain = new DropDownChoice("domainSelect", new PropertyModel(node, "domain"), domainModel);
+        DropDownChoice domain = new DropDownChoice("domainSelect", new PropertyModel(action, "domain"), domainModel);
         domain.setOutputMarkupId(true);
 
         final DropDownChoice method =
@@ -79,17 +81,29 @@ public class EditAction extends BasePage {
         Form<Object> form = new Form<Object>("actionForm") {
             @Override
             protected void onSubmit() {
-                if (node.getLocation() != "" && node.getLocation() != null && node.getDomain() != null
+                if (action.getLocation() != "" && action.getLocation() != null && action.getDomain() != null
                         && getActionMethod() != null) {
-                    node.setMethodName(getActionMethod().getName());
-                    node.setMethodParameters(Arrays.asList(getActionMethod().getParameterTypes()));
+                    action.setMethodName(getActionMethod().getName());
+                    action.setMethodParameters(Arrays.asList(getActionMethod().getParameterTypes()));
+                    if (parent != null) {
+                        parent.addAction(action);
+                    }
                     setResponsePage(WorkflowEditor.class);
                 }
             }
         };
+
+        Button cancelButton = new Button("cancel-button") {
+            @Override
+            public void onSubmit() {
+                setResponsePage(WorkflowEditor.class);
+            }
+        };
+
         form.add(domain);
         form.add(method);
-        form.add(new TextField<String>("location", new PropertyModel<String>(node, "location")));
+        form.add(new TextField<String>("location", new PropertyModel<String>(action, "location")));
+        form.add(cancelButton);
         add(form);
     }
 

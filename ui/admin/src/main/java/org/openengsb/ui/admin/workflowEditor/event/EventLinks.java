@@ -32,8 +32,7 @@ public class EventLinks extends Panel {
             @Override
             public void onClick() {
                 Action action = new Action();
-                event.addAction(action);
-                setResponsePage(new EditAction(action));
+                setResponsePage(new EditAction(event, action));
             }
         });
     }
