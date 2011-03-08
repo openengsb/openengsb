@@ -24,8 +24,8 @@ import org.openengsb.domain.issue.IssueDomain;
 
 public class JiraServiceManager extends AbstractServiceManager<IssueDomain, JiraService> {
 
-    public JiraServiceManager(JiraServiceInstanceFactory tracServiceFactory) {
-        super(tracServiceFactory);
+    public JiraServiceManager(JiraServiceInstanceFactory jiraServiceFactory) {
+        super(jiraServiceFactory);
     }
 
 }

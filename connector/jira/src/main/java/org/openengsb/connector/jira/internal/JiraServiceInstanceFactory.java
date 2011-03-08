@@ -20,8 +20,6 @@ package org.openengsb.connector.jira.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
@@ -34,14 +32,16 @@ public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueD
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
 
-        builder.attribute(builder.newAttribute().id("jira.user").name("jira.user.name")
-                .description("jira.user.description").build());
+        builder.attribute(
+            builder.newAttribute().id("jira.user").name("jira.user.name").description("jira.user.description").build());
         builder.attribute(builder.newAttribute().id("jira.password").name("jira.password.name")
-                .description("jira.password.description").defaultValue("").asPassword().build());
-        builder.attribute(builder.newAttribute().id("jira.project").name("jira.project.name")
-                .description("jira.project.description").defaultValue("").required().build());
-        builder.attribute(builder.newAttribute().id("jira.uri").name("jira.uri.name")
-                .description("jira.uri.description").defaultValue("").required().build());
+            .description("jira.password.description").defaultValue("").asPassword().build());
+        builder.attribute(
+            builder.newAttribute().id("jira.project").name("jira.project.name").description("jira.project.description")
+                .defaultValue("").required().build());
+        builder.attribute(
+            builder.newAttribute().id("jira.uri").name("jira.uri.name").description("jira.uri.description")
+                .defaultValue("").required().build());
 
         return builder.build();
     }
@@ -51,8 +51,8 @@ public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueD
         instance.setJiraUser(attributes.get("jira.user"));
         instance.setJiraPassword(attributes.get("jira.password"));
 
-        instance.getProxyFactory().setJiraURI(attributes.get("jira.uri"));
-        instance.getRpcConverter().setJiraProject(attributes.get("jira.project"));
+        instance.getSoapSession().setJiraURI(attributes.get("jira.uri"));
+        instance.setProjectKey(attributes.get("jira.project"));
     }
 
     @Override
@@ -62,10 +62,10 @@ public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueD
 
     @Override
     public JiraService createServiceInstance(String id, Map<String, String> attributes) {
-        JiraProxyFactory proxyFactory = new JiraProxyFactory(attributes.get("jira.uri"));
-        JiraRpcConverter rpcConverter = new JiraRpcConverter(attributes.get("jira.project"));
-        JiraService jiraConnector = new JiraService(id, proxyFactory, rpcConverter);
-
+        JiraSOAPSession jiraSoapSession = new JiraSOAPSession(attributes.get("jira.uri"));
+        JiraService jiraConnector = new JiraService(id, jiraSoapSession, attributes.get("jira.project"));
+        jiraConnector.setJiraUser(attributes.get("jira.user"));
+        jiraConnector.setJiraPassword(attributes.get("jira.password"));
         updateServiceInstance(jiraConnector, attributes);
         return jiraConnector;
     }

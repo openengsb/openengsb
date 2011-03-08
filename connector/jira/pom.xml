@@ -17,14 +17,21 @@
     limitations under the License.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
+  <repositories>
+    <repository>
+      <id>atlassian-m2-contrib</id>
+      <name>Atlassian Maven 2 Contributor Repository</name>
+      <url>https://maven.atlassian.com/contrib</url>
+    </repository>
+  </repositories>
 
   <properties>
     <bundle.symbolicName>org.openengsb.connector.jira</bundle.symbolicName>
@@ -61,7 +68,36 @@
   </scm>
 
   <dependencies>
-    <!-- Pax Logging -->
+      
+      <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-saaj</artifactId>
+      <version>1.3</version>
+      <scope>compile</scope>
+    </dependency>
+      <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-wsdl4j</artifactId>
+      <version>1.5.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dolby.jira.net</groupId>
+      <artifactId>jira-soap</artifactId>
+      <version>4.0</version>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
@@ -73,14 +109,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlrpc</groupId>
-      <artifactId>xmlrpc-client</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>

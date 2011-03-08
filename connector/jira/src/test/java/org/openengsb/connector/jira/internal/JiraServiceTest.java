@@ -14,79 +14,207 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.connector.jira.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.MalformedURLException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraDynamicProxy;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;
-import org.openengsb.core.common.AliveState;
+import org.mockito.Mockito;
+import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
+import com.dolby.jira.net.soap.jira.JiraSoapService;
+import com.dolby.jira.net.soap.jira.RemoteComment;
+import com.dolby.jira.net.soap.jira.RemoteFieldValue;
+import com.dolby.jira.net.soap.jira.RemoteIssue;
+import com.dolby.jira.net.soap.jira.RemoteVersion;
+
 public class JiraServiceTest {
 
-    private JiraDynamicProxy mockProxy;
-    private JiraProxyFactory mockProxyFactory;
-    private JiraService jiraService;
-    private JiraRpcConverter mockConverter;
+    private JiraService jiraClient;
+    private JiraSoapService jiraSoapService;
+    private String authToken = "authToken";
+    private JiraSOAPSession jiraSoapSession;
+    private String projectKey = "projectKey";
 
     @Before
-    public void setUp() throws MalformedURLException {
-        mockProxy = mock(JiraDynamicProxy.class);
-        mockProxyFactory = mock(JiraProxyFactory.class);
-        mockConverter = mock(JiraRpcConverter.class);
+    public void setUp() throws Exception {
+        jiraSoapSession = mock(JiraSOAPSession.class);
+        jiraSoapService = mock(JiraSoapService.class);
+        when(jiraSoapSession.getJiraSoapService()).thenReturn(jiraSoapService);
+        when(jiraSoapSession.getAuthenticationToken()).thenReturn(authToken);
+        jiraClient = new JiraService("id", jiraSoapSession, projectKey);
+        jiraClient.setJiraPassword("pwd");
+        jiraClient.setJiraUser("user");
+    }
 
-        when(mockProxyFactory.createInstance()).thenReturn(mockProxy);
-
-        jiraService = new JiraService("anId", mockProxyFactory, mockConverter);
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testCreateIssueAndLoginWithWrongUserdata_shouldFail() throws RemoteException {
+        Issue issue = createIssue("id1");
+        jiraSoapSession = mock(JiraSOAPSession.class);
+        jiraSoapService = mock(JiraSoapService.class);
+        when(jiraSoapSession.getJiraSoapService()).thenReturn(jiraSoapService);
+        when(jiraSoapSession.getAuthenticationToken()).thenReturn(authToken);
+        doThrow(new RemoteException()).when(jiraSoapSession).connect(anyString(), anyString());
+        jiraClient = new JiraService("id", jiraSoapSession, projectKey);
+        jiraClient.setJiraPassword("pwd");
+        jiraClient.setJiraUser("user");
+        jiraClient.createIssue(issue);
     }
 
     @Test
-    public void connectorIsDisconnectedAfterCreation() {
-        assertEquals(AliveState.DISCONNECTED, jiraService.getAliveState());
+    public void testCreateIssue() throws Exception {
+        Issue issue = createIssue("id1");
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("key");
+        when(remoteIssue.getId()).thenReturn("id1");
+        when(jiraSoapService.createIssue(anyString(), any(RemoteIssue.class))).thenReturn(remoteIssue);
+        String id = jiraClient.createIssue(issue);
+        verify(jiraSoapSession).getJiraSoapService();
+        verify(jiraSoapSession).getAuthenticationToken();
+        verify(jiraSoapSession).connect("user", "pwd");
+        verify(jiraSoapService).createIssue(anyString(), Mockito.any(RemoteIssue.class));
+        assertThat(id, is("key"));
     }
 
     @Test
-    public void connectorKeepsId() {
-        assertEquals("anId", jiraService.getInstanceId());
+    public void testAddComment() throws Exception {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        when(jiraSoapService.getIssue(authToken, "id")).thenReturn(remoteIssue);
+        jiraClient.addComment("id", "comment1");
+        verify(jiraSoapSession, atLeastOnce()).getJiraSoapService();
+        verify(jiraSoapSession, atLeastOnce()).getAuthenticationToken();
+        verify(jiraSoapSession, atLeastOnce()).connect("user", "pwd");
+        verify(jiraSoapService, times(1)).addComment(anyString(), anyString(), any(RemoteComment.class));
     }
 
     @Test
-    public void issuesCanBeCreated() throws Exception {
-        Issue issue = mock(Issue.class);
-        @SuppressWarnings("unchecked")
-        Hashtable<String, Object> mockIssueStruct = mock(Hashtable.class);
-        when(mockConverter.convertIssueForCreation(issue)).thenReturn(mockIssueStruct);
+    public void testUpdateIssue_shouldSuccess() throws Exception {
 
-        jiraService.createIssue(issue);
-
-        verify(mockProxy).createIssue(mockIssueStruct);
-    }
-
-    @Test
-    public void issuesCanBeUpdated() {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        when(jiraSoapService.getIssue(authToken, "id1")).thenReturn(remoteIssue);
         HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
 
-        jiraService.updateIssue("issueId", "aComment", changes);
+        jiraClient.updateIssue("id1", "comment1", changes);
+        verify(jiraSoapService, times(1)).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
+
     }
 
     @Test
-    public void commentsCanBeCreated() throws Exception {
-        jiraService.addComment("issueId", "aComment");
-
-        verify(mockProxy).addComment("issueId", "aComment");
+    public void testMoveIssues() throws Exception {
+        RemoteVersion[] versions = new RemoteVersion[1];
+        RemoteVersion version = mock(RemoteVersion.class);
+        when(version.getId()).thenReturn("id2");
+        versions[0] = version;
+        when(jiraSoapService.getVersions(anyString(), anyString())).thenReturn(versions);
+        RemoteIssue[] values = new RemoteIssue[1];
+        RemoteIssue issue = mock(RemoteIssue.class);
+        values[0] = issue;
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"id1\") ", 1000)).thenReturn(values);
+        jiraClient.moveIssuesFromReleaseToRelease("id1", "id2");
+        verify(jiraSoapService, atLeastOnce()).updateIssue(anyString(), anyString(), any(RemoteFieldValue[].class));
     }
 
+    @Test
+    public void testCloseRelease() throws java.rmi.RemoteException {
+        RemoteVersion[] versions = new RemoteVersion[1];
+        RemoteVersion version = mock(RemoteVersion.class);
+        when(version.getName()).thenReturn("versionName");
+        versions[0] = version;
+        when(jiraSoapService.getVersions(anyString(), anyString())).thenReturn(versions);
+
+        jiraClient.closeRelease("versionName");
+        verify(jiraSoapService).releaseVersion(authToken, "projectKey", version);
+    }
+
+    @Test
+    public void testGenerateReleaseReport() throws java.rmi.RemoteException {
+        RemoteIssue[] values = new RemoteIssue[2];
+        RemoteIssue issue = mock(RemoteIssue.class);
+        when(issue.getKey()).thenReturn("issue1Key");
+        when(issue.getDescription()).thenReturn("issue1Description");
+        when(issue.getType()).thenReturn("issue1Type");
+        when(issue.getStatus()).thenReturn("6");
+        values[0] = issue;
+        RemoteIssue issue2 = mock(RemoteIssue.class);
+        when(issue2.getKey()).thenReturn("issue2Key");
+        when(issue2.getDescription()).thenReturn("issue2Description");
+        when(issue2.getType()).thenReturn("issue2Type");
+        when(issue2.getStatus()).thenReturn("6");
+        values[1] = issue2;
+
+        when(jiraSoapService.getIssuesFromJqlSearch(authToken, "fixVersion in (\"versionName\") and status in (6)",
+                1000)).thenReturn(values);
+        ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
+        ArrayList<String> expectedReport = new ArrayList<String>();
+
+        expectedReport.add("** issue2Type\n");
+        expectedReport.add("\t * [issue2Key] - issue2Description");
+        expectedReport.add("\n");
+        expectedReport.add("** issue1Type\n");
+        expectedReport.add("\t * [issue1Key] - issue1Description");
+        expectedReport.add("\n");
+        assertThat(report.toString(), is(expectedReport.toString()));
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testFailCommitingIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException()
+        throws Exception {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        when(remoteIssue.getKey()).thenReturn("issueKey");
+        doThrow(new RemoteException()).when(jiraSoapSession).connect(anyString(), anyString());
+        jiraClient.addComment("id", "comment1");
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void testFailUpdateIssueCausedByRemoteException_shouldThrowDomainMehtodExecutionException()
+        throws Exception {
+        RemoteIssue remoteIssue = mock(RemoteIssue.class);
+        doThrow(new RemoteException()).when(jiraSoapService).updateIssue(anyString(), anyString(),
+            any(RemoteFieldValue[].class));
+        when(jiraSoapService.getIssue(authToken, "id1")).thenReturn(remoteIssue);
+        HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
+        jiraClient.updateIssue("id1", "comment1", changes);
+    }
+
+    @Test(expected = DomainMethodExecutionException.class)
+    public void tesGeneratingReleaseReportCausedByNonExistingRelease_shouldThrowDomainMehtodExecutionException()
+        throws Exception {
+        doThrow(new RemoteException()).when(jiraSoapService).getIssuesFromJqlSearch(authToken,
+            "fixVersion in (\"versionName\") and status in (6)",
+                1000);
+        jiraClient.generateReleaseReport("versionName");
+    }
+
+    private Issue createIssue(String id) {
+        Issue issue = new Issue();
+        issue.setId(id);
+        issue.setSummary("summary");
+        issue.setDescription("description");
+        issue.setReporter("reporter");
+        issue.setOwner("owner");
+        issue.setPriority(Issue.Priority.NONE);
+        issue.setStatus(Issue.Status.NEW);
+        issue.setDueVersion("versionID1");
+        issue.setType(Issue.Type.BUG);
+
+        return issue;
+    }
 }

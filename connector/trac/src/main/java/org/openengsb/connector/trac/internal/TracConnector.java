@@ -17,6 +17,7 @@
 
 package org.openengsb.connector.trac.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.openengsb.connector.trac.internal.models.constants.TracStatusConstant
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
+import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -101,6 +103,21 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
         }
     }
 
+    @Override
+    public void moveIssuesFromReleaseToRelease(String releaseFromId, String releaseToId) {
+        throw new DomainMethodNotImplementedException("method not yet implemented");
+    }
+
+    @Override
+    public void closeRelease(String id) {
+        throw new DomainMethodNotImplementedException("method not yet implemented");
+    }
+
+    @Override
+    public ArrayList<String> generateReleaseReport(String releaseId) {
+        throw new DomainMethodNotImplementedException("method not yet implemented");
+    }
+
     private Ticket createTicket() {
         if (ticketFactory != null) {
             Ticket ticket = ticketFactory.createTicket();
@@ -137,8 +154,8 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
                     addStatus(attributes, Issue.Status.valueOf(entry.getValue()));
                 }
             } catch (ClassCastException e) {
-                log.error("Wrong value provided for field " + entry.getKey() + ": "
-                        + entry.getValue().getClass().getName());
+                log.error(
+                    "Wrong value provided for field " + entry.getKey() + ": " + entry.getValue().getClass().getName());
             }
         }
 

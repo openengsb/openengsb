@@ -15,43 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.jira.internal.models.constants;
+package org.openengsb.connector.jira.internal.misc;
 
-import org.openengsb.domain.issue.models.Issue.Status;
+import java.util.HashMap;
+
+import org.openengsb.domain.issue.models.Issue;
 
 /**
- * 
- * The statuses of a default Jira installation
- * 
+ * status converter from OpenEngSB status to Jira status,
+ * see http://docs.atlassian.com/jira/latest/constant-values.html
  */
-public enum JiraIssueStatus {
-    OPEN("1"), IN_PROGRESS("2"), REOPENED("3"), RESOLVED("4"), CLOSED("5");
+public final class StatusConverter {
+    
+    private static HashMap<Issue.Status, String> statusMap;
 
-    private String id;
+    private StatusConverter() {
 
-    private JiraIssueStatus(String id) {
-        this.id = id;
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public String toString() {
-        return this.id;
-    }
-
-    public static JiraIssueStatus fromStatus(Status status) {
-        switch (status) {
-            case NEW:
-                return OPEN;
-            case ASSIGNED:
-                return IN_PROGRESS;
-            case CLOSED:
-                return CLOSED;
-            default:
-                return null;
+    public static String fromIssueStatus(Issue.Status status) {
+        if (statusMap == null) {
+            initMap();
         }
+        return statusMap.get(status);
     }
+
+    private static void initMap() {
+        statusMap = new HashMap<Issue.Status, String>();
+        statusMap.put(Issue.Status.CLOSED, "6");
+        statusMap.put(Issue.Status.NEW, "1");
+        statusMap.put(Issue.Status.UNASSIGNED, "2");
+    }
+
 }

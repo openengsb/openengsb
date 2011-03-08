@@ -15,24 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.jira.internal.models.constants;
+package org.openengsb.connector.jira.internal.misc;
 
-public enum JiraIssueType {
-    BUG("1"), NEW_FEATURE("2"), TASK("3"), IMPROVEMENT("4");
+import java.util.HashMap;
 
-    private String id;
+import org.openengsb.domain.issue.models.Issue;
 
-    private JiraIssueType(String id) {
-        this.id = id;
+/**
+ * type converter from OpenEngSB type to Jira type,
+ * see http://docs.atlassian.com/jira/latest/constant-values.html
+ */
+public final class TypeConverter {
+
+    private static HashMap<Issue.Type, String> typeMap;
+
+    private TypeConverter() {
+
     }
 
-    public String getId() {
-        return this.id;
+    public static String fromIssueType(Issue.Type type) {
+        if (typeMap == null) {
+            initMap();
+        }
+        return typeMap.get(type);
     }
 
-    @Override
-    public String toString() {
-        return this.id;
+    private static void initMap() {
+        typeMap = new HashMap<Issue.Type, String>();
+        typeMap.put(Issue.Type.BUG, "1");
+        typeMap.put(Issue.Type.NEW_FEATURE, "2");
+        typeMap.put(Issue.Type.TASK, "3");
+        typeMap.put(Issue.Type.IMPROVEMENT, "4");
     }
-
 }

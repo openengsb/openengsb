@@ -17,6 +17,7 @@
 
 package org.openengsb.domain.issue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.openengsb.core.common.Domain;
@@ -41,4 +42,19 @@ public interface IssueDomain extends Domain {
      */
     void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes);
 
+
+    /**
+     * move all issues from one release ( specified by releaseFromId ) to another release ( specified by releaseToId )
+     */
+    void moveIssuesFromReleaseToRelease(String releaseFromId, String releaseToId);
+
+    /**
+     * close a release specified by his id
+     */
+    void closeRelease(String id);
+
+    /**
+     * generates an report for all closed issues belonging the the specified release
+     */
+    ArrayList<String> generateReleaseReport(String releaseId);
 }

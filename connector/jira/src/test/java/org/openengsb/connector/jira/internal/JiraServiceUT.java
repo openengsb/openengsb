@@ -17,80 +17,85 @@
 
 package org.openengsb.connector.jira.internal;
 
-import java.util.Date;
-import java.util.HashMap;
+import static junit.framework.Assert.assertNotNull;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
-import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;
 import org.openengsb.domain.issue.models.Issue;
-import org.openengsb.domain.issue.models.Issue.Priority;
-import org.openengsb.domain.issue.models.Issue.Status;
-import org.openengsb.domain.issue.models.IssueAttribute;
 
-/**
- * User test, testing the basic Jira connector service funtionality
- * <p>
- * Prerequisites:
- * <ul>
- * <li>A default local Jira installation in {@value JIRA_URI},
- * <li>a project with key {@value JIRA_PROJECT} (CAUTION: the test will create issues there),
- * <li>a user {@value JIRA_USER} with password {@value JIRA_PASSWORD} and developer rights in the project
- * <li>and a second user {@value JIRA_2ND_USER} with developer rights in the project
- * </ul>
- */
+
 public class JiraServiceUT {
-    
-    /**
-     * The URI of the Jira instance
-     */
-    public static final String JIRA_URI = "http://localhost:8080";
-    
-    /**
-     * The user used for RPCs (has to have developer rights)
-     */
-    public static final String JIRA_USER = "admin";
-    
-    /**
-     * The password for the user specified in {@link JiraServiceUT#JIRA_USER}
-     */
-    public static final String JIRA_PASSWORD = "admin";
-    
-    /**
-     * A second user with developer rights
-     */
-    public static final String JIRA_2ND_USER = "jirauser";
-    
-    /**
-     * The project key of project used for the test
-     */
-    public static final String JIRA_PROJECT = "PP";
+    private static Log log = LogFactory.getLog(JiraServiceUT.class);
+    // Login details
+    static final String LOGIN_NAME = "soaptester";
+    static final String LOGIN_PASSWORD = "soaptester";
 
-    @Test
-    public void testBasicServiceFuntionality() throws Exception {
-        JiraProxyFactory proxyFactory = new JiraProxyFactory(JIRA_URI);
-        JiraRpcConverter rpcConverter = new JiraRpcConverter(JIRA_PROJECT);
-        JiraService issueSystem = new JiraService("someId", proxyFactory, rpcConverter);
-        issueSystem.setJiraUser(JIRA_USER);
-        issueSystem.setJiraPassword(JIRA_PASSWORD);
+    // Constants for issue creation
+    static final String PROJECT_KEY = "TST";
 
-        Issue issue = new Issue();
-        issue.setDescription(timestamped("issue.description"));
-        issue.setOwner(JIRA_2ND_USER);
-        issue.setReporter(JIRA_USER);
-        issue.setPriority(Priority.IMMEDIATE);
-        issue.setStatus(Status.NEW);
-        issue.setSummary(timestamped("issue.summary"));
-        issue.setId(issueSystem.createIssue(issue)); 
+    // Constant for get filter
+    private static JiraService jiraClient;
+    private static JiraSOAPSession jiraSoapSession;
 
-        issueSystem.addComment(issue.getId(), timestamped("New comment on"));
+    /**
+     * testing server provided by jira
+     */
+    private static String baseUrl = "http://jira.atlassian.com/rpc/soap/jirasoapservice-v2";
+    private static String issueId;
 
-        HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
-        changes.put(Issue.Field.OWNER, JIRA_USER);
-        issueSystem.updateIssue(issue.getId(), timestamped("comment for issue update"), changes);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        jiraSoapSession = new JiraSOAPSession(baseUrl);
+        jiraClient = new JiraService("id", jiraSoapSession, PROJECT_KEY);
+        jiraClient.setJiraPassword(LOGIN_PASSWORD);
+        jiraClient.setJiraUser(LOGIN_NAME);
+        testCreateIssue();
     }
 
-    private static String timestamped(String message) {
-        return message + " " + new Date();
+    public static void testCreateIssue() {
+        log.debug("test to create an issue");
+        Issue engsbIssue = createIssue();
+        issueId = jiraClient.createIssue(engsbIssue);
+        assertNotNull(issueId);
+    }
+
+    @Test
+    public void testAddComment() {
+        log.debug("test to add a command to an issue");
+        jiraClient.addComment(issueId, "comment");
+
+    }
+
+    @Test
+    public void testMoveAllIssuesFromOneReleaseToAnotherRelease() {
+        jiraClient.moveIssuesFromReleaseToRelease("13203", "11410");
+    }
+
+    @Ignore("user has no rights to close a release")
+    @Test
+    public void closeRelease() {
+        jiraClient.closeRelease("Version 2.0");
+    }
+
+    @Test
+    public void testGenerateReleaseReport() {
+        assertNotNull(jiraClient.generateReleaseReport("Version 2.0"));
+    }
+
+    private static Issue createIssue() {
+        Issue issue = new Issue();
+        issue.setSummary("summary");
+        issue.setDescription("description");
+        issue.setReporter("reporter");
+        issue.setOwner("");
+        issue.setPriority(Issue.Priority.NONE);
+        issue.setStatus(Issue.Status.NEW);
+        issue.setDueVersion("versionID1");
+        issue.setType(Issue.Type.BUG);
+        return issue;
     }
 }
