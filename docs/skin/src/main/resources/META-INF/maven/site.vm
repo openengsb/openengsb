@@ -453,7 +453,18 @@
       @import url("$relativePath/css/maven-base.css");
       @import url("$relativePath/css/maven-theme.css");
       @import url("$relativePath/css/site.css");
+
+      #set( $ie_if = "<!--[if IE]>")
+      #set( $ie_endif = "<![endif]-->")
+      
+      $ie_if
+      @import url("$relativePath/css/site-ie-fixes.css");
+      $ie_endif
     </style>
+
+    #set( $ie_if = "<!--[if IE]>")
+    #set( $ie_endif = "<![endif]-->")
+    $ie_if<link rel="stylesheet" href="$relativePath/css/site-ie-fixes.css" type="text/css" media="all" />$ie_endif
     <link rel="icon" type="image/x-icon" href="$relativePath/images/openengsb.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="$relativePath/images/openengsb.ico" />
     <link rel="stylesheet" href="$relativePath/css/print.css" type="text/css" media="print" />
