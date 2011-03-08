@@ -290,7 +290,7 @@
         </dependencies>
         <configuration>
           <siteDirectory>${basedir}/target/classes</siteDirectory>
-          <encoding>UTF-8</encoding>
+          <outputEncoding>UTF-8</outputEncoding>
           <reportPlugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
