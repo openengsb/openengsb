@@ -1,3 +1,22 @@
+openengsb-1.1.0.RELEASE 2011-03-08
+-----------------------------------------------------
+
+Finally the openengsb-1.1.x branch reached a stability to release an 1.1.0 final release. The OpenEngSB
+Team is proud to bring to you the next major release of the OpenEngSB containing hundreds of new features,
+improvements and bugfixes. There are definitely too many changes to name them in the short space here,
+but you can upgrade from openengsb-1.0.0 by simply follow the instructions for the single releases. Our
+absolute highlights for this release are
+
+### Highlights
+  * Human Tasks
+  * Highly improved documentation and homepage
+  * External openengsb-maven-plugin handling all parts formerly handled by scripts
+  * Three new connectors and domains
+  * Enhanced security, workflow and domain model
+  * Karaf-2.2 feature model
+  * No warnings and errors printed after the startup of the OpenEngSB
+  * Scripts to run the OpenEngSB as service by default
+
 openengsb-1.1.0.RC3 2011-03-06
 -----------------------------------------------------
 
