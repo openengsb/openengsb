@@ -103,7 +103,7 @@ public class WorkflowEditor extends BasePage {
                             return new ActionLinks("links", (Action) userObject, treeNode);
                         }
                         if (userObject instanceof Event) {
-                            return new EventLinks("id", (Event) userObject, treeNode);
+                            return new EventLinks("links", (Event) userObject, treeNode);
                         }
                         return null;
                     }

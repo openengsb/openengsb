@@ -133,6 +133,18 @@ public class WorkflowEditorTest {
     }
 
     @Test
+    public void removeEvent_ShouldRemoveEventFromWorkflow() {
+        service.createWorkflow("default");
+        Event event = new Event();
+        event.setEvent(NullEvent.class);
+        service.getCurrentWorkflow().getRoot().addEvent(event);
+        tester.startPage(WorkflowEditor.class);
+        assertThat(service.getCurrentWorkflow().getRoot().getEvents().size(), equalTo(1));
+        tester.clickLink("treeTable:i:1:middleColumns:links:remove");
+        assertThat(service.getCurrentWorkflow().getRoot().getEvents().size(), equalTo(0));
+    }
+
+    @Test
     public void rootNode_shouldNotHaveRemoveLink() {
         service.createWorkflow("workflow");
         tester.startPage(WorkflowEditor.class);
