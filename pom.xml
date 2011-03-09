@@ -36,7 +36,7 @@
     <openengsb.version.name.noun>Nelson</openengsb.version.name.noun>
     <!-- General Download Version Information -->
     <openengsb.version.stable>1.1.0.RELEASE</openengsb.version.stable>
-    <openengsb.version.dev>1.2.0.M2</openengsb.version.dev>
+    <openengsb.version.dev>1.2.0.M3</openengsb.version.dev>
     <openengsb.version.nightly>1.2.0-SNAPSHOT</openengsb.version.nightly>
     <!-- maven plugin versions -->
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
