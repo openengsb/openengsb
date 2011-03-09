@@ -687,4 +687,55 @@
         <artifactId>velocity-dep</artifactId>
         <license>Apache License, Version 2.0</license>
     </artifact>
+    <artifact>
+        <groupId>axis</groupId>
+        <artifactId>axis</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>axis</groupId>
+        <artifactId>axis-jaxrpc</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>axis</groupId>
+        <artifactId>axis-saaj</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>axis</groupId>
+        <artifactId>axis-wsdl4j</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>biz.aQute</groupId>
+        <artifactId>bndlib</artifactId>
+        <license>MIT</license>
+    </artifact>
+    <artifact>
+        <groupId>com.dolby.jira.net</groupId>
+        <artifactId>jira-soap</artifactId>
+        <license>BSD</license>
+    </artifact>
+    <artifact>
+        <groupId>commons-discovery</groupId>
+        <artifactId>commons-discovery</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>org.apache.axis</groupId>
+        <artifactId>axis-jaxrpc</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>org.apache.axis</groupId>
+        <artifactId>axis-saaj</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>wsdl4j</groupId>
+        <artifactId>wsdl4j</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
 </license-lookup>
+
