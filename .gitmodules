@@ -22,3 +22,6 @@
 [submodule "wrapped/openengsb-wrapped-org.neobatis.odb"]
 	path = wrapped/openengsb-wrapped-org.neobatis.odb
 	url = git://github.com/openengsb/openengsb-wrapped-org.neobatis.odb.git
+[submodule "wrapped/openengsb-wrapped-org.apache.axis"]
+	path = wrapped/openengsb-wrapped-org.apache.axis
+	url = git://github.com/openengsb/openengsb-wrapped-org.apache.axis.git
