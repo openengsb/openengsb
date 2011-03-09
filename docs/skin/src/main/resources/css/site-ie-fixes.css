@@ -16,17 +16,8 @@
  */
 
 div.linkblock {
-  margin: 10px;
-  padding: 10px;
-  max-width: 350px;
-
-  float: left;
-
-  background: rgba(255, 255, 255, 0.5);
-
-  border: 1px solid grey;
+  float: none;
+  background: #eee;
+  width: 400px;
 }
-div.linkblock img {
-  float: left;
-  margin-right: 10px;
-}
+
