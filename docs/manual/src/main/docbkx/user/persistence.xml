@@ -44,6 +44,17 @@
   </para>
 
   <para>
+    Queries with the OpenEngSB persistence done via the 
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceService.java">persistence service</link>.
+    Behind this service an easy query-by-example logic is used to retrieve your results. In some cases the comparision and storage can create some
+    wired problems for your specific use cases. For those cases the 
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/util/IgnoreInQueries.java">IgnoreInQueries</link> annotation had
+    been added. Using this annotation on getters in classes persisted via the
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceService.java">persistence service</link>
+    querying them ignores those fields during trying to compare them to stored data.
+  </para> 
+
+  <para>
     The persistence solution of the OpenEngSB was designed to support different possible back-end database systems.
     So if a project has high performance or security requirements, which can not be fulfilled with the default database
     system used by the persistence service, it is possible to implement a different persistence back-end. To make this
