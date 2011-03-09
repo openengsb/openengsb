@@ -166,6 +166,7 @@
     <feature version="${project.version}">openengsb-domain-issue</feature>
     <bundle dependency="true">mvn:org.openengsb.wrapped/axis-all/${wrapped.axis.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-jira/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.wrapped/com.dolby.jira.net.jira-soap/${jira.wrapped.version}</bundle>
   </feature>
 
 </features>
