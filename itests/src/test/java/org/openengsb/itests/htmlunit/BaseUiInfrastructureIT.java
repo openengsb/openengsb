@@ -75,6 +75,8 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
         assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
+        HtmlPage workflowEditorpage = testClient.getAnchorByText("Workflow Editor").click();
+        assertTrue(workflowEditorpage.asText().contains("Workflow Editor"));
     }
 
     @Test
