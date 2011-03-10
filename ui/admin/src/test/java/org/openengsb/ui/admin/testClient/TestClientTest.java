@@ -88,18 +88,6 @@ import org.osgi.framework.ServiceReference;
 public class TestClientTest extends AbstractOsgiMockServiceTest {
     private DomainService managedServicesMock;
 
-    public interface TestInterface extends Domain {
-
-        void update(String id, String name);
-
-        void update(TestBean test);
-
-        void update(UpdateEnum updateEnum);
-
-        void update(Integer integer);
-
-    }
-
     public enum UpdateEnum {
             ONE, TWO
     }
@@ -481,7 +469,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         testService = mock(TestInterface.class);
-        registerService(testService, TestInterface.class, "(id=test)");
+
+        registerService(testService, "test", TestInterface.class, Domain.class);
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);

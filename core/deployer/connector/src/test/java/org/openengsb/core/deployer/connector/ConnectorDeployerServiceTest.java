@@ -29,6 +29,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -69,7 +71,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         storageMock = mock(DeployerStorage.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
-        registerService(serviceManagerMock, ServiceManager.class, "(connector=a-connector )");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", "a-connector ");
+        registerService(serviceManagerMock, props, ServiceManager.class);
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setBundleContext(bundleContext);
