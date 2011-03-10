@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
@@ -125,7 +126,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testStartProcess_shouldRunScriptNodes() throws Exception {
         long id = service.startFlow("flowtest");
         service.waitForFlowToFinish(id);
-        verify(logService).doSomething("flow42");
+        verify(logService).doSomething("context: " + ContextHolder.get().getCurrentContextId());
     }
 
     @Test
