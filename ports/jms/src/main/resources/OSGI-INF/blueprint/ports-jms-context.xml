@@ -22,19 +22,6 @@
            xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
            xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
-  <!-- <cm:property-placeholder persistent-id="org.openengsb.settings" update-strategy="reload">
-    <cm:default-properties>
-      <cm:property key="jmsPort">6549</cm:property>
-    </cm:default-properties>
-  </cm:property-placeholder> -->
-
-  <!-- JMS ConnectionFactory to use -->
-  <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-    <property name="brokerURL">
-      <value>vm:(broker:(tcp://localhost:6549)?persistent=false)</value>
-    </property>
-  </bean>
-
   <service interface="org.openengsb.core.common.communication.OutgoingPort">
     <service-properties>
       <entry key="id" value="jms-json" />
@@ -46,10 +33,11 @@
       <property name="factory">
         <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
       </property>
-      <property name="connectionFactory" ref="jmsFactory" />
+      <property name="connectionFactory" ref="openengsbBrokerConnectionFactory" />
       <property name="requestHandler" ref="requestHandler" />
     </bean>
   
   <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
+  <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
 </blueprint>
