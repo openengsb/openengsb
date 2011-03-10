@@ -29,8 +29,10 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +44,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
@@ -137,7 +140,23 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testStartProcess_shouldRunScriptNodes() throws Exception {
         long id = service.startFlow("flowtest");
         service.waitForFlowToFinish(id);
-        verify(logService).doSomething("flow42");
+        verify(logService).doSomething("context: " + ContextHolder.get().getCurrentContextId());
+    }
+
+    @Test
+    public void testStartMultipleProcesses_shouldRunInCorrectContext() throws Exception {
+        int tryThreads = 2;
+        List<DummyExampleDomain> services = new ArrayList<DummyExampleDomain>();
+        for (int i = 0; i < tryThreads; i++) {
+            ContextHolder.get().setCurrentContextId(Integer.toString(i));
+            services.add(registerDummyConnector(DummyExampleDomain.class, "example"));
+        }
+        for (int i = 0; i < tryThreads; i++) {
+            ContextHolder.get().setCurrentContextId(Integer.toString(i));
+            long id = service.startFlow("flowtest");
+            service.waitForFlowToFinish(id);
+            verify(services.get(i)).doSomething("context: " + ContextHolder.get().getCurrentContextId());
+        }
     }
 
     @Test
@@ -339,4 +358,5 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.cancelFlow(pid);
         service.waitForFlowToFinish(pid, 5000);
     }
+
 }

@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 import com.google.common.base.Preconditions;
@@ -32,9 +33,11 @@ public class WorkflowStarter implements Callable<Long> {
     private KnowledgeRuntime session;
     private String processId;
     private Map<String, Object> params;
+    private String contextId;
 
     public WorkflowStarter(KnowledgeRuntime session, String processId, Map<String, Object> params) {
         Preconditions.checkNotNull(params, "params-map must not be null");
+        this.contextId = ContextHolder.get().getCurrentContextId();
         this.session = session;
         this.processId = processId;
         this.params = params;
@@ -45,6 +48,7 @@ public class WorkflowStarter implements Callable<Long> {
     }
 
     public Long call() {
+        ContextHolder.get().setCurrentContextId(contextId);
         ProcessBag processBag = getProcessBag();
         ProcessInstance processInstance = session.startProcess(processId, params);
         session.insert(processInstance);

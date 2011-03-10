@@ -11,3 +11,4 @@ org.openengsb.core.workflow.OsgiHelper
 org.openengsb.core.common.workflow.model.ProcessBag
 java.net.URI
 org.openengsb.core.common.workflow.model.RemoteEvent
+org.openengsb.core.common.context.ContextHolder
