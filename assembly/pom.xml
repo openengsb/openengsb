@@ -209,7 +209,7 @@
                 <feature>wrapper</feature>
                 <feature>war</feature>
                 <!-- OpenEngSB Features -->
-                <feature>openengsb-core</feature>
+                <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
                 <feature>openengsb-domain-notification</feature>
                 <feature>openengsb-domain-report</feature>

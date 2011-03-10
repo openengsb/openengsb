@@ -47,7 +47,6 @@
     <bundle>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
     <bundle>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
     <bundle>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
-    <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${jaxb.wrapped.version}</bundle>
     <bundle>mvn:org.drools/drools-api/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
@@ -68,34 +67,46 @@
     <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
-    <!-- OpenEngSB JMS Proxy Feature -->
-    <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
-    <bundle>mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>
-    <bundle>mvn:org.apache.geronimo.specs/com.springsource.javax.management.j2ee/${org.apache.geronimo.specs.version}</bundle>
-    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
-    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-events/${project.version}</bundle>
-        <!-- OpenEngSB Feature Implementations -->
+    <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
     <!-- OpenEngSB Deployer -->
     <bundle>mvn:org.openengsb.core.deployer/openengsb-core-deployer-connector/${project.version}</bundle>
-    <!-- OpenEngSB Proxy JMS Feature -->
+  </feature>
+  <feature name="openengsb-ports-jms" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
+    <bundle>mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/com.springsource.javax.management.j2ee/${org.apache.geronimo.specs.version}</bundle>
+    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
-    <!-- Required Domains and Connectors -->
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
-    <!-- OpenEngSB UI Features -->
+  </feature>
+  <feature name="openengsb-ui-core" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
-    <!-- OpenEngSB Management UI -->
+  </feature>
+  <feature name="openengsb-ui-admin" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-ports-jms</feature>
+    <feature version="${project.version}">openengsb-connector-memoryauditing</feature>
+    <feature version="${project.version}">openengsb-connector-example</feature>
+    <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}/war</bundle>
+  </feature>
+  <feature name="openengsb-domain-auditing" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
+  </feature>
+  <feature name="openengsb-domain-example" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
   </feature>
   <feature name="openengsb-domain-notification" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
@@ -160,6 +171,16 @@
     <bundle>mvn:org.openengsb.wrapped/axis-all/${wrapped.axis.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-jira/${project.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/com.dolby.jira.net.jira-soap/${jira.wrapped.version}</bundle>
+  </feature>
+  <feature name="openengsb-connector-memoryauditing" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
+  </feature>
+  <feature name="openengsb-connector-example" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-example</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
   </feature>
 
 </features>
