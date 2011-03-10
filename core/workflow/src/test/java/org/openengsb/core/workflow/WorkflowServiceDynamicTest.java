@@ -32,7 +32,6 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
@@ -138,8 +137,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         } else {
             interfaces = new Class<?>[]{ domainClass, };
         }
-        registerSerivce(services.get(name), interfaces,
-            OsgiServiceUtils.getFilterForLocation(name, "42").toString());
+        registerServiceAtLocation(services.get(name), name, interfaces);
     }
 
     private void setupWorkflowService() throws Exception {
