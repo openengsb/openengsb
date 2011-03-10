@@ -29,6 +29,7 @@
     <end id="2" name="End" x="236" y="16" width="49" height="49" />
     <actionNode id="6" name="Reiteration" x="97" y="16" width="107" height="48" >
         <action type="expression" dialect="java" >String mycontext = ContextHolder.get().getCurrentContextId();
+Thread.sleep(200);
 example.doSomething("context: " + mycontext);</action>
     </actionNode>
   </nodes>
