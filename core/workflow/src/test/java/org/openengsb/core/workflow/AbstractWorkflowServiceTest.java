@@ -89,12 +89,14 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         registerDummyConnector(DummyTest.class, "test");
     }
 
-    private void registerDummyConnector(Class<? extends Domain> domainClass, String name)
+    @SuppressWarnings("unchecked")
+    protected <T extends Domain> T registerDummyConnector(Class<T> domainClass, String name)
         throws InvalidSyntaxException {
         Domain mock2 = mock(domainClass);
         registerSerivce(mock2, new Class<?>[]{ domainClass, Domain.class },
-            OsgiServiceUtils.getFilterForLocation(name, "42").toString());
+            OsgiServiceUtils.getFilterForLocation(name, ContextHolder.get().getCurrentContextId()).toString());
         domains.put(name, mock2);
+        return (T) mock2;
     }
 
     @After
