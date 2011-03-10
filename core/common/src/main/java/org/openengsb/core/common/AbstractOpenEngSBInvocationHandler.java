@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
-import org.apache.commons.collections.CollectionUtils;
-
 /**
  * The OpenEngSB, and its projects can contain quite complex proxing of methods. This abstract class handles some of the
  * common problems which can occur working in such situations.
@@ -43,12 +41,11 @@ public abstract class AbstractOpenEngSBInvocationHandler implements InvocationHa
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (handleObjectMethodsItself) {
             for (Method objectMethod : Object.class.getMethods()) {
-                if (objectMethod.getName().equals(method.getName()) &&
-                		Arrays.deepEquals(objectMethod.getParameterTypes(), method.getParameterTypes())) {
+                if (objectMethod.getName().equals(method.getName())
+                        && Arrays.deepEquals(objectMethod.getParameterTypes(), method.getParameterTypes())) {
                     if (Proxy.isProxyClass(proxy.getClass())) {
                         if (Proxy.getInvocationHandler(proxy) instanceof AbstractOpenEngSBInvocationHandler) {
-                            Object foo = method.invoke(Proxy.getInvocationHandler(proxy), args);
-                            return foo;
+                            return method.invoke(Proxy.getInvocationHandler(proxy), args);
                         }
                     }
                 }
