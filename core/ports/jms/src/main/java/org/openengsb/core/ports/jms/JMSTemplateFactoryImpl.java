@@ -31,7 +31,7 @@ public class JMSTemplateFactoryImpl implements JMSTemplateFactory {
     private final Map<String, ConnectionFactory> connections = new HashMap<String, ConnectionFactory>();
 
     @Override
-    public JmsTemplate createJMSTemplate(String host) {
+    public synchronized JmsTemplate createJMSTemplate(String host) {
         if (!connections.containsKey(host)) {
             connections.put(host, new SingleConnectionFactory(new ActiveMQConnectionFactory(host)));
         }
