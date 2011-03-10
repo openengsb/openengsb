@@ -103,13 +103,20 @@ public abstract class AbstractOsgiMockServiceTest {
 
     }
 
+    /**
+     * create a mock of the specified class and register the service under that interface. It also adds the given id as
+     * property to the service.
+     */
     protected <T> T mockService(Class<T> serviceClass, String id) {
         T serviceMock = mock(serviceClass);
         registerService(serviceMock, id, serviceClass);
         return serviceMock;
     }
 
-    public void registerService(Object service, Dictionary<String, Object> props, Class<?>... interfazes) {
+    /**
+     * registers the service with the given properties under the given interfaces
+     */
+    protected void registerService(Object service, Dictionary<String, Object> props, Class<?>... interfazes) {
         Set<String> objectClasses = new HashSet<String>();
         for (Class<?> interfaze : interfazes) {
             objectClasses.add(interfaze.getCanonicalName());
@@ -119,29 +126,43 @@ public abstract class AbstractOsgiMockServiceTest {
         putService(service, props);
     }
 
-    public void registerServiceAtLocation(Object service, String location, String context, Class<?>... interfazes) {
+    /**
+     * registers the service under the given interfaces and sets its location-property accordingly:
+     * location.context=location
+     */
+    protected void registerServiceAtLocation(Object service, String location, String context, Class<?>... interfazes) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("location." + context, "[" + location + "]");
         registerService(service, props, interfazes);
     }
 
-    public void registerServiceAtLocation(Object service, String location, Class<?>... interfazes) {
+    /**
+     * registers the service under the given interfaces and sets its location-property for the current context
+     * accordingly: location.context=location
+     */
+    protected void registerServiceAtLocation(Object service, String location, Class<?>... interfazes) {
         registerServiceAtLocation(service, location, ContextHolder.get().getCurrentContextId(), interfazes);
     }
 
-    public void registerServiceAtRootLocation(Object service, String location, Class<?>... interfazes) {
+    /**
+     * registers the service under the given interfaces and sets it's location in the root-context
+     */
+    protected void registerServiceAtRootLocation(Object service, String location, Class<?>... interfazes) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("location.root", "[" + location + "]");
         registerService(service, props, interfazes);
     }
 
+    /**
+     * registers the service under the given interfaces, settint its "id"-property to the given id
+     */
     protected void registerService(Object service, String id, Class<?>... interfaces) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("id", id);
         registerService(service, props, interfaces);
     }
 
-    protected void putService(Object service, Dictionary<String, Object> props) {
+    private void putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);
