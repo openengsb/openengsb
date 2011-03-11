@@ -1,5 +1,34 @@
+openengsb-1.1.1.RELEASE 2011-03-11
+-------------------------------------------------------
+
+This release contains various bug fixes, fixed of potential bugs, and improvements mostly to the documentation and the homepage
+
+### Highlights
+  * Homepage usable again from internet explorer
+
+### Details
+** Bug
+    * [OPENENGSB-1076] - Rendering problem on HP using internet explorer
+    * [OPENENGSB-1077] - openengsb.org not reachable by MS Internet Explorer
+    * [OPENENGSB-1106] - AbstractOpenEngSBInvocationHandler cannot invoke method called "notify"
+    * [OPENENGSB-1108] - Spring-security uses Threadlocal context-strategy in production environment (should be InheritedThreadLocal)
+    * [OPENENGSB-1110] - workflow-service does not start flows in correct context
+
+** Improvement
+    * [OPENENGSB-961] - Use URL-params to determine a the current contextID rather than a session-variable
+    * [OPENENGSB-1040] - Add opencit logo to openengsb childproject page
+    * [OPENENGSB-1071] - Add opencit logo to openengsb childprojects page, again.
+    * [OPENENGSB-1072] - refactor subprojects page to use linkbox layout
+    * [OPENENGSB-1080] - Remove "Release Candidate" from link list
+    * [OPENENGSB-1088] - Set development version also manual in root pom
+    * [OPENENGSB-1115] - Make JMSTemplateFactory thread safe
+
+** Task
+    * [OPENENGSB-1001] - Document how to add local pre-push scripts to gitrepo
+    * [OPENENGSB-1068] - Release openengsb-1.1.1.RELEASE
+
 openengsb-1.1.0.RELEASE 2011-03-08
------------------------------------------------------
+-------------------------------------------------------
 
 Finally the openengsb-1.1.x branch reached a stability to release an 1.1.0 final release. The OpenEngSB
 Team is proud to bring to you the next major release of the OpenEngSB containing hundreds of new features,
