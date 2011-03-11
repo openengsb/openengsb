@@ -16,6 +16,9 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,7 @@ import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
@@ -59,6 +63,12 @@ public class WorkflowIT extends AbstractExamTestHelper {
         public boolean isWasCalled() {
             return wasCalled;
         }
+    }
+
+    @Test
+    public void testCorrectContextHolderStrategy() throws Exception {
+        assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
+            is("InheritableThreadLocalSecurityContextHolderStrategy"));
     }
 
     /**
