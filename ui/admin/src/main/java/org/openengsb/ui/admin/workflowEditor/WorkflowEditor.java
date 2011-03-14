@@ -48,6 +48,7 @@ import org.openengsb.core.workflow.editor.Action;
 import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Node;
 import org.openengsb.core.workflow.editor.Workflow;
+import org.openengsb.core.workflow.editor.WorkflowConverter;
 import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
@@ -68,6 +69,9 @@ public class WorkflowEditor extends BasePage {
 
     @SpringBean
     RuleManager ruleManager;
+
+    @SpringBean
+    WorkflowConverter workflowConverter;
 
     public WorkflowEditor() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
@@ -99,7 +103,8 @@ public class WorkflowEditor extends BasePage {
             protected void onSubmit() {
                 try {
                     ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
-                        .getCurrentWorkflow().getName()), "");
+                        .getCurrentWorkflow().getName()),
+                        workflowConverter.convert(workflowEditorService.getCurrentWorkflow()));
                 } catch (RuleBaseException e) {
                     error(e.getMessage());
                 }

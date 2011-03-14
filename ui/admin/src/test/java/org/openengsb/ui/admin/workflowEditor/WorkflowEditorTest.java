@@ -43,6 +43,7 @@ import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.workflow.editor.Action;
 import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Workflow;
+import org.openengsb.core.workflow.editor.WorkflowConverter;
 import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.core.workflow.editor.WorkflowEditorServiceImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -54,6 +55,7 @@ public class WorkflowEditorTest {
     private ApplicationContextMock mock;
     private WorkflowEditorService service;
     private RuleManager ruleManager;
+    private WorkflowConverter workflowConverter;
 
     @Before
     public void setup() {
@@ -66,6 +68,8 @@ public class WorkflowEditorTest {
         mock.putBean("domainService", mock(DomainService.class));
         ruleManager = mock(RuleManager.class);
         mock.putBean(ruleManager);
+        workflowConverter = mock(WorkflowConverter.class);
+        mock.putBean(workflowConverter);
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new WorkflowEditor());
@@ -162,14 +166,16 @@ public class WorkflowEditorTest {
     }
 
     @Test
-    public void exportWorkflow_ShouldCallRuleManagerAdd() throws RuleBaseException {
+    public void exportWorkflow_ShouldCallRuleManagerAddWithConverterReturn() throws RuleBaseException {
         service.createWorkflow("workflow");
         tester.startPage(WorkflowEditor.class);
+        String converted = "converted";
+        Mockito.when(workflowConverter.convert(service.getCurrentWorkflow())).thenReturn(converted);
         FormTester export = tester.newFormTester("export");
 
         export.submit();
         ArgumentCaptor<RuleBaseElementId> captor = ArgumentCaptor.forClass(RuleBaseElementId.class);
-        Mockito.verify(ruleManager).add(captor.capture(), Mockito.eq(""));
+        Mockito.verify(ruleManager).add(captor.capture(), Mockito.eq(converted));
         RuleBaseElementId value = captor.getValue();
         assertThat(value.getType(), equalTo(RuleBaseElementType.Process));
         assertThat(value.getName(), equalTo("workflow"));

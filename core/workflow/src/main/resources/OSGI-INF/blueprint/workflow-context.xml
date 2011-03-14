@@ -88,5 +88,9 @@
   <service interface="org.openengsb.core.common.workflow.editor.WorkflowEditorService">
     <bean class="org.openengsb.core.common.workflow.editor.WorkflowEditorServiceImpl"/>
   </service>
+  
+  <service interface="org.openengsb.core.workflow.editor.WorkflowConverter">
+    <bean class="org.openengsb.core.workflow.editor.converter.DroolsConverter"/>
+  </service>
 
 </blueprint>
