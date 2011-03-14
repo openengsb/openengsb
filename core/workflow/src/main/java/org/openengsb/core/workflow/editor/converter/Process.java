@@ -1,0 +1,129 @@
+package org.openengsb.core.workflow.editor.converter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Workflow;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Process {
+
+    @XmlTransient
+    private int idCounter = 1;
+
+    @XmlTransient
+    private List<Integer> endConnections = new ArrayList<Integer>();
+
+    @XmlAttribute
+    private String type;
+    @XmlAttribute
+    private String name;
+    @XmlAttribute
+    private String id;
+    @XmlAttribute(name = "package-name")
+    private String packageName;
+
+    public Process() {
+    }
+
+    private Process(String type, String name, String id, String packageName) {
+        super();
+        this.type = type;
+        this.name = name;
+        this.id = id;
+        this.packageName = packageName;
+    }
+
+    @XmlElementWrapper
+    @XmlElements({ @XmlElement(name = "start", type = Start.class),
+        @XmlElement(name = "actionNode", type = ActionNode.class),
+        @XmlElement(name = "eventNode", type = ActionEvent.class),
+        @XmlElement(name = "end", type = End.class) })
+    List<Object> nodes = new ArrayList<Object>();
+
+    @XmlElementWrapper(name = "connections")
+    List<Connection> connection = new ArrayList<Connection>();
+
+    private int getIdCounter() {
+        idCounter++;
+        return idCounter;
+    }
+
+    private void addNode(Object node) {
+        this.nodes.add(node);
+    }
+
+    public static final class Start {
+        @XmlAttribute
+        private int id = 1;
+        @XmlAttribute
+        private String name = "Start";
+    }
+
+    public static final class End {
+        @XmlAttribute
+        private int id;
+        @XmlAttribute
+        private String name = "End";
+    }
+
+    public static Process build(Workflow workflow) {
+        Process process =
+            new Process("RuleFlow", workflow.getName(), workflow.getName(), RuleBaseElementId.DEFAULT_RULE_PACKAGE);
+        process.addNode(new Start());
+        processAction(process, workflow.getRoot(), 1);
+        addEndConnections(process);
+        return process;
+    }
+
+    private static void addEndConnections(Process process) {
+        End end = new End();
+        end.id = process.getIdCounter();
+        process.addNode(end);
+        for (Integer toEnd : process.endConnections) {
+            process.connection.add(new Connection(toEnd, end.id));
+        }
+    }
+
+    private static void processAction(Process process, Action root, int parentId) {
+        int counter = process.getIdCounter();
+        process.addNode(new ActionNode(counter, root.getMethodName(), root.getLocation(), root
+            .getMethodName()));
+        process.connection.add(new Connection(parentId, counter));
+        for (Action action : root.getActions()) {
+            processAction(process, action, counter);
+        }
+        for (Event event : root.getEvents()) {
+            processEvent(process, event, counter);
+        }
+        if (root.getActions().size() == 0) {
+            process.endConnections.add(counter);
+        }
+    }
+
+    private static void processEvent(Process process, Event event, int parentId) {
+        String simpleName = event.getEvent().getSimpleName();
+        int counter = process.getIdCounter();
+        process.addNode(new ActionEvent(counter, simpleName, simpleName));
+        process.connection.add(new Connection(parentId, counter));
+        for (Action action : event.getActions()) {
+            processAction(process, action, counter);
+        }
+        if (event.getActions().size() == 0) {
+            process.endConnections.add(counter);
+        }
+    }
+}
