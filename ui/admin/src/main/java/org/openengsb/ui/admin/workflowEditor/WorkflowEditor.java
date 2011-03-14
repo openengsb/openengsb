@@ -40,11 +40,15 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
-import org.openengsb.core.common.workflow.editor.Node;
-import org.openengsb.core.common.workflow.editor.Workflow;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorService;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Node;
+import org.openengsb.core.workflow.editor.Workflow;
+import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
@@ -61,6 +65,9 @@ public class WorkflowEditor extends BasePage {
 
     @SpringBean
     WorkflowEditorService workflowEditorService;
+
+    @SpringBean
+    RuleManager ruleManager;
 
     public WorkflowEditor() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
@@ -87,6 +94,19 @@ public class WorkflowEditor extends BasePage {
         createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
         add(createForm);
 
+        Form<Object> exportForm = new Form<Object>("export") {
+            @Override
+            protected void onSubmit() {
+                try {
+                    ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
+                        .getCurrentWorkflow().getName()), "");
+                } catch (RuleBaseException e) {
+                    error(e.getMessage());
+                }
+            }
+        };
+        add(exportForm);
+
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         Workflow currentWorkflow = workflowEditorService.getCurrentWorkflow();
         DefaultTreeModel model = new DefaultTreeModel(node);
@@ -112,7 +132,7 @@ public class WorkflowEditor extends BasePage {
                     public IRenderable newCell(TreeNode node, int level) {
                         return null;
                     }
-                }};
+                } };
 
         table = new TreeTable("treeTable", model, columns);
         String label = "";
@@ -121,6 +141,7 @@ public class WorkflowEditor extends BasePage {
             node.setUserObject(new Action());
             table.setVisible(false);
             selectForm.setVisible(false);
+            exportForm.setVisible(false);
         } else {
             label = currentWorkflow.getName();
             node.setUserObject(currentWorkflow.getRoot());

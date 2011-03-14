@@ -114,6 +114,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-workflow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.ui</groupId>
       <artifactId>openengsb-ui-common</artifactId>
       <scope>provided</scope>

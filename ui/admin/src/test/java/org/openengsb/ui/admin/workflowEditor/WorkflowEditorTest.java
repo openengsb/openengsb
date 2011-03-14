@@ -30,15 +30,21 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
-import org.openengsb.core.common.workflow.editor.Workflow;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorService;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorServiceImpl;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Workflow;
+import org.openengsb.core.workflow.editor.WorkflowEditorService;
+import org.openengsb.core.workflow.editor.WorkflowEditorServiceImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
@@ -47,6 +53,7 @@ public class WorkflowEditorTest {
     private WicketTester tester;
     private ApplicationContextMock mock;
     private WorkflowEditorService service;
+    private RuleManager ruleManager;
 
     @Before
     public void setup() {
@@ -57,6 +64,8 @@ public class WorkflowEditorTest {
         mock.putBean("openengsbVersion", new OpenEngSBVersion());
         mock.putBean("workflowEditorService", service);
         mock.putBean("domainService", mock(DomainService.class));
+        ruleManager = mock(RuleManager.class);
+        mock.putBean(ruleManager);
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new WorkflowEditor());
@@ -66,6 +75,7 @@ public class WorkflowEditorTest {
     public void withoutWorkflow_partsShouldBeInvisible() {
         tester.assertInvisible("workflowSelectForm");
         tester.assertInvisible("treeTable");
+        tester.assertInvisible("export");
     }
 
     @Test
@@ -149,5 +159,20 @@ public class WorkflowEditorTest {
         service.createWorkflow("workflow");
         tester.startPage(WorkflowEditor.class);
         tester.assertInvisible("treeTable:i:0:middleColumns:links:remove");
+    }
+
+    @Test
+    public void exportWorkflow_ShouldCallRuleManagerAdd() throws RuleBaseException {
+        service.createWorkflow("workflow");
+        tester.startPage(WorkflowEditor.class);
+        FormTester export = tester.newFormTester("export");
+
+        export.submit();
+        ArgumentCaptor<RuleBaseElementId> captor = ArgumentCaptor.forClass(RuleBaseElementId.class);
+        Mockito.verify(ruleManager).add(captor.capture(), Mockito.eq(""));
+        RuleBaseElementId value = captor.getValue();
+        assertThat(value.getType(), equalTo(RuleBaseElementType.Process));
+        assertThat(value.getName(), equalTo("workflow"));
+        assertThat(value.getPackageName(), equalTo(RuleBaseElementId.DEFAULT_RULE_PACKAGE));
     }
 }
