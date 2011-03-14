@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * creates context-aware Threadpools
  */
-public class ThreadLocalUtil {
+public final class ThreadLocalUtil {
 
     private static final ClassLoader CLASS_LOADER = ThreadLocalUtil.class.getClassLoader();
     private static final Class<?>[] INTERFACES = new Class<?>[] { ExecutorService.class };
@@ -101,5 +101,8 @@ public class ThreadLocalUtil {
      */
     public static ExecutorService contextAwareExecutor(ExecutorService original) {
         return (ExecutorService) Proxy.newProxyInstance(CLASS_LOADER, INTERFACES, new ExecutorServiceHandler(original));
+    }
+
+    private ThreadLocalUtil() {
     }
 }
