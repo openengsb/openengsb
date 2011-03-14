@@ -17,7 +17,6 @@
 
 package org.openengsb.core.workflow.editor.converter;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -40,7 +39,7 @@ import org.xml.sax.SAXException;
 public class DroolsConverterTest {
 
     @Test
-    public void callWorkflow_ShouldConvertCorrectly() throws FileNotFoundException, SAXException, IOException,
+    public void callWorkflow_ShouldConvertCorrectly() throws SAXException, IOException,
         JAXBException {
         Workflow workflow = new Workflow();
         workflow.setName("workflow");
