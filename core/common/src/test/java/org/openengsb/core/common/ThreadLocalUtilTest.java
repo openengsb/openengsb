@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -110,5 +111,20 @@ public class ThreadLocalUtilTest {
         referenceContext.set("1");
 
         assertThat(pool.submit(command).get(), is(true));
+    }
+
+    @Test
+    public void testCallableException() throws Exception {
+        Callable<Boolean> command = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                throw new RuntimeException("test");
+            }
+        };
+        try {
+            pool.submit(command).get();
+        } catch (ExecutionException e) {
+            assertThat(e.getCause().getMessage(), is("test"));
+        }
     }
 }
