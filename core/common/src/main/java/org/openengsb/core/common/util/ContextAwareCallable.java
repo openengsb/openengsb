@@ -19,6 +19,10 @@ package org.openengsb.core.common.util;
 
 import java.util.concurrent.Callable;
 
+/**
+ * wraps a {@link Callable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
+ *
+ */
 class ContextAwareCallable extends ContextAware implements Callable<Object> {
     private Callable<Object> original;
 

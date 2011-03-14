@@ -24,6 +24,9 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * creates context-aware Threadpools
+ */
 public class ThreadLocalUtil {
 
     private static final ClassLoader CLASS_LOADER = ThreadLocalUtil.class.getClassLoader();
@@ -79,7 +82,24 @@ public class ThreadLocalUtil {
         args[0] = result;
     }
 
-    public static ExecutorService contextAwareExecutor(final ExecutorService original) {
+    /**
+     * creates a context-aware proxy of the given ExecutorService. All calls to the resulting proxy are directly
+     * forwarded to the original after wrapping all {@link Runnable} and {@link Callable} in their context-aware
+     * counter-parts.
+     *
+     * All submitted tasks to the resulting ExecutorService are guaranteed to run in the same context as the method on
+     * the ExecutorService was called. When doing this:
+     *
+     * <pre>
+     * ExecutorService pool = ThreadlocalUtil.contextAwareExecutor(Executors.newCachedThreadPool());
+     * ContextHolder.get().setCurrentContextId(&quot;42&quot;);
+     * pool.submit(command);
+     * </pre>
+     *
+     * You can assume that the command is executed in a thread where the contextid is set to "42".
+     *
+     */
+    public static ExecutorService contextAwareExecutor(ExecutorService original) {
         return (ExecutorService) Proxy.newProxyInstance(CLASS_LOADER, INTERFACES, new ExecutorServiceHandler(original));
     }
 }
