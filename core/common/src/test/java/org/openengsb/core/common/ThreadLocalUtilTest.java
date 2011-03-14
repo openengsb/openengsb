@@ -31,20 +31,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 
 public class ThreadLocalUtilTest {
 
+    private ExecutorService pool;
+    private AtomicReference<String> referenceContext = new AtomicReference<String>();
+
+    @Before
+    public void setup() throws Exception {
+        ContextHolder.get().setCurrentContextId("0");
+        referenceContext.set(ContextHolder.get().getCurrentContextId());
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        this.pool = ThreadLocalUtil.contextAwareExecutor(pool);
+    }
+
     @Test
     public void testInheritContext() throws Exception {
-        ContextHolder.get().setCurrentContextId("0");
-        ExecutorService pool = Executors.newSingleThreadExecutor();
-        pool = ThreadLocalUtil.contextAwareExecutor(pool);
         final AtomicBoolean success = new AtomicBoolean(false);
-        final AtomicReference<String> referenceContext = new AtomicReference<String>();
-        referenceContext.set(ContextHolder.get().getCurrentContextId());
         Runnable command = new Runnable() {
             @Override
             public void run() {
@@ -66,12 +73,7 @@ public class ThreadLocalUtilTest {
 
     @Test
     public void testInvokeAll() throws Exception {
-        ContextHolder.get().setCurrentContextId("0");
-        ExecutorService pool = Executors.newSingleThreadExecutor();
-        pool = ThreadLocalUtil.contextAwareExecutor(pool);
         final AtomicInteger success = new AtomicInteger(0);
-        final AtomicReference<String> referenceContext = new AtomicReference<String>();
-        referenceContext.set(ContextHolder.get().getCurrentContextId());
         Runnable command = new Runnable() {
             @Override
             public void run() {
@@ -95,11 +97,6 @@ public class ThreadLocalUtilTest {
 
     @Test
     public void testCallable() throws Exception {
-        ContextHolder.get().setCurrentContextId("0");
-        ExecutorService pool = Executors.newSingleThreadExecutor();
-        pool = ThreadLocalUtil.contextAwareExecutor(pool);
-        final AtomicReference<String> referenceContext = new AtomicReference<String>();
-        referenceContext.set(ContextHolder.get().getCurrentContextId());
         Callable<Boolean> command = new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
