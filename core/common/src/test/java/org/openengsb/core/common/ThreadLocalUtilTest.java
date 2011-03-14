@@ -93,4 +93,25 @@ public class ThreadLocalUtilTest {
         assertThat(success.get(), is(2));
     }
 
+    @Test
+    public void testCallable() throws Exception {
+        ContextHolder.get().setCurrentContextId("0");
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        pool = ThreadLocalUtil.contextAwareExecutor(pool);
+        final AtomicReference<String> referenceContext = new AtomicReference<String>();
+        referenceContext.set(ContextHolder.get().getCurrentContextId());
+        Callable<Boolean> command = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return ContextHolder.get().getCurrentContextId() == referenceContext.get();
+            }
+        };
+
+        assertThat(pool.submit(command).get(), is(true));
+
+        ContextHolder.get().setCurrentContextId("1");
+        referenceContext.set("1");
+
+        assertThat(pool.submit(command).get(), is(true));
+    }
 }
