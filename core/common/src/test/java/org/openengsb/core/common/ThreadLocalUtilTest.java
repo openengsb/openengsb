@@ -20,9 +20,15 @@ package org.openengsb.core.common;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
@@ -56,6 +62,35 @@ public class ThreadLocalUtilTest {
 
         pool.submit(command).get();
         assertThat(success.get(), is(true));
+    }
+
+    @Test
+    public void testInvokeAll() throws Exception {
+        ContextHolder.get().setCurrentContextId("0");
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        pool = ThreadLocalUtil.contextAwareExecutor(pool);
+        final AtomicInteger success = new AtomicInteger(0);
+        final AtomicReference<String> referenceContext = new AtomicReference<String>();
+        referenceContext.set(ContextHolder.get().getCurrentContextId());
+        Runnable command = new Runnable() {
+            @Override
+            public void run() {
+                if (ContextHolder.get().getCurrentContextId() == referenceContext.get()) {
+                    success.incrementAndGet();
+                }
+            }
+        };
+        pool.submit(command).get();
+
+        ContextHolder.get().setCurrentContextId("1");
+        referenceContext.set("1");
+
+        Collection<Callable<Object>> commands = new ArrayList<Callable<Object>>();
+        commands.add(Executors.callable(command));
+        List<Future<Object>> invokeAll = pool.invokeAll(commands);
+        invokeAll.get(0).get();
+
+        assertThat(success.get(), is(2));
     }
 
 }
