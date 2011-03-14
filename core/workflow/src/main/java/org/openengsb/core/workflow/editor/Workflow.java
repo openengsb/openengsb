@@ -15,19 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.workflow.editor;
+package org.openengsb.core.workflow.editor;
 
-import java.util.List;
+public class Workflow {
 
-public interface WorkflowEditorService {
+    private String name;
+    private Action root = new Action();
 
-    List<String> getWorkflowNames();
+    public final String getName() {
+        return name;
+    }
 
-    Workflow loadWorkflow(String name);
+    public final void setName(String name) {
+        this.name = name;
+    }
 
-    Workflow getCurrentWorkflow();
+    public final Action getRoot() {
+        return root;
+    }
 
-    void saveCurrentWorkflow();
-
-    void createWorkflow(String name);
+    public final void setRoot(Action root) {
+        this.root = root;
+    }
 }

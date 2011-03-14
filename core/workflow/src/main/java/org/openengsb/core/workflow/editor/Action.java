@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.workflow.editor;
+package org.openengsb.core.workflow.editor;
 
 import java.io.Serializable;
 import java.util.ArrayList;

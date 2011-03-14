@@ -21,9 +21,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
+<<<<<<< HEAD
+import org.openengsb.core.common.workflow.editor.Action;
+import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+=======
 import org.openengsb.core.workflow.editor.Action;
 import org.openengsb.core.workflow.editor.Event;
-import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+>>>>>>> OPENENGSB-1001/Moving workfloweditor related classes to core-workflow
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
 public class EventLinks extends Panel {

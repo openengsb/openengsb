@@ -30,8 +30,8 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.common.Raises;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 

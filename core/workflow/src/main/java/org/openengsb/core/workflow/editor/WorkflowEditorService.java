@@ -15,10 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.workflow.editor;
+package org.openengsb.core.workflow.editor;
 
-public interface Node {
-    String getDescription();
+import java.util.List;
 
-    void addAction(Action action);
+public interface WorkflowEditorService {
+
+    List<String> getWorkflowNames();
+
+    Workflow loadWorkflow(String name);
+
+    Workflow getCurrentWorkflow();
+
+    void saveCurrentWorkflow();
+
+    void createWorkflow(String name);
 }

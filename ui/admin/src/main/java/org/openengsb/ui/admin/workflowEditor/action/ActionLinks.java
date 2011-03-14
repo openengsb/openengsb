@@ -21,8 +21,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.admin.workflowEditor.event.EditEvent;
 

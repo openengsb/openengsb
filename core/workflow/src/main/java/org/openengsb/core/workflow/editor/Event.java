@@ -15,26 +15,37 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.workflow.editor;
+package org.openengsb.core.workflow.editor;
 
-public class Workflow {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-    private String name;
-    private Action root = new Action();
+public class Event implements Node, Serializable {
+    private final List<Action> actions = new ArrayList<Action>();
 
-    public final String getName() {
-        return name;
+    private Class<? extends org.openengsb.core.common.Event> event;
+
+    @Override
+    public final void addAction(Action action) {
+        this.actions.add(action);
     }
 
-    public final void setName(String name) {
-        this.name = name;
+    public final List<Action> getActions() {
+        return actions;
     }
 
-    public final Action getRoot() {
-        return root;
+    @Override
+    public String getDescription() {
+        return event.getSimpleName();
     }
 
-    public final void setRoot(Action root) {
-        this.root = root;
+    public final Class<? extends org.openengsb.core.common.Event> getEvent() {
+        return event;
     }
+
+    public final void setEvent(Class<? extends org.openengsb.core.common.Event> event) {
+        this.event = event;
+    }
+
 }

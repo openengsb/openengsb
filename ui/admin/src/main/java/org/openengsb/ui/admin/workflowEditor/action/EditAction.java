@@ -35,8 +35,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Node;
+import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.Node;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
