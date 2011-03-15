@@ -20,14 +20,11 @@ package org.openengsb.core.workflow.editor.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.editor.Action;
@@ -35,23 +32,18 @@ import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Workflow;
 
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Process {
 
-    @XmlTransient
     private int idCounter = 1;
-
-    @XmlTransient
     private List<Integer> endConnections = new ArrayList<Integer>();
-
-    @XmlAttribute
     private String type;
-    @XmlAttribute
     private String name;
-    @XmlAttribute
     private String id;
-    @XmlAttribute(name = "package-name")
+
     private String packageName;
+    List<Object> nodes = new ArrayList<Object>();
+
+    List<Connection> connection = new ArrayList<Connection>();
 
     public Process() {
     }
@@ -64,16 +56,6 @@ public class Process {
         this.packageName = packageName;
     }
 
-    @XmlElementWrapper
-    @XmlElements({ @XmlElement(name = "start", type = Start.class),
-        @XmlElement(name = "actionNode", type = ActionNode.class),
-        @XmlElement(name = "eventNode", type = ActionEvent.class),
-        @XmlElement(name = "end", type = End.class) })
-    List<Object> nodes = new ArrayList<Object>();
-
-    @XmlElementWrapper(name = "connections")
-    List<Connection> connection = new ArrayList<Connection>();
-
     private int getIdCounter() {
         idCounter++;
         return idCounter;
@@ -81,6 +63,40 @@ public class Process {
 
     private void addNode(Object node) {
         this.nodes.add(node);
+    }
+
+    @XmlAttribute
+    public String getType() {
+        return type;
+    }
+
+    @XmlAttribute
+    public String getName() {
+        return name;
+    }
+
+    @XmlAttribute
+    public String getId() {
+        return id;
+    }
+
+    @XmlAttribute(name = "package-name")
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @XmlElementWrapper
+    @XmlElements({ @XmlElement(name = "start", type = Start.class),
+        @XmlElement(name = "actionNode", type = ActionNode.class),
+        @XmlElement(name = "eventNode", type = ActionEvent.class),
+        @XmlElement(name = "end", type = End.class) })
+    public List<Object> getNodes() {
+        return nodes;
+    }
+
+    @XmlElementWrapper(name = "connections")
+    public List<Connection> getConnection() {
+        return connection;
     }
 
     public static final class Start {
