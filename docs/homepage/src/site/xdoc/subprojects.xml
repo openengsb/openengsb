@@ -43,11 +43,11 @@
       </div>
 
       <div class="linkblock">
+        <img src="images/openticket.png" alt="openticket"/>
         <div>
           <a href="http://openticket.openengsb.org"><b>OpenTicket</b></a><br />
-          Generic issue tracker for engineering processes. Light-weight ticket
-          management integrated into OpenEngSB infrastructure. Proof of concept
-          and valuable reference for new integration efforts.
+          Issue tracker for engineering processes. Light-weight ticket
+          management and valuable reference for new integration projects.
         </div>
       </div>
 
