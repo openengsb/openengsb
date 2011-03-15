@@ -51,11 +51,11 @@
       </div>
 
       <div class="linkblock">
+        <img src="images/yaste.png" alt="yaste"/>
         <div>
           <a href="http://yaste.openengsb.org"><b>YASTE</b></a><br />
-          Frontend for automated testing environment for software development
-          processes. Configuration and provisioning of virtual machines for
-          running system- and acceptance-tests.
+          Frontend for automated testing environment. Configuration and
+          provisioning of virtual machines for system- and acceptance-tests.
         </div>
       </div>
 
