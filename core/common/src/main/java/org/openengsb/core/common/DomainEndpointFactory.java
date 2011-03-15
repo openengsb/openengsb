@@ -19,20 +19,17 @@ package org.openengsb.core.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import com.google.common.collect.MapMaker;
 
 /**
  * provides utility-methods for retrieving domain-services
@@ -43,7 +40,6 @@ public final class DomainEndpointFactory {
     private static Log log = LogFactory.getLog(DomainEndpointFactory.class);
 
     private static BundleContext bundleContext;
-    private static ConcurrentMap<String, Pattern> cachedPatterns = new MapMaker().softValues().makeMap();
 
     /**
      * returns the domain-service for the corresponding location in the current context. If no service with that
@@ -92,40 +88,14 @@ public final class DomainEndpointFactory {
         }
         log.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
         for (ServiceReference ref : allServiceReferences) {
-            String discoveredLocation = (String) ref.getProperty("location." + context);
-            result.add(getDomainEndpoint(domainType, getMatchingLocation(discoveredLocation, location)));
+            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
+            try {
+                OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+            } catch (InvalidSyntaxException e) {
+                throw new RuntimeException(e);
+            }
         }
         return result;
-    }
-
-    private static String getMatchingLocation(String discoveredLocation, String pattern) {
-        Pattern compliedPattern = getCompiledPattern(pattern);
-        Matcher matcher = compliedPattern.matcher(discoveredLocation);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException(String.format(
-                "could not find location matching pattern \"%s\" in provided list \"%s\"", pattern,
-                discoveredLocation));
-        }
-        return matcher.group();
-    }
-
-    private static Pattern getCompiledPattern(String pattern) {
-        Pattern result = cachedPatterns.get(pattern);
-        if (result == null) {
-            log.debug("pattern-cache miss: " + pattern);
-            result = makeCompiledPattern(pattern);
-            cachedPatterns.put(pattern, result);
-        } else {
-            log.debug("pattern-cache hit: " + pattern);
-        }
-        return result;
-    }
-
-    private static Pattern makeCompiledPattern(String pattern) {
-        String regex = pattern.replace("*", "[^" + OsgiServiceUtils.LOCATION_END + "]+");
-        log.debug("compiling pattern: " + regex);
-        Pattern compliedPattern = Pattern.compile(regex);
-        return compliedPattern;
     }
 
     public static void setBundleContext(BundleContext bundleContext) {
