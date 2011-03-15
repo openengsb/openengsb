@@ -187,7 +187,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
                         issueList = reports.get(issue.getType());
                     }
                     issueList.add("\t * [" + issue.getKey() + "] - " + issue.getDescription());
-                    reports.put(issue.getType(), issueList);
+                    reports.put(TypeConverter.fromCode(issue.getType()), issueList);
                 }
             }
             for (String key : reports.keySet()) {
