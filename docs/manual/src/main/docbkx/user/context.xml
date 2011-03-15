@@ -39,6 +39,13 @@
     parent thread.
   </para>
 
+  <para><emphasis>Attention:</emphasis> When using Theadpools, the ContextHolder may malfunction
+    (i.e. return the context of some previous task that was run in the same thread). Use
+    <programlisting>ThreadLocalUtil.contextAwareExecutor(ExecutorService)</programlisting> to convert any executor to a
+    context-aware one. ExecutorServices returned by this method ensure that the submitted tasks are executed in the
+    same context as the thread they were submitted from.
+  </para>
+
   <para>
    This way connector-implementations and other client projects always can handle actions according to the current
    context, and execute actions in specific a specific context. So when a person with a certain role in the project
