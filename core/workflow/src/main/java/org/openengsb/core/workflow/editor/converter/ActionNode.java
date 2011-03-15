@@ -17,17 +17,13 @@
 
 package org.openengsb.core.workflow.editor.converter;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlValue;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ActionNode {
 
-    @XmlAttribute
     private int id;
-    @XmlAttribute
     private String name;
 
     private Action action;
@@ -43,7 +39,22 @@ public class ActionNode {
         action.setValue(location + "." + methodName + "()");
     }
 
-    public static class Action {
+    @XmlAttribute
+    public int getId() {
+        return id;
+    }
+
+    @XmlAttribute
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement
+    public Action getAction() {
+        return action;
+    }
+
+    public static final class Action {
         @XmlAttribute
         private String type = "expression";
         @XmlAttribute

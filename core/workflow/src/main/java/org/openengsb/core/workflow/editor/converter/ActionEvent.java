@@ -42,7 +42,11 @@ public class ActionEvent {
         this.eventFilter.add(e);
     }
 
-    public static class EventFilter {
+    public static final class EventFilter {
+
+        private EventFilter() {
+        }
+
         @XmlAttribute
         private String type = "eventType";
         @XmlAttribute

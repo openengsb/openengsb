@@ -21,9 +21,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class Connection {
 
-    @XmlAttribute
     private int to;
-    @XmlAttribute
     private int from;
 
     public Connection() {
@@ -33,5 +31,15 @@ public class Connection {
         super();
         this.from = from;
         this.to = to;
+    }
+
+    @XmlAttribute
+    public int getTo() {
+        return to;
+    }
+
+    @XmlAttribute
+    public int getFrom() {
+        return from;
     }
 }

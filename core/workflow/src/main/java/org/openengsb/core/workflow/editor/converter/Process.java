@@ -100,6 +100,11 @@ public class Process {
     }
 
     public static final class Start {
+
+        private Start() {
+
+        }
+
         @XmlAttribute
         private int id = 1;
         @XmlAttribute
@@ -107,6 +112,10 @@ public class Process {
     }
 
     public static final class End {
+
+        private End() {
+        }
+
         @XmlAttribute
         private int id;
         @XmlAttribute
