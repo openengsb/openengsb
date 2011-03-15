@@ -46,12 +46,35 @@ public class ThreadLocalUtilTest {
     public void setup() throws Exception {
         ContextHolder.get().setCurrentContextId("0");
         referenceContext.set(ContextHolder.get().getCurrentContextId());
+        /*
+         * using a single thread ensures that the same thread is used for all tasks
+         */
         ExecutorService pool = Executors.newSingleThreadExecutor();
         this.pool = ThreadLocalUtil.contextAwareExecutor(pool);
     }
 
     @Test
-    public void testInheritContext() throws Exception {
+    public void testExecute2CallablesInSingleThread_shouldReturnCorrectContext() throws Exception {
+        Callable<Boolean> command = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return ContextHolder.get().getCurrentContextId() == referenceContext.get();
+            }
+        };
+
+        assertThat(pool.submit(command).get(), is(true));
+
+        ContextHolder.get().setCurrentContextId("1");
+        referenceContext.set("1");
+
+        assertThat(pool.submit(command).get(), is(true));
+    }
+
+    @Test
+    public void testExecute2RunnablesWithDifferentContexts_shouldBeExecutedInCorrectContext() throws Exception {
+        /*
+         * use this variable to indicate successful executions, because Runnables do not have return values
+         */
         final AtomicBoolean success = new AtomicBoolean(false);
         Runnable command = new Runnable() {
             @Override
@@ -68,18 +91,19 @@ public class ThreadLocalUtilTest {
         ContextHolder.get().setCurrentContextId("1");
         referenceContext.set("1");
 
+        /* this command is run in the same thread, but should run in the current context */
         pool.submit(command).get();
         assertThat(success.get(), is(true));
     }
 
     @Test
-    public void testInvokeAll() throws Exception {
-        final AtomicInteger success = new AtomicInteger(0);
+    public void testRunTasksWithInvokeAll_shouldBeExecutedInCorrectContext() throws Exception {
+        final AtomicInteger successfulExecutions = new AtomicInteger(0);
         Runnable command = new Runnable() {
             @Override
             public void run() {
                 if (ContextHolder.get().getCurrentContextId() == referenceContext.get()) {
-                    success.incrementAndGet();
+                    successfulExecutions.incrementAndGet();
                 }
             }
         };
@@ -90,27 +114,13 @@ public class ThreadLocalUtilTest {
 
         Collection<Callable<Object>> commands = new ArrayList<Callable<Object>>();
         commands.add(Executors.callable(command));
+        commands.add(Executors.callable(command));
         List<Future<Object>> invokeAll = pool.invokeAll(commands);
-        invokeAll.get(0).get();
+        for (Future<Object> f : invokeAll) {
+            f.get();
+        }
 
-        assertThat(success.get(), is(2));
-    }
-
-    @Test
-    public void testCallable() throws Exception {
-        Callable<Boolean> command = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return ContextHolder.get().getCurrentContextId() == referenceContext.get();
-            }
-        };
-
-        assertThat(pool.submit(command).get(), is(true));
-
-        ContextHolder.get().setCurrentContextId("1");
-        referenceContext.set("1");
-
-        assertThat(pool.submit(command).get(), is(true));
+        assertThat(successfulExecutions.get(), is(3));
     }
 
     @Test
