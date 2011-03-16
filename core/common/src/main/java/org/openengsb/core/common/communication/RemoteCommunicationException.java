@@ -17,10 +17,27 @@
 
 package org.openengsb.core.common.communication;
 
-public interface OutgoingPort {
+/**
+ * Since there's always the propability that a remote service fails because e.g. the network is down or the remote side
+ * does not answer this exception is used during the ports implementation to indicate serious problems in that way.
+ */
+@SuppressWarnings("serial")
+public class RemoteCommunicationException extends RuntimeException {
 
-    void send(String destination, MethodCall call) throws RemoteCommunicationException;
+    public RemoteCommunicationException() {
+        super();
+    }
 
-    MethodReturn sendSync(String destination, MethodCall call) throws RemoteCommunicationException;
+    public RemoteCommunicationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public RemoteCommunicationException(String message) {
+        super(message);
+    }
+
+    public RemoteCommunicationException(Throwable cause) {
+        super(cause);
+    }
 
 }

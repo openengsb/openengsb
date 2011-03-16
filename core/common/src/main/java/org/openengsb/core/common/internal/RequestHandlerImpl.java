@@ -25,7 +25,6 @@ import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.RequestHandler;
-import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
@@ -41,11 +40,7 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
             throw new IllegalArgumentException("missing definition of serviceid in methodcall");
         }
         OpenEngSBService service;
-        try {
-            service = OsgiServiceUtils.getServiceWithId(OpenEngSBService.class, serviceId);
-        } catch (OsgiServiceNotAvailableException e) {
-            throw new IllegalStateException(e);
-        }
+        service = OsgiServiceUtils.getServiceWithId(OpenEngSBService.class, serviceId);
 
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(args));

@@ -19,8 +19,10 @@ package org.openengsb.core.common.communication;
 
 public interface CallRouter {
 
-    void call(String portId, String destination, MethodCall call);
+    void call(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
+        RemoteCommunicationException;
 
-    MethodReturn callSync(String portId, String destination, MethodCall call);
+    MethodReturn callSync(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
+        RemoteCommunicationException;
 
 }

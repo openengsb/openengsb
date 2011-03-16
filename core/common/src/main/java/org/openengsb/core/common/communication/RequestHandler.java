@@ -19,6 +19,6 @@ package org.openengsb.core.common.communication;
 
 public interface RequestHandler {
 
-    MethodReturn handleCall(MethodCall request);
+    MethodReturn handleCall(MethodCall request) throws OsgiServiceNotAvailableException;
 
 }
