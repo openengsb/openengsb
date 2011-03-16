@@ -26,12 +26,8 @@ import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.RequestHandler;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
-
-    private BundleContext bundleContext;
+public class RequestHandlerImpl implements RequestHandler {
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
@@ -84,11 +80,6 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
             result[i] = args[i].getClass();
         }
         return result;
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
 }
