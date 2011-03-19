@@ -73,7 +73,11 @@
     <service-properties>
       <entry key="id" value="auditing-root" />
       <entry key="connector" value="memory-auditing" />
-      <entry key="location.root" value="[auditing]" />
+      <entry key="location.root">
+        <array>
+          <value>auditing</value>
+        </array>
+      </entry>
     </service-properties>
     <ref component-id="rootService" />
   </service>
