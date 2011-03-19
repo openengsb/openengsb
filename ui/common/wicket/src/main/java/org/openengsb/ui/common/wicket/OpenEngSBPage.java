@@ -37,7 +37,7 @@ public class OpenEngSBPage extends WebPage {
 
     public static final String CONTEXT_PARAM = "context";
 
-    private Log log = LogFactory.getLog(OpenEngSBPage.class);
+    private static Log log = LogFactory.getLog(OpenEngSBPage.class);
 
     @SpringBean
     protected ContextCurrentService contextService;
@@ -50,7 +50,9 @@ public class OpenEngSBPage extends WebPage {
         super(parameters);
         Object object = parameters.get(CONTEXT_PARAM);
         if (object != null && object instanceof String[]) {
-            ContextHolder.get().setCurrentContextId(((String[]) object)[0]);
+            String value = ((String[]) object)[0];
+            log.info("starting page with context-parameter: " + value);
+            ContextHolder.get().setCurrentContextId(value);
         }
     }
 
@@ -63,14 +65,17 @@ public class OpenEngSBPage extends WebPage {
 
     protected final void initContextForCurrentThread() {
         String sessionContextId = ContextHolder.get().getCurrentContextId();
+
         if (sessionContextId == null) {
             sessionContextId = "foo";
         }
+        log.debug("initialize OpenEngSBPage for context: " + sessionContextId);
         try {
             if (contextService != null) {
                 contextService.setThreadLocalContext(sessionContextId);
             }
         } catch (IllegalArgumentException e) {
+            log.debug("context does not exist: creating...");
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
             contextService.setThreadLocalContext(sessionContextId);
