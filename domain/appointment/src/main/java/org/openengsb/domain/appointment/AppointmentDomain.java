@@ -24,25 +24,24 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.domain.appointment.models.Appointment;
 
 public interface AppointmentDomain extends Domain {
-    
+
     /**
      * creates an appointment and returns the generated id
      */
     String createAppointment(Appointment appointment);
-    
+
     /**
      * updates an appointment
      */
     void updateAppointment(String id, Appointment appointment);
-    
+
     /**
      * deletes an appointment
      */
     void deleteAppointment(String id);
-    
+
     /**
-     * Returns a list of appointments which are lying between the given
-     * start and end time.
+     * Returns a list of appointments which are lying between the given start and end time.
      */
     ArrayList<Appointment> getAppointments(Date start, Date end);
 }
