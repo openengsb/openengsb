@@ -27,7 +27,8 @@ import java.util.Map;
  * method and so called {@link #metaData}. Since the target system often requires additional information for calling
  * specific methods (e.g. context setup, target thread, security, active user, ...) it is allowed to add additional
  * information to each method call to make. Finally this abstraction can extract all {@link Class} objects in the
- * {@link #getClasses()} required to load this method call correctly into the class loader.
+ * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
+ * identify the right method.
  */
 public class MethodCall {
 
