@@ -28,9 +28,7 @@ Downloads
 
   The latest stable release of OpenEngSB is ${stable.version}.
 
-  * {{{${stable.binary.win}}OpenEngSB (stable) for Windows}}
-
-  * {{{${stable.binary.unix}}OpenEngSB (stable) for Linux and Mac}}
+  * {{{${stable.binary.win}}OpenEngSB (stable) multiplatform}}
 
   * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
 
@@ -38,9 +36,7 @@ Downloads
 
   The latest development release of OpenEngSB is ${dev.version}.
 
-  * {{{${dev.binary.win}}OpenEngSB (dev) for Windows}}
-
-  * {{{${dev.binary.unix}}OpenEngSB (dev) for Linux and Mac}}
+  * {{{${dev.binary.win}}OpenEngSB (dev) multiplatform}}
 
   * Download OpenEngSB ${dev.version} source. ({{{${dev.source.zip}}zip}}, {{{${dev.source.tar}}tar.gz}}, {{{${dev.source}}browse tags}})
 
