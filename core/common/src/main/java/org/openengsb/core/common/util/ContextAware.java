@@ -17,27 +17,22 @@
 
 package org.openengsb.core.common.util;
 
+import org.openengsb.core.common.context.ContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
- * or even never come back.
+ * keeps track of thread-locals important to the OpenEngSB context-aware threads can use this to initialize the context
+ * properly in a new (or used) thread
  */
-@SuppressWarnings("serial")
-public class OsgiServiceNotAvailableException extends RuntimeException {
+abstract class ContextAware {
 
-    public OsgiServiceNotAvailableException() {
-    }
+    private String context = ContextHolder.get().getCurrentContextId();
+    private SecurityContext securityContext = SecurityContextHolder.getContext();
 
-    public OsgiServiceNotAvailableException(String message) {
-        super(message);
-    }
-
-    public OsgiServiceNotAvailableException(Throwable cause) {
-        super(cause);
-    }
-
-    public OsgiServiceNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
+    protected void applyContext() {
+        ContextHolder.get().setCurrentContextId(context);
+        SecurityContextHolder.setContext(securityContext);
     }
 
 }

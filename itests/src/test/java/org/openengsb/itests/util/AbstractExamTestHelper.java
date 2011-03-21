@@ -197,7 +197,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
-                .versionAsInProject(), "openengsb-core"), workingDirectory(getWorkingDirectory()),
+                .versionAsInProject(), "openengsb-ui-admin"), workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=8090"), waitForFrameworkStartup(),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")

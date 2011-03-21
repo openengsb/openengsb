@@ -29,6 +29,7 @@ eclipse-workspace
 *bin
 *.springBeans
 *.checkstyle
+.checkstyleCheckerConfig
 
 #=================
 #intellij-project

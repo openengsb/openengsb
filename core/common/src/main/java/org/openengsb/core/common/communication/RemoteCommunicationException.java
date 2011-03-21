@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
-
+package org.openengsb.core.common.communication;
 
 /**
- * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
- * or even never come back.
+ * Since there's always the propability that a remote service fails because e.g. the network is down or the remote side
+ * does not answer this exception is used during the ports implementation to indicate serious problems in that way.
  */
 @SuppressWarnings("serial")
-public class OsgiServiceNotAvailableException extends RuntimeException {
+public class RemoteCommunicationException extends RuntimeException {
 
-    public OsgiServiceNotAvailableException() {
+    public RemoteCommunicationException() {
+        super();
     }
 
-    public OsgiServiceNotAvailableException(String message) {
+    public RemoteCommunicationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public RemoteCommunicationException(String message) {
         super(message);
     }
 
-    public OsgiServiceNotAvailableException(Throwable cause) {
+    public RemoteCommunicationException(Throwable cause) {
         super(cause);
-    }
-
-    public OsgiServiceNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }

@@ -49,9 +49,7 @@
   <service interface="org.openengsb.core.common.proxy.ProxyFactory">
     <bean class="org.openengsb.core.common.proxy.ProxyFactoryImpl">
       <property name="callRouter">
-        <bean class="org.openengsb.core.common.internal.CallRouterImpl">
-          <property name="bundleContext" ref="blueprintBundleContext" />
-        </bean>
+        <bean class="org.openengsb.core.common.internal.CallRouterImpl" />
       </property>
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>

@@ -15,12 +15,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.communication;
+package org.openengsb.core.common.util;
 
-public interface IncomingPort {
 
-    void start();
+/**
+ * wraps a {@link Runnable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
+ */
+class ContextAwareRunnable extends ContextAware implements Runnable {
+    private Runnable original;
 
-    void stop();
+    public ContextAwareRunnable(Runnable original) {
+        this.original = original;
+    }
 
+    @Override
+    public void run() {
+        applyContext();
+        original.run();
+    }
 }

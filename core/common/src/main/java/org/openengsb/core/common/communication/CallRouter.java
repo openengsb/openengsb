@@ -17,10 +17,25 @@
 
 package org.openengsb.core.common.communication;
 
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
+
+/**
+ * The {@link CallRouter} is registered as OSGi Service and should be used to send a {@link MethodCall} via a specific
+ * {@link OutgoingPort} (via it's portId) to a specific destination.
+ */
 public interface CallRouter {
 
-    void call(String portId, String destination, MethodCall call);
+    /**
+     * Executes a {@link MethodCall} via a defined port at a given destination.
+     */
+    void call(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
+        RemoteCommunicationException;
 
-    MethodReturn callSync(String portId, String destination, MethodCall call);
+    /**
+     * This method does the same as {@link #call(String, String, MethodCall)} but blocks till a result is available
+     * returned as {@link MethodReturn}. If no result is available within an error is returned.
+     */
+    MethodReturn callSync(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
+        RemoteCommunicationException;
 
 }

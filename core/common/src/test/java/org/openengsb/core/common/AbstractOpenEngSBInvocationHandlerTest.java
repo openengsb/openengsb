@@ -31,7 +31,7 @@ public class AbstractOpenEngSBInvocationHandlerTest {
         Object testObject = new Object();
         AbstractOpenEngSBInvocationHandler abstractOpenEngSBInvocationHandler =
             createDefaultAbstractOpenEngSBInvocationHandler(testObject);
-        Method method = Object.class.getMethod("toString", null);
+        Method method = Object.class.getMethod("toString", (Class<?>[]) null);
         assertSame(testObject, abstractOpenEngSBInvocationHandler.invoke(testObject, method, null));
     }
 
@@ -45,7 +45,7 @@ public class AbstractOpenEngSBInvocationHandlerTest {
         };
         AbstractOpenEngSBInvocationHandler abstractOpenEngSBInvocationHandler =
             createAbstractOpenEngSBInvocationHandlerHandlingObjectMethods(testObject);
-        Method method = Object.class.getMethod("toString", null);
+        Method method = Object.class.getMethod("toString", (Class<?>[]) null);
         String proxyRetVal = abstractOpenEngSBInvocationHandler.invoke(testObject, method, null).toString();
         assertEquals(proxyRetVal, "teststring");
     }

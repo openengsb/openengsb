@@ -28,6 +28,7 @@ import org.openengsb.domain.issue.models.Issue;
 public final class TypeConverter {
 
     private static HashMap<Issue.Type, String> typeMap;
+    private static HashMap<String, String> codeMap;
 
     private TypeConverter() {
 
@@ -46,5 +47,21 @@ public final class TypeConverter {
         typeMap.put(Issue.Type.NEW_FEATURE, "2");
         typeMap.put(Issue.Type.TASK, "3");
         typeMap.put(Issue.Type.IMPROVEMENT, "4");
+    }
+
+
+    public static String fromCode(String code) {
+        if (codeMap == null) {
+            initCodeMap();
+        }
+        return codeMap.get(code);
+    }
+
+    private static void initCodeMap() {
+        codeMap = new HashMap<String, String>();
+        codeMap.put("1", "Bug");
+        codeMap.put("2", "New Feature");
+        codeMap.put("3", "Task");
+        codeMap.put("4", "Improvement");
     }
 }

@@ -37,9 +37,6 @@ public final class OsgiServiceUtils {
 
     private static final long DEFAULT_TIMEOUT = 30000L;
 
-    public static final Character LOCATION_START = '[';
-    public static final Character LOCATION_END = ']';
-
     private static BundleContext bundleContext;
 
     /**
@@ -177,7 +174,7 @@ public final class OsgiServiceUtils {
     @SuppressWarnings("unchecked")
     public static <T> T getOsgiServiceProxy(final Filter filter,
             Class<T> targetClass) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -276,12 +273,7 @@ public final class OsgiServiceUtils {
     }
 
     private static String makeLocationFilterString(String location, String context) {
-        location = encloseWithDelemiters(location);
         return String.format("(|(location.%s=*%s*)(location.root=*%s*))", context, location, location);
-    }
-
-    private static String encloseWithDelemiters(String location) {
-        return LOCATION_START + location + LOCATION_END;
     }
 
     /**

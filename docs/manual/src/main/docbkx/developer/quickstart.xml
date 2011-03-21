@@ -348,7 +348,7 @@
         <para>
           Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
         </para>
-        <para>
+        <para xml:id="licenseCheck">
           <command>licenseCheck</command> or <filename>etc/scripts/license-check.sh</filename>
         </para>
         <para>
@@ -364,6 +364,16 @@
           <emphasis>NOTE: pom.xml files are excluded from license check</emphasis>
         </para>
         <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>Defines path to a file where each line represents a pattern which files to exclude from 
+            license check or license format (additionally to the default excludes).</para>
+          </listitem>
+        </itemizedlist>
+        <para>
           <command>licenseFormat</command> or <filename>etc/scripts/license-format.sh</filename>
         </para>
         <para>
@@ -373,11 +383,29 @@
           <emphasis>NOTE: pom.xml files are excluded from license format</emphasis>
         </para>
         <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>see description of <link linkend="licenseCheck">licenseCheck</link></para>
+          </listitem>
+        </itemizedlist>
+        <para>
           <command>prePush</command> or <filename>etc/scripts/pre-push.sh</filename>
         </para>
         <para>
           Builds and installs the openengsb, checks for license headers, performs a Checkstyle check and runs the integration tests.
         </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>see description of <link linkend="licenseCheck">licenseCheck</link></para>
+          </listitem>
+        </itemizedlist>
         <para>
           <command>provision</command> or <filename>etc/scripts/run.sh</filename> / <filename>etc/scripts/quickrun.sh</filename>
         </para>

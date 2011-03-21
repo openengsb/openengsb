@@ -86,4 +86,12 @@ public class JiraConverterTest {
         assertThat(JiraValueConverter.convert("NEW"), is(StatusConverter.fromIssueStatus(Issue.Status.NEW)));
         assertThat(JiraValueConverter.convert("hIgH"), is(PriorityConverter.fromIssuePriority(Issue.Priority.HIGH)));
     }
+
+    @Test
+    public void testConvertFromTypeCodeToTypeAsName() {
+        assertThat(TypeConverter.fromCode("1"), is("Bug"));
+        assertThat(TypeConverter.fromCode("2"), is("New Feature"));
+        assertThat(TypeConverter.fromCode("3"), is("Task"));
+        assertThat(TypeConverter.fromCode("4"), is("Improvement"));
+    }
 }

@@ -20,9 +20,15 @@ package org.openengsb.core.common.communication;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This object wraps the return values of a remote method call. The different types which could be returned are stored
+ * in {@link #type}. The object itself is available via {@link #getArg()}. Since this is the result of an remote call it
+ * is possible that additional meta-data was added (describing e.g. context, username, ...) could have been added to
+ * this message. Those could be retrieved via {@link #getMetaData()}.
+ */
 public class MethodReturn {
     public enum ReturnType {
-        Void, Object, Exception,
+            Void, Object, Exception,
     }
 
     private ReturnType type;
@@ -39,7 +45,7 @@ public class MethodReturn {
     }
 
     public ReturnType getType() {
-        return this.type;
+        return type;
     }
 
     public void setType(ReturnType type) {
@@ -47,7 +53,7 @@ public class MethodReturn {
     }
 
     public Object getArg() {
-        return this.arg;
+        return arg;
     }
 
     public void setArg(Object arg) {
@@ -55,7 +61,7 @@ public class MethodReturn {
     }
 
     public Map<String, String> getMetaData() {
-        return this.metaData;
+        return metaData;
     }
 
     public void setMetaData(Map<String, String> metaData) {
@@ -66,9 +72,9 @@ public class MethodReturn {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.arg == null) ? 0 : this.arg.hashCode());
-        result = prime * result + ((this.metaData == null) ? 0 : this.metaData.hashCode());
-        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
+        result = prime * result + (arg == null ? 0 : arg.hashCode());
+        result = prime * result + (metaData == null ? 0 : metaData.hashCode());
+        result = prime * result + (type == null ? 0 : type.hashCode());
         return result;
     }
 
@@ -84,21 +90,21 @@ public class MethodReturn {
             return false;
         }
         MethodReturn other = (MethodReturn) obj;
-        if (this.arg == null) {
+        if (arg == null) {
             if (other.arg != null) {
                 return false;
             }
-        } else if (!this.arg.equals(other.arg)) {
+        } else if (!arg.equals(other.arg)) {
             return false;
         }
-        if (this.metaData == null) {
+        if (metaData == null) {
             if (other.metaData != null) {
                 return false;
             }
-        } else if (!this.metaData.equals(other.metaData)) {
+        } else if (!metaData.equals(other.metaData)) {
             return false;
         }
-        if (this.type != other.type) {
+        if (type != other.type) {
             return false;
         }
         return true;
@@ -110,11 +116,11 @@ public class MethodReturn {
     }
 
     public String getClassName() {
-        if (this.arg != null) {
-            if (this.arg instanceof List<?>) {
+        if (arg != null) {
+            if (arg instanceof List<?>) {
                 return List.class.getName();
             } else {
-                return this.arg.getClass().getName();
+                return arg.getClass().getName();
             }
         } else {
             return "";

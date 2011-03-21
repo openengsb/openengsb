@@ -15,29 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.security.internal;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
- * or even never come back.
- */
-@SuppressWarnings("serial")
-public class OsgiServiceNotAvailableException extends RuntimeException {
+public class SecurityBundleActivator implements BundleActivator {
 
-    public OsgiServiceNotAvailableException() {
+    @Override
+    public void start(BundleContext context) throws Exception {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
-    public OsgiServiceNotAvailableException(String message) {
-        super(message);
-    }
-
-    public OsgiServiceNotAvailableException(Throwable cause) {
-        super(cause);
-    }
-
-    public OsgiServiceNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public void stop(BundleContext context) throws Exception {
     }
 
 }

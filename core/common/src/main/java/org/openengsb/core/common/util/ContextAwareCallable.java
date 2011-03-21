@@ -17,27 +17,22 @@
 
 package org.openengsb.core.common.util;
 
+import java.util.concurrent.Callable;
 
 /**
- * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
- * or even never come back.
+ * wraps a {@link Callable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
+ *
  */
-@SuppressWarnings("serial")
-public class OsgiServiceNotAvailableException extends RuntimeException {
+class ContextAwareCallable extends ContextAware implements Callable<Object> {
+    private Callable<Object> original;
 
-    public OsgiServiceNotAvailableException() {
+    public ContextAwareCallable(Callable<Object> original) {
+        this.original = original;
     }
 
-    public OsgiServiceNotAvailableException(String message) {
-        super(message);
+    @Override
+    public Object call() throws Exception {
+        applyContext();
+        return original.call();
     }
-
-    public OsgiServiceNotAvailableException(Throwable cause) {
-        super(cause);
-    }
-
-    public OsgiServiceNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

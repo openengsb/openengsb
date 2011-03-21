@@ -58,6 +58,7 @@ import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.common.workflow.RemoteEventProcessor;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -88,7 +89,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private BundleContext bundleContext;
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private ExecutorService executor = ThreadLocalUtil.contextAwareExecutor(Executors.newCachedThreadPool());
 
     private Lock workflowLock = new ReentrantLock();
 

@@ -151,13 +151,13 @@ public class JiraServiceTest {
         RemoteIssue issue = mock(RemoteIssue.class);
         when(issue.getKey()).thenReturn("issue1Key");
         when(issue.getDescription()).thenReturn("issue1Description");
-        when(issue.getType()).thenReturn("issue1Type");
+        when(issue.getType()).thenReturn("1");
         when(issue.getStatus()).thenReturn("6");
         values[0] = issue;
         RemoteIssue issue2 = mock(RemoteIssue.class);
         when(issue2.getKey()).thenReturn("issue2Key");
         when(issue2.getDescription()).thenReturn("issue2Description");
-        when(issue2.getType()).thenReturn("issue2Type");
+        when(issue2.getType()).thenReturn("2");
         when(issue2.getStatus()).thenReturn("6");
         values[1] = issue2;
 
@@ -166,10 +166,10 @@ public class JiraServiceTest {
         ArrayList<String> report = jiraClient.generateReleaseReport("versionName");
         ArrayList<String> expectedReport = new ArrayList<String>();
 
-        expectedReport.add("** issue2Type\n");
+        expectedReport.add("** New Feature\n");
         expectedReport.add("\t * [issue2Key] - issue2Description");
         expectedReport.add("\n");
-        expectedReport.add("** issue1Type\n");
+        expectedReport.add("** Bug\n");
         expectedReport.add("\t * [issue1Key] - issue1Description");
         expectedReport.add("\n");
         assertThat(report.toString(), is(expectedReport.toString()));

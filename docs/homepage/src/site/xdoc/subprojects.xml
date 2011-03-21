@@ -43,20 +43,20 @@
       </div>
 
       <div class="linkblock">
+        <img src="images/openticket.png" alt="openticket"/>
         <div>
           <a href="http://openticket.openengsb.org"><b>OpenTicket</b></a><br />
-          Generic issue tracker for engineering processes. Light-weight ticket
-          management integrated into OpenEngSB infrastructure. Proof of concept
-          and valuable reference for new integration efforts.
+          Issue tracker for iterative processes. Light-weight ticket
+          management and reference documentation for integration.
         </div>
       </div>
 
       <div class="linkblock">
+        <img src="images/yaste.png" alt="yaste"/>
         <div>
           <a href="http://yaste.openengsb.org"><b>YASTE</b></a><br />
-          Frontend for automated testing environment for software development
-          processes. Configuration and provisioning of virtual machines for
-          running system- and acceptance-tests.
+          Frontend for automated testing environment. Configuration and
+          provisioning of virtual machines for testing.
         </div>
       </div>
 

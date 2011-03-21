@@ -22,6 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
+ * method and so called {@link #metaData}. Since the target system often requires additional information for calling
+ * specific methods (e.g. context setup, target thread, security, active user, ...) it is allowed to add additional
+ * information to each method call to make. Finally this abstraction can extract all {@link Class} objects in the
+ * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
+ * identify the right method.
+ */
 public class MethodCall {
 
     private String methodName;
@@ -39,7 +47,7 @@ public class MethodCall {
     }
 
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public void setMethodName(String methodName) {
@@ -47,10 +55,10 @@ public class MethodCall {
     }
 
     public Object[] getArgs() {
-        if (this.args == null) {
+        if (args == null) {
             return new Object[0];
         }
-        return this.args;
+        return args;
     }
 
     public void setArgs(Object[] args) {
@@ -58,7 +66,7 @@ public class MethodCall {
     }
 
     public Map<String, String> getMetaData() {
-        return this.metaData;
+        return metaData;
     }
 
     public void setMetaData(Map<String, String> metaData) {
@@ -67,8 +75,8 @@ public class MethodCall {
 
     public List<String> getClasses() {
         List<String> argsClasses = new ArrayList<String>();
-        if (this.getArgs() != null) {
-            for (Object object : this.getArgs()) {
+        if (getArgs() != null) {
+            for (Object object : getArgs()) {
                 if (object instanceof List<?>) {
                     argsClasses.add(List.class.getName());
                 } else {
