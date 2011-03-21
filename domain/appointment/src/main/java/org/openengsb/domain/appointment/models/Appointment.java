@@ -19,8 +19,10 @@ package org.openengsb.domain.appointment.models;
 
 import java.util.Date;
 
+/**
+ * Represents an appointment with all necessary information
+ */
 public class Appointment {
-
     private String id;
     private String name;
     private String description;

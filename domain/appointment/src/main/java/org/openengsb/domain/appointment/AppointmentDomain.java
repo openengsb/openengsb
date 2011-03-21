@@ -23,6 +23,10 @@ import java.util.Date;
 import org.openengsb.core.common.Domain;
 import org.openengsb.domain.appointment.models.Appointment;
 
+/**
+ * This domain is used to integrate different calendar programs. It can create, update, delete and
+ * retrieve Appointments.
+ */
 public interface AppointmentDomain extends Domain {
 
     /**
@@ -33,7 +37,7 @@ public interface AppointmentDomain extends Domain {
     /**
      * updates an appointment
      */
-    void updateAppointment(String id, Appointment appointment);
+    void updateAppointment(Appointment appointment);
 
     /**
      * deletes an appointment
