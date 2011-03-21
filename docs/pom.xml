@@ -51,20 +51,5 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
-  <profiles>
-    <profile>
-      <id>docs</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>skin</module>
-        <module>examples</module>
-        <module>manual</module>
-        <module>homepage</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>
 
