@@ -350,9 +350,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.clickLink("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", true);
+        tester.clickLink("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", true);
         tester
-            .executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
+            .executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", "onclick");
     }
 
     @Test
@@ -514,7 +514,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             expandServiceListTree();
         }
         tester.debugComponentTrees();
-        tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);
+        tester.clickLink("methodCallForm:serviceList:i:3:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
         Assert.assertEquals(true, editButton.isEnabled());
         tester.executeAjaxEvent(editButton, "onclick");
@@ -544,6 +544,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
             .getDefaultModelObject()).size();
         //get all domains
+        tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
@@ -562,7 +563,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         }
 
-        tester.debugComponentTrees();
         for (int i = 0; i < domains.size(); i++) {
             String domain = domains.get(i);
             assertThat(availableInTree.contains(domain), is(true));

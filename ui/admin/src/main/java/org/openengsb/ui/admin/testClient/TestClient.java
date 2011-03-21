@@ -353,9 +353,19 @@ public class TestClient extends BasePage {
     }
 
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
+        String providerName = provider.getName().getString(getSession().getLocale());
         DefaultMutableTreeNode providerNode =
-            new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
+            new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
+
+        // add call via domain with domain endpoint factory
+        ServiceId domainProviderServiceId = new ServiceId();
+        domainProviderServiceId.setServiceId("[domain."+providerName+"]");
+        domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
+        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId,false);
+        providerNode.add(endPointReferenceNode);
+
+        // add all corresponding services
         for (ServiceReference serviceReference : services.serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
