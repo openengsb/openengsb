@@ -17,15 +17,18 @@
 
 package org.openengsb.domain.contact.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Contact {
     private String id;
     private String name;
-    private String mail;
-    private String homepage;
-    private String telephone;
-    private Date birthday;
+    private ArrayList<KeyValuePair<String>> mails;
+    private ArrayList<KeyValuePair<String>> homepages;
+    private ArrayList<KeyValuePair<String>> telephones;
+    private ArrayList<KeyValuePair<Location>> locations;
+    private ArrayList<KeyValuePair<Date>> dates;
+    private String comment;
 
     public String getId() {
         return id;
@@ -43,35 +46,51 @@ public class Contact {
         this.name = name;
     }
 
-    public String getMail() {
-        return mail;
+    public ArrayList<KeyValuePair<String>> getMails() {
+        return mails;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setMails(ArrayList<KeyValuePair<String>> mails) {
+        this.mails = mails;
     }
 
-    public String getHomepage() {
-        return homepage;
+    public ArrayList<KeyValuePair<String>> getHomepages() {
+        return homepages;
     }
 
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
+    public void setHomepages(ArrayList<KeyValuePair<String>> homepages) {
+        this.homepages = homepages;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public ArrayList<KeyValuePair<String>> getTelephones() {
+        return telephones;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setTelephones(ArrayList<KeyValuePair<String>> telephones) {
+        this.telephones = telephones;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public ArrayList<KeyValuePair<Location>> getLocations() {
+        return locations;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setLocations(ArrayList<KeyValuePair<Location>> locations) {
+        this.locations = locations;
+    }
+
+    public ArrayList<KeyValuePair<Date>> getDates() {
+        return dates;
+    }
+
+    public void setDates(ArrayList<KeyValuePair<Date>> dates) {
+        this.dates = dates;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

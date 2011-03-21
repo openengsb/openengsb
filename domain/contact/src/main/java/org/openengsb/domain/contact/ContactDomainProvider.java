@@ -19,6 +19,7 @@ package org.openengsb.domain.contact;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
+
 public class ContactDomainProvider extends AbstractDomainProvider<ContactDomain, ContactDomainEvents> {
 
 }

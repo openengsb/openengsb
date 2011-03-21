@@ -17,9 +17,16 @@
 
 package org.openengsb.domain.contact;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.openengsb.core.common.Domain;
 import org.openengsb.domain.contact.models.Contact;
+import org.openengsb.domain.contact.models.Location;
 
+/**
+ * This domain is used to maintain different contact books in different tools like gcontacts or facebook.
+ */
 public interface ContactDomain extends Domain {
 
     /**
@@ -36,4 +43,10 @@ public interface ContactDomain extends Domain {
      * deletes a contact on the server
      */
     void deleteContact(String id);
+    
+    /**
+     * retrieves a list of contacts from the server based on "query by example" 
+     */
+    ArrayList<Contact> retrieveContacts(String id, String name, String homepage, 
+        Location location, Date date, String comment);
 }
