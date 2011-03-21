@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
@@ -184,7 +186,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupTestClientPage();
         ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
         tester.startPage(new TestClient(reference));
-        tester.assertComponent("methodCallForm:serviceList:i:3:nodeComponent:contentLink:content", Label.class);
+        tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         assertThat(form.getModelObject().getService(), is(reference));
         DropDownChoice<MethodId> ddc = (DropDownChoice<MethodId>) form.get("methodList");
@@ -427,81 +429,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         assertThat(argList.size(), is(0));
     }
 
-    private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
-        final List<ServiceReference> expected = setupTestClientPage();
-        tester.startPage(TestClient.class);
-        formTester = tester.newFormTester("methodCallForm");
-        return expected;
-    }
-
-    private List<ServiceReference> setupTestClientPage() throws InvalidSyntaxException {
-        final List<ServiceReference> expected = new ArrayList<ServiceReference>();
-        ServiceReference serviceReferenceMock = mock(ServiceReference.class);
-        when(serviceReferenceMock.getProperty("id")).thenReturn("test");
-        expected.add(serviceReferenceMock);
-        expected.add(serviceReferenceMock);
-        managedServicesMock = mock(DomainService.class);
-        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
-            @Override
-            public List<ServiceReference> answer(InvocationOnMock invocation) {
-                return expected;
-            }
-        });
-        DomainProvider domainProviderMock = mock(DomainProvider.class);
-        LocalizableString nameMock = mock(LocalizableString.class);
-        when(nameMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
-        when(domainProviderMock.getName()).thenReturn(nameMock);
-        when(domainProviderMock.getDescription()).thenReturn(nameMock);
-        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-            @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
-            }
-        });
-        final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
-        expectedProviders.add(domainProviderMock);
-        when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
-            @Override
-            public List<DomainProvider> answer(InvocationOnMock invocation) {
-                return expectedProviders;
-            }
-        });
-
-        Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
-
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
-        List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();
-        serviceManagerList.add(serviceManagerMock);
-        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
-
-        ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
-        Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
-        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
-            new PassThroughLocalizableString("service.description"));
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
-
-        testService = mock(TestInterface.class);
-        registerService(testService, TestInterface.class, "(id=test)");
-
-        doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
-        when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
-        when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
-        context.putBean(managedServicesMock);
-        setupTesterWithSpringMockContext();
-        return expected;
-    }
-
-    private void setupIndexPage() {
-        DomainService domainServiceMock = mock(DomainService.class);
-        context.putBean(domainServiceMock);
-        setupTesterWithSpringMockContext();
-    }
-
-    private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
-    }
-
     @Test
     public void testListToCreateNewServices() throws Exception {
         setupAndStartTestClientPage();
@@ -592,4 +519,79 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
+
+
+    private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
+        final List<ServiceReference> expected = setupTestClientPage();
+        tester.startPage(TestClient.class);
+        formTester = tester.newFormTester("methodCallForm");
+        return expected;
+    }
+
+    private List<ServiceReference> setupTestClientPage() throws InvalidSyntaxException {
+        final List<ServiceReference> expected = new ArrayList<ServiceReference>();
+        ServiceReference serviceReferenceMock = mock(ServiceReference.class);
+        when(serviceReferenceMock.getProperty("id")).thenReturn("test");
+        expected.add(serviceReferenceMock);
+        managedServicesMock = mock(DomainService.class);
+        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
+            @Override
+            public List<ServiceReference> answer(InvocationOnMock invocation) {
+                return expected;
+            }
+        });
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
+        when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
+        when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
+        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
+                return TestInterface.class;
+            }
+        });
+        final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
+        expectedProviders.add(domainProviderMock);
+        when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
+            @Override
+            public List<DomainProvider> answer(InvocationOnMock invocation) {
+                return expectedProviders;
+            }
+        });
+
+        Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
+
+        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();
+        serviceManagerList.add(serviceManagerMock);
+        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
+
+        ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
+        Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
+        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
+            new PassThroughLocalizableString("service.description"));
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
+
+        testService = mock(TestInterface.class);
+        registerService(testService, TestInterface.class, "(id=test)");
+
+        doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
+        when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
+        when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
+        context.putBean(managedServicesMock);
+        setupTesterWithSpringMockContext();
+        return expected;
+    }
+
+    private void setupIndexPage() {
+        DomainService domainServiceMock = mock(DomainService.class);
+        context.putBean(domainServiceMock);
+        setupTesterWithSpringMockContext();
+    }
+
+    private void setupTesterWithSpringMockContext() {
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
+    }
 }
