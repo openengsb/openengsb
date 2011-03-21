@@ -19,17 +19,18 @@
 -->
 
 <assembly>
-  <id>windows</id>
+  <id>unix</id>
   <formats>
     <format>zip</format>
   </formats>
   <fileSets>
     <!-- Expanded Karaf Runtime -->
     <fileSet>
-      <directory>target/dependencies/win/apache-karaf-${karaf.version}</directory>
+      <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
         <exclude>**/demos/**</exclude>
+        <exclude>bin/**</exclude>
         <!--<exclude>etc/system.properties</exclude> -->
         <exclude>etc/org.apache.karaf.features.cfg</exclude>
         <exclude>etc/org.ops4j.pax.logging.cfg</exclude>
@@ -44,16 +45,30 @@
       </excludes>
     </fileSet>
 
-    <!-- Copy license and other files from root -->
+    <!-- Copy over bin/karaf separately to get the correct file mode -->
     <fileSet>
-      <directory>${basedir}/..</directory>
+      <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>LICENSE</include>
-        <include>NOTICE</include>
+        <include>bin/admin</include>
+        <include>bin/karaf</include>
+        <include>bin/start</include>
+        <include>bin/stop</include>
       </includes>
-      <lineEnding>dos</lineEnding>
-      <fileMode>0644</fileMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <!-- Copy over bin/karaf separately to get the correct file mode -->
+    <fileSet>
+      <directory>target/dependencies/win/apache-karaf-${karaf.version}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>bin/admin.bat</include>
+        <include>bin/karaf.bat</include>
+        <include>bin/start.bat</include>
+        <include>bin/stop.bat</include>
+      </includes>
+      <fileMode>0755</fileMode>
     </fileSet>
 
     <!-- copy lib directory -->
@@ -62,17 +77,29 @@
       <outputDirectory>/lib/</outputDirectory>
     </fileSet>
 
-    <!-- Copy over everything that needs to get win line endings -->
+    <!-- Copy license and other files from root -->
+    <fileSet>
+      <directory>${basedir}/..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>LICENSE</include>
+        <include>NOTICE</include>
+      </includes>
+      <lineEnding>unix</lineEnding>
+      <fileMode>0644</fileMode>
+    </fileSet>
+
+    <!-- Copy over everything that needs to get unix line endings -->
     <fileSet>
       <directory>target/classes/etc</directory>
       <outputDirectory>/etc/</outputDirectory>
-      <lineEnding>dos</lineEnding>
+      <lineEnding>unix</lineEnding>
       <fileMode>0644</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/classes/config</directory>
       <outputDirectory>/config/</outputDirectory>
-      <lineEnding>dos</lineEnding>
+      <lineEnding>unix</lineEnding>
       <fileMode>0644</fileMode>
     </fileSet>
 
@@ -90,14 +117,21 @@
       <outputDirectory>/</outputDirectory>
       <destName>CHANGELOG</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
+      <lineEnding>unix</lineEnding>
     </file>
     <file>
       <source>${basedir}/../KNOWN_ISSUES.md</source>
       <outputDirectory>/</outputDirectory>
       <destName>KNOWN_ISSUES</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>${basedir}/target/dependencies/unix/apache-karaf-${karaf.version}/bin/karaf</source>
+      <outputDirectory>/bin/</outputDirectory>
+      <destName>openengsb</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
     </file>
     <file>
       <source>${basedir}/target/dependencies/win/apache-karaf-${karaf.version}/bin/karaf.bat</source>
@@ -111,7 +145,7 @@
       <outputDirectory>/</outputDirectory>
       <destName>README</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
+      <lineEnding>unix</lineEnding>
     </file>
     <file>
       <source>${basedir}/target/openengsb-docs-manual-${project.version}/manual/pdf/openengsb-manual.pdf</source>
