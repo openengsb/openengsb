@@ -48,4 +48,5 @@
 
   <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
-</beans>
+
+</blueprint>
