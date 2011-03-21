@@ -61,11 +61,13 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainEndpointFactory;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -568,6 +570,24 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             assertThat(availableInTree.contains(domain), is(true));
             assertThat(serviceListTree.getChildCount(availableInTreeAsTreeNode.get(i)), greaterThan(0));
         }
+    }
+
+    @Ignore
+    @Test
+    public void callMethodViaDomain_domainEndpointFactoryShouldBeCalled() throws InvalidSyntaxException {
+        setupAndStartTestClientPage();
+ //      mockService(TestInterface.class, "testService1");
+
+        DomainEndpointFactory.setBundleContext(bundleContext);
+
+        setServiceInDropDown(-1);
+        setMethodInDropDown(3);
+
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        tester.debugComponentTrees();
+        formTester.setValue(beanPanelPath + ":field", "42");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {

@@ -22,7 +22,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -58,6 +60,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainEndpointFactory;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -107,6 +110,8 @@ public class TestClient extends BasePage {
     private AjaxButton editButton;
 
     private ServiceId lastServiceId;
+    private static final String DOMAINSTRING = "[domain.";
+    private Map<String, Class<? extends Domain>> availableDomains = new HashMap<String, Class<? extends Domain>>();
 
     public TestClient() {
         super();
@@ -358,9 +363,10 @@ public class TestClient extends BasePage {
             new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
 
-        // add call via domain with domain endpoint factory
+        // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
-        domainProviderServiceId.setServiceId("[domain."+providerName+"]");
+        domainProviderServiceId.setServiceId(DOMAINSTRING+providerName+"]");
+        availableDomains.put(provider.getDomainInterface().getName(), provider.getDomainInterface());
         domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId,false);
         providerNode.add(endPointReferenceNode);
@@ -414,7 +420,11 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            serviceObject = getService(service);
+            if(service.getServiceId().startsWith(DOMAINSTRING)) {
+                serviceObject = getServiceViaDomainEndpointFactory(service);
+            } else {
+                serviceObject = getService(service);
+            }
         } catch (OsgiServiceNotAvailableException e) {
             handleExceptionWithFeedback(e);
             return;
@@ -431,6 +441,18 @@ public class TestClient extends BasePage {
             i++;
         }
         call.setArguments(arguments);
+    }
+
+    private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) throws OsgiServiceNotAvailableException {
+        String service = serviceId.getServiceClass();
+        Class<? extends Domain> aClass = availableDomains.get(service);
+        String name = serviceId.getServiceId()
+            .substring(DOMAINSTRING.length(), serviceId.getServiceId().length() - 1);
+        Domain defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/defaul");
+        if (defaultDomain != null) {
+            return defaultDomain;
+        }
+        throw new OsgiServiceNotAvailableException("no default service found for id: " + serviceId.getServiceClass());
     }
 
     private void handleExceptionWithFeedback(Throwable e) {
