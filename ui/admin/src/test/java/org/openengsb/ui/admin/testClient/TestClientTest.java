@@ -20,6 +20,7 @@ package org.openengsb.ui.admin.testClient;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -37,6 +38,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import junit.framework.Assert;
 
@@ -529,6 +533,42 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
+    @Test
+    public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws InvalidSyntaxException {
+        setupAndStartTestClientPage();
+        tester.assertRenderedPage(TestClient.class);
+        List<String> domains = new ArrayList<String>();
+        List<String> availableInTree = new ArrayList<String>();
+        List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
+
+        int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
+            .getDefaultModelObject()).size();
+        //get all domains
+        for (int i = 0; i < count; i++) {
+            Component label = tester
+                .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
+            domains.add(label.getDefaultModelObjectAsString());
+        }
+
+        //get all services from the tree
+        DefaultTreeModel serviceListTree = (DefaultTreeModel) tester
+            .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
+        count = serviceListTree.getChildCount(serviceListTree.getRoot());
+        for (int i = 0; i < count; i++) {
+            DefaultMutableTreeNode child = ((DefaultMutableTreeNode) serviceListTree.getChild(serviceListTree.getRoot(), i))                ;
+            String userObject = (String)child.getUserObject();
+            availableInTreeAsTreeNode.add(child);
+            availableInTree.add(userObject);
+
+        }
+
+        tester.debugComponentTrees();
+        for (int i = 0; i < domains.size(); i++) {
+            String domain = domains.get(i);
+            assertThat(availableInTree.contains(domain), is(true));
+            assertThat(serviceListTree.getChildCount(availableInTreeAsTreeNode.get(i)), greaterThan(0));
+        }
+    }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
         final List<ServiceReference> expected = setupTestClientPage();
