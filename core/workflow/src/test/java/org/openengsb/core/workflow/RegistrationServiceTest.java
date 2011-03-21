@@ -59,7 +59,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     public void setUp() throws Exception {
         super.setUp();
         CallRouterImpl callRouterImpl = new CallRouterImpl();
-        callRouterImpl.setBundleContext(bundleContext);
         requestHandler = getRequestHandler();
 
         regService = getRegistrationService();
@@ -88,7 +87,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     private RequestHandler getRequestHandler() {
         RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
-        requestHandlerImpl.setBundleContext(bundleContext);
         return requestHandlerImpl;
     }
 

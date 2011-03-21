@@ -43,7 +43,6 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.AbstractOsgiMockServiceTest;
-import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
@@ -63,20 +62,14 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
         serviceMock = mockService(bundleContext, TestService.class, "foo");
         outgoingPortMock = mockService(bundleContext, OutgoingPort.class, "jms+json-out");
-
         callrouter = new CallRouterImpl();
-        callrouter.setBundleContext(bundleContext);
-
         requestHandler = new RequestHandlerImpl();
-        requestHandler.setBundleContext(bundleContext);
     }
 
     @Test
     public void testReceiveAnything() throws Exception {
-        mock(IncomingPort.class);
         callrouter.stop();
         Thread.sleep(300);
     }

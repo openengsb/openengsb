@@ -17,12 +17,13 @@
 
 package org.openengsb.core.common.util;
 
+
 /**
  * This exception is thrown when a service was not found in the OSGi-environment. The service might be temporarily down
  * or even never come back.
  */
 @SuppressWarnings("serial")
-public class OsgiServiceNotAvailableException extends Exception {
+public class OsgiServiceNotAvailableException extends RuntimeException {
 
     public OsgiServiceNotAvailableException() {
     }

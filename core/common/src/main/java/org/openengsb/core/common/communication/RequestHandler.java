@@ -17,8 +17,23 @@
 
 package org.openengsb.core.common.communication;
 
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
+
+/**
+ * The request handler is registered as OSGi service by core common and should be used for ports implementations to
+ * handle method calls to the OpenEngSB..
+ */
 public interface RequestHandler {
 
-    MethodReturn handleCall(MethodCall request);
+    /**
+     * Assumes that a method call is received from an external resource. Besides of the
+     * {@link OsgiServiceNotAvailableException} all exceptions thrown by the clients themselves are wrapped in the
+     * {@link MethodReturn} object and do not have to bother the client.
+     *
+     * @throws OsgiServiceNotAvailableException To call methods on the OpenEngSB this method uses OSGi services baring
+     *         the risk that endpoint services are currently not available. In this case the caller has to decide if to
+     *         try later again or how to abort the process.
+     */
+    MethodReturn handleCall(MethodCall request) throws OsgiServiceNotAvailableException;
 
 }

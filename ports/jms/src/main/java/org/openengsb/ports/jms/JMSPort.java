@@ -28,7 +28,6 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.MethodReturn.ReturnType;
@@ -38,7 +37,7 @@ import org.openengsb.core.common.context.ContextHolder;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
-public class JMSPort implements IncomingPort, OutgoingPort {
+public class JMSPort implements OutgoingPort {
 
     private static final String RECEIVE = "receive";
 
@@ -108,12 +107,11 @@ public class JMSPort implements IncomingPort, OutgoingPort {
     }
 
     public void setRequestHandler(RequestHandler handler) {
-        this.requestHandler = handler;
+        requestHandler = handler;
     }
 
-    @Override
     public void start() {
-        this.simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
+        simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 if (message instanceof TextMessage) {
@@ -151,9 +149,8 @@ public class JMSPort implements IncomingPort, OutgoingPort {
         return messageListenerContainer;
     }
 
-    @Override
     public void stop() {
-        if (this.simpleMessageListenerContainer != null) {
+        if (simpleMessageListenerContainer != null) {
             simpleMessageListenerContainer.stop();
         }
     }
