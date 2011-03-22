@@ -448,7 +448,7 @@ public class TestClient extends BasePage {
         Class<? extends Domain> aClass = availableDomains.get(service);
         String name = serviceId.getServiceId()
             .substring(DOMAINSTRING.length(), serviceId.getServiceId().length() - 1);
-        Domain defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/defaul");
+        Domain defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");
         if (defaultDomain != null) {
             return defaultDomain;
         }
