@@ -29,10 +29,15 @@ import org.junit.BeforeClass;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.TaskboxServiceInternal;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyPersistenceManager;
+import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
+import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -43,6 +48,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     protected RuleManager manager;
     protected DummyService myservice;
     protected HashMap<String, Domain> domains;
+    protected TaskboxService taskbox;
+    protected TaskboxServiceInternal taskboxInternal;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -55,11 +62,28 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         super.setUp();
         setupRulemanager();
         service = new WorkflowServiceImpl();
+        setupTaskbox();
         service.setRulemanager(manager);
+        service.setTaskbox(taskbox);
         ContextHolder.get().setCurrentContextId("42");
         service.setBundleContext(bundleContext);
         registerService(service, "workflowService", WorkflowService.class);
         setupDomainsAndOtherServices();
+    }
+
+    private void setupTaskbox() {
+        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        TaskboxServiceImpl taskboxServiceImpl = new TaskboxServiceImpl();
+        taskboxServiceImpl.setPersistenceManager(persistenceManager);
+        taskboxServiceImpl.setBundleContext(bundleContext);
+        taskboxServiceImpl.init();
+        taskboxServiceImpl.setWorkflowService(service);
+        TaskboxServiceInternalImpl taskboxInternalImpl = new TaskboxServiceInternalImpl();
+        taskboxInternalImpl.setBundleContext(bundleContext);
+        taskboxInternalImpl.setPersistenceManager(persistenceManager);
+        taskboxInternalImpl.init();
+        taskbox = taskboxServiceImpl;
+        taskboxInternal = taskboxInternalImpl;
     }
 
     private void setupRulemanager() throws Exception {

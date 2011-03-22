@@ -58,6 +58,7 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RemoteEventProcessor;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
@@ -65,6 +66,7 @@ import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.util.ThreadLocalUtil;
@@ -87,6 +89,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private RuleManager rulemanager;
     private BundleContext bundleContext;
+    private TaskboxService taskbox;
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
     private ExecutorService executor = ThreadLocalUtil.contextAwareExecutor(Executors.newCachedThreadPool());
@@ -396,6 +399,15 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     @Override
     public void cancelFlow(Long processInstanceId) throws WorkflowException {
         getSessionForCurrentContext().abortProcessInstance(processInstanceId);
+        List<Task> tasksForProcessId = taskbox.getTasksForProcessId(Long.toString(processInstanceId));
+        for (Task t : tasksForProcessId) {
+            taskbox.finishTask(t);
+        }
+
+    }
+
+    public void setTaskbox(TaskboxService taskbox) {
+        this.taskbox = taskbox;
     }
 
 }
