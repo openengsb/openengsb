@@ -572,24 +572,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void callMethodViaDomain_domainEndpointFactoryShouldBeCalled() throws InvalidSyntaxException {
-        setupAndStartTestClientPage();
- //      mockService(TestInterface.class, "testService1");
-
-        DomainEndpointFactory.setBundleContext(bundleContext);
-
-        setServiceInDropDown(-1);
-        setMethodInDropDown(3);
-
-        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
-        tester.debugComponentTrees();
-        formTester.setValue(beanPanelPath + ":field", "42");
-
-        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-    }
-
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
         final List<ServiceReference> expected = setupTestClientPage();
         tester.startPage(TestClient.class);
