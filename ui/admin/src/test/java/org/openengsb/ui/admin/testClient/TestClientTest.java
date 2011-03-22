@@ -61,13 +61,11 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainEndpointFactory;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -119,7 +117,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     public enum UpdateEnum {
-            ONE, TWO
+        ONE, TWO
     }
 
     private WicketTester tester;
@@ -405,7 +403,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
+        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -461,7 +459,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:services:0:service.name");
         Label description =
             (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
-                    + "0:services:0:service.description");
+                + "0:services:0:service.description");
         assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testDomain"));
         assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testDomain"));
         assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(TestInterface.class.getName()));
@@ -492,7 +490,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ ref };
+            ServiceReference[] refs = new ServiceReference[]{ref};
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
@@ -530,7 +528,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{"foo"});
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
@@ -544,7 +542,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
 
         int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-            .getDefaultModelObject()).size();
+                .getDefaultModelObject()).size();
         //get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
@@ -558,11 +556,11 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
         count = serviceListTree.getChildCount(serviceListTree.getRoot());
         for (int i = 0; i < count; i++) {
-            DefaultMutableTreeNode child = ((DefaultMutableTreeNode) serviceListTree.getChild(serviceListTree.getRoot(), i))                ;
-            String userObject = (String)child.getUserObject();
+            DefaultMutableTreeNode child =
+                (DefaultMutableTreeNode) serviceListTree.getChild(serviceListTree.getRoot(), i);
+            String userObject = (String) child.getUserObject();
             availableInTreeAsTreeNode.add(child);
             availableInTree.add(userObject);
-
         }
 
         for (int i = 0; i < domains.size(); i++) {
@@ -627,34 +625,30 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     private List createDomainProviderMocks() {
         List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
-        {
-            DomainProvider domainProviderMock = mock(DomainProvider.class);
-            LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
-            when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
-            when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
-            when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
-            when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-                @Override
-                public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                    return TestInterface.class;
-                }
-            });
-            expectedProviders.add(domainProviderMock);
-        }
-        {
-            DomainProvider domainProviderMock = mock(DomainProvider.class);
-            LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
-            when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("anotherTestDomain");
-            when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
-            when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
-            when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-                @Override
-                public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                    return AnotherTestInterface.class;
-                }
-            });
-            expectedProviders.add(domainProviderMock);
-        }
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
+        when(testDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("testDomain");
+        when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
+        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
+                return TestInterface.class;
+            }
+        });
+        expectedProviders.add(domainProviderMock);
+        DomainProvider anotherDomainProviderMock = mock(DomainProvider.class);
+        LocalizableString anotherTestDomainLocalziedStringMock = mock(LocalizableString.class);
+        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("anotherTestDomain");
+        when(anotherDomainProviderMock.getName()).thenReturn(anotherTestDomainLocalziedStringMock);
+        when(anotherDomainProviderMock.getDescription()).thenReturn(anotherTestDomainLocalziedStringMock);
+        when(anotherDomainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
+                return AnotherTestInterface.class;
+            }
+        });
+        expectedProviders.add(anotherDomainProviderMock);
 
         return expectedProviders;
     }

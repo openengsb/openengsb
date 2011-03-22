@@ -365,10 +365,10 @@ public class TestClient extends BasePage {
 
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
-        domainProviderServiceId.setServiceId(DOMAINSTRING+providerName+"]");
+        domainProviderServiceId.setServiceId(DOMAINSTRING + providerName + "]");
         availableDomains.put(provider.getDomainInterface().getName(), provider.getDomainInterface());
         domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
-        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId,false);
+        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
 
         // add all corresponding services
@@ -420,7 +420,7 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            if(service.getServiceId().startsWith(DOMAINSTRING)) {
+            if (service.getServiceId().startsWith(DOMAINSTRING)) {
                 serviceObject = getServiceViaDomainEndpointFactory(service);
             } else {
                 serviceObject = getService(service);
