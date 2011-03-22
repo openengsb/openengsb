@@ -18,52 +18,34 @@
 package org.openengsb.domain.contact.models;
 
 /**
- * represents a location
+ * represents an easy way to store informations with values.
+ * Examples: key = phone.private ; value = "..."
+ *           key = birthday ; value = a date
+ *           key = address.work ; value = a location
+ *           ...
  */
-public class Location {
-    private String country;
-    private String state;
-    private String city;
-    private String zip;
-    private String address;
+public class InformationTypeWithValue<T> {
+    private String key;
+    private T value;
 
-    public String getCountry() {
-        return country;
+    public InformationTypeWithValue(String key, T value) {
+        this.setKey(key);
+        this.setValue(value);
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getState() {
-        return state;
+    public String getKey() {
+        return key;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setValue(T value) {
+        this.value = value;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public T getValue() {
+        return value;
     }
 }

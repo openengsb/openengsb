@@ -20,14 +20,17 @@ package org.openengsb.domain.contact.models;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * represents a contact with all their necessary infos
+ */
 public class Contact {
     private String id;
     private String name;
-    private ArrayList<KeyValuePair<String>> mails;
-    private ArrayList<KeyValuePair<String>> homepages;
-    private ArrayList<KeyValuePair<String>> telephones;
-    private ArrayList<KeyValuePair<Location>> locations;
-    private ArrayList<KeyValuePair<Date>> dates;
+    private ArrayList<InformationTypeWithValue<String>> mails;
+    private ArrayList<InformationTypeWithValue<String>> homepages;
+    private ArrayList<InformationTypeWithValue<String>> telephones;
+    private ArrayList<InformationTypeWithValue<Location>> locations;
+    private ArrayList<InformationTypeWithValue<Date>> dates;
     private String comment;
 
     public String getId() {
@@ -46,43 +49,43 @@ public class Contact {
         this.name = name;
     }
 
-    public ArrayList<KeyValuePair<String>> getMails() {
+    public ArrayList<InformationTypeWithValue<String>> getMails() {
         return mails;
     }
 
-    public void setMails(ArrayList<KeyValuePair<String>> mails) {
+    public void setMails(ArrayList<InformationTypeWithValue<String>> mails) {
         this.mails = mails;
     }
 
-    public ArrayList<KeyValuePair<String>> getHomepages() {
+    public ArrayList<InformationTypeWithValue<String>> getHomepages() {
         return homepages;
     }
 
-    public void setHomepages(ArrayList<KeyValuePair<String>> homepages) {
+    public void setHomepages(ArrayList<InformationTypeWithValue<String>> homepages) {
         this.homepages = homepages;
     }
 
-    public ArrayList<KeyValuePair<String>> getTelephones() {
+    public ArrayList<InformationTypeWithValue<String>> getTelephones() {
         return telephones;
     }
 
-    public void setTelephones(ArrayList<KeyValuePair<String>> telephones) {
+    public void setTelephones(ArrayList<InformationTypeWithValue<String>> telephones) {
         this.telephones = telephones;
     }
 
-    public ArrayList<KeyValuePair<Location>> getLocations() {
+    public ArrayList<InformationTypeWithValue<Location>> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<KeyValuePair<Location>> locations) {
+    public void setLocations(ArrayList<InformationTypeWithValue<Location>> locations) {
         this.locations = locations;
     }
 
-    public ArrayList<KeyValuePair<Date>> getDates() {
+    public ArrayList<InformationTypeWithValue<Date>> getDates() {
         return dates;
     }
 
-    public void setDates(ArrayList<KeyValuePair<Date>> dates) {
+    public void setDates(ArrayList<InformationTypeWithValue<Date>> dates) {
         this.dates = dates;
     }
 

@@ -33,20 +33,20 @@ public interface ContactDomain extends Domain {
      * creates a contact on the server and returns the generated id
      */
     String createContact(Contact contact);
-    
+
     /**
      * updates a contact on the server
      */
     void updateContact(Contact contact);
-    
+
     /**
      * deletes a contact on the server
      */
     void deleteContact(String id);
-    
+
     /**
-     * retrieves a list of contacts from the server based on "query by example" 
+     * retrieves a list of contacts from the server based on "query by example"
      */
-    ArrayList<Contact> retrieveContacts(String id, String name, String homepage, 
-        Location location, Date date, String comment);
+    ArrayList<Contact> retrieveContacts(String id, String name, String homepage,
+            Location location, Date date, String comment);
 }
