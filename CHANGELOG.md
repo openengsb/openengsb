@@ -1,3 +1,29 @@
+openengsb-1.1.2.RELEASE 2011-03-22
+-------------------------------------------------------
+
+This release contains various bug fixes, fixed of potential bugs, and improvements mostly to the documentation and the homepage.
+
+### Highlights
+  * .zip distribution contains windows and linux files now
+  * Workflows can be cancled now
+  * All tmp data is stored in  ${karaf.data}/openengsb again
+
+### Details
+** Bug
+    * [OPENENGSB-1120] - Subproject page on hp looks wired
+    * [OPENENGSB-1131] - archetype domain create invalid blueprint xml file
+    * [OPENENGSB-1136] - SerializeException in OpenEngSBPage
+
+** Improvement
+    * [OPENENGSB-676] - openengsb writes to ${karaf.data}/data/openengsb instead of ${karaf.data}/openengsb
+    * [OPENENGSB-988] - provide functionality to cancel workflows
+    * [OPENENGSB-1041] - Add openticket logo to openengsb childproject page
+    * [OPENENGSB-1042] - Add yaste logo to openengsb childproject page
+    * [OPENENGSB-1123] - Merge win and linux distribution
+
+** Task
+    * [OPENENGSB-1117] - Release openengsb-1.1.2.RELEASE
+
 openengsb-1.1.1.RELEASE 2011-03-11
 -------------------------------------------------------
 
