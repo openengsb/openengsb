@@ -311,4 +311,11 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         };
         return task;
     }
+
+    @Test
+    public void testCancelWorkflow() throws Exception {
+        long pid = service.startFlow("ci");
+        service.cancelFlow(pid);
+        service.waitForFlowToFinish(pid, 5000);
+    }
 }

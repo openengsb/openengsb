@@ -503,4 +503,9 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         this.timeout = timeout;
     }
 
+    @Override
+    public void cancelFlow(Long processInstanceId) throws WorkflowException {
+        getSessionForCurrentContext().abortProcessInstance(processInstanceId);
+    }
+
 }
