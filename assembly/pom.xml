@@ -218,6 +218,7 @@
                 <feature>openengsb-domain-build</feature>
                 <feature>openengsb-domain-test</feature>
                 <feature>openengsb-domain-deploy</feature>
+                <feature>openengsb-domain-appointment</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-email</feature>
                 <feature>openengsb-connector-plaintextreport</feature>
