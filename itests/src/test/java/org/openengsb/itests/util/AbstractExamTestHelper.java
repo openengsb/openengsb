@@ -185,10 +185,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         if (DEBUG) {
             baseOptions = combine(baseOptions, Helper.activateDebugging(DEBUG_PORT));
         }
+        String logLvl = System.getProperty("itests_log") != null ? System.getProperty("itests.debug") : LOG_LEVEL;
         return combine(
             baseOptions,
             Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
-            Helper.setLogLevel(LOG_LEVEL),
+            Helper.setLogLevel(logLvl),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
             // Helper.activateDebugging("5005"),
