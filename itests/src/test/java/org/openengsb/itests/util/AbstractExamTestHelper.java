@@ -172,10 +172,13 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Configuration
     public static Option[] configuration() throws Exception {
+        Option[] baseOptions = Helper.getDefaultOptions();
+        String logLvl = System.getProperty("itests_log") != null ? System.getProperty("itests.debug") : LOG_LEVEL;
         return combine(
-            Helper.getDefaultOptions(),
+            baseOptions,
             Helper.loadKarafFeatures("config", "ssh", "management", "wrapper", "obr"),
-            Helper.setLogLevel("WARN"),
+            Helper.setLogLevel(logLvl),
+            // Helper.activateDebugging("5005"),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
