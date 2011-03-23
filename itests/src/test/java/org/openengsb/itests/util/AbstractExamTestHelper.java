@@ -53,6 +53,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
+    private static final String SYS_PROP_LOG = "itests_log";
+    private static final String LOG_LEVEL = "WARN";
+
     public enum SetupType {
             BLUEPRINT, SPRING, START_ONLY
     }
@@ -173,7 +176,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     @Configuration
     public static Option[] configuration() throws Exception {
         Option[] baseOptions = Helper.getDefaultOptions();
-        String logLvl = System.getProperty("itests_log") != null ? System.getProperty("itests.debug") : LOG_LEVEL;
+        String logLvl = System.getProperty(SYS_PROP_LOG) != null ? System.getProperty(SYS_PROP_LOG) : LOG_LEVEL;
         return combine(
             baseOptions,
             Helper.loadKarafFeatures("config", "ssh", "management", "wrapper", "obr"),
