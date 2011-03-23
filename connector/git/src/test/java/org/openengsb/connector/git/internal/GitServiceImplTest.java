@@ -75,13 +75,96 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
     }
 
     @Test
-    public void exportRepository_shouldCreateFullCopyOfCurrentRepoState() {
-        service.poll();
-        assertThat(new File(localDirectory, "testfile").isFile(), is(true));
-        File exportDirectory = tempFolder.newFolder("export");
-        service.export(exportDirectory);
-        assertThat(new File(exportDirectory, "testfile").isFile(), is(true));
-        assertThat(new File(exportDirectory, ".git").isDirectory(), is(false));
+    public void exportRepository_shouldReturnZipFileWithRepoEntries() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String dir = "testDirectory";
+        String file = "myTestFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+
+        String pattern = dir + "/" + file;
+        Git git = new Git(localRepository);
+        git.add().addFilepattern(pattern).call();
+        git.commit().setMessage("My msg").call();
+
+        ZipFile zipFile = new ZipFile(service.export());
+        assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
+        assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
+        assertThat(zipFile.getEntry(dir + File.separator + file).getName(), is(dir + File.separator + file));
+    }
+
+    public void exportRepositoryByRef_shouldReturnZipFileWithRepoEntries() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String dir = "testDirectory";
+        String file = "myTestFile";
+        File parent = new File(localDirectory, dir);
+        parent.mkdirs();
+        File child = new File(parent, file);
+        FileWriter fw = new FileWriter(child);
+        fw.write(file + "\n");
+        fw.close();
+
+        String pattern = dir + "/" + file;
+        Git git = new Git(localRepository);
+        git.add().addFilepattern(pattern).call();
+        git.commit().setMessage("My msg").call();
+
+        AnyObjectId headId = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit head = rw.parseCommit(headId);
+        rw.release();
+
+        ZipFile zipFile = new ZipFile(service.export(new GitCommitRef(head)));
+        assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
+        assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
+        assertThat(zipFile.getEntry(dir + "\\" + file).getName(), is(dir + "\\" + file));
+    }
+
+    @Test
+    public void getFileFromHeadCommit_shouldReturnFileWithCorrectContent() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        String fileName = "myFile";
+        Git git = new Git(localRepository);
+        RepositoryFixture.addFile(git, fileName);
+        RepositoryFixture.commit(git, "Commited my file");
+
+        File file = service.get(fileName);
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is(fileName));
+    }
+
+    @Test
+    public void getFileFromCommitByRef_shouldReturnFileWithCorrectContent() throws Exception {
+        String fileName = "myFile";
+
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+        AnyObjectId head = localRepository.resolve(Constants.HEAD);
+        RevWalk rw = new RevWalk(localRepository);
+        RevCommit headCommit = rw.parseCommit(head);
+        rw.release();
+        Git git = new Git(localRepository);
+        RepositoryFixture.addFile(git, fileName);
+        RepositoryFixture.commit(git, "Commited my file");
+
+        File file = service.get("testfile", new GitCommitRef(headCommit));
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is("testfile"));
+    }
+
+    @Test(expected = ScmException.class)
+    public void getFileFromCommitByNonExistingRef_shouldThrowSCMException() throws Exception {
+        localRepository = RepositoryFixture.createRepository(localDirectory);
+
+        File file = service.get("testfile", new GitCommitRef(null));
+        String content = new BufferedReader(new FileReader(file)).readLine();
+        assertThat(content, is("testfile"));
     }
     
     @Test
