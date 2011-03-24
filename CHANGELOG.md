@@ -24,6 +24,8 @@ This milestone release contains various improvements and bugfixes. In addition t
     * [OPENENGSB-1131] - archetype domain create invalid blueprint xml file
     * [OPENENGSB-1139] - Integration tests fail
     * [OPENENGSB-1146] - GitServiceImplTest.exportRepository_shouldReturnZipFileWithRepoEntries fails under Windows.
+    * [OPENENGSB-1163] - Integration Tests time out (after 300000ms)
+    * [OPENENGSB-1164] - Wiring integration tests fails
 
 ** Improvement
     * [OPENENGSB-676] - openengsb writes to ${karaf.data}/data/openengsb instead of ${karaf.data}/openengsb
@@ -43,17 +45,18 @@ This milestone release contains various improvements and bugfixes. In addition t
 
 ** Library Upgrade
     * [OPENENGSB-1092] - Extract com.atlassian.jira.plugins 4.1.1
-    * [OPENENGSB-1150] - upgrade to openengsb-maven-plugin 1.3.2 stable
+    * [OPENENGSB-1150] - upgrade to openengsb-maven-plugin 1.3.3 stable
     * [OPENENGSB-1156] - Upgrad maven-assembly-plugin to 2.2.1
     * [OPENENGSB-1157] - Upgrade maven-resources-plugin to 2.5
     * [OPENENGSB-1158] - Upgrade maven-surefire-plugin to 2.8
     * [OPENENGSB-1159] - Upgrade maven-surefire-report-plugin to 2.8
-    * [OPENENGSB-1160] - Upgrade to openengsb-root-12
+    * [OPENENGSB-1160] - Upgrade to openengsb-root-13
 
 ** New Feature
     * [OPENENGSB-1006] - Add contact domain for OpenEngSB
     * [OPENENGSB-1007] - Add appointment domain to openengsb
     * [OPENENGSB-1124] - Add RemoteCommunicationException and OsgiServiceException to ports-communication-implementation
+
 
 ** Task
     * [OPENENGSB-983] - release openengsb-1.2.0.M4
