@@ -273,7 +273,7 @@ public final class OsgiServiceUtils {
     }
 
     private static String makeLocationFilterString(String location, String context) {
-        return String.format("(|(location.%s=*%s*)(location.root=*%s*))", context, location, location);
+        return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
     }
 
     /**

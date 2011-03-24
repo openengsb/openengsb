@@ -90,7 +90,9 @@ public final class DomainEndpointFactory {
         for (ServiceReference ref : allServiceReferences) {
             String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
             try {
-                OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+                T osgiServiceProxy =
+                    OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+                result.add(osgiServiceProxy);
             } catch (InvalidSyntaxException e) {
                 throw new RuntimeException(e);
             }

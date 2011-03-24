@@ -83,10 +83,10 @@ public class EventForwardIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");
-        properties.put("location.42", "[example]");
+        properties.put("location.42", new String[]{ "example" });
 
         DummyLogDomain logService = new DummyLogDomain();
         getBundleContext().registerService(clazzes, logService, properties);
