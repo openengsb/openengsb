@@ -32,8 +32,8 @@
     <aries.util.version>0.3</aries.util.version>
     <!-- Current Branch Version Information -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Obedient</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Overmind</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Pink</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Panther</openengsb.version.name.noun>
     <!-- General Download Version Information -->
     <openengsb.version.stable>1.1.2.RELEASE</openengsb.version.stable>
     <openengsb.version.dev>1.2.0.M4</openengsb.version.dev>
