@@ -27,9 +27,11 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.l10n.BundleStringsTest;
-import org.openengsb.core.common.support.NullDomain;
-import org.openengsb.core.common.support.NullEvent;
+import org.openengsb.core.api.DomainEvents;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.test.BundleStringHelper;
+import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.test.NullEvent;
 import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest {
@@ -55,7 +57,7 @@ public class AbstractDomainProviderTest {
     @Before
     public void setup() {
         provider = new DummyProvider();
-        bundleContext = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        bundleContext = BundleStringHelper.createBundleContextMockWithBundleStrings();
         provider.setBundleContext(bundleContext);
     }
 

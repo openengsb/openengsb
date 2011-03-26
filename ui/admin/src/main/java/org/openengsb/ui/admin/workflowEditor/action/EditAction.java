@@ -32,11 +32,11 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Node;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.NodeRepresentation;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
@@ -48,7 +48,7 @@ public class EditAction extends BasePage {
     @SpringBean
     private DomainService domainService;
 
-    public EditAction(final Node parent, final Action action) {
+    public EditAction(final NodeRepresentation parent, final ActionRepresentation action) {
 
         IModel<List<Class<? extends Domain>>> domainModel = new AbstractReadOnlyModel<List<Class<? extends Domain>>>() {
 

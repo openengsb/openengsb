@@ -20,10 +20,10 @@ package org.openengsb.domain.auditing.internal;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.springframework.security.authentication.AuthenticationManager;

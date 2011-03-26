@@ -17,6 +17,8 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.api.OpenEngSBService;
+
 public abstract class AbstractOpenEngSBService implements OpenEngSBService {
 
     protected String instanceId;

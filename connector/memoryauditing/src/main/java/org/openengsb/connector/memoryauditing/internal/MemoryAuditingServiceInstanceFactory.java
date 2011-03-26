@@ -20,10 +20,11 @@ package org.openengsb.connector.memoryauditing.internal;
 import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class MemoryAuditingServiceInstanceFactory implements
@@ -44,7 +45,7 @@ public class MemoryAuditingServiceInstanceFactory implements
     }
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+    public ServiceDescriptor getDescriptor(Builder builder) {
         builder.name("service.name").description("service.description");
         builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
             .description("service.attr.description").build());

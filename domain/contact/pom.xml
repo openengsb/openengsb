@@ -45,7 +45,9 @@
     Contact Domain is the tool domain for all tools with contactbooks like gcontacts or facebook
     and provides the possibility to create, update, delete contacts.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -61,6 +63,11 @@
   </scm>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

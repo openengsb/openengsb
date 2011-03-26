@@ -29,9 +29,9 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 
 public abstract class AbstractRuleManager implements RuleManager {
 

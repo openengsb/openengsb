@@ -20,16 +20,17 @@ package org.openengsb.connector.jira.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.issue.IssueDomain;
 
 public class JiraServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, JiraService> {
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+    public ServiceDescriptor getDescriptor(Builder builder) {
         builder.name("service.name").description("service.description");
 
         builder.attribute(

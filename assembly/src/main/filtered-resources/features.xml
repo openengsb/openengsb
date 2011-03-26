@@ -68,8 +68,9 @@
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB Core Features -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-events/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>

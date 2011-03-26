@@ -43,15 +43,18 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
-import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.common.l10n.BundleStringsTest;
-import org.openengsb.core.common.support.NullDomain;
-import org.openengsb.core.common.support.NullDomainImpl;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.persistence.ConnectorDomainPair;
+import org.openengsb.core.api.persistence.ConnectorSetupStore;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.test.BundleStringHelper;
+import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -99,6 +102,7 @@ public class AbstractServiceManagerTest {
                 public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
                     return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
                 }
+
             });
         }
 
@@ -106,7 +110,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testInterfaceGetters() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new NullDomainImpl());
         assertThat(manager.getDomainInterface(), sameInstance(NullDomain.class));
         assertThat(manager.getImplementationClass(), sameInstance(NullDomainImpl.class));
@@ -114,7 +118,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testGetDescriptor() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new NullDomainImpl());
 
         ServiceDescriptor descriptor = manager.getDescriptor();
@@ -126,7 +130,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testAddNewOne() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         NullDomainImpl instance = new NullDomainImpl();
 
@@ -149,7 +153,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testServiceRanking_ShouldBePassedToServiceRegistry() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         NullDomainImpl instance = new NullDomainImpl();
 
@@ -165,7 +169,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testUpdateExistingOne() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
 
         NullDomainImpl instance = new NullDomainImpl();
@@ -191,7 +195,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testDeleteService() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         NullDomainImpl instance = new NullDomainImpl();
         ServiceRegistration serviceRegistrationMock =
@@ -234,7 +238,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testGetAttributeValues() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
@@ -251,7 +255,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testGetAttributeValuesAfterUpdate() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
@@ -281,7 +285,7 @@ public class AbstractServiceManagerTest {
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
 
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         NullDomainImpl instance = new NullDomainImpl();
         ServiceRegistration serviceRegistrationMock =
             appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
@@ -298,7 +302,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testIfUpdateOfSingleAttributesIsPossible() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
@@ -341,7 +345,7 @@ public class AbstractServiceManagerTest {
     @Test
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void validationfailsForUpdate_checkNotUpdated() {
-        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        BundleContext bundleContextMock = BundleStringHelper.createBundleContextMockWithBundleStrings();
         ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
         ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
         when(descriptor.getId()).thenReturn("Something");

@@ -20,7 +20,7 @@ package org.openengsb.domain.contact;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 import org.openengsb.domain.contact.models.Contact;
 import org.openengsb.domain.contact.models.Location;
 

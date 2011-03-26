@@ -17,7 +17,7 @@
 
 package org.openengsb.core.common.util;
 
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 

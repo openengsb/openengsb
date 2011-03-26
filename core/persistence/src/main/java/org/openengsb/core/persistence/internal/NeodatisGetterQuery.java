@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.neodatis.odb.core.query.nq.NativeQuery;
 
+@SuppressWarnings("serial")
 public class NeodatisGetterQuery<TYPE> extends NativeQuery {
     private List<Method> getters;
     private TYPE example;

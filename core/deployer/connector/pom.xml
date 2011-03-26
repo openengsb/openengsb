@@ -40,11 +40,13 @@
   <name>OpenEngSB :: Core :: Deployer :: Connector</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>
     OpenEngSB Core classes for loading and creating connector instances from a property file.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -60,6 +62,11 @@
   </scm>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

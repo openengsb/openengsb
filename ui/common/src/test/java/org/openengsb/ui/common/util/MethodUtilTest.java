@@ -26,13 +26,13 @@ import java.util.Locale;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.l10n.StringLocalizer;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
+import org.openengsb.core.api.l10n.LocalizableString;
+import org.openengsb.core.api.l10n.StringLocalizer;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 

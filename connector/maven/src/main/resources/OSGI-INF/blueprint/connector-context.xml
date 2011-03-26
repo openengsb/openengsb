@@ -27,7 +27,7 @@
   <bean id="buildServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
     <property name="proxyInterfaces">
       <list>
-        <value>org.openengsb.core.common.ServiceManager</value>
+        <value>org.openengsb.core.api.ServiceManager</value>
       </list>
     </property>
     <property name="target" ref="realBuildServiceManager" />
@@ -41,7 +41,7 @@
   <bean id="testServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
     <property name="proxyInterfaces">
       <list>
-        <value>org.openengsb.core.common.ServiceManager</value>
+        <value>org.openengsb.core.api.ServiceManager</value>
       </list>
     </property>
     <property name="target" ref="realTestServiceManager" />
@@ -55,7 +55,7 @@
   <bean id="deployServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
     <property name="proxyInterfaces">
       <list>
-        <value>org.openengsb.core.common.ServiceManager</value>
+        <value>org.openengsb.core.api.ServiceManager</value>
       </list>
     </property>
     <property name="target" ref="realDeployServiceManager" />
@@ -66,15 +66,15 @@
     </property>
   </bean>
 
-  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
 
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service interface="org.openengsb.core.common.ServiceManager">
+  <service interface="org.openengsb.core.api.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.build.BuildDomain" />
       <entry key="connector" value="maven" />
@@ -82,7 +82,7 @@
     <bean factory-ref="buildServiceManagerProxyFactory" factory-method="getObject" />
   </service>
 
-  <service interface="org.openengsb.core.common.ServiceManager">
+  <service interface="org.openengsb.core.api.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.test.TestDomain" />
       <entry key="connector" value="maven" />
@@ -90,7 +90,7 @@
     <bean factory-ref="testServiceManagerProxyFactory" factory-method="getObject" />
   </service>
 
-  <service interface="org.openengsb.core.common.ServiceManager">
+  <service interface="org.openengsb.core.api.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.deploy.DeployDomain" />
       <entry key="connector" value="maven" />
@@ -130,6 +130,6 @@
   <reference id="buildEvents" interface="org.openengsb.domain.build.BuildDomainEvents" />
   <reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
   <reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />
-  <reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
+  <reference id="contextService" interface="org.openengsb.core.api.context.ContextCurrentService" />
 
 </blueprint>

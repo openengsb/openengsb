@@ -43,15 +43,17 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
+import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
@@ -357,6 +359,11 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         long pid = service.startFlow("ci");
         service.cancelFlow(pid);
         service.waitForFlowToFinish(pid, 5000);
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
 }

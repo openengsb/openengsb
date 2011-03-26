@@ -30,13 +30,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.OpenEngSBService;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.security.AuthorizedRoles;
-import org.openengsb.core.common.security.model.ServiceAuthorizedList;
-import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.security.AuthorizedRoles;
+import org.openengsb.core.api.security.model.ServiceAuthorizedList;
+import org.openengsb.core.api.security.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -44,7 +43,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter, BundleContextAware {
+public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter {
 
     private Log log = LogFactory.getLog(AuthenticatedUserAccessDecisionVoter.class);
 
@@ -167,7 +166,6 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         this.persistenceManager = persistenceManager;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
 

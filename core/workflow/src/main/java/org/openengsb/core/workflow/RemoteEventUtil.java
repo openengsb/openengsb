@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.workflow.model.RemoteEvent;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.springframework.beans.BeanUtils;
 
 public final class RemoteEventUtil {

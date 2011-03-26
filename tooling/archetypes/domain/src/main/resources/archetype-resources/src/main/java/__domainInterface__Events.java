@@ -17,7 +17,7 @@
 
 package ${package};
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.api.DomainEvents;
 
 public interface ${domainInterface}Events extends DomainEvents {
 

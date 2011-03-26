@@ -23,16 +23,16 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.TaskboxException;
-import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.core.workflow.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.common.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.taskbox.web.TaskPanel;
 import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());

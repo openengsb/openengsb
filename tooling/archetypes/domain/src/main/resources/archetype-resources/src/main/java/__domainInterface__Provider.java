@@ -17,7 +17,7 @@
 
 package ${package};
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.api.AbstractDomainProvider;
 
 public class ${domainInterface}Provider extends AbstractDomainProvider<${domainInterface}, ${domainInterface}Events> {
 

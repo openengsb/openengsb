@@ -40,9 +40,9 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.fields.AbstractField;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 

@@ -30,10 +30,10 @@ import java.util.Collection;
 import java.util.Random;
 
 import org.junit.Test;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class PersistenceRuleManagerIT extends AbstractRuleManagerIT {
 

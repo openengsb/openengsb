@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.openengsb.core.common.AliveState;
+import org.openengsb.core.api.AliveState;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class MemoryAuditingServiceImpl implements AuditingDomain {

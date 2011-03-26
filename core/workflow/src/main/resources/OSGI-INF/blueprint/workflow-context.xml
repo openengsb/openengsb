@@ -27,14 +27,14 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service interface="org.openengsb.core.common.workflow.RuleManager">
+  <service interface="org.openengsb.core.api.workflow.RuleManager">
     <ref component-id="ruleManager" />
   </service>
 
   <service>
   <interfaces>
-    <value>org.openengsb.core.common.workflow.WorkflowService</value>
-    <value>org.openengsb.core.common.OpenEngSBService</value>
+    <value>org.openengsb.core.api.workflow.WorkflowService</value>
+    <value>org.openengsb.core.api.OpenEngSBService</value>
   </interfaces>
     <service-properties>
       <entry key="id" value="workflowService"/>
@@ -51,7 +51,7 @@
     <property name="ruleManager" ref="ruleManager" />
   </bean>
 
-  <service interface="org.openengsb.core.common.taskbox.TaskboxService">
+  <service interface="org.openengsb.core.api.workflow.TaskboxService">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="taskbox" />
@@ -79,10 +79,10 @@
     </bean>
   </service>
 
-  <reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
-  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <reference id="contextService" interface="org.openengsb.core.api.context.ContextCurrentService" />
+  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
 
-  <service interface="org.openengsb.core.common.workflow.EventRegistrationService">
+  <service interface="org.openengsb.core.api.workflow.EventRegistrationService">
     <bean class="org.openengsb.core.workflow.internal.RegistrationServiceImpl">
       <property name="ruleManager" ref="ruleManager" />
       <property name="instanceId" value="registrationService" />

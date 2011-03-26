@@ -32,15 +32,15 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.TaskboxException;
-import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -133,11 +133,11 @@ public class TaskboxServiceTest {
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
-        
+
         service.finishTask(task);
         verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }
-    
+
     @Test
     public void testFinishTaskTwice_shouldProcessEventOnlyOnce() throws PersistenceException, WorkflowException {
         Task task = new Task();
@@ -145,13 +145,13 @@ public class TaskboxServiceTest {
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
         service.finishTask(task);
-        
+
         result = new ArrayList<Task>();
         //mocking Persistence-Behaviour again, since the task
         //would have been deleted by the TaskBoxService
         when(persistenceService.query(any(Task.class))).thenReturn(result);
         service.finishTask(task);
-        
+
         verify(workflowService, times(1)).processEvent(any(InternalWorkflowEvent.class));
     }
 
@@ -161,7 +161,7 @@ public class TaskboxServiceTest {
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
-        
+
         ProcessBag bag = new ProcessBag(task);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("processBag", bag);

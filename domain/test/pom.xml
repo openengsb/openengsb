@@ -40,12 +40,14 @@
   <name>OpenEngSB :: Domain :: Test</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>
     Test Domain is used to run tests for projects. The type of project is configured in
     in the respective tool connector.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -61,6 +63,11 @@
   </scm>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

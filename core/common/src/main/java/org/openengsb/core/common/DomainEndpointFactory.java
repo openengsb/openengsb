@@ -22,7 +22,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;

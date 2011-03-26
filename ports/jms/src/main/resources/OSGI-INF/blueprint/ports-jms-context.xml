@@ -35,7 +35,7 @@
     </property>
   </bean>
 
-  <service interface="org.openengsb.core.common.communication.OutgoingPort">
+  <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
       <entry key="id" value="jms-json" />
     </service-properties>
@@ -50,6 +50,6 @@
       <property name="requestHandler" ref="requestHandler" />
     </bean>
   
-  <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
+  <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
 
 </blueprint>

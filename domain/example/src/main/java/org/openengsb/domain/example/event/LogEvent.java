@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.example.event;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class LogEvent extends Event {
 

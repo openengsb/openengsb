@@ -46,13 +46,13 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
@@ -163,7 +163,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         form.add(submitButton);
         List<String> audits = new ArrayList<String>();
         try {
-            audits = this.auditing.getAudits();
+            audits = auditing.getAudits();
         } catch (Exception e) {
             log.error("Audits cannot be loaded", e);
         }

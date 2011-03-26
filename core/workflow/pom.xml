@@ -39,7 +39,9 @@
   <packaging>bundle</packaging>
 
   <description>OpenEngSB classes for Workflow, Rules and Events processing based on Drools</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -69,8 +71,18 @@
     <!-- OpenEngSB Dependencies -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-services</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>

@@ -20,7 +20,7 @@ package org.openengsb.domain.appointment;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 import org.openengsb.domain.appointment.models.Appointment;
 
 /**
