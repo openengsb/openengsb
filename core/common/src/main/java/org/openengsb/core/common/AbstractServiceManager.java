@@ -29,10 +29,14 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
-import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.persistence.ConnectorDomainPair;
+import org.openengsb.core.api.persistence.ConnectorSetupStore;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.aop.framework.ProxyFactory;
 

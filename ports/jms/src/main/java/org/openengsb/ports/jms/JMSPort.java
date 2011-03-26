@@ -28,12 +28,12 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.common.communication.MethodCall;
-import org.openengsb.core.common.communication.MethodReturn;
-import org.openengsb.core.common.communication.MethodReturn.ReturnType;
-import org.openengsb.core.common.communication.OutgoingPort;
-import org.openengsb.core.common.communication.RequestHandler;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.RequestHandler;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 

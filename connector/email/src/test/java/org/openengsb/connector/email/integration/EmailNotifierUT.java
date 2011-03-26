@@ -23,7 +23,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.openengsb.connector.email.internal.EmailNotifier;
 import org.openengsb.connector.email.internal.abstraction.JavaxMailAbstraction;
-import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.domain.notification.model.Attachment;
 import org.openengsb.domain.notification.model.Notification;
 

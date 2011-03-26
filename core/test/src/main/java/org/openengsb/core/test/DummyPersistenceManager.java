@@ -20,8 +20,8 @@ package org.openengsb.core.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 
 public class DummyPersistenceManager implements PersistenceManager {

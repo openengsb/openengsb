@@ -17,8 +17,8 @@
 
 package org.openengsb.core.security;
 
-import org.openengsb.core.common.OpenEngSBService;
-import org.openengsb.core.common.security.AuthorizedRoles;
+import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.security.AuthorizedRoles;
 
 public interface DummyService extends OpenEngSBService {
 

@@ -34,9 +34,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.model.Task;
 
 @SuppressWarnings("serial")
 public class TaskPanel extends Panel {

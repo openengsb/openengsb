@@ -38,8 +38,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.taskbox.TaskboxException;
-import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
 
 @SuppressWarnings("serial")

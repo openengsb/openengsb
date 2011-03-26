@@ -19,8 +19,8 @@ package org.openengsb.connector.maven;
 
 import org.openengsb.connector.maven.internal.MavenServiceImpl;
 import org.openengsb.connector.maven.internal.MavenServiceInstanceFactory;
+import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.domain.deploy.DeployDomain;
 
 public class DeployDomainServiceManager extends AbstractServiceManager<DeployDomain, MavenServiceImpl> {

@@ -37,12 +37,13 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -72,7 +73,7 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         serviceManagerListMock = new ArrayList<ServiceManager>();
 
         bundleContext = mock(BundleContext.class);
-        when(bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null)).thenReturn(
+        when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
             managedServiceInstances.toArray(new ServiceReference[0]));
 
         context.putBean(serviceManagerMock);
@@ -128,7 +129,7 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     private void addServiceRef(ServiceReference serRef) {
         managedServiceInstances.add(serRef);
         try {
-            when(bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null)).thenReturn(
+            when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
                 managedServiceInstances.toArray(new ServiceReference[0]));
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException(e);
@@ -258,5 +259,10 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         domainService.setAliveState(AliveState.CONNECTING);
         return domainService;
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 }

@@ -27,8 +27,8 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")

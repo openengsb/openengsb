@@ -31,8 +31,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.DomainMethodExecutionException;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 
@@ -58,7 +58,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
                 throw new RuntimeException("This implementation works only with internal mail properties");
             }
             MailPropertiesImp props = (MailPropertiesImp) properties;
-            if (!(this.aliveState == AliveState.ONLINE)) {
+            if (!(aliveState == AliveState.ONLINE)) {
                 log.info("State is OFFLINE, connecting...");
                 connect(props);
             }
@@ -94,14 +94,14 @@ public class JavaxMailAbstraction implements MailAbstraction {
             log.debug("connecting smtp-transport " + tr);
             tr.connect(smtpHost, username, password);
             if (tr.isConnected()) {
-                this.aliveState = AliveState.ONLINE;
+                aliveState = AliveState.ONLINE;
             } else {
-                this.aliveState = AliveState.OFFLINE;
+                aliveState = AliveState.OFFLINE;
             }
-            log.debug("State is now " + this.aliveState);
+            log.debug("State is now " + aliveState);
         } catch (MessagingException e) {
             log.error("could not connect transport ", e);
-            this.aliveState = AliveState.OFFLINE;
+            aliveState = AliveState.OFFLINE;
             throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or"
                     + " mail server unavailable) ");
         }
@@ -141,12 +141,12 @@ public class JavaxMailAbstraction implements MailAbstraction {
 
         @Override
         public void setSmtpAuth(Boolean smtpAuth) {
-            this.properties.setProperty("mail.smtp.auth", String.valueOf(smtpAuth));
+            properties.setProperty("mail.smtp.auth", String.valueOf(smtpAuth));
         }
 
         @Override
         public void setSmtpHost(String smtpHost) {
-            this.properties.setProperty("mail.smtp.host", smtpHost);
+            properties.setProperty("mail.smtp.host", smtpHost);
         }
 
         @Override
@@ -156,21 +156,21 @@ public class JavaxMailAbstraction implements MailAbstraction {
 
         @Override
         public void setUser(String user) {
-            this.username = user;
+            username = user;
         }
 
         @Override
         public void setSmtpPort(String smtpPort) {
-            this.properties.setProperty("mail.smtp.port", smtpPort);
-            this.properties.setProperty("mail.smtp.socketFactory.port", smtpPort);
+            properties.setProperty("mail.smtp.port", smtpPort);
+            properties.setProperty("mail.smtp.socketFactory.port", smtpPort);
         }
 
         public String getUsername() {
-            return this.username;
+            return username;
         }
 
         public String getPassword() {
-            return this.password;
+            return password;
         }
 
         public Properties getProperties() {
@@ -183,7 +183,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
         }
 
         public String getSender() {
-            return this.sender;
+            return sender;
         }
 
         @Override
@@ -192,7 +192,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
         }
 
         public String getPrefix() {
-            return this.prefix;
+            return prefix;
         }
     }
 

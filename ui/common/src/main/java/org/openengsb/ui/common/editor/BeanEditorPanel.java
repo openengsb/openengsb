@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.ui.common.model.MapModel;
 import org.openengsb.ui.common.util.MethodUtil;
 

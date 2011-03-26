@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.report;
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.api.DomainEvents;
 
 public interface ReportDomainEvents extends DomainEvents {
 

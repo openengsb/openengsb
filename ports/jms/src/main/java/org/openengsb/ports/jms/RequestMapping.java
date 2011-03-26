@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.common.communication.MethodCall;
+import org.openengsb.core.api.remote.MethodCall;
 
 public class RequestMapping extends MethodCall {
 
@@ -74,11 +74,11 @@ public class RequestMapping extends MethodCall {
      * Converts the Args read by Jackson into the correct classes that have to be used for calling the method.
      */
     public void resetArgs() {
-        if (this.getClasses().size() != this.getArgs().length) {
+        if (getClasses().size() != this.getArgs().length) {
             throw new IllegalStateException("Classes and Args have to be the same");
         }
         ObjectMapper mapper = new ObjectMapper();
-        Iterator<String> iterator = this.getClasses().iterator();
+        Iterator<String> iterator = getClasses().iterator();
 
         List<Object> values = new ArrayList<Object>();
 

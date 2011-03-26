@@ -42,7 +42,9 @@
   <packaging>bundle</packaging>
 
   <description>Plaintext Report Connector implements the Report Domain and generates plain text reports</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -66,6 +68,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

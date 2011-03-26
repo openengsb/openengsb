@@ -45,7 +45,9 @@
     Email Connector implements the Notification Domain and is used for sending emails.
     It is based on the JavaMail API.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -76,6 +78,11 @@
     </dependency>
 
     <!-- OpenEngSB References -->
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

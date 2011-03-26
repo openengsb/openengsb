@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first

@@ -32,9 +32,9 @@ import org.openengsb.connector.jira.internal.misc.JiraValueConverter;
 import org.openengsb.connector.jira.internal.misc.PriorityConverter;
 import org.openengsb.connector.jira.internal.misc.StatusConverter;
 import org.openengsb.connector.jira.internal.misc.TypeConverter;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -77,7 +77,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error creating issue " + engsbIssue.getDescription() + ". XMLRPC call failed.");
             throw new DomainMethodExecutionException("RPC called failed", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
         return issue.getKey();
     }
@@ -95,7 +95,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error commenting issue . XMLRPC call failed. ");
             throw new DomainMethodExecutionException("RPC called failed", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
 
     }
@@ -111,7 +111,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error updating the issue . XMLRPC call failed. ");
             throw new DomainMethodExecutionException("RPC called failed", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
     }
 
@@ -139,7 +139,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error updating the issue . XMLRPC call failed. ");
             throw new DomainMethodExecutionException("RPC called failed", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
     }
 
@@ -164,7 +164,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error closing release, Remote exception ");
             throw new DomainMethodExecutionException("RPC called failed", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
     }
 
@@ -200,7 +200,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
             log.error("Error generating release report. XMLRPC call failed. ");
             throw new DomainMethodExecutionException("RPC called failed ", e);
         } finally {
-            this.state = AliveState.DISCONNECTED;
+            state = AliveState.DISCONNECTED;
         }
         for (String s : report) {
             log.info(s);
@@ -210,7 +210,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
 
     private RemoteVersion getNextVersion(String authToken, JiraSoapService jiraSoapService, String releaseToId)
         throws RemoteException {
-        RemoteVersion[] versions = jiraSoapService.getVersions(authToken, this.projectKey);
+        RemoteVersion[] versions = jiraSoapService.getVersions(authToken, projectKey);
         RemoteVersion next = null;
         for (RemoteVersion version : versions) {
             if (releaseToId.equals(version.getId())) {
@@ -222,7 +222,7 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
 
     @Override
     public AliveState getAliveState() {
-        return this.state;
+        return state;
     }
 
     private RemoteFieldValue[] convertChanges(HashMap<IssueAttribute, String> changes) {
@@ -268,10 +268,10 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
 
     private JiraSoapService login() {
         try {
-            this.state = AliveState.CONNECTING;
+            state = AliveState.CONNECTING;
             jiraSoapSession.connect(jiraUser, jiraPassword);
-            this.state = AliveState.ONLINE;
-            this.authToken = jiraSoapSession.getAuthenticationToken();
+            state = AliveState.ONLINE;
+            authToken = jiraSoapSession.getAuthenticationToken();
             return jiraSoapSession.getJiraSoapService();
         } catch (RemoteException e) {
             throw new DomainMethodExecutionException("Could not connect to server, maybe wrong user password/username"

@@ -17,8 +17,8 @@
 
 package ${package};
 
+import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.ServiceInstanceFactory;
 import ${domainPackage}.${domainInterface};
 import ${package}.internal.${connectorName}ServiceImpl;
 

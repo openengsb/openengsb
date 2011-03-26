@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextHolder;
 
 public class ContextIdFilter implements Filter {
 
@@ -40,6 +40,7 @@ public class ContextIdFilter implements Filter {
     static final String FILTER_APPLIED = "__openengsb_context_filter_applied";
     static final String CONTEXT_ID_ATTRIBUTE_NAME = "__openengsb_context_id";
 
+    @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
         ServletException {
         HttpServletRequest request = (HttpServletRequest) req;

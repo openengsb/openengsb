@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.build;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class BuildSuccessEvent extends Event {
     private String output;

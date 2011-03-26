@@ -21,7 +21,7 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
 
-  <service interface="org.openengsb.core.common.DomainProvider">
+  <service interface="org.openengsb.core.api.DomainProvider">
     <bean class="org.openengsb.domain.scm.ScmDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
@@ -29,7 +29,7 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.core.common.DomainEvents</value>
+      <value>org.openengsb.core.api.DomainEvents</value>
       <value>org.openengsb.domain.scm.ScmDomainEvents</value>
     </interfaces>
     <service-properties>
@@ -39,7 +39,7 @@
     <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />
   </service>
 
-  <bean id="domainEventsProxyFactory" class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+  <bean id="domainEventsProxyFactory" class="org.openengsb.core.common.events.DomainEventsProxyFactoryBean">
     <property name="domainEventInterface">
       <value>org.openengsb.domain.scm.ScmDomainEvents</value>
     </property>
@@ -47,6 +47,6 @@
   </bean>
 
 
-  <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-  <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
+  <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
+  <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
 </blueprint>

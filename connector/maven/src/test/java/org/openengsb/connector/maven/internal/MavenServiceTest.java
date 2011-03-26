@@ -40,8 +40,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.build.BuildStartEvent;
 import org.openengsb.domain.build.BuildSuccessEvent;
@@ -177,7 +177,6 @@ public class MavenServiceTest {
         verify(buildEvents).raiseEvent(argumentCaptor.capture());
         BuildSuccessEvent event = argumentCaptor.getValue();
         String output = event.getOutput();
-        @SuppressWarnings("unchecked")
         Collection<File> logFiles = FileUtils.listFiles(new File("log"), new String[]{ "log", }, false);
         File logFile = logFiles.iterator().next();
         assertThat(logFile, notNullValue());
@@ -222,7 +221,6 @@ public class MavenServiceTest {
         Thread waitForBuildEnd = startWaiterThread(syncFinish);
         mavenService.build();
         waitForBuildStart.join();
-        @SuppressWarnings("unchecked")
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat("no logfile was created", listFiles.isEmpty(), is(false));
         waitForBuildEnd.join();
@@ -252,7 +250,6 @@ public class MavenServiceTest {
         Thread waitForBuildEnd = startWaiterThread(syncFinish);
 
         waitForBuildEnd.join();
-        @SuppressWarnings("unchecked")
         Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
         assertThat(listFiles.size(), is(max));
         assertThat(listFiles.contains(new File("dummyFile" + max)), is(false));

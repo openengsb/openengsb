@@ -61,16 +61,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.proxy.ProxyFactory;
-import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.LocalizableString;
+import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.api.remote.ProxyFactory;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -82,6 +83,7 @@ import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
@@ -590,6 +592,11 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
 }

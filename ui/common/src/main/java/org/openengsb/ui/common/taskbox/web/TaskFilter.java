@@ -17,7 +17,7 @@
 
 package org.openengsb.ui.common.taskbox.web;
 
-import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.api.workflow.model.Task;
 
 @SuppressWarnings("serial")
 public class TaskFilter extends Task {
@@ -31,20 +31,20 @@ public class TaskFilter extends Task {
 
     public boolean match(Task task) {
 
-        if (this.getTaskId() != null) {
-            if (!task.getTaskId().startsWith(this.getTaskId())) {
+        if (getTaskId() != null) {
+            if (!task.getTaskId().startsWith(getTaskId())) {
                 return false;
             }
         }
 
-        if (this.getTaskType() != null) {
-            if (!task.getTaskType().startsWith(this.getTaskType())) {
+        if (getTaskType() != null) {
+            if (!task.getTaskType().startsWith(getTaskType())) {
                 return false;
             }
         }
 
-        if (this.getDescription() != null) {
-            if (!(task.getDescription().toLowerCase().indexOf(this.getDescription().toLowerCase()) > -1)) {
+        if (getDescription() != null) {
+            if (!(task.getDescription().toLowerCase().indexOf(getDescription().toLowerCase()) > -1)) {
                 return false;
             }
         }

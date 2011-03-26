@@ -30,13 +30,13 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
-import org.openengsb.core.common.workflow.editor.Workflow;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorService;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorServiceImpl;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import org.openengsb.core.services.internal.WorkflowEditorServiceImpl;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -80,15 +80,15 @@ public class WorkflowEditorTest {
     public void selectWorkflow_ShouldShowWorkflowActionDescriptions() {
         String string = "Workflow";
         service.createWorkflow(string);
-        Workflow currentWorkflow = service.getCurrentWorkflow();
-        Action action = new Action();
+        WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
+        ActionRepresentation action = new ActionRepresentation();
         action.setDomain(NullDomain.class);
         Method method = NullDomain.class.getMethods()[0];
         action.setMethodName(method.getName());
         action.setMethodParameters(Arrays.asList(method.getParameterTypes()));
         String location = "Location";
         action.setLocation(location);
-        Event event = new Event();
+        EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
         action.addEvent(event);
         currentWorkflow.getRoot().addAction(action);
@@ -121,7 +121,7 @@ public class WorkflowEditorTest {
     @Test
     public void removeAction_ShouldRemoveActionFromWorkflow() {
         service.createWorkflow("default");
-        Action action = new Action();
+        ActionRepresentation action = new ActionRepresentation();
         action.setLocation("location");
         action.setDomain(NullDomain.class);
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
@@ -135,7 +135,7 @@ public class WorkflowEditorTest {
     @Test
     public void removeEvent_ShouldRemoveEventFromWorkflow() {
         service.createWorkflow("default");
-        Event event = new Event();
+        EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
         service.getCurrentWorkflow().getRoot().addEvent(event);
         tester.startPage(WorkflowEditor.class);

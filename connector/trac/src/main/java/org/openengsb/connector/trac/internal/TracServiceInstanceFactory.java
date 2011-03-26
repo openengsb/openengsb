@@ -21,11 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.connector.trac.internal.models.TicketHandlerFactory;
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.issue.IssueDomain;
 
 public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, TracConnector> {
@@ -35,7 +36,7 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
     static final String ATTRIB_USERNAME = "username";
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+    public ServiceDescriptor getDescriptor(Builder builder) {
         builder.name("trac.name").description("trac.description");
 
         builder
@@ -53,7 +54,6 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
                                                String descriptionId) {
         return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
             .build();
-
     }
 
     @Override

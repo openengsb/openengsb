@@ -40,11 +40,11 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
-import org.openengsb.core.common.workflow.editor.Node;
-import org.openengsb.core.common.workflow.editor.Workflow;
-import org.openengsb.core.common.workflow.editor.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
+import org.openengsb.core.api.workflow.model.NodeRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
@@ -88,7 +88,7 @@ public class WorkflowEditor extends BasePage {
         add(createForm);
 
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        Workflow currentWorkflow = workflowEditorService.getCurrentWorkflow();
+        WorkflowRepresentation currentWorkflow = workflowEditorService.getCurrentWorkflow();
         DefaultTreeModel model = new DefaultTreeModel(node);
         IColumn[] columns =
             new IColumn[]{
@@ -98,12 +98,12 @@ public class WorkflowEditor extends BasePage {
                     @Override
                     public Component newCell(MarkupContainer parent, String id, final TreeNode node, int level) {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
-                        Node userObject = (Node) treeNode.getUserObject();
-                        if (userObject instanceof Action) {
-                            return new ActionLinks("links", (Action) userObject, treeNode);
+                        NodeRepresentation userObject = (NodeRepresentation) treeNode.getUserObject();
+                        if (userObject instanceof ActionRepresentation) {
+                            return new ActionLinks("links", (ActionRepresentation) userObject, treeNode);
                         }
-                        if (userObject instanceof Event) {
-                            return new EventLinks("links", (Event) userObject, treeNode);
+                        if (userObject instanceof EventRepresentation) {
+                            return new EventLinks("links", (EventRepresentation) userObject, treeNode);
                         }
                         return null;
                     }
@@ -118,13 +118,13 @@ public class WorkflowEditor extends BasePage {
         String label = "";
         if (currentWorkflow == null) {
             label = getString("workflow.create.first");
-            node.setUserObject(new Action());
+            node.setUserObject(new ActionRepresentation());
             table.setVisible(false);
             selectForm.setVisible(false);
         } else {
             label = currentWorkflow.getName();
             node.setUserObject(currentWorkflow.getRoot());
-            Action root = currentWorkflow.getRoot();
+            ActionRepresentation root = currentWorkflow.getRoot();
             addActionsToNode(root.getActions(), node);
             addEventsToNode(root.getEvents(), node);
         }
@@ -133,25 +133,25 @@ public class WorkflowEditor extends BasePage {
         add(table);
     }
 
-    private void addTreeNodeForEvent(DefaultMutableTreeNode node, Event event) {
+    private void addTreeNodeForEvent(DefaultMutableTreeNode node, EventRepresentation event) {
         DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(event);
         addActionsToNode(event.getActions(), newChild);
         node.add(newChild);
     }
 
-    private void addActionsToNode(List<Action> actions, DefaultMutableTreeNode newChild) {
-        for (Action childAction : actions) {
+    private void addActionsToNode(List<ActionRepresentation> actions, DefaultMutableTreeNode newChild) {
+        for (ActionRepresentation childAction : actions) {
             addTreeNodeForAction(newChild, childAction);
         }
     }
 
-    private void addEventsToNode(List<Event> events, DefaultMutableTreeNode newChild) {
-        for (Event childEvent : events) {
+    private void addEventsToNode(List<EventRepresentation> events, DefaultMutableTreeNode newChild) {
+        for (EventRepresentation childEvent : events) {
             addTreeNodeForEvent(newChild, childEvent);
         }
     }
 
-    private void addTreeNodeForAction(DefaultMutableTreeNode node, Action action) {
+    private void addTreeNodeForAction(DefaultMutableTreeNode node, ActionRepresentation action) {
         DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(action);
         addActionsToNode(action.getActions(), newChild);
         addEventsToNode(action.getEvents(), newChild);

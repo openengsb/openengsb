@@ -25,10 +25,10 @@ import java.util.Hashtable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;

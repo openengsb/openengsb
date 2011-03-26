@@ -26,11 +26,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
@@ -74,7 +74,6 @@ public final class PersistenceTestUtil {
     private static void readGlobals(PersistenceService persistence) throws IOException, PersistenceException {
         URL globalURL = ClassLoader.getSystemResource("rulebase/globals");
         File globalFile = FileUtils.toFile(globalURL);
-        @SuppressWarnings("unchecked")
         List<String> globalLines = FileUtils.readLines(globalFile);
         for (String s : globalLines) {
             String[] parts = s.split(" ");
@@ -85,7 +84,6 @@ public final class PersistenceTestUtil {
     private static void readImports(PersistenceService persistence) throws IOException, PersistenceException {
         URL importsURL = ClassLoader.getSystemResource("rulebase/imports");
         File importsFile = FileUtils.toFile(importsURL);
-        @SuppressWarnings("unchecked")
         List<String> importLines = FileUtils.readLines(importsFile);
         for (String s : importLines) {
             persistence.create(new ImportDeclaration(s));

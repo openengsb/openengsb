@@ -27,11 +27,11 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.model.Task;
 
-@SuppressWarnings("serial")
-public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator {
+@SuppressWarnings({ "serial" })
+public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Object> {
 
     @SpringBean(name = "taskboxService")
     private TaskboxService taskboxService;
@@ -52,7 +52,7 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
         initList();
 
         List<Task> ret = list;
-        if (ret.size() > (first + count)) {
+        if (ret.size() > first + count) {
             ret = ret.subList(first, first + count);
         } else {
             ret = ret.subList(first, ret.size());

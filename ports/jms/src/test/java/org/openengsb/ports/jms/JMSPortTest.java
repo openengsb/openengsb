@@ -41,10 +41,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openengsb.core.common.communication.MethodCall;
-import org.openengsb.core.common.communication.MethodReturn;
-import org.openengsb.core.common.communication.MethodReturn.ReturnType;
-import org.openengsb.core.common.communication.RequestHandler;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.RequestHandler;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 

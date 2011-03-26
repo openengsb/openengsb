@@ -17,8 +17,8 @@
 
 package org.openengsb.core.workflow.model;
 
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class RuleBaseElement {
     private String code;
@@ -30,9 +30,9 @@ public class RuleBaseElement {
     }
 
     public RuleBaseElement(RuleBaseElementId id) {
-        this.name = id.getName();
-        this.packageName = id.getPackageName();
-        this.type = id.getType();
+        name = id.getName();
+        packageName = id.getPackageName();
+        type = id.getType();
     }
 
     public RuleBaseElement(RuleBaseElementId id, String code) {
@@ -41,7 +41,7 @@ public class RuleBaseElement {
     }
 
     public RuleBaseElementType getType() {
-        return this.type;
+        return type;
     }
 
     public void setType(RuleBaseElementType type) {
@@ -49,7 +49,7 @@ public class RuleBaseElement {
     }
 
     public String getPackageName() {
-        return this.packageName;
+        return packageName;
     }
 
     public void setPackageName(String packageName) {
@@ -57,7 +57,7 @@ public class RuleBaseElement {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -65,7 +65,7 @@ public class RuleBaseElement {
     }
 
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public void setCode(String code) {

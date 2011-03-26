@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.example;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Raises;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Raises;
 import org.openengsb.domain.example.event.LogEvent;
 
 /**

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.workflow;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 
 public interface DummyExampleDomain extends Domain {
 

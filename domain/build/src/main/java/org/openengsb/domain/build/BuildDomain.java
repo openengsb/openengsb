@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.build;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Raises;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Raises;
 
 /**
  * This domain can be used to build projects. The affected project is usually configured in the respective tool

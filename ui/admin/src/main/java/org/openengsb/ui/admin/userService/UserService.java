@@ -45,10 +45,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.security.UserExistsException;
-import org.openengsb.core.common.security.UserManagementException;
-import org.openengsb.core.common.security.UserManager;
-import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserManagementException;
+import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -236,7 +236,7 @@ public class UserService extends BasePage {
         }
 
         public String getRoles() {
-            return this.roles;
+            return roles;
         }
 
         public void setRoles(String roles) {
