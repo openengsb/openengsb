@@ -17,12 +17,22 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MethodCall {
+/**
+ * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
+ * method and so called {@link #metaData}. Since the target system often requires additional information for calling
+ * specific methods (e.g. context setup, target thread, security, active user, ...) it is allowed to add additional
+ * information to each method call to make. Finally this abstraction can extract all {@link Class} objects in the
+ * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
+ * identify the right method.
+ */
+@SuppressWarnings("serial")
+public class MethodCall implements Serializable {
 
     private String methodName;
     private Object[] args;

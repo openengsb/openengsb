@@ -51,12 +51,6 @@ public class PublicKeyUtil {
 
     }
 
-    /**
-     * Generate key which contains a pair of private and public key using 1024 bytes
-     *
-     * @return key pair
-     * @throws NoSuchAlgorithmException
-     */
     public KeyPair generateKey(int keySize) throws NoSuchAlgorithmException {
         keyGenerator.initialize(keySize);
         KeyPair key = keyGenerator.generateKeyPair();
