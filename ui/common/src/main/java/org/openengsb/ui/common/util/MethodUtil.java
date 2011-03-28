@@ -119,7 +119,7 @@ public final class MethodUtil {
                 }
             }
         }
-        if (String.class.equals(value.getClass())) {
+        if (String.class.isInstance(value)) {
             Constructor<?> constructor = getStringOnlyConstructor(type);
             if (constructor != null) {
                 try {
