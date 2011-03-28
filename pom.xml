@@ -329,11 +329,6 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-events</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
