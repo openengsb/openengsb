@@ -17,13 +17,21 @@
 
 package org.openengsb.connector.maven.internal;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +39,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -73,6 +84,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private String command;
     private File logDir;
+    private String mvnVersion = "3.0.3";
 
     public MavenServiceImpl(String id) {
         super(id);
@@ -83,8 +95,142 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         } else if (!logDir.isDirectory()) {
             throw new IllegalStateException("cannot access log-directory");
         }
+
+        if (!isMavenInstalled()) {
+            installMaven();
+        }
     }
 
+    public Boolean isMavenInstalled() {
+        String oldProjectPath = projectPath;
+        projectPath = System.getProperty("user.home");
+        MavenResult res = excuteCommand("-version");
+        projectPath = oldProjectPath;
+
+        if (res.isSuccess() && res.getOutput().contains("Apache Maven")) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public void download(String url, String downloadPath) {
+        try {
+            System.out.println("Connecting\n");
+
+            URL downloadUrl = new URL(url);
+            downloadUrl.openConnection();
+            InputStream reader = downloadUrl.openStream();
+
+            System.out.println("Downloading to " + downloadPath);
+
+            FileOutputStream writer = new FileOutputStream(downloadPath);
+            int bufSize = 100000;
+            byte[] buffer = new byte[bufSize];
+            int bytesRead = 0;
+
+            while ((bytesRead = reader.read(buffer)) > 0) {
+                writer.write(buffer, 0, bytesRead);
+                buffer = new byte[bufSize];
+            }
+
+            writer.close();
+            reader.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void installMaven() {
+        if (!new File(System.getProperty("user.home") + "\\apache-maven-" + mvnVersion).exists()) {
+
+            String downloadPath = System.getProperty("user.home") + "\\mvn_setup.zip";
+            download("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip",
+                    downloadPath);
+            unzipFile(downloadPath, System.getProperty("user.home"));
+        }
+        //setEnvironmentVariables();
+    }
+
+    private void setEnvironmentVariables() {
+        Runtime rt = Runtime.getRuntime();
+
+         /*try {
+            rt.exec("cmd /c set M2_HOME=" + System.getProperty("user.home") +"\\apache-maven-" + mvnVersion);
+             rt.exec("cmd /c set PATH=%PATH%;%M2_HOME%\bin");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+        
+        /*System.setProperty("M2_HOME", System.getProperty("user.home") + "\\apache-maven-" + mvnVersion);
+        System.out.println(System.getProperty("M2_HOME"));
+        System.setProperty("PATH", System.getProperty("PATH") +";"+ System.getProperty("M2_HOME"));
+        System.out.println(System.getProperty("PATH"));*/
+
+    }
+
+    public void unzipFile(String archivePath, String targetPath) {
+        File targetDir = new File(targetPath);
+
+        if (!targetDir.exists()) {
+            targetDir.mkdir();
+        }
+
+        try {
+            ZipFile zipFile = new ZipFile(new File(archivePath));
+            Enumeration entries = zipFile.entries();
+
+            byte[] buffer = new byte[16384];
+            int len;
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) entries.nextElement();
+
+                String entryFileName = entry.getName();
+
+                File dir = buildDirectoryHierarchyFor(entryFileName, targetDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                if (!entry.isDirectory()) {
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(targetDir,
+                            entryFileName)));
+
+                    BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
+
+                    while ((len = bis.read(buffer)) > 0) {
+                        bos.write(buffer, 0, len);
+                    }
+
+                    bos.flush();
+                    bos.close();
+                    bis.close();
+                }
+            }
+            zipFile.close();
+        } catch (ZipException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private File buildDirectoryHierarchyFor(String entryName, File targetDir) {
+        int lastIndex = entryName.lastIndexOf('/');
+        String entryFileName = entryName.substring(lastIndex + 1);
+        String internalPathToEntry = entryName.substring(0, lastIndex + 1);
+        return new File(targetDir, internalPathToEntry);
+    }
+
+    
     private static String addSystemEnding() {
         if (System.getProperty("os.name").contains("Windows")) {
             return ".bat";
