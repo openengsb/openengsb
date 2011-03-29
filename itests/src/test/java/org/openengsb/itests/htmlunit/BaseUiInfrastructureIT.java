@@ -40,7 +40,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
-    private final String loginPageEntryUrl = "http://localhost:8090/openengsb/LoginPage/";
+    private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/LoginPage/";
 
     @Before
     public void setUp() throws Exception {
@@ -93,7 +93,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:8090/openengsb/");
+        HtmlPage page = webClient.getPage("http://localhost:" + WEBUI_PORT + "/openengsb/");
         page = page.getAnchorByText("Login").click();
 
         HtmlForm form = page.getForms().get(0);

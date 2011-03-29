@@ -62,6 +62,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
      */
     private static final boolean DEBUG = false;
     private static final String DEBUG_PORT = "5005";
+    protected static final int WEBUI_PORT = 8091;
 
     public enum SetupType {
         BLUEPRINT, SPRING, START_ONLY
@@ -193,7 +194,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Helper.setLogLevel(logLvl),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
-            // Helper.activateDebugging("5005"),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
@@ -201,7 +201,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
                 .versionAsInProject(), "openengsb-ui-admin"), workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
-            vmOption("-Dorg.osgi.service.http.port=8090"), waitForFrameworkStartup(),
+            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }
