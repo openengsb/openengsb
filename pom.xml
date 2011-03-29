@@ -393,6 +393,12 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-appointment</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-test</artifactId>
         <version>${project.version}</version>
       </dependency>
