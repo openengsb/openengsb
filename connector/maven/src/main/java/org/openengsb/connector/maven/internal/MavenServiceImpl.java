@@ -85,6 +85,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private String command;
     private File logDir;
+    private boolean first = true;
 
     public MavenServiceImpl(String id) {
         super(id);
@@ -415,10 +416,11 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private Future<String> configureProcessOutputReader(Process process) throws IOException {
         ProcessOutputReader output;
-        if (useLogFile) {
+        if (useLogFile && !first) {
             File logFile = getNewLogFile();
             output = new ProcessOutputReader(process.getInputStream(), logFile);
         } else {
+            first = false;
             output = new ProcessOutputReader(process.getInputStream());
         }
         return outputReaderPool.submit(output);
