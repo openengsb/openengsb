@@ -41,7 +41,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
 
     private Session createSession(final MailPropertiesImp properties) {
         log.debug("creating session");
-        Session session = Session.getDefaultInstance(properties.getProperties(), new Authenticator() {
+        Session session = Session.getInstance(properties.getProperties(), new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(properties.getUsername(), properties.getPassword());
@@ -59,12 +59,13 @@ public class JavaxMailAbstraction implements MailAbstraction {
             MailPropertiesImp props = (MailPropertiesImp) properties;
             if (!(this.aliveState == AliveState.ONLINE)) {
                 log.info("State is OFFLINE, connecting...");
-                connect(props);
+                //connect(props);
             }
             Session session = createSession(props);
 
             Message message = new MimeMessage(session);
             MailPropertiesImp propertiesImpl = (MailPropertiesImp) properties;
+            
             message.setFrom(new InternetAddress(propertiesImpl.getSender()));
             message.setRecipients(RecipientType.TO, InternetAddress.parse(receiver));
             message.setSubject(buildSubject(propertiesImpl, subject));
@@ -134,8 +135,8 @@ public class JavaxMailAbstraction implements MailAbstraction {
         private String prefix;
 
         MailPropertiesImp() {
-            properties = new Properties();
-            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            properties = new Properties();            
+            properties.setProperty("mail.smtp.timeout", "10000");
         }
 
         @Override
@@ -192,6 +193,15 @@ public class JavaxMailAbstraction implements MailAbstraction {
 
         public String getPrefix() {
             return this.prefix;
+        }
+        
+        @Override
+        public void setSecureMode(String secureMode) {
+            if (secureMode.equals(SecureMode.SSL.toString())) {
+                properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            } else if (secureMode.equals(SecureMode.STARTTLS.toString())) {
+                properties.put("mail.smtp.starttls.enable", "true");
+            }
         }
     }
 

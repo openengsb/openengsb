@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
+import org.openengsb.connector.email.internal.abstraction.MailProperties;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -58,6 +59,9 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
         if (attributes.containsKey("smtpPort")) {
             notifier.getProperties().setSmtpPort(attributes.get("smtpPort"));
         }
+        if (attributes.containsKey("secureMode")) {
+            notifier.getProperties().setSecureMode(attributes.get("secureMode"));
+        }
     }
 
     @Override
@@ -81,7 +85,13 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
                     "mail.smtp.port.outputMode.description"))
             .attribute(
                 buildAttribute(builder, "smtpHost", "mail.smtp.host.outputMode",
-                    "mail.smtp.host.outputMode.description")).build();
+                    "mail.smtp.host.outputMode.description"))
+            .attribute(
+                builder.newAttribute().id("secureMode").name("secureMode.outputMode")
+                .description("secureMode.outputMode.description")
+                .option("secureMode.option.starttls", MailProperties.SecureMode.STARTTLS.toString())
+                .option("secureMode.option.ssl", MailProperties.SecureMode.SSL.toString())
+                .option("secureMode.option.plain", MailProperties.SecureMode.PLAIN.toString()).build());
 
         return builder.build();
     }
