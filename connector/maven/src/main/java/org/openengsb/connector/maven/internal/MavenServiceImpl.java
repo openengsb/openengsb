@@ -65,8 +65,7 @@ import org.openengsb.domain.test.TestSuccessEvent;
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
     private static String mvnVersion = "3.0.3";
-    private static final String MVN_COMMAND = System.getProperty("user.home") + "\\apache-maven-" + mvnVersion
-            + "\\bin\\mvn" + addSystemEnding();
+    private static String mvnCommand = "mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
@@ -107,23 +106,20 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         projectPath = System.getProperty("user.home");
         MavenResult res = excuteCommand("-version");
         projectPath = oldProjectPath;
-        System.out.println(res.getOutput());
+
         if (res.isSuccess() && res.getOutput().contains("Apache Maven")) {
             return true;
+        } else if (res.getOutput().contains("M2_HOME is set to an invalid directory")) {
+            throw new IllegalStateException("M2_HOME variable is incorrect");
         }
         return false;
-
     }
 
     public void download(String url, String downloadPath) {
         try {
-            System.out.println("Connecting\n");
-
             URL downloadUrl = new URL(url);
             downloadUrl.openConnection();
             InputStream reader = downloadUrl.openStream();
-
-            System.out.println("Downloading to " + downloadPath);
 
             FileOutputStream writer = new FileOutputStream(downloadPath);
             int bufSize = 100000;
@@ -138,9 +134,9 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
             writer.close();
             reader.close();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -152,6 +148,8 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
                     downloadPath);
             unzipFile(downloadPath, System.getProperty("user.home"));
         }
+        mvnCommand = System.getProperty("user.home") + "\\apache-maven-" + mvnVersion + "\\bin\\mvn"
+                + addSystemEnding();
     }
 
     public void unzipFile(String archivePath, String targetPath) {
@@ -194,20 +192,16 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
             }
             zipFile.close();
         } catch (ZipException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
     private File buildDirectoryHierarchyFor(String entryName, File targetDir) {
         int lastIndex = entryName.lastIndexOf('/');
-        String entryFileName = entryName.substring(lastIndex + 1);
         String internalPathToEntry = entryName.substring(0, lastIndex + 1);
         return new File(targetDir, internalPathToEntry);
     }
@@ -379,7 +373,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         File dir = new File(projectPath);
 
         List<String> command = new ArrayList<String>();
-        command.add(MVN_COMMAND);
+        command.add(mvnCommand);
         command.addAll(Arrays.asList(goal.trim().split(" ")));
 
         try {
