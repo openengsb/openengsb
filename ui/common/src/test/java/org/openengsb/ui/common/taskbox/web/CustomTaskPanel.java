@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -47,9 +46,6 @@ public class CustomTaskPanel extends Panel {
     public CustomTaskPanel(String id, Task t) {
         super(id);
         task = t;
-        final FeedbackPanel feedback = new FeedbackPanel("feedback");
-        feedback.setOutputMarkupId(true);
-        add(feedback);
 
         add(new Label("taskid", task.getTaskId()));
         add(new Label("taskname", task.getName()));
@@ -85,7 +81,6 @@ public class CustomTaskPanel extends Panel {
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(feedback);
             }
         });
         add(form);
