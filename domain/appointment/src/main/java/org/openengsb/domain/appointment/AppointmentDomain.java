@@ -43,6 +43,11 @@ public interface AppointmentDomain extends Domain {
      * deletes an appointment
      */
     void deleteAppointment(String id);
+    
+    /**
+     * loads an appointment
+     */
+    Appointment loadAppointment(String id);
 
     /**
      * Returns a list of appointments which are lying between the given start and end time.
