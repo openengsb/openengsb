@@ -63,4 +63,4 @@
     <property name="securityInterceptor" ref="securityInterceptor" />
   </bean>
 
-</beans>
+</blueprint>
