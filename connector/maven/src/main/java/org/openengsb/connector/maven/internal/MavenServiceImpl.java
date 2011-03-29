@@ -64,7 +64,9 @@ import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
-    private static final String MVN_COMMAND = "mvn" + addSystemEnding();
+    private static String mvnVersion = "3.0.3";
+    private static final String MVN_COMMAND = System.getProperty("user.home") + "\\apache-maven-" + mvnVersion
+            + "\\bin\\mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
@@ -84,7 +86,6 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private String command;
     private File logDir;
-    private String mvnVersion = "3.0.3";
 
     public MavenServiceImpl(String id) {
         super(id);
@@ -106,7 +107,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         projectPath = System.getProperty("user.home");
         MavenResult res = excuteCommand("-version");
         projectPath = oldProjectPath;
-
+        System.out.println(res.getOutput());
         if (res.isSuccess() && res.getOutput().contains("Apache Maven")) {
             return true;
         }
@@ -151,25 +152,6 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
                     downloadPath);
             unzipFile(downloadPath, System.getProperty("user.home"));
         }
-        //setEnvironmentVariables();
-    }
-
-    private void setEnvironmentVariables() {
-        Runtime rt = Runtime.getRuntime();
-
-         /*try {
-            rt.exec("cmd /c set M2_HOME=" + System.getProperty("user.home") +"\\apache-maven-" + mvnVersion);
-             rt.exec("cmd /c set PATH=%PATH%;%M2_HOME%\bin");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
-        
-        /*System.setProperty("M2_HOME", System.getProperty("user.home") + "\\apache-maven-" + mvnVersion);
-        System.out.println(System.getProperty("M2_HOME"));
-        System.setProperty("PATH", System.getProperty("PATH") +";"+ System.getProperty("M2_HOME"));
-        System.out.println(System.getProperty("PATH"));*/
-
     }
 
     public void unzipFile(String archivePath, String targetPath) {
