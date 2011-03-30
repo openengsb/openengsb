@@ -68,48 +68,28 @@ public class EditorPageTest {
     }
 
     @Test
-    public void shouldAddAnIdAttributeAtBeginning() throws Exception {
-        ConnectorEditorPage page = new ConnectorEditorPage(manager);
-        assertThat(page.getEditorPanel().getAttributes().size(), is(2));
-        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
-        assertThat(page.getEditorPanel().getAttributes().get(0).isRequired(), is(true));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testIfValuesOfAttributesAreShown() {
 
         Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("id", "id1");
+        attributes.put("a", "testValue");
         when(manager.getAttributeValues("a")).thenReturn(attributes);
 
         ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
         tester.startPage(page);
         tester.debugComponentTrees();
-        String id = page.getEditorPanel().getAttributeViewId("id");
-        TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id
-                    + ":row:field");
-        assertThat(page.getEditorPanel().getAttributes().size(), is(2));
-        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
-        assertThat((String) idField.getDefaultModel().getObject(), is("id1"));
-        assertThat(idField.isEnabled(), is(false));
+
+        assertThat(page.getEditorPanel().getAttributes().size(), is(1));
+        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("a"));
     }
 
-    @Test
     @SuppressWarnings("unchecked")
-    public void testIfEmptyIdFieldIsEditable() {
-
+    @Test
+    public void testIdFieldIsEditable() {
         ConnectorEditorPage page = new ConnectorEditorPage(manager);
         tester.startPage(page);
         tester.debugComponentTrees();
-        String id = page.getEditorPanel().getAttributeViewId("id");
         TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id
-                    + ":row:field");
-        assertThat(page.getEditorPanel().getAttributes().size(), is(2));
-        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
-        assertThat((String) idField.getDefaultModel().getObject(), is(""));
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
         assertThat(idField.isEnabled(), is(true));
     }
 
