@@ -101,6 +101,7 @@
     <module>ui</module>
     <module>assembly</module>
     <module>itests</module>
+    <module>examples/connector</module>
   </modules>
 
   <scm>
