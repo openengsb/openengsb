@@ -27,8 +27,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.gcalendar.internal.misc.AppointmentConverter;
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.appointment.AppointmentDomain;
 import org.openengsb.domain.appointment.models.Appointment;
 
@@ -116,7 +116,7 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             this.state = AliveState.DISCONNECTED;
         }
     }
-    
+
     @Override
     public Appointment loadAppointment(String id) {
         Appointment appointment = new Appointment();

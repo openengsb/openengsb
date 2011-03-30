@@ -20,10 +20,10 @@ package org.openengsb.connector.gcalendar.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.appointment.AppointmentDomain;
 
 public class GcalendarServiceInstanceFactory
