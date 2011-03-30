@@ -217,7 +217,6 @@
                 <feature>war</feature>
                 <!-- ActiveMq Features -->
                 <feature>activemq-blueprint</feature>
-                <feature>activemq-web-console</feature>
                 <!-- OpenEngSB Features -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
