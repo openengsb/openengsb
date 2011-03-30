@@ -109,17 +109,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     public interface AnotherTestInterface extends Domain {
 
-        void update(String id, String name);
-
-        void update(TestBean test);
-
-        void update(UpdateEnum updateEnum);
-
-        void update(Integer integer);
-
     }
 
-    public class TestService implements TestInterface {
+    public class TestService implements AnotherTestInterface {
 
         private String instanceId;
 
@@ -128,29 +120,13 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         }
 
         @Override
-        public void update(String id, String name) {
-        }
-
-        @Override
-        public void update(TestBean test) {
-        }
-
-        @Override
-        public void update(UpdateEnum updateEnum) {
-        }
-
-        @Override
-        public void update(Integer integer) {
-        }
-
-        @Override
         public AliveState getAliveState() {
-            return AliveState.ONLINE;  //To change body of implemented methods use File | Settings | File Templates.
+            return AliveState.OFFLINE;
         }
 
         @Override
         public String getInstanceId() {
-            return instanceId;  //To change body of implemented methods use File | Settings | File Templates.
+            return instanceId;
         }
     }
 
@@ -574,7 +550,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws InvalidSyntaxException {
+    public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
         List<String> domains = new ArrayList<String>();
@@ -608,6 +584,20 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             assertThat(availableInTree.contains(domain), is(true));
             assertThat(serviceListTree.getChildCount(availableInTreeAsTreeNode.get(i)), greaterThan(0));
         }
+    }
+
+    @Test
+    public void testErrorMessageAppearIfServiceDoesNotExists() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertRenderedPage(TestClient.class);
+
+        setServiceInDropDown(2);
+        tester.debugComponentTrees();
+
+        String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
+        assertThat(resultException, containsString("No service found for domain"));
+        assertThat(resultException, containsString(AnotherTestInterface.class.getName()));
+
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {

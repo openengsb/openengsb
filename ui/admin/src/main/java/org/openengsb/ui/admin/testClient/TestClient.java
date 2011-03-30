@@ -485,9 +485,11 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-
-        List<Method> methods = Arrays.asList(connectorInterface.getMethods());
-        return methods;
+        if (DomainEndpointFactory.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+            return Arrays.asList(connectorInterface.getMethods());
+        }
+        error("No service found for domain: " + connectorInterface.getName() );
+        return new ArrayList<Method>();
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
