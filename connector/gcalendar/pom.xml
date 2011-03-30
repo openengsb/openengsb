@@ -65,6 +65,17 @@
     </resources>
   </build>
 
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mandubian-mvn</id>
+      <url>http://mandubian-mvn.googlecode.com/svn/trunk/mandubian-mvn/repository</url>
+    </repository>
+  </repositories> 
+
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
@@ -87,8 +98,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.wrapped</groupId>
-      <artifactId>com.google.gdata-calendar</artifactId>
+      <groupId>com.google.gdata</groupId>
+      <artifactId>gdata-calendar-2.0</artifactId>
+      <version>${google.calendar.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

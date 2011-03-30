@@ -67,6 +67,7 @@
     <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
+    <bundle>mvn:org.openengsb.wrapped/com.google.gdata-calendar/${google.calendar.wrapped.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
@@ -151,6 +152,13 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-email/${project.version}</bundle>
   </feature>
+
+  <feature name="openengsb-connector-gcalendar" version="${project.version}">
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-appointment</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-gcalendar/${project.version}</bundle>
+  </feature>
+
   <feature name="openengsb-connector-plaintextreport" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-report</feature>

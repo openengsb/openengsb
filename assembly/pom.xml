@@ -227,6 +227,7 @@
                 <feature>openengsb-connector-git</feature>
                 <feature>openengsb-connector-trac</feature>
                 <feature>openengsb-connector-jira</feature>
+                <feature>openengsb-connector-gcalendar</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>

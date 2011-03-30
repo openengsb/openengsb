@@ -18,13 +18,13 @@
 package org.openengsb.connector.gcalendar;
 
 import org.openengsb.connector.gcalendar.internal.GcalendarServiceImpl;
+import org.openengsb.connector.gcalendar.internal.GcalendarServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.domain.appointment.AppointmentDomain;
 
 public class GcalendarServiceManager extends AbstractServiceManager<AppointmentDomain, GcalendarServiceImpl> {
 
-    public GcalendarServiceManager(ServiceInstanceFactory<AppointmentDomain, GcalendarServiceImpl> factory) {
+    public GcalendarServiceManager(GcalendarServiceInstanceFactory factory) {
         super(factory);
     }
 }

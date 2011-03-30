@@ -111,6 +111,10 @@ public class GcalendarServiceTestUT {
 
     @Test
     public void testRetrievingAppointments() {
+        Appointment a1 = createTestAppointment();
+        
+        service.createAppointment(a1);
+        
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, -2);
         Date start = c.getTime();

@@ -62,6 +62,7 @@
     <module>maven</module>
     <module>jira</module>
     <module>memoryauditing</module>
+    <module>gcalendar</module>
   </modules>
 
 </project>
