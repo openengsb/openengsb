@@ -111,6 +111,7 @@ public class TestClient extends BasePage {
     private ServiceId lastServiceId;
     private static final String DOMAINSTRING = "[domain.";
     private Map<String, Class<? extends Domain>> availableDomains = new HashMap<String, Class<? extends Domain>>();
+    private AjaxButton submitButton;
 
     public TestClient() {
         super();
@@ -219,6 +220,7 @@ public class TestClient extends BasePage {
 
                 updateEditButton((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
+                target.addComponent(submitButton);
             }
         };
         serviceList.setOutputMarkupId(true);
@@ -245,7 +247,7 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
-        AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
+        submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 target.addComponent(feedbackPanel);
@@ -260,7 +262,7 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
-
+        submitButton.setOutputMarkupId(true);
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
@@ -486,9 +488,11 @@ public class TestClient extends BasePage {
             throw new IllegalArgumentException(e);
         }
         if (DomainEndpointFactory.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+            this.submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
         }
-        error("No service found for domain: " + connectorInterface.getName() );
+        error("No service found for domain: " + connectorInterface.getName());
+        this.submitButton.setEnabled(false);
         return new ArrayList<Method>();
     }
 

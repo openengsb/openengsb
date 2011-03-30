@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -593,7 +594,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         setServiceInDropDown(2);
         tester.debugComponentTrees();
-
+        AjaxButton submitButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
+        assertFalse(submitButton.isEnabled());
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString("No service found for domain"));
         assertThat(resultException, containsString(AnotherTestInterface.class.getName()));
