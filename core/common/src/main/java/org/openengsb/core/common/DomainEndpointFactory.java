@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -135,4 +136,13 @@ public final class DomainEndpointFactory {
     private DomainEndpointFactory() {
     }
 
+    public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
+        Domain service;
+        try {
+            service = OsgiServiceUtils.getService(domainType);
+        } catch (OsgiServiceNotAvailableException e) {
+            return false;
+        }
+        return service != null;
+    }
 }
