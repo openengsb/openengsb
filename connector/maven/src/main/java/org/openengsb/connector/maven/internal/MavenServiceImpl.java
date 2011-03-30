@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +42,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -117,27 +118,15 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void download(String url, String downloadPath) {
+        InputStream in = null;
         try {
-            URL downloadUrl = new URL(url);
-            downloadUrl.openConnection();
-            InputStream reader = downloadUrl.openStream();
-
-            FileOutputStream writer = new FileOutputStream(downloadPath);
-            int bufSize = 100000;
-            byte[] buffer = new byte[bufSize];
-            int bytesRead = 0;
-
-            while ((bytesRead = reader.read(buffer)) > 0) {
-                writer.write(buffer, 0, bytesRead);
-                buffer = new byte[bufSize];
-            }
-
-            writer.close();
-            reader.close();
-        } catch (MalformedURLException e) {
-            log.error(e);
+            in = new URL(url).openStream();
+            FileUtils.writeByteArrayToFile(new File(downloadPath), IOUtils.toByteArray(in));
+            System.out.println(IOUtils.toString(in));
         } catch (IOException e) {
             log.error(e);
+        } finally {
+            IOUtils.closeQuietly(in);
         }
     }
 

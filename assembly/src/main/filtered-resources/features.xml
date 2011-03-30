@@ -53,6 +53,7 @@
     <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
     <!-- OpenEngSB Commons Dependencies -->
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
+<bundle>mvn:org.apache.commons/commons-compress/${commons.compress.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
