@@ -442,16 +442,20 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
     }
 
-    private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) throws OsgiServiceNotAvailableException {
+    private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
         String service = serviceId.getServiceClass();
         Class<? extends Domain> aClass = availableDomains.get(service);
         String name = serviceId.getServiceId()
             .substring(DOMAINSTRING.length(), serviceId.getServiceId().length() - 1);
-        Domain defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");
+        Domain defaultDomain = null;
+        if (DomainEndpointFactory.isConnectorCurrentlyPresent(aClass)) {
+            defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");
+        }
         if (defaultDomain != null) {
             return defaultDomain;
         }
-        throw new OsgiServiceNotAvailableException("no default service found for id: " + serviceId.getServiceClass());
+        throw new OsgiServiceNotAvailableException("no default service found for service: "
+            + serviceId.getServiceClass());
     }
 
     private void handleExceptionWithFeedback(Throwable e) {

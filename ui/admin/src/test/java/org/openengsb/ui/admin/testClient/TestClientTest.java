@@ -34,7 +34,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -66,19 +65,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-<<<<<<< HEAD
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.proxy.ProxyFactory;
-import org.openengsb.core.common.service.DomainService;
-=======
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
@@ -90,7 +77,6 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.util.OsgiServiceUtils;
->>>>>>> master
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -585,7 +571,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
-<<<<<<< HEAD
     @Test
     public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws InvalidSyntaxException {
         setupAndStartTestClientPage();
@@ -595,7 +580,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
 
         int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                .getDefaultModelObject()).size();
+            .getDefaultModelObject()).size();
         //get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
@@ -621,30 +606,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             assertThat(availableInTree.contains(domain), is(true));
             assertThat(serviceListTree.getChildCount(availableInTreeAsTreeNode.get(i)), greaterThan(0));
         }
-    }
-
-    @Test
-    public void testCallThrewDomainEndpointFactory() throws org.osgi.framework.InvalidSyntaxException {
-        setupAndStartTestClientPage();
-        TestService service = new TestService("testServiceId");
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("id", "test");
-        properties.put(org.osgi.framework.Constants.SERVICE_RANKING, -1);
-        properties.put("location.foo", "[domain/testDomain/default]");
-        bundleContext.registerService(TestInterface.class.getName(), service, properties);
-
-
-        org.openengsb.core.common.DomainEndpointFactory.setBundleContext(bundleContext);
-
-        setServiceInDropDown(-1);
-        setMethodInDropDown(3);
-
-        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
-        tester.debugComponentTrees();
-        formTester.setValue(beanPanelPath + ":field", "42");
-
-        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
@@ -740,11 +701,10 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
     }
-=======
+
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
         OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
->>>>>>> master
 }
