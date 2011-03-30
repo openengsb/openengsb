@@ -21,20 +21,20 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
 public class EventLinks extends Panel {
 
-    public EventLinks(String id, final Event event,
+    public EventLinks(String id, final EventRepresentation event,
             final DefaultMutableTreeNode treeNode) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create.action") {
             @Override
             public void onClick() {
-                Action action = new Action();
+                ActionRepresentation action = new ActionRepresentation();
                 setResponsePage(new EditAction(event, action));
             }
         });
@@ -45,8 +45,8 @@ public class EventLinks extends Panel {
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) treeNode
                         .getParent();
                 Object userObject = parent.getUserObject();
-                if (userObject instanceof Action) {
-                    ((Action) userObject).getEvents().remove(event);
+                if (userObject instanceof ActionRepresentation) {
+                    ((ActionRepresentation) userObject).getEvents().remove(event);
                 }
                 setResponsePage(WorkflowEditor.class);
             }

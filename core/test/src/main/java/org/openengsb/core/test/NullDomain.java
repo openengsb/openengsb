@@ -17,8 +17,8 @@
 
 package org.openengsb.core.test;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Raises;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Raises;
 
 public interface NullDomain extends Domain {
 

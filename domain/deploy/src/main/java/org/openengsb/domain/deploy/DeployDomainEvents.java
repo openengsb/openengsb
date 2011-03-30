@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.deploy;
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.api.DomainEvents;
 
 public interface DeployDomainEvents extends DomainEvents {
 

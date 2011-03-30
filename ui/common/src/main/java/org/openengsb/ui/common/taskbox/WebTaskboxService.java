@@ -18,9 +18,9 @@
 package org.openengsb.ui.common.taskbox;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.taskbox.TaskboxException;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.model.Task;
 
 /**
  * The WebTaskboxService extends the normal {@link org.openengsb.core.common.taskbox.TaskboxService TaskboxService} by
@@ -30,7 +30,7 @@ import org.openengsb.core.common.taskbox.model.Task;
 public interface WebTaskboxService extends TaskboxService {
     /**
      * Returns a Wicket panel which displays all open tasks. It provides filtering and sorting capabilities.
-     * 
+     *
      * This panel has {@code componentId="OverviewPanel"} and style attribute {@code class="OverviewPanel"}.
      */
     Panel getOverviewPanel();
@@ -38,17 +38,17 @@ public interface WebTaskboxService extends TaskboxService {
     /**
      * Gets the Wicket panel for the task type of the passed task. If a custom panel was registered for this type before
      * it gets returned, otherwise it falls back to the default task panel providing a generic user interface.
-     * 
+     *
      * @throws TaskboxException when the creation of the tasks panel fails
      */
     Panel getTaskPanel(Task task, String wicketPanelId) throws TaskboxException;
 
     /**
      * Registers a custom Wicket panel for a certain task type. Any older registration for this type gets overwritten.
-     * 
+     *
      * The panel is provided via its class and needs a constructor with the ID as string for the first parameter and the
      * {@link org.openengsb.core.common.taskbox.model.Task Task} as second.
-     * 
+     *
      * @throws TaskboxException when the panel could not be registered
      */
     void registerTaskPanel(String taskType, Class<? extends Panel> panelClass) throws TaskboxException;

@@ -17,8 +17,8 @@
 
 package org.openengsb.domain.test;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Raises;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Raises;
 
 /**
  * This domain can be used to run tests for projects. The affected project is usually configured in the respective tool

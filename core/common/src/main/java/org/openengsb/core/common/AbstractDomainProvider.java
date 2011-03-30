@@ -22,9 +22,14 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.common.l10n.BundleStrings;
-import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainEvents;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.l10n.BundleStrings;
+import org.openengsb.core.api.l10n.LocalizableString;
 import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
 /**
  * Base class for {@code DomainProvider} implementations with the following unctionality:
@@ -104,6 +109,7 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
         return domainInterface;
     }
 
+    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.strings = new BundleStrings(this.bundleContext.getBundle());

@@ -19,7 +19,7 @@ package org.openengsb.ui.admin.tree;
 
 import java.io.Serializable;
 
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextCurrentService;
 
 @SuppressWarnings("serial")
 public class ModelBean implements Serializable {

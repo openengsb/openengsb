@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
 import org.openengsb.domain.report.NoSuchReportException;
 import org.openengsb.domain.report.common.AbstractReportDomain;
 import org.openengsb.domain.report.model.Report;

@@ -28,17 +28,18 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
@@ -160,6 +161,11 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         mockDomain("report");
         mockDomain("issue");
         RuleUtil.addHello1Rule(manager);
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
 }

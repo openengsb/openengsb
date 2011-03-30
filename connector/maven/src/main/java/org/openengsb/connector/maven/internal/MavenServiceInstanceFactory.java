@@ -20,11 +20,12 @@ package org.openengsb.connector.maven.internal;
 import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.test.TestDomainEvents;
@@ -64,7 +65,7 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<Maven
     }
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+    public ServiceDescriptor getDescriptor(Builder builder) {
         builder.name("service.name").description("service.description");
         builder.attribute(builder.newAttribute().id("projectPath").name("service.projectPath.name")
             .description("service.projectPath.description").required().build());

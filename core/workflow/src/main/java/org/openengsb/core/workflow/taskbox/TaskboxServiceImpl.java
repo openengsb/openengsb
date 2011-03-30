@@ -21,19 +21,18 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.TaskboxException;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
 
-public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
+public class TaskboxServiceImpl implements TaskboxService {
     private Log log = LogFactory.getLog(getClass());
 
     private WorkflowService workflowService;
@@ -53,7 +52,6 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         this.persistenceManager = persistenceManager;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
@@ -91,14 +89,14 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
-        
-        if (this.getTasksForExample(t).size() > 0) {
+
+        if (getTasksForExample(t).size() > 0) {
             try {
                 persistence.delete(t);
             } catch (PersistenceException e) {
                 throw new WorkflowException(e);
             }
-    
+
             workflowService.processEvent(finishedEvent);
             log.info("finished task " + task.getTaskId());
         } else {

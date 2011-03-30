@@ -17,7 +17,7 @@
 
 package org.openengsb.core.workflow.model;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class TestEvent extends Event {
 
@@ -40,7 +40,7 @@ public class TestEvent extends Event {
     }
 
     public String getValue() {
-        return this.value;
+        return value;
     }
 
     public void setValue(String value) {

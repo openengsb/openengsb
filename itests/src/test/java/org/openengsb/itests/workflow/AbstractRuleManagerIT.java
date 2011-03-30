@@ -23,9 +23,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 

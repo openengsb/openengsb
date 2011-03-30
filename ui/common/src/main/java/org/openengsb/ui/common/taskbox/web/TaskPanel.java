@@ -29,14 +29,13 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.model.Task;
 
 @SuppressWarnings("serial")
 public class TaskPanel extends Panel {
@@ -51,9 +50,6 @@ public class TaskPanel extends Panel {
     public TaskPanel(String id, Task t) {
         super(id);
         task = t;
-        final FeedbackPanel feedback = new FeedbackPanel("feedback");
-        feedback.setOutputMarkupId(true);
-        add(feedback);
 
         add(new Label("taskid", task.getTaskId()));
         add(new Label("taskname", task.getName()));
@@ -87,7 +83,6 @@ public class TaskPanel extends Panel {
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                target.addComponent(feedback);
             }
         });
         add(form);

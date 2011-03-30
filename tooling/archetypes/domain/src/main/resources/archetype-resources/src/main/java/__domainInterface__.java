@@ -17,7 +17,7 @@
 
 package ${package};
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 
 public interface ${domainInterface} extends Domain {
 

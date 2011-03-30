@@ -32,9 +32,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 @RunWith(Parameterized.class)
 public class PersistenceRuleManagerCrudIT extends
@@ -50,11 +50,11 @@ public class PersistenceRuleManagerCrudIT extends
         }
 
         public RuleBaseElementId getId() {
-            return this.id;
+            return id;
         }
 
         public String getCode() {
-            return this.code;
+            return code;
         }
     }
 
@@ -129,8 +129,8 @@ public class PersistenceRuleManagerCrudIT extends
     public PersistenceRuleManagerCrudIT(List<TestElement> testelements) {
         for (int i = 0; i < 3; i++) {
             TestElement el = testelements.get(i);
-            this.code[i] = el.code;
-            this.id[i] = el.id;
+            code[i] = el.code;
+            id[i] = el.id;
         }
     }
 

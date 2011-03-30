@@ -54,7 +54,7 @@ namespace Workflow
 				// of which type the sent data is; this have to be the required java types
 				+ "    \"classes\": ["
 				+ "        \"java.lang.String\","
-				+ "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
+				+ "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
 				+ "    ],"
 				// the method which should be executed
 				+ "    \"methodName\": \"executeWorkflow\","

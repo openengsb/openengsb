@@ -20,9 +20,9 @@ package org.openengsb.ui.common.editor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.SingleAttributeValidationResult;
-import org.openengsb.core.common.validation.ValidationResultImpl;
+import org.openengsb.core.api.validation.FieldValidator;
+import org.openengsb.core.api.validation.SingleAttributeValidationResult;
+import org.openengsb.core.api.validation.ValidationResultImpl;
 
 /**
  * FieldValidator, that is used to check if the value is a number

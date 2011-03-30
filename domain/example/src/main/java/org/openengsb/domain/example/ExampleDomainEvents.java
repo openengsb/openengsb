@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.example;
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.api.DomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 
 public interface ExampleDomainEvents extends DomainEvents {

@@ -120,7 +120,7 @@ public class GitServiceImplTest extends AbstractGitServiceImpl {
         ZipFile zipFile = new ZipFile(service.export());
         assertThat(zipFile.getEntry("testfile").getName(), is("testfile"));
         assertThat(zipFile.getEntry(dir + "/").getName(), is(dir + "/"));
-        assertThat(zipFile.getEntry(dir + "/" + file).getName(), is(dir + "/" + file));
+        assertThat(zipFile.getEntry(dir + File.separator + file).getName(), is(dir + File.separator + file));
     }
 
     public void exportRepositoryByRef_shouldReturnZipFileWithRepoEntries() throws Exception {

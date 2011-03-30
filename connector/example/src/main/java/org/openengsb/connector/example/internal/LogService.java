@@ -19,8 +19,8 @@ package org.openengsb.connector.example.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -69,12 +69,12 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     public void setOutputMode(String outputMode) {
         this.outputMode = outputMode;
-        this.aliveState = AliveState.ONLINE;
+        aliveState = AliveState.ONLINE;
     }
 
     @Override
     public AliveState getAliveState() {
-        return this.aliveState;
+        return aliveState;
     }
 
     @Override

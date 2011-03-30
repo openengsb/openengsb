@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 
 public class ThreadLocalUtilTest {

@@ -53,24 +53,24 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RemoteEventProcessor;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowException;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.RemoteEvent;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.common.util.ThreadLocalUtil;
-import org.openengsb.core.common.workflow.RemoteEventProcessor;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
-import org.openengsb.core.common.workflow.model.RemoteEvent;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor,
         BundleContextAware {
@@ -270,6 +270,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
     }
 
+    @Override
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
@@ -279,6 +280,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
     }
 
+    @Override
     public void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {

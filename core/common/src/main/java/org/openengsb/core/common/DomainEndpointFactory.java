@@ -22,7 +22,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -90,7 +91,9 @@ public final class DomainEndpointFactory {
         for (ServiceReference ref : allServiceReferences) {
             String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
             try {
-                OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+                T osgiServiceProxy =
+                    OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+                result.add(osgiServiceProxy);
             } catch (InvalidSyntaxException e) {
                 throw new RuntimeException(e);
             }

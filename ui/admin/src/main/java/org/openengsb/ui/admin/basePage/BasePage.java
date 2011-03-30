@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;
@@ -73,7 +73,7 @@ public class BasePage extends OpenEngSBPage {
             public void onClick() {
                 boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
                 if (signedIn) {
-                    ((AuthenticatedWebSession) this.getSession()).signOut();
+                    ((AuthenticatedWebSession) getSession()).signOut();
                 }
                 setResponsePage(signedIn ? Index.class : LoginPage.class);
             }

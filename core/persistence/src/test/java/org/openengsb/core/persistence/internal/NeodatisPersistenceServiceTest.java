@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.mockito.Mockito;
-import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.persistence.PersistenceServiceTest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

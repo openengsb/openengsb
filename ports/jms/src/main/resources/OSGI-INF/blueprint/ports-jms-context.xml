@@ -22,22 +22,23 @@
            xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
            xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
-  <service interface="org.openengsb.core.common.communication.OutgoingPort">
+  <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
       <entry key="id" value="jms-json" />
     </service-properties>
     <ref component-id="portBean"/>
   </service>
-  
+
   <bean id="portBean" class="org.openengsb.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
-      <property name="factory">
-        <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
-      </property>
-      <property name="connectionFactory" ref="openengsbBrokerConnectionFactory" />
-      <property name="requestHandler" ref="requestHandler" />
-    </bean>
-  
-  <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
+    <property name="factory">
+      <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
+    </property>
+    <property name="connectionFactory" ref="openengsbBrokerConnectionFactory" />
+    <property name="requestHandler" ref="requestHandler" />
+  </bean>
+
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
+  <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
 
 </blueprint>
+

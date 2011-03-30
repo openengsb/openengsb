@@ -54,16 +54,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
+    private static final String SYS_PROP_LOG = "itests_log";
     private static final String LOG_LEVEL = "WARN";
     /**
-     * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached.
-     * Look for "Listening for transport dt_socket at address: <DEBUG_PORT>"
+     * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached. Look for
+     * "Listening for transport dt_socket at address: <DEBUG_PORT>"
      */
     private static final boolean DEBUG = false;
     private static final String DEBUG_PORT = "5005";
+    protected static final int WEBUI_PORT = 8091;
 
     public enum SetupType {
-        BLUEPRINT, SPRING, START_ONLY
+            BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -185,21 +187,22 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         if (DEBUG) {
             baseOptions = combine(baseOptions, Helper.activateDebugging(DEBUG_PORT));
         }
+        String logLvl = System.getProperty(SYS_PROP_LOG) != null ? System.getProperty(SYS_PROP_LOG) : LOG_LEVEL;
         return combine(
             baseOptions,
             Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
-            Helper.setLogLevel(LOG_LEVEL),
+            Helper.setLogLevel(logLvl),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
-            // Helper.activateDebugging("5005"),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
-                .versionAsInProject(), "openengsb-ui-admin"), workingDirectory(getWorkingDirectory()),
+                .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
+            workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
-            vmOption("-Dorg.osgi.service.http.port=8090"), waitForFrameworkStartup(),
+            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }

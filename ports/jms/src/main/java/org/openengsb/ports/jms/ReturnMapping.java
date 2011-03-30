@@ -17,7 +17,7 @@
 
 package org.openengsb.ports.jms;
 
-import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.api.remote.MethodReturn;
 
 public class ReturnMapping extends MethodReturn {
 

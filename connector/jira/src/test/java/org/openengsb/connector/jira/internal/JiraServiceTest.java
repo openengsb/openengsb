@@ -35,7 +35,7 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 

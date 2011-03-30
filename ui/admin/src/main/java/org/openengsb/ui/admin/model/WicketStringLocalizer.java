@@ -21,8 +21,8 @@ import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.l10n.StringLocalizer;
+import org.openengsb.core.api.l10n.LocalizableString;
+import org.openengsb.core.api.l10n.StringLocalizer;
 
 /**
  * String localizer that implements the OpenEngSB's {@link StringLocalizer} interface and uses Wicket to localize the

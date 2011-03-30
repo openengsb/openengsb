@@ -23,8 +23,8 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
 import org.openengsb.domain.report.NoSuchReportException;
 import org.openengsb.domain.report.common.ReportStore;
 import org.openengsb.domain.report.model.Report;
@@ -139,15 +139,15 @@ public class PlaintextReportServiceTest {
         }
 
         public String getStringField() {
-            return this.stringField;
+            return stringField;
         }
 
         public int getIntField() {
-            return this.intField;
+            return intField;
         }
 
         public Object getObjectField() {
-            return this.objectField;
+            return objectField;
         }
 
     }
