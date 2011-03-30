@@ -25,7 +25,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.test.TestDomainEvents;

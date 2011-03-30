@@ -17,7 +17,7 @@
 
 package org.openengsb.connector.email.internal.abstraction;
 
-import org.openengsb.core.common.AliveState;
+import org.openengsb.core.api.AliveState;
 
 public interface MailAbstraction {
 

@@ -20,12 +20,12 @@ package org.openengsb.core.workflow;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.common.communication.MethodCall;
-import org.openengsb.core.common.communication.OutgoingPort;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.core.common.workflow.model.RemoteEvent;
 
 public final class OsgiHelper {
 

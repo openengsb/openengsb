@@ -26,8 +26,8 @@ import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
@@ -87,7 +87,7 @@ public abstract class ServiceEditor extends Panel {
     public abstract void onSubmit();
 
     public ServiceEditorPanel getServiceEditorPanel() {
-        return this.serviceEditorPanel;
+        return serviceEditorPanel;
     }
 
     public List<AttributeDefinition> getAttributes() {

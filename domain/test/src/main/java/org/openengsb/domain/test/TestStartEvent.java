@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.test;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class TestStartEvent extends Event {
 

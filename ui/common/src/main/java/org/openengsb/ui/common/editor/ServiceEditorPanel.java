@@ -33,9 +33,9 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.validation.FormValidator;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.

@@ -59,15 +59,14 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.DomainEndpointFactory;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.proxy.ProxyFactory;
-import org.openengsb.core.common.proxy.ProxyServiceManager;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -145,7 +144,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
+                        ServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });

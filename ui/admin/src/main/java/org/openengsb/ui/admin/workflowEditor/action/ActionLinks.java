@@ -21,19 +21,19 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.admin.workflowEditor.event.EditEvent;
 
 public class ActionLinks extends Panel {
 
-    public ActionLinks(String id, final Action action, final DefaultMutableTreeNode treeNode) {
+    public ActionLinks(String id, final ActionRepresentation action, final DefaultMutableTreeNode treeNode) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create-action") {
             @Override
             public void onClick() {
-                Action action2 = new Action();
+                ActionRepresentation action2 = new ActionRepresentation();
                 treeNode.add(new DefaultMutableTreeNode(action2));
                 setResponsePage(new EditAction(action, action2));
             }
@@ -41,7 +41,7 @@ public class ActionLinks extends Panel {
         add(new Link<DefaultMutableTreeNode>("create-event") {
             @Override
             public void onClick() {
-                Event event = new Event();
+                EventRepresentation event = new EventRepresentation();
                 setResponsePage(new EditEvent(event, action));
             }
         });
@@ -50,11 +50,11 @@ public class ActionLinks extends Panel {
             public void onClick() {
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) treeNode.getParent();
                 Object userObject = parent.getUserObject();
-                if (userObject instanceof Action) {
-                    ((Action) userObject).getActions().remove(action);
+                if (userObject instanceof ActionRepresentation) {
+                    ((ActionRepresentation) userObject).getActions().remove(action);
                 }
-                if (userObject instanceof Event) {
-                    ((Event) userObject).getActions().remove(action);
+                if (userObject instanceof EventRepresentation) {
+                    ((EventRepresentation) userObject).getActions().remove(action);
                 }
                 setResponsePage(WorkflowEditor.class);
             }

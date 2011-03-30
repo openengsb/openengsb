@@ -19,7 +19,7 @@ package org.openengsb.domain.auditing;
 
 import java.util.List;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.

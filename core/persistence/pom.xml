@@ -42,7 +42,9 @@
     OpenEngSB Persistence Interfaces to be used by Domains and Services to store their data
     and implementation of storing data in NeoDatis ODB.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -58,6 +60,11 @@
   </scm>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

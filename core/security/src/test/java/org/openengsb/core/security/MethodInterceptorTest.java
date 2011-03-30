@@ -28,10 +28,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.security.model.ServiceAuthorizedList;
-import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.security.model.ServiceAuthorizedList;
+import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.internal.MetadataSource;
 import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.test.DummyPersistenceManager;

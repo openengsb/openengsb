@@ -23,7 +23,7 @@ import java.util.concurrent.Callable;
 
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
-import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.ProcessBag;
 
 import com.google.common.base.Preconditions;
 
@@ -44,6 +44,7 @@ public class WorkflowStarter implements Callable<Long> {
         this(session, processId, new HashMap<String, Object>());
     }
 
+    @Override
     public Long call() {
         ProcessBag processBag = getProcessBag();
         ProcessInstance processInstance = session.startProcess(processId, params);

@@ -19,9 +19,9 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
 
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 
 public abstract class ResourceHandler<SourceType extends RuleManager> {
 

@@ -29,22 +29,23 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.openengsb.core.common.Raises;
-import org.openengsb.core.common.workflow.editor.Action;
-import org.openengsb.core.common.workflow.editor.Event;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.Raises;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class EditEvent extends BasePage {
 
-    public EditEvent(final Event node, final Action action) {
+    public EditEvent(final EventRepresentation node, final ActionRepresentation action) {
 
-        IModel<List<Class<? extends org.openengsb.core.common.Event>>> eventsModel =
-            new AbstractReadOnlyModel<List<Class<? extends org.openengsb.core.common.Event>>>() {
+        IModel<List<Class<? extends Event>>> eventsModel =
+            new AbstractReadOnlyModel<List<Class<? extends Event>>>() {
 
                 @Override
-                public List<Class<? extends org.openengsb.core.common.Event>> getObject() {
+                public List<Class<? extends Event>> getObject() {
                     List<Class<?>> methodParameters = action.getMethodParameters();
                     Method method;
                     try {
@@ -64,9 +65,9 @@ public class EditEvent extends BasePage {
                 }
             };
 
-        DropDownChoice<Class<? extends org.openengsb.core.common.Event>> events =
-            new DropDownChoice<Class<? extends org.openengsb.core.common.Event>>("eventSelect",
-                new PropertyModel<Class<? extends org.openengsb.core.common.Event>>(node, "event"), eventsModel);
+        DropDownChoice<Class<? extends Event>> events =
+            new DropDownChoice<Class<? extends Event>>("eventSelect", new PropertyModel<Class<? extends Event>>(node,
+                "event"), eventsModel);
         events.setOutputMarkupId(true);
 
         Form<Object> form = new Form<Object>("eventForm") {

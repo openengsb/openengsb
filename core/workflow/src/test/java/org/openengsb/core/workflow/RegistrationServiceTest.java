@@ -34,17 +34,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.communication.MethodCall;
-import org.openengsb.core.common.communication.OutgoingPort;
-import org.openengsb.core.common.communication.RequestHandler;
-import org.openengsb.core.common.internal.CallRouterImpl;
-import org.openengsb.core.common.internal.RequestHandlerImpl;
-import org.openengsb.core.common.workflow.EventRegistrationService;
-import org.openengsb.core.common.workflow.model.RemoteEvent;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.workflow.EventRegistrationService;
+import org.openengsb.core.api.workflow.model.RemoteEvent;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
+import org.osgi.framework.BundleContext;
 
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
@@ -58,8 +59,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        CallRouterImpl callRouterImpl = new CallRouterImpl();
-        callRouterImpl.setBundleContext(bundleContext);
         requestHandler = getRequestHandler();
 
         regService = getRegistrationService();
@@ -88,7 +87,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     private RequestHandler getRequestHandler() {
         RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
-        requestHandlerImpl.setBundleContext(bundleContext);
         return requestHandlerImpl;
     }
 
@@ -153,5 +151,10 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 }

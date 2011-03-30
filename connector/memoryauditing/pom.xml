@@ -40,9 +40,11 @@
   <name>OpenEngSB :: Connector :: MemoryAuditing</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>Description of Connector</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -66,6 +68,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>

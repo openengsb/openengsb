@@ -27,30 +27,24 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.Activator;
-import org.openengsb.core.common.OpenEngSBService;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.api.OpenEngSBService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public abstract class AbstractOsgiMockServiceTest {
 
     protected BundleContext bundleContext;
+    protected Bundle bundle;
 
     @Before
     public void setUp() throws Exception {
         bundleContext = mock(BundleContext.class);
-        new Activator().start(bundleContext);
-        Bundle bundleMock = mock(Bundle.class);
-        when(bundleContext.getBundle()).thenReturn(bundleMock);
-        when(bundleMock.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
-            @Override
-            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
-                return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
-            }
-        });
+        setBundleContext(bundleContext);
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override
@@ -60,7 +54,10 @@ public abstract class AbstractOsgiMockServiceTest {
                     return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
                 }
             });
+        when(bundleContext.getBundle()).thenReturn(new DummyBundle());
     }
+
+    protected abstract void setBundleContext(BundleContext bundleContext);
 
     protected <T> T mockService(Class<T> serviceClass, String id)
         throws InvalidSyntaxException {
@@ -71,9 +68,6 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected void registerSerivce(Object service, Class<?>[] interfaces, String... validQueries)
         throws InvalidSyntaxException {
-        if (service == null) {
-            throw new IllegalArgumentException("service must not be null");
-        }
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
         ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock, };
         for (Class<?> serviceClass : interfaces) {
@@ -81,8 +75,8 @@ public abstract class AbstractOsgiMockServiceTest {
             for (String query : validQueries) {
                 mockQueriesForString(mockAsArray, serviceClass, query);
             }
+            when(bundleContext.getService(serviceRefMock)).thenReturn(service);
         }
-        when(bundleContext.getService(serviceRefMock)).thenReturn(service);
     }
 
     protected void registerService(Object service, Class<?> interfaze, String... validQueries)
@@ -106,14 +100,26 @@ public abstract class AbstractOsgiMockServiceTest {
         when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(query)))
             .thenReturn(mockAsArray);
         when(bundleContext.getServiceReferences(null,
-            OsgiServiceUtils.makeFilter(serviceClass.getName(), query).toString()))
+            makeFilter(serviceClass.getName(), query).toString()))
             .thenReturn(mockAsArray);
         when(bundleContext.getServiceReferences(null,
-            OsgiServiceUtils.makeFilter(OpenEngSBService.class.getName(), query).toString()))
+            makeFilter(OpenEngSBService.class.getName(), query).toString()))
             .thenReturn(mockAsArray);
         when(
             bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()),
                 eq(query)))
             .thenReturn(mockAsArray);
+    }
+
+    private Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
+        return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
+    }
+
+    private Filter makeFilterForClass(String className) {
+        try {
+            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

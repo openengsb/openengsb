@@ -20,7 +20,7 @@ package org.openengsb.domain.scm;
 import java.io.File;
 import java.util.List;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 
 /**
  * ScmDomain is an abstraction for working with SCM tools.

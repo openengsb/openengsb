@@ -21,21 +21,20 @@ package org.openengsb.core.security.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.security.UserExistsException;
-import org.openengsb.core.common.security.UserManagementException;
-import org.openengsb.core.common.security.UserManager;
-import org.openengsb.core.common.security.UserNotFoundException;
-import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserManagementException;
+import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.api.security.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserManagerImpl implements UserManager, BundleContextAware {
+public class UserManagerImpl implements UserManager {
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;
@@ -124,7 +123,6 @@ public class UserManagerImpl implements UserManager, BundleContextAware {
         }
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }

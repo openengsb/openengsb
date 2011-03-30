@@ -22,7 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openengsb.core.common.validation.SingleAttributeValidationResult;
+import org.openengsb.core.api.validation.SingleAttributeValidationResult;
 import org.openengsb.ui.common.editor.NumberValidator;
 
 public class NumberValidatorTest {

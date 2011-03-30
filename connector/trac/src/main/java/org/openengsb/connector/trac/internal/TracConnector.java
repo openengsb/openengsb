@@ -30,9 +30,9 @@ import org.openengsb.connector.trac.internal.models.constants.TracFieldConstants
 import org.openengsb.connector.trac.internal.models.constants.TracPriorityConstants;
 import org.openengsb.connector.trac.internal.models.constants.TracStatusConstants;
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.DomainMethodNotImplementedException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -57,11 +57,11 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
 
         try {
             issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes).toString();
-            this.state = AliveState.ONLINE;
+            state = AliveState.ONLINE;
             log.info("Successfully created issue " + issue.getSummary() + ", ID is: " + issueId + ".");
         } catch (XmlRpcException e) {
             log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
-            this.state = AliveState.OFFLINE;
+            state = AliveState.OFFLINE;
         }
         return issueId.toString();
     }
@@ -122,9 +122,9 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
         if (ticketFactory != null) {
             Ticket ticket = ticketFactory.createTicket();
             if (ticket != null) {
-                this.state = AliveState.CONNECTING;
+                state = AliveState.CONNECTING;
             } else {
-                this.state = AliveState.DISCONNECTED;
+                state = AliveState.DISCONNECTED;
             }
             return ticket;
         }
@@ -132,7 +132,7 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
     }
 
     public TicketHandlerFactory getTicketHandlerFactory() {
-        return this.ticketFactory;
+        return ticketFactory;
     }
 
     private Hashtable<IssueAttribute, String> translateChanges(Map<IssueAttribute, String> changes) {

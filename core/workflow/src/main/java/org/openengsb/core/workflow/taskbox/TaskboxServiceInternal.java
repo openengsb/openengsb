@@ -17,8 +17,8 @@
 
 package org.openengsb.core.workflow.taskbox;
 
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.workflow.model.ProcessBag;
 
 /**
  * This service is used internally by the human subtask 'humantask' to create new tasks for human interaction.

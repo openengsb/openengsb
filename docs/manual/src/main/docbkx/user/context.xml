@@ -31,7 +31,7 @@
     the same workflow with the project-specific tool-instances and other metadata (like contact-information).</para>
 
   <para>To determine in which context an action should be executed a thread-local variable is used. The
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextHolder.java">
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/context/ContextHolder.java">
       ContextHolder
     </link>
     keeps track of this variable (the current threads' context). Invoking the set- and get-method will always
@@ -70,8 +70,8 @@
       the context it is looked up in the "root"-context.</para>
 
     <para>In detail the wiring is handled via the service-properties. Services contain properties where the key is of
-      the format "location.&lt;contextid&gt;". The value is a list of "locations" where each location is delimited by
-      square brackets ("[" and "]"). So a service may have several locations in several contexts.</para>
+      the format "location.&lt;contextid&gt;". The value is a list of "locations" represented by an array of strigns.
+      So a service may have several locations in several contexts.</para>
 
     <para>When a global variable is accessed during the execution of an action (from a process or rule), the
       osgi-context is queried for the correspinding service. The service wired to this variable must have location
@@ -81,11 +81,12 @@
       proxies, that automatically resolve the service with the corresponding location when a method is invoked.</para>
 
     <para>Example: The auditing-service is registered with the interface AuditingDomain. The service has property
-      "location.root" with value "[auditing]". The workflow engine contains a global named "auditing" and a rule that
-      invokes a method on every Event that is processed. When the rule fires and the consequence is executed, the proxy
-      representing "auditing"-global queries for a service with the location.currentContext or the location.root
-      containing "[auditing]". Since root-services get a service-ranking of "-1" by default, the service current
-      context's would supersede the service located in the root-context.</para>
+      "location.root" with value {"auditing"} (array with one element). The workflow engine contains a global named
+      "auditing" and a rule that invokes a method on every Event that is processed. When the rule fires and the
+      consequence is executed, the proxy representing "auditing"-global queries for a service with the
+      location.currentContext or the location.root containing a location-entry "auditing". Since root-services get a
+      service-ranking of "-1" by default, the service current context's would supersede the service located in the
+      root-context.</para>
   </section>
 </chapter>
 

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.test;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class NullEvent extends Event {
 }

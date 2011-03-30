@@ -20,12 +20,13 @@ package org.openengsb.core.common;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.BundleStrings;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
-public abstract class AbstractServiceManagerParent implements BundleContextAware {
+public abstract class AbstractServiceManagerParent {
 
     private BundleContext bundleContext;
     private BundleStrings strings;

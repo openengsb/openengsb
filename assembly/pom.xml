@@ -218,6 +218,8 @@
                 <feature>openengsb-domain-build</feature>
                 <feature>openengsb-domain-test</feature>
                 <feature>openengsb-domain-deploy</feature>
+                <feature>openengsb-domain-appointment</feature>
+                <feature>openengsb-domain-contact</feature>
                 <!-- OpenEngSB Connectors -->
                 <feature>openengsb-connector-email</feature>
                 <feature>openengsb-connector-plaintextreport</feature>
@@ -265,96 +267,32 @@
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <configuration>
-          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
+          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathUnix>
           <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>
           <provisionArchivePathWindows>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathWindows>
           <provisionExecutionPathWindows>bin/openengsb.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptors>
+            <descriptor>${project.basedir}/src/main/descriptors/bin.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>assembly-openengsb</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
-                <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>nix</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>win</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
 

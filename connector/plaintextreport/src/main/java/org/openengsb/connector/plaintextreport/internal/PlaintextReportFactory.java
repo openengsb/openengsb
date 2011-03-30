@@ -20,11 +20,11 @@ package org.openengsb.connector.plaintextreport.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.report.ReportDomain;
 import org.openengsb.domain.report.common.ReportStoreFactory;
 

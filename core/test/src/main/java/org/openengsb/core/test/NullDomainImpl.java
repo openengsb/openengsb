@@ -17,10 +17,9 @@
 
 package org.openengsb.core.test;
 
-import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
+import org.openengsb.core.api.AliveState;
 
-public class NullDomainImpl extends AbstractOpenEngSBService implements NullDomain {
+public class NullDomainImpl implements NullDomain {
 
     private AliveState state = AliveState.OFFLINE;
 
@@ -36,6 +35,24 @@ public class NullDomainImpl extends AbstractOpenEngSBService implements NullDoma
     @Override
     public Object nullMethod(Object o) {
         return o;
+    }
+
+    protected String instanceId;
+
+    public NullDomainImpl() {
+    }
+
+    public NullDomainImpl(String instanceId) {
+        this.instanceId = instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
+
+    @Override
+    public String getInstanceId() {
+        return instanceId;
     }
 
     public void setAliveState(AliveState state) {
