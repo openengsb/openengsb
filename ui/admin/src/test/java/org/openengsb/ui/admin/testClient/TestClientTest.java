@@ -594,6 +594,17 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
 
+    @Test
+    public void testPerformMethodCallWithNullArgument() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(1);
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new TestBean(null, null));
+    }
+
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
         OsgiServiceUtils.setBundleContext(bundleContext);
