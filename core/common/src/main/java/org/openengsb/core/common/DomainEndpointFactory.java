@@ -109,6 +109,9 @@ public final class DomainEndpointFactory {
     private DomainEndpointFactory() {
     }
 
+    /**
+     * returns true a connector for the specified domain type exists, otherwise false
+     */
     public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
         Domain service;
         try {
