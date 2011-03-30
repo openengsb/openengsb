@@ -139,7 +139,7 @@ public final class DomainEndpointFactory {
     public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
         Domain service;
         try {
-            service = OsgiServiceUtils.getService(domainType);
+            service = OsgiServiceUtils.getService(domainType, 5000L);
         } catch (OsgiServiceNotAvailableException e) {
             return false;
         }
