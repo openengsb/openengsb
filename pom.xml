@@ -98,7 +98,6 @@
     <module>core</module>
     <module>ports</module>
     <module>domain</module>
-    <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
     <module>itests</module>
