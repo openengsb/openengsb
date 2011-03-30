@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +66,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
@@ -114,6 +116,41 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         void update(Integer integer);
 
+    }
+
+    public class TestService implements TestInterface {
+
+        private String instanceId;
+
+        public TestService(String id) {
+            this.instanceId = id;
+        }
+
+        @Override
+        public void update(String id, String name) {
+        }
+
+        @Override
+        public void update(TestBean test) {
+        }
+
+        @Override
+        public void update(UpdateEnum updateEnum) {
+        }
+
+        @Override
+        public void update(Integer integer) {
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            return AliveState.ONLINE;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public String getInstanceId() {
+            return instanceId;  //To change body of implemented methods use File | Settings | File Templates.
+        }
     }
 
     public enum UpdateEnum {
@@ -568,6 +605,30 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             assertThat(availableInTree.contains(domain), is(true));
             assertThat(serviceListTree.getChildCount(availableInTreeAsTreeNode.get(i)), greaterThan(0));
         }
+    }
+
+    @Test
+    public void testCallThrewDomainEndpointFactory() throws org.osgi.framework.InvalidSyntaxException {
+        setupAndStartTestClientPage();
+        TestService service = new TestService("testServiceId");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(org.osgi.framework.Constants.SERVICE_RANKING, -1);
+        properties.put("location.foo", "[domain/testDomain/default]");
+        bundleContext.registerService(TestInterface.class.getName(), service, properties);
+
+
+        org.openengsb.core.common.DomainEndpointFactory.setBundleContext(bundleContext);
+
+        setServiceInDropDown(-1);
+        setMethodInDropDown(3);
+
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        tester.debugComponentTrees();
+        formTester.setValue(beanPanelPath + ":field", "42");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
