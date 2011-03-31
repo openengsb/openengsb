@@ -105,7 +105,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public Boolean isMavenInstalled() {
         String oldProjectPath = projectPath;
-        projectPath = System.getProperty("user.home");
+        projectPath = System.getProperty("karaf.data");
         MavenResult res = excuteCommand("-version");
         projectPath = oldProjectPath;
 
@@ -131,15 +131,16 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void installMaven() {
-        if (!new File(System.getProperty("user.home") + "\\apache-maven-" + mvnVersion).exists()) {
+        if (!new File(System.getProperty("karaf.data") + "\\apache-maven-" + mvnVersion).exists()) {
 
-            String downloadPath = System.getProperty("user.home") + "\\mvn_setup.zip";
+            System.out.println(System.getProperty("karaf.data"));
+            String downloadPath = System.getProperty("karaf.data") + "\\mvn_setup.zip";
             download("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip",
                     downloadPath);
-            unzipFile(downloadPath, System.getProperty("user.home"));
+            unzipFile(downloadPath, System.getProperty("karaf.data"));
         }
-        mvnCommand = System.getProperty("user.home") + "\\apache-maven-" + mvnVersion + "\\bin\\mvn"
-                + addSystemEnding();
+        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "\\apache-maven-" + mvnVersion
+                + "\\bin\\mvn" + addSystemEnding();
     }
 
     public void unzipFile(String archivePath, String targetPath) {
