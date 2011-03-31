@@ -40,3 +40,6 @@
 [submodule "connector/jira"]
 	path = connector/jira
 	url = git@github.com:openengsb/openengsb-connector-jira.git
+[submodule "connector/memoryauditing"]
+	path = connector/memoryauditing
+	url = git@github.com:openengsb/openengsb-connector-memoryauditing.git
