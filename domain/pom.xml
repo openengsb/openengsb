@@ -52,7 +52,6 @@
   </scm>
 
   <modules>
-    <module>example</module>
     <module>notification</module>
     <module>report</module>
     <module>issue</module>
