@@ -224,6 +224,7 @@
 
   <modules>
     <module>compiled</module>
+    <module>connector</module>
   </modules>
 
   <dependencyManagement>
