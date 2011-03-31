@@ -222,6 +222,7 @@ public class TestClient extends BasePage {
                 updateEditButton((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
                 target.addComponent(submitButton);
+                target.addComponent(feedbackPanel);
             }
         };
         serviceList.setOutputMarkupId(true);
