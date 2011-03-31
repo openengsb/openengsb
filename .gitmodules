@@ -46,3 +46,6 @@
 [submodule "connector/plaintextreport"]
 	path = connector/plaintextreport
 	url = git@github.com:openengsb/openengsb-connector-plaintextreport.git
+[submodule "connector/trac"]
+	path = connector/trac
+	url = git@github.com:openengsb/openengsb-connector-trac.git
