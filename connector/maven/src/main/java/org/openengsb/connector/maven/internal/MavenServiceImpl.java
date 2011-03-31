@@ -64,7 +64,8 @@ import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
-    private static String mvnCommand = "mvn" + addSystemEnding();
+    private static final String MVN_COMMAND = new File(System.getProperty("karaf.data")).getAbsolutePath()
+            + "/apache-maven-" + getMvnVersion() + "/bin/mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
@@ -84,7 +85,6 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private String command;
     private File logDir;
-    private boolean first = true;
 
     public MavenServiceImpl(String id) {
         super(id);
@@ -101,30 +101,23 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
     }
 
-    public String getMvnVersion() {
+    public static String getMvnVersion() {
         Properties prop = new Properties();
         String version = null;
         try {
             prop.load(new FileInputStream("src/main/resources/config.properties"));
             version = prop.getProperty("mvnVersion");
         } catch (IOException e) {
-            log.error(e);
         }
         return version;
     }
 
     public Boolean isMavenInstalled() {
-        String oldProjectPath = projectPath;
-        projectPath = System.getProperty("karaf.data");
-        MavenResult res = excuteCommand("-version");
-        projectPath = oldProjectPath;
-        System.out.println(getMvnVersion());
-        if (res.isSuccess() && res.getOutput().contains("Apache Maven")) {
+        if (new File(System.getProperty("karaf.data") + "/apache-maven-" + getMvnVersion()).exists()) {
             return true;
-        } else if (res.getOutput().contains("M2_HOME is set to an invalid directory")) {
-            throw new IllegalStateException("M2_HOME variable is incorrect");
         }
         return false;
+
     }
 
     public void download(String url, String downloadPath) {
@@ -141,14 +134,10 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void installMaven() {
-        if (!new File(System.getProperty("karaf.data") + "/apache-maven-" + getMvnVersion()).exists()) {
-            String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-            download("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip",
-                    downloadPath);
-            unzipFile(downloadPath, System.getProperty("karaf.data"));
-        }
-        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-" + getMvnVersion()
-                + "/bin/mvn" + addSystemEnding();
+        String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
+        download("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip",
+                downloadPath);
+        unzipFile(downloadPath, System.getProperty("karaf.data"));
     }
 
     public void unzipFile(String archivePath, String targetPath) {
@@ -347,7 +336,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         File dir = new File(projectPath);
 
         List<String> command = new ArrayList<String>();
-        command.add(mvnCommand);
+        command.add(MVN_COMMAND);
         command.addAll(Arrays.asList(goal.trim().split(" ")));
 
         try {
@@ -389,11 +378,10 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private Future<String> configureProcessOutputReader(Process process) throws IOException {
         ProcessOutputReader output;
-        if (useLogFile && !first) {
+        if (useLogFile) {
             File logFile = getNewLogFile();
             output = new ProcessOutputReader(process.getInputStream(), logFile);
         } else {
-            first = false;
             output = new ProcessOutputReader(process.getInputStream());
         }
         return outputReaderPool.submit(output);
