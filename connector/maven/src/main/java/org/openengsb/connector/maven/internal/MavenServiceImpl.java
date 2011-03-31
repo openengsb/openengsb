@@ -17,10 +17,7 @@
 
 package org.openengsb.connector.maven.internal;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,10 +35,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -132,9 +129,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void installMaven() {
         if (!new File(System.getProperty("karaf.data") + "/apache-maven-" + mvnVersion).exists()) {
-
-            System.out.println(System.getProperty("karaf.data"));
-            String downloadPath = System.getProperty("karaf.data") + "/mvn_setup.zip";
+            String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
             download("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip",
                     downloadPath);
             unzipFile(downloadPath, System.getProperty("karaf.data"));
@@ -144,57 +139,32 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void unzipFile(String archivePath, String targetPath) {
-        File targetDir = new File(targetPath);
-
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-
         try {
-            ZipFile zipFile = new ZipFile(new File(archivePath));
-            Enumeration entries = zipFile.entries();
-
-            byte[] buffer = new byte[16384];
-            int len;
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) entries.nextElement();
-
-                String entryFileName = entry.getName();
-
-                File dir = buildDirectoryHierarchyFor(entryFileName, targetDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                if (!entry.isDirectory()) {
-                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(targetDir,
-                            entryFileName)));
-
-                    BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
-
-                    while ((len = bis.read(buffer)) > 0) {
-                        bos.write(buffer, 0, len);
+            File archiveFile = new File(archivePath);
+            File targetFile = new File(targetPath);
+            ZipFile zipFile = new ZipFile(archiveFile);
+            Enumeration<?> e = zipFile.getEntries();
+            while (e.hasMoreElements()) {
+                ZipArchiveEntry zipEntry = (ZipArchiveEntry) e.nextElement();
+                File file = new File(targetFile, zipEntry.getName());
+                if (zipEntry.isDirectory()) {
+                    FileUtils.forceMkdir(file);
+                } else {
+                    InputStream is = zipFile.getInputStream(zipEntry);
+                    FileOutputStream os = FileUtils.openOutputStream(file);
+                    try {
+                        IOUtils.copy(is, os);
+                    } finally {
+                        os.close();
+                        is.close();
                     }
-
-                    bos.flush();
-                    bos.close();
-                    bis.close();
                 }
             }
-            zipFile.close();
         } catch (ZipException e) {
-            log.error(e);
-        } catch (FileNotFoundException e) {
             log.error(e);
         } catch (IOException e) {
             log.error(e);
         }
-    }
-
-    private File buildDirectoryHierarchyFor(String entryName, File targetDir) {
-        int lastIndex = entryName.lastIndexOf('/');
-        String internalPathToEntry = entryName.substring(0, lastIndex + 1);
-        return new File(targetDir, internalPathToEntry);
     }
 
     
