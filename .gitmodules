@@ -28,3 +28,6 @@
 [submodule "wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap"]
 	path = wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap
 	url = git://github.com/openengsb/openengsb-wrapped-com.dolby.jira.net.git
+[submodule "connector/email"]
+	path = connector/email
+	url = git@github.com:openengsb/openengsb-connector-email.git
