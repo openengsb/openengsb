@@ -220,13 +220,6 @@
                 <feature>openengsb-domain-deploy</feature>
                 <feature>openengsb-domain-appointment</feature>
                 <feature>openengsb-domain-contact</feature>
-                <!-- OpenEngSB Connectors -->
-                <feature>openengsb-connector-email</feature>
-                <feature>openengsb-connector-plaintextreport</feature>
-                <feature>openengsb-connector-maven</feature>
-                <feature>openengsb-connector-git</feature>
-                <feature>openengsb-connector-trac</feature>
-                <feature>openengsb-connector-jira</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
