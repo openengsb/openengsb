@@ -26,7 +26,7 @@
   <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
     <property name="proxyInterfaces">
       <list>
-        <value>org.openengsb.core.common.ServiceManager</value>
+        <value>org.openengsb.core.api.ServiceManager</value>
       </list>
     </property>
     <property name="target" ref="realServiceManager" />
@@ -37,15 +37,15 @@
     </property>
   </bean>
 
-  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
 
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service interface="org.openengsb.core.common.ServiceManager">
+  <service interface="org.openengsb.core.api.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.appointment.AppointmentDomain" />
       <entry key="openengsb.service.type" value="connector" />

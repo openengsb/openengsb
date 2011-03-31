@@ -79,24 +79,25 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-persistence</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-appointment</artifactId>
       <scope>provided</scope>
     </dependency>
+    
     <dependency>
       <groupId>com.google.gdata</groupId>
       <artifactId>gdata-calendar-2.0</artifactId>
