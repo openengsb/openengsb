@@ -131,16 +131,16 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void installMaven() {
-        if (!new File(System.getProperty("karaf.data") + "\\apache-maven-" + mvnVersion).exists()) {
+        if (!new File(System.getProperty("karaf.data") + "/apache-maven-" + mvnVersion).exists()) {
 
             System.out.println(System.getProperty("karaf.data"));
-            String downloadPath = System.getProperty("karaf.data") + "\\mvn_setup.zip";
+            String downloadPath = System.getProperty("karaf.data") + "/mvn_setup.zip";
             download("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip",
                     downloadPath);
             unzipFile(downloadPath, System.getProperty("karaf.data"));
         }
-        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "\\apache-maven-" + mvnVersion
-                + "\\bin\\mvn" + addSystemEnding();
+        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-" + mvnVersion
+                + "/bin/mvn" + addSystemEnding();
     }
 
     public void unzipFile(String archivePath, String targetPath) {
