@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -109,8 +110,8 @@ public class TestClient extends BasePage {
     private AjaxButton editButton;
 
     private ServiceId lastServiceId;
-    private static final String DOMAINSTRING = "[domain.";
-    private Map<String, Class<? extends Domain>> availableDomains = new HashMap<String, Class<? extends Domain>>();
+    private static final String DOMAINSTRING = "[domain.%1$s]";
+    private Map<String, DomainProvider> availableDomains = new HashMap<String, DomainProvider>();
     private AjaxButton submitButton;
 
     public TestClient() {
@@ -366,8 +367,9 @@ public class TestClient extends BasePage {
 
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
-        domainProviderServiceId.setServiceId(DOMAINSTRING + providerName + "]");
-        availableDomains.put(provider.getDomainInterface().getName(), provider.getDomainInterface());
+        String name = String.format(DOMAINSTRING, providerName);
+        domainProviderServiceId.setServiceId(name);
+        availableDomains.put(name, provider);
         domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
@@ -421,7 +423,7 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            if (service.getServiceId().startsWith(DOMAINSTRING)) {
+            if (availableDomains.containsKey(service.getServiceId())) {
                 serviceObject = getServiceViaDomainEndpointFactory(service);
             } else {
                 serviceObject = getService(service);
@@ -445,10 +447,9 @@ public class TestClient extends BasePage {
     }
 
     private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
-        String service = serviceId.getServiceClass();
-        Class<? extends Domain> aClass = availableDomains.get(service);
-        String name = serviceId.getServiceId()
-            .substring(DOMAINSTRING.length(), serviceId.getServiceId().length() - 1);
+        DomainProvider domainProvider = availableDomains.get(serviceId.getServiceId());
+        Class<? extends Domain> aClass = domainProvider.getDomainInterface();
+        String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
         if (DomainEndpointFactory.isConnectorCurrentlyPresent(aClass)) {
             defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");

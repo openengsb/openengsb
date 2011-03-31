@@ -588,6 +588,20 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    public void testToSelectDefaultEndPoint_ShouldDisplayDomainMethodWithArguments() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertRenderedPage(TestClient.class);
+
+        setServiceInDropDown(-1);
+        setMethodInDropDown(0);
+        RepeatingView argList =
+                (RepeatingView) tester
+                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        Assert.assertEquals(2, argList.size());
+
+    }
+
+    @Test
     public void testErrorMessageAppearIfServiceDoesNotExists() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
