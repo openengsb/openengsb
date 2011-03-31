@@ -31,3 +31,6 @@
 [submodule "connector/email"]
 	path = connector/email
 	url = git@github.com:openengsb/openengsb-connector-email.git
+[submodule "connector/git"]
+	path = connector/git
+	url = git@github.com:openengsb/openengsb-connector-git.git
