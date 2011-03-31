@@ -37,3 +37,6 @@
 [submodule "connector/maven"]
 	path = connector/maven
 	url = git@github.com:openengsb/openengsb-connector-maven.git
+[submodule "connector/jira"]
+	path = connector/jira
+	url = git@github.com:openengsb/openengsb-connector-jira.git
