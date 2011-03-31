@@ -18,29 +18,20 @@
 
 -->
 
-<chapter xml:id="domains.contact.domain" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<section xml:id="domains.contact.gcontacts" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
-  <title>Contact Domain</title>
-  <para>The contact domain is the tool domain for all contact books in tools which are using contact books like gcontacts or Facebook.</para> 
-  <section>
-    <title>Description</title>
-    <para>The contact domain provides the possibility to create, update, delete and retrieve contacts.</para>
-  </section>
+  <title>Gcontacts Connector</title>
+  
+  <para>The Gcontacts Connector is an contact connector for the contact book of the online google mail service.</para>
 
   <section>
-    <title>Functional Interface</title>
-    <para><link xlink:href="${github}/domain/contact/src/main/java/org/openengsb/domain/contact/ContactDomain.java">Link</link>
-      to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
+    <title>External Tool Configuration</title>
+    <para>The Gcontacts connector should work as soon as you have a google mail account.
+    </para>
   </section>
 
-  <section>
-    <title>Connectors</title>  
-    <xi:include href="gcontacts.xml" />
-  </section>
-
-</chapter>
+</section>
