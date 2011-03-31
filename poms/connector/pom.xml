@@ -33,6 +33,10 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <openengsb.version>${project.version}</openengsb.version>
+  </properties>
+
   <description>Parent of all connectors</description>
   <url>http://www.openengsb.org</url>
   <licenses>
@@ -50,6 +54,18 @@
   </scm>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/filtered-resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -81,11 +97,13 @@
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-api</artifactId>
+	<version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-common</artifactId>
+	<version>${project.version}</version>
         <scope>provided</scope>
         <optional>true</optional>
       </dependency>
@@ -93,6 +111,7 @@
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-test</artifactId>
+	<version>${project.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
