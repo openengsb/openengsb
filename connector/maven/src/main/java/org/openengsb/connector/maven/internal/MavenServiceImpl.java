@@ -18,6 +18,7 @@
 package org.openengsb.connector.maven.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -62,7 +64,6 @@ import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
-    private static String mvnVersion = "3.0.3";
     private static String mvnCommand = "mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
     private Log log = LogFactory.getLog(this.getClass());
@@ -100,12 +101,24 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
     }
 
+    public String getMvnVersion() {
+        Properties prop = new Properties();
+        String version = null;
+        try {
+            prop.load(new FileInputStream("src/main/resources/config.properties"));
+            version = prop.getProperty("mvnVersion");
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return version;
+    }
+
     public Boolean isMavenInstalled() {
         String oldProjectPath = projectPath;
         projectPath = System.getProperty("karaf.data");
         MavenResult res = excuteCommand("-version");
         projectPath = oldProjectPath;
-
+        System.out.println(getMvnVersion());
         if (res.isSuccess() && res.getOutput().contains("Apache Maven")) {
             return true;
         } else if (res.getOutput().contains("M2_HOME is set to an invalid directory")) {
@@ -128,13 +141,13 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void installMaven() {
-        if (!new File(System.getProperty("karaf.data") + "/apache-maven-" + mvnVersion).exists()) {
+        if (!new File(System.getProperty("karaf.data") + "/apache-maven-" + getMvnVersion()).exists()) {
             String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-            download("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip",
+            download("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip",
                     downloadPath);
             unzipFile(downloadPath, System.getProperty("karaf.data"));
         }
-        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-" + mvnVersion
+        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-" + getMvnVersion()
                 + "/bin/mvn" + addSystemEnding();
     }
 
