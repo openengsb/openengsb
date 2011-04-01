@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
@@ -39,7 +40,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
     private WorkflowService workflowService;
     private RuleManager ruleManager;
     private final String loginPageEntryUrl =
-        "http://localhost:" + WEBUI_PORT + "/openengsb/TaskOverview/";
+        "http://localhost:" + WEBUI_PORT + "/openengsb/TaskOverview/?context=it-taskbox";
 
     @Before
     public void setUp() throws Exception {
@@ -50,12 +51,9 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains("it-taskbox")) {
             contextService.createContext("it-taskbox");
-            contextService.setThreadLocalContext("it-taskbox");
-            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
-        } else {
-            contextService.setThreadLocalContext("it-taskbox");
+        //    contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         }
-
+        contextService.setThreadLocalContext("it-taskbox");
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class, 30000);
@@ -111,16 +109,16 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         taskOverviewPage = finishButton.click();
         assertEquals(2, taskboxService.getOpenTasks().size());
 
-        for(Task t:taskboxService.getOpenTasks()){
-            System.out.println(t.getTaskId()+" "+t.getTaskType()+" "+t.getName());
+        for (Task t : taskboxService.getOpenTasks()) {
+            System.out.println(t.getTaskId() + " " + t.getTaskType() + " " + t.getName());
         }
         taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
 
         /* To stop it from shutting down so I can check manually */
         /* Scroll up to see the site. Just one ticket, but assertEquals tells us it should be 2 */
         /* See the exceptions... My guess is the security exception, tied with the workflow exception */
-        while(true){
-            
+        while (true) {
+
         }
 
     }
