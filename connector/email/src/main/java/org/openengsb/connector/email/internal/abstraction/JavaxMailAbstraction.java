@@ -28,6 +28,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.AliveState;
@@ -38,39 +40,30 @@ public class JavaxMailAbstraction implements MailAbstraction {
     private Log log = LogFactory.getLog(JavaxMailAbstraction.class);
 
     private AliveState aliveState = AliveState.OFFLINE;
+    
+    private SessionManager sessionManager = new SessionManager();
 
-    private Session createSession(final MailPropertiesImp properties) {
-        log.debug("creating session");
-        Session session = Session.getInstance(properties.getProperties(), new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(properties.getUsername(), properties.getPassword());
-            }
-        });
-        return session;
+    private Session getSession(final MailPropertiesImp properties) {
+        return sessionManager.getSession(properties);
     }
 
     @Override
-    public void send(MailProperties properties, String subject, String textContet, String receiver) {
+    public void send(MailProperties properties, String subject, String textContent, String receiver) {
         try {
             if (!(properties instanceof MailPropertiesImp)) {
                 throw new RuntimeException("This implementation works only with internal mail properties");
             }
             MailPropertiesImp props = (MailPropertiesImp) properties;
-            if (!(this.aliveState == AliveState.ONLINE)) {
-                log.info("State is OFFLINE, connecting...");
-                //connect(props);
-            }
-            Session session = createSession(props);
+
+            Session session = getSession(props);
 
             Message message = new MimeMessage(session);
-            MailPropertiesImp propertiesImpl = (MailPropertiesImp) properties;
-            
-            message.setFrom(new InternetAddress(propertiesImpl.getSender()));
+
+            message.setFrom(new InternetAddress(props.getSender()));
             message.setRecipients(RecipientType.TO, InternetAddress.parse(receiver));
-            message.setSubject(buildSubject(propertiesImpl, subject));
-            message.setText(textContet);
-            send(message);
+            message.setSubject(buildSubject(props, subject));
+            message.setText(textContent);
+            send(message, session);
         } catch (Exception e) {
             throw new DomainMethodExecutionException(e);
         }
@@ -81,19 +74,17 @@ public class JavaxMailAbstraction implements MailAbstraction {
         if (!(properties instanceof MailPropertiesImp)) {
             throw new RuntimeException("This implementation works only with internal mail properties");
         }
-        Session session = createSession((MailPropertiesImp) properties);
-        MailPropertiesImp props = (MailPropertiesImp) properties;
-
-        String smtpHost = (String) props.getProperties().get("mail.smtp.host");
-        String username = props.getUsername();
-        String password = props.getPassword();
-        log.info(String.format("sending as %s via %s", username, smtpHost));
-        Transport tr = null;
+        Session session = getSession((MailPropertiesImp) properties);
+        getTransport(session);
+    }
+    
+    private Transport getTransport(Session session) {
+        Transport transport = null;
         try {
-            tr = session.getTransport("smtp");
-            log.debug("connecting smtp-transport " + tr);
-            tr.connect(smtpHost, username, password);
-            if (tr.isConnected()) {
+            transport = session.getTransport("smtp");
+            log.debug("connecting smtp-transport " + transport);
+            transport.connect();
+            if (transport.isConnected()) {
                 this.aliveState = AliveState.ONLINE;
             } else {
                 this.aliveState = AliveState.OFFLINE;
@@ -105,20 +96,24 @@ public class JavaxMailAbstraction implements MailAbstraction {
             throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or"
                     + " mail server unavailable) ");
         }
+        
+        return transport;
     }
 
+    private void send(Message message, Session session) throws MessagingException {
+        log.info("sending email-message");
+        message.saveChanges();
+        Transport transport = getTransport(session);
+        transport.sendMessage(message, message.getAllRecipients());
+        log.info("email has been sent");
+    }
+    
     private String buildSubject(MailPropertiesImp properties, String subject) {
         log.debug("building subject");
         if (properties.getPrefix() == null) {
             return subject;
         }
         return new StringBuilder().append(properties.getPrefix()).append(" ").append(subject).toString();
-    }
-
-    private void send(Message message) throws MessagingException {
-        log.info("sending email-message");
-        Transport.send(message);
-        log.info("email has been sent");
     }
 
     @Override
@@ -133,10 +128,12 @@ public class JavaxMailAbstraction implements MailAbstraction {
         private String password;
         private String sender;
         private String prefix;
+        private SecureMode secureMode = SecureMode.PLAIN;
 
         MailPropertiesImp() {
-            properties = new Properties();            
-            properties.setProperty("mail.smtp.timeout", "10000");
+            properties = new Properties();
+            properties.setProperty("mail.debug", "true");
+            properties.setProperty("mail.smtp.timeout", "35000");
         }
 
         @Override
@@ -197,17 +194,53 @@ public class JavaxMailAbstraction implements MailAbstraction {
         
         @Override
         public void setSecureMode(String secureMode) {
-            if (secureMode.equals(SecureMode.SSL.toString())) {
+            if (SecureMode.SSL.toString().equals(secureMode)) {
+                this.secureMode = SecureMode.SSL;
                 properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            } else if (secureMode.equals(SecureMode.STARTTLS.toString())) {
+            } else if (SecureMode.STARTTLS.toString().equals(secureMode)) {
+                this.secureMode = SecureMode.STARTTLS;
                 properties.put("mail.smtp.starttls.enable", "true");
+            } else {
+                this.secureMode = SecureMode.PLAIN;
             }
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
+        }
+        
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
         }
     }
 
     @Override
     public AliveState getAliveState() {
         return aliveState;
+    }
+    
+    private static class SessionManager {
+        private Log log = LogFactory.getLog(SessionManager.class);
+        
+        private Session session;
+        private MailPropertiesImp properties;
+        
+        public Session getSession(MailPropertiesImp newProperties) {         
+            if (session == null || !newProperties.equals(properties)) {
+                log.info("create new mail session");
+                
+                properties = newProperties;
+                session = Session.getInstance(properties.getProperties(), new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(properties.getUsername(), properties.getPassword());
+                    }
+                });
+            }
+            return session;
+        }
     }
 
 }

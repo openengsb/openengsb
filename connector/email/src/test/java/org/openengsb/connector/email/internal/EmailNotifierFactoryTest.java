@@ -16,26 +16,44 @@
 
 package org.openengsb.connector.email.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
+import org.openengsb.core.common.AliveState;
 
 public class EmailNotifierFactoryTest {
 
+    public static class MailAbstractionImp implements MailAbstraction {
+        MailProperties props = mock(MailProperties.class);
+        
+        @Override
+        public void send(MailProperties properties, String subject, String textContet, String receiver) { }
+
+        @Override
+        public void connect(MailProperties properties) { }
+
+        @Override
+        public MailProperties createMailProperties() {
+            return props;
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            return null;
+        }
+    }
+    
     @Test
     public void testCreateEmailNotifier() throws Exception {
-        MailAbstraction mailAbstraction = Mockito.mock(MailAbstraction.class);
-
-        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
-        Mockito.when(mailAbstraction.createMailProperties()).thenReturn(propertiesMock);
-
-        EmailNotifierFactory factory = new EmailNotifierFactory(mailAbstraction);
+        EmailNotifierFactory factory = new EmailNotifierFactory(MailAbstractionImp.class);
 
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("user", "user");
@@ -45,28 +63,28 @@ public class EmailNotifierFactoryTest {
         attributes.put("smtpSender", "smtpSender");
         attributes.put("smtpHost", "smtpHost");
         attributes.put("smtpPort", "smtpPort");
+        attributes.put("secureMode", "SSL");
 
         EmailNotifier notifier = factory.createServiceInstance("id", attributes);
+        MailProperties propertiesMock = notifier.getProperties();
+        
+        assertNotNull(notifier);
+        assertEquals("id", notifier.getInstanceId());
 
-        Assert.assertNotNull(notifier);
-        Assert.assertEquals("id", notifier.getInstanceId());
-
-        Mockito.verify(propertiesMock).setPassword("password");
-        Mockito.verify(propertiesMock).setPrefix("pre: ");
-        Mockito.verify(propertiesMock).setSmtpAuth(true);
-        Mockito.verify(propertiesMock).setSender("smtpSender");
-        Mockito.verify(propertiesMock).setSmtpHost("smtpHost");
-        Mockito.verify(propertiesMock).setSmtpPort("smtpPort");
-        Mockito.verify(propertiesMock).setUser("user");
+        verify(propertiesMock).setPassword("password");
+        verify(propertiesMock).setPrefix("pre: ");
+        verify(propertiesMock).setSmtpAuth(true);
+        verify(propertiesMock).setSender("smtpSender");
+        verify(propertiesMock).setSmtpHost("smtpHost");
+        verify(propertiesMock).setSmtpPort("smtpPort");
+        verify(propertiesMock).setUser("user");
+        verify(propertiesMock).setSecureMode("SSL");
     }
-
+    
     @Test
     public void testUpdateEmailNotifier() throws Exception {
-        MailAbstraction mailAbstraction = Mockito.mock(MailAbstraction.class);
-        EmailNotifierFactory factory = new EmailNotifierFactory(mailAbstraction);
-        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
-        Mockito.when(mailAbstraction.createMailProperties()).thenReturn(propertiesMock);
-
+        EmailNotifierFactory factory = new EmailNotifierFactory(MailAbstractionImp.class);
+    
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("user", "user");
         attributes.put("password", "password");
@@ -75,13 +93,14 @@ public class EmailNotifierFactoryTest {
         attributes.put("smtpSender", "smtpSender");
         attributes.put("smtpHost", "smtpHost");
         attributes.put("smtpPort", "smtpPort");
-
+    
         EmailNotifier notifier = factory.createServiceInstance("id", attributes);
-
+        MailProperties propertiesMock = notifier.getProperties();
+    
         attributes.put("user", "otherValue");
-
+    
         factory.updateServiceInstance(notifier, attributes);
-
-        Mockito.verify(propertiesMock).setUser("otherValue");
+    
+        verify(propertiesMock).setUser("otherValue");
     }
 }

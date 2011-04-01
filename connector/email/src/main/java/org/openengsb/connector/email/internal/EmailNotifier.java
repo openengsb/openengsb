@@ -33,12 +33,11 @@ public class EmailNotifier extends AbstractOpenEngSBService implements Notificat
 
     private final MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
-    private final MailProperties properties;
+    private MailProperties properties;
 
     public EmailNotifier(String instanceId, MailAbstraction mailAbstraction) {
         super(instanceId);
         this.mailAbstraction = mailAbstraction;
-        properties = mailAbstraction.createMailProperties();
     }
 
     @Override
@@ -67,8 +66,12 @@ public class EmailNotifier extends AbstractOpenEngSBService implements Notificat
     public void setServiceRegistration(ServiceRegistration serviceRegistration) {
         this.serviceRegistration = serviceRegistration;
     }
-
+    
     public MailProperties getProperties() {
         return properties;
+    }
+
+    public void createProperties() {
+        properties = mailAbstraction.createMailProperties();
     }
 }

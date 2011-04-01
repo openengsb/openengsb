@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
-import org.openengsb.connector.email.internal.abstraction.MailProperties;
+import org.openengsb.connector.email.internal.abstraction.MailProperties.SecureMode;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -30,14 +30,15 @@ import org.openengsb.domain.notification.NotificationDomain;
 
 public class EmailNotifierFactory implements ServiceInstanceFactory<NotificationDomain, EmailNotifier> {
 
-    private final MailAbstraction mailAbstraction;
+    private final Class<? extends MailAbstraction> mailAbstraction;
 
-    public EmailNotifierFactory(MailAbstraction mailAbstraction) {
+    public EmailNotifierFactory(Class<? extends MailAbstraction> mailAbstraction) {
         this.mailAbstraction = mailAbstraction;
     }
 
     private void setAttributesOnNotifier(Map<String, String> attributes, EmailNotifier notifier) {
-
+        notifier.createProperties();
+        
         if (attributes.containsKey("user")) {
             notifier.getProperties().setUser(attributes.get("user"));
         }
@@ -89,9 +90,9 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
             .attribute(
                 builder.newAttribute().id("secureMode").name("secureMode.outputMode")
                 .description("secureMode.outputMode.description")
-                .option("secureMode.option.starttls", MailProperties.SecureMode.STARTTLS.toString())
-                .option("secureMode.option.ssl", MailProperties.SecureMode.SSL.toString())
-                .option("secureMode.option.plain", MailProperties.SecureMode.PLAIN.toString()).build());
+                .option("secureMode.option.starttls", SecureMode.STARTTLS.toString())
+                .option("secureMode.option.ssl", SecureMode.SSL.toString())
+                .option("secureMode.option.plain", SecureMode.PLAIN.toString()).build());
 
         return builder.build();
     }
@@ -110,7 +111,12 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
 
     @Override
     public EmailNotifier createServiceInstance(String id, Map<String, String> attributes) {
-        EmailNotifier notifier = new EmailNotifier(id, mailAbstraction);
+        EmailNotifier notifier;
+        try {
+            notifier = new EmailNotifier(id, mailAbstraction.newInstance());
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
         setAttributesOnNotifier(attributes, notifier);
         return notifier;
     }
