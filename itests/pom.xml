@@ -72,6 +72,20 @@
   </build>
 
   <dependencies>
+    <!-- To enable correct logging behaviour -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
@@ -107,7 +121,7 @@
       <groupId>org.apache.aries</groupId>
       <artifactId>org.apache.aries.util</artifactId>
     </dependency>
-    
+
     <!-- Feature File Dependencies -->
     <dependency>
       <groupId>org.apache.karaf.assemblies.features</groupId>
@@ -126,6 +140,12 @@
       <artifactId>openengsb</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
+      <exclusions>
+        <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Internal Dependencies -->
@@ -192,7 +212,7 @@
       <artifactId>org.apache.karaf.tooling.testing</artifactId>
       <scope>test</scope>
     </dependency>
-
+    
     <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
