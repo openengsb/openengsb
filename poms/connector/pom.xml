@@ -22,6 +22,7 @@
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
     <version>1.2.0-SNAPSHOT</version>
+    <relativePath>../compiled</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
