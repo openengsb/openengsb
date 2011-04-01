@@ -148,6 +148,14 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+      <version>${connector.memoryauditing.version}</version>
+    </dependency>
+
     <!-- Internal Dependencies -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
@@ -180,18 +188,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-example</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-auditing</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <scope>test</scope>
     </dependency>
 

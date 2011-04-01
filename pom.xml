@@ -312,12 +312,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.openengsb.connector</groupId>
-        <artifactId>openengsb-connector-memoryauditing</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-api</artifactId>
         <version>${project.version}</version>

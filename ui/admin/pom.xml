@@ -139,11 +139,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-security</artifactId>
       <scope>provided</scope>
