@@ -18,7 +18,7 @@
 package org.openengsb.core.api.workflow;
 
 @SuppressWarnings("serial")
-public class WorkflowException extends Exception {
+public class WorkflowException extends RuntimeException {
 
     public WorkflowException() {
     }

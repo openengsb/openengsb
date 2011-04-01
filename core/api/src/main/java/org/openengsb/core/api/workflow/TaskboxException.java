@@ -18,7 +18,7 @@
 package org.openengsb.core.api.workflow;
 
 @SuppressWarnings("serial")
-public class TaskboxException extends Exception {
+public class TaskboxException extends RuntimeException {
     public TaskboxException() {
     }
 
