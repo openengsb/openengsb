@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.gcalendar.internal.misc.AppointmentConverter;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.appointment.AppointmentDomain;
 import org.openengsb.domain.appointment.models.Appointment;
@@ -69,11 +70,11 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             log.info("Successfully created appointment " + id);
             appointment.setId(id);
         } catch (MalformedURLException e) {
-            log.error("unknown type of URL");
+            throw new DomainMethodExecutionException("unknown type of URL", e);
         } catch (IOException e) {
-            log.error("unable to connect to the google server");
+            throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
-            log.error("unable to insert the appointment");
+            throw new DomainMethodExecutionException("unable to insert the appointment", e);
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -89,11 +90,11 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
         } catch (MalformedURLException e) {
-            log.error("unknown type of URL");
+            throw new DomainMethodExecutionException("unknown type of URL", e);
         } catch (IOException e) {
-            log.error("unable to connect to the google server");
+            throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
-            log.error("unable to update the appointment");
+            throw new DomainMethodExecutionException("unable to update the appointment", e);
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -109,9 +110,9 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             CalendarEventEntry entry = getAppointmentEntry(appointment);
             entry.delete();
         } catch (IOException e) {
-            log.error("unable to connect to google");
+            throw new DomainMethodExecutionException("unable to connect to google", e);
         } catch (ServiceException e) {
-            log.error("unable to delete the appointment");
+            throw new DomainMethodExecutionException("unable to delete the appointment", e);
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
@@ -134,13 +135,15 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
                 CalendarEventEntry entry =
                     (CalendarEventEntry) service.getEntry(new URL(appointment.getId()), CalendarEventEntry.class);
                 return entry;
+            } else {
+                log.error("given appointment has no id");
             }
         } catch (MalformedURLException e) {
-            log.error("unknown type of URL");
+            throw new DomainMethodExecutionException("unknown type of URL", e);
         } catch (IOException e) {
-            log.error("unable to connect to the google server");
+            throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
-            log.error("unable to retrieve the appointment");
+            throw new DomainMethodExecutionException("unable to retrieve the appointment", e);
         }
         return null;
     }
@@ -164,13 +167,12 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             CalendarEventFeed resultFeed = service.query(myQuery, CalendarEventFeed.class);
             return resultFeed.getEntries();
         } catch (MalformedURLException e) {
-            log.error("unknown type of URL");
+            throw new DomainMethodExecutionException("unknown type of URL", e);
         } catch (IOException e) {
-            log.error("unable to connect to the google server");
+            throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
-            log.error("unable to insert the appointment");
+            throw new DomainMethodExecutionException("unable to insert the appointment", e);
         }
-        return null;
     }
 
     @Override
@@ -198,7 +200,8 @@ public class GcalendarServiceImpl extends AbstractOpenEngSBService implements Ap
             service.setUserCredentials(googleUser, googlePassword);
             this.state = AliveState.ONLINE;
         } catch (AuthenticationException e) {
-            log.error("unable to authenticate at google server, maybe wrong username and/or password?");
+            throw new DomainMethodExecutionException(
+                "unable to authenticate at google server, maybe wrong username and/or password?", e);
         }
     }
 
