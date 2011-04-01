@@ -55,7 +55,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     private static final String SYS_PROP_LOG = "itests_log";
-    private static final String LOG_LEVEL = "WARN";
+    private static final String LOG_LEVEL = "TRACE";
     /**
      * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached. Look for
      * "Listening for transport dt_socket at address: <DEBUG_PORT>"
@@ -198,10 +198,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
-            scanFeatures(
-                maven().groupId("org.apache.activemq").artifactId("activemq-karaf").type("xml").classifier("features")
-                    .versionAsInProject(), "activemq-blueprint"),
-            scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
+            scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                 .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),

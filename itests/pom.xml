@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -54,7 +55,6 @@
 
   <build>
     <plugins>
-      <!-- generate dependencies versions -->
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>depends-maven-plugin</artifactId>
@@ -85,7 +85,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
@@ -136,24 +136,35 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+      <version>${connector.memoryauditing.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
       <exclusions>
         <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb</artifactId>
       <type>xml</type>
-      <classifier>features</classifier>
-      <version>${connector.memoryauditing.version}</version>
+      <classifier>features-itests</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Internal Dependencies -->
@@ -210,7 +221,7 @@
       <artifactId>org.apache.karaf.tooling.testing</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.drools</groupId>

@@ -404,6 +404,13 @@
         <classifier>features</classifier>
       </dependency>
       <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb</artifactId>
+        <version>${project.version}</version>
+        <type>xml</type>
+        <classifier>features-itests</classifier>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>openengsb-ui-common</artifactId>
         <version>${project.version}</version>
