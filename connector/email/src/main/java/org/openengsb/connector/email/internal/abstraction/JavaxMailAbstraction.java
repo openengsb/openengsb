@@ -105,6 +105,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
         message.saveChanges();
         Transport transport = getTransport(session);
         transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
         log.info("email has been sent");
     }
     
