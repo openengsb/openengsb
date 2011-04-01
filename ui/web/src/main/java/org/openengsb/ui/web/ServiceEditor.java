@@ -23,12 +23,18 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
+import org.apache.wicket.model.Model;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.ui.common.editor.ServiceEditorPanel;
+import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
@@ -37,9 +43,17 @@ public abstract class ServiceEditor extends Panel {
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
+    protected Model<String> idModel = new Model<String>();
+    private TextField<String> idfield;
 
     public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
         this(id, attributes, values, new DefaultPassingFormValidator());
+    }
+
+    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
+            Map<String, String> values) {
+        this(id, attributes, values, new DefaultPassingFormValidator());
+        idModel.setObject(serviceId);
     }
 
     public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values,
@@ -51,10 +65,20 @@ public abstract class ServiceEditor extends Panel {
         createForm(attributes, values);
     }
 
+    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes, Map<String, String> values,
+            FormValidator validator) {
+        this(id, attributes, values, validator);
+        idModel.setObject(serviceId);
+        idfield.setEnabled(false);
+    }
+
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
+        idfield = new TextField<String>("serviceId", idModel);
+        idfield.setRequired(true);
+        form.add(idfield);
         serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values);
         form.add(serviceEditorPanel);
 
@@ -68,14 +92,14 @@ public abstract class ServiceEditor extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ServiceEditor.this.onSubmit();
                 if (hasErrorMessage()) {
-                    serviceEditorPanel.addAjaxValidationToForm(form);
+                    ServiceEditorPanel.addAjaxValidationToForm(form);
                     target.addComponent(form);
                 }
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                serviceEditorPanel.addAjaxValidationToForm(form);
+                ServiceEditorPanel.addAjaxValidationToForm(form);
                 target.addComponent(form);
             }
         };
