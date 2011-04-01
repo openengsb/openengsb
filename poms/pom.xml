@@ -63,6 +63,15 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
 
+    <!-- connector versions -->
+    <connector.email.version>1.2.0-SNAPSHOT</connector.email.version>
+    <connector.memoryauditing.version>1.2.0-SNAPSHOT</connector.memoryauditing.version>
+    <connector.plaintextreport.version>1.2.0-SNAPSHOT</connector.plaintextreport.version>
+    <connector.maven.version>1.2.0-SNAPSHOT</connector.maven.version>
+    <connector.git.version>1.2.0-SNAPSHOT</connector.git.version>
+    <connector.jira.version>1.2.0-SNAPSHOT</connector.jira.version>
+    <connector.trac.version>1.2.0-SNAPSHOT</connector.trac.version>
+
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
@@ -215,6 +224,7 @@
 
   <modules>
     <module>compiled</module>
+    <module>connector</module>
   </modules>
 
   <dependencyManagement>

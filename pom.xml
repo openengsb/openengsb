@@ -38,6 +38,10 @@
     <openengsb.version.stable>1.1.2.RELEASE</openengsb.version.stable>
     <openengsb.version.dev>1.2.0.M4</openengsb.version.dev>
     <openengsb.version.nightly>1.2.0-SNAPSHOT</openengsb.version.nightly>
+    <!-- version range for externalized projects (connectors) -->
+    <openengsb.version.min>1.2.0-SNAPSHOT</openengsb.version.min>
+    <openengsb.version.max>1.3</openengsb.version.max>
+    <openengsb.version.range>[${openengsb.version.min},${openengsb.version.max})</openengsb.version.range>
     <!-- maven plugin versions -->
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
@@ -98,10 +102,11 @@
     <module>core</module>
     <module>ports</module>
     <module>domain</module>
-    <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
     <module>itests</module>
+    <module>examples/domain</module>
+    <module>examples/connector</module>
   </modules>
 
   <scm>

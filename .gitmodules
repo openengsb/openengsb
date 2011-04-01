@@ -28,3 +28,24 @@
 [submodule "wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap"]
 	path = wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap
 	url = git://github.com/openengsb/openengsb-wrapped-com.dolby.jira.net.git
+[submodule "connector/email"]
+	path = connector/email
+	url = git@github.com:openengsb/openengsb-connector-email.git
+[submodule "connector/git"]
+	path = connector/git
+	url = git@github.com:openengsb/openengsb-connector-git.git
+[submodule "connector/maven"]
+	path = connector/maven
+	url = git@github.com:openengsb/openengsb-connector-maven.git
+[submodule "connector/jira"]
+	path = connector/jira
+	url = git@github.com:openengsb/openengsb-connector-jira.git
+[submodule "connector/memoryauditing"]
+	path = connector/memoryauditing
+	url = git@github.com:openengsb/openengsb-connector-memoryauditing.git
+[submodule "connector/plaintextreport"]
+	path = connector/plaintextreport
+	url = git@github.com:openengsb/openengsb-connector-plaintextreport.git
+[submodule "connector/trac"]
+	path = connector/trac
+	url = git@github.com:openengsb/openengsb-connector-trac.git
