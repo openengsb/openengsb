@@ -198,6 +198,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
+            scanFeatures(
+                maven().groupId("org.apache.activemq").artifactId("activemq-karaf").type("xml").classifier("features")
+                    .versionAsInProject(), "activemq-blueprint"),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
                 .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),

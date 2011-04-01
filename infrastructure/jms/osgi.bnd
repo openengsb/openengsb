@@ -15,10 +15,6 @@
 # limitations under the License.
 #
 
-#
-# You can place any customized configuration here.
-# All the values specified here will override the default value.
-#
-
-karaf.systemBundlesStartLevel=50
+Import-Package: sun.reflect, *
+DynamicImport-Package: *
 

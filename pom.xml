@@ -100,6 +100,7 @@
     <module>docs</module>
     <module>poms</module>
     <module>core</module>
+    <module>infrastructure</module>
     <module>ports</module>
     <module>domain</module>
     <module>ui</module>

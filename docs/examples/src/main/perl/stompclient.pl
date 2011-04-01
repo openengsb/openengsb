@@ -19,15 +19,16 @@ use lib 'lib/lib/perl5';
 use Net::Stomp;
 
 # set up connection
-my $stomp = Net::Stomp->new( { hostname => 'localhost', port => '61613' } );
+my $stomp = Net::Stomp->new( { hostname => 'localhost', port => '6550' } );
 $stomp->connect( { login => 'user', passcode => 'pwd' } );
 
 # send message to channel
 $stomp->send(
   { destination => '/queue/org.openengsb.scm.subversion.jms.eventService', 
     body => 'svn commit hook triggered', 
-	'reply-to'=>'/queue/org.openengsb.scm.subversion.jms.response',
-	'correlation-id'=>'111111456' } );
+    'reply-to'=>'/queue/org.openengsb.scm.subversion.jms.response', 
+    'correlation-id'=>'111111456' } );
 
 # disconnect
 $stomp->disconnect;
+
