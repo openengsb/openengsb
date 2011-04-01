@@ -26,7 +26,6 @@
       openengsb.version.number=${openengsb.version.number}
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
-      jmsPort=6549
     </config>
     <feature version="[3,4)">spring</feature>
     <feature version="[3,4)">spring-web</feature>
@@ -83,6 +82,10 @@
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
   <feature name="openengsb-ports-jms" version="${project.version}" >
+    <config name="org.openengsb.infrastructure.jms">
+      openwire=6549
+      stomp=6550
+    </config>
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
     <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>

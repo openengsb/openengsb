@@ -22,9 +22,17 @@
   xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" xmlns:amq="http://activemq.apache.org/schema/core">
 
   <!-- Allows us to use system properties as variables in this configuration file -->
-  <ext:property-placeholder />
+  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]"/>
 
-  <broker xmlns="http://activemq.apache.org/schema/core" brokerName="openengsb" dataDirectory="${karaf.data}/activemq/openengsb"
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.infrastructure.jms">
+    <cm:default-properties>
+      <cm:property name="openwire" value="6549" />
+      <cm:property name="stomp" value="6550" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <broker xmlns="http://activemq.apache.org/schema/core" brokerName="openengsb" dataDirectory="$[karaf.data]/activemq/openengsb"
     useShutdownHook="false">
 
     <destinationPolicy>
@@ -46,7 +54,7 @@
     </managementContext>
 
     <persistenceAdapter>
-      <kahaDB directory="${karaf.data}/activemq/openengsb/kahadb" />
+      <kahaDB directory="$[karaf.data]/activemq/openengsb/kahadb" />
     </persistenceAdapter>
 
     <systemUsage>
@@ -64,13 +72,13 @@
     </systemUsage>
 
     <transportConnectors>
-      <transportConnector name="openwire" uri="tcp://localhost:6549" />
-      <transportConnector name="stomp" uri="stomp://localhost:6550" />
+      <transportConnector name="openwire" uri="tcp://localhost:${openwire}" />
+      <transportConnector name="stomp" uri="stomp://localhost:${stomp}" />
     </transportConnectors>
   </broker>
 
   <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-    <property name="brokerURL" value="tcp://localhost:6549" />
+    <property name="brokerURL" value="tcp://localhost:${openwire}" />
   </bean>
 
   <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
