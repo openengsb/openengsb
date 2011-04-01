@@ -25,24 +25,12 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
-import org.openengsb.ui.web.model.WicketStringLocalizer;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.ui.admin.basePage.BasePage;
-import org.openengsb.ui.admin.model.ServiceId;
-import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
-import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.common.editor.ServiceEditorPanel;
-import org.openengsb.ui.common.model.LocalizableStringModel;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
