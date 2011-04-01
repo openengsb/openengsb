@@ -29,12 +29,10 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.Task;
@@ -76,7 +74,6 @@ public class TaskPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
-                    System.out.println(ContextHolder.get().getCurrentContextId());
                     service.finishTask(task);
                     setResponsePage(getPage().getClass());
                 } catch (WorkflowException e) {
