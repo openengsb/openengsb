@@ -34,6 +34,7 @@ public class MavenServiceInstanceFactoryTest {
 
     @Test
     public void testCreatePlaintextReportService() throws Exception {
+        System.setProperty("karaf.data", ".");
         MavenServiceInstanceFactory factory = new MavenServiceInstanceFactory();
         factory.setBuildEvents(mock(BuildDomainEvents.class));
         factory.setTestEvents(mock(TestDomainEvents.class));

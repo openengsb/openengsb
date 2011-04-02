@@ -32,7 +32,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +41,9 @@ import java.util.zip.ZipException;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -69,7 +71,6 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     private final String mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-"
             + mvnVersion + "/bin/mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
-    private final Vector<String> mvnUrl = getListOfMirrors();
 
     private Log log = LogFactory.getLog(this.getClass());
 
@@ -104,9 +105,10 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         if (!isMavenInstalled()) {
             installMaven();
         }
+        new File(mvnCommand).setExecutable(true);
     }
-    
-    public static String readMvnVersionFromPropFile() {
+
+    public String readMvnVersionFromPropFile() {        
         Properties prop = new Properties();
         String version = null;
         try {
@@ -116,28 +118,34 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
         return version;
     }
-    
-    private Vector<String> getListOfMirrors() {
-        Vector<String> list = new Vector<String>();
-        list.add("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip");
-        return list;
+
+    private List getListOfMirrors() {
+        try {
+            Configuration config = new PropertiesConfiguration("src/main/resources/config.properties");
+            List mirrorList = config.getList("mirror1");
+            return mirrorList;
+        } catch (ConfigurationException e1) {
+            return new ArrayList<String>();
+        }
     }
 
     public Boolean isMavenInstalled() {
-        if (new File(System.getProperty("karaf.data") + "/apache-maven-" + getMvnVersion()).exists()) {
+        if (new File(System.getProperty("karaf.data") + "/apache-maven-" + readMvnVersionFromPropFile()).exists()) {
             return true;
         }
         return false;
 
     }
 
-    public void download(String url, String downloadPath) {
+    public boolean download(String url, String downloadPath) {
         InputStream in = null;
         try {
             in = new URL(url).openStream();
             FileUtils.writeByteArrayToFile(new File(downloadPath), IOUtils.toByteArray(in));
+            return true;
         } catch (IOException e) {
             log.error(e);
+            return false;
         } finally {
             IOUtils.closeQuietly(in);
         }
@@ -145,18 +153,26 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void installMaven() {
         String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-        download(mvnUrl.get(0), downloadPath);
+
+        List mirrors = getListOfMirrors();
+
+        for (int i = 0; i < mirrors.size(); i++) {
+            if (download(String.valueOf(mirrors.get(i)) + "apache-maven-" + readMvnVersionFromPropFile() + "-bin.zip",
+                    downloadPath)) {
+                break;
+            }
+            
+            if (i == mirrors.size() - 1) {
+                log.error("No valid mirror found!");
+            }
+        }
         unzipFile(downloadPath, System.getProperty("karaf.data"));
-        new File(mvnCommand).setExecutable(true);
     }
 
     public void unzipFile(String archivePath, String targetPath) {
         try {
             File archiveFile = new File(archivePath);
             File targetFile = new File(targetPath);
-            targetFile.setExecutable(true);
-            targetFile.setReadable(true);
-            targetFile.setWritable(true);
             ZipFile zipFile = new ZipFile(archiveFile);
             Enumeration<?> e = zipFile.getEntries();
             while (e.hasMoreElements()) {
