@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
@@ -108,4 +109,16 @@ public final class DomainEndpointFactory {
     private DomainEndpointFactory() {
     }
 
+    /**
+     * returns true a connector for the specified domain type exists, otherwise false
+     */
+    public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
+        Domain service;
+        try {
+            service = OsgiServiceUtils.getService(domainType, 5000L);
+        } catch (OsgiServiceNotAvailableException e) {
+            return false;
+        }
+        return service != null;
+    }
 }

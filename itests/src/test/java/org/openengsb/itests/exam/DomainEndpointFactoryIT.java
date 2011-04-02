@@ -127,4 +127,21 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         assertThat(ids, hasItems("test", "test2"));
         assertThat(ids, not(hasItem("test3")));
     }
+
+    @Test
+    public void testServiceDoesNotExist() throws Exception {
+        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(false));
+    }
+
+    @Test
+    public void testServiceDoesExist() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
+    }
 }
