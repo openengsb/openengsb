@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -67,6 +68,8 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     private static final String MVN_COMMAND = new File(System.getProperty("karaf.data")).getAbsolutePath()
             + "/apache-maven-" + getMvnVersion() + "/bin/mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
+    private static final Vector<String> MVN_URL = getListOfMirrors();
+
     private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
 
@@ -111,6 +114,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
         return version;
     }
+    
+    private static Vector<String> getListOfMirrors() {
+        Vector<String> list = new Vector<String>();
+        list.add("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip");
+        return list;
+    }
 
     public Boolean isMavenInstalled() {
         if (new File(System.getProperty("karaf.data") + "/apache-maven-" + getMvnVersion()).exists()) {
@@ -125,7 +134,6 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         try {
             in = new URL(url).openStream();
             FileUtils.writeByteArrayToFile(new File(downloadPath), IOUtils.toByteArray(in));
-            System.out.println(IOUtils.toString(in));
         } catch (IOException e) {
             log.error(e);
         } finally {
@@ -135,15 +143,18 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void installMaven() {
         String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-        download("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip",
-                downloadPath);
+        download(MVN_URL.get(0), downloadPath);
         unzipFile(downloadPath, System.getProperty("karaf.data"));
+        new File(MVN_COMMAND).setExecutable(true);
     }
 
     public void unzipFile(String archivePath, String targetPath) {
         try {
             File archiveFile = new File(archivePath);
             File targetFile = new File(targetPath);
+            targetFile.setExecutable(true);
+            targetFile.setReadable(true);
+            targetFile.setWritable(true);
             ZipFile zipFile = new ZipFile(archiveFile);
             Enumeration<?> e = zipFile.getEntries();
             while (e.hasMoreElements()) {
