@@ -27,6 +27,7 @@ import java.io.InputStream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -57,6 +58,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         addWorkflow("simpleFlow");
         System.out.println("Starting Integration Test");
