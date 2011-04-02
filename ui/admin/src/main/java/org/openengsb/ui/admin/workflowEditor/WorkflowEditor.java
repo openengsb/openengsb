@@ -102,9 +102,11 @@ public class WorkflowEditor extends BasePage {
             @Override
             protected void onSubmit() {
                 try {
+                    String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
+                    System.out.println(convert);
                     ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
                         .getCurrentWorkflow().getName()),
-                        workflowConverter.convert(workflowEditorService.getCurrentWorkflow()));
+                        convert);
                 } catch (RuleBaseException e) {
                     error(e.getMessage());
                 }
@@ -113,7 +115,7 @@ public class WorkflowEditor extends BasePage {
         add(exportForm);
 
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        Workflow currentWorkflow = workflowEditorService.getCurrentWorkflow();
+        final Workflow currentWorkflow = workflowEditorService.getCurrentWorkflow();
         DefaultTreeModel model = new DefaultTreeModel(node);
         IColumn[] columns =
             new IColumn[]{
@@ -125,7 +127,7 @@ public class WorkflowEditor extends BasePage {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                         Node userObject = (Node) treeNode.getUserObject();
                         if (userObject instanceof Action) {
-                            return new ActionLinks("links", (Action) userObject, treeNode);
+                            return new ActionLinks("links", (Action) userObject, treeNode, currentWorkflow);
                         }
                         if (userObject instanceof Event) {
                             return new EventLinks("links", (Event) userObject, treeNode);

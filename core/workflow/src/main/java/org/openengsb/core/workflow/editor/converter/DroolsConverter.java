@@ -25,7 +25,7 @@ import javax.xml.bind.Marshaller;
 
 import org.openengsb.core.workflow.editor.Workflow;
 import org.openengsb.core.workflow.editor.WorkflowConverter;
-import org.openengsb.core.workflow.editor.converter.Process.End;
+import org.openengsb.core.workflow.editor.converter.Process.EndNode;
 import org.openengsb.core.workflow.editor.converter.Process.Start;
 
 public class DroolsConverter implements WorkflowConverter {
@@ -37,8 +37,10 @@ public class DroolsConverter implements WorkflowConverter {
     public DroolsConverter() throws JAXBException {
         context =
             JAXBContext.newInstance(ActionNode.class, EventNode.class, Process.class, Connection.class, Start.class,
-                org.openengsb.core.workflow.editor.converter.ActionNode.Action.class, End.class);
+                org.openengsb.core.workflow.editor.converter.ActionNode.Action.class, EndNode.class);
         this.marshaller = context.createMarshaller();
+        marshaller.setProperty("jaxb.schemaLocation",
+            "http://drools.org/drools-5.0/process drools-processes-5.0.xsd");
     }
 
     @Override

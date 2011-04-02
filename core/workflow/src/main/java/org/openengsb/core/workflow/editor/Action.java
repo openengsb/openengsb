@@ -30,6 +30,8 @@ public class Action implements Serializable, Node {
     private Class<? extends Domain> domain;
     private String methodName;
 
+    private End end;
+
     private List<Class<?>> methodParameters = new ArrayList<Class<?>>();
     private String location;
 
@@ -91,4 +93,23 @@ public class Action implements Serializable, Node {
         this.methodParameters = methodParameters;
     }
 
+    public End getEnd() {
+        if (isLeaf()) {
+            return this.end;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasSharedEnd() {
+        return end != null;
+    }
+
+    public void setEnd(End end) {
+        this.end = end;
+    }
+
+    public boolean isLeaf() {
+        return actions.isEmpty() && events.isEmpty();
+    }
 }

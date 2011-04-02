@@ -17,10 +17,15 @@
 
 package org.openengsb.core.workflow.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Workflow {
 
     private String name;
     private Action root = new Action();
+
+    private List<End> endNodes = new ArrayList<End>();
 
     public final String getName() {
         return name;
@@ -30,11 +35,23 @@ public class Workflow {
         this.name = name;
     }
 
+    public void setEndNodes(List<End> endNodes) {
+        this.endNodes = endNodes;
+    }
+
     public final Action getRoot() {
         return root;
     }
 
     public final void setRoot(Action root) {
         this.root = root;
+    }
+
+    public void addEndNode(End end) {
+        this.endNodes.add(end);
+    }
+
+    public List<End> getEndNodes() {
+        return this.endNodes;
     }
 }

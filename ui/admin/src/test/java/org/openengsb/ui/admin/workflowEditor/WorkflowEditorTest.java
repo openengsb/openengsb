@@ -17,12 +17,17 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -41,6 +46,7 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.End;
 import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Workflow;
 import org.openengsb.core.workflow.editor.WorkflowConverter;
@@ -48,6 +54,7 @@ import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.core.workflow.editor.WorkflowEditorServiceImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
+import org.openengsb.ui.admin.workflowEditor.end.SetEnd;
 
 public class WorkflowEditorTest {
 
@@ -163,6 +170,39 @@ public class WorkflowEditorTest {
         service.createWorkflow("workflow");
         tester.startPage(WorkflowEditor.class);
         tester.assertInvisible("treeTable:i:0:middleColumns:links:remove");
+    }
+
+    @Test
+    public void createAndSetEndNode_ShouldBeShownInEditor() {
+        service.createWorkflow("workflow");
+        tester.startPage(WorkflowEditor.class);
+        String setEnd = "treeTable:i:0:middleColumns:links:set-end";
+        tester.clickLink(setEnd);
+        tester.assertRenderedPage(SetEnd.class);
+        FormTester formTester = tester.newFormTester("endSelectForm");
+        formTester.setValue("name", "Name");
+        formTester.submit("create");
+        Action root = service.getCurrentWorkflow().getRoot();
+        End end = root.getEnd();
+        assertTrue(root.isLeaf());
+        assertThat(end.getName(), equalTo("Name"));
+        List<End> endNodes = service.getCurrentWorkflow().getEndNodes();
+        assertThat(endNodes.size(), equalTo(1));
+        assertThat(endNodes.get(0), sameInstance(end));
+        tester.assertRenderedPage(WorkflowEditor.class);
+        root.setEnd(null);
+        assertNull(root.getEnd());
+        tester.clickLink(setEnd);
+        formTester = tester.newFormTester("endSelectForm");
+        formTester.select("endSelect", 0);
+        formTester.submit("select");
+        assertThat(root.getEnd().getName(), equalTo("Name"));
+        root.setEnd(null);
+        tester.assertRenderedPage(WorkflowEditor.class);
+        tester.clickLink(setEnd);
+        formTester = tester.newFormTester("endSelectForm");
+        formTester.submit("cancel");
+        assertNull(root.getEnd());
     }
 
     @Test

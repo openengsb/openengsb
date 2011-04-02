@@ -19,25 +19,31 @@ package org.openengsb.core.workflow.editor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class WorkflowEditorServiceImplTest {
 
+    private WorkflowEditorServiceImpl service;
+    private String name;
+
+    @Before
+    public void before() {
+        service = new WorkflowEditorServiceImpl();
+        name = "name";
+        service.createWorkflow(name);
+    }
+
     @Test
     public void createWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
-        String name = "name";
-        service.createWorkflow(name);
         Workflow currentWorkflow = service.getCurrentWorkflow();
         assertThat(name, equalTo(currentWorkflow.getName()));
     }
 
     @Test
     public void loadWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
-        String name = "name";
-        service.createWorkflow(name);
         String string = "123";
         service.createWorkflow(string);
         assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
@@ -46,14 +52,30 @@ public class WorkflowEditorServiceImplTest {
     }
 
     @Test
-    public void getWorkflowName_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
-        String name = "name";
-        service.createWorkflow(name);
+    public void getWorkflowName_ShouldBeInCorrectOrder() {
         String string = "123";
         service.createWorkflow(string);
         assertThat(string, equalTo(service.getWorkflowNames().get(0)));
         assertThat(name, equalTo(service.getWorkflowNames().get(1)));
+    }
+
+    @Test
+    public void addEndNode_ShouldBeAddedInCorrectOrder() {
+        Workflow currentWorkflow = service.getCurrentWorkflow();
+        currentWorkflow.addEndNode(new End(name));
+        String string = name + "1";
+        currentWorkflow.addEndNode(new End(string));
+        assertThat(currentWorkflow.getEndNodes().size(), equalTo(2));
+        End end1 = currentWorkflow.getEndNodes().get(0);
+        assertThat(end1.getName(), equalTo(name));
+        assertThat(currentWorkflow.getEndNodes().get(1).getName(), equalTo(string));
+        currentWorkflow.getRoot().setEnd(end1);
+        assertThat(currentWorkflow.getRoot().getEnd(), sameInstance(end1));
+    }
+
+    @Test
+    public void defaultEndNode_ShouldExist() {
+        assertThat(service.getCurrentWorkflow().getRoot().getEnd().getName(), equalTo("Default"));
     }
 
     @Test

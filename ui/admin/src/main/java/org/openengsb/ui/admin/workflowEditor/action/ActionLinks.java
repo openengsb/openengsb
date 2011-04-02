@@ -23,12 +23,14 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.workflow.editor.Action;
 import org.openengsb.core.workflow.editor.Event;
+import org.openengsb.core.workflow.editor.Workflow;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.openengsb.ui.admin.workflowEditor.end.SetEnd;
 import org.openengsb.ui.admin.workflowEditor.event.EditEvent;
 
 public class ActionLinks extends Panel {
 
-    public ActionLinks(String id, final Action action, final DefaultMutableTreeNode treeNode) {
+    public ActionLinks(String id, final Action action, final DefaultMutableTreeNode treeNode, final Workflow workflow) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create-action") {
             @Override
@@ -59,6 +61,17 @@ public class ActionLinks extends Panel {
                 setResponsePage(WorkflowEditor.class);
             }
         };
+        add(new Link<DefaultMutableTreeNode>("set-end") {
+            @Override
+            public void onClick() {
+                Object userObject = treeNode.getUserObject();
+                if (userObject instanceof Action) {
+                    setResponsePage(new SetEnd(workflow, (Action) userObject));
+                } else {
+                    setResponsePage(WorkflowEditor.class);
+                }
+            }
+        });
         if (treeNode.getParent() == null) {
             remove.setVisible(false);
         }

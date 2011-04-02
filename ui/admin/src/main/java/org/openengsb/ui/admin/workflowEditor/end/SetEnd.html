@@ -18,15 +18,18 @@
 
 -->
 
-
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-  xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+	xml:lang="en" lang="en">
 <body>
-<wicket:panel>
-   <a href="#" wicket:id="create-action"><wicket:message key="create.action">[create.action]</wicket:message></a>
-   <a href="#" wicket:id="create-event"><wicket:message key="create.event">[create.event]</wicket:message></a>
-   <a href="#" wicket:id="remove"><wicket:message key="remove">[remove]</wicket:message></a>
-   <a href="#" wicket:id="set-end"><wicket:message key="set.end">[set.end]</wicket:message></a>
-</wicket:panel>
+<wicket:extend>
+	<form wicket:id="endSelectForm" id="endSelectForm">
+	<select wicket:id="endSelect"></select>
+  <input wicket:id="select" type="submit" value="Select" />
+    <input type="text" wicket:id="name" />
+    <input wicket:id="create" type="submit" value="Create" />
+    <input wicket:id="cancel" type="submit" value="Cancel" />
+	</form>
+</wicket:extend>
 </body>
 </html>
