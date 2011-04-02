@@ -318,4 +318,21 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.cancelFlow(pid);
         service.waitForFlowToFinish(pid, 5000);
     }
+
+    @Test
+    public void testWaitForFlow_shouldReturnTrue() throws Exception {
+        Future<Long> pid = service.startFlowInBackground("flowtest");
+        boolean finished = service.waitForFlowToFinish(pid.get(), 400);
+        assertThat(finished, is(true));
+    }
+
+    @Test
+    public void testWaitForFlowThatCannotFinish_shouldReturnFalse() throws Exception {
+        Long pid = service.startFlow("floweventtest");
+        service.processEvent(new Event("FirstEvent"));
+        service.startFlowInBackground("flowtest");
+        boolean finished = service.waitForFlowToFinish(pid, 400);
+        assertThat(finished, is(false));
+    }
+
 }

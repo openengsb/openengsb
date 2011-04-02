@@ -100,7 +100,7 @@ public interface WorkflowService {
      * @throws InterruptedException if the waiting is interrupted
      * @throws WorkflowException if the session could not be obtained
      */
-    void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException;
+    boolean waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException;
 
     /**
      * this method adds a rule to the rulebase that always starts workflow(s) when a certain event is raised. All fields

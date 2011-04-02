@@ -274,13 +274,17 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         }
     }
 
-    public void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
+    @Override
+    public boolean waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
+        long endTime = System.currentTimeMillis() + timeout;
         synchronized (session) {
-            while (session.getProcessInstance(id) != null) {
+            while (session.getProcessInstance(id) != null && timeout > 0) {
                 session.wait(timeout);
+                timeout = System.currentTimeMillis() - endTime;
             }
         }
+        return !getRunningFlows().contains(id);
     }
 
     public Collection<Long> getRunningFlows() throws WorkflowException {
