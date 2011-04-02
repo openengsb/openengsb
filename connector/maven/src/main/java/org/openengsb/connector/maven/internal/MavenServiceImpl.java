@@ -65,12 +65,14 @@ import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
-    private static final String MVN_COMMAND = new File(System.getProperty("karaf.data")).getAbsolutePath()
-            + "/apache-maven-" + getMvnVersion() + "/bin/mvn" + addSystemEnding();
+    private String mvnVersion = readMvnVersionFromPropFile();
+    private final String mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-"
+            + mvnVersion + "/bin/mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
-    private static final Vector<String> MVN_URL = getListOfMirrors();
+    private final Vector<String> mvnUrl = getListOfMirrors();
 
     private Log log = LogFactory.getLog(this.getClass());
+
     private String projectPath;
 
     private BuildDomainEvents buildEvents;
@@ -88,7 +90,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     private String command;
     private File logDir;
-
+    
     public MavenServiceImpl(String id) {
         super(id);
         String karafData = System.getProperty("karaf.data");
@@ -103,8 +105,8 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
             installMaven();
         }
     }
-
-    public static String getMvnVersion() {
+    
+    public static String readMvnVersionFromPropFile() {
         Properties prop = new Properties();
         String version = null;
         try {
@@ -115,9 +117,9 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         return version;
     }
     
-    private static Vector<String> getListOfMirrors() {
+    private Vector<String> getListOfMirrors() {
         Vector<String> list = new Vector<String>();
-        list.add("http://apache.deathculture.net//maven/binaries/apache-maven-" + getMvnVersion() + "-bin.zip");
+        list.add("http://apache.deathculture.net//maven/binaries/apache-maven-" + mvnVersion + "-bin.zip");
         return list;
     }
 
@@ -143,9 +145,9 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public void installMaven() {
         String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-        download(MVN_URL.get(0), downloadPath);
+        download(mvnUrl.get(0), downloadPath);
         unzipFile(downloadPath, System.getProperty("karaf.data"));
-        new File(MVN_COMMAND).setExecutable(true);
+        new File(mvnCommand).setExecutable(true);
     }
 
     public void unzipFile(String archivePath, String targetPath) {
@@ -347,7 +349,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         File dir = new File(projectPath);
 
         List<String> command = new ArrayList<String>();
-        command.add(MVN_COMMAND);
+        command.add(mvnCommand);
         command.addAll(Arrays.asList(goal.trim().split(" ")));
 
         try {
@@ -465,6 +467,14 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
 
     public int getLogLimit() {
         return MAX_LOG_FILES;
+    }
+    
+    public String getMvnVersion() {
+        return mvnVersion;
+    }
+    
+    public void setMvnVersion(String mvnVersion) {
+        this.mvnVersion = mvnVersion;
     }
 
     private class MavenResult {
