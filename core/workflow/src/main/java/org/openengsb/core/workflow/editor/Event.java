@@ -23,6 +23,7 @@ import java.util.List;
 
 public class Event implements Node, Serializable {
     private final List<Action> actions = new ArrayList<Action>();
+    private final List<Event> events = new ArrayList<Event>();
 
     private Class<? extends org.openengsb.core.common.Event> event;
 
@@ -33,6 +34,14 @@ public class Event implements Node, Serializable {
 
     public final List<Action> getActions() {
         return actions;
+    }
+
+    public final void addEvent(Event event) {
+        this.events.add(event);
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 
     @Override

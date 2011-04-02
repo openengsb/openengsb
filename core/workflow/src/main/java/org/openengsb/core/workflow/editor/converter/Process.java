@@ -18,7 +18,9 @@
 package org.openengsb.core.workflow.editor.converter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.End;
 import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Workflow;
 
@@ -35,7 +38,7 @@ import org.openengsb.core.workflow.editor.Workflow;
 public class Process {
 
     private int idCounter = 1;
-    private List<Integer> endConnections = new ArrayList<Integer>();
+    private Map<End, List<Integer>> endConnections = new LinkedHashMap<End, List<Integer>>();
     private String type;
     private String name;
     private String id;
@@ -89,14 +92,22 @@ public class Process {
     @XmlElements({ @XmlElement(name = "start", type = Start.class),
         @XmlElement(name = "actionNode", type = ActionNode.class),
         @XmlElement(name = "eventNode", type = ActionEvent.class),
-        @XmlElement(name = "end", type = End.class) })
+        @XmlElement(name = "end", type = EndNode.class),
+        @XmlElement(name = "split", type = Split.class),
+        @XmlElement(name = "join", type = Join.class) })
     public List<Object> getNodes() {
         return nodes;
     }
 
     @XmlElementWrapper(name = "connections")
-    public List<Connection> getConnection() {
+    @XmlElement(name = "connection")
+    public List<Connection> getNodesConnection() {
         return connection;
+    }
+
+    @XmlAttribute
+    public String getXmlns() {
+        return "http://drools.org/drools-5.0/process";
     }
 
     public static final class Start {
@@ -111,15 +122,41 @@ public class Process {
         private String name = "Start";
     }
 
-    public static final class End {
+    public static final class EndNode {
 
-        private End() {
+        private EndNode() {
         }
 
         @XmlAttribute
         private int id;
         @XmlAttribute
         private String name = "End";
+    }
+
+    public static final class Split {
+
+        private Split() {
+        }
+
+        @XmlAttribute
+        private int id;
+        @XmlAttribute
+        private String name;
+        @XmlAttribute
+        private int type = 1;
+    }
+
+    public static final class Join {
+
+        private Join() {
+        }
+
+        @XmlAttribute
+        private int id;
+        @XmlAttribute
+        private String name;
+        @XmlAttribute
+        private int type = 1;
     }
 
     public static Process build(Workflow workflow) {
@@ -132,12 +169,31 @@ public class Process {
     }
 
     private static void addEndConnections(Process process) {
-        End end = new End();
-        end.id = process.getIdCounter();
-        process.addNode(end);
-        for (Integer toEnd : process.endConnections) {
-            process.connection.add(new Connection(toEnd, end.id));
+        for (End end : process.endConnections.keySet()) {
+            List<Integer> list = process.endConnections.get(end);
+            int counter = process.getIdCounter();
+            for (int id : list) {
+                process.connection.add(new Connection(id, counter));
+            }
+            if (list.size() > 1) {
+                Join node = new Join();
+                node.name = "EndJoin";
+                node.id = counter;
+                counter = process.getIdCounter();
+                process.addNode(node);
+                process.connection.add(new Connection(node.id, counter));
+            }
+            EndNode endNode = new EndNode();
+            endNode.id = counter;
+            process.addNode(endNode);
         }
+    }
+
+    private static void addEnd(Process process, End end, int from) {
+        if (!process.endConnections.containsKey(end)) {
+            process.endConnections.put(end, new ArrayList<Integer>());
+        }
+        process.endConnections.get(end).add(from);
     }
 
     private static void processAction(Process process, Action root, int parentId) {
@@ -145,27 +201,67 @@ public class Process {
         process.addNode(new ActionNode(counter, root.getMethodName(), root.getLocation(), root
             .getMethodName()));
         process.connection.add(new Connection(parentId, counter));
-        for (Action action : root.getActions()) {
-            processAction(process, action, counter);
+        if (root.isLeaf()) {
+            End end;
+            if (root.hasSharedEnd()) {
+                end = root.getEnd();
+            } else {
+                end = new End("Default");
+            }
+            addEnd(process, end, counter);
         }
+        int children = root.getActions().size() + root.getEvents().size();
+        String splitName = "ActionSplit";
+        counter = addSplit(process, counter, children, splitName);
+        handleActions(process, root, counter);
+        handleEvents(process, root, counter);
+    }
+
+    private static int addSplit(Process process, int counter, int children, String splitName) {
+        if (children > 1) {
+            Split split = new Split();
+            split.id = process.getIdCounter();
+            split.name = splitName;
+            process.addNode(split);
+            process.connection.add(new Connection(counter, split.id));
+            counter = split.id;
+        }
+        return counter;
+    }
+
+    private static void handleEvents(Process process, Action root, int counter) {
         for (Event event : root.getEvents()) {
             processEvent(process, event, counter);
         }
-        if (root.getActions().size() == 0) {
-            process.endConnections.add(counter);
+    }
+
+    private static void handleActions(Process process, Action root, int counter) {
+        iterateOverActions(process, root, counter);
+    }
+
+    private static void iterateOverActions(Process process, Action root, int id) {
+        for (Action action : root.getActions()) {
+            processAction(process, action, id);
         }
     }
 
     private static void processEvent(Process process, Event event, int parentId) {
         String simpleName = event.getEvent().getSimpleName();
-        int counter = process.getIdCounter();
-        process.addNode(new ActionEvent(counter, simpleName, simpleName));
-        process.connection.add(new Connection(parentId, counter));
+        int eventId = process.getIdCounter();
+        process.addNode(new ActionEvent(eventId, simpleName, simpleName));
+        Join join = new Join();
+        join.id = process.getIdCounter();
+        join.name = "EventJoin";
+        process.addNode(join);
+        process.connection.add(new Connection(parentId, join.id));
+        process.connection.add(new Connection(eventId, join.id));
+        int counter = join.id;
+        counter = addSplit(process, counter, event.getActions().size() + event.getEvents().size(), "EventSplit");
         for (Action action : event.getActions()) {
             processAction(process, action, counter);
         }
-        if (event.getActions().size() == 0) {
-            process.endConnections.add(counter);
+        for (Event toProcess : event.getEvents()) {
+            processEvent(process, toProcess, counter);
         }
     }
 }

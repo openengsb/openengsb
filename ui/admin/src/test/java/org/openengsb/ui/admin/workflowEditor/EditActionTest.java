@@ -40,8 +40,10 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.WorkflowConverter;
 import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
@@ -80,6 +82,8 @@ public class EditActionTest {
         DomainService domainServiceMock = mock(DomainService.class);
         when(domainServiceMock.domains()).thenReturn(domainProviders);
         mock.putBean("domainService", domainServiceMock);
+        mock.putBean(mock(WorkflowConverter.class));
+        mock.putBean(mock(RuleManager.class));
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new EditAction(parent, action));

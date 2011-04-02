@@ -36,7 +36,7 @@ public class ActionNode {
         this.id = id;
         this.name = name;
         this.action = new Action();
-        action.setValue(location + "." + methodName + "()");
+        action.setValue(location + "." + methodName + "();");
     }
 
     @XmlAttribute

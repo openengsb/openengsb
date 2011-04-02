@@ -17,6 +17,8 @@
 
 package org.openengsb.core.workflow.editor.converter;
 
+import static org.junit.Assert.fail;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -27,10 +29,17 @@ import javax.xml.bind.JAXBException;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.workflow.editor.Action;
+import org.openengsb.core.workflow.editor.End;
 import org.openengsb.core.workflow.editor.Event;
 import org.openengsb.core.workflow.editor.Workflow;
 import org.openengsb.core.workflow.editor.WorkflowConverter;
@@ -38,23 +47,151 @@ import org.xml.sax.SAXException;
 
 public class DroolsConverterTest {
 
+    private Workflow workflow;
+
+    @Before
+    public void before() {
+        XMLUnit.setIgnoreWhitespace(true);
+        workflow = new Workflow();
+        workflow.setName("workflow");
+        setActionValues(workflow.getRoot());
+    }
+
     @Test
     public void callWorkflow_ShouldConvertCorrectly() throws SAXException, IOException,
-        JAXBException {
-        Workflow workflow = new Workflow();
-        workflow.setName("workflow");
+        JAXBException, XpathException {
         Action root = workflow.getRoot();
-        setActionValues(root);
-        Event event = new Event();
-        event.setEvent(NullEvent.class);
-        event.addAction(setActionValues(new Action()));
+        End end = new End();
+        root.addAction(createAction(end));
+        root.addAction(createAction(end));
+        Event event = createEvent();
+        event.addAction(createAction(end));
+        event.addAction(createAction(end));
         root.addEvent(event);
-        root.addAction(setActionValues(new Action()));
+        String convert = convertWorkflowToString();
+        assertConversionResult(convert, "test-workflow");
+    }
+
+    @Test
+    public void actionFollowingAction() throws SAXException, IOException, JAXBException {
+        workflow.getRoot().addAction(createAction());
+        assertConversionResult(convertWorkflowToString(), "actionFollowingAction");
+    }
+
+    @Test
+    public void actionsFollowingAction() throws SAXException, IOException, JAXBException {
+        workflow.getRoot().addAction(createAction());
+        workflow.getRoot().addAction(createAction());
+        assertConversionResult(convertWorkflowToString(), "actionsFollowingAction");
+    }
+
+    @Test
+    public void actionsFollowingActionWithSharedEnd() throws SAXException, IOException, JAXBException {
+        Action createAction = createAction();
+        End end = new End();
+        createAction.setEnd(end);
+        workflow.getRoot().addAction(createAction);
+        workflow.getRoot().addAction(createAction);
+        assertConversionResult(convertWorkflowToString(), "actionsFollowingActionWithSharedEnd");
+    }
+
+    @Test
+    public void actionFollowingEvent_eventFollowingAction() throws SAXException, IOException, JAXBException {
+        Action createAction = createAction();
+        Event event = createEvent();
+        event.addAction(createAction);
+        workflow.getRoot().addEvent(event);
+        assertConversionResult(convertWorkflowToString(), "actionFollowingEvent_eventFollowingAction");
+    }
+
+    @Test
+    public void actionsFollowingEvent() throws SAXException, IOException, JAXBException {
+        Action createAction = createAction();
+        Event event = createEvent();
+        event.addAction(createAction);
+        event.addAction(createAction);
+        workflow.getRoot().addEvent(event);
+        assertConversionResult(convertWorkflowToString(), "actionsFollowingEvent");
+    }
+
+    @Test
+    public void eventsFollowingAction() throws SAXException, IOException, JAXBException {
+        Action createAction = createAction();
+        Event event = createEvent();
+        event.addAction(createAction);
+        workflow.getRoot().addEvent(event);
+        workflow.getRoot().addEvent(event);
+        assertConversionResult(convertWorkflowToString(), "eventsFollowingAction");
+    }
+
+    @Test
+    public void actionAndEventFollowingAction() throws SAXException, IOException, JAXBException {
+        End end = new End();
+        Action createAction = createAction(end);
+        Event event = createEvent();
+        Action createAction2 = createAction(end);
+        event.addAction(createAction2);
+        workflow.getRoot().addAction(createAction);
+        workflow.getRoot().addEvent(event);
+        assertConversionResult(convertWorkflowToString(), "actionAndEventFollowingAction");
+    }
+
+    @Test
+    public void eventFollowingEvent() throws SAXException, IOException, JAXBException {
+        Event event = createEvent();
+        Action createAction2 = createAction();
+        event.addAction(createAction2);
+        Event parentEvent = createEvent();
+        parentEvent.addEvent(event);
+        workflow.getRoot().addEvent(parentEvent);
+        assertConversionResult(convertWorkflowToString(), "eventFollowingEvent");
+    }
+
+    @Test
+    public void eventsFollowingEvent() throws SAXException, IOException, JAXBException {
+        End end = new End();
+        Event event = createEvent();
+        Action createAction2 = createAction(end);
+        event.addAction(createAction2);
+        Event parentEvent = createEvent();
+        parentEvent.addEvent(event);
+        parentEvent.addEvent(event);
+        workflow.getRoot().addEvent(parentEvent);
+        assertConversionResult(convertWorkflowToString(), "eventsFollowingEvent");
+    }
+
+    private String convertWorkflowToString() throws JAXBException {
         WorkflowConverter converter = new DroolsConverter();
         String convert = converter.convert(workflow);
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual(new FileReader(this.getClass().getResource("/test-workflow.xml").getPath()),
+        System.out.println(convert);
+        return convert;
+    }
+
+    private void assertConversionResult(String convert, String name) throws SAXException, IOException {
+        XMLAssert.assertXMLEqual(new FileReader(this.getClass().getResource("/converted/" + name + ".xml").getPath()),
             new StringReader(convert));
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("convertertest.drl", getClass()), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newReaderResource(new StringReader(convert)), ResourceType.DRF);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+    }
+
+    private Event createEvent() {
+        Event event = new Event();
+        event.setEvent(NullEvent.class);
+        return event;
+    }
+
+    private Action createAction(End end) {
+        Action createAction = createAction();
+        createAction.setEnd(end);
+        return createAction;
+    }
+
+    private Action createAction() {
+        return setActionValues(new Action());
     }
 
     private Action setActionValues(Action root) {
