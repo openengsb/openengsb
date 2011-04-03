@@ -28,10 +28,13 @@
       <defaultValue>org.openengsb.client-project</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>openengsb-client-project-parent</defaultValue>
+      <defaultValue>openengsb-client-project</defaultValue>
     </requiredProperty>
     <requiredProperty key="clientProjectName">
-      <defaultValue>Client-Project :: Parent</defaultValue>
+      <defaultValue>Client-Project</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="name">
+      <defaultValue>Client-Project</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
       <defaultValue>1.0.0-SNAPSHOT</defaultValue>
@@ -74,12 +77,59 @@
   </requiredProperties>
 
   <fileSets>
-    <fileSet encoding="UTF-8">
+    <fileSet filtered="true">
       <directory></directory>
       <includes>
         <include>NOTICE</include>
         <include>LICENSE</include>
         <include>README.md</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>assembly</directory>
+      <includes>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="false">
+      <directory>assembly/src/main/descriptors</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>assembly/src/main/filtered-resources</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>poms</directory>
+      <includes>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet> <fileSet filtered="true"  encoding="UTF-8">
+      <directory>poms/compiled</directory>
+      <includes>
+        <include>**/pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>poms/nonosgi</directory>
+      <includes>
+        <include>**/pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true"  encoding="UTF-8">
+      <directory>poms/wrapped</directory>
+      <includes>
+        <include>**/pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>core</directory>
+      <includes>
+        <include>pom.xml</include>
       </includes>
     </fileSet>
   </fileSets>

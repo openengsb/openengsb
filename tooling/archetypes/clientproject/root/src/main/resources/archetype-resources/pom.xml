@@ -4,10 +4,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>${artifactId}-parent</artifactId>
   <version>${version}</version>
 
-  <name>${clientProjectName}</name>
+  <name>${name} :: Parent</name>
 
   <description>${clientProjectDescription}</description>
 
@@ -39,6 +39,9 @@
   </licenses>
 
   <modules>
+    <module>core</module>
+    <module>poms</module>
+    <module>assembly</module>
   </modules>
 
   <scm>

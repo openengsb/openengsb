@@ -27,7 +27,7 @@
   <artifactId>wrapped-settings</artifactId>
   <groupId>${groupId}.build</groupId>
   
-  <name>${cname} :: Plugin Configuration :: Wrapped Settings</name>
+  <name>${name} :: Plugin Configuration :: Wrapped Settings</name>
 
   <packaging>pom</packaging>
 
