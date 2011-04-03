@@ -62,6 +62,7 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -117,7 +118,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         private String instanceId;
 
         public TestService(String id) {
-            this.instanceId = id;
+            instanceId = id;
         }
 
         @Override
@@ -197,6 +198,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testServiceListSelect() throws Exception {
         setupAndStartTestClientPage();
         setServiceInDropDown(0);
@@ -211,6 +213,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
         ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
@@ -229,6 +232,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
         @SuppressWarnings("unchecked")
@@ -256,6 +260,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
@@ -273,6 +278,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testCreateDropdownForOptionArguments() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
@@ -293,6 +299,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
@@ -310,6 +317,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testPerformMethodCall() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
@@ -328,6 +336,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
 
@@ -347,6 +356,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
         setupAndStartTestClientPage();
 
@@ -371,6 +381,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
@@ -385,6 +396,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testFormResetAfterCall() throws Exception {
         setupAndStartTestClientPage();
 
@@ -408,6 +420,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testFeedbackPanelContainsText() throws Exception {
         setupAndStartTestClientPage();
 
@@ -424,6 +437,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testExceptionInFeedback() throws Exception {
         setupAndStartTestClientPage();
 
@@ -447,6 +461,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testSelectOtherService_shouldClearArgumentList() throws Exception {
         setupAndStartTestClientPage();
         setServiceInDropDown(0);
@@ -501,6 +516,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
         try {
@@ -588,6 +604,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testToSelectDefaultEndPoint_ShouldDisplayDomainMethodWithArguments() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
@@ -602,6 +619,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @Ignore("reevaluated by OPENENGSB-1213")
     public void testErrorMessageAppearIfServiceDoesNotExists() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
