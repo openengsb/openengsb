@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.DomainEndpointFactory;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractExamTestHelper;
@@ -79,7 +79,8 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
-        ExampleDomain domainEndpoint = DomainEndpointFactory.getDomainEndpoint(ExampleDomain.class, "foo");
+        ExampleDomain domainEndpoint =
+            OpenEngSBCoreServices.getWireingService().getDomainEndpoint(ExampleDomain.class, "foo");
         assertThat(domainEndpoint.getInstanceId(), is("test"));
 
         service = new DummyService("test2");
@@ -89,7 +90,8 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         properties.put(Constants.SERVICE_RANKING, 1);
 
         /* create the proxy before the service is registered */
-        ExampleDomain domainEndpoint2 = DomainEndpointFactory.getDomainEndpoint(ExampleDomain.class, "foo2");
+        ExampleDomain domainEndpoint2 =
+            OpenEngSBCoreServices.getWireingService().getDomainEndpoint(ExampleDomain.class, "foo2");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         assertThat(domainEndpoint2.getInstanceId(), is("test2"));
@@ -119,7 +121,8 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
-        List<ExampleDomain> domainEndpoints = DomainEndpointFactory.getDomainEndpoints(ExampleDomain.class, "main/*");
+        List<ExampleDomain> domainEndpoints =
+            OpenEngSBCoreServices.getWireingService().getDomainEndpoints(ExampleDomain.class, "main/*");
         List<String> ids = new ArrayList<String>();
         for (ExampleDomain endpoint : domainEndpoints) {
             ids.add(endpoint.getInstanceId());
@@ -130,7 +133,8 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
 
     @Test
     public void testServiceDoesNotExist() throws Exception {
-        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(false));
+        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class),
+            is(false));
     }
 
     @Test
@@ -142,6 +146,6 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
+        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
     }
 }

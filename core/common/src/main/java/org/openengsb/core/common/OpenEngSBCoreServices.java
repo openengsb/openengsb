@@ -17,20 +17,29 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.api.WireingService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+/**
+ * Static helper methods providing proxies which access the OSGi service registry for each request to retrieve the
+ * correct service implementation. Please keep in mind that each service implementation can change any moment and be
+ * either null and/or replaced by a different service.
+ */
+public final class OpenEngSBCoreServices {
 
-    @Override
-    public void start(BundleContext context) throws Exception {
-        OsgiServiceUtils.setBundleContext(context);
+    /**
+     * This class should not be created
+     */
+    private OpenEngSBCoreServices() {
     }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        // do nothing
+    /**
+     * Wiring is one of the core concepts in the OpenEngSB. The service retrieved by this method is used to get the
+     * endpoints which can be reached within the OpenEngSB.
+     */
+    public static WireingService getWireingService() {
+        return OsgiServiceUtils.getOsgiServiceProxy(OsgiServiceUtils.makeFilterForClass(WireingService.class),
+            WireingService.class);
     }
 
 }

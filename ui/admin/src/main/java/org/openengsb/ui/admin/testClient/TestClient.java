@@ -65,9 +65,10 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.WireingService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.DomainEndpointFactory;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -452,8 +453,9 @@ public class TestClient extends BasePage {
         Class<? extends Domain> aClass = domainProvider.getDomainInterface();
         String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
-        if (DomainEndpointFactory.isConnectorCurrentlyPresent(aClass)) {
-            defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");
+        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
+        if (wireingService.isConnectorCurrentlyPresent(aClass)) {
+            defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
         if (defaultDomain != null) {
             return defaultDomain;
@@ -479,6 +481,7 @@ public class TestClient extends BasePage {
         log.info("populating list with: " + methodChoices);
     }
 
+    @SuppressWarnings("unchecked")
     private List<Method> getServiceMethods(ServiceId service) {
         if (service == null) {
             return Collections.emptyList();
@@ -489,12 +492,13 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-        if (DomainEndpointFactory.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
-            this.submitButton.setEnabled(true);
+        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
+        if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+            submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
         }
         error("No service found for domain: " + connectorInterface.getName());
-        this.submitButton.setEnabled(false);
+        submitButton.setEnabled(false);
         return new ArrayList<Method>();
     }
 
