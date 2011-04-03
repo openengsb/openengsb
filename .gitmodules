@@ -49,3 +49,16 @@
 [submodule "connector/trac"]
 	path = connector/trac
 	url = git://github.com:openengsb/openengsb-connector-trac.git
+[submodule "connector/openengsb-connector-gcalendar"]
+	path = connector/openengsb-connector-gcalendar
+	url = git://github.com/openengsb/openengsb-connector-gcalendar.git
+[submodule "connector/openengsb-connector-gcontacts"]
+	path = connector/openengsb-connector-gcontacts
+	url = git://github.com/openengsb/openengsb-connector-gcontacts.git
+[submodule "wrapped/openengsb-wrapped-com.google.gdata-calendar"]
+	path = wrapped/openengsb-wrapped-com.google.gdata-calendar
+	url = git://github.com/openengsb/openengsb-wrapped-com.google.gdata-calendar.git
+
+[submodule "wrapped/openengsb-wrapped-com.google.gdata-contacts"]
+	path = wrapped/openengsb-wrapped-com.google.gdata-contacts
+	url = git://github.com/openengsb/openengsb-wrapped-com.google.gdata-contacts.git
