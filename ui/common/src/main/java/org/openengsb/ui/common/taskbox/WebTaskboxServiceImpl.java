@@ -27,33 +27,23 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.TaskboxException;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.Task;
-import org.openengsb.core.workflow.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.common.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.taskbox.web.TaskPanel;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService, BundleContextAware {
+public class WebTaskboxServiceImpl implements TaskboxService, WebTaskboxService {
     private Log log = LogFactory.getLog(getClass());
 
     private PersistenceService persistence;
-    private PersistenceManager persistenceManager;
+    private TaskboxService taskboxService;
     private BundleContext bundleContext;
+    private PersistenceManager persistenceManager;
 
-    @Override
     public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-    }
-
-    @Override
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
     @Override
@@ -92,4 +82,42 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
             throw new TaskboxException(e);
         }
     }
+
+    @Override
+    public List<Task> getOpenTasks() {
+        return taskboxService.getOpenTasks();
+    }
+
+    @Override
+    public List<Task> getTasksForExample(Task example) {
+        return taskboxService.getTasksForExample(example);
+    }
+
+    @Override
+    public Task getTaskForId(String id) throws TaskboxException {
+        return taskboxService.getTaskForId(id);
+    }
+
+    @Override
+    public List<Task> getTasksForProcessId(String id) {
+        return taskboxService.getTasksForProcessId(id);
+    }
+
+    @Override
+    public void finishTask(Task task) throws WorkflowException {
+        taskboxService.finishTask(task);
+    }
+
+    public void setTaskboxService(TaskboxService taskboxService) {
+        this.taskboxService = taskboxService;
+    }
+
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
 }

@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.taskbox;
+package org.openengsb.core.workflow.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.TaskboxServiceInternal;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;

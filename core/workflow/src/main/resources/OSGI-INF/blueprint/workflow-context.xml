@@ -47,7 +47,7 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <bean class="org.openengsb.core.workflow.taskbox.config.TaskboxConfigurator" init-method="init">
+  <bean class="org.openengsb.core.workflow.internal.TaskboxConfigurator" init-method="init">
     <property name="ruleManager" ref="ruleManager" />
   </bean>
 
@@ -56,14 +56,14 @@
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="taskbox" />
     </service-properties>
-    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceImpl" init-method="init">
+    <bean class="org.openengsb.core.workflow.internal.TaskboxServiceImpl" init-method="init">
       <property name="workflowService" ref="workflowService" />
       <property name="persistenceManager" ref="persistenceManager" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.workflow.taskbox.TaskboxServiceInternal">
+  <service interface="org.openengsb.core.api.workflow.TaskboxServiceInternal">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="location.root">
@@ -73,7 +73,7 @@
       </entry>
       <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
     </service-properties>
-    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceInternalImpl" init-method="init">
+    <bean class="org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl" init-method="init">
       <property name="persistenceManager" ref="persistenceManager" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>

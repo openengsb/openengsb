@@ -26,6 +26,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.internal.TaskboxConfigurator;
 
 public class TaskboxConfiguratorTest {
     private TaskboxConfigurator configurator;
