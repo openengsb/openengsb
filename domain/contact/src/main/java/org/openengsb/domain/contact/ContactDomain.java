@@ -45,6 +45,11 @@ public interface ContactDomain extends Domain {
     void deleteContact(String id);
 
     /**
+     * loads a contact from the server
+     */
+    Contact loadContact(String id);
+
+    /**
      * retrieves a list of contacts from the server based on "query by example"
      */
     ArrayList<Contact> retrieveContacts(String id, String name, String homepage,
