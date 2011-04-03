@@ -103,11 +103,11 @@
     <module>infrastructure</module>
     <module>ports</module>
     <module>domain</module>
+    <module>examples/domain</module>
+    <module>examples/connector</module>
     <module>ui</module>
     <module>assembly</module>
     <module>itests</module>
-    <module>examples/domain</module>
-    <module>examples/connector</module>
   </modules>
 
   <scm>
