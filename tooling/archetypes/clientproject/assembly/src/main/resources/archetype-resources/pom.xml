@@ -29,7 +29,7 @@
   <groupId>${groupId}</groupId>
   <artifactId>${name}</artifactId>
   <packaging>pom</packaging>
-  <name>${name}</name>
+  <name>${name} :: Assembly</name>
 
   <description>${clientProjectDescription} ${name}</description>
   <url>${url}</url>

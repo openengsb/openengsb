@@ -63,14 +63,23 @@
     <requiredProperty key="scmUrl">
       <defaultValue>http://github.com/clientproject</defaultValue>
     </requiredProperty>
+    <requiredProperty key="url">
+      <defaultValue>www.clientproject.com</defaultValue>
+    </requiredProperty>
 
   </requiredProperties>
 
   <fileSets>
-    <fileSet filtered="true" encoding="UTF-8">
-      <directory>src</directory>
+    <fileSet filtered="false">
+      <directory>src/main/descriptors</directory>
       <includes>
-        <include>**/*</include>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>src/main/filtered-resources</directory>
+      <includes>
+        <include>*</include>
       </includes>
     </fileSet>
   </fileSets>

@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
@@ -29,7 +26,7 @@
   <fileSets>
     <!-- Expanded Karaf Runtime -->
     <fileSet>
-      <directory>target/dependencies/openengsb-${symbol_dollar}{openengsb.version}</directory>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
         <exclude>bin/**</exclude>
@@ -50,7 +47,7 @@
 
     <!-- Copy over bin/karaf separately to get the correct file mode -->
     <fileSet>
-      <directory>target/dependencies/openengsb-${symbol_dollar}{openengsb.version}</directory>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>bin/admin</include>
@@ -64,7 +61,7 @@
 
     <!-- Copy over bin/karaf separately to get the correct file mode -->
     <fileSet>
-      <directory>target/dependencies/openengsb-${symbol_dollar}{openengsb.version}</directory>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>bin/admin.bat</include>
@@ -84,7 +81,7 @@
 
     <!-- Copy license and other files from root -->
     <fileSet>
-      <directory>${symbol_dollar}{basedir}/..</directory>
+      <directory>${basedir}/..</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>LICENSE</include>
@@ -112,35 +109,35 @@
 
   <files>
     <file>
-      <source>${symbol_dollar}{basedir}/target/dependencies/openengsb-${symbol_dollar}{openengsb.version}/bin/openengsb.bat</source>
+      <source>${basedir}/target/dependencies/openengsb-${openengsb.version}/bin/openengsb.bat</source>
       <outputDirectory>/bin/</outputDirectory>
       <destName>${artifactId}.bat</destName>
       <fileMode>0755</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
     <file>
-      <source>${symbol_dollar}{basedir}/target/dependencies/openengsb-${symbol_dollar}{openengsb.version}/bin/openengsb</source>
+      <source>${basedir}/target/dependencies/openengsb-${openengsb.version}/bin/openengsb</source>
       <outputDirectory>/bin/</outputDirectory>
       <destName>${artifactId}</destName>
       <fileMode>0755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
     <file>
-      <source>${symbol_dollar}{basedir}/target/classes/features.xml</source>
-      <outputDirectory>system/${packageInPathFormat}/${symbol_dollar}{artifactId}/${symbol_dollar}{version}</outputDirectory>
-      <destName>${symbol_dollar}{artifactId}-${symbol_dollar}{version}-features.xml</destName>
+      <source>${basedir}/target/classes/features.xml</source>
+      <outputDirectory>system/${packageInPathFormat}/${artifactId}/${version}</outputDirectory>
+      <destName>${artifactId}-${version}-features.xml</destName>
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
     <file>
-      <source>${symbol_dollar}{basedir}/target/classes/README.txt</source>
+      <source>${basedir}/target/classes/README.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>README</destName>
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
     <file>
-      <source>${symbol_dollar}{basedir}/target/${artifactId}-docs-manual-${symbol_dollar}{project.version}/manual/pdf/${artifactId}-manual.pdf</source>
+      <source>${basedir}/target/$-docs-manual-${project.version}/manual/pdf/${artifactId}-manual.pdf</source>
       <outputDirectory>/</outputDirectory>
       <destName>${artifactId}-manual.pdf</destName>
       <fileMode>0644</fileMode>

@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 ====
     Licensed to the Austrian Association for Software Tool Integration (AASTI)
     under one or more contributor license agreements. See the NOTICE file

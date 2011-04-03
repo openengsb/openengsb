@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
@@ -21,11 +18,8 @@
 
 -->
 
-<features name="${artifactId}-${symbol_dollar}{project.version}">
-  <feature name="${artifactId}-core" version="${symbol_dollar}{project.version}" >
-    <bundle>mvn:${package}.core/${artifactId}-core-config/${symbol_dollar}{project.version}</bundle>
-    <bundle>mvn:${package}.core/${artifactId}-core-projectmanager/${symbol_dollar}{project.version}</bundle>
-    <bundle>mvn:${package}.ui/${artifactId}-ui-web/${symbol_dollar}{project.version}/war</bundle>
+<features name="${artifactId}-${project.version}">
+  <feature name="${name}-core" version="${project.version}" >
   </feature>
 
 </features> 
