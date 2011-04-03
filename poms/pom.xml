@@ -72,6 +72,7 @@
     <connector.jira.version>1.2.0-SNAPSHOT</connector.jira.version>
     <connector.trac.version>1.2.0-SNAPSHOT</connector.trac.version>
     <connector.gcalendar.version>1.2.0-SNAPSHOT</connector.gcalendar.version>
+    <connector.gcontacts.version>1.2.0-SNAPSHOT</connector.gcontacts.version>
 
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
