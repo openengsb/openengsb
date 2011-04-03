@@ -63,7 +63,7 @@ public class RulebaseBuilder {
 
     /**
      * reloads the rulebase but keeps references intact
-     *
+     * 
      * @throws RuleBaseException if the rulebase contains errors
      */
     public void reloadRulebase() throws RuleBaseException {
@@ -175,8 +175,10 @@ public class RulebaseBuilder {
         builder.add(ResourceFactory.newReaderResource(new StringReader(content)), ResourceType.DRL);
         if (flows != null) {
             for (String drf : flows) {
-                Resource resource = ResourceFactory.newReaderResource(new StringReader(drf));
-                builder.add(resource, ResourceType.DRF);
+                if (drf != null) {
+                    Resource resource = ResourceFactory.newReaderResource(new StringReader(drf));
+                    builder.add(resource, ResourceType.DRF);
+                }
             }
         }
         if (builder.hasErrors()) {
