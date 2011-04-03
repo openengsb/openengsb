@@ -26,6 +26,9 @@
 
   <modules>
     <module>root</module>
+    <module>assembly</module>
+    <module>poms</module>
+    <module>core</module>
   </modules>
 
   <modelVersion>4.0.0</modelVersion>
