@@ -50,9 +50,9 @@ public class EmailNotifierTest {
         notification.setMessage("Content");
         notification.setAttachments(new ArrayList<Attachment>());
 
+        notifier.createProperties();
         notifier.notify(notification);
         verify(mailMock).send(propertiesMock, "Subject", "Content", "openengsb.notification.test@gmail.com");
-
     }
 
     @Test(expected = DomainMethodExecutionException.class)
