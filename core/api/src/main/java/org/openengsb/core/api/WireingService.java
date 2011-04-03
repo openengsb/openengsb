@@ -15,110 +15,42 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
 /**
  * provides utility-methods for retrieving domain-services
- *
  */
-public final class DomainEndpointFactory {
-
-    private static Log log = LogFactory.getLog(DomainEndpointFactory.class);
-
-    private static BundleContext bundleContext;
+public interface WireingService {
 
     /**
      * returns the domain-service for the corresponding location in the current context. If no service with that
      * location is found in the current context, the root-context is tried.
      */
-    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
-        Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
-        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
-    }
+    <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location);
 
     /**
      * returns domain-services for all domains registered at the given location in the current context and the
      * root-context. If no service is found an empty list is returned.
      */
-    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
-        return getDomainEndpoints(domainType, location, ContextHolder.get().getCurrentContextId());
-    }
+    <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location);
 
     /**
      * returns the domain-service for the corresponding location in the given context. If no service with that location
      * is found in the given context, the root-context is tried.
      */
-    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
-        Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
-        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
-    }
+    <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context);
 
     /**
      * returns domain-services for all domains registered at the given location in the given context and the
      * root-context. If no service is found an empty list is returned.
      */
-    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
-        Filter filterForLocation = OsgiServiceUtils.getFilterForLocation(domainType, location);
-        ServiceReference[] allServiceReferences;
-        try {
-            allServiceReferences =
-                bundleContext.getAllServiceReferences(domainType.getName(), filterForLocation.toString());
-        } catch (InvalidSyntaxException e) {
-            // this can never happen, because the filter has been compiled before
-            throw new RuntimeException(e);
-        }
-        List<T> result = new ArrayList<T>();
-        if (allServiceReferences == null) {
-            log.info("no references found for filter: " + filterForLocation.toString());
-            return result;
-        }
-        log.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
-        for (ServiceReference ref : allServiceReferences) {
-            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
-            try {
-                T osgiServiceProxy =
-                    OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
-                result.add(osgiServiceProxy);
-            } catch (InvalidSyntaxException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return result;
-    }
-
-    public static void setBundleContext(BundleContext bundleContext) {
-        DomainEndpointFactory.bundleContext = bundleContext;
-    }
-
-    private DomainEndpointFactory() {
-    }
+    <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context);
 
     /**
      * returns true a connector for the specified domain type exists, otherwise false
      */
-    public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
-        Domain service;
-        try {
-            service = OsgiServiceUtils.getService(domainType, 5000L);
-        } catch (OsgiServiceNotAvailableException e) {
-            return false;
-        }
-        return service != null;
-    }
+    boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType);
 }
