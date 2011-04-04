@@ -22,12 +22,12 @@
 
   <parent>
     <groupId>${groupId}.docs</groupId>
-    <artifactId>${name}-docs-parent</artifactId>
+    <artifactId>${artifactId}-docs-parent</artifactId>
     <version>${version}</version>
   </parent>
 
   <groupId>${groupId}.docs</groupId>
-  <artifactId>${name}-docs-homepage</artifactId>
+  <artifactId>${artifactId}-docs-homepage</artifactId>
   <version>${version}</version>
   <name>${name} :: Documentation :: Homepage</name>
   <packaging>pom</packaging>

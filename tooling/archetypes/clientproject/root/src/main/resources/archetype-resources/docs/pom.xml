@@ -29,7 +29,7 @@
   </parent>
 
   <groupId>${groupId}.docs</groupId>
-  <artifactId>${name}-docs-parent</artifactId>
+  <artifactId>${artifactId}-docs-parent</artifactId>
   <version>${version}</version>
   <packaging>pom</packaging>
   <name>${name} :: Documentation :: Parent</name>

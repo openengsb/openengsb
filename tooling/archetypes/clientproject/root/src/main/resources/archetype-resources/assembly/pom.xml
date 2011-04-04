@@ -29,7 +29,7 @@
   </parent>
 
   <groupId>${groupId}</groupId>
-  <artifactId>${name}</artifactId>
+  <artifactId>${artifactId}</artifactId>
   <packaging>pom</packaging>
   <name>${name} :: Assembly</name>
 

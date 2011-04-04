@@ -24,12 +24,12 @@
 
   <parent>
     <groupId>${groupId}.docs</groupId>
-    <artifactId>${name}-docs-parent</artifactId>
+    <artifactId>${artifactId}-docs-parent</artifactId>
     <version>${version}</version>
   </parent>
 
   <groupId>${groupId}.docs</groupId>
-  <artifactId>${name}-docs-manual</artifactId>
+  <artifactId>${artifactId}-docs-manual</artifactId>
   <version>${version}</version>
   <name>${name} :: Documentation :: Manual</name>
   <packaging>pom</packaging>
