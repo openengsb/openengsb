@@ -40,6 +40,7 @@
 
   <modules>
     <module>core</module>
+    <module>docs</module>
     <module>poms</module>
     <module>assembly</module>
   </modules>

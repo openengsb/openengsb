@@ -131,12 +131,6 @@
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
-    <file>
-      <source>${basedir}/target/$-docs-manual-${project.version}/manual/pdf/${artifactId}-manual.pdf</source>
-      <outputDirectory>/</outputDirectory>
-      <destName>${artifactId}-manual.pdf</destName>
-      <fileMode>0644</fileMode>
-    </file>
   </files>
 
 </assembly>

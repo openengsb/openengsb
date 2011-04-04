@@ -15,7 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -72,6 +74,29 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-win</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>target/dependencies/</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <useDefaultDelimiters>false</useDefaultDelimiters>
@@ -117,9 +142,11 @@
         <artifactId>openengsb-maven-plugin</artifactId>
         <version>${openengsb.maven.plugin.version}</version>
         <configuration>
-          <provisionArchivePathUnix>${project.basedir}/target/${name}-${project.version}.tar.gz</provisionArchivePathUnix>
+          <provisionArchivePathUnix>${project.basedir}/target/${name}-${project.version}.tar.gz
+          </provisionArchivePathUnix>
           <provisionExecutionPathUnix>bin/${name}</provisionExecutionPathUnix>
-          <provisionArchivePathWindows>${project.basedir}/target/${name}-${project.version}.zip</provisionArchivePathWindows>
+          <provisionArchivePathWindows>${project.basedir}/target/${name}-${project.version}.zip
+          </provisionArchivePathWindows>
           <provisionExecutionPathWindows>bin/${name}.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>

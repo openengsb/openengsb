@@ -132,5 +132,49 @@
         <include>pom.xml</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>docs</directory>
+      <includes>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+
+    <fileSet filtered="true" packaged="false">
+      <directory>docs/homepage</directory>
+      <includes>
+        <include>pom.xml</include>
+        <include>src/site/apt/*</include>
+        <include>src/site/fml/reference/*</include>
+        <include>src/site/resources/*</include>
+      </includes>
+    </fileSet>
+
+
+    <fileSet filtered="true" packaged="false">
+      <directory>docs/manual</directory>
+      <includes>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>docs/manual/src/main/descriptors</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>docs/manual/src/main/docbkx</directory>
+      <includes>
+        <include>manual.xml</include>
+        <include>customization/*</include>
+        <include>resources/css/*</include>
+        <include>resources/images/admons/*</include>
+        <include>resources/images/callouts/*</include>
+        <include>resources/xsl/*</include>
+        <include>user/*</include>
+      </includes>
+    </fileSet>
+
+
   </fileSets>
 </archetype-descriptor>
