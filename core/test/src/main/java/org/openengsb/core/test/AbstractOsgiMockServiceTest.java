@@ -17,29 +17,42 @@
 
 package org.openengsb.core.test;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public abstract class AbstractOsgiMockServiceTest {
 
     protected BundleContext bundleContext;
     protected Bundle bundle;
+
+    private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
+        new HashMap<ServiceReference, Dictionary<String, Object>>();
+
+    private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
 
     @Before
     public void setUp() throws Exception {
@@ -54,72 +67,110 @@ public abstract class AbstractOsgiMockServiceTest {
                     return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
                 }
             });
-        when(bundleContext.getBundle()).thenReturn(new DummyBundle());
+        when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(new Answer<ServiceReference[]>() {
+            @Override
+            public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
+                String clazz = (String) invocation.getArguments()[0];
+                String filterString = (String) invocation.getArguments()[1];
+                if (clazz != null) {
+                    if (filterString == null) {
+                        filterString = "";
+                    }
+                    filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
+                }
+                Filter filter = FrameworkUtil.createFilter(filterString);
+                Collection<ServiceReference> result = new ArrayList<ServiceReference>();
+                for (Map.Entry<ServiceReference, Dictionary<String, Object>> entry : serviceReferences.entrySet()) {
+                    if (filter.match(entry.getValue())) {
+                        result.add(entry.getKey());
+                    }
+                }
+                return result.toArray(new ServiceReference[result.size()]);
+            }
+        });
+        when(bundleContext.getService(any(ServiceReference.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ServiceReference ref = (ServiceReference) invocation.getArguments()[0];
+                return services.get(ref);
+            }
+        });
+        bundle = mock(Bundle.class);
+        when(bundle.getBundleContext()).thenReturn(bundleContext);
+        when(bundleContext.getBundle()).thenReturn(bundle);
+        when(bundle.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
+            @Override
+            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
+                return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
+            }
+        });
     }
 
-    protected abstract void setBundleContext(BundleContext bundleContext);
-
-    protected <T> T mockService(Class<T> serviceClass, String id)
-        throws InvalidSyntaxException {
+    /**
+     * create a mock of the specified class and register the service under that interface. It also adds the given id as
+     * property to the service.
+     */
+    protected <T> T mockService(Class<T> serviceClass, String id) {
         T serviceMock = mock(serviceClass);
         registerService(serviceMock, id, serviceClass);
         return serviceMock;
     }
 
-    protected void registerSerivce(Object service, Class<?>[] interfaces, String... validQueries)
-        throws InvalidSyntaxException {
-        final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock, };
-        for (Class<?> serviceClass : interfaces) {
-            when(bundleContext.getServiceReferences(serviceClass.getName(), null)).thenReturn(mockAsArray);
-            for (String query : validQueries) {
-                mockQueriesForString(mockAsArray, serviceClass, query);
-            }
-            when(bundleContext.getService(serviceRefMock)).thenReturn(service);
+    /**
+     * registers the service with the given properties under the given interfaces
+     */
+    protected void registerService(Object service, Dictionary<String, Object> props, Class<?>... interfazes) {
+        Set<String> objectClasses = new HashSet<String>();
+        for (Class<?> interfaze : interfazes) {
+            objectClasses.add(interfaze.getCanonicalName());
         }
+        objectClasses.add(OpenEngSBService.class.getCanonicalName());
+        props.put(Constants.OBJECTCLASS, objectClasses.toArray(new String[objectClasses.size()]));
+        putService(service, props);
     }
 
-    protected void registerService(Object service, Class<?> interfaze, String... validQueries)
-        throws InvalidSyntaxException {
-        registerSerivce(service, new Class<?>[]{ interfaze }, validQueries);
+    /**
+     * registers the service under the given interfaces and sets its location-property accordingly:
+     * location.context=location
+     */
+    protected void registerServiceAtLocation(Object service, String location, String context, Class<?>... interfazes) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("location." + context, new String[]{ location });
+        registerService(service, props, interfazes);
     }
 
-    protected void registerService(Object service, String id, Class<?>... interfaces) throws InvalidSyntaxException {
-        final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock, };
-        for (Class<?> serviceClass : interfaces) {
-            when(bundleContext.getServiceReferences(serviceClass.getName(), null)).thenReturn(mockAsArray);
-            String idQuery = String.format("(id=%s)", id);
-            mockQueriesForString(mockAsArray, serviceClass, idQuery);
-            when(bundleContext.getService(serviceRefMock)).thenReturn(service);
-        }
+    /**
+     * registers the service under the given interfaces and sets its location-property for the current context
+     * accordingly: location.context=location
+     */
+    protected void registerServiceAtLocation(Object service, String location, Class<?>... interfazes) {
+        registerServiceAtLocation(service, location, ContextHolder.get().getCurrentContextId(), interfazes);
     }
 
-    private void mockQueriesForString(ServiceReference[] mockAsArray, Class<?> serviceClass, String query)
-        throws InvalidSyntaxException {
-        when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(query)))
-            .thenReturn(mockAsArray);
-        when(bundleContext.getServiceReferences(null,
-            makeFilter(serviceClass.getName(), query).toString()))
-            .thenReturn(mockAsArray);
-        when(bundleContext.getServiceReferences(null,
-            makeFilter(OpenEngSBService.class.getName(), query).toString()))
-            .thenReturn(mockAsArray);
-        when(
-            bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()),
-                eq(query)))
-            .thenReturn(mockAsArray);
+    /**
+     * registers the service under the given interfaces and sets it's location in the root-context
+     */
+    protected void registerServiceAtRootLocation(Object service, String location, Class<?>... interfazes) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("location.root", new String[]{ location });
+        registerService(service, props, interfazes);
     }
 
-    private Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
-        return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
+    /**
+     * registers the service under the given interfaces, settint its "id"-property to the given id
+     */
+    protected void registerService(Object service, String id, Class<?>... interfaces) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("id", id);
+        registerService(service, props, interfaces);
     }
 
-    private Filter makeFilterForClass(String className) {
-        try {
-            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+    private void putService(Object service, Dictionary<String, Object> props) {
+        ServiceReference serviceReference = mock(ServiceReference.class);
+        services.put(serviceReference, service);
+        serviceReferences.put(serviceReference, props);
     }
+
+    protected abstract void setBundleContext(BundleContext bundleContext);
+
 }

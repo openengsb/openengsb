@@ -23,6 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +68,10 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
         serviceManagerMock = mock(ServiceManager.class);
-        registerService(serviceManagerMock, ServiceManager.class, "(connector=bla)");
+
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", "bla");
+        registerService(serviceManagerMock, props, ServiceManager.class);
         domainServiceMock = mock(DomainService.class);
         ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();

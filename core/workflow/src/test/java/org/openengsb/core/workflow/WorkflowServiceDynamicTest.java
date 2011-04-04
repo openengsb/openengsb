@@ -139,8 +139,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         } else {
             interfaces = new Class<?>[]{ domainClass, };
         }
-        registerSerivce(services.get(name), interfaces,
-            OsgiServiceUtils.getFilterForLocation(name, "42").toString());
+        registerServiceAtLocation(services.get(name), name, interfaces);
     }
 
     private void setupWorkflowService() throws Exception {

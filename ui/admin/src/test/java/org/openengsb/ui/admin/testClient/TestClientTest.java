@@ -96,18 +96,6 @@ import org.osgi.framework.ServiceReference;
 public class TestClientTest extends AbstractOsgiMockServiceTest {
     private DomainService managedServicesMock;
 
-    public interface TestInterface extends Domain {
-
-        void update(String id, String name);
-
-        void update(TestBean test);
-
-        void update(UpdateEnum updateEnum);
-
-        void update(Integer integer);
-
-    }
-
     public interface AnotherTestInterface extends Domain {
 
     }
@@ -132,7 +120,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     private WicketTester tester;
@@ -418,7 +406,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -456,6 +444,11 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         assertThat(argList.size(), is(0));
+    }
+
+    private void setupTesterWithSpringMockContext() {
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Test
@@ -507,7 +500,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
@@ -545,7 +538,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{"foo"});
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
@@ -560,7 +553,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
                 .getDefaultModelObject()).size();
-        //get all domains
+        // get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
@@ -568,7 +561,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             domains.add(label.getDefaultModelObjectAsString());
         }
 
-        //get all services from the tree
+        // get all services from the tree
         DefaultTreeModel serviceListTree = (DefaultTreeModel) tester
                 .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
         count = serviceListTree.getChildCount(serviceListTree.getRoot());
@@ -658,8 +651,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-        testService = mock(TestInterface.class);
-        registerService(testService, TestInterface.class, "(id=test)");
+        testService = mockService(TestInterface.class, "test");
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
@@ -673,7 +665,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(testDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("testDomain");
+        when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
         when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
         when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -685,7 +677,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         expectedProviders.add(domainProviderMock);
         DomainProvider anotherDomainProviderMock = mock(DomainProvider.class);
         LocalizableString anotherTestDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("anotherTestDomain");
+        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("anotherTestDomain");
         when(anotherDomainProviderMock.getName()).thenReturn(anotherTestDomainLocalziedStringMock);
         when(anotherDomainProviderMock.getDescription()).thenReturn(anotherTestDomainLocalziedStringMock);
         when(anotherDomainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -703,11 +695,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         DomainService domainServiceMock = mock(DomainService.class);
         context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
-    }
-
-    private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Override

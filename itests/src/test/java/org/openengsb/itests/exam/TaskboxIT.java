@@ -36,7 +36,6 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.TaskboxException;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
@@ -118,16 +117,17 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException,
-        TaskboxException {
+    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException {
         addWorkflow("TaskDemoWorkflow");
 
-        assertThat(taskboxService.getOpenTasks().size(), is(0));;
+        assertThat(taskboxService.getOpenTasks().size(), is(0));
+        ;
 
         long id = workflowService.startFlow("TaskDemoWorkflow");
         long id2 = workflowService.startFlow("TaskDemoWorkflow");
 
-        assertThat(taskboxService.getOpenTasks().size(), is(2));;
+        assertThat(taskboxService.getOpenTasks().size(), is(2));
+        ;
 
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 1);
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);

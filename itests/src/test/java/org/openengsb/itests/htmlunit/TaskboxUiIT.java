@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -51,11 +50,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 @RunWith(JUnit4TestRunner.class)
 public class TaskboxUiIT extends AbstractExamTestHelper {
 
-    private final static String CONTEXT = "it-taskbox";
-    private final static String WORKFLOW = "HIDemoWorkflow";
-    private final static String PAGE_ENTRY_URL =
+    private static final String CONTEXT = "it-taskbox";
+    private static final String WORKFLOW = "HIDemoWorkflow";
+    private static final String PAGE_ENTRY_URL =
         "http://localhost:" + WEBUI_PORT + "/openengsb/TaskOverview/?context=" + CONTEXT;
-    private final static int MAX_RETRY = 5;
+    private static final int MAX_RETRY = 5;
 
     private WebClient webClient;
     private TaskboxService taskboxService;
@@ -180,7 +179,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         }
     }
 
-    private void loginAsAdmin() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+    private void loginAsAdmin() throws FailingHttpStatusCodeException, IOException {
         HtmlPage page = webClient.getPage(PAGE_ENTRY_URL);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
