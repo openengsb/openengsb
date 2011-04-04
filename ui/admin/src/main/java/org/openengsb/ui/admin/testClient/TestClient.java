@@ -68,7 +68,6 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WireingService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -95,6 +94,9 @@ public class TestClient extends BasePage {
 
     @SpringBean
     private ProxyFactory proxyFactory;
+
+    @SpringBean
+    private WireingService wireingService;
 
     private DropDownChoice<MethodId> methodList;
 
@@ -453,7 +455,6 @@ public class TestClient extends BasePage {
         Class<? extends Domain> aClass = domainProvider.getDomainInterface();
         String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
-        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
         if (wireingService.isConnectorCurrentlyPresent(aClass)) {
             defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
@@ -492,7 +493,6 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
         if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
@@ -514,6 +514,6 @@ public class TestClient extends BasePage {
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
-
     }
+
 }
