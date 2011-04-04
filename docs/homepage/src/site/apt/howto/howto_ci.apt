@@ -1,0 +1,80 @@
+~~
+~~ Licensed to the Austrian Association for Software Tool Integration (AASTI)
+~~ under one or more contributor license agreements. See the NOTICE file
+~~ distributed with this work for additional information regarding copyright
+~~ ownership. The AASTI licenses this file to you under the Apache License,
+~~ Version 2.0 (the "License"); you may not use this file except in compliance
+~~ with the License. You may obtain a copy of the License at
+~~
+~~     http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+
+HowTo - integrate services with OpenEngSB
+
+  The service integration tutorial shows how to combine and automate different software tools, services and applications with OpenEngSB. To show OpenEngSB's versatility the use case we will be implementing is a continuous integration (CI) server for software development processes. The tutorial takes a straight forward approach favoring visible results over architectural details of tool integration, it is assumed you have basic knowledge of software development practices and you are able to set up auxiliary software (i.e. JDK 1.6) youself. Whether or not you have experience with CI servers, you will be surprised how simple it works out and how easily extensible the set up environment is.
+
+  Before we get started let us lay out the idea of our CI server and create a step-by-step development plan. The practice of continuous integration aims at improving software quality by frequent (automated) building and testing of a project's source base and by reporting back to the developers. The CI server must be able to access the source repository, build the project, test the binaries, generate reports and notify the developers. And there we have a basic five step plan:
+
+  * Repository access
+
+  * Building source
+
+  * Testing binaries
+
+  * Generate report
+
+  * Notify developers
+
+  []
+
+* Setting up OpenEngSB
+
+  Getting OpenEngSB is simple. Go to http://www.openengsb.org, download the latest stable version to your computer and unpack the archive to a convenient location. Before you fire up OpenEngSB for the first time, please make sure you have a Java Development Kit 1.6+ available and set up.
+
+  You can startup OpenEngSB via the "openengsb" script in the "bin" folder. If you want to explore the web interface yourself before digging into implementing the CI use case, open up your web browser and navigate to http://localhost:8090/openengsb and log on as "admin" with password "password". OpenEngSB only binds to the loop-back interface by default, so you do not need to worry about remote access security.
+
+* Source repository
+
+  It turns out, we actually need a sample project before we can start developing and testing our CI server. In this tutorial we will be using Apache Maven for project and source management and a small "Hello World" application written in Java. For this to work flawlessly we need JDK 1.6+ (link) and Maven 3+ (link) to be set up on the computer.
+
+  You may download and extract the openengsb-tutorial (link) project that works out of the box or set up your own sample project via maven archetypes. Put the project files in a memorable location (i.e. /home/user/Desktop/openengsb-tutorial or C:\users\user\desktop\openengsb-tutorial) and that's about it for now.
+
+* Building source
+
+  You could certainly build the project using Maven, but we want this to happen from within OpenEngSB. Open up your browser and go to the web interface at http://localhost:8090/openengsb. Authenticate using the "Login" link as "admin" with password "password". Switch to the "Test client" tab and check whether the "build" domain is available to accept commands.
+
+  As the "build" domain is not shown, we will need to go to OpenEngSB's console. Use "features:install openengsb-connector-maven" to load the tool connector for Apache Maven. The tool connector allows OpenEngSB to communicate with an external service or application, Maven in this case. By loading the connector OpenEngSB also loads the domains associated with the connector. A domain is a generic interface that is implemented by specific connectors. For example, the "build" domain offers a generic function to build a software project. Whether this is done by Apache Maven, an Ant script or a plain compiler depends on the connector chosen by the user, but does not affect the basic model of our CI server that simply "builds" the source. Using this technique specific tools can be exchanged quickly and transparently while data-flow and process models are completely unaffected.
+
+  Now let us return to the web interface. After a page refresh we are able to create a new Maven connector instance by following the "new" link next to the connector description. The service id is an arbitrary name that can be referred to later on, i.e. "builder". The project path refers to the local copy of the source repository, i.e. "/home/user/Desktop/openengsb-tutorial". Finally, the maven command is the command line option handed to Apache Maven, i.e. "clean build". Whenever the connector is ordered to build the project it will now execute "mvn clean install" in the project directory of openengsb-tutorial. Click save to create the connector instance.
+
+  It is time for some action. Scroll down all the way in the "Test Client" tab, navigate to the "BuildDomain" in the tree view and click the "builder" service. From the drop down menu below select "build()" and click the "Call" button. When the project is built successfully a "Method called successfully" message appears. Let us check the directory of openengsb-tutorial to find the newly created "target" directory. Using a console we can navigate to the "classes" sub-folder and run "java org.openengsb.Main". It returns "Hello World!". Congratulations, you have just implemented the core functionality of our CI server.
+
+  In case an error message is returned, we will need to check the connector configuration. Please make sure that Maven is able to build the project by manually executing "mvn clean build" in the project directory of openengsb-tutorial. If this does not work out, most likely the setup of either Maven or JDK are incorrect. If it works however, please check the configuration of the connector by navigating to the "builder" service in the web interface again and clicking the "Edit Service" button.
+
+* Testing binaries
+
+  TBD
+
+* Generate report
+
+  TBD
+
+* Notify developers
+
+  TBD
+
+* Conclusion
+
+  TBD
+
+* Further Documentation
+
+  TBD
+
+
