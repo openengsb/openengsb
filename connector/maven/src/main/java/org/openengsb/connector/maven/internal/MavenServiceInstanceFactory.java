@@ -51,6 +51,10 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<Maven
         if (attributes.containsKey("command")) {
             instance.setCommand(attributes.get("command"));
         }
+        if (attributes.containsKey("mvnVersion")) {
+            instance.setCommand(attributes.get("mvnVersion"));
+        }
+        
     }
 
     @Override
@@ -71,6 +75,8 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<Maven
             .description("service.projectPath.description").required().build());
         builder.attribute(builder.newAttribute().id("command").name("service.command.name")
             .description("service.command.description").required().build());
+        builder.attribute(builder.newAttribute().id("mvnVersion").name("service.mvnVersion.name")
+                .description("service.mvnVersion.description").required().build());
         return builder.build();
     }
 

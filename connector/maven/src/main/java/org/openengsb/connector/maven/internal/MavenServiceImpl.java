@@ -68,7 +68,7 @@ import org.openengsb.domain.test.TestSuccessEvent;
 public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenDomain {
 
     private String mvnVersion = readMvnVersionFromPropFile();
-    private final String mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-"
+    private String mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-"
             + mvnVersion + "/bin/mvn" + addSystemEnding();
     private static final int MAX_LOG_FILES = 5;
 
@@ -103,7 +103,11 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
 
         if (!isMavenInstalled()) {
-            installMaven();
+            try {
+                installMaven();
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
         new File(mvnCommand).setExecutable(true);
     }
@@ -151,17 +155,16 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         }
     }
 
-    public void installMaven() {
+    public void installMaven() throws Exception {
+
         String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-
         List mirrors = getListOfMirrors();
-
         for (int i = 0; i < mirrors.size(); i++) {
             if (download(String.valueOf(mirrors.get(i)) + "apache-maven-" + readMvnVersionFromPropFile() + "-bin.zip",
                     downloadPath)) {
                 break;
             }
-            
+
             if (i == mirrors.size() - 1) {
                 log.error("No valid mirror found!");
             }
@@ -484,13 +487,16 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     public int getLogLimit() {
         return MAX_LOG_FILES;
     }
-    
+
     public String getMvnVersion() {
         return mvnVersion;
     }
-    
-    public void setMvnVersion(String mvnVersion) {
+
+    public void setMvnVersion(String mvnVersion) throws Exception {        
+        installMaven();
         this.mvnVersion = mvnVersion;
+        mvnCommand = new File(System.getProperty("karaf.data")).getAbsolutePath() + "/apache-maven-" + mvnVersion
+                + "/bin/mvn" + addSystemEnding();
     }
 
     private class MavenResult {
