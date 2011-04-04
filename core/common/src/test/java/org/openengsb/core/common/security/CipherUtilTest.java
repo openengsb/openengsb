@@ -63,6 +63,7 @@ public class CipherUtilTest {
     }
 
     private PublicKeyCipherUtil cipherUtil;
+    private PublicKeyVerificationUtil verifyUtil;
     private PublicKey generatedPublickey;
     private PrivateKey generatedPrivatekey;
     private PublicKeyUtil keyUtil;
@@ -77,6 +78,7 @@ public class CipherUtilTest {
         KeyPair kp = keyUtil.generateKey(2048);
         generatedPublickey = kp.getPublic();
         generatedPrivatekey = kp.getPrivate();
+        verifyUtil = new PublicKeyVerificationUtil();
     }
 
     public void testGenerate() throws Exception {
@@ -137,16 +139,16 @@ public class CipherUtilTest {
     @Test
     public void testSignAndVerify() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = cipherUtil.sign(data, generatedPrivatekey);
-        Assert.assertTrue(cipherUtil.verify(data, signature, generatedPublickey));
+        byte[] signature = verifyUtil.sign(data, generatedPrivatekey);
+        Assert.assertTrue(verifyUtil.verify(data, signature, generatedPublickey));
     }
 
     @Test
     public void testInvalidSignature() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = cipherUtil.sign(data, generatedPrivatekey);
+        byte[] signature = verifyUtil.sign(data, generatedPrivatekey);
         data[0] = 0;
-        Assert.assertFalse(cipherUtil.verify(data, signature, generatedPublickey));
+        Assert.assertFalse(verifyUtil.verify(data, signature, generatedPublickey));
     }
 
     @Test

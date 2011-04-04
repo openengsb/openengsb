@@ -63,7 +63,7 @@ public class SecurePortTest {
             + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
             + "Ky/vHQD1rMM=";
 
-    private SecureRequestHandler secureRequestHandler;
+    private SecureRequestHandler<byte[]> secureRequestHandler;
 
     private SecretKeyUtil secretKeyUtil;
 
@@ -92,15 +92,16 @@ public class SecurePortTest {
     }
 
     private void makeSecureHandler() {
-        secureRequestHandler = new SecureRequestHandler() {
+        secureRequestHandler = new SecureRequestHandler<byte[]>() {
             @Override
             public SecureRequest unmarshalRequest(byte[] input) {
                 return (SecureRequest) SerializationUtils.deserialize(input);
             }
 
+            @SuppressWarnings("unchecked")
             @Override
-            public EncryptedMessage unmarshalContainer(byte[] container) {
-                return (EncryptedMessage) SerializationUtils.deserialize(container);
+            public EncryptedMessage<byte[]> unmarshalContainer(byte[] container) {
+                return (EncryptedMessage<byte[]>) SerializationUtils.deserialize(container);
             }
 
             @Override
@@ -121,10 +122,9 @@ public class SecurePortTest {
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] encodedKey = secretKeyUtil.serializeKey(sessionKey).getBytes();
+        byte[] encodedKey = sessionKey.getEncoded();
         byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
-
-        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
+        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
 
         byte[] encodedResponse = secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
         byte[] decryptedResponse = secretKeyCipherUtil.decrypt(encodedResponse, sessionKey);
@@ -149,17 +149,18 @@ public class SecurePortTest {
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] encodedKey = secretKeyUtil.serializeKey(sessionKey).getBytes();
+        byte[] encodedKey = sessionKey.getEncoded();
         byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
 
-        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
+        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
 
         secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
     }
 
     private void setupRequestHandler() {
-        KeyDecrypter keyDecrypter = new KeyDecrypter(serverPrivateKey, publicKeyCipherUtil, secretKeyUtil);
-        secureRequestHandler.setKeyDecrypter(keyDecrypter);
+        BinaryMessageCryptUtil cryptUtil = new BinaryMessageCryptUtil();
+        secureRequestHandler.setCryptUtil(cryptUtil);
+        secureRequestHandler.setPrivateKey(serverPrivateKey);
 
         AuthenticationManager authManager = mock(AuthenticationManager.class);
         secureRequestHandler.setAuthManager(authManager);

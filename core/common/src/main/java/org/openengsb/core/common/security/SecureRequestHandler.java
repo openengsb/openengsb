@@ -17,41 +17,48 @@
 
 package org.openengsb.core.common.security;
 
+import java.security.PrivateKey;
+
 import javax.crypto.SecretKey;
 
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.MessageCryptUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 
-public abstract class SecureRequestHandler {
+public abstract class SecureRequestHandler<EncodingType> {
 
     private RequestHandler realHandler;
-    private CipherUtil cipherUtil = new SecretKeyCipherUtil();
-    private KeyDecrypter keyDecrypter;
+    private MessageCryptUtil<EncodingType> cryptUtil;
+    private PrivateKey privateKey;
     private AuthenticationManager authManager;
 
-    public abstract SecureRequest unmarshalRequest(byte[] decrypt);
+    public abstract SecureRequest unmarshalRequest(EncodingType decrypt);
 
-    public abstract EncryptedMessage unmarshalContainer(byte[] container);
+    public abstract EncryptedMessage<EncodingType> unmarshalContainer(EncodingType container);
 
-    public abstract byte[] marshalResponse(SecureResponse response);
+    public abstract EncodingType marshalResponse(SecureResponse response);
 
-    public byte[] handleRequest(byte[] containerMessage) {
-        EncryptedMessage container = unmarshalContainer(containerMessage);
-        byte[] encryptedKey = container.getEncryptedKey();
-        SecretKey sessionKey = keyDecrypter.decryptKey(encryptedKey);
-        byte[] encContent = container.getEncryptedContent();
-        byte[] decrypt = cipherUtil.decrypt(encContent, sessionKey);
+    public EncodingType handleRequest(EncodingType containerMessage) {
+        EncryptedMessage<EncodingType> container = unmarshalContainer(containerMessage);
+
+        EncodingType encryptedKey = container.getEncryptedKey();
+        SecretKey sessionKey = cryptUtil.decryptKey(encryptedKey, privateKey);
+
+        EncodingType encryptedContent = container.getEncryptedContent();
+        EncodingType decrypt = cryptUtil.decrypt(encryptedContent, sessionKey);
+
         SecureRequest secureRequest = unmarshalRequest(decrypt);
         secureRequest.verify();
         authManager.authenticate(secureRequest.getAuthentiation());
         MethodResult methodReturn = realHandler.handleCall(secureRequest.getMessage());
         SecureResponse secureResponse = SecureResponse.create(methodReturn);
-        byte[] response = marshalResponse(secureResponse);
-        return cipherUtil.encrypt(response, sessionKey);
+        EncodingType response = marshalResponse(secureResponse);
+
+        return cryptUtil.encrypt(response, sessionKey);
     }
 
     public void setAuthManager(AuthenticationManager authManager) {
@@ -62,11 +69,12 @@ public abstract class SecureRequestHandler {
         this.realHandler = realHandler;
     }
 
-    public void setKeyDecrypter(KeyDecrypter keyDecrypter) {
-        this.keyDecrypter = keyDecrypter;
+    public void setCryptUtil(MessageCryptUtil<EncodingType> cryptUtil) {
+        this.cryptUtil = cryptUtil;
     }
 
-    public void setCipherUtil(CipherUtil cipherUtil) {
-        this.cipherUtil = cipherUtil;
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
     }
+
 }
