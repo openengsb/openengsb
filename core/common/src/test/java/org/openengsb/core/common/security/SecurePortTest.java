@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.security.PrivateKey;
@@ -40,6 +42,7 @@ import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public class SecurePortTest {
@@ -76,6 +79,10 @@ public class SecurePortTest {
     private PublicKey serverPublicKey;
 
     private PrivateKey serverPrivateKey;
+
+    private AuthenticationManager authManager;
+
+    private RequestHandler realHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -135,9 +142,33 @@ public class SecurePortTest {
         assertThat((Long) mr.getArg(), is(new Long(43)));
     }
 
+    @Test
+    public void testInvalidAuthentication() throws Exception {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
+        when(authManager.authenticate(token)).thenThrow(new BadCredentialsException("bad"));
+        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
+        SecureRequest secureRequest = SecureRequest.create(request, token);
+
+        SecretKey sessionKey = secretKeyUtil.generateKey(128);
+
+        byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
+        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
+
+        byte[] encodedKey = sessionKey.getEncoded();
+        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
+        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
+
+        try {
+            secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+        } catch (Exception e) {
+            assertThat(e, is(BadCredentialsException.class));
+        }
+
+        verify(realHandler, never()).handleCall(any(MethodCall.class));
+    }
+
     @Test(expected = MessageVerificationFailedException.class)
     public void testManipulateMessage() throws Exception {
-
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
@@ -162,10 +193,10 @@ public class SecurePortTest {
         secureRequestHandler.setCryptUtil(cryptUtil);
         secureRequestHandler.setPrivateKey(serverPrivateKey);
 
-        AuthenticationManager authManager = mock(AuthenticationManager.class);
+        authManager = mock(AuthenticationManager.class);
         secureRequestHandler.setAuthManager(authManager);
 
-        RequestHandler realHandler = mock(RequestHandler.class);
+        realHandler = mock(RequestHandler.class);
         MethodResult ref = new MethodResult(new Long(43L));
         when(realHandler.handleCall(any(MethodCall.class))).thenReturn(ref);
         secureRequestHandler.setRealHandler(realHandler);
