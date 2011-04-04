@@ -16,33 +16,31 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
--->
-
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
-
-  <modelVersion>4.0.0</modelVersion>
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>${version}</version>
+    <version>${openengsbVersion}</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
+    <openengsb.version>${openengsbVersion}</openengsb.version>
   </properties>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>openengsb-connector-${connectorName}</artifactId>
   <version>${version}</version>
 
-  <name>${name}</name>
+  <name>OpenEngSB :: Connector :: ${name}</name>
 
   <packaging>bundle</packaging>
-  
-  <description>Description of Connector</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -52,45 +50,28 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>${scmConnection}</connection>
+    <developerConnection>${scmDeveloperConnection}</developerConnection>
+    <url>${scmUrl}</url>
   </scm>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-  </build>
-
   <dependencies>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!-- OpenEngSB References -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-persistence</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-${domainInterface}</artifactId>
+      <version>${openengsb.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>${domainArtifactId}</artifactId>
-    </dependency>
-
   </dependencies>
-
 </project>

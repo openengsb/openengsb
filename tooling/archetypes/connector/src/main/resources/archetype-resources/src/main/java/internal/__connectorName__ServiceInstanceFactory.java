@@ -25,13 +25,13 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import ${package}.internal.${connectorName}ServiceImpl;
 
+import ${package}.internal.${connectorName}ServiceImpl;
 import ${domainPackage}.${domainInterface};
 
-public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> {
+public class ${connectorName}Factory implements ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> {
 
-    public ${connectorName}ServiceInstanceFactory() {
+    public ${connectorName}Factory() {
     }
 
     @Override
@@ -48,13 +48,6 @@ public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFa
         return service;
     }
 
-    @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
-        builder.name("service.name").description("service.description");
-        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build());
-        return builder.build();
-    }
-    
     @Override
     public MultipleAttributeValidationResult updateValidation(${connectorName}ServiceImpl instance,
             Map<String, String> attributes) {
