@@ -19,23 +19,26 @@ package org.openengsb.core.common.security;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -99,27 +102,18 @@ public class SecurePortTest {
             public EncryptedMessage unmarshalContainer(byte[] container) {
                 return (EncryptedMessage) SerializationUtils.deserialize(container);
             }
+
+            @Override
+            public byte[] marshalResponse(SecureResponse response) {
+                return SerializationUtils.serialize(response);
+            }
         };
     }
 
     @Test
-    public void testEncryptSymmetricKey() throws Exception {
-        SecretKey secretKey = secretKeyUtil.generateKey(256);
-
-        byte[] encoded = secretKey.getEncoded();
-        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encoded, serverPublicKey);
-
-        byte[] decryptKey = publicKeyCipherUtil.decrypt(encryptedKey, serverPrivateKey);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(decryptKey, "AES");
-
-        assertThat(secretKeySpec, is(secretKey));
-    }
-
-    @Test
     public void testDefaultImpls() throws Exception {
-
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
+        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
         SecretKey sessionKey = secretKeyUtil.generateKey(128);
@@ -132,19 +126,25 @@ public class SecurePortTest {
 
         EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
 
-        secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+        byte[] encodedResponse = secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+        byte[] decryptedResponse = secretKeyCipherUtil.decrypt(encodedResponse, sessionKey);
+
+        SecureResponse secureResponse = (SecureResponse) SerializationUtils.deserialize(decryptedResponse);
+        secureResponse.verify();
+        MethodResult mr = secureResponse.getMessage();
+        assertThat((Long) mr.getArg(), is(new Long(43)));
     }
 
     @Test(expected = MessageVerificationFailedException.class)
     public void testManipulateMessage() throws Exception {
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
+        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
         SecretKey sessionKey = secretKeyUtil.generateKey(128);
 
-        request.setArgs(new Object[] { "43" }); // manipulate message
+        request.setArgs(new Object[]{ "43" }); // manipulate message
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
@@ -165,6 +165,8 @@ public class SecurePortTest {
         secureRequestHandler.setAuthManager(authManager);
 
         RequestHandler realHandler = mock(RequestHandler.class);
+        MethodResult ref = new MethodResult(new Long(43L));
+        when(realHandler.handleCall(any(MethodCall.class))).thenReturn(ref);
         secureRequestHandler.setRealHandler(realHandler);
     }
 }

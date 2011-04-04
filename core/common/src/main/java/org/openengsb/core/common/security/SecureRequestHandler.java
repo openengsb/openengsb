@@ -23,6 +23,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 
 public abstract class SecureRequestHandler {
@@ -36,7 +37,9 @@ public abstract class SecureRequestHandler {
 
     public abstract EncryptedMessage unmarshalContainer(byte[] container);
 
-    public void handleRequest(byte[] containerMessage) {
+    public abstract byte[] marshalResponse(SecureResponse response);
+
+    public byte[] handleRequest(byte[] containerMessage) {
         EncryptedMessage container = unmarshalContainer(containerMessage);
         byte[] encryptedKey = container.getEncryptedKey();
         SecretKey sessionKey = keyDecrypter.decryptKey(encryptedKey);
@@ -46,6 +49,9 @@ public abstract class SecureRequestHandler {
         secureRequest.verify();
         authManager.authenticate(secureRequest.getAuthentiation());
         MethodResult methodReturn = realHandler.handleCall(secureRequest.getMessage());
+        SecureResponse secureResponse = SecureResponse.create(methodReturn);
+        byte[] response = marshalResponse(secureResponse);
+        return cipherUtil.encrypt(response, sessionKey);
     }
 
     public void setAuthManager(AuthenticationManager authManager) {

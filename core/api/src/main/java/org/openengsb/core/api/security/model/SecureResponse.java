@@ -17,34 +17,21 @@
 
 package org.openengsb.core.api.security.model;
 
-import org.openengsb.core.api.remote.MethodCall;
-import org.springframework.security.core.Authentication;
+import org.openengsb.core.api.remote.MethodResult;
 
-public class SecureRequest extends AbstractSecureMessage<MethodCall> {
+public class SecureResponse extends AbstractSecureMessage<MethodResult> {
 
-    private static final long serialVersionUID = -2350090113804167120L;
+    private static final long serialVersionUID = 4052853600342752517L;
 
-    private Authentication authentiation;
-
-    public Authentication getAuthentiation() {
-        return this.authentiation;
+    protected SecureResponse() {
     }
 
-    public void setAuthentiation(Authentication authentiation) {
-        this.authentiation = authentiation;
-    }
-
-    public static SecureRequest create(MethodCall original, Authentication auth) {
-        SecureRequest secureRequest = new SecureRequest();
-        secureRequest.setMessage(original);
+    public static SecureResponse create(MethodResult original) {
+        SecureResponse secureResponse = new SecureResponse();
+        secureResponse.setMessage(original);
         long time = System.currentTimeMillis();
-        secureRequest.setTimestamp(time);
-        secureRequest.setAuthentiation(auth);
-        secureRequest.setVerification();
-        return secureRequest;
+        secureResponse.setTimestamp(time);
+        secureResponse.setVerification();
+        return secureResponse;
     }
-
-    protected SecureRequest() {
-    }
-
 }

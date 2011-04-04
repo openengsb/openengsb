@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.AfterClass;
@@ -23,10 +24,14 @@ public class CipherUtilTest {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
-    private static final String PUBLIC_KEY_64 = ""
-            + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS"
-            + "9qd8A7MdaVub61Npc6wSuLJNK1qnrSufWkiZxuo7IsyFnZl9bqkr1D/x4UqKEBmGZIh4s4WIMymw"
-            + "TGu2HmAKuKO7JypfQpHemZpLmXTsNse1xFhTfshxWJq4+WqBdeoYZ8p1iwIDAQAB";
+    /*
+     * for the sake of completeness, maybe we need it sometime
+     *
+     * private static final String PUBLIC_KEY_64 = "" +
+     * "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS" +
+     * "9qd8A7MdaVub61Npc6wSuLJNK1qnrSufWkiZxuo7IsyFnZl9bqkr1D/x4UqKEBmGZIh4s4WIMymw" +
+     * "TGu2HmAKuKO7JypfQpHemZpLmXTsNse1xFhTfshxWJq4+WqBdeoYZ8p1iwIDAQAB";
+     */
 
     private static final String PRIVATE_KEY_64 = ""
             + "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMTBB51QUSVgE05bvU1guAoQZKoo"
@@ -58,20 +63,22 @@ public class CipherUtilTest {
     }
 
     private PublicKeyCipherUtil cipherUtil;
-    private PublicKey publickey;
-    private PrivateKey privatekey;
+    private PublicKey generatedPublickey;
+    private PrivateKey generatedPrivatekey;
     private PublicKeyUtil keyUtil;
+
+    private SecretKeyUtil secretKeyUtil;
 
     @Before
     public void setUp() throws Exception {
         cipherUtil = new PublicKeyCipherUtil();
+        secretKeyUtil = new SecretKeyUtil();
         keyUtil = new PublicKeyUtil();
         KeyPair kp = keyUtil.generateKey(2048);
-        publickey = kp.getPublic();
-        privatekey = kp.getPrivate();
+        generatedPublickey = kp.getPublic();
+        generatedPrivatekey = kp.getPrivate();
     }
 
-    @Test
     public void testGenerate() throws Exception {
         keyUtil.generateKey(2048);
         /*
@@ -84,26 +91,39 @@ public class CipherUtilTest {
     }
 
     @Test
+    public void testEncryptSymmetricKey() throws Exception {
+        SecretKey secretKey = secretKeyUtil.generateKey(256);
+
+        byte[] encoded = secretKey.getEncoded();
+        byte[] encryptedKey = cipherUtil.encrypt(encoded, generatedPublickey);
+
+        byte[] decryptKey = cipherUtil.decrypt(encryptedKey, generatedPrivatekey);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(decryptKey, "AES");
+
+        assertThat(secretKeySpec, is(secretKey));
+    }
+
+    @Test
     public void testEncryptWithGenerated() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] encrypted = cipherUtil.encrypt(data, publickey);
-        byte[] decrypted = cipherUtil.decrypt(encrypted, privatekey);
+        byte[] encrypted = cipherUtil.encrypt(data, generatedPublickey);
+        byte[] decrypted = cipherUtil.decrypt(encrypted, generatedPrivatekey);
         String result = new String(decrypted, DEFAULT_ENCODING);
         assertEquals(TEST_STRING, result);
     }
 
     @Test
     public void testReadPublicKey() throws Exception {
-        String data = keyUtil.serializeKey(publickey);
+        String data = keyUtil.serializeKey(generatedPublickey);
         PublicKey parsedKey = keyUtil.deserializePublicKey(data);
-        assertEquals(publickey, parsedKey);
+        assertEquals(generatedPublickey, parsedKey);
     }
 
     @Test
     public void testReadPrivateKey() throws Exception {
-        String data = keyUtil.serializeKey(privatekey);
+        String data = keyUtil.serializeKey(generatedPrivatekey);
         PrivateKey parsedKey = keyUtil.deserializePrivateKey(data);
-        assertEquals(privatekey, parsedKey);
+        assertEquals(generatedPrivatekey, parsedKey);
     }
 
     @Test
@@ -117,16 +137,16 @@ public class CipherUtilTest {
     @Test
     public void testSignAndVerify() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = cipherUtil.sign(data, privatekey);
-        Assert.assertTrue(cipherUtil.verify(data, signature, publickey));
+        byte[] signature = cipherUtil.sign(data, generatedPrivatekey);
+        Assert.assertTrue(cipherUtil.verify(data, signature, generatedPublickey));
     }
 
     @Test
     public void testInvalidSignature() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = cipherUtil.sign(data, privatekey);
+        byte[] signature = cipherUtil.sign(data, generatedPrivatekey);
         data[0] = 0;
-        Assert.assertFalse(cipherUtil.verify(data, signature, publickey));
+        Assert.assertFalse(cipherUtil.verify(data, signature, generatedPublickey));
     }
 
     @Test
