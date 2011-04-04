@@ -19,9 +19,9 @@ package org.openengsb.core.api.security.model;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.core.api.security.MessageVerificationFailedException;
 
 public abstract class AbstractSecureMessage<MessageType> implements Serializable {
 
@@ -68,9 +68,7 @@ public abstract class AbstractSecureMessage<MessageType> implements Serializable
     public void verify() {
         byte[] refChecksum = calcChecksum(this.getMessage().toString(), this.getTimestamp());
         if (!ArrayUtils.isEquals(this.verification, refChecksum)) {
-            System.err.println(Base64.encodeBase64String(this.verification));
-            System.err.println(Base64.encodeBase64String(refChecksum));
-            throw new IllegalStateException("wrong checksum");
+            throw new MessageVerificationFailedException("wrong checksum");
         }
     }
 

@@ -23,8 +23,7 @@ import static org.mockito.Mockito.mock;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Collections;
-import java.util.Map;
+import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -34,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -84,6 +84,8 @@ public class SecurePortTest {
 
         serverPublicKey = publicKeyUtil.deserializePublicKey(PUBLIC_KEY_64);
         serverPrivateKey = publicKeyUtil.deserializePrivateKey(PRIVATE_KEY_64);
+
+        setupRequestHandler();
     }
 
     private void makeSecureHandler() {
@@ -116,20 +118,8 @@ public class SecurePortTest {
     @Test
     public void testDefaultImpls() throws Exception {
 
-        KeyDecrypter keyDecrypter = new KeyDecrypter(serverPrivateKey, publicKeyCipherUtil, secretKeyUtil);
-        secureRequestHandler.setKeyDecrypter(keyDecrypter);
-
-        AuthenticationManager authManager = mock(AuthenticationManager.class);
-        secureRequestHandler.setAuthManager(authManager);
-
-        RequestHandler realHandler = mock(RequestHandler.class);
-        secureRequestHandler.setRealHandler(realHandler);
-
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-
-        Map<String, String> emptyMap = Collections.emptyMap();
-        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, emptyMap);
-
+        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
         SecretKey sessionKey = secretKeyUtil.generateKey(128);
@@ -143,5 +133,38 @@ public class SecurePortTest {
         EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
 
         secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+    }
+
+    @Test(expected = MessageVerificationFailedException.class)
+    public void testManipulateMessage() throws Exception {
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
+        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
+        SecureRequest secureRequest = SecureRequest.create(request, token);
+
+        SecretKey sessionKey = secretKeyUtil.generateKey(128);
+
+        request.setArgs(new Object[] { "43" }); // manipulate message
+
+        byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
+        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
+
+        byte[] encodedKey = secretKeyUtil.serializeKey(sessionKey).getBytes();
+        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
+
+        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
+
+        secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+    }
+
+    private void setupRequestHandler() {
+        KeyDecrypter keyDecrypter = new KeyDecrypter(serverPrivateKey, publicKeyCipherUtil, secretKeyUtil);
+        secureRequestHandler.setKeyDecrypter(keyDecrypter);
+
+        AuthenticationManager authManager = mock(AuthenticationManager.class);
+        secureRequestHandler.setAuthManager(authManager);
+
+        RequestHandler realHandler = mock(RequestHandler.class);
+        secureRequestHandler.setRealHandler(realHandler);
     }
 }
