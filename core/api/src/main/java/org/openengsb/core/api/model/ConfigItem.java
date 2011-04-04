@@ -19,17 +19,22 @@ package org.openengsb.core.api.model;
 
 import java.util.Properties;
 
-public abstract class ConfigItem {
+/**
+ * General ConfigurationObject which could not be instanciated by itself, but rather have to be implemented in a
+ * ConfigurationObject.
+ */
+// TODO: Implement
+public abstract class ConfigItem<ConfigType> {
 
     private Properties metaData;
-    private Properties value;
+    private ConfigType content;
 
     public ConfigItem() {
     }
 
-    public ConfigItem(Properties metaData, Properties value) {
+    public ConfigItem(Properties metaData, ConfigType content) {
         this.metaData = metaData;
-        this.value = value;
+        this.content = content;
     }
 
     public Properties getMetaData() {
@@ -40,11 +45,12 @@ public abstract class ConfigItem {
         this.metaData = metaData;
     }
 
-    public Properties getValue() {
-        return value;
+    public ConfigType getContent() {
+        return content;
     }
 
-    public void setValue(Properties value) {
-        this.value = value;
+    public void setContent(ConfigType content) {
+        this.content = content;
     }
+
 }

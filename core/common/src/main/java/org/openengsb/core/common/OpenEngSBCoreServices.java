@@ -19,6 +19,8 @@ package org.openengsb.core.common;
 
 import org.openengsb.core.api.WireingService;
 import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.model.ContextConfiguration;
+import org.openengsb.core.api.model.RuleConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 
@@ -47,11 +49,12 @@ public final class OpenEngSBCoreServices {
     /**
      * OpenEngSB Core persistence service specialized to retrieve and store {@link ConfigItem}. Those are basically
      * simple persistence items which can be stored at various endpoints like file, the "regular" persistence service or
-     * anywhere else.
+     * anywhere else. The type to request the config persistence service is stored directly at the Configuration objects
+     * in a string constant such as {@link RuleConfiguration#TYPE_ID} or {@link ContextConfiguration#TYPE_ID}
      */
-    public static <ConfigType extends ConfigItem> ConfigPersistenceService<ConfigType> getConfigPersistenceService(
-            String id, Class<? extends ConfigPersistenceService<ConfigType>> type) {
+    public static ConfigPersistenceService getConfigPersistenceService(String type) {
         // query osgi context for service with configPersId=id and interface=type
+        // TODO: implement
         return null;
     }
 

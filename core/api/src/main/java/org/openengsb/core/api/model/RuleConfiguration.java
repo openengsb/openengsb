@@ -19,17 +19,22 @@ package org.openengsb.core.api.model;
 
 import java.util.Properties;
 
+/**
+ * General model describing the configuration required for rules.
+ */
+// TODO: Implement
+public class RuleConfiguration extends ConfigItem<String> {
 
-public class RuleConfiguration extends ConfigItem {
+    public static String TYPE_ID = "RULE";
 
     public RuleConfiguration() {
         super();
     }
 
-    public RuleConfiguration(Properties metaData, Properties value) {
-        super(metaData, value);
+    public RuleConfiguration(Properties metaData, String ruleContent) {
+        super(metaData, ruleContent);
     }
 
-    // TODO: add rule model
+    // TODO: add rule model methods
 
 }

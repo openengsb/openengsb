@@ -17,17 +17,23 @@
 
 package org.openengsb.core.api.model;
 
+import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Specific configuration model for the configuration to get up an connector.
+ */
+// TODO: Implement
+public class ConnectorConfiguration extends ConfigItem<Map<String, String>> {
 
-public class ConnectorConfiguration extends ConfigItem {
+    public static String TYPE_ID = "CONNECTOR";
 
     public ConnectorConfiguration() {
         super();
     }
 
-    public ConnectorConfiguration(Properties metaData, Properties value) {
-        super(metaData, value);
+    public ConnectorConfiguration(Properties metaData, Map<String, String> content) {
+        super(metaData, content);
     }
 
     // TODO: add specific Connector-Model

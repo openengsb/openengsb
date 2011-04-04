@@ -21,8 +21,20 @@ import java.util.Properties;
 
 import org.openengsb.core.api.model.ConfigItem;
 
-public interface ConfigPersistenceService<ConfigType extends ConfigItem> {
-    ConfigType load(Properties metadata) throws PersistenceException, InvalidConfigurationException;
+/**
+ * A thin wrapper service around the {@link ConfigPersistenceBackendService} implementations providing them via the OSGi
+ * registry.
+ */
+public interface ConfigPersistenceService {
+    /**
+     * Small wrapper around {@link ConfigPersistenceBackendService#load(Properties)}
+     */
+    <ConfigType> ConfigItem<ConfigType> load(Properties metadata) throws PersistenceException,
+        InvalidConfigurationException;
 
-    void persist(ConfigType config) throws PersistenceException, InvalidConfigurationException;
+    /**
+     * Small wrapper around {@link ConfigPersistenceBackendService#persist(ConfigItem)}
+     */
+    <ConfigType> void persist(ConfigItem<ConfigType> configuration) throws PersistenceException,
+        InvalidConfigurationException;
 }

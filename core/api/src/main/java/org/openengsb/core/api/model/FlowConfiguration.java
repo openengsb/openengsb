@@ -15,33 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.api.model;
 
 import java.util.Properties;
 
-import org.openengsb.core.api.model.ConfigItem;
-import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
-import org.openengsb.core.api.persistence.ConfigPersistenceTransformer;
-import org.openengsb.core.api.persistence.PersistenceException;
+/**
+ * General model describing the configuration required for flow.
+ */
+// TODO: Implement
+public class FlowConfiguration extends ConfigItem<String> {
 
-public class ConfigFilePersistenceBackendService implements ConfigPersistenceBackendService {
+    public static String TYPE_ID = "FLOW";
 
-    @Override
-    public ConfigItem load(Properties metadata, ConfigPersistenceTransformer transformer) throws PersistenceException {
-        // TODO Auto-generated method stub
-        return null;
+    public FlowConfiguration() {
+        super();
     }
 
-    @Override
-    public void persist(ConfigItem config) throws PersistenceException {
-        // TODO Auto-generated method stub
-
+    public FlowConfiguration(Properties metaData, String ruleContent) {
+        super(metaData, ruleContent);
     }
 
-    @Override
-    public BackendStorageType getBackendType() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // TODO: add rule model methods
 
 }
