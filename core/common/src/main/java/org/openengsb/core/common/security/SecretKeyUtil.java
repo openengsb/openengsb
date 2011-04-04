@@ -17,10 +17,8 @@
 
 package org.openengsb.core.common.security;
 
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -62,8 +60,12 @@ public class SecretKeyUtil {
         return new String(Base64.encodeBase64(key.getEncoded()));
     }
 
-    public SecretKey deserializePublicKey(String keyString) throws InvalidKeyException, InvalidKeySpecException {
+    public SecretKey deserializeKey(String keyString) {
         return new SecretKeySpec(Base64.decodeBase64(keyString), algorithm);
+    }
+
+    public SecretKey deserializeKey(byte[] rawKey) {
+        return new SecretKeySpec(Base64.decodeBase64(rawKey), algorithm);
     }
 
 }

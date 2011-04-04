@@ -21,18 +21,21 @@ import java.security.PrivateKey;
 
 import javax.crypto.SecretKey;
 
-import org.openengsb.core.api.security.MessageDecrypter;
+public class KeyDecrypter {
 
-public abstract class PublicKeyMessageDecrypter<MessageFormatType> implements MessageDecrypter<MessageFormatType> {
+    private PrivateKey privateKey;
+    private CipherUtil cipherUtil;
+    private SecretKeyUtil keyUtil;
 
-    private PrivateKey key;
+    public KeyDecrypter(PrivateKey privateKey, CipherUtil cipherUtil, SecretKeyUtil keyUtil) {
+        this.privateKey = privateKey;
+        this.cipherUtil = cipherUtil;
+        this.keyUtil = keyUtil;
+    }
 
-    public MessageFormatType decrypt(MessageFormatType encrypted) {
-
-    };
-
-    protected SecretKey getEncryptionKey(byte[] keyData){
-
+    public SecretKey decryptKey(byte[] encryptedKey) {
+        byte[] rawKey = cipherUtil.decrypt(encryptedKey, privateKey);
+        return keyUtil.deserializeKey(rawKey);
     }
 
 }

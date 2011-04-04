@@ -17,37 +17,50 @@
 
 package org.openengsb.core.common.security;
 
+import javax.crypto.SecretKey;
+
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.MessageDecrypter;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 
-public abstract class SecureRequestHandler<MessageFormatType, KeyFormat> {
+public abstract class SecureRequestHandler {
 
     private RequestHandler realHandler;
-    private MessageDecrypter<MessageFormatType> messageDecrypter;
+    private CipherUtil cipherUtil = new SecretKeyCipherUtil();
+    private KeyDecrypter keyDecrypter;
     private AuthenticationManager authManager;
 
-    public abstract SecureRequest unmarshalRequest(MessageFormatType input);
+    public abstract SecureRequest unmarshalRequest(byte[] decrypt);
 
-    public abstract EncryptedMessage<MessageFormatType> unmarshalContainer(MessageFormatType container);
+    public abstract EncryptedMessage unmarshalContainer(byte[] container);
 
-    public void handleRequest(MessageFormatType containerMessage) {
-        EncryptedMessage<MessageFormatType> container = unmarshalContainer(containerMessage);
-
-        SecureRequest secureRequest = unmarshalRequest(decryptedMessage);
+    public void handleRequest(byte[] containerMessage) {
+        EncryptedMessage container = unmarshalContainer(containerMessage);
+        byte[] encryptedKey = container.getEncryptedKey();
+        SecretKey sessionKey = keyDecrypter.decryptKey(encryptedKey);
+        byte[] encContent = container.getEncryptedContent();
+        byte[] decrypt = cipherUtil.decrypt(encContent, sessionKey);
+        SecureRequest secureRequest = unmarshalRequest(decrypt);
+        secureRequest.verify();
+        authManager.authenticate(secureRequest.getAuthentiation());
+        MethodResult methodReturn = realHandler.handleCall(secureRequest.getMessage());
     }
 
     public void setAuthManager(AuthenticationManager authManager) {
         this.authManager = authManager;
     }
 
-    public void setMessageDecrypter(MessageDecrypter<MessageFormatType> messageDecrypter) {
-        this.messageDecrypter = messageDecrypter;
-    }
-
     public void setRealHandler(RequestHandler realHandler) {
         this.realHandler = realHandler;
+    }
+
+    public void setKeyDecrypter(KeyDecrypter keyDecrypter) {
+        this.keyDecrypter = keyDecrypter;
+    }
+
+    public void setCipherUtil(CipherUtil cipherUtil) {
+        this.cipherUtil = cipherUtil;
     }
 }

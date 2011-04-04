@@ -17,17 +17,26 @@
 
 package org.openengsb.core.common.security;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang.SerializationUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public class SecurePortTest {
@@ -51,43 +60,88 @@ public class SecurePortTest {
             + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
             + "Ky/vHQD1rMM=";
 
-    @Test
-    public void testDefaultImpls() throws Exception {
-        SecureRequestHandler<byte[]> req = new SecureRequestHandler<byte[]>() {
+    private SecureRequestHandler secureRequestHandler;
+
+    private SecretKeyUtil secretKeyUtil;
+
+    private PublicKeyUtil publicKeyUtil;
+
+    private PublicKeyCipherUtil publicKeyCipherUtil;
+
+    private SecretKeyCipherUtil secretKeyCipherUtil;
+
+    private PublicKey serverPublicKey;
+
+    private PrivateKey serverPrivateKey;
+
+    @Before
+    public void setUp() throws Exception {
+        makeSecureHandler();
+        secretKeyUtil = new SecretKeyUtil();
+        publicKeyUtil = new PublicKeyUtil();
+        publicKeyCipherUtil = new PublicKeyCipherUtil();
+        secretKeyCipherUtil = new SecretKeyCipherUtil();
+
+        serverPublicKey = publicKeyUtil.deserializePublicKey(PUBLIC_KEY_64);
+        serverPrivateKey = publicKeyUtil.deserializePrivateKey(PRIVATE_KEY_64);
+    }
+
+    private void makeSecureHandler() {
+        secureRequestHandler = new SecureRequestHandler() {
             @Override
             public SecureRequest unmarshalRequest(byte[] input) {
                 return (SecureRequest) SerializationUtils.deserialize(input);
             }
+
+            @Override
+            public EncryptedMessage unmarshalContainer(byte[] container) {
+                return (EncryptedMessage) SerializationUtils.deserialize(container);
+            }
         };
-        PrivateKey privateKey = new PublicKeyUtil().deserializePrivateKey(PRIVATE_KEY_64);
-        BinaryMessageCipher cipher = new BinaryMessageCipher(new PublicKeyCipherUtil(), privateKey);
-        req.setMessageDecrypter(cipher);
+    }
+
+    @Test
+    public void testEncryptSymmetricKey() throws Exception {
+        SecretKey secretKey = secretKeyUtil.generateKey(256);
+
+        byte[] encoded = secretKey.getEncoded();
+        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encoded, serverPublicKey);
+
+        byte[] decryptKey = publicKeyCipherUtil.decrypt(encryptedKey, serverPrivateKey);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(decryptKey, "AES");
+
+        assertThat(secretKeySpec, is(secretKey));
+    }
+
+    @Test
+    public void testDefaultImpls() throws Exception {
+
+        KeyDecrypter keyDecrypter = new KeyDecrypter(serverPrivateKey, publicKeyCipherUtil, secretKeyUtil);
+        secureRequestHandler.setKeyDecrypter(keyDecrypter);
+
+        AuthenticationManager authManager = mock(AuthenticationManager.class);
+        secureRequestHandler.setAuthManager(authManager);
+
+        RequestHandler realHandler = mock(RequestHandler.class);
+        secureRequestHandler.setRealHandler(realHandler);
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
 
         Map<String, String> emptyMap = Collections.emptyMap();
         MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, emptyMap);
 
-        Long time = System.currentTimeMillis();
-        byte[] checksum = new byte[0];
+        SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecureRequest secureRequest = new SecureRequest();
-        secureRequest.setMessage(request);
-        secureRequest.setTimestamp(time);
-        secureRequest.setAuthentiation(token);
-        secureRequest.setVerification(checksum);
-
-        PublicKey publicKey = new PublicKeyUtil().deserializePublicKey(PUBLIC_KEY_64);
-
-        SecretKeyUtil secretKeyUtil = new SecretKeyUtil("AES");
-        SecretKey encryptionKey = secretKeyUtil.generateKey(128);
-        BinaryMessageCipher encrypter = new BinaryMessageCipher(new SecretKeyCipherUtil(), encryptionKey);
+        SecretKey sessionKey = secretKeyUtil.generateKey(128);
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = encrypter.encrypt(serializedRequest);
+        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] encryptedKey = new PublicKeyCipherUtil().encrypt(encryptionKey.getEncoded(), publicKey);
+        byte[] encodedKey = secretKeyUtil.serializeKey(sessionKey).getBytes();
+        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
 
-        req.handleRequest(encryptedRequest);
+        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedRequest, encryptedKey);
+
+        secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
     }
 }

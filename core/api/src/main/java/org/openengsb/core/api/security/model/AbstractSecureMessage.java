@@ -19,7 +19,13 @@ package org.openengsb.core.api.security.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.ArrayUtils;
+
 public abstract class AbstractSecureMessage<MessageType> implements Serializable {
+
+    private static final long serialVersionUID = 8482667667480837182L;
 
     protected MessageType message;
     protected Long timestamp;
@@ -47,6 +53,25 @@ public abstract class AbstractSecureMessage<MessageType> implements Serializable
 
     public void setVerification(byte[] verification) {
         this.verification = verification;
+    }
+
+    protected byte[] calcChecksum(String original, long time) {
+        String concat = original + time;
+        byte[] checksum = DigestUtils.sha(concat);
+        return checksum;
+    }
+
+    protected void setVerification() {
+        this.verification = calcChecksum(this.getMessage().toString(), this.timestamp);
+    }
+
+    public void verify() {
+        byte[] refChecksum = calcChecksum(this.getMessage().toString(), this.getTimestamp());
+        if (!ArrayUtils.isEquals(this.verification, refChecksum)) {
+            System.err.println(Base64.encodeBase64String(this.verification));
+            System.err.println(Base64.encodeBase64String(refChecksum));
+            throw new IllegalStateException("wrong checksum");
+        }
     }
 
 }

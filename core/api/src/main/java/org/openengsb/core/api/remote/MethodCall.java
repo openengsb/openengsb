@@ -109,4 +109,18 @@ public class MethodCall implements Serializable {
         return argsClasses;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(methodName + "\n");
+        int i = 0;
+        for (Object o : args) {
+            sb.append("arg" + i + ": " + o.getClass().getSimpleName() + o.hashCode() + "\n");
+        }
+        sb.append("metadata:\n");
+        for (Map.Entry<String, String> entry : metaData.entrySet()) {
+            sb.append(entry.getKey() + "=" + entry.getValue());
+        }
+        return sb.toString();
+    }
 }

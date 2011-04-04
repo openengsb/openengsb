@@ -22,6 +22,8 @@ import org.springframework.security.core.Authentication;
 
 public class SecureRequest extends AbstractSecureMessage<MethodCall> {
 
+    private static final long serialVersionUID = -2350090113804167120L;
+
     private Authentication authentiation;
 
     public Authentication getAuthentiation() {
@@ -30,6 +32,16 @@ public class SecureRequest extends AbstractSecureMessage<MethodCall> {
 
     public void setAuthentiation(Authentication authentiation) {
         this.authentiation = authentiation;
+    }
+
+    public static SecureRequest create(MethodCall original, Authentication auth) {
+        SecureRequest secureRequest = new SecureRequest();
+        secureRequest.setMessage(original);
+        long time = System.currentTimeMillis();
+        secureRequest.setTimestamp(time);
+        secureRequest.setAuthentiation(auth);
+        secureRequest.setVerification();
+        return secureRequest;
     }
 
 }

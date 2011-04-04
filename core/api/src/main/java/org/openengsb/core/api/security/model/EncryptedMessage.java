@@ -17,21 +17,24 @@
 
 package org.openengsb.core.api.security.model;
 
-public class EncryptedMessage<MessageFormat> {
+import java.io.Serializable;
 
-    private MessageFormat encryptedContent;
+@SuppressWarnings("serial")
+public class EncryptedMessage implements Serializable {
+
+    private byte[] encryptedContent;
     private byte[] encryptedKey;
 
-    public EncryptedMessage(MessageFormat encryptedContent, byte[] encryptedKey) {
+    public EncryptedMessage(byte[] encryptedContent, byte[] encryptedKey) {
         this.encryptedContent = encryptedContent;
         this.encryptedKey = encryptedKey;
     }
 
-    public MessageFormat getEncryptedContent() {
+    public byte[] getEncryptedContent() {
         return this.encryptedContent;
     }
 
-    public void setEncryptedContent(MessageFormat encryptedContent) {
+    public void setEncryptedContent(byte[] encryptedContent) {
         this.encryptedContent = encryptedContent;
     }
 
