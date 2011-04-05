@@ -29,7 +29,6 @@ import javax.xml.bind.JAXBException;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -59,7 +58,7 @@ public class DroolsConverterTest {
 
     @Test
     public void callWorkflow_ShouldConvertCorrectly() throws SAXException, IOException,
-        JAXBException, XpathException {
+        JAXBException {
         ActionRepresentation root = workflow.getRoot();
         EndRepresentation end = new EndRepresentation();
         root.addAction(createAction(end));

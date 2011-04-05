@@ -167,10 +167,10 @@ public class Process {
         @XmlAttribute
         private int from;
 
-        public Connection() {
+        private Connection() {
         }
 
-        public Connection(int from, int to) {
+        private Connection(int from, int to) {
             super();
             this.from = from;
             this.to = to;
