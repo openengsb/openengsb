@@ -15,20 +15,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.core.common.security;
 
-import java.security.PrivateKey;
+@SuppressWarnings("serial")
+public class MarshallingException extends RuntimeException {
 
-import javax.crypto.SecretKey;
+    public MarshallingException() {
+        super();
+    }
 
-import org.openengsb.core.api.security.model.DecryptionException;
-import org.openengsb.core.api.security.model.EncryptionException;
+    public MarshallingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-public interface MessageCryptUtil<EncodingType> {
+    public MarshallingException(String message) {
+        super(message);
+    }
 
-    SecretKey decryptKey(EncodingType encryptedKey, PrivateKey key) throws DecryptionException;
+    public MarshallingException(Throwable cause) {
+        super(cause);
+    }
 
-    EncodingType decrypt(EncodingType encContent, SecretKey sessionKey) throws DecryptionException;
-
-    EncodingType encrypt(EncodingType content, SecretKey sessionKey) throws EncryptionException;
 }

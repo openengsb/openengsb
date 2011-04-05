@@ -15,14 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.api.security.model;
 
-import java.security.Key;
+@SuppressWarnings("serial")
+public class DecryptionException extends Exception {
 
-public interface CipherUtil {
+    public DecryptionException() {
+    }
 
-    byte[] encrypt(byte[] text, Key key) throws SecurityException;
+    public DecryptionException(String message) {
+        super(message);
+    }
 
-    byte[] decrypt(byte[] text, Key key) throws SecurityException;
+    public DecryptionException(Throwable cause) {
+        super(cause);
+    }
+
+    public DecryptionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

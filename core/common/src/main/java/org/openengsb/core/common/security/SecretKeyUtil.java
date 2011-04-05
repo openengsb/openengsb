@@ -40,6 +40,7 @@ public class SecretKeyUtil {
         try {
             keyGenerator = KeyGenerator.getInstance(algorithm);
             this.algorithm = algorithm;
+            this.keySize = keySize;
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }

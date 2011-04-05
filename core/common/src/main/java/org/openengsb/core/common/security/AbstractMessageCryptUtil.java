@@ -17,34 +17,21 @@
 
 package org.openengsb.core.common.security;
 
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.NoSuchPaddingException;
-
 import org.openengsb.core.api.security.MessageCryptUtil;
 
 public abstract class AbstractMessageCryptUtil<EncodingType> implements MessageCryptUtil<EncodingType> {
 
-    protected SecretKeyCipherUtil symCipherUtil;
-    protected PublicKeyCipherUtil pubCipherUtil;
+    protected BasicCipherUtil cipherUtil;
     protected String symmectricAlgorithm;
 
     public AbstractMessageCryptUtil() {
-        pubCipherUtil = new PublicKeyCipherUtil();
-        symCipherUtil = new SecretKeyCipherUtil();
+        cipherUtil = new BasicCipherUtil();
         symmectricAlgorithm = "AES";
     }
 
     public AbstractMessageCryptUtil(String publicKeyAlgorithm, String symmetricAlgorithm) {
         this.symmectricAlgorithm = symmetricAlgorithm;
-        try {
-            pubCipherUtil = new PublicKeyCipherUtil(publicKeyAlgorithm);
-            symCipherUtil = new SecretKeyCipherUtil(symmetricAlgorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        } catch (NoSuchPaddingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        cipherUtil = new BasicCipherUtil(publicKeyAlgorithm, symmetricAlgorithm);
     }
 
 }

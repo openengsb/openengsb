@@ -72,9 +72,7 @@ public class SecurePortTest {
 
     private PublicKeyUtil publicKeyUtil;
 
-    private PublicKeyCipherUtil publicKeyCipherUtil;
-
-    private SecretKeyCipherUtil secretKeyCipherUtil;
+    private BasicCipherUtil cipherUtil;
 
     private PublicKey serverPublicKey;
 
@@ -89,8 +87,8 @@ public class SecurePortTest {
         makeSecureHandler();
         secretKeyUtil = new SecretKeyUtil();
         publicKeyUtil = new PublicKeyUtil();
-        publicKeyCipherUtil = new PublicKeyCipherUtil();
-        secretKeyCipherUtil = new SecretKeyCipherUtil();
+
+        cipherUtil = new BasicCipherUtil();
 
         serverPublicKey = publicKeyUtil.deserializePublicKey(PUBLIC_KEY_64);
         serverPrivateKey = publicKeyUtil.deserializePrivateKey(PRIVATE_KEY_64);
@@ -127,14 +125,14 @@ public class SecurePortTest {
         SecretKey sessionKey = secretKeyUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
+        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
 
         byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
+        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
         EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
 
         byte[] encodedResponse = secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
-        byte[] decryptedResponse = secretKeyCipherUtil.decrypt(encodedResponse, sessionKey);
+        byte[] decryptedResponse = cipherUtil.decrypt(encodedResponse, sessionKey);
 
         SecureResponse secureResponse = (SecureResponse) SerializationUtils.deserialize(decryptedResponse);
         secureResponse.verify();
@@ -152,10 +150,10 @@ public class SecurePortTest {
         SecretKey sessionKey = secretKeyUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
+        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
 
         byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
+        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
         EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
 
         try {
@@ -178,10 +176,10 @@ public class SecurePortTest {
         request.setArgs(new Object[]{ "43" }); // manipulate message
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
+        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
 
         byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = publicKeyCipherUtil.encrypt(encodedKey, serverPublicKey);
+        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
 
         EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
 

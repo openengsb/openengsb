@@ -24,7 +24,9 @@ import javax.crypto.SecretKey;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.MessageCryptUtil;
+import org.openengsb.core.api.security.model.DecryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
+import org.openengsb.core.api.security.model.EncryptionException;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,10 +48,22 @@ public abstract class SecureRequestHandler<EncodingType> {
         EncryptedMessage<EncodingType> container = unmarshalContainer(containerMessage);
 
         EncodingType encryptedKey = container.getEncryptedKey();
-        SecretKey sessionKey = cryptUtil.decryptKey(encryptedKey, privateKey);
+        SecretKey sessionKey;
+        try {
+            sessionKey = cryptUtil.decryptKey(encryptedKey, privateKey);
+        } catch (DecryptionException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
 
         EncodingType encryptedContent = container.getEncryptedContent();
-        EncodingType decrypt = cryptUtil.decrypt(encryptedContent, sessionKey);
+        EncodingType decrypt;
+        try {
+            decrypt = cryptUtil.decrypt(encryptedContent, sessionKey);
+        } catch (DecryptionException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
 
         SecureRequest secureRequest = unmarshalRequest(decrypt);
         secureRequest.verify();
@@ -58,7 +72,12 @@ public abstract class SecureRequestHandler<EncodingType> {
         SecureResponse secureResponse = SecureResponse.create(methodReturn);
         EncodingType response = marshalResponse(secureResponse);
 
-        return cryptUtil.encrypt(response, sessionKey);
+        try {
+            return cryptUtil.encrypt(response, sessionKey);
+        } catch (EncryptionException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
     }
 
     public void setAuthManager(AuthenticationManager authManager) {

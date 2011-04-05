@@ -15,27 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.api.security.model;
 
-import java.security.PrivateKey;
+@SuppressWarnings("serial")
+public class EncryptionException extends Exception {
 
-import javax.crypto.SecretKey;
-
-public class KeyDecrypter {
-
-    private PrivateKey privateKey;
-    private CipherUtil cipherUtil;
-    private SecretKeyUtil keyUtil;
-
-    public KeyDecrypter(PrivateKey privateKey, CipherUtil cipherUtil, SecretKeyUtil keyUtil) {
-        this.privateKey = privateKey;
-        this.cipherUtil = cipherUtil;
-        this.keyUtil = keyUtil;
+    public EncryptionException() {
     }
 
-    public SecretKey decryptKey(byte[] encryptedKey) {
-        byte[] rawKey = cipherUtil.decrypt(encryptedKey, privateKey);
-        return keyUtil.deserializeKey(rawKey);
+    public EncryptionException(String message) {
+        super(message);
+    }
+
+    public EncryptionException(Throwable cause) {
+        super(cause);
+    }
+
+    public EncryptionException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

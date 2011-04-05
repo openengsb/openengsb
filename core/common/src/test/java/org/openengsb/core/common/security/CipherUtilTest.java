@@ -62,7 +62,7 @@ public class CipherUtilTest {
     public static void tearDownAfterClass() throws Exception {
     }
 
-    private PublicKeyCipherUtil cipherUtil;
+    private BasicCipherUtil cipherUtil;
     private PublicKeyVerificationUtil verifyUtil;
     private PublicKey generatedPublickey;
     private PrivateKey generatedPrivatekey;
@@ -72,7 +72,7 @@ public class CipherUtilTest {
 
     @Before
     public void setUp() throws Exception {
-        cipherUtil = new PublicKeyCipherUtil();
+        cipherUtil = new BasicCipherUtil();
         secretKeyUtil = new SecretKeyUtil();
         keyUtil = new PublicKeyUtil();
         KeyPair kp = keyUtil.generateKey(2048);
@@ -153,7 +153,7 @@ public class CipherUtilTest {
 
     @Test
     public void encryptSymmetric() throws Exception {
-        CipherUtil cipherUtil2 = new SecretKeyCipherUtil();
+        BasicCipherUtil cipherUtil2 = new BasicCipherUtil();
 
         SecretKeyUtil secretKeyUtil = new SecretKeyUtil();
         SecretKey generateKey = secretKeyUtil.generateKey();
@@ -166,7 +166,7 @@ public class CipherUtilTest {
 
     @Test
     public void encryptBlowfish() throws Exception {
-        CipherUtil cipherUtil2 = new SecretKeyCipherUtil("Blowfish");
+        BasicCipherUtil cipherUtil2 = new BasicCipherUtil("RSA", "Blowfish");
         SecretKeyUtil secretKeyUtil = new SecretKeyUtil("Blowfish", 128);
         SecretKey generateKey = secretKeyUtil.generateKey();
 
@@ -178,7 +178,7 @@ public class CipherUtilTest {
 
     @Test
     public void encryptWrongKey() throws Exception {
-        CipherUtil cipherUtil2 = new SecretKeyCipherUtil("Blowfish");
+        BasicCipherUtil cipherUtil2 = new BasicCipherUtil("RSA", "Blowfish");
         SecretKeyUtil secretKeyUtil = new SecretKeyUtil("AES", 128);
         SecretKey generateKey = secretKeyUtil.generateKey();
 
