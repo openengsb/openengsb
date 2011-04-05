@@ -32,7 +32,6 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
@@ -74,8 +73,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     private void setupDomainsAndOtherServices() throws InvalidSyntaxException {
         createDomainMocks();
         myservice = mock(DummyService.class);
-        registerService(myservice, DummyService.class, OsgiServiceUtils.getFilterForLocation("myservice", "42")
-            .toString());
+        registerServiceAtLocation(myservice, "myservice", DummyService.class);
     }
 
     private void createDomainMocks() throws InvalidSyntaxException {
@@ -93,8 +91,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     protected <T extends Domain> T registerDummyConnector(Class<T> domainClass, String name)
         throws InvalidSyntaxException {
         Domain mock2 = mock(domainClass);
-        registerSerivce(mock2, new Class<?>[]{ domainClass, Domain.class },
-            OsgiServiceUtils.getFilterForLocation(name, ContextHolder.get().getCurrentContextId()).toString());
+        registerServiceAtLocation(mock2, name, Domain.class, domainClass);
         domains.put(name, mock2);
         return (T) mock2;
     }

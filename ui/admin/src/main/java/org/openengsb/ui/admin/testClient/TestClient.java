@@ -111,7 +111,7 @@ public class TestClient extends BasePage {
 
     private ServiceId lastServiceId;
     private static final String DOMAINSTRING = "[domain.%1$s]";
-    private Map<String, DomainProvider> availableDomains = new HashMap<String, DomainProvider>();
+    private IModel<Map<String, DomainProvider>> availableDomains;
     private AjaxButton submitButton;
 
     public TestClient() {
@@ -136,6 +136,8 @@ public class TestClient extends BasePage {
                 return services.domains();
             }
         };
+        availableDomains = initAvailableDomainsMap();
+
 
         serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
 
@@ -151,7 +153,7 @@ public class TestClient extends BasePage {
                     }
                 });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
-                    .getDescription())));
+                        .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
                 IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
@@ -174,7 +176,7 @@ public class TestClient extends BasePage {
                         });
                         item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
                         item.add(new Label("service.description", new LocalizableStringModel(this, desc
-                            .getDescription())));
+                                .getDescription())));
                     }
                 });
             }
@@ -274,6 +276,21 @@ public class TestClient extends BasePage {
         add(feedbackPanel);
     }
 
+    private LoadableDetachableModel<Map<String, DomainProvider>> initAvailableDomainsMap() {
+        return new LoadableDetachableModel<Map<String, DomainProvider>>() {
+            @Override
+            protected Map<String, DomainProvider> load() {
+                HashMap<String, DomainProvider> providerHashMap = new HashMap<String, DomainProvider>();
+                for (DomainProvider provider : services.domains()) {
+                    String providerName = provider.getName().getString(getSession().getLocale());
+                    String name = String.format(DOMAINSTRING, providerName);
+                    providerHashMap.put(name, provider);
+                }
+                return providerHashMap;
+            }
+        };
+    }
+
     public TestClient(ServiceId jumpToService) {
         this();
         serviceList.getTreeState().collapseAll();
@@ -319,8 +336,8 @@ public class TestClient extends BasePage {
         ServiceReference[] references = null;
         try {
             references =
-                bundleContext.getServiceReferences(Domain.class.getName(),
-                    String.format("(id=%s)", serviceId.getServiceId()));
+                    bundleContext.getServiceReferences(Domain.class.getName(),
+                            String.format("(id=%s)", serviceId.getServiceId()));
             String id = "";
             String domain = null;
             if (references != null && references.length > 0) {
@@ -363,14 +380,13 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         String providerName = provider.getName().getString(getSession().getLocale());
         DefaultMutableTreeNode providerNode =
-            new DefaultMutableTreeNode(providerName);
+                new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
 
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
         String name = String.format(DOMAINSTRING, providerName);
         domainProviderServiceId.setServiceId(name);
-        availableDomains.put(name, provider);
         domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
@@ -424,7 +440,7 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            if (availableDomains.containsKey(service.getServiceId())) {
+            if (availableDomains.getObject().containsKey(service.getServiceId())) {
                 serviceObject = getServiceViaDomainEndpointFactory(service);
             } else {
                 serviceObject = getService(service);
@@ -448,7 +464,7 @@ public class TestClient extends BasePage {
     }
 
     private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
-        DomainProvider domainProvider = availableDomains.get(serviceId.getServiceId());
+        DomainProvider domainProvider = availableDomains.getObject().get(serviceId.getServiceId());
         Class<? extends Domain> aClass = domainProvider.getDomainInterface();
         String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
@@ -459,7 +475,7 @@ public class TestClient extends BasePage {
             return defaultDomain;
         }
         throw new OsgiServiceNotAvailableException("no default service found for service: "
-            + serviceId.getServiceClass());
+                + serviceId.getServiceClass());
     }
 
     private void handleExceptionWithFeedback(Throwable e) {

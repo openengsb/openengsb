@@ -34,8 +34,8 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.TaskboxException;
-import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.ui.common.taskbox.web.CustomTaskPanel;
 import org.openengsb.ui.common.taskbox.web.TaskPanel;
 import org.osgi.framework.Bundle;
@@ -44,7 +44,6 @@ import org.osgi.framework.BundleContext;
 public class WebTaskboxServiceTest {
     private WebTaskboxServiceImpl service;
     private PersistenceService persistenceService;
-    private WorkflowService workflowService;
 
     @SuppressWarnings("unused")
     private WicketTester tester;
@@ -53,14 +52,20 @@ public class WebTaskboxServiceTest {
     public void init() throws Exception {
         tester = new WicketTester();
 
-        workflowService = mock(WorkflowService.class);
+        BundleContext bundleContextMock = mock(BundleContext.class);
+        Bundle bundleMock = mock(Bundle.class);
+        when(bundleContextMock.getBundle()).thenReturn(bundleMock);
+        TaskboxServiceImpl workflow = new TaskboxServiceImpl();
         persistenceService = mock(PersistenceService.class);
         PersistenceManager persistenceManager = mock(PersistenceManager.class);
         when(persistenceManager.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistenceService);
+        workflow.setPersistenceManager(persistenceManager);
+        workflow.setBundleContext(bundleContextMock);
+        workflow.init();
 
         service = new WebTaskboxServiceImpl();
-        service.setBundleContext(mock(BundleContext.class));
-        service.setWorkflowService(workflowService);
+        service.setTaskboxService(workflow);
+        service.setBundleContext(bundleContextMock);
         service.setPersistenceManager(persistenceManager);
         service.init();
     }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.taskbox.config;
+package org.openengsb.core.workflow.internal;
 
 import java.io.InputStream;
 
@@ -25,11 +25,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.TaskboxServiceInternal;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.taskbox.TaskboxServiceInternal;
 
 /**
  * Adds everything needed for humann interaction into the rulemanager, (humantask workflow, taskbox global etc.).

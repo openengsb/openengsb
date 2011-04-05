@@ -41,6 +41,8 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
+import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
