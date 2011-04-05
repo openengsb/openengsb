@@ -37,7 +37,9 @@ HowTo - integrate services with OpenEngSB
 
   Getting OpenEngSB is simple. Go to http://www.openengsb.org, download the latest stable version to your computer and unpack the archive to a convenient location. Before you fire up OpenEngSB for the first time, please make sure you have a Java Development Kit 1.6+ available and set up.
 
-  You can startup OpenEngSB via the "openengsb" script in the "bin" folder. If you want to explore the web interface yourself before digging into implementing the CI use case, open up your web browser and navigate to http://localhost:8090/openengsb and log on as "admin" with password "password". OpenEngSB only binds to the loop-back interface by default, so you do not need to worry about remote access security.
+  You can startup OpenEngSB via the "openengsb" script in the "bin" folder. If you want to explore the web interface yourself before digging into implementing the CI use case, open up your web browser and navigate to http://localhost:8090/openengsb and log on as "admin" with password "password".
+
+  If you want to take a break or shutdown OpenEngSB in the middle of the tutorial, go ahead and do not worry. All changes made so far are saved and restored upon restart, so you can continue working with the most up-to-date state. Use the "shutdown" command in OpenEngSB's management console to stop any running services.
 
 * Source repository
 
