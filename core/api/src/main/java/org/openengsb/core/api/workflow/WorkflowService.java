@@ -21,9 +21,10 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 
-public interface WorkflowService {
+public interface WorkflowService extends OpenEngSBService {
     /**
      * processes the event in the Knowledgebase by inserting it as a fact, and signaling it the processes it may
      * concern. The processes the Event is signaled to are determined by looking at the processId-field of the event. If
