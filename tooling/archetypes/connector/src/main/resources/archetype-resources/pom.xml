@@ -21,13 +21,12 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>${openengsbVersion}</version>
+    <version>${version}</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
-    <openengsb.version>${openengsbVersion}</openengsb.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -49,12 +48,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>${scmConnection}</connection>
-    <developerConnection>${scmDeveloperConnection}</developerConnection>
-    <url>${scmUrl}</url>
-  </scm>
-
   <dependencies>
     <!-- OpenEngSB References -->
     <dependency>
@@ -64,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-${domainInterface}</artifactId>
+      <artifactId>openengsb-domain-${domainPackage}</artifactId>
       <version>${openengsb.version}</version>
       <scope>provided</scope>
     </dependency>

@@ -30,9 +30,6 @@
       <defaultValue>openengsb-connector-connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>1.1.0-SNAPSHOT</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="openengsbVersion">
       <defaultValue>1.2.0-SNAPSHOT</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
