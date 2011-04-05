@@ -55,11 +55,17 @@ HowTo - integrate services with OpenEngSB
 
   It is time for some action. Scroll down all the way in the "Test Client" tab, navigate to the "BuildDomain" in the tree view and click the "builder" service. From the drop down menu below select "build()" and click the "Call" button. When the project is built successfully a "Method called successfully" message appears. Let us check the directory of openengsb-tutorial to find the newly created "target" directory. Using a console we can navigate to the "classes" sub-folder and run "java org.openengsb.Main". It returns "Hello World!". Congratulations, you have just implemented the core functionality of our CI server.
 
-  In case an error message is returned, we will need to check the connector configuration. Please make sure that Maven is able to build the project by manually executing "mvn clean build" in the project directory of openengsb-tutorial. If this does not work out, most likely the setup of either Maven or JDK are incorrect. If it works however, please check the configuration of the connector by navigating to the "builder" service in the web interface again and clicking the "Edit Service" button.
+  In case an error message is returned, we need to check the connector configuration. Please make sure that Maven is able to build the project by manually executing "mvn clean build" in the project directory of openengsb-tutorial. If this does not work out, most likely the setup of either Maven or JDK are incorrect. If it works however, please check the configuration of the connector by navigating to the "builder" service in the web interface again and clicking the "Edit Service" button.
 
 * Testing binaries
 
-  TBD
+  The next step in building the CI server is implementation of automated testing. We can use the "test" domain to achieve this. Conveniently, the Maven connector also exports this type of functionality and we do not to load any additional features in the management console.
+
+  Use the "Test client" tab and create a new instance of the Maven connector for the "test" domain. It works the same way as before. The Service Id is an arbitrary name, i.e. "tester". The project path points at the location of openengsb-tutorial's base directory, i.e. "/home/user/Desktop/openengsb-tutorial", and the maven command indicates the command line arguments passed to Maven, i.e. "test". Click save to create the connector instance.
+
+  We are also going to test the newly created connector. Use the tree view at the bottom of the page to navigate to "TestDomain" and select the "tester" service. In the drop down box below choose "runTests()" and click the "Call" button. If the "method called successfully" message is returned, the Maven connector ran the rigorous unit tests on our sample application and they were passed with flying colors.
+
+  In case you are wondering about the output of the test suite go to the "Send Event page". There you will find an audit list of all events processed by OpenEngSB and their corresponding payload, i.e. the output of the test run. The list behaves like a log file with most recent events appended to the bottom. In OpenEngSB any input from connectors is processed by domains and packaged in form of events. Every time an event is raised it can be matched by a rule in a central rule-base and cause a reaction of the system possibly invoking different domains or spawning additional events. By editing the rule-base we become able to link different actions together. Depending on the outcome of an action, we may receive different events, i.e. build success or build failure. By creating separate rules for each case we can react accordingly and by chaining multiple actions and events we could create a longer decision tree or process model.
 
 * Generate report
 
