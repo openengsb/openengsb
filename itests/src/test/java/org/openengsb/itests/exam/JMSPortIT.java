@@ -27,14 +27,15 @@ import java.io.InputStream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.common.communication.OutgoingPort;
+import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.jms.core.JmsTemplate;
@@ -46,7 +47,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        this.ruleManager = getOsgiService(RuleManager.class);
+        ruleManager = getOsgiService(RuleManager.class);
     }
 
     @Test
@@ -57,19 +58,19 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         addWorkflow("simpleFlow");
         System.out.println("Starting Integration Test");
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:6549");
         JmsTemplate template = new JmsTemplate(cf);
-        // template.setReceiveTimeout(4000);
         String request = ""
                 + "{"
                 + "    \"callId\": \"12345\","
                 + "    \"answer\": true,"
                 + "    \"classes\": ["
                 + "        \"java.lang.String\","
-                + "        \"org.openengsb.core.common.workflow.model.ProcessBag\""
+                + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
                 + "    ],"
                 + "    \"methodName\": \"executeWorkflow\","
                 + "    \"metaData\": {"

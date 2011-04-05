@@ -110,13 +110,18 @@
     <!-- OpenEngSB Internal Dependencies -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-workflow</artifactId>
-      <scope>provided</scope>
+      <artifactId>openengsb-core-services</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.ui</groupId>
@@ -131,11 +136,6 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-auditing</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

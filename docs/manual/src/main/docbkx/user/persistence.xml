@@ -33,11 +33,11 @@
 
   <para>
     The interface of the
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceService.java">persistence service</link>
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>
     supports basic CRUD (create, update, retrieve, delete) mechanisms. Instances of the persistence service are created
     per bundle and have to make sure that data is stored persistently. If bundles need to share data the common
     persistence service cannot be used, as it does not support this feature. The 
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceManager.java">persistence manager</link>
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceManager.java">persistence manager</link>
     is responsible for the management of persistence service instances per bundle. On the first request from a
     bundle the persistence manager creates a persistence service. All later requests from a specific bundle should
     get the exact same instance of the persistence service.
@@ -45,12 +45,12 @@
 
   <para>
     Queries with the OpenEngSB persistence done via the 
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceService.java">persistence service</link>.
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>.
     Behind this service an easy query-by-example logic is used to retrieve your results. In some cases the comparision and storage can create some
     wired problems for your specific use cases. For those cases the 
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/util/IgnoreInQueries.java">IgnoreInQueries</link> annotation had
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/IgnoreInQueries.java">IgnoreInQueries</link> annotation had
     been added. Using this annotation on getters in classes persisted via the
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/persistence/PersistenceService.java">persistence service</link>
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>
     querying them ignores those fields during trying to compare them to stored data.
   </para> 
 

@@ -17,9 +17,8 @@
 
 package org.openengsb.domain.auditing;
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.api.DomainEvents;
 
 public interface AuditingDomainEvents extends DomainEvents {
 
-    // TODO add your domain-specific methods here
 }

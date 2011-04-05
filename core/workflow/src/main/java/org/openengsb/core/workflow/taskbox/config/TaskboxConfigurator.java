@@ -22,13 +22,13 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.TaskboxService;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.taskbox.TaskboxServiceInternal;
 
 /**

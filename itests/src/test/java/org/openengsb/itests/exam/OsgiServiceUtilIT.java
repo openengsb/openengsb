@@ -25,10 +25,10 @@ import java.util.Hashtable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
@@ -94,13 +94,13 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "[foo]");
+        properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "[foo]");
+        properties.put("location.foo", new String[]{ "foo" });
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
@@ -130,7 +130,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "[main/foo] [main/foo2]");
+        properties.put("location.root", new String[]{ "main/foo", "main/foo2" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ExampleDomain fooService = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo");

@@ -34,9 +34,9 @@ import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.nq.NativeQuery;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.util.IgnoreInQueries;
+import org.openengsb.core.api.persistence.IgnoreInQueries;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceService implements PersistenceService {

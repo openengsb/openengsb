@@ -23,7 +23,8 @@ import java.lang.reflect.Proxy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.context.ContextHolder;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -37,9 +38,6 @@ public final class OsgiServiceUtils {
 
     private static final long DEFAULT_TIMEOUT = 30000L;
 
-    public static final Character LOCATION_START = '[';
-    public static final Character LOCATION_END = ']';
-
     private static BundleContext bundleContext;
 
     /**
@@ -47,8 +45,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getService(Class<T> clazz)
-        throws OsgiServiceNotAvailableException {
+    public static <T> T getService(Class<T> clazz) throws OsgiServiceNotAvailableException {
         return getService(clazz, DEFAULT_TIMEOUT);
     }
 
@@ -177,7 +174,7 @@ public final class OsgiServiceUtils {
     @SuppressWarnings("unchecked")
     public static <T> T getOsgiServiceProxy(final Filter filter,
             Class<T> targetClass) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -229,8 +226,8 @@ public final class OsgiServiceUtils {
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getServiceForLocation(Class<T> clazz, String location,
-            String context) throws OsgiServiceNotAvailableException {
+    public static <T> T getServiceForLocation(Class<T> clazz, String location, String context)
+        throws OsgiServiceNotAvailableException {
         Filter compiled = getFilterForLocation(clazz, location, context);
         return (T) getService(compiled);
     }
@@ -276,12 +273,7 @@ public final class OsgiServiceUtils {
     }
 
     private static String makeLocationFilterString(String location, String context) {
-        location = encloseWithDelemiters(location);
-        return String.format("(|(location.%s=*%s*)(location.root=*%s*))", context, location, location);
-    }
-
-    private static String encloseWithDelemiters(String location) {
-        return LOCATION_START + location + LOCATION_END;
+        return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
     }
 
     /**
@@ -290,8 +282,8 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 secondss
      */
-    public static Object getServiceForLocation(String location,
-            String context) throws OsgiServiceNotAvailableException {
+    public static Object getServiceForLocation(String location, String context)
+        throws OsgiServiceNotAvailableException {
         return getService(getFilterForLocation(location, context));
     }
 
@@ -301,8 +293,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static Object getServiceForLocation(String location)
-        throws OsgiServiceNotAvailableException {
+    public static Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException {
         log.debug("retrieve service for location: " + location);
         return getService(getFilterForLocation(location));
     }
@@ -313,8 +304,7 @@ public final class OsgiServiceUtils {
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
-    public static <T> T getServiceForLocation(Class<T> clazz, String location)
-        throws OsgiServiceNotAvailableException {
+    public static <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException {
         return getServiceForLocation(clazz, location, ContextHolder.get().getCurrentContextId());
     }
 

@@ -17,7 +17,7 @@
 
 package org.openengsb.domain.deploy;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.api.Event;
 
 public class DeployStartEvent extends Event {
 

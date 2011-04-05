@@ -34,14 +34,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.LocalizableString;
+import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
@@ -235,7 +235,7 @@ public class ServiceListPanel extends Panel {
 
     private ServiceReference[] getAllManagedServices() {
         try {
-            return bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null);
+            return bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null);
         } catch (InvalidSyntaxException e) {
             String stackTrace = ExceptionUtils.getFullStackTrace(e.getCause());
             error(stackTrace);

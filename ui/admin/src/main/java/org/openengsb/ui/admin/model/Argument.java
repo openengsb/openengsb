@@ -69,6 +69,10 @@ public class Argument implements Serializable {
 
     @SuppressWarnings("unchecked")
     public Object toValue() {
+        if (value == null) {
+            return null;
+        }
+        
         if (!isBean) {
             return MethodUtil.convertToCorrectClass(type, value);
         } else {

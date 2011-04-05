@@ -45,7 +45,9 @@
     Issue Domain is the tool domain for all issue tracking tools, like Jira, Trac or Mantis
     and provides the possibility to create, update, delete and comment issues.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -63,12 +65,12 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <artifactId>openengsb-core-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
+      <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

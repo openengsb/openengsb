@@ -36,23 +36,23 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EndRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowConverter;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.core.workflow.editor.Action;
-import org.openengsb.core.workflow.editor.End;
-import org.openengsb.core.workflow.editor.Event;
-import org.openengsb.core.workflow.editor.Workflow;
-import org.openengsb.core.workflow.editor.WorkflowConverter;
 import org.xml.sax.SAXException;
 
 public class DroolsConverterTest {
 
-    private Workflow workflow;
+    private WorkflowRepresentation workflow;
 
     @Before
     public void before() {
         XMLUnit.setIgnoreWhitespace(true);
-        workflow = new Workflow();
+        workflow = new WorkflowRepresentation();
         workflow.setName("workflow");
         setActionValues(workflow.getRoot());
     }
@@ -60,11 +60,11 @@ public class DroolsConverterTest {
     @Test
     public void callWorkflow_ShouldConvertCorrectly() throws SAXException, IOException,
         JAXBException, XpathException {
-        Action root = workflow.getRoot();
-        End end = new End();
+        ActionRepresentation root = workflow.getRoot();
+        EndRepresentation end = new EndRepresentation();
         root.addAction(createAction(end));
         root.addAction(createAction(end));
-        Event event = createEvent();
+        EventRepresentation event = createEvent();
         event.addAction(createAction(end));
         event.addAction(createAction(end));
         root.addEvent(event);
@@ -87,8 +87,8 @@ public class DroolsConverterTest {
 
     @Test
     public void actionsFollowingActionWithSharedEnd() throws SAXException, IOException, JAXBException {
-        Action createAction = createAction();
-        End end = new End();
+        ActionRepresentation createAction = createAction();
+        EndRepresentation end = new EndRepresentation();
         createAction.setEnd(end);
         workflow.getRoot().addAction(createAction);
         workflow.getRoot().addAction(createAction);
@@ -97,8 +97,8 @@ public class DroolsConverterTest {
 
     @Test
     public void actionFollowingEvent_eventFollowingAction() throws SAXException, IOException, JAXBException {
-        Action createAction = createAction();
-        Event event = createEvent();
+        ActionRepresentation createAction = createAction();
+        EventRepresentation event = createEvent();
         event.addAction(createAction);
         workflow.getRoot().addEvent(event);
         assertConversionResult(convertWorkflowToString(), "actionFollowingEvent_eventFollowingAction");
@@ -106,8 +106,8 @@ public class DroolsConverterTest {
 
     @Test
     public void actionsFollowingEvent() throws SAXException, IOException, JAXBException {
-        Action createAction = createAction();
-        Event event = createEvent();
+        ActionRepresentation createAction = createAction();
+        EventRepresentation event = createEvent();
         event.addAction(createAction);
         event.addAction(createAction);
         workflow.getRoot().addEvent(event);
@@ -116,8 +116,8 @@ public class DroolsConverterTest {
 
     @Test
     public void eventsFollowingAction() throws SAXException, IOException, JAXBException {
-        Action createAction = createAction();
-        Event event = createEvent();
+        ActionRepresentation createAction = createAction();
+        EventRepresentation event = createEvent();
         event.addAction(createAction);
         workflow.getRoot().addEvent(event);
         workflow.getRoot().addEvent(event);
@@ -126,10 +126,10 @@ public class DroolsConverterTest {
 
     @Test
     public void actionAndEventFollowingAction() throws SAXException, IOException, JAXBException {
-        End end = new End();
-        Action createAction = createAction(end);
-        Event event = createEvent();
-        Action createAction2 = createAction(end);
+        EndRepresentation end = new EndRepresentation();
+        ActionRepresentation createAction = createAction(end);
+        EventRepresentation event = createEvent();
+        ActionRepresentation createAction2 = createAction(end);
         event.addAction(createAction2);
         workflow.getRoot().addAction(createAction);
         workflow.getRoot().addEvent(event);
@@ -138,10 +138,10 @@ public class DroolsConverterTest {
 
     @Test
     public void eventFollowingEvent() throws SAXException, IOException, JAXBException {
-        Event event = createEvent();
-        Action createAction2 = createAction();
+        EventRepresentation event = createEvent();
+        ActionRepresentation createAction2 = createAction();
         event.addAction(createAction2);
-        Event parentEvent = createEvent();
+        EventRepresentation parentEvent = createEvent();
         parentEvent.addEvent(event);
         workflow.getRoot().addEvent(parentEvent);
         assertConversionResult(convertWorkflowToString(), "eventFollowingEvent");
@@ -149,11 +149,11 @@ public class DroolsConverterTest {
 
     @Test
     public void eventsFollowingEvent() throws SAXException, IOException, JAXBException {
-        End end = new End();
-        Event event = createEvent();
-        Action createAction2 = createAction(end);
+        EndRepresentation end = new EndRepresentation();
+        EventRepresentation event = createEvent();
+        ActionRepresentation createAction2 = createAction(end);
         event.addAction(createAction2);
-        Event parentEvent = createEvent();
+        EventRepresentation parentEvent = createEvent();
         parentEvent.addEvent(event);
         parentEvent.addEvent(event);
         workflow.getRoot().addEvent(parentEvent);
@@ -178,23 +178,23 @@ public class DroolsConverterTest {
         }
     }
 
-    private Event createEvent() {
-        Event event = new Event();
+    private EventRepresentation createEvent() {
+        EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
         return event;
     }
 
-    private Action createAction(End end) {
-        Action createAction = createAction();
+    private ActionRepresentation createAction(EndRepresentation end) {
+        ActionRepresentation createAction = createAction();
         createAction.setEnd(end);
         return createAction;
     }
 
-    private Action createAction() {
-        return setActionValues(new Action());
+    private ActionRepresentation createAction() {
+        return setActionValues(new ActionRepresentation());
     }
 
-    private Action setActionValues(Action root) {
+    private ActionRepresentation setActionValues(ActionRepresentation root) {
         root.setDomain(NullDomain.class);
         root.setLocation("location");
         Method method = NullDomain.class.getMethods()[0];

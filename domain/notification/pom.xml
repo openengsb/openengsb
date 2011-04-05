@@ -44,7 +44,9 @@
     Notification Domain is an abstraction of basic notification services (e.g. email)
     and provides the functionality for sending notifications to a specific recipent.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -62,12 +64,12 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <artifactId>openengsb-core-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
+      <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

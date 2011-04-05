@@ -29,14 +29,14 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowConverter;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.core.workflow.editor.Action;
-import org.openengsb.core.workflow.editor.Event;
-import org.openengsb.core.workflow.editor.WorkflowConverter;
-import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
@@ -48,17 +48,17 @@ public class EditEventTest {
 
     private ApplicationContextMock mock;
 
-    private Event event;
+    private EventRepresentation event;
 
-    private Action action;
+    private ActionRepresentation action;
 
     @Before
     public void setup() {
-        action = new Action();
+        action = new ActionRepresentation();
         action.setLocation("123");
         action.setDomain(NullDomain.class);
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
-        event = new Event();
+        event = new EventRepresentation();
         tester = new WicketTester();
         mock = new ApplicationContextMock();
         mock.putBean(mock(ContextCurrentService.class));

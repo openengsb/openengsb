@@ -36,7 +36,12 @@
 
   <packaging>jar</packaging>
 
+  <description>
+    Common test package wich helps all packages to provide their tests in a common OpenEngSB fashion.
+  </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -54,7 +59,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <artifactId>openengsb-core-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

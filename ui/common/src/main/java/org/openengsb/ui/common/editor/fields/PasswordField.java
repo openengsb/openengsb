@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField<String> {

@@ -20,11 +20,11 @@ package ${package}.internal;
 import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import ${package}.internal.${connectorName}ServiceImpl;
 
 import ${domainPackage}.${domainInterface};

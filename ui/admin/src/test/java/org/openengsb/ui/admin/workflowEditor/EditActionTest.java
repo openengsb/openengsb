@@ -36,15 +36,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowConverter;
 import org.openengsb.core.test.NullDomain;
-import org.openengsb.core.workflow.editor.Action;
-import org.openengsb.core.workflow.editor.WorkflowConverter;
-import org.openengsb.core.workflow.editor.WorkflowEditorService;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
@@ -54,16 +54,16 @@ public class EditActionTest {
 
     private FormTester formTester;
 
-    private Action action;
+    private ActionRepresentation action;
 
-    private Action parent;
+    private ActionRepresentation parent;
 
     private ApplicationContextMock mock;
 
     @Before
     public void setup() {
-        parent = new Action();
-        action = new Action();
+        parent = new ActionRepresentation();
+        action = new ActionRepresentation();
         action.setLocation("test");
         tester = new WicketTester();
         mock = new ApplicationContextMock();

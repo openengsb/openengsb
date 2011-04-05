@@ -94,6 +94,7 @@ This project includes:
   Apache XML-RPC Common Library under The Apache Software License, Version 2.0
   AspectJ runtime under Eclipse Public License - v 1.0
   AspectJ weaver under Eclipse Public License - v 1.0
+  Atlassian JIRA Soap Model under BSD
   avalon-framework under Apache License, Version 2.0
   axis under Apache License, Version 2.0
   axis-jaxrpc under Apache License, Version 2.0
@@ -104,7 +105,6 @@ This project includes:
   Camel :: Core under The Apache Software License, Version 2.0
   cglib under Apache License, Version 2.0
   Codec under Apache License, Version 2.0
-  com.dolby.jira.net:jira-soap under BSD
   com.springsource.org.codehaus.janino under BSD license
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
@@ -181,7 +181,9 @@ This project includes:
   OpenEngSB :: Documentation :: Manual under Apache 2
   OpenEngSB :: Documentation :: Parent under Apache 2
   OpenEngSB :: Documentation :: Skin under Apache 2
+  OpenEngSB :: Domain :: Appointment under Apache 2
   OpenEngSB :: Domain :: Build under Apache 2
+  OpenEngSB :: Domain :: Contact under Apache 2
   OpenEngSB :: Domain :: Deploy under Apache 2
   OpenEngSB :: Domain :: Example under Apache 2
   OpenEngSB :: Domain :: Issue under Apache 2

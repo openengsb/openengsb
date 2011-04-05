@@ -19,9 +19,9 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
 
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public abstract class AbstractDirectoryRuleManager extends AbstractRuleManager {
 
@@ -31,31 +31,31 @@ public abstract class AbstractDirectoryRuleManager extends AbstractRuleManager {
 
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).create(name, code);
+        getRessourceHandler(name.getType()).create(name, code);
     }
 
     @Override
     public String get(RuleBaseElementId name) {
-        return this.getRessourceHandler(name.getType()).get(name);
+        return getRessourceHandler(name.getType()).get(name);
     }
 
     @Override
     public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).update(name, newCode);
+        getRessourceHandler(name.getType()).update(name, newCode);
     }
 
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).delete(name);
+        getRessourceHandler(name.getType()).delete(name);
     }
 
     @Override
     public Collection<RuleBaseElementId> list(RuleBaseElementType type) {
-        return this.getRessourceHandler(type).list();
+        return getRessourceHandler(type).list();
     }
 
     @Override
     public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
-        return this.getRessourceHandler(type).list(packageName);
+        return getRessourceHandler(type).list(packageName);
     }
 }

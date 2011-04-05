@@ -19,7 +19,7 @@ package org.openengsb.ui.common.model;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.api.l10n.LocalizableString;
 
 /**
  * Wicket Model for {@link LocalizableString} objects, used to localize strings coming from other OpenEngSB bundles.

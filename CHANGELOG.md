@@ -1,3 +1,70 @@
+openengsb-1.2.0.M4 2011-03-23
+--------------------------------------------
+
+This milestone release contains various improvements and bugfixes. In addition the features packaing and the distribution has been completely refactored. In addition two new domains had been added and the exception model had been adapted.
+
+### Highlights
+  * Upgrade various libs to their latest versions
+  * Provide only one distirbution for windows and linux
+  * Split features into a useful and sane package size
+  * Add Appointment and Contact domain
+  * Make all exceptions untagged
+  * Increase jdoc and stability at various places
+
+### Details
+
+** Bug
+    * [OPENENGSB-1078] - Required bundle in drools metainf suppress features:uninstall/install
+    * [OPENENGSB-1099] - jira connector - generating report is returning the type-code not the name
+    * [OPENENGSB-1102] - Make scripts in etc/scripts executable
+    * [OPENENGSB-1108] - Spring-security uses Threadlocal context-strategy in production environment (should be InheritedThreadLocal)
+    * [OPENENGSB-1110] - workflow-service does not start flows in correct context
+    * [OPENENGSB-1119] - Eclipse Checkstyle configuration has a bug
+    * [OPENENGSB-1120] - Subproject page on hp looks wired
+    * [OPENENGSB-1131] - archetype domain create invalid blueprint xml file
+    * [OPENENGSB-1139] - Integration tests fail
+    * [OPENENGSB-1146] - GitServiceImplTest.exportRepository_shouldReturnZipFileWithRepoEntries fails under Windows.
+    * [OPENENGSB-1163] - Integration Tests time out (after 300000ms)
+    * [OPENENGSB-1164] - Wiring integration tests fails
+
+** Improvement
+    * [OPENENGSB-676] - openengsb writes to ${karaf.data}/data/openengsb instead of ${karaf.data}/openengsb
+    * [OPENENGSB-1041] - Add openticket logo to openengsb childproject page
+    * [OPENENGSB-1042] - Add yaste logo to openengsb childproject page
+    * [OPENENGSB-1052] - use String[] to manage loctions in service-properties
+    * [OPENENGSB-1079] - Cleanup and split features.xml
+    * [OPENENGSB-1104] - Make Events removable from WorkflowEditor
+    * [OPENENGSB-1111] - provide abstract classes or util-methods to deal with Context in threadpools
+    * [OPENENGSB-1115] - Make JMSTemplateFactory thread safe
+    * [OPENENGSB-1118] - Create checkstyle script
+    * [OPENENGSB-1123] - Merge win and linux distribution
+    * [OPENENGSB-1125] - Enhance JDoc for ports (remote communciation)
+    * [OPENENGSB-1126] - Remove IncomingPort interface
+    * [OPENENGSB-1127] - Transform OsgiServiceNotAvailableException into a runtime exception
+    * [OPENENGSB-1147] - use environment variable to enable debug-output
+
+** Library Upgrade
+    * [OPENENGSB-1092] - Extract com.atlassian.jira.plugins 4.1.1
+    * [OPENENGSB-1150] - upgrade to openengsb-maven-plugin 1.3.3 stable
+    * [OPENENGSB-1156] - Upgrad maven-assembly-plugin to 2.2.1
+    * [OPENENGSB-1157] - Upgrade maven-resources-plugin to 2.5
+    * [OPENENGSB-1158] - Upgrade maven-surefire-plugin to 2.8
+    * [OPENENGSB-1159] - Upgrade maven-surefire-report-plugin to 2.8
+    * [OPENENGSB-1160] - Upgrade to openengsb-root-13
+
+** New Feature
+    * [OPENENGSB-1006] - Add contact domain for OpenEngSB
+    * [OPENENGSB-1007] - Add appointment domain to openengsb
+    * [OPENENGSB-1124] - Add RemoteCommunicationException and OsgiServiceException to ports-communication-implementation
+
+
+** Task
+    * [OPENENGSB-983] - release openengsb-1.2.0.M4
+    * [OPENENGSB-984] - Define release name using O O
+    * [OPENENGSB-1105] - Remove old licenses from WorkflowEditor html files
+    * [OPENENGSB-1140] - Add Felix Mayerhuber as contributor
+    * [OPENENGSB-1151] - remove no longer required update-version-info.sh script
+
 openengsb-1.2.0.M3 2011-03-09
 --------------------------------------------
 

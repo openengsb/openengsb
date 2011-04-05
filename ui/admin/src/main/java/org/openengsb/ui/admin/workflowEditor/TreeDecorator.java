@@ -17,8 +17,8 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
-import org.openengsb.core.workflow.editor.Node;
+import org.openengsb.core.api.workflow.model.NodeRepresentation;
 
 public interface TreeDecorator {
-    Node getNode();
+    NodeRepresentation getNode();
 }

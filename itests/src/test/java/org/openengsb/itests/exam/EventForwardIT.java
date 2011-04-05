@@ -28,13 +28,13 @@ import java.util.Hashtable;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -83,10 +83,10 @@ public class EventForwardIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");
-        properties.put("location.42", "[example]");
+        properties.put("location.42", new String[]{ "example" });
 
         DummyLogDomain logService = new DummyLogDomain();
         getBundleContext().registerService(clazzes, logService, properties);

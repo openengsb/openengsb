@@ -27,8 +27,8 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceService;
 
 public abstract class PersistenceServiceTest {
 

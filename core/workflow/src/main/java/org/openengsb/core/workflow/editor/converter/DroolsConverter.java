@@ -23,8 +23,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.openengsb.core.workflow.editor.Workflow;
-import org.openengsb.core.workflow.editor.WorkflowConverter;
+import org.openengsb.core.api.workflow.model.WorkflowConverter;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import org.openengsb.core.workflow.editor.converter.Process.Connection;
 import org.openengsb.core.workflow.editor.converter.Process.EndNode;
 import org.openengsb.core.workflow.editor.converter.Process.Start;
 
@@ -36,7 +37,7 @@ public class DroolsConverter implements WorkflowConverter {
 
     public DroolsConverter() throws JAXBException {
         context =
-            JAXBContext.newInstance(ActionNode.class, EventNode.class, Process.class, Connection.class, Start.class,
+            JAXBContext.newInstance(ActionNode.class, ActionEvent.class, Process.class, Connection.class, Start.class,
                 org.openengsb.core.workflow.editor.converter.ActionNode.Action.class, EndNode.class);
         this.marshaller = context.createMarshaller();
         marshaller.setProperty("jaxb.schemaLocation",
@@ -44,7 +45,7 @@ public class DroolsConverter implements WorkflowConverter {
     }
 
     @Override
-    public String convert(Workflow workflow) {
+    public String convert(WorkflowRepresentation workflow) {
         Process process = Process.build(workflow);
         StringWriter writer = new StringWriter();
         try {

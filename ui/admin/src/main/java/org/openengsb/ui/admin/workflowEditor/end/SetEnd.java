@@ -27,27 +27,27 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.openengsb.core.workflow.editor.Action;
-import org.openengsb.core.workflow.editor.End;
-import org.openengsb.core.workflow.editor.Workflow;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EndRepresentation;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class SetEnd extends BasePage {
 
-    private End end;
+    private EndRepresentation end;
 
-    public SetEnd(final Workflow workflow, final Action action) {
-        IModel<List<End>> endModel = new AbstractReadOnlyModel<List<End>>() {
+    public SetEnd(final WorkflowRepresentation workflow, final ActionRepresentation action) {
+        IModel<List<EndRepresentation>> endModel = new AbstractReadOnlyModel<List<EndRepresentation>>() {
 
             @Override
-            public List<End> getObject() {
+            public List<EndRepresentation> getObject() {
                 return workflow.getEndNodes();
             }
         };
         Form<Object> form = new Form<Object>("endSelectForm");
-        final End endNode = new End();
+        final EndRepresentation endNode = new EndRepresentation();
         form.add(new DropDownChoice("endSelect", new PropertyModel(this, "end"), endModel));
         form.add(new Button("select") {
             @Override
@@ -74,11 +74,11 @@ public class SetEnd extends BasePage {
         add(form);
     }
 
-    public End getEnd() {
+    public EndRepresentation getEnd() {
         return end;
     }
 
-    public void setEnd(End end) {
+    public void setEnd(EndRepresentation end) {
         this.end = end;
     }
 

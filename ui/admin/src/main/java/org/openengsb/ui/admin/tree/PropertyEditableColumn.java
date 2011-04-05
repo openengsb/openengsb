@@ -31,9 +31,9 @@ import org.apache.wicket.extensions.markup.html.tree.table.IRenderable;
 import org.apache.wicket.extensions.markup.html.tree.table.PropertyRenderableColumn;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
 import org.openengsb.ui.admin.tree.dropDownPanel.DropDownPanel;
 import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
 import org.osgi.framework.ServiceReference;
@@ -87,7 +87,7 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
                 for (ServiceReference serviceReferce : serviceReferencesForConnector) {
                     String type = (String) serviceReferce.getProperty("openengsb.service.type");
                     if (!"domain".equals(type)) { // it is an connector
-                        services.add((String) (serviceReferce.getProperty("id")));
+                        services.add((String) serviceReferce.getProperty("id"));
                     }
 
                 }

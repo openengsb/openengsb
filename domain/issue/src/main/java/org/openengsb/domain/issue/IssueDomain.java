@@ -20,7 +20,7 @@ package org.openengsb.domain.issue;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.api.Domain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 

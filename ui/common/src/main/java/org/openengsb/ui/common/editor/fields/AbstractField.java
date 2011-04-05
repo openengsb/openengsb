@@ -25,7 +25,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 /**

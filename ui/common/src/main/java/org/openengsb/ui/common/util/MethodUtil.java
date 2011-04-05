@@ -31,9 +31,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 
 public final class MethodUtil {
     private static Log log = LogFactory.getLog(MethodUtil.class);
@@ -119,7 +119,7 @@ public final class MethodUtil {
                 }
             }
         }
-        if (String.class.equals(value.getClass())) {
+        if (String.class.isInstance(value)) {
             Constructor<?> constructor = getStringOnlyConstructor(type);
             if (constructor != null) {
                 try {

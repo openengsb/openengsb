@@ -53,11 +53,12 @@
   </scm>
 
   <modules>
+    <module>api</module>
+    <module>test</module>
     <module>common</module>
+    <module>services</module>
     <module>workflow</module>
     <module>persistence</module>
-    <module>events</module>
-    <module>test</module>
     <module>security</module>
     <module>deployer</module>
   </modules>

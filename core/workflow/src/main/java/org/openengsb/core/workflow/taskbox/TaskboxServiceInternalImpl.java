@@ -19,15 +19,14 @@ package org.openengsb.core.workflow.taskbox;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.persistence.PersistenceManager;
-import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
 
-public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, BundleContextAware {
+public class TaskboxServiceInternalImpl implements TaskboxServiceInternal {
     private Log log = LogFactory.getLog(getClass());
 
     private PersistenceService persistence;
@@ -42,7 +41,6 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, Bundl
         this.persistenceManager = persistenceManager;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
@@ -53,4 +51,5 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, Bundl
         persistence.create(task);
         log.info("New human task with id " + task.getTaskId() + " created");
     }
+
 }

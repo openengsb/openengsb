@@ -17,7 +17,7 @@
 
 package org.openengsb.ui.admin.ruleEditorPanel;
 
-import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.api.workflow.RuleManager;
 
 public interface RuleManagerProvider {
 

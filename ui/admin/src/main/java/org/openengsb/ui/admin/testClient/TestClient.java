@@ -22,7 +22,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -57,14 +60,14 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.proxy.ProxyFactory;
-import org.openengsb.core.common.proxy.ProxyServiceManager;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.remote.ProxyFactory;
+import org.openengsb.core.common.DomainEndpointFactory;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -107,6 +110,9 @@ public class TestClient extends BasePage {
     private AjaxButton editButton;
 
     private ServiceId lastServiceId;
+    private static final String DOMAINSTRING = "[domain.%1$s]";
+    private Map<String, DomainProvider> availableDomains = new HashMap<String, DomainProvider>();
+    private AjaxButton submitButton;
 
     public TestClient() {
         super();
@@ -140,7 +146,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
+                        ServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });
@@ -215,6 +221,8 @@ public class TestClient extends BasePage {
 
                 updateEditButton((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
+                target.addComponent(submitButton);
+                target.addComponent(feedbackPanel);
             }
         };
         serviceList.setOutputMarkupId(true);
@@ -241,7 +249,7 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
-        AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
+        submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 target.addComponent(feedbackPanel);
@@ -256,7 +264,7 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
-
+        submitButton.setOutputMarkupId(true);
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
@@ -353,9 +361,21 @@ public class TestClient extends BasePage {
     }
 
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
+        String providerName = provider.getName().getString(getSession().getLocale());
         DefaultMutableTreeNode providerNode =
-            new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
+            new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
+
+        // add domain entry to call via domain endpoint factory
+        ServiceId domainProviderServiceId = new ServiceId();
+        String name = String.format(DOMAINSTRING, providerName);
+        domainProviderServiceId.setServiceId(name);
+        availableDomains.put(name, provider);
+        domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
+        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
+        providerNode.add(endPointReferenceNode);
+
+        // add all corresponding services
         for (ServiceReference serviceReference : services.serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
@@ -404,7 +424,11 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            serviceObject = getService(service);
+            if (availableDomains.containsKey(service.getServiceId())) {
+                serviceObject = getServiceViaDomainEndpointFactory(service);
+            } else {
+                serviceObject = getService(service);
+            }
         } catch (OsgiServiceNotAvailableException e) {
             handleExceptionWithFeedback(e);
             return;
@@ -421,6 +445,21 @@ public class TestClient extends BasePage {
             i++;
         }
         call.setArguments(arguments);
+    }
+
+    private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
+        DomainProvider domainProvider = availableDomains.get(serviceId.getServiceId());
+        Class<? extends Domain> aClass = domainProvider.getDomainInterface();
+        String name = domainProvider.getName().getString(Locale.getDefault());
+        Domain defaultDomain = null;
+        if (DomainEndpointFactory.isConnectorCurrentlyPresent(aClass)) {
+            defaultDomain = DomainEndpointFactory.getDomainEndpoint(aClass, "domain/" + name + "/default");
+        }
+        if (defaultDomain != null) {
+            return defaultDomain;
+        }
+        throw new OsgiServiceNotAvailableException("no default service found for service: "
+            + serviceId.getServiceClass());
     }
 
     private void handleExceptionWithFeedback(Throwable e) {
@@ -450,9 +489,13 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-
-        List<Method> methods = Arrays.asList(connectorInterface.getMethods());
-        return methods;
+        if (DomainEndpointFactory.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
+            this.submitButton.setEnabled(true);
+            return Arrays.asList(connectorInterface.getMethods());
+        }
+        error("No service found for domain: " + connectorInterface.getName());
+        this.submitButton.setEnabled(false);
+        return new ArrayList<Method>();
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {

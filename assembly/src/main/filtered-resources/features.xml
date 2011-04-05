@@ -26,7 +26,6 @@
       openengsb.version.number=${openengsb.version.number}
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
-      jmsPort=6549
     </config>
     <feature version="[3,4)">spring</feature>
     <feature version="[3,4)">spring-web</feature>
@@ -68,8 +67,9 @@
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB Core Features -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-events/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
@@ -77,8 +77,17 @@
     <!-- OpenEngSB Deployer -->
     <bundle>mvn:org.openengsb.core.deployer/openengsb-core-deployer-connector/${project.version}</bundle>
   </feature>
+  <feature name="openengsb-infrastructure-jms" version="${project.version}" >
+    <feature version="[5.5,6)">activemq-blueprint</feature>
+    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
+  </feature>
   <feature name="openengsb-ports-jms" version="${project.version}" >
+    <config name="org.openengsb.infrastructure.jms">
+      openwire=6549
+      stomp=6550
+    </config>
     <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-infrastructure-jms</feature>
     <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
     <bundle>mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>
     <bundle>mvn:org.apache.geronimo.specs/com.springsource.javax.management.j2ee/${org.apache.geronimo.specs.version}</bundle>
@@ -95,7 +104,7 @@
   <feature name="openengsb-ui-admin" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-ports-jms</feature>
-    <feature version="${project.version}">openengsb-connector-memoryauditing</feature>
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}/war</bundle>
@@ -136,47 +145,15 @@
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-deploy/${project.version}</bundle>
   </feature>
-  <feature name="openengsb-connector-email" version="${project.version}" >
+  <feature name="openengsb-domain-appointment" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-notification</feature>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-email/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-appointment/${project.version}</bundle>
   </feature>
-  <feature name="openengsb-connector-plaintextreport" version="${project.version}" >
+  <feature name="openengsb-domain-contact" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-report</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-plaintextreport/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-contact/${project.version}</bundle>
   </feature>
-  <feature name="openengsb-connector-maven" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-build</feature>
-    <feature version="${project.version}">openengsb-domain-test</feature>
-    <feature version="${project.version}">openengsb-domain-deploy</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-maven/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-connector-git" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-scm</feature>
-    <bundle>mvn:org.eclipse.jgit/org.eclipse.jgit/${jgit.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-git/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-connector-trac" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-issue</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-trac/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-connector-jira" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-issue</feature>
-    <bundle>mvn:org.openengsb.wrapped/axis-all/${wrapped.axis.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-jira/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/com.dolby.jira.net.jira-soap/${jira.wrapped.version}</bundle>
-  </feature>
-  <feature name="openengsb-connector-memoryauditing" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-domain-auditing</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
-  </feature>
+
   <feature name="openengsb-connector-example" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-example</feature>

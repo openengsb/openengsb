@@ -29,10 +29,10 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.DomainEndpointFactory;
-import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractExamTestHelper;
@@ -75,7 +75,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", "[foo]");
+        properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         ContextHolder.get().setCurrentContextId("foo");
@@ -85,7 +85,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "[foo2]");
+        properties.put("location.foo", new String[]{ "foo2", });
         properties.put(Constants.SERVICE_RANKING, 1);
 
         /* create the proxy before the service is registered */
@@ -101,20 +101,20 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
+        properties.put("location.foo", new String[]{ "test/foo", "main/foo", "main/bla", });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test2");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test2");
-        properties.put("location.foo", "[main/foo2]");
+        properties.put("location.foo", new String[]{ "main/foo2" });
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         service = new DummyService("test3");
         properties = new Hashtable<String, Object>();
         properties.put("id", "test3");
-        properties.put("location.foo", "[test/foo]");
+        properties.put("location.foo", new String[]{ "test/foo" });
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
@@ -126,5 +126,22 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         }
         assertThat(ids, hasItems("test", "test2"));
         assertThat(ids, not(hasItem("test3")));
+    }
+
+    @Test
+    public void testServiceDoesNotExist() throws Exception {
+        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(false));
+    }
+
+    @Test
+    public void testServiceDoesExist() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        assertThat(DomainEndpointFactory.isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
     }
 }

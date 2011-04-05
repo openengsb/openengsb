@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -54,7 +55,6 @@
 
   <build>
     <plugins>
-      <!-- generate dependencies versions -->
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>depends-maven-plugin</artifactId>
@@ -72,6 +72,20 @@
   </build>
 
   <dependencies>
+    <!-- To enable correct logging behaviour -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
@@ -107,7 +121,7 @@
       <groupId>org.apache.aries</groupId>
       <artifactId>org.apache.aries.util</artifactId>
     </dependency>
-    
+
     <!-- Feature File Dependencies -->
     <dependency>
       <groupId>org.apache.karaf.assemblies.features</groupId>
@@ -122,13 +136,43 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+      <version>${connector.memoryauditing.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb</artifactId>
+      <type>xml</type>
+      <classifier>features-itests</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Internal Dependencies -->
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
@@ -137,11 +181,6 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-workflow</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -160,18 +199,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-example</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-auditing</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <scope>test</scope>
     </dependency>
 

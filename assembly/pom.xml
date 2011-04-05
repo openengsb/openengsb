@@ -68,6 +68,12 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-karaf</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
+    </dependency>
+    <dependency>
       <groupId>org.apache.karaf.assemblies.features</groupId>
       <artifactId>enterprise</artifactId>
       <type>xml</type>
@@ -201,6 +207,7 @@
               <descriptors>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
@@ -208,6 +215,8 @@
                 <feature>obr</feature>
                 <feature>wrapper</feature>
                 <feature>war</feature>
+                <!-- ActiveMq Features -->
+                <feature>activemq-blueprint</feature>
                 <!-- OpenEngSB Features -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
@@ -218,13 +227,8 @@
                 <feature>openengsb-domain-build</feature>
                 <feature>openengsb-domain-test</feature>
                 <feature>openengsb-domain-deploy</feature>
-                <!-- OpenEngSB Connectors -->
-                <feature>openengsb-connector-email</feature>
-                <feature>openengsb-connector-plaintextreport</feature>
-                <feature>openengsb-connector-maven</feature>
-                <feature>openengsb-connector-git</feature>
-                <feature>openengsb-connector-trac</feature>
-                <feature>openengsb-connector-jira</feature>
+                <feature>openengsb-domain-appointment</feature>
+                <feature>openengsb-domain-contact</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>
@@ -233,6 +237,7 @@
                   <targetFileName>${project.artifactId}-${project.version}-features.xml</targetFileName>
                 </copyFileBasedDescriptor>
               </copyFileBasedDescriptors>
+              <includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
               <repository>target/features-repo</repository>
               <failOnArtifactResolutionError>true</failOnArtifactResolutionError>
             </configuration>
@@ -256,6 +261,11 @@
                   <type>xml</type>
                   <classifier>features</classifier>
                 </artifact>
+                <artifact>
+                  <file>target/classes/features-itests.xml</file>
+                  <type>xml</type>
+                  <classifier>features-itests</classifier>
+                </artifact>
               </artifacts>
             </configuration>
           </execution>
@@ -265,96 +275,32 @@
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
         <configuration>
-          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
+          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathUnix>
           <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>
           <provisionArchivePathWindows>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathWindows>
           <provisionExecutionPathWindows>bin/openengsb.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptors>
+            <descriptor>${project.basedir}/src/main/descriptors/bin.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>assembly-openengsb</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
-                <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>nix</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>win</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>assembly-openengsb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
 

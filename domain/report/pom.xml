@@ -39,13 +39,15 @@
   <name>OpenEngSB :: Domain :: Report</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>
     Report Domain supports basic report generation, like event logging and manual report building
     and provides basic report management features, like persistent storage of reports and a category system
     for report storage.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -63,12 +65,12 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <artifactId>openengsb-core-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
+      <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

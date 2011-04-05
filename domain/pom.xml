@@ -16,9 +16,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
--->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <relativePath>../poms/compiled/</relativePath>
@@ -54,7 +52,6 @@
   </scm>
 
   <modules>
-    <module>example</module>
     <module>notification</module>
     <module>report</module>
     <module>issue</module>
@@ -63,6 +60,8 @@
     <module>deploy</module>
     <module>build</module>
     <module>auditing</module>
+    <module>appointment</module>
+    <module>contact</module>
   </modules>
 
 </project>

@@ -20,8 +20,8 @@ package org.openengsb.core.workflow.model;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class RuleBaseElementIdTest {
 

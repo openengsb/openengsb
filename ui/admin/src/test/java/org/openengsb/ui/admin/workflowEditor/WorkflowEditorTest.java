@@ -37,21 +37,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.model.ActionRepresentation;
+import org.openengsb.core.api.workflow.model.EndRepresentation;
+import org.openengsb.core.api.workflow.model.EventRepresentation;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.workflow.model.WorkflowConverter;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import org.openengsb.core.services.internal.WorkflowEditorServiceImpl;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.core.workflow.editor.Action;
-import org.openengsb.core.workflow.editor.End;
-import org.openengsb.core.workflow.editor.Event;
-import org.openengsb.core.workflow.editor.Workflow;
-import org.openengsb.core.workflow.editor.WorkflowConverter;
-import org.openengsb.core.workflow.editor.WorkflowEditorService;
-import org.openengsb.core.workflow.editor.WorkflowEditorServiceImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.end.SetEnd;
@@ -101,15 +101,15 @@ public class WorkflowEditorTest {
     public void selectWorkflow_ShouldShowWorkflowActionDescriptions() {
         String string = "Workflow";
         service.createWorkflow(string);
-        Workflow currentWorkflow = service.getCurrentWorkflow();
-        Action action = new Action();
+        WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
+        ActionRepresentation action = new ActionRepresentation();
         action.setDomain(NullDomain.class);
         Method method = NullDomain.class.getMethods()[0];
         action.setMethodName(method.getName());
         action.setMethodParameters(Arrays.asList(method.getParameterTypes()));
         String location = "Location";
         action.setLocation(location);
-        Event event = new Event();
+        EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
         action.addEvent(event);
         currentWorkflow.getRoot().addAction(action);
@@ -142,7 +142,7 @@ public class WorkflowEditorTest {
     @Test
     public void removeAction_ShouldRemoveActionFromWorkflow() {
         service.createWorkflow("default");
-        Action action = new Action();
+        ActionRepresentation action = new ActionRepresentation();
         action.setLocation("location");
         action.setDomain(NullDomain.class);
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
@@ -156,7 +156,7 @@ public class WorkflowEditorTest {
     @Test
     public void removeEvent_ShouldRemoveEventFromWorkflow() {
         service.createWorkflow("default");
-        Event event = new Event();
+        EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
         service.getCurrentWorkflow().getRoot().addEvent(event);
         tester.startPage(WorkflowEditor.class);
@@ -182,11 +182,11 @@ public class WorkflowEditorTest {
         FormTester formTester = tester.newFormTester("endSelectForm");
         formTester.setValue("name", "Name");
         formTester.submit("create");
-        Action root = service.getCurrentWorkflow().getRoot();
-        End end = root.getEnd();
+        ActionRepresentation root = service.getCurrentWorkflow().getRoot();
+        EndRepresentation end = root.getEnd();
         assertTrue(root.isLeaf());
         assertThat(end.getName(), equalTo("Name"));
-        List<End> endNodes = service.getCurrentWorkflow().getEndNodes();
+        List<EndRepresentation> endNodes = service.getCurrentWorkflow().getEndNodes();
         assertThat(endNodes.size(), equalTo(1));
         assertThat(endNodes.get(0), sameInstance(end));
         tester.assertRenderedPage(WorkflowEditor.class);

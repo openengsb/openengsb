@@ -43,15 +43,17 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextHolder;
-import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.api.workflow.model.ProcessBag;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
+import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
@@ -357,6 +359,27 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         long pid = service.startFlow("ci");
         service.cancelFlow(pid);
         service.waitForFlowToFinish(pid, 5000);
+    }
+
+    @Test
+    public void testWaitForFlow_shouldReturnTrue() throws Exception {
+        Future<Long> pid = service.startFlowInBackground("flowtest");
+        boolean finished = service.waitForFlowToFinish(pid.get(), 400);
+        assertThat(finished, is(true));
+    }
+
+    @Test
+    public void testWaitForFlowThatCannotFinish_shouldReturnFalse() throws Exception {
+        Long pid = service.startFlow("floweventtest");
+        service.processEvent(new Event("FirstEvent"));
+        service.startFlowInBackground("flowtest");
+        boolean finished = service.waitForFlowToFinish(pid, 400);
+        assertThat(finished, is(false));
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
 }
