@@ -20,7 +20,6 @@ package org.openengsb.core.common.security;
 import java.security.PrivateKey;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.openengsb.core.api.security.model.DecryptionException;
 import org.openengsb.core.api.security.model.EncryptionException;
@@ -30,8 +29,8 @@ public class BinaryMessageCryptUtil extends AbstractMessageCryptUtil<byte[]> {
     public BinaryMessageCryptUtil() {
     }
 
-    public BinaryMessageCryptUtil(String publicKeyAlgorithm, String symmetricAlgorithm) {
-        super(publicKeyAlgorithm, symmetricAlgorithm);
+    public BinaryMessageCryptUtil(AlgorithmConfig config) {
+        super(config);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class BinaryMessageCryptUtil extends AbstractMessageCryptUtil<byte[]> {
     @Override
     public SecretKey decryptKey(byte[] encryptedKey, PrivateKey privateKey) throws DecryptionException {
         byte[] encodedSessionKey = cipherUtil.decrypt(encryptedKey, privateKey);
-        return new SecretKeySpec(encodedSessionKey, this.symmectricAlgorithm);
+        return keySerializer.deserializeSecretKey(encodedSessionKey);
     }
 
     @Override

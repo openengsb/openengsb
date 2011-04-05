@@ -23,7 +23,7 @@ import javax.crypto.SecretKey;
 
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.MessageCryptUtil;
+import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.DecryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.EncryptionException;
@@ -34,7 +34,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 public abstract class SecureRequestHandler<EncodingType> {
 
     private RequestHandler realHandler;
-    private MessageCryptUtil<EncodingType> cryptUtil;
+    private MessageCryptoUtil<EncodingType> messageCryptoUtil;
     private PrivateKey privateKey;
     private AuthenticationManager authManager;
 
@@ -50,7 +50,7 @@ public abstract class SecureRequestHandler<EncodingType> {
         EncodingType encryptedKey = container.getEncryptedKey();
         SecretKey sessionKey;
         try {
-            sessionKey = cryptUtil.decryptKey(encryptedKey, privateKey);
+            sessionKey = messageCryptoUtil.decryptKey(encryptedKey, privateKey);
         } catch (DecryptionException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public abstract class SecureRequestHandler<EncodingType> {
         EncodingType encryptedContent = container.getEncryptedContent();
         EncodingType decrypt;
         try {
-            decrypt = cryptUtil.decrypt(encryptedContent, sessionKey);
+            decrypt = messageCryptoUtil.decrypt(encryptedContent, sessionKey);
         } catch (DecryptionException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e);
@@ -73,7 +73,7 @@ public abstract class SecureRequestHandler<EncodingType> {
         EncodingType response = marshalResponse(secureResponse);
 
         try {
-            return cryptUtil.encrypt(response, sessionKey);
+            return messageCryptoUtil.encrypt(response, sessionKey);
         } catch (EncryptionException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e);
@@ -88,8 +88,8 @@ public abstract class SecureRequestHandler<EncodingType> {
         this.realHandler = realHandler;
     }
 
-    public void setCryptUtil(MessageCryptUtil<EncodingType> cryptUtil) {
-        this.cryptUtil = cryptUtil;
+    public void setCryptUtil(MessageCryptoUtil<EncodingType> cryptUtil) {
+        this.messageCryptoUtil = cryptUtil;
     }
 
     public void setPrivateKey(PrivateKey privateKey) {

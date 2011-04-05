@@ -17,21 +17,19 @@
 
 package org.openengsb.core.common.security;
 
-import org.openengsb.core.api.security.MessageCryptUtil;
+import org.openengsb.core.api.security.MessageCryptoUtil;
 
-public abstract class AbstractMessageCryptUtil<EncodingType> implements MessageCryptUtil<EncodingType> {
+public abstract class AbstractMessageCryptUtil<EncodingType> implements MessageCryptoUtil<EncodingType> {
 
     protected BasicCipherUtil cipherUtil;
-    protected String symmectricAlgorithm;
+    protected KeySerializationUtil keySerializer;
 
     public AbstractMessageCryptUtil() {
-        cipherUtil = new BasicCipherUtil();
-        symmectricAlgorithm = "AES";
     }
 
-    public AbstractMessageCryptUtil(String publicKeyAlgorithm, String symmetricAlgorithm) {
-        this.symmectricAlgorithm = symmetricAlgorithm;
-        cipherUtil = new BasicCipherUtil(publicKeyAlgorithm, symmetricAlgorithm);
+    public AbstractMessageCryptUtil(AlgorithmConfig config) {
+        cipherUtil = new BasicCipherUtil(config);
+        keySerializer = new KeySerializationUtil(config);
     }
 
 }

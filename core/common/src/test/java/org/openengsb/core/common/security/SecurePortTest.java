@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,11 +69,11 @@ public class SecurePortTest {
 
     private SecureRequestHandler<byte[]> secureRequestHandler;
 
-    private SecretKeyUtil secretKeyUtil;
-
-    private PublicKeyUtil publicKeyUtil;
-
     private BasicCipherUtil cipherUtil;
+
+    private KeyGeneratorUtils keyGenUtil;
+
+    private KeySerializationUtil keySerializeUtil;
 
     private PublicKey serverPublicKey;
 
@@ -85,13 +86,12 @@ public class SecurePortTest {
     @Before
     public void setUp() throws Exception {
         makeSecureHandler();
-        secretKeyUtil = new SecretKeyUtil();
-        publicKeyUtil = new PublicKeyUtil();
+        keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
+        keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
+        cipherUtil = new BasicCipherUtil(AlgorithmConfig.getDefault());
 
-        cipherUtil = new BasicCipherUtil();
-
-        serverPublicKey = publicKeyUtil.deserializePublicKey(PUBLIC_KEY_64);
-        serverPrivateKey = publicKeyUtil.deserializePrivateKey(PRIVATE_KEY_64);
+        serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
+        serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
 
         setupRequestHandler();
     }
@@ -122,7 +122,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey();
+        SecretKey sessionKey = keyGenUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
@@ -147,7 +147,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey();
+        SecretKey sessionKey = keyGenUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
@@ -171,7 +171,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey();
+        SecretKey sessionKey = keyGenUtil.generateKey();
 
         request.setArgs(new Object[]{ "43" }); // manipulate message
 
@@ -187,7 +187,7 @@ public class SecurePortTest {
     }
 
     private void setupRequestHandler() {
-        BinaryMessageCryptUtil cryptUtil = new BinaryMessageCryptUtil();
+        BinaryMessageCryptUtil cryptUtil = new BinaryMessageCryptUtil(AlgorithmConfig.getDefault());
         secureRequestHandler.setCryptUtil(cryptUtil);
         secureRequestHandler.setPrivateKey(serverPrivateKey);
 

@@ -37,12 +37,20 @@ public class BasicCipherUtil {
     private Cipher secretKeyCipher;
 
     public BasicCipherUtil() {
-        this("RSA", "AES");
     }
 
     public BasicCipherUtil(String publicKeyAlgorithm, String secretKeyAlgorithm) {
         setPublicKeyAlgorithm(publicKeyAlgorithm);
         setSecretKeyAlgorithm(secretKeyAlgorithm);
+    }
+
+    public BasicCipherUtil(AlgorithmConfig config) {
+        setAlgorithmConfig(config);
+    }
+
+    public void setAlgorithmConfig(AlgorithmConfig config) {
+        setPublicKeyAlgorithm(config.getPublicKeyAlgorithm());
+        setSecretKeyAlgorithm(config.getSecretKeyAlgorithm());
     }
 
     public synchronized byte[] encrypt(byte[] text, PublicKey key) throws EncryptionException {
