@@ -17,7 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
@@ -32,7 +32,7 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
     private ConfigPersistenceBackendService backend;
 
     @Override
-    public <ConfigType> ConfigItem<ConfigType> load(Properties metadata) throws PersistenceException,
+    public <ConfigType> ConfigItem<ConfigType> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
         // TODO Auto-generated method stub
         return null;
@@ -43,6 +43,12 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
         InvalidConfigurationException {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

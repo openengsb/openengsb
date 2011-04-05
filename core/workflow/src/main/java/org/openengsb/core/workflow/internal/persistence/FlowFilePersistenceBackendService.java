@@ -17,7 +17,7 @@
 
 package org.openengsb.core.workflow.internal.persistence;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
@@ -28,7 +28,7 @@ import org.openengsb.core.api.persistence.PersistenceException;
 public class FlowFilePersistenceBackendService implements ConfigPersistenceBackendService {
 
     @Override
-    public ConfigItem<?> load(Properties metadata) throws PersistenceException, InvalidConfigurationException {
+    public ConfigItem<?> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -37,6 +37,12 @@ public class FlowFilePersistenceBackendService implements ConfigPersistenceBacke
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

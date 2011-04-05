@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.persistence;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.openengsb.core.api.model.ConfigItem;
@@ -29,7 +30,7 @@ public interface ConfigPersistenceService {
     /**
      * Small wrapper around {@link ConfigPersistenceBackendService#load(Properties)}
      */
-    <ConfigType> ConfigItem<ConfigType> load(Properties metadata) throws PersistenceException,
+    <ConfigType> ConfigItem<ConfigType> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException;
 
     /**
@@ -37,4 +38,9 @@ public interface ConfigPersistenceService {
      */
     <ConfigType> void persist(ConfigItem<ConfigType> configuration) throws PersistenceException,
         InvalidConfigurationException;
+
+    /**
+     * Returns if the backend is applicable for a specific {@link ConfigItem} type.
+     */
+    boolean supports(Class<? extends ConfigItem<?>> configItemType);
 }

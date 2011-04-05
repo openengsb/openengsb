@@ -18,7 +18,6 @@
 package org.openengsb.core.api.model;
 
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Specific configuration model for the configuration to get up an connector.
@@ -32,7 +31,7 @@ public class ConnectorConfiguration extends ConfigItem<Map<String, String>> {
         super();
     }
 
-    public ConnectorConfiguration(Properties metaData, Map<String, String> content) {
+    public ConnectorConfiguration(Map<String, String> metaData, Map<String, String> content) {
         super(metaData, content);
     }
 

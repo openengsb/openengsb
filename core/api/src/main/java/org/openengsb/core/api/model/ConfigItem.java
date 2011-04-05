@@ -17,39 +17,39 @@
 
 package org.openengsb.core.api.model;
 
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * General ConfigurationObject which could not be instanciated by itself, but rather have to be implemented in a
  * ConfigurationObject.
  */
 // TODO: Implement
-public abstract class ConfigItem<ConfigType> {
+public abstract class ConfigItem<ContentType> {
 
-    private Properties metaData;
-    private ConfigType content;
+    private Map<String, String> metaData;
+    private ContentType content;
 
     public ConfigItem() {
     }
 
-    public ConfigItem(Properties metaData, ConfigType content) {
+    public ConfigItem(Map<String, String> metaData, ContentType content) {
         this.metaData = metaData;
         this.content = content;
     }
 
-    public Properties getMetaData() {
+    public Map<String, String> getMetaData() {
         return metaData;
     }
 
-    public void setMetaData(Properties metaData) {
+    public void setMetaData(Map<String, String> metaData) {
         this.metaData = metaData;
     }
 
-    public ConfigType getContent() {
+    public ContentType getContent() {
         return content;
     }
 
-    public void setContent(ConfigType content) {
+    public void setContent(ContentType content) {
         this.content = content;
     }
 

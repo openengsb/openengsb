@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api.model;
 
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * General model describing the configuration required for flow.
@@ -31,7 +31,7 @@ public class FlowConfiguration extends ConfigItem<String> {
         super();
     }
 
-    public FlowConfiguration(Properties metaData, String ruleContent) {
+    public FlowConfiguration(Map<String, String> metaData, String ruleContent) {
         super(metaData, ruleContent);
     }
 

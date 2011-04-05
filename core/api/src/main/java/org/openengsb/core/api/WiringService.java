@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * provides utility-methods for retrieving domain-services
  */
-public interface WireingService {
+public interface WiringService {
 
     /**
      * returns the domain-service for the corresponding location in the current context. If no service with that

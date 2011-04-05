@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -45,17 +45,17 @@ import org.osgi.framework.ServiceReference;
 public abstract class AbstractOsgiMockServiceTest {
 
     protected OsgiUtilsService serviceUtils;
-    protected WireingService wiringService;
+    protected WiringService wiringService;
 
     /**
-     * Set up the default OSGi Services such as {@link WireingService} and {@link OsgiUtilsService}
+     * Set up the default OSGi Services such as {@link WiringService} and {@link OsgiUtilsService}
      */
     @Before
     public void setUp() throws Exception {
         serviceUtils = mock(OsgiUtilsService.class);
-        wiringService = mock(WireingService.class);
+        wiringService = mock(WiringService.class);
         when(serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class)).thenReturn(serviceUtils);
-        when(serviceUtils.getOsgiServiceProxy(WireingService.class)).thenReturn(wiringService);
+        when(serviceUtils.getOsgiServiceProxy(WiringService.class)).thenReturn(wiringService);
         initializeOpenEngSBCoreServicesObject(serviceUtils);
     }
 

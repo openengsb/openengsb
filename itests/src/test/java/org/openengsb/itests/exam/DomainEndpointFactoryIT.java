@@ -80,7 +80,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
 
         ContextHolder.get().setCurrentContextId("foo");
         ExampleDomain domainEndpoint =
-            OpenEngSBCoreServices.getWireingService().getDomainEndpoint(ExampleDomain.class, "foo");
+            OpenEngSBCoreServices.getWiringService().getDomainEndpoint(ExampleDomain.class, "foo");
         assertThat(domainEndpoint.getInstanceId(), is("test"));
 
         service = new DummyService("test2");
@@ -91,7 +91,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
 
         /* create the proxy before the service is registered */
         ExampleDomain domainEndpoint2 =
-            OpenEngSBCoreServices.getWireingService().getDomainEndpoint(ExampleDomain.class, "foo2");
+            OpenEngSBCoreServices.getWiringService().getDomainEndpoint(ExampleDomain.class, "foo2");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         assertThat(domainEndpoint2.getInstanceId(), is("test2"));
@@ -122,7 +122,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
 
         ContextHolder.get().setCurrentContextId("foo");
         List<ExampleDomain> domainEndpoints =
-            OpenEngSBCoreServices.getWireingService().getDomainEndpoints(ExampleDomain.class, "main/*");
+            OpenEngSBCoreServices.getWiringService().getDomainEndpoints(ExampleDomain.class, "main/*");
         List<String> ids = new ArrayList<String>();
         for (ExampleDomain endpoint : domainEndpoints) {
             ids.add(endpoint.getInstanceId());
@@ -133,7 +133,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
 
     @Test
     public void testServiceDoesNotExist() throws Exception {
-        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class),
+        assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class),
             is(false));
     }
 
@@ -146,6 +146,6 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
+        assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
     }
 }

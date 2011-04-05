@@ -65,7 +65,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -452,7 +452,7 @@ public class TestClient extends BasePage {
         Class<? extends Domain> aClass = domainProvider.getDomainInterface();
         String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
-        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
+        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent(aClass)) {
             defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
@@ -491,7 +491,7 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-        WireingService wireingService = OpenEngSBCoreServices.getWireingService();
+        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());

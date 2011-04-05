@@ -18,7 +18,7 @@
 package org.openengsb.core.common;
 
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 
 /**
@@ -40,8 +40,8 @@ public final class OpenEngSBCoreServices {
      * Wiring is one of the core concepts in the OpenEngSB. The service retrieved by this method is used to get the
      * endpoints which can be reached within the OpenEngSB.
      */
-    public static WireingService getWireingService() {
-        return serviceUtils.getOsgiServiceProxy(WireingService.class);
+    public static WiringService getWiringService() {
+        return serviceUtils.getOsgiServiceProxy(WiringService.class);
     }
 
     /**

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api.persistence;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 
@@ -35,17 +35,22 @@ public interface ConfigPersistenceBackendService {
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration is no longer valid (modified e.g. directly in a file).
      */
-    ConfigItem<?> load(Properties metadata) throws PersistenceException, InvalidConfigurationException;
+    ConfigItem<?> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException;
 
     /**
      * Persists a configuration to the selected backend solution. Please do not use this metod if you're not completely
      * aware what you're doing. Persisting e.g. a ConnectorConfiguration would NOT create a connector, persisting a
      * RuleConfiguration would not activate the rule and so on. Please use the corresponding services like the
      * WorkflowService to do such things.
-     * 
+     *
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration passed alone is not valid.
      */
     void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException;
+
+    /**
+     * Returns if the backend is applicable for a specific {@link ConfigItem} type.
+     */
+    boolean supports(Class<? extends ConfigItem<?>> configItemType);
 
 }

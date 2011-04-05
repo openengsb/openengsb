@@ -18,7 +18,6 @@
 package org.openengsb.core.api.model;
 
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Specific configuration model for the configuration to get up an context.
@@ -32,7 +31,7 @@ public class ContextConfiguration extends ConfigItem<Map<String, String>> {
         super();
     }
 
-    public ContextConfiguration(Properties metaData, Map<String, String> content) {
+    public ContextConfiguration(Map<String, String> metaData, Map<String, String> content) {
         super(metaData, content);
     }
 
