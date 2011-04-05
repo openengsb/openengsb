@@ -26,7 +26,7 @@ import java.util.Properties;
 // TODO: Implement
 public class ConnectorConfiguration extends ConfigItem<Map<String, String>> {
 
-    public static String TYPE_ID = "CONNECTOR";
+    public static final String TYPE_ID = "CONNECTOR";
 
     public ConnectorConfiguration() {
         super();

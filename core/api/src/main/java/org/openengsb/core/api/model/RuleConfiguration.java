@@ -25,7 +25,7 @@ import java.util.Properties;
 // TODO: Implement
 public class RuleConfiguration extends ConfigItem<String> {
 
-    public static String TYPE_ID = "RULE";
+    public static final String TYPE_ID = "RULE";
 
     public RuleConfiguration() {
         super();

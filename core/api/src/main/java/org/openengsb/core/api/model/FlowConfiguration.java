@@ -25,7 +25,7 @@ import java.util.Properties;
 // TODO: Implement
 public class FlowConfiguration extends ConfigItem<String> {
 
-    public static String TYPE_ID = "FLOW";
+    public static final String TYPE_ID = "FLOW";
 
     public FlowConfiguration() {
         super();

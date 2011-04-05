@@ -20,9 +20,6 @@ package org.openengsb.core.api.persistence;
 import java.util.Properties;
 
 import org.openengsb.core.api.model.ConfigItem;
-import org.openengsb.core.api.model.ConnectorConfiguration;
-import org.openengsb.core.api.model.RuleConfiguration;
-import org.openengsb.core.api.workflow.WorkflowService;
 
 /**
  * Service to store properties in one of the possible including metadata. The backend type can be very specific to te
@@ -42,10 +39,10 @@ public interface ConfigPersistenceBackendService {
 
     /**
      * Persists a configuration to the selected backend solution. Please do not use this metod if you're not completely
-     * aware what you're doing. Persisting e.g. a {@link ConnectorConfiguration} would NOT create a connector,
-     * persisting a {@link RuleConfiguration} would not activate the rule and so on. Please use the corresponding
-     * services like the {@link WorkflowService} to do such things.
-     *
+     * aware what you're doing. Persisting e.g. a ConnectorConfiguration would NOT create a connector, persisting a
+     * RuleConfiguration would not activate the rule and so on. Please use the corresponding services like the
+     * WorkflowService to do such things.
+     * 
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration passed alone is not valid.
      */

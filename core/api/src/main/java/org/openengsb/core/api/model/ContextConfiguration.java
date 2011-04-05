@@ -26,7 +26,7 @@ import java.util.Properties;
 // TODO: Implement
 public class ContextConfiguration extends ConfigItem<Map<String, String>> {
 
-    public static String TYPE_ID = "CONTEXT";
+    public static final String TYPE_ID = "CONTEXT";
 
     public ContextConfiguration() {
         super();
