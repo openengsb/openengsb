@@ -17,9 +17,9 @@
 
 HowTo - integrate services with OpenEngSB
 
-  The service integration tutorial shows how to combine and automate different software tools, services and applications with OpenEngSB. To show OpenEngSB's versatility the use case we will be implementing is a continuous integration (CI) server for software development processes. The tutorial takes a straight forward approach favoring visible results over architectural details of tool integration, it is assumed you have basic knowledge of software development practices and you are able to set up auxiliary software (i.e. JDK 1.6) youself. Whether or not you have experience with CI servers, bear with the tutorial for a moment and you will see how simple it works out.
+  The service integration tutorial shows how to combine and automate different software tools, services and applications with OpenEngSB. To show OpenEngSB's versatility the use case we will be implementing is a continuous integration (CI) tool for software development processes. The tutorial takes a straight forward approach favoring visible results over architectural details of tool integration, it is assumed you have basic knowledge of software development practices and you are able to set up auxiliary software (i.e. JDK 1.6) youself. Whether or not you have experience with CI, bear with the tutorial for a moment and you will see how simple it works out.
 
-  Before we get started let us lay out the idea of our CI server and create a step-by-step development plan. The practice of continuous integration aims at improving software quality by frequent (automated) building and testing of a project's source base and by reporting back to the developers. The CI server must be able to access the source repository, build the project, test the binaries and  reports to the developers. And there we have a basic four step plan:
+  Before we get started let us lay out the idea of our CI tool and create a step-by-step development plan. The practice of continuous integration aims at improving software quality by frequent (automated) building and testing of a project's source base and by reporting back to the developers. The CI tool must be able to access the source repository, build the project, test the binaries and  reports to the developers. And there we have a basic four step plan:
 
   * Repository access
 
@@ -31,7 +31,7 @@ HowTo - integrate services with OpenEngSB
 
   []
 
-  If you would like to take a look at a fully functional CI server built on OpenEngSB check out {{{http://opencit.openengsb.org}OpenCIT}}. It implements a wider rage of features, but it's a great reference.
+  If you would like to take a look at a fully functional CI server built on OpenEngSB check out {{{http://opencit.openengsb.org}OpenCIT}}. It implements a wider range of features, but it's a great reference.
 
 * Setting up OpenEngSB
 
@@ -43,7 +43,7 @@ HowTo - integrate services with OpenEngSB
 
 * Source repository
 
-  It turns out, we actually need a sample project before we can start developing and testing our CI server. In this tutorial we will be using Apache Maven for project and source management and a small <<Hello World>> application written in Java. For this to work flawlessly we need JDK 1.6+ ({{{http://www.oracle.com/technetwork/java/javase/downloads/index.html}download}}) and Maven 3+ ({{{http://maven.apache.org/download.html}download}}) to be set up on the computer.
+  It turns out, we actually need a sample project before we can start developing and testing our CI tool. In this tutorial we will be using Apache Maven for project and source management and a small <<Hello World>> application written in Java. For this to work flawlessly we need JDK 1.6+ ({{{http://www.oracle.com/technetwork/java/javase/downloads/index.html}download}}) and Maven 3+ ({{{http://maven.apache.org/download.html}download}}) to be set up on the computer.
 
   You may download and extract the openengsb-tutorial ({{{http://www.openengsb.org/howto/openengsb-tutorial.zip}download}}) project that works out of the box or set up your own sample project via maven archetypes. Put the project files in a memorable location (i.e. "/home/user/Desktop/openengsb-tutorial" or "C:\users\user\desktop\openengsb-tutorial") and that's about it for now.
 
@@ -51,17 +51,17 @@ HowTo - integrate services with OpenEngSB
 
   You could certainly build the project using Maven, but we want this to happen from within OpenEngSB. Open up your browser and go to the web interface at {{http://localhost:8090/openengsb}}. Authenticate using the <<Login>> link as "admin" with password "password". Switch to the <<Test client>> tab and check whether the <<build domain>> is available to accept commands.
 
-  As the <<build domain>> is not shown, we will need to go to OpenEngSB's console. Use the "features:install openengsb-connector-maven" command to load the tool connector for Apache Maven. The tool connector allows OpenEngSB to communicate with an external service or application, Maven in this case. By loading the connector OpenEngSB also loads the domains associated with the connector. A domain is a generic interface that is implemented by specific connectors. For example, the build domain offers a generic function to build a software project. Whether this is done by Apache Maven, an Ant script or a plain compiler depends on the connector chosen by the user, but does not affect the basic model of our CI server that simply <builds> the source. Using this technique specific tools can be exchanged quickly and transparently while data-flow and process models are completely unaffected.
+  As the <<build domain>> is not shown, we will need to go to OpenEngSB's console. Use the "features:install openengsb-connector-maven" command to load the tool connector for Apache Maven. The tool connector allows OpenEngSB to communicate with an external service or application, Maven in this case. By loading the connector OpenEngSB also loads the domains associated with the connector. A domain is a generic interface that is implemented by specific connectors. For example, the build domain offers a generic function to build a software project. Whether this is done by Apache Maven, an Ant script or a plain compiler depends on the connector chosen by the user, but does not affect the basic model of our CI tool that simply <builds> the source. Using this technique specific tools can be exchanged quickly and transparently while data-flow and process models are completely unaffected.
 
   Now let us return to the web interface. After a page refresh we are able to create a new Maven connector instance by following the <<new>> link next to the connector description. The service id is an arbitrary name that can be referred to later on, i.e. <<builder>>. The project path refers to the local copy of the source repository, i.e. "/home/user/Desktop/openengsb-tutorial". Finally, the maven command is the command line option handed to Apache Maven, i.e. "clean build". Whenever the connector is ordered to build the project it will now execute "mvn clean install" in the project directory of openengsb-tutorial. Click save to create the connector instance.
 
-  It is time for some action. Scroll down all the way in the <<Test Client>> tab, navigate to the <<BuildDomain>> in the tree view and click the <<builder>> service. From the drop down menu below select <<build()>> and click the "Call" button. When the project is built successfully a "Method called successfully" message appears. Let us check the directory of openengsb-tutorial to find the newly created <<target>> directory. Using a console we can navigate to the <<classes>> sub-folder and run "java org.openengsb.Main". It returns "Hello World!". Congratulations, you have just implemented the core functionality of our CI server.
+  It is time for some action. Scroll down all the way in the <<Test Client>> tab, navigate to the <<BuildDomain>> in the tree view and click the <<builder>> service. From the drop down menu below select <<build()>> and click the "Call" button. When the project is built successfully a "Method called successfully" message appears. Let us check the directory of openengsb-tutorial to find the newly created <<target>> directory. Using a console we can navigate to the <<classes>> sub-folder and run "java org.openengsb.Main". It returns "Hello World!". Congratulations, you have just implemented the core functionality of our CI tool.
 
   In case an error message is returned, we need to check the connector configuration. Please make sure that Maven is able to build the project by manually executing "mvn clean build" in the project directory of openengsb-tutorial. If this does not work out, most likely the setup of either Maven or JDK are incorrect. If it works however, please check the configuration of the connector by navigating to the <<builder>> service in the web interface again and clicking the "Edit Service" button.
 
 * Testing binaries
 
-  The next step in building the CI server is implementation of automated testing. We can use the <<test domain>> to achieve this. Conveniently, the Maven connector also exports this type of functionality and we do not to load any additional features in the management console.
+  The next step in building the CI tool is implementation of automated testing. We can use the <<test domain>> to achieve this. Conveniently, the Maven connector also exports this type of functionality and we do not to load any additional features in the management console.
 
   Use the <<Test client>> tab and create a new instance of the Maven connector for the "test" domain. It works the same way as before. The Service Id is an arbitrary name, i.e. <<tester>>. The project path points at the location of openengsb-tutorial's base directory, i.e. "/home/user/Desktop/openengsb-tutorial", and the maven command indicates the command line arguments passed to Maven, i.e. "test". Click save to create the connector instance.
 
@@ -103,7 +103,7 @@ then
 
   The rule also matches "BuildSuccessEvent" and prints a line to the console window. In addition, however, it calls a method provided by the test connector. Remember the "runTests()" method you called in the <<tester>> service by using the test client before? This has exactly the same effect but replaces manual UI interaction with an automated response. Click <<save>> and kick off another build using the <<Test client>> again. There you go: "Build started" and "Build successful, running tests".
 
-  <<Congratulations>>, you have created a basic CI server! The foundations have been extended to allow for easy auditing and extensibility.
+  <<Congratulations>>, you have created a basic CI tool! The foundations have been extended to allow for easy auditing and extensibility. Of course, at the moment it simply replicates the functionality of existing CI tools, but it can be easily extended using SCM access, reporting and notification tools and work together with project management software and PIM applications. Take a look on the long list of available domains and tool connectors.
 
   If you want to do some more practice you can add more rules, i.e. for "TestSuccessEvent" or "BuildFailureEvent". You can find event types, names and properties by checking the event log displayed on the <<Send Event page>>.
 
