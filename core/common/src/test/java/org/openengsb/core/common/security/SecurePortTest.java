@@ -124,7 +124,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey(128);
+        SecretKey sessionKey = secretKeyUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
@@ -149,7 +149,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey(128);
+        SecretKey sessionKey = secretKeyUtil.generateKey();
 
         byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
         byte[] encryptedRequest = secretKeyCipherUtil.encrypt(serializedRequest, sessionKey);
@@ -173,7 +173,7 @@ public class SecurePortTest {
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
-        SecretKey sessionKey = secretKeyUtil.generateKey(128);
+        SecretKey sessionKey = secretKeyUtil.generateKey();
 
         request.setArgs(new Object[]{ "43" }); // manipulate message
 

@@ -30,12 +30,13 @@ public class SecretKeyUtil {
 
     private KeyGenerator keyGenerator;
     private String algorithm;
+    private int keySize;
 
     public SecretKeyUtil() {
-        this("AES");
+        this("AES", 128);
     }
 
-    public SecretKeyUtil(String algorithm) {
+    public SecretKeyUtil(String algorithm, int keySize) {
         try {
             keyGenerator = KeyGenerator.getInstance(algorithm);
             this.algorithm = algorithm;
@@ -50,8 +51,8 @@ public class SecretKeyUtil {
      * @return key pair
      * @throws NoSuchAlgorithmException
      */
-    public SecretKey generateKey(int keysize) {
-        keyGenerator.init(keysize);
+    public SecretKey generateKey() {
+        keyGenerator.init(keySize);
         SecretKey key = keyGenerator.generateKey();
         return key;
     }

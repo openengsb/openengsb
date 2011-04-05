@@ -94,7 +94,7 @@ public class CipherUtilTest {
 
     @Test
     public void testEncryptSymmetricKey() throws Exception {
-        SecretKey secretKey = secretKeyUtil.generateKey(256);
+        SecretKey secretKey = secretKeyUtil.generateKey();
 
         byte[] encoded = secretKey.getEncoded();
         byte[] encryptedKey = cipherUtil.encrypt(encoded, generatedPublickey);
@@ -156,7 +156,7 @@ public class CipherUtilTest {
         CipherUtil cipherUtil2 = new SecretKeyCipherUtil();
 
         SecretKeyUtil secretKeyUtil = new SecretKeyUtil();
-        SecretKey generateKey = secretKeyUtil.generateKey(128);
+        SecretKey generateKey = secretKeyUtil.generateKey();
 
         byte[] encrypt = cipherUtil2.encrypt(TEST_STRING.getBytes(), generateKey);
         byte[] decrypt = cipherUtil2.decrypt(encrypt, generateKey);
@@ -167,8 +167,8 @@ public class CipherUtilTest {
     @Test
     public void encryptBlowfish() throws Exception {
         CipherUtil cipherUtil2 = new SecretKeyCipherUtil("Blowfish");
-        SecretKeyUtil secretKeyUtil = new SecretKeyUtil("Blowfish");
-        SecretKey generateKey = secretKeyUtil.generateKey(128);
+        SecretKeyUtil secretKeyUtil = new SecretKeyUtil("Blowfish", 128);
+        SecretKey generateKey = secretKeyUtil.generateKey();
 
         byte[] encrypt = cipherUtil2.encrypt(TEST_STRING.getBytes(), generateKey);
         byte[] decrypt = cipherUtil2.decrypt(encrypt, generateKey);
@@ -179,8 +179,8 @@ public class CipherUtilTest {
     @Test
     public void encryptWrongKey() throws Exception {
         CipherUtil cipherUtil2 = new SecretKeyCipherUtil("Blowfish");
-        SecretKeyUtil secretKeyUtil = new SecretKeyUtil("AES");
-        SecretKey generateKey = secretKeyUtil.generateKey(128);
+        SecretKeyUtil secretKeyUtil = new SecretKeyUtil("AES", 128);
+        SecretKey generateKey = secretKeyUtil.generateKey();
 
         try {
             cipherUtil2.encrypt(TEST_STRING.getBytes(), generateKey);
