@@ -224,7 +224,7 @@
   </properties>
 
   <modules>
-    <module>compiled</module>
+    <module>bundle</module>
     <module>connector</module>
   </modules>
 

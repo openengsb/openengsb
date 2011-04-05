@@ -28,10 +28,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.build</groupId>
-  <artifactId>compiled-bundle-settings</artifactId>
+  <artifactId>openengsb-bundle-settings</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Plugin Configuration :: Compiled</name>
+  <name>OpenEngSB :: Plugin Configuration :: Bundle</name>
 
   <packaging>pom</packaging>
 
