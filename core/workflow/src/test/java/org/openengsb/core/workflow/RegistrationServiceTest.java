@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -41,11 +42,10 @@ import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
-import org.osgi.framework.BundleContext;
 
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
@@ -62,7 +62,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         requestHandler = getRequestHandler();
 
         regService = getRegistrationService();
-        registerService(requestHandler, "requestHandler", RequestHandler.class);
+        registerServiceViaId(requestHandler, "requestHandler", RequestHandler.class);
         outgoingPort = mockService(OutgoingPort.class, "testPort");
 
         doAnswer(new Answer<Void>() {
@@ -154,7 +154,8 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
+
 }

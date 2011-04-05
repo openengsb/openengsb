@@ -36,7 +36,6 @@ import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
-import org.osgi.framework.InvalidSyntaxException;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -58,8 +57,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         service = new WorkflowServiceImpl();
         service.setRulemanager(manager);
         ContextHolder.get().setCurrentContextId("42");
-        service.setBundleContext(bundleContext);
-        registerService(service, "workflowService", WorkflowService.class);
+        service.setBundleContext(createBundleContextMock());
+        registerServiceViaId(service, "workflowService", WorkflowService.class);
         setupDomainsAndOtherServices();
     }
 
@@ -71,14 +70,15 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
-    private void setupDomainsAndOtherServices() throws InvalidSyntaxException {
+    private void setupDomainsAndOtherServices() throws Exception {
         createDomainMocks();
         myservice = mock(DummyService.class);
-        registerService(myservice, DummyService.class, OsgiServiceUtils.getFilterForLocation("myservice", "42")
+        registerService(myservice, DummyService.class, getServiceUtils().getFilterForLocation("myservice", "42")
             .toString());
+        registerLocationService(myservice, DummyService.class, "myservice");
     }
 
-    private void createDomainMocks() throws InvalidSyntaxException {
+    private void createDomainMocks() throws Exception {
         domains = new HashMap<String, Domain>();
         registerDummyConnector(DummyExampleDomain.class, "example");
         registerDummyConnector(DummyNotificationDomain.class, "notification");
@@ -90,13 +90,15 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends Domain> T registerDummyConnector(Class<T> domainClass, String name)
-        throws InvalidSyntaxException {
+    protected <T extends Domain> T registerDummyConnector(Class<T> domainClass, String name) throws Exception {
         Domain mock2 = mock(domainClass);
-        registerSerivce(mock2, new Class<?>[]{ domainClass, Domain.class },
-            OsgiServiceUtils.getFilterForLocation(name, ContextHolder.get().getCurrentContextId()).toString());
+        registerLocationService(mock2, domainClass, name);
         domains.put(name, mock2);
         return (T) mock2;
+    }
+
+    private OsgiServiceUtils getServiceUtils() {
+        return new OsgiServiceUtils();
     }
 
     @After

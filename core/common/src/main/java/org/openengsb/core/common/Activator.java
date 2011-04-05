@@ -25,7 +25,9 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        OsgiServiceUtils.setBundleContext(context);
+        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        osgiServiceUtils.setBundleContext(context);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
     @Override

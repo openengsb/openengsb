@@ -25,7 +25,7 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public final class OsgiHelper {
 
@@ -40,7 +40,7 @@ public final class OsgiHelper {
         throws PortNotAvailableException {
         OutgoingPort port;
         try {
-            port = OsgiServiceUtils.getServiceWithId(OutgoingPort.class, portId);
+            port = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
         } catch (OsgiServiceNotAvailableException e1) {
             throw new PortNotAvailableException("Port with id " + portId + " not available", e1);
         }

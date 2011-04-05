@@ -28,19 +28,17 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
@@ -131,16 +129,9 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         verify(example).doSomething(anyString());
     }
 
-    private void simulateServiceStart(String name) throws InvalidSyntaxException {
+    private void simulateServiceStart(String name) throws Exception {
         Class<?> domainClass = domains.get(name);
-        Class<?>[] interfaces;
-        if (Domain.class.isAssignableFrom(domainClass)) {
-            interfaces = new Class<?>[]{ Domain.class, domainClass, };
-        } else {
-            interfaces = new Class<?>[]{ domainClass, };
-        }
-        registerSerivce(services.get(name), interfaces,
-            OsgiServiceUtils.getFilterForLocation(name, "42").toString());
+        registerLocationService(services.get(name), domainClass, name);
     }
 
     private void setupWorkflowService() throws Exception {
@@ -150,7 +141,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getThreadLocalContext()).thenReturn("42");
         // workflowService.setCurrentContextService(currentContext);
-        workflowService.setBundleContext(bundleContext);
+        workflowService.setBundleContext(createBundleContextMock());
     }
 
     private void setupRulemanager() throws Exception {
@@ -164,8 +155,8 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
 
 }

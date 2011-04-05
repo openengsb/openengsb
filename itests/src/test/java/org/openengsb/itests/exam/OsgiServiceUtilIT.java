@@ -26,10 +26,11 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractExamTestHelper;
@@ -41,22 +42,24 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
 
     @Test
     public void testOsgiServiceUtilMethods() throws Exception {
-        ServiceManager service = OsgiServiceUtils.getService(ServiceManager.class);
+        ServiceManager service = getServiceUtils().getService(ServiceManager.class);
         assertThat(service, notNullValue());
         service =
-            (ServiceManager) OsgiServiceUtils.getService(OsgiServiceUtils.makeFilter(ServiceManager.class,
+            (ServiceManager) getServiceUtils().getService(getServiceUtils().makeFilter(ServiceManager.class,
                 "(connector=example)"));
         assertThat(service, notNullValue());
 
-        ServiceManager service2 = (ServiceManager) OsgiServiceUtils.getService("(connector=example)");
+        ServiceManager service2 = (ServiceManager) getServiceUtils().getService("(connector=example)");
         assertThat(service2.getInstanceId(), is(service.getInstanceId()));
     }
+
+
 
     @Test
     public void testOsgiServiceProxy() throws Exception {
         ServiceManager proxy =
-            OsgiServiceUtils.getOsgiServiceProxy(
-                OsgiServiceUtils.makeFilter(ServiceManager.class, "(connector=example)"), ServiceManager.class);
+            getServiceUtils().getOsgiServiceProxy(
+                getServiceUtils().makeFilter(ServiceManager.class, "(connector=example)"), ServiceManager.class);
         assertThat(proxy.getInstanceId(), is("org.openengsb.connector.example.LogServiceManager"));
     }
 
@@ -104,23 +107,23 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         properties.put(Constants.SERVICE_RANKING, 1);
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ExampleDomain service2 = OsgiServiceUtils.getService(ExampleDomain.class);
+        ExampleDomain service2 = getServiceUtils().getService(ExampleDomain.class);
         assertThat(service2.getInstanceId(), is("test2"));
 
         ContextHolder.get().setCurrentContextId("foo");
         ExampleDomain serviceForLocation =
-            (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
+            (ExampleDomain) getServiceUtils().getServiceForLocation("foo");
         assertThat(serviceForLocation.getInstanceId(), is("test2"));
 
         ContextHolder.get().setCurrentContextId("foo2");
-        serviceForLocation = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo");
+        serviceForLocation = (ExampleDomain) getServiceUtils().getServiceForLocation("foo");
         assertThat(serviceForLocation.getInstanceId(), is("test"));
 
         serviceForLocation =
-            (ExampleDomain) OsgiServiceUtils.getServiceForLocation("foo", "foo");
+            (ExampleDomain) getServiceUtils().getServiceForLocation("foo", "foo");
         assertThat(serviceForLocation.getInstanceId(), is("test2"));
 
-        serviceForLocation = OsgiServiceUtils.getServiceForLocation(ExampleDomain.class, "foo");
+        serviceForLocation = getServiceUtils().getServiceForLocation(ExampleDomain.class, "foo");
         assertThat(serviceForLocation.getInstanceId(), is("test"));
     }
 
@@ -133,10 +136,14 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         properties.put("location.root", new String[]{ "main/foo", "main/foo2" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ExampleDomain fooService = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo");
+        ExampleDomain fooService = (ExampleDomain) getServiceUtils().getServiceForLocation("main/foo");
         assertThat(fooService.getInstanceId(), is("test"));
 
-        ExampleDomain foo2Service = (ExampleDomain) OsgiServiceUtils.getServiceForLocation("main/foo2");
+        ExampleDomain foo2Service = (ExampleDomain) getServiceUtils().getServiceForLocation("main/foo2");
         assertThat(foo2Service.getInstanceId(), is("test"));
+    }
+
+    private OsgiUtilsService getServiceUtils() {
+        return OpenEngSBCoreServices.getServiceUtilsService();
     }
 }

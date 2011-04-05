@@ -69,7 +69,6 @@ import org.openengsb.core.api.WireingService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -461,7 +460,7 @@ public class TestClient extends BasePage {
             return defaultDomain;
         }
         throw new OsgiServiceNotAvailableException("no default service found for service: "
-            + serviceId.getServiceClass());
+                + serviceId.getServiceClass());
     }
 
     private void handleExceptionWithFeedback(Throwable e) {
@@ -503,7 +502,8 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
-        return OsgiServiceUtils.getServiceWithId(service.getServiceClass(), service.getServiceId());
+        return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
+            service.getServiceId());
     }
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {

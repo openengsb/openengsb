@@ -39,11 +39,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -61,7 +62,7 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     private BundleContext bundleContext;
 
     @Before
-    public void setup() throws InvalidSyntaxException {
+    public void setup() throws Exception {
         Locale.setDefault(new Locale("en"));
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
@@ -262,7 +263,7 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
 }

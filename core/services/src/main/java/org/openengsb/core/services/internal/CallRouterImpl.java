@@ -25,7 +25,7 @@ import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class CallRouterImpl implements CallRouter {
 
@@ -52,7 +52,8 @@ public class CallRouterImpl implements CallRouter {
     }
 
     private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {
-        final OutgoingPort port = OsgiServiceUtils.getServiceWithId(OutgoingPort.class, portId);
+        final OutgoingPort port =
+            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
         return port;
     }
 

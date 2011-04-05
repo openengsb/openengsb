@@ -54,6 +54,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RemoteEventProcessor;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -66,14 +67,12 @@ import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor,
-        BundleContextAware {
+public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
         " )\nthen\n  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
@@ -378,13 +377,18 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             } catch (ClassNotFoundException e) {
                 throw new WorkflowException(String.format("Could not load class for global (%s)", global), e);
             }
-            Filter filter = OsgiServiceUtils.getFilterForLocation(globalClass, global.getKey());
-            Object osgiServiceProxy = OsgiServiceUtils.getOsgiServiceProxy(filter, globalClass);
+            Filter filter =
+                getServiceUtils().getFilterForLocation(globalClass, global.getKey(),
+                    ContextHolder.get().getCurrentContextId());
+            Object osgiServiceProxy = getServiceUtils().getOsgiServiceProxy(filter, globalClass);
             session.setGlobal(global.getKey(), osgiServiceProxy);
         }
     }
 
-    @Override
+    private OsgiUtilsService getServiceUtils() {
+        return OpenEngSBCoreServices.getServiceUtilsService();
+    }
+
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }

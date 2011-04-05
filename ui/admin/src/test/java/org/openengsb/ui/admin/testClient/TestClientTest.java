@@ -71,6 +71,7 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -78,7 +79,7 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -90,8 +91,6 @@ import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest extends AbstractOsgiMockServiceTest {
@@ -133,7 +132,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     private WicketTester tester;
@@ -149,7 +148,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
-        context.putBean(bundleContext);
+        context.putBean(createBundleContextMock());
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(mock(ProxyFactory.class));
     }
@@ -431,7 +430,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -519,15 +518,12 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     @Ignore("reevaluated by OPENENGSB-1213")
     public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
-        try {
-            ServiceReference ref = Mockito.mock(ServiceReference.class);
-            Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
-            Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
-            Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
-        } catch (InvalidSyntaxException e) {
-            Assert.fail("not expected");
-        }
+        ServiceReference ref = Mockito.mock(ServiceReference.class);
+        Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
+        Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
+        // ServiceReference[] refs = new ServiceReference[]{ref};
+        // registerSerivce(, interfazes, filters)
+        // Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
 
         List<ServiceManager> managerList = new ArrayList<ServiceManager>();
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
@@ -561,7 +557,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupTestClientPage();
         ContextHolder.get().setCurrentContextId("foo2");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{"foo"});
+        parameterMap.put(OpenEngSBPage.CONTEXT_PARAM, new String[]{ "foo" });
         tester.startPage(TestClient.class, new PageParameters(parameterMap));
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
     }
@@ -576,7 +572,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
                 .getDefaultModelObject()).size();
-        //get all domains
+        // get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
@@ -584,7 +580,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             domains.add(label.getDefaultModelObjectAsString());
         }
 
-        //get all services from the tree
+        // get all services from the tree
         DefaultTreeModel serviceListTree = (DefaultTreeModel) tester
                 .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
         count = serviceListTree.getChildCount(serviceListTree.getRoot());
@@ -634,14 +630,14 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
+    private List<ServiceReference> setupAndStartTestClientPage() throws Exception {
         final List<ServiceReference> expected = setupTestClientPage();
         tester.startPage(TestClient.class);
         formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 
-    private List<ServiceReference> setupTestClientPage() throws InvalidSyntaxException {
+    private List<ServiceReference> setupTestClientPage() throws Exception {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = mock(ServiceReference.class);
         when(serviceReferenceMock.getProperty("id")).thenReturn("test");
@@ -691,7 +687,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(testDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("testDomain");
+        when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
         when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
         when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -703,7 +699,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         expectedProviders.add(domainProviderMock);
         DomainProvider anotherDomainProviderMock = mock(DomainProvider.class);
         LocalizableString anotherTestDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale>any())).thenReturn("anotherTestDomain");
+        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("anotherTestDomain");
         when(anotherDomainProviderMock.getName()).thenReturn(anotherTestDomainLocalziedStringMock);
         when(anotherDomainProviderMock.getDescription()).thenReturn(anotherTestDomainLocalziedStringMock);
         when(anotherDomainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -729,8 +725,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
-
 }
