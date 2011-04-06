@@ -62,3 +62,21 @@
 [submodule "wrapped/openengsb-wrapped-com.google.gdata-contacts"]
 	path = wrapped/openengsb-wrapped-com.google.gdata-contacts
 	url = git://github.com/openengsb/openengsb-wrapped-com.google.gdata-contacts.git
+[submodule "features/connector/email"]
+	path = features/connector/email
+	url = git://github.com/openengsb/openengsb-connector-email
+[submodule "features/connector/maven"]
+	path = features/connector/maven
+	url = git://github.com/openengsb/openengsb-connector-maven
+[submodule "features/connector/jira"]
+	path = features/connector/jira
+	url = git://github.com/openengsb/openengsb-connector-jira
+[submodule "features/connector/trac"]
+	path = features/connector/trac
+	url = git://github.com/openengsb/openengsb-connector-trac
+[submodule "features/connector/git"]
+	path = features/connector/git
+	url = git://github.com/openengsb/openengsb-connector-git
+[submodule "features/connector/plaintextreport"]
+	path = features/connector/plaintextreport
+	url = git://github.com/openengsb/openengsb-connector-plaintextreport

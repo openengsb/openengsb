@@ -61,6 +61,11 @@
     <module>domain/build</module>
     <module>domain/appointment</module>
     <module>domain/contact</module>
+    <module>connector/email</module>
+    <module>connector/git</module>
+    <module>connector/maven</module>
+    <module>connector/trac</module>
+    <module>connector/jira</module>
   </modules>
 
 </project>
