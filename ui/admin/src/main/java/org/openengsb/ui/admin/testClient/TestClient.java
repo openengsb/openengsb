@@ -59,6 +59,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -414,6 +415,11 @@ public class TestClient extends BasePage {
         }
         MethodId mid = call.getMethod();
         Method m;
+        if (mid == null) {
+            String s = new StringResourceModel("serviceError", this, null).getString();
+            error(s);
+            return;
+        }
         try {
             m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
         } catch (SecurityException e) {
