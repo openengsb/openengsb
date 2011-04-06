@@ -32,12 +32,12 @@ import java.util.HashMap;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
@@ -46,7 +46,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-public class SecurePortTest {
+public abstract class GenericSecurePortTest<EncodingType> {
 
     private static final String PUBLIC_KEY_64 = ""
             + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS"
@@ -67,13 +67,11 @@ public class SecurePortTest {
             + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
             + "Ky/vHQD1rMM=";
 
-    private SecureRequestHandler<byte[]> secureRequestHandler;
-
-    private BasicCipherUtil cipherUtil;
+    private SecureRequestHandler<EncodingType> secureRequestHandler;
 
     private KeyGeneratorUtils keyGenUtil;
 
-    private KeySerializationUtil keySerializeUtil;
+    private MessageCryptoUtil<EncodingType> cryptoUtil;
 
     private PublicKey serverPublicKey;
 
@@ -85,59 +83,50 @@ public class SecurePortTest {
 
     @Before
     public void setUp() throws Exception {
-        makeSecureHandler();
+        cryptoUtil = getMessageCryptoUtil();
         keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
-        cipherUtil = new BasicCipherUtil(AlgorithmConfig.getDefault());
-
+        KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
         serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
 
         setupRequestHandler();
     }
 
-    private void makeSecureHandler() {
-        secureRequestHandler = new SecureRequestHandler<byte[]>() {
-            @Override
-            public SecureRequest unmarshalRequest(byte[] input) {
-                return (SecureRequest) SerializationUtils.deserialize(input);
-            }
+    protected abstract MessageCryptoUtil<EncodingType> getMessageCryptoUtil();
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public EncryptedMessage<byte[]> unmarshalContainer(byte[] container) {
-                return (EncryptedMessage<byte[]>) SerializationUtils.deserialize(container);
-            }
+    protected abstract SecureRequestHandler<EncodingType> getSecureRequestHandler();
 
-            @Override
-            public byte[] marshalResponse(SecureResponse response) {
-                return SerializationUtils.serialize(response);
-            }
-        };
-    }
+    protected abstract EncodingType encode(Object o);
+
+    protected abstract Object decode(EncodingType encoded);
 
     @Test
     public void testDefaultImpls() throws Exception {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, token);
+        SecureRequest secureRequest = prepareSecureRequest();
 
         SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
 
-        byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
+        EncodingType serializedRequest = encode(secureRequest);
+        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
-        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
+        EncryptedMessage<EncodingType> encryptedMessage =
+            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
 
-        byte[] encodedResponse = secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
-        byte[] decryptedResponse = cipherUtil.decrypt(encodedResponse, sessionKey);
+        EncodingType encodedResponse = secureRequestHandler.handleRequest(encode(encryptedMessage));
+        EncodingType decryptedResponse = cryptoUtil.decrypt(encodedResponse, sessionKey);
 
-        SecureResponse secureResponse = (SecureResponse) SerializationUtils.deserialize(decryptedResponse);
+        SecureResponse secureResponse = (SecureResponse) decode(decryptedResponse);
         secureResponse.verify();
         MethodResult mr = secureResponse.getMessage();
         assertThat((Long) mr.getArg(), is(new Long(43)));
+    }
+
+    private SecureRequest prepareSecureRequest() {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
+        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
+        SecureRequest secureRequest = SecureRequest.create(request, token);
+        return secureRequest;
     }
 
     @Test
@@ -148,16 +137,15 @@ public class SecurePortTest {
         SecureRequest secureRequest = SecureRequest.create(request, token);
 
         SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
 
-        byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
+        EncodingType serializedRequest = encode(secureRequest);
+        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
-        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
-
+        EncryptedMessage<EncodingType> encryptedMessage =
+            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
         try {
-            secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+            secureRequestHandler.handleRequest(encode(encryptedMessage));
         } catch (Exception e) {
             assertThat(e, is(BadCredentialsException.class));
         }
@@ -167,28 +155,25 @@ public class SecurePortTest {
 
     @Test(expected = MessageVerificationFailedException.class)
     public void testManipulateMessage() throws Exception {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, token);
+        SecureRequest secureRequest = prepareSecureRequest();
+
+        secureRequest.getMessage().setArgs(new Object[] { "43" }); // manipulate message
 
         SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
 
-        request.setArgs(new Object[]{ "43" }); // manipulate message
+        EncodingType serializedRequest = encode(secureRequest);
+        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
 
-        byte[] serializedRequest = SerializationUtils.serialize(secureRequest);
-        byte[] encryptedRequest = cipherUtil.encrypt(serializedRequest, sessionKey);
+        EncryptedMessage<EncodingType> encryptedMessage =
+            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
 
-        byte[] encodedKey = sessionKey.getEncoded();
-        byte[] encryptedKey = cipherUtil.encrypt(encodedKey, serverPublicKey);
-
-        EncryptedMessage<byte[]> encryptedMessage = new EncryptedMessage<byte[]>(encryptedRequest, encryptedKey);
-
-        secureRequestHandler.handleRequest(SerializationUtils.serialize(encryptedMessage));
+        secureRequestHandler.handleRequest(encode(encryptedMessage));
     }
 
     private void setupRequestHandler() {
-        BinaryMessageCryptUtil cryptUtil = new BinaryMessageCryptUtil(AlgorithmConfig.getDefault());
-        secureRequestHandler.setCryptUtil(cryptUtil);
+        secureRequestHandler = getSecureRequestHandler();
+        secureRequestHandler.setCryptUtil(cryptoUtil);
         secureRequestHandler.setPrivateKey(serverPrivateKey);
 
         authManager = mock(AuthenticationManager.class);

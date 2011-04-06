@@ -18,18 +18,19 @@
 package org.openengsb.core.common.security;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
 import org.openengsb.core.api.security.model.DecryptionException;
 import org.openengsb.core.api.security.model.EncryptionException;
 
-public class BinaryMessageCryptUtil extends AbstractMessageCryptUtil<byte[]> {
+public class BinaryMessageCryptoUtil extends AbstractMessageCryptUtil<byte[]> {
 
-    public BinaryMessageCryptUtil() {
+    public BinaryMessageCryptoUtil() {
     }
 
-    public BinaryMessageCryptUtil(AlgorithmConfig config) {
+    public BinaryMessageCryptoUtil(AlgorithmConfig config) {
         super(config);
     }
 
@@ -47,5 +48,10 @@ public class BinaryMessageCryptUtil extends AbstractMessageCryptUtil<byte[]> {
     @Override
     public byte[] encrypt(byte[] content, SecretKey sessionKey) throws EncryptionException {
         return cipherUtil.encrypt(content, sessionKey);
+    }
+
+    @Override
+    public byte[] encryptKey(SecretKey sessionKey, PublicKey serverPublicKey) throws EncryptionException {
+        return cipherUtil.encrypt(sessionKey.getEncoded(), serverPublicKey);
     }
 }

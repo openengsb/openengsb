@@ -18,6 +18,7 @@
 package org.openengsb.core.api.security;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
@@ -26,9 +27,11 @@ import org.openengsb.core.api.security.model.EncryptionException;
 
 public interface MessageCryptoUtil<EncodingType> {
 
-    SecretKey decryptKey(EncodingType encryptedKey, PrivateKey key) throws DecryptionException;
-
     EncodingType decrypt(EncodingType encContent, SecretKey sessionKey) throws DecryptionException;
 
     EncodingType encrypt(EncodingType content, SecretKey sessionKey) throws EncryptionException;
+
+    SecretKey decryptKey(EncodingType encryptedKey, PrivateKey key) throws DecryptionException;
+
+    EncodingType encryptKey(SecretKey sessionKey, PublicKey key) throws EncryptionException;
 }
