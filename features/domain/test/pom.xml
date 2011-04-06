@@ -23,28 +23,28 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../../poms/domain/</relativePath>
+    <relativePath>../../../poms/domain/</relativePath>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.domain.contact</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domain.contact</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.domain.test</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.domain.test</bundle.namespace>
   </properties>
 
   <groupId>org.openengsb.domain</groupId>
-  <artifactId>openengsb-domain-contact</artifactId>
+  <artifactId>openengsb-domain-test</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domain :: Contact</name>
+  <name>OpenEngSB :: Domain :: Test</name>
 
   <packaging>bundle</packaging>
 
   <description>
-    Contact Domain is the tool domain for all tools with contactbooks like gcontacts or facebook
-    and provides the possibility to create, update, delete contacts.
+    Test Domain is used to run tests for projects. The type of project is configured in
+    in the respective tool connector.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -72,11 +72,6 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
