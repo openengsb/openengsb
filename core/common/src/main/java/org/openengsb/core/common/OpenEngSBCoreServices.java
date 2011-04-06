@@ -70,7 +70,7 @@ public final class OpenEngSBCoreServices {
      * priority (for any reason).
      */
     public static void setOsgiServiceUtils(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.serviceUtils = serviceUtils;
+        OpenEngSBCoreServices.serviceUtils = serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class);
     }
 
 }
