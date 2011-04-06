@@ -109,7 +109,6 @@
     <module>ui</module>
     <module>assembly</module>
     <module>itests</module>
-    <module>features</module>
   </modules>
 
   <scm>
@@ -159,6 +158,12 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>features</id>
+      <modules>
+        <module>features</module>
+      </modules>
+    </profile>
     <profile>
       <id>nightly</id>
       <properties>
