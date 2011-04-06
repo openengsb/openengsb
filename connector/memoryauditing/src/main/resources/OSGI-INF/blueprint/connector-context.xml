@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+
+  <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.api.ServiceManager</value>
+      </list>
+    </property>
+    <property name="target" ref="realServiceManager" />
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+  </bean>
+
+  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.PersistenceConnectorSetupStore"
+    init-method="init">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.auditing.AuditingDomain" />
+      <entry key="connector" value="memory-auditing" />
+      <entry key="openengsb.service.type" value="connector" />
+    </service-properties>
+    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
+  </service>
+
+  <bean id="realServiceManager" class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager"
+    init-method="init">
+    <argument ref="auditingServiceFactory" />
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
+
+  <bean id="rootService" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl" />
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.OpenEngSBService</value>
+      <value>org.openengsb.core.api.Domain</value>
+      <value>org.openengsb.domain.auditing.AuditingDomain</value>
+    </interfaces>
+    <service-properties>
+      <entry key="id" value="auditing-root" />
+      <entry key="connector" value="memory-auditing" />
+      <entry key="location.root">
+        <array>
+          <value>auditing</value>
+        </array>
+      </entry>
+    </service-properties>
+    <ref component-id="rootService" />
+  </service>
+
+  <bean id="auditingServiceFactory" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
+
+</blueprint>
