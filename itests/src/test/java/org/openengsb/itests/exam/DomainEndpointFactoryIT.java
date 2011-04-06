@@ -143,7 +143,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
+        properties.put("location.foo", new String[]{ "test/foo", "main/foo", "main/bla", });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
