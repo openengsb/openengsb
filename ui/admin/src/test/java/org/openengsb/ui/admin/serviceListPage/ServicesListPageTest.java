@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,6 +46,7 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -67,7 +69,9 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
         serviceManagerMock = mock(ServiceManager.class);
-        registerService(serviceManagerMock, ServiceManager.class, "(connector=bla)");
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", "bla");
+        registerService(serviceManagerMock, props, ServiceManager.class);
         domainServiceMock = mock(DomainService.class);
         ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();
@@ -263,7 +267,10 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

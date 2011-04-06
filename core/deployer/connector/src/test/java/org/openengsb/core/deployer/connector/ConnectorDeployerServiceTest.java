@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -42,9 +43,11 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.deployer.connector.internal.ConnectorDeployerService;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,7 +75,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         storageMock = mock(DeployerStorage.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
-        registerService(serviceManagerMock, ServiceManager.class, "(connector=a-connector )");
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", "a-connector ");
+        registerService(serviceManagerMock, props, ServiceManager.class);
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setDeployerStorage(storageMock);
@@ -202,7 +207,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

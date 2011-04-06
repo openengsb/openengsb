@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -42,7 +41,6 @@ import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
@@ -151,11 +149,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
-    }
-
-    @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
     }
 
 }

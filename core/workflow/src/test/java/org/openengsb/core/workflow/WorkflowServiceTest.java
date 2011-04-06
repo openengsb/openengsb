@@ -44,14 +44,12 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
 
@@ -377,8 +375,4 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(finished, is(false));
     }
 
-    @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-    }
 }

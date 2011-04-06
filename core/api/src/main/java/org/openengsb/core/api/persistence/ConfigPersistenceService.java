@@ -18,7 +18,6 @@
 package org.openengsb.core.api.persistence;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.openengsb.core.api.model.ConfigItem;
 

@@ -30,6 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,7 +49,9 @@ import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.osgi.framework.BundleContext;
 
 public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
@@ -228,8 +231,11 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
 }

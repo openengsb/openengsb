@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.junit.After;
@@ -36,9 +37,11 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
@@ -131,7 +134,8 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
     private void simulateServiceStart(String name) throws Exception {
         Class<?> domainClass = domains.get(name);
-        registerLocationService(services.get(name), domainClass, name);
+        // registerLocationService(services.get(name), domainClass, name);
+        registerServiceAtLocation(services.get(name), name, domainClass);
     }
 
     private void setupWorkflowService() throws Exception {
@@ -141,7 +145,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getThreadLocalContext()).thenReturn("42");
         // workflowService.setCurrentContextService(currentContext);
-        workflowService.setBundleContext(createBundleContextMock());
+        workflowService.setBundleContext(bundleContext);
     }
 
     private void setupRulemanager() throws Exception {
@@ -155,8 +159,11 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils serviceUtils = new OsgiServiceUtils();
+        serviceUtils.setBundleContext(bundleContext);
         OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
     }
 
 }

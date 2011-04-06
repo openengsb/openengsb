@@ -17,70 +17,52 @@
 
 package org.openengsb.core.test;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Helper methods to mock the core {@link OsgiUtilsService} service responsible for working with the OpenEngSB osgi
- * registry.
+ * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
+ * the OpenEngSB osgi registry.
  */
 public abstract class AbstractOsgiMockServiceTest {
 
-    protected OsgiUtilsService serviceUtils;
-    protected WiringService wiringService;
+    protected BundleContext bundleContext;
+    protected Bundle bundle;
 
-    /**
-     * Set up the default OSGi Services such as {@link WiringService} and {@link OsgiUtilsService}
-     */
+    private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
+        new HashMap<ServiceReference, Dictionary<String, Object>>();
+
+    private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
+
     @Before
     public void setUp() throws Exception {
-        serviceUtils = mock(OsgiUtilsService.class);
-        wiringService = mock(WiringService.class);
-        when(serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class)).thenReturn(serviceUtils);
-        when(serviceUtils.getOsgiServiceProxy(WiringService.class)).thenReturn(wiringService);
-        initializeOpenEngSBCoreServicesObject(serviceUtils);
-    }
-
-    /**
-     * Since the testbundle does not have access to the OpenEngSBCoreServices bundle the serviceUtils have to be set by
-     * hand
-     */
-    protected abstract void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils);
-
-    /**
-     * Simple method creating a mock, returning it and also registere it via its id in the
-     * {@link #registerServiceViaId(Object, String, Class)} method
-     */
-    protected <T> T mockService(Class<T> serviceClass, String id) throws Exception {
-        T serviceMock = mock(serviceClass);
-        registerServiceViaId(serviceMock, id, serviceClass);
-        return serviceMock;
-    }
-
-    /**
-     * Helper method providing a very primitiv {@link BundleContext} mock if tests require it.
-     */
-    protected BundleContext createBundleContextMock() throws Exception {
-        BundleContext bundleContext = mock(BundleContext.class);
-        when(bundleContext.getAllServiceReferences(Mockito.anyString(), Mockito.anyString())).thenAnswer(
+        bundleContext = mock(BundleContext.class);
+        setBundleContext(bundleContext);
+        when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override
                 public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
@@ -89,103 +71,113 @@ public abstract class AbstractOsgiMockServiceTest {
                     return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
                 }
             });
-        when(bundleContext.getBundle()).thenReturn(new DummyBundle());
-        return bundleContext;
+        when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(new Answer<ServiceReference[]>() {
+            @Override
+            public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
+                String clazz = (String) invocation.getArguments()[0];
+                String filterString = (String) invocation.getArguments()[1];
+                if (clazz != null) {
+                    if (filterString == null) {
+                        filterString = "";
+                    }
+                    filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
+                }
+                Filter filter = FrameworkUtil.createFilter(filterString);
+                Collection<ServiceReference> result = new ArrayList<ServiceReference>();
+                for (Map.Entry<ServiceReference, Dictionary<String, Object>> entry : serviceReferences.entrySet()) {
+                    if (filter.match(entry.getValue())) {
+                        result.add(entry.getKey());
+                    }
+                }
+                return result.toArray(new ServiceReference[result.size()]);
+            }
+        });
+        when(bundleContext.getService(any(ServiceReference.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ServiceReference ref = (ServiceReference) invocation.getArguments()[0];
+                return services.get(ref);
+            }
+        });
+        bundle = mock(Bundle.class);
+        when(bundle.getBundleContext()).thenReturn(bundleContext);
+        when(bundleContext.getBundle()).thenReturn(bundle);
+        when(bundle.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
+            @Override
+            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
+                return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
+            }
+        });
     }
 
     /**
-     * Registeres services using the location services of the OpenEngSB.All sub-interfaces are also automatically
-     * registered.
+     * create a mock of the specified class and register the service under that interface. It also adds the given id as
+     * property to the service.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected void registerLocationService(Object service, Class interfaze, String location) throws Exception {
-        ArrayList<Class> all = new ArrayList<Class>();
-        findInterfaces(interfaze, all);
-        for (Class class1 : all) {
-            Filter filter =
-                getFilterForLocation(class1, location, ContextHolder.get().getCurrentContextId().toString());
-            when(serviceUtils.getFilterForLocation(class1, location)).thenReturn(filter);
-            when(serviceUtils.getFilterForLocation(class1, location, ContextHolder.get().getCurrentContextId()))
-                .thenReturn(filter);
-            when(serviceUtils.getOsgiServiceProxy(filter, class1)).thenReturn(service);
-        }
+    protected <T> T mockService(Class<T> serviceClass, String id) {
+        T serviceMock = mock(serviceClass);
+        registerService(serviceMock, id, serviceClass);
+        return serviceMock;
     }
 
     /**
-     * Simple registers a service with a specific interface and filter. All sub-interfaces are also automatically
-     * registered.
+     * registers the service with the given properties under the given interfaces
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected void registerService(Object service, Class interfaze, String filter)
-        throws Exception {
-        ArrayList<Class> all = new ArrayList<Class>();
-        findInterfaces(interfaze, all);
-        for (Class class1 : all) {
-            Filter realFilter = makeFilter(class1, filter);
-            when(serviceUtils.makeFilter(class1, filter)).thenReturn(realFilter);
-            when(serviceUtils.getOsgiServiceProxy(filter, class1)).thenReturn(service);
-            when(serviceUtils.getOsgiServiceProxy(class1)).thenReturn(service);
-            when(serviceUtils.getServiceWithId(class1, filter)).thenReturn(service);
-            when(serviceUtils.getService(realFilter.toString())).thenReturn(service);
-            when(serviceUtils.getService(Mockito.eq(realFilter), Mockito.anyLong())).thenReturn(service);
-            when(serviceUtils.getOsgiServiceProxy(realFilter.toString(), interfaze)).thenReturn(service);
+    protected void registerService(Object service, Dictionary<String, Object> props, Class<?>... interfazes) {
+        Set<String> objectClasses = new HashSet<String>();
+        for (Class<?> interfaze : interfazes) {
+            objectClasses.add(interfaze.getCanonicalName());
         }
+        objectClasses.add(OpenEngSBService.class.getCanonicalName());
+        props.put(Constants.OBJECTCLASS, objectClasses.toArray(new String[objectClasses.size()]));
+        putService(service, props);
     }
 
     /**
-     * If the query methods via id=xxx should be used services should be regsisterd using this method. All
-     * sub-interfaces are also automatically registered.
+     * registers the service under the given interfaces and sets its location-property accordingly:
+     * location.context=location
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected void registerServiceViaId(final Object service, String id, final Class interfaze) throws Exception {
-        List<Class> allInterfaces = new ArrayList<Class>();
-        findInterfaces(interfaze, allInterfaces);
-        for (Class local : allInterfaces) {
-            String idQuery = String.format("(id=%s)", id);
-            when(serviceUtils.getServiceWithId(local, id)).thenReturn(service);
-            when(serviceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(idQuery), local)).thenReturn(service);
-            when(serviceUtils.getOsgiServiceProxy(local)).thenReturn(service);
-        }
+    protected void registerServiceAtLocation(Object service, String location, String context, Class<?>... interfazes) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("location." + context, new String[]{ location });
+        registerService(service, props, interfazes);
     }
 
-    @SuppressWarnings("rawtypes")
-    private void findInterfaces(Class interfaze, List<Class> allInterfaces) {
-        allInterfaces.add(interfaze);
-        Class[] interfaces = interfaze.getInterfaces();
-        if (interfaces == null || interfaces.length == 0) {
-            return;
-        }
-        for (Class local : interfaces) {
-            findInterfaces(local, allInterfaces);
-        }
+    /**
+     * registers the service under the given interfaces and sets its location-property for the current context
+     * accordingly: location.context=location
+     */
+    protected void registerServiceAtLocation(Object service, String location, Class<?>... interfazes) {
+        registerServiceAtLocation(service, location, ContextHolder.get().getCurrentContextId(), interfazes);
     }
 
-    private Filter getFilterForLocation(Class<?> clazz, String location, String context) {
-        String filter = makeLocationFilterString(location, context);
-        try {
-            return makeFilter(clazz, filter);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException("location is invalid", e);
-        }
+    /**
+     * registers the service under the given interfaces and sets it's location in the root-context
+     */
+    protected void registerServiceAtRootLocation(Object service, String location, Class<?>... interfazes) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("location.root", new String[]{ location });
+        registerService(service, props, interfazes);
     }
 
-    private String makeLocationFilterString(String location, String context) {
-        return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
+    /**
+     * registers the service under the given interfaces, settint its "id"-property to the given id
+     */
+    protected void registerService(Object service, String id, Class<?>... interfaces) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("id", id);
+        registerService(service, props, interfaces);
     }
 
-    private Filter makeFilter(Class<?> clazz, String otherFilter) throws InvalidSyntaxException {
-        return makeFilter(clazz.getName(), otherFilter);
+    protected void registerServiceViaId(Object service, String id, Class<?>... interfaces) {
+        registerService(service, id, interfaces);
     }
 
-    private Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
-        return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
+    private void putService(Object service, Dictionary<String, Object> props) {
+        ServiceReference serviceReference = mock(ServiceReference.class);
+        services.put(serviceReference, service);
+        serviceReferences.put(serviceReference, props);
     }
 
-    private Filter makeFilterForClass(String className) {
-        try {
-            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.OBJECTCLASS, className));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
+    protected abstract void setBundleContext(BundleContext bundleContext);
 }

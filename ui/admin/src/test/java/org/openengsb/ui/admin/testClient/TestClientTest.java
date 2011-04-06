@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +81,7 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -91,6 +93,7 @@ import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest extends AbstractOsgiMockServiceTest {
@@ -148,7 +151,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
-        context.putBean(createBundleContextMock());
+        context.putBean(bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(mock(ProxyFactory.class));
     }
@@ -673,7 +676,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         testService = mock(TestInterface.class);
-        registerService(testService, TestInterface.class, "(id=test)");
+        registerServiceViaId(testService, "test", TestInterface.class);
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
@@ -725,7 +728,10 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Override
-    protected void initializeOpenEngSBCoreServicesObject(OsgiUtilsService serviceUtils) {
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+    protected void setBundleContext(BundleContext bundleContext) {
+        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }
