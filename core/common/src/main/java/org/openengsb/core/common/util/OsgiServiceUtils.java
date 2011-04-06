@@ -18,6 +18,7 @@
 package org.openengsb.core.common.util;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -33,10 +34,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
-/**
- * Default implementation of the OsgoUtilsService. This class is only available in core-commons because there are some
- * valid use cases where it have to be accessed directly rather via the exported OSGi service.
- */
 public class OsgiServiceUtils implements OsgiUtilsService {
 
     private static final Log LOGGER = LogFactory.getLog(OsgiServiceUtils.class);
@@ -125,13 +122,13 @@ public class OsgiServiceUtils implements OsgiUtilsService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+    public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                     LOGGER.info("dynamically resolving service for filter : " + filter);
-                    Object service = getService(filter);
+                    Object service = getService(filter, timeout);
                     return method.invoke(service, args);
                 }
             });
@@ -139,13 +136,13 @@ public class OsgiServiceUtils implements OsgiUtilsService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+    public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, final long timeout) {
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                     LOGGER.info("dynamically resolving service for filter : " + filter);
-                    Object service = getService(filter);
+                    Object service = getService(filter, timeout);
                     return method.invoke(service, args);
                 }
             });
@@ -153,16 +150,35 @@ public class OsgiServiceUtils implements OsgiUtilsService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getOsgiServiceProxy(final Class<T> targetClass) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
+    public <T> T getOsgiServiceProxy(final Class<T> targetClass, final long timeout) {
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                     LOGGER.info("dynamically resolving service for class : " + targetClass.toString());
-                    Object service = getService(targetClass);
-                    return method.invoke(service, args);
+                    Object service = getService(targetClass, timeout);
+                    try {
+                        return method.invoke(service, args);
+                    } catch (InvocationTargetException e) {
+                        throw e.getCause();
+                    }
                 }
             });
+    }
+
+    @Override
+    public <T> T getOsgiServiceProxy(Class<T> targetClass) {
+        return getOsgiServiceProxy(targetClass, DEFAULT_TIMEOUT);
+    }
+
+    @Override
+    public <T> T getOsgiServiceProxy(Filter filter, Class<T> targetClass) {
+        return getOsgiServiceProxy(filter, targetClass, DEFAULT_TIMEOUT);
+    }
+
+    @Override
+    public <T> T getOsgiServiceProxy(String filter, Class<T> targetClass) {
+        return getOsgiServiceProxy(filter, targetClass, DEFAULT_TIMEOUT);
     }
 
     @Override

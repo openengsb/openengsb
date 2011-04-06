@@ -113,6 +113,27 @@ public interface OsgiUtilsService {
     <T> T getOsgiServiceProxy(Class<T> targetClass);
 
     /**
+     * returns a proxy that looks up an OSGi-service with the given Filter as soon as a method is called. Note that the
+     * returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within the given
+     * timeout (in milliseconds)
+     */
+    <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, long timeout);
+
+    /**
+     * returns a proxy that looks up an OSGi-service with the given Filter as soon as a method is called. Note that the
+     * returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within the given
+     * timeout (in milliseconds)
+     */
+    <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout);
+
+    /**
+     * returns a proxy that looks up an OSGi-service according to the targetClass as soon as a method is called. Note
+     * that the returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within
+     * the given timeout (in milliseconds)
+     */
+    <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout);
+
+    /**
      * creates a filter that matches all services exporting the class as interface
      */
     Filter makeFilterForClass(Class<?> clazz);
@@ -188,6 +209,5 @@ public interface OsgiUtilsService {
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException;
-
 
 }
