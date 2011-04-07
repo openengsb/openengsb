@@ -17,11 +17,14 @@
 
 package org.openengsb.ui.admin.model;
 
+import java.io.Serializable;
+
 /**
  * Container filled by spring cm-prop service to contain the properties about the openengsb wich are set via a config
  * file, loaded via the fileadmin and mapped via the admin service.
  */
-public class OpenEngSBVersion {
+@SuppressWarnings("serial")
+public class OpenEngSBVersion implements Serializable {
 
     private String versionNumber;
     private String nameAdjective;

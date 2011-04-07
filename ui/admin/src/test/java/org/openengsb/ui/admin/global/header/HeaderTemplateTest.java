@@ -38,6 +38,7 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
@@ -58,6 +59,7 @@ public class HeaderTemplateTest {
         context = new ApplicationContextMock();
         context.putBean(Mockito.mock(ContextCurrentService.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("wireingService", new DefaultWiringService());
     }
 
     @Test
@@ -131,6 +133,7 @@ public class HeaderTemplateTest {
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("auditing", mock(AuditingDomain.class));
+        context.putBean("wireingService", new DefaultWiringService());
         context.putBean(mock(ProxyFactory.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
