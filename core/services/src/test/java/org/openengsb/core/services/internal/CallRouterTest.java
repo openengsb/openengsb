@@ -49,7 +49,7 @@ import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 
@@ -232,7 +232,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(bundleContext);
         registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);

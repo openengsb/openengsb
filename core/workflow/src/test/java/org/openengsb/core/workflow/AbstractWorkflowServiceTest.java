@@ -35,7 +35,7 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
@@ -116,7 +116,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils serviceUtils = new OsgiServiceUtils();
+        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
         serviceUtils.setBundleContext(bundleContext);
         OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);

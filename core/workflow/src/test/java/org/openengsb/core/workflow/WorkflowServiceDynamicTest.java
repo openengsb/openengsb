@@ -37,7 +37,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
@@ -160,7 +160,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils serviceUtils = new OsgiServiceUtils();
+        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
         serviceUtils.setBundleContext(bundleContext);
         OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);

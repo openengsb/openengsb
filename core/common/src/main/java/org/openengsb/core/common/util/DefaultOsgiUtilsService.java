@@ -34,9 +34,9 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class OsgiServiceUtils implements OsgiUtilsService {
+public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
-    private static final Log LOGGER = LogFactory.getLog(OsgiServiceUtils.class);
+    private static final Log LOGGER = LogFactory.getLog(DefaultOsgiUtilsService.class);
     private static final long DEFAULT_TIMEOUT = 30000L;
 
     private BundleContext bundleContext;

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.common;
 
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(context);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }

@@ -81,7 +81,7 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -729,7 +729,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils osgiServiceUtils = new OsgiServiceUtils();
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(bundleContext);
         registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
