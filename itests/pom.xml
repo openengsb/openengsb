@@ -140,7 +140,7 @@
       <artifactId>openengsb-connector-memoryauditing</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
-      <version>${connector.memoryauditing.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
