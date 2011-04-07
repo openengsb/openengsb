@@ -23,6 +23,7 @@ import java.util.Hashtable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
@@ -36,8 +37,7 @@ import org.osgi.service.cm.ManagedServiceFactory;
 public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
 
     private static final Log LOGGER = LogFactory.getLog(ConfigPersistenceServiceFactory.class);
-    private static final String BACKEND_ID = "backend.id";
-    private static final String CONFIGURATION_ID = "configuration.id";
+
     private BundleContext bundleContext;
     private OsgiUtilsService serviceUtils;
 
@@ -51,12 +51,12 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
 
     @Override
     public synchronized void updated(String pid, Dictionary properties) throws ConfigurationException {
-        preconditionPropertyExists(BACKEND_ID, properties);
-        preconditionPropertyExists(CONFIGURATION_ID, properties);
+        preconditionPropertyExists(Constants.BACKEND_ID, properties);
+        preconditionPropertyExists(Constants.CONFIGURATION_ID, properties);
         ConfigPersistenceBackendService backendService = retrieveBackendService(properties);
         DefaultConfigPersistenceService configPersistenceService = new DefaultConfigPersistenceService(backendService);
         Dictionary exportProperties = new Hashtable();
-        exportProperties.put(CONFIGURATION_ID, properties.get(CONFIGURATION_ID));
+        exportProperties.put(Constants.CONFIGURATION_ID, properties.get(Constants.CONFIGURATION_ID));
         ServiceRegistration registration =
             bundleContext.registerService(ConfigPersistenceService.class.getName(), configPersistenceService,
                 exportProperties);
@@ -65,15 +65,17 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
 
     private ConfigPersistenceBackendService retrieveBackendService(Dictionary properties) throws ConfigurationException {
         try {
-            return serviceUtils.getOsgiServiceProxy(serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
-                    String.format("(%s=%s)", BACKEND_ID, properties.get(BACKEND_ID))),
-                    ConfigPersistenceBackendService.class);
+            return serviceUtils.getOsgiServiceProxy(
+                serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
+                    String.format("(%s=%s)", Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID))),
+                ConfigPersistenceBackendService.class);
         } catch (OsgiServiceNotAvailableException e) {
-            throw new ConfigurationException(BACKEND_ID, String.format(
-                "backend service %s could not be found; please recheck documentation", properties.get(BACKEND_ID)), e);
+            throw new ConfigurationException(Constants.BACKEND_ID, String.format(
+                "backend service %s could not be found; please recheck documentation",
+                properties.get(Constants.BACKEND_ID)), e);
         } catch (InvalidSyntaxException e) {
-            throw new ConfigurationException(BACKEND_ID, String.format("(%s=%s) is not welcomed", BACKEND_ID,
-                properties.get(BACKEND_ID)));
+            throw new ConfigurationException(Constants.BACKEND_ID, String.format("(%s=%s) is not welcomed",
+                Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID)));
         }
     }
 
