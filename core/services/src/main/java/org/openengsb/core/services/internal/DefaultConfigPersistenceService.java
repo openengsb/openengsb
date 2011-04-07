@@ -17,6 +17,8 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
@@ -27,7 +29,8 @@ import org.openengsb.core.api.persistence.PersistenceException;
 
 /**
  * Default implementation of the {@link ConfigPersistenceService} registered by the ConfigPersistenceServiceFactory with
- * the correct properties at the right places.
+ * the correct properties at the right places. Basically this class does nothing than forwarding the backend services
+ * and casting them to the right type.
  */
 public class DefaultConfigPersistenceService implements ConfigPersistenceService {
 
@@ -38,21 +41,26 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <ConfigType> ConfigItem<ConfigType> load(Map<String, String> metadata) throws PersistenceException,
-        InvalidConfigurationException {
-        return (ConfigItem<ConfigType>) backendService.load(metadata);
-    }
-
-    @Override
-    public <ConfigType> void persist(ConfigItem<ConfigType> configuration) throws PersistenceException,
-        InvalidConfigurationException {
-        backendService.persist(configuration);
-    }
-
-    @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
         return backendService.supports(configItemType);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <ConfigType extends ConfigItem<?>> List<ConfigType> load(Map<String, String> metadata)
+        throws PersistenceException, InvalidConfigurationException {
+        List<ConfigType> configItems = new ArrayList<ConfigType>();
+        List<ConfigItem<?>> result = backendService.load(metadata);
+        for (ConfigItem<?> configItem : result) {
+            configItems.add((ConfigType) configItem);
+        }
+        return configItems;
+    }
+
+    @Override
+    public <ConfigType extends ConfigItem<?>> void persist(ConfigType configuration) throws PersistenceException,
+        InvalidConfigurationException {
+        backendService.persist(configuration);
     }
 
 }

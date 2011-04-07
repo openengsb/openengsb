@@ -21,22 +21,22 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 
+/**
+ * Service factory managed by Configuration and Fileinstall OSGi services in play.
+ */
 public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
-
-    private static final Log LOGGER = LogFactory.getLog(ConfigPersistenceServiceFactory.class);
 
     private BundleContext bundleContext;
     private OsgiUtilsService serviceUtils;
@@ -50,9 +50,16 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
     }
 
     @Override
+    @SuppressWarnings({ "rawtypes" })
     public synchronized void updated(String pid, Dictionary properties) throws ConfigurationException {
         preconditionPropertyExists(Constants.BACKEND_ID, properties);
         preconditionPropertyExists(Constants.CONFIGURATION_ID, properties);
+        deleted(pid);
+        setupConfigPersistenceService(pid, properties);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void setupConfigPersistenceService(String pid, Dictionary properties) throws ConfigurationException {
         ConfigPersistenceBackendService backendService = retrieveBackendService(properties);
         DefaultConfigPersistenceService configPersistenceService = new DefaultConfigPersistenceService(backendService);
         Dictionary exportProperties = new Hashtable();
@@ -63,13 +70,13 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
         serviceMap.put(pid, registration);
     }
 
+    @SuppressWarnings("rawtypes")
     private ConfigPersistenceBackendService retrieveBackendService(Dictionary properties)
         throws ConfigurationException {
         try {
-            return serviceUtils.getOsgiServiceProxy(
-                serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
-                    String.format("(%s=%s)", Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID))),
-                ConfigPersistenceBackendService.class);
+            Filter serviceProxyFilter = serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
+                String.format("(%s=%s)", Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID)));
+            return serviceUtils.getOsgiServiceProxy(serviceProxyFilter, ConfigPersistenceBackendService.class);
         } catch (OsgiServiceNotAvailableException e) {
             throw new ConfigurationException(Constants.BACKEND_ID, String.format(
                 "backend service %s could not be found; please recheck documentation",
@@ -80,15 +87,19 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void preconditionPropertyExists(String key, Dictionary properties) throws ConfigurationException {
         if (properties.get(key) == null) {
             throw new ConfigurationException(key,
-                String.format("Property %s is required to configure a ConfigPersistenceService correctly"));
+                String.format("Property %s is required to configure a ConfigPersistenceService correctly", key));
         }
     }
 
     @Override
     public synchronized void deleted(String pid) {
+        if (!serviceMap.containsKey(pid)) {
+            return;
+        }
         serviceMap.get(pid).unregister();
     }
 

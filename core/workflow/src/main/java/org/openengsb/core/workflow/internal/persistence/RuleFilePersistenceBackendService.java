@@ -17,6 +17,7 @@
 
 package org.openengsb.core.workflow.internal.persistence;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
@@ -28,7 +29,8 @@ import org.openengsb.core.api.persistence.PersistenceException;
 public class RuleFilePersistenceBackendService implements ConfigPersistenceBackendService {
 
     @Override
-    public ConfigItem<?> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException {
+    public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
+        InvalidConfigurationException {
         // TODO Auto-generated method stub
         return null;
     }

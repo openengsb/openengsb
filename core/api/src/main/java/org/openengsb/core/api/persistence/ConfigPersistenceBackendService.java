@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.persistence;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
@@ -35,7 +36,7 @@ public interface ConfigPersistenceBackendService {
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration is no longer valid (modified e.g. directly in a file).
      */
-    ConfigItem<?> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException;
+    List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException;
 
     /**
      * Persists a configuration to the selected backend solution. Please do not use this metod if you're not completely

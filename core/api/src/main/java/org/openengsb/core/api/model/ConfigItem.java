@@ -18,13 +18,13 @@
 package org.openengsb.core.api.model;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
- * General ConfigurationObject which could not be instanciated by itself, but rather have to be implemented in a
+ * General ConfigurationObject which should not be instanciated by itself, but rather have to be implemented in a
  * ConfigurationObject.
  */
-// TODO: Implement
-public abstract class ConfigItem<ContentType> {
+public class ConfigItem<ContentType> {
 
     private Map<String, String> metaData;
     private ContentType content;
@@ -51,6 +51,35 @@ public abstract class ConfigItem<ContentType> {
 
     public void setContent(ContentType content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ConfigItem)) {
+            return false;
+        }
+        ConfigItem<?> toCompare = (ConfigItem<?>) obj;
+        if (!compareMetadata(toCompare.getMetaData(), getMetaData())) {
+            if (!compareMetadata(getMetaData(), toCompare.getMetaData())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean compareMetadata(Map<String, String> first, Map<String, String> second) {
+        Set<String> keys = first.keySet();
+        for (String key : keys) {
+            if (!second.containsKey(key) || !second.get(key).equals(first.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

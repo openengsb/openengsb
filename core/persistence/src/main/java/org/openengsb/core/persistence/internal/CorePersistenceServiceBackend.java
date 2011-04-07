@@ -17,32 +17,61 @@
 
 package org.openengsb.core.persistence.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
+import org.openengsb.core.api.persistence.PersistenceService;
+import org.osgi.framework.BundleContext;
 
-// TODO: Implement
+/**
+ * Simple {@link ConfigPersistenceBackendService} implementation directly using the core {@link PersistenceService}.
+ * Only disadvantage at the current implementation is that objects have to be stored in simple form.
+ */
 public class CorePersistenceServiceBackend implements ConfigPersistenceBackendService {
 
+    private PersistenceManager persistenceManager;
+    private PersistenceService persistenceService;
+    private BundleContext bundleContext;
+
+    public void init() {
+        persistenceService = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+    }
+
     @Override
-    public ConfigItem<?> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
+        InvalidConfigurationException {
+        List<ConfigItem<?>> configItems = new ArrayList<ConfigItem<?>>();
+        List<InternalConfigurationItem> result =
+            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(metadata, null)));
+        for (InternalConfigurationItem configItem : result) {
+            configItems.add(configItem.getConfigItem());
+        }
+        return configItems;
     }
 
     @Override
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
-        // TODO Auto-generated method stub
-
+        persistenceService.create(new InternalConfigurationItem(config));
     }
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        // TODO Auto-generated method stub
-        return false;
+        // as an object persistence this backend supports everything
+        return true;
+    }
+
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
 }
