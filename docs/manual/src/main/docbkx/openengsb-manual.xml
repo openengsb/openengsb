@@ -79,6 +79,7 @@
     <xi:include href="user/taskbox.xml"/>
     <xi:include href="user/plugins.xml" />
     <xi:include href="user/deployers.xml" />
+    <xi:include href="user/clients.xml" />
     <xi:include href="user/platform.xml" />
   </part>
 
