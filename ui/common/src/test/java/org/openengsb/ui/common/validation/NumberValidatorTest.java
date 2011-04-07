@@ -35,9 +35,9 @@ public class NumberValidatorTest {
         assertEquals("validation.number.formating", validate.getErrorMessageId());
     }
 
-    // TODO public void testUsingGermanLocale_shouldReturnGermanMessage() {
+    // TODO: [OPENENGSB-1250] public void testUsingGermanLocale_shouldReturnGermanMessage() {
 
-    // TODO public void testUsingEnglishLocale_shouldReturnEnglishMessage()
+    // TODO: [OPENENGSB-1250] public void testUsingEnglishLocale_shouldReturnEnglishMessage()
 
     @Test
     public void validateNumber_shouldReturnValidAndNoErrorMessage() {

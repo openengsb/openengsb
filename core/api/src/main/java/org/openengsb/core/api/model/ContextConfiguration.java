@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Specific configuration model for the configuration to get up an context.
  */
-// TODO: Implement
+// TODO: [OPENENGSB-1252] Design context object
 public class ContextConfiguration extends ConfigItem<Map<String, String>> {
 
     public static final String TYPE_ID = "CONTEXT";
@@ -35,5 +35,4 @@ public class ContextConfiguration extends ConfigItem<Map<String, String>> {
         super(metaData, content);
     }
 
-    // TODO: add specific Connector-Model
 }

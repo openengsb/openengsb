@@ -74,31 +74,26 @@ public abstract class AbstractRuleManagerIT {
 
             @Override
             public String getInstanceId() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             public AliveState getAliveState() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             public String doSomethingWithLogEvent(LogEvent event) {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             public String doSomething(ExampleEnum exampleEnum) {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             public String doSomething(String message) {
-                // TODO Auto-generated method stub
                 return null;
             }
         };

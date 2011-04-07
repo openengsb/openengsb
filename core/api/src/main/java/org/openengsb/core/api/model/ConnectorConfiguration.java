@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Specific configuration model for the configuration to get up an connector.
  */
-// TODO: Implement
+// TODO: [OPENENGSB-1251] Provide configuration object for connector
 public class ConnectorConfiguration extends ConfigItem<Map<String, String>> {
 
     public static final String TYPE_ID = "CONNECTOR";
@@ -35,5 +35,4 @@ public class ConnectorConfiguration extends ConfigItem<Map<String, String>> {
         super(metaData, content);
     }
 
-    // TODO: add specific Connector-Model
 }

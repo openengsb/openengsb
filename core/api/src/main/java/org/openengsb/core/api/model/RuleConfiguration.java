@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * General model describing the configuration required for rules.
  */
-// TODO: Implement
+// TODO: [OPENENGSB-1253] Design Rule Configuration object
 public class RuleConfiguration extends ConfigItem<String> {
 
     public static final String TYPE_ID = "RULE";
@@ -34,7 +34,5 @@ public class RuleConfiguration extends ConfigItem<String> {
     public RuleConfiguration(Map<String, String> metaData, String ruleContent) {
         super(metaData, ruleContent);
     }
-
-    // TODO: add rule model methods
 
 }

@@ -25,25 +25,21 @@ import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 
-// TODO: Implement
+// TODO: [OPENENGSB-1253] Implement flow backend; dont forget cfg and blueprint
 public class FlowFilePersistenceBackendService implements ConfigPersistenceBackendService {
 
     @Override
     public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        // TODO Auto-generated method stub
         return false;
     }
 

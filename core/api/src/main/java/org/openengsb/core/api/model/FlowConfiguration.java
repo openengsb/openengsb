@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * General model describing the configuration required for flow.
  */
-// TODO: Implement
+// TODO: [OPENENGSB-1253] Design Flow Configuration object
 public class FlowConfiguration extends ConfigItem<String> {
 
     public static final String TYPE_ID = "FLOW";
@@ -34,7 +34,5 @@ public class FlowConfiguration extends ConfigItem<String> {
     public FlowConfiguration(Map<String, String> metaData, String ruleContent) {
         super(metaData, ruleContent);
     }
-
-    // TODO: add rule model methods
 
 }

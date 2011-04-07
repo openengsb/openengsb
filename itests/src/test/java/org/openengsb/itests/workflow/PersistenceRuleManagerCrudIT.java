@@ -110,16 +110,6 @@ public class PersistenceRuleManagerCrudIT extends
 
         data.add(new Object[]{ testData });
 
-        // TODO: imports & globals
-        // data.add(new Object[] { new
-        // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
-        // "java.util.Currency"),
-        // "java.util.Currency", new
-        // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
-        // "java.util.Random"),
-        // "java.util.Random", });
-        // globals:
-
         return data;
     }
 

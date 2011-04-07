@@ -127,7 +127,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
@@ -145,7 +144,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
