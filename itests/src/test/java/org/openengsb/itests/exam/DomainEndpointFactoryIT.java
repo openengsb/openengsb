@@ -146,6 +146,7 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         properties.put("location.foo", "[test/foo] [main/foo] [main/bla]");
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
+        assertThat(OpenEngSBCoreServices.getWireingService().isConnectorCurrentlyPresent(ExampleDomain.class),
+            is(true));
     }
 }
