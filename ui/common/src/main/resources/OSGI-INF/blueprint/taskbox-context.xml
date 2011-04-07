@@ -26,7 +26,7 @@
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="webtaskbox" />
     </service-properties>
-    <bean class="org.openengsb.ui.common.taskbox.WebTaskboxServiceImpl" >
+    <bean class="org.openengsb.ui.common.taskbox.WebTaskboxServiceImpl" init-method="init">
       <property name="taskboxService" ref="taskboxService" />
       <property name="persistenceManager" ref="persistenceManager" />
       <property name="bundleContext" ref="blueprintBundleContext" />
