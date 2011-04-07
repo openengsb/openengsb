@@ -25,30 +25,34 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 
-// TODO: implement
+/**
+ * Default implementation of the {@link ConfigPersistenceService} registered by the ConfigPersistenceServiceFactory with
+ * the correct properties at the right places.
+ */
 public class DefaultConfigPersistenceService implements ConfigPersistenceService {
 
-    // injected by blueprint
-    private ConfigPersistenceBackendService backend;
+    private final ConfigPersistenceBackendService backendService;
+
+    public DefaultConfigPersistenceService(ConfigPersistenceBackendService backendService) {
+        this.backendService = backendService;
+    }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <ConfigType> ConfigItem<ConfigType> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
-        // TODO Auto-generated method stub
-        return null;
+        return (ConfigItem<ConfigType>) backendService.load(metadata);
     }
 
     @Override
     public <ConfigType> void persist(ConfigItem<ConfigType> configuration) throws PersistenceException,
         InvalidConfigurationException {
-        // TODO Auto-generated method stub
-
+        backendService.persist(configuration);
     }
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        // TODO Auto-generated method stub
-        return false;
+        return backendService.supports(configItemType);
     }
 
 }
