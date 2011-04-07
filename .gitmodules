@@ -80,3 +80,30 @@
 [submodule "features/connector/plaintextreport"]
 	path = features/connector/plaintextreport
 	url = git://github.com/openengsb/openengsb-connector-plaintextreport
+[submodule "features/domain/appointment"]
+	path = features/domain/appointment
+	url = git://github.com/openengsb/openengsb-domain-appointment
+[submodule "features/domain/build"]
+	path = features/domain/build
+	url = git://github.com/openengsb/openengsb-domain-build
+[submodule "features/domain/contact"]
+	path = features/domain/contact
+	url = git://github.com/openengsb/openengsb-domain-contact
+[submodule "features/domain/deploy"]
+	path = features/domain/deploy
+	url = git://github.com/openengsb/openengsb-domain-deploy
+[submodule "features/domain/issue"]
+	path = features/domain/issue
+	url = git://github.com/openengsb/openengsb-domain-issue
+[submodule "features/domain/notification"]
+	path = features/domain/notification
+	url = git://github.com/openengsb/openengsb-domain-notification
+[submodule "features/domain/report"]
+	path = features/domain/report
+	url = git://github.com/openengsb/openengsb-domain-report
+[submodule "features/domain/scm"]
+	path = features/domain/scm
+	url = git://github.com/openengsb/openengsb-domain-scm
+[submodule "features/domain/test"]
+	path = features/domain/test
+	url = git://github.com/openengsb/openengsb-domain-test
