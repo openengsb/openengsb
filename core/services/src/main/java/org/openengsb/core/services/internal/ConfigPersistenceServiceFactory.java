@@ -63,7 +63,8 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
         serviceMap.put(pid, registration);
     }
 
-    private ConfigPersistenceBackendService retrieveBackendService(Dictionary properties) throws ConfigurationException {
+    private ConfigPersistenceBackendService retrieveBackendService(Dictionary properties)
+        throws ConfigurationException {
         try {
             return serviceUtils.getOsgiServiceProxy(
                 serviceUtils.makeFilter(ConfigPersistenceBackendService.class,
