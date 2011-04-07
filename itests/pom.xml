@@ -136,13 +136,6 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memoryauditing</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb</artifactId>
       <type>xml</type>

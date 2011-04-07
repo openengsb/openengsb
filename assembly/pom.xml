@@ -220,15 +220,9 @@
                 <!-- OpenEngSB Features -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
-                <feature>openengsb-domain-notification</feature>
-                <feature>openengsb-domain-report</feature>
-                <feature>openengsb-domain-issue</feature>
-                <feature>openengsb-domain-scm</feature>
-                <feature>openengsb-domain-build</feature>
-                <feature>openengsb-domain-test</feature>
-                <feature>openengsb-domain-deploy</feature>
-                <feature>openengsb-domain-appointment</feature>
-                <feature>openengsb-domain-contact</feature>
+                <feature>openengsb-domain-auditing</feature>
+                <!-- OpenEngSB Connectors -->
+                <feature>openengsb-connector-memoryauditing</feature>
               </features>
               <copyFileBasedDescriptors>
                 <copyFileBasedDescriptor>

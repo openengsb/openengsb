@@ -109,49 +109,21 @@
     <feature version="${project.version}">openengsb-ui-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}/war</bundle>
   </feature>
+
   <feature name="openengsb-domain-auditing" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
   </feature>
+
+  <feature name="openengsb-connector-memoryauditing" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-auditing</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
+  </feature>
+
   <feature name="openengsb-domain-example" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-notification" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-notification/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-report" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-report/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-issue" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-issue/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-scm" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-scm/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-build" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-build/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-test" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-test/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-deploy" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-deploy/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-appointment" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-appointment/${project.version}</bundle>
-  </feature>
-  <feature name="openengsb-domain-contact" version="${project.version}" >
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-contact/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-connector-example" version="${project.version}" >
