@@ -46,6 +46,12 @@
     <bean class="org.openengsb.core.services.internal.RequestHandlerImpl"/>
   </service>
   
+  <service interface="org.openengsb.core.api.WiringService">
+    <bean class="org.openengsb.core.services.internal.DefaultWiringService">
+        <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+  </service>
+  
   <service interface="org.openengsb.core.api.remote.ProxyFactory">
     <bean class="org.openengsb.core.services.internal.ProxyFactoryImpl">
       <property name="callRouter">

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.services.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
@@ -34,46 +35,33 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /**
- * provides utility-methods for retrieving domain-services
- *
+ * Default Wiring Implementation which can be overwritten by another service implementation easily if required.
  */
-public final class DomainEndpointFactory {
+public class DefaultWiringService implements WiringService {
 
-    private static Log log = LogFactory.getLog(DomainEndpointFactory.class);
+    private static Log log = LogFactory.getLog(DefaultWiringService.class);
 
     private static BundleContext bundleContext;
 
-    /**
-     * returns the domain-service for the corresponding location in the current context. If no service with that
-     * location is found in the current context, the root-context is tried.
-     */
-    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
+    @Override
+    public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
         return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
-    /**
-     * returns domain-services for all domains registered at the given location in the current context and the
-     * root-context. If no service is found an empty list is returned.
-     */
-    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
+    @Override
+    public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location) {
         return getDomainEndpoints(domainType, location, ContextHolder.get().getCurrentContextId());
     }
 
-    /**
-     * returns the domain-service for the corresponding location in the given context. If no service with that location
-     * is found in the given context, the root-context is tried.
-     */
-    public static <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
+    @Override
+    public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
         Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
         return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
     }
 
-    /**
-     * returns domain-services for all domains registered at the given location in the given context and the
-     * root-context. If no service is found an empty list is returned.
-     */
-    public static <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
+    @Override
+    public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
         Filter filterForLocation = OsgiServiceUtils.getFilterForLocation(domainType, location);
         ServiceReference[] allServiceReferences;
         try {
@@ -102,17 +90,8 @@ public final class DomainEndpointFactory {
         return result;
     }
 
-    public static void setBundleContext(BundleContext bundleContext) {
-        DomainEndpointFactory.bundleContext = bundleContext;
-    }
-
-    private DomainEndpointFactory() {
-    }
-
-    /**
-     * returns true a connector for the specified domain type exists, otherwise false
-     */
-    public static boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
+    @Override
+    public boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
         Domain service;
         try {
             service = OsgiServiceUtils.getService(domainType, 5000L);
@@ -120,5 +99,9 @@ public final class DomainEndpointFactory {
             return false;
         }
         return service != null;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        DefaultWiringService.bundleContext = bundleContext;
     }
 }
