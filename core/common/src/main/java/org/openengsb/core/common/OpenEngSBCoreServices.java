@@ -17,9 +17,13 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * Static helper methods providing proxies which access the OSGi service registry for each request to retrieve the
@@ -40,7 +44,7 @@ public final class OpenEngSBCoreServices {
      * Wiring is one of the core concepts in the OpenEngSB. The service retrieved by this method is used to get the
      * endpoints which can be reached within the OpenEngSB.
      */
-    public static WiringService getWiringService() {
+    public static WiringService getWiringService() throws OsgiServiceNotAvailableException {
         return serviceUtils.getOsgiServiceProxy(WiringService.class);
     }
 
@@ -50,17 +54,24 @@ public final class OpenEngSBCoreServices {
      * anywhere else. The type to request the config persistence service is stored directly at the Configuration objects
      * in a string constant such as RuleConfiguration#TYPE_ID or ContextConfiguration#TYPE_ID
      */
-    public static ConfigPersistenceService getConfigPersistenceService(String type) {
-        // query osgi context for service with configPersId=id and interface=type
-        // TODO: implement
-        return null;
+    public static ConfigPersistenceService getConfigPersistenceService(String type)
+        throws OsgiServiceNotAvailableException {
+        Filter configPersistenceFilter;
+        try {
+            configPersistenceFilter = serviceUtils.makeFilter(ConfigPersistenceService.class,
+                String.format("(%s=%s)", Constants.CONFIGURATION_ID, type));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(String.format(
+                "It is not possible to create a filter: (%s=%s)", Constants.CONFIGURATION_ID, type));
+        }
+        return serviceUtils.getOsgiServiceProxy(configPersistenceFilter, ConfigPersistenceService.class);
     }
 
     /**
      * Returns the {@link OsgiUtilsService} from the OSGi registry. This service helps to retrieve services from the
      * OSGi registry directly from the code.
      */
-    public static OsgiUtilsService getServiceUtilsService() {
+    public static OsgiUtilsService getServiceUtilsService() throws OsgiServiceNotAvailableException {
         return serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class);
     }
 
@@ -69,7 +80,7 @@ public final class OpenEngSBCoreServices {
      * {@link #getServiceUtilsService()} since a user can export an implementation of this service with a higher
      * priority (for any reason).
      */
-    public static void setOsgiServiceUtils(OsgiUtilsService serviceUtils) {
+    public static void setOsgiServiceUtils(OsgiUtilsService serviceUtils) throws OsgiServiceNotAvailableException {
         OpenEngSBCoreServices.serviceUtils = serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class);
     }
 
