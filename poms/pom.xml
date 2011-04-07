@@ -216,6 +216,7 @@
   <modules>
     <module>bundle</module>
     <module>connector</module>
+    <module>domain</module>
   </modules>
 
   <dependencyManagement>
