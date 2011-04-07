@@ -29,7 +29,7 @@
 
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
     <service-properties>
-      <entry key="backend.id" value="testConnector" />
+      <entry key="backend.id" value="persistenceService" />
     </service-properties>
     <bean class="org.openengsb.core.persistence.internal.CorePersistenceServiceBackend" init-method="init" >
       <property name="bundleContext" ref="blueprintBundleContext" />
