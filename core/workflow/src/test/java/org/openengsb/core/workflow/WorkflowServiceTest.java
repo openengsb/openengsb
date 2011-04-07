@@ -362,6 +362,16 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     }
 
     @Test
+    public void testCancelWorkflowWithOpenTasks() throws Exception {
+        long pid = service.startFlow("ci");
+        ProcessBag bag = new ProcessBag();
+        bag.setProcessId(Long.toString(pid));
+        taskboxInternal.createNewTask(bag);
+        service.cancelFlow(pid);
+        service.waitForFlowToFinish(pid, 5000);
+        assertThat("Tasks were not cancelled properly", taskbox.getOpenTasks().isEmpty(), is(true));
+    }
+
     public void testWaitForFlow_shouldReturnTrue() throws Exception {
         Future<Long> pid = service.startFlowInBackground("flowtest");
         boolean finished = service.waitForFlowToFinish(pid.get(), 400);
