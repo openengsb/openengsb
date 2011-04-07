@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.services.internal.DefaultWireingService;
+import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.ui.admin.AbstractLogin;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -114,7 +114,7 @@ public class RoleAuthorizationTest extends AbstractLogin {
         context.putBean(mock(DomainService.class));
         context.putBean(mock(ProxyFactory.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
-        context.putBean("wireingService", new DefaultWireingService());
+        context.putBean("wireingService", new DefaultWiringService());
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
     }

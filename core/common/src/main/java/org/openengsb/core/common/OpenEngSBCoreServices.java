@@ -17,7 +17,7 @@
 
 package org.openengsb.core.common;
 
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 
 /**
@@ -37,9 +37,9 @@ public final class OpenEngSBCoreServices {
      * Wiring is one of the core concepts in the OpenEngSB. The service retrieved by this method is used to get the
      * endpoints which can be reached within the OpenEngSB.
      */
-    public static WireingService getWireingService() {
-        return OsgiServiceUtils.getOsgiServiceProxy(OsgiServiceUtils.makeFilterForClass(WireingService.class),
-            WireingService.class);
+    public static WiringService getWireingService() {
+        return OsgiServiceUtils.getOsgiServiceProxy(OsgiServiceUtils.makeFilterForClass(WiringService.class),
+            WiringService.class);
     }
 
 }

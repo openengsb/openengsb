@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
@@ -37,9 +37,9 @@ import org.osgi.framework.ServiceReference;
 /**
  * Default Wiring Implementation which can be overwritten by another service implementation easily if required.
  */
-public class DefaultWireingService implements WireingService {
+public class DefaultWiringService implements WiringService {
 
-    private static Log log = LogFactory.getLog(DefaultWireingService.class);
+    private static Log log = LogFactory.getLog(DefaultWiringService.class);
 
     private static BundleContext bundleContext;
 
@@ -102,6 +102,6 @@ public class DefaultWireingService implements WireingService {
     }
 
     public void setBundleContext(BundleContext bundleContext) {
-        DefaultWireingService.bundleContext = bundleContext;
+        DefaultWiringService.bundleContext = bundleContext;
     }
 }

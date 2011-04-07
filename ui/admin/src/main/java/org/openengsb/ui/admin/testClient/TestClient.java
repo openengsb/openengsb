@@ -65,7 +65,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.WireingService;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.util.OsgiServiceUtils;
@@ -96,7 +96,7 @@ public class TestClient extends BasePage {
     private ProxyFactory proxyFactory;
 
     @SpringBean
-    private WireingService wireingService;
+    private WiringService wireingService;
 
     private DropDownChoice<MethodId> methodList;
 

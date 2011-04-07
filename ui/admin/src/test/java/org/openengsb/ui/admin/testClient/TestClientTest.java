@@ -78,7 +78,7 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.core.services.internal.DefaultWireingService;
+import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -151,7 +151,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
-        context.putBean("wireingService", new DefaultWireingService());
+        context.putBean("wireingService", new DefaultWiringService());
         context.putBean(mock(ProxyFactory.class));
     }
 
