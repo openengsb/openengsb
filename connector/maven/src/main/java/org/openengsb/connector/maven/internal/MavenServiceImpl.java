@@ -40,9 +40,6 @@ import java.util.zip.ZipException;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -123,16 +120,19 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     private List<String> getListOfMirrors() {
+        Properties prop = new Properties();
+        List<String> mirrorList = new ArrayList<String>();
         try {
-            Configuration config = new PropertiesConfiguration(ClassLoader.getSystemResource("config.properties"));
-            List<String> mirrorList = new ArrayList<String>();
-            for (Object tmp : config.getList("mirror")) {
-                mirrorList.add((String) tmp);
+            prop.load(ClassLoader.getSystemResourceAsStream("config.properties"));
+
+            int i = 1;
+            while (prop.getProperty("mirror" + i) != null) {
+                mirrorList.add(prop.getProperty("mirror" + i));
+                i++;
             }
-            return mirrorList;
-        } catch (ConfigurationException e1) {
-            return new ArrayList<String>();
+        } catch (IOException e) {
         }
+        return mirrorList;
     }
 
     public Boolean isMavenInstalled() {

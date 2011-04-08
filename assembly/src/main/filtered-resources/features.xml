@@ -54,7 +54,6 @@
     <!-- OpenEngSB Commons Dependencies -->
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
-    <bundle>mvn:commons-configuration/commons-configuration/${commons.configuration.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle>mvn:javax.activation/com.springsource.javax.activation/${javax.activation.version}</bundle>
