@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -70,6 +71,7 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -77,8 +79,8 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -91,7 +93,6 @@ import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest extends AbstractOsgiMockServiceTest {
@@ -498,15 +499,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
-        try {
-            ServiceReference ref = Mockito.mock(ServiceReference.class);
-            Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
-            Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ ref };
-            Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
-        } catch (InvalidSyntaxException e) {
-            Assert.fail("not expected");
-        }
+        ServiceReference ref = Mockito.mock(ServiceReference.class);
+        Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
+        Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
 
         List<ServiceManager> managerList = new ArrayList<ServiceManager>();
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
@@ -611,14 +606,14 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    private List<ServiceReference> setupAndStartTestClientPage() throws InvalidSyntaxException {
+    private List<ServiceReference> setupAndStartTestClientPage() throws Exception {
         final List<ServiceReference> expected = setupTestClientPage();
         tester.startPage(TestClient.class);
         formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 
-    private List<ServiceReference> setupTestClientPage() throws InvalidSyntaxException {
+    private List<ServiceReference> setupTestClientPage() throws Exception {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = mock(ServiceReference.class);
         when(serviceReferenceMock.getProperty("id")).thenReturn("test");
@@ -653,7 +648,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-        testService = mockService(TestInterface.class, "test");
+        testService = mock(TestInterface.class);
+        registerServiceViaId(testService, "test", TestInterface.class);
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
@@ -701,7 +697,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
-
 }

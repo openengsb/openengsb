@@ -50,10 +50,8 @@ import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
-import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
@@ -385,11 +383,6 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.startFlowInBackground("flowtest");
         boolean finished = service.waitForFlowToFinish(pid, 400);
         assertThat(finished, is(false));
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
     }
 
 }

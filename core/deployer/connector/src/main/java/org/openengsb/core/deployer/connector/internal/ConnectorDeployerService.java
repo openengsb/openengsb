@@ -23,11 +23,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,7 +43,6 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private static Log log = LogFactory.getLog(ConnectorDeployerService.class);
 
-    private BundleContext bundleContext;
     private AuthenticationManager authenticationManager;
     private DeployerStorage deployerStorage;
 
@@ -134,7 +133,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     private ServiceManager getServiceManagerFor(String connectorType) throws OsgiServiceNotAvailableException {
-        return (ServiceManager) OsgiServiceUtils.getService(getFilterFor(connectorType));
+        return (ServiceManager) getOsgiUtils().getService(getFilterFor(connectorType));
+    }
+
+    private OsgiUtilsService getOsgiUtils() {
+        return OpenEngSBCoreServices.getServiceUtilsService();
     }
 
     private String getFilterFor(String connectorType) {
@@ -159,7 +162,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         return hasConnectorType && hasServiceId;
     }
 
-    public boolean authenticate(String username, String password) {
+    private boolean authenticate(String username, String password) {
         boolean authenticated = false;
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -174,28 +177,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         return authenticated;
     }
 
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
-
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthenticationManager getAuthenticationManager() {
-        return authenticationManager;
-    }
-
     public void setDeployerStorage(DeployerStorage deployerStorage) {
         this.deployerStorage = deployerStorage;
-    }
-
-    public DeployerStorage getDeployerStorage() {
-        return deployerStorage;
     }
 
 }

@@ -32,7 +32,6 @@
 	<service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
 		<bean class="org.openengsb.core.deployer.connector.internal.ConnectorDeployerService">
 			<property name="authenticationManager" ref="authenticationManager" />
-			<property name="bundleContext" ref="blueprintBundleContext" />
 			<property name="deployerStorage" ref="deployerStorage" />
 		</bean>
 	</service>

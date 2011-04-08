@@ -40,9 +40,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.deployer.connector.internal.ConnectorDeployerService;
 import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -79,7 +81,6 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         registerService(serviceManagerMock, props, ServiceManager.class);
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setBundleContext(bundleContext);
         connectorDeployerService.setDeployerStorage(storageMock);
     }
 
@@ -208,7 +209,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
-
 }

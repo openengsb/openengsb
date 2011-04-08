@@ -42,7 +42,7 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.BundleContext;
@@ -197,11 +197,12 @@ public class ServiceListPanel extends Panel {
                 Filter filter;
                 try {
                     filter =
-                        OsgiServiceUtils.makeFilter(ServiceManager.class, String.format("(connector=%s)", connector));
+                        OpenEngSBCoreServices.getServiceUtilsService().makeFilter(ServiceManager.class,
+                            String.format("(connector=%s)", connector));
                 } catch (InvalidSyntaxException e) {
                     throw new IllegalStateException(e);
                 }
-                return (ServiceManager) OsgiServiceUtils.getService(filter, 300);
+                return (ServiceManager) OpenEngSBCoreServices.getServiceUtilsService().getService(filter, 300);
             }
         };
     }

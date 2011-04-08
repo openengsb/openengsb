@@ -25,7 +25,7 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class RequestHandlerImpl implements RequestHandler {
 
@@ -36,7 +36,7 @@ public class RequestHandlerImpl implements RequestHandler {
             throw new IllegalArgumentException("missing definition of serviceid in methodcall");
         }
         OpenEngSBService service;
-        service = OsgiServiceUtils.getServiceWithId(OpenEngSBService.class, serviceId);
+        service = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OpenEngSBService.class, serviceId);
 
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(args));

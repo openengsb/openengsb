@@ -24,13 +24,13 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,14 +43,15 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 
 public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
@@ -64,8 +65,8 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        serviceMock = mockService(bundleContext, TestService.class, "foo");
-        outgoingPortMock = mockService(bundleContext, OutgoingPort.class, "jms+json-out");
+        serviceMock = mockService(TestService.class, "foo");
+        outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
         callrouter = new CallRouterImpl();
         requestHandler = new RequestHandlerImpl();
     }
@@ -219,13 +220,6 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
         public abstract T realAnswer(InvocationOnMock invocationOnMock);
     }
 
-    private <T> T mockService(BundleContext bundleContext, Class<T> serviceClass, String id)
-        throws InvalidSyntaxException {
-        T serviceMock = mock(serviceClass);
-        registerService(serviceMock, id, serviceClass);
-        return serviceMock;
-    }
-
     public interface TestService extends OpenEngSBService {
         void test();
 
@@ -238,7 +232,10 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 
 }

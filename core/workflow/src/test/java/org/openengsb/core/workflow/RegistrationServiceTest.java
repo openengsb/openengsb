@@ -41,11 +41,9 @@ import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
-import org.osgi.framework.BundleContext;
 
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
@@ -62,7 +60,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         requestHandler = getRequestHandler();
 
         regService = getRegistrationService();
-        registerService(requestHandler, "requestHandler", RequestHandler.class);
+        registerServiceViaId(requestHandler, "requestHandler", RequestHandler.class);
         outgoingPort = mockService(OutgoingPort.class, "testPort");
 
         doAnswer(new Answer<Void>() {
@@ -129,7 +127,6 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
@@ -147,14 +144,9 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        OsgiServiceUtils.setBundleContext(bundleContext);
-    }
 }

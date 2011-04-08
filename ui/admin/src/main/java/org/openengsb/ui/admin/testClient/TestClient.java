@@ -69,7 +69,7 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -477,6 +477,7 @@ public class TestClient extends BasePage {
         Class<? extends Domain> aClass = domainProvider.getDomainInterface();
         String name = domainProvider.getName().getString(Locale.getDefault());
         Domain defaultDomain = null;
+        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent(aClass)) {
             defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
         }
@@ -515,6 +516,7 @@ public class TestClient extends BasePage {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
+        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
@@ -525,7 +527,8 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
-        return OsgiServiceUtils.getServiceWithId(service.getServiceClass(), service.getServiceId());
+        return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
+            service.getServiceId());
     }
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {

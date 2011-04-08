@@ -74,7 +74,6 @@ public class CustomTaskPanel extends Panel {
                     service.finishTask(task);
                     // setResponsePage(TaskOverviewPage.class);
                 } catch (WorkflowException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

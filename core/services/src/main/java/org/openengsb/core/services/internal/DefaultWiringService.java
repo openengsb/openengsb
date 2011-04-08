@@ -24,9 +24,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.common.util.OsgiServiceUtils;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -39,14 +40,15 @@ import org.osgi.framework.ServiceReference;
  */
 public class DefaultWiringService implements WiringService {
 
-    private static Log log = LogFactory.getLog(DefaultWiringService.class);
+    private static final long DEFAULT_TIMEOUT = 5000L;
+    private static Log LOGGER = LogFactory.getLog(DefaultWiringService.class);
 
-    private static BundleContext bundleContext;
+    private BundleContext bundleContext;
 
     @Override
     public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location) {
-        Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location);
-        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
+        Filter filter = getServiceUtils().getFilterForLocation(domainType, location);
+        return getServiceUtils().getOsgiServiceProxy(filter, domainType);
     }
 
     @Override
@@ -56,13 +58,13 @@ public class DefaultWiringService implements WiringService {
 
     @Override
     public <T extends Domain> T getDomainEndpoint(Class<T> domainType, String location, String context) {
-        Filter filter = OsgiServiceUtils.getFilterForLocation(domainType, location, context);
-        return OsgiServiceUtils.getOsgiServiceProxy(filter, domainType);
+        Filter filter = getServiceUtils().getFilterForLocation(domainType, location, context);
+        return getServiceUtils().getOsgiServiceProxy(filter, domainType);
     }
 
     @Override
     public <T extends Domain> List<T> getDomainEndpoints(Class<T> domainType, String location, String context) {
-        Filter filterForLocation = OsgiServiceUtils.getFilterForLocation(domainType, location);
+        Filter filterForLocation = getServiceUtils().getFilterForLocation(domainType, location);
         ServiceReference[] allServiceReferences;
         try {
             allServiceReferences =
@@ -73,15 +75,15 @@ public class DefaultWiringService implements WiringService {
         }
         List<T> result = new ArrayList<T>();
         if (allServiceReferences == null) {
-            log.info("no references found for filter: " + filterForLocation.toString());
+            LOGGER.info("no references found for filter: " + filterForLocation.toString());
             return result;
         }
-        log.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
+        LOGGER.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
         for (ServiceReference ref : allServiceReferences) {
             String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
             try {
                 T osgiServiceProxy =
-                    OsgiServiceUtils.getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
+                    getServiceUtils().getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);
                 result.add(osgiServiceProxy);
             } catch (InvalidSyntaxException e) {
                 throw new RuntimeException(e);
@@ -94,7 +96,7 @@ public class DefaultWiringService implements WiringService {
     public boolean isConnectorCurrentlyPresent(Class<? extends Domain> domainType) {
         Domain service;
         try {
-            service = OsgiServiceUtils.getService(domainType, 5000L);
+            service = getServiceUtils().getService(domainType, DEFAULT_TIMEOUT);
         } catch (OsgiServiceNotAvailableException e) {
             return false;
         }
@@ -102,6 +104,11 @@ public class DefaultWiringService implements WiringService {
     }
 
     public void setBundleContext(BundleContext bundleContext) {
-        DefaultWiringService.bundleContext = bundleContext;
+        this.bundleContext = bundleContext;
+    }
+
+    private OsgiUtilsService getServiceUtils() {
+        return OpenEngSBCoreServices.getServiceUtilsService();
     }
 }
+

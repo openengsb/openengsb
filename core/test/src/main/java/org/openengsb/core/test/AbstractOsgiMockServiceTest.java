@@ -44,6 +44,10 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
+ * the OpenEngSB osgi registry.
+ */
 public abstract class AbstractOsgiMockServiceTest {
 
     protected BundleContext bundleContext;
@@ -174,3 +178,4 @@ public abstract class AbstractOsgiMockServiceTest {
     protected abstract void setBundleContext(BundleContext bundleContext);
 
 }
+

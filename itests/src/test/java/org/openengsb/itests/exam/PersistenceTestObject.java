@@ -45,8 +45,8 @@ public class PersistenceTestObject {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((integer == null) ? 0 : integer.hashCode());
-        result = prime * result + ((string == null) ? 0 : string.hashCode());
+        result = prime * result + (integer == null ? 0 : integer.hashCode());
+        result = prime * result + (string == null ? 0 : string.hashCode());
         return result;
     }
 
@@ -62,7 +62,7 @@ public class PersistenceTestObject {
             return false;
         }
         PersistenceTestObject other = (PersistenceTestObject) obj;
-        return ObjectUtils.equals(this.string, other.string) && ObjectUtils.equals(this.integer, other.integer);
+        return ObjectUtils.equals(string, other.string) && ObjectUtils.equals(integer, other.integer);
     }
 
 }

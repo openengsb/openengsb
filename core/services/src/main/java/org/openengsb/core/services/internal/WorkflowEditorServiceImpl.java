@@ -56,7 +56,6 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
 
     @Override
     public void saveCurrentWorkflow() {
-        // TODO Auto-generated method stub
 
     }
 
