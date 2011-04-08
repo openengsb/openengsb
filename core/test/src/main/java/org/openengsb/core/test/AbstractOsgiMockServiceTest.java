@@ -55,8 +55,8 @@ public abstract class AbstractOsgiMockServiceTest {
 
     private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
         new HashMap<ServiceReference, Dictionary<String, Object>>();
-
     private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
+    private Long serviceId = Long.MAX_VALUE;
 
     @Before
     public void setUp() throws Exception {
@@ -171,6 +171,7 @@ public abstract class AbstractOsgiMockServiceTest {
 
     private void putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
+        when(serviceReference.getProperty(Constants.SERVICE_ID)).thenReturn(--serviceId);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);
     }
