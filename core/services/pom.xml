@@ -77,6 +77,11 @@
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>provided</scope>
+    </dependency>
  </dependencies>
 
 </project>

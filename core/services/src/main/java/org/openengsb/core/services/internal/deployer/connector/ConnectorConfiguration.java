@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.deployer.connector.internal;
+package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.IOException;
 import java.util.Map;

@@ -21,4 +21,5 @@ org.aopalliance.aop,\
 org.aopalliance.intercept,\
 org.springframework.aop,\
 org.springframework.aop.framework,\
+org.apache.felix.fileinstall;version="[3,4)",\
 *

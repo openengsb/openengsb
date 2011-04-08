@@ -74,8 +74,6 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
-    <!-- OpenEngSB Deployer -->
-    <bundle>mvn:org.openengsb.core.deployer/openengsb-core-deployer-connector/${project.version}</bundle>
   </feature>
   <feature name="openengsb-infrastructure-jms" version="${project.version}" >
     <feature version="[5.5,6)">activemq-blueprint</feature>

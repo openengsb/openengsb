@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.deployer.connector.internal;
+package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
 import java.io.IOException;
 
-public interface DeployerStorage {
+public final class StorageFileFactory {
+    
+    private StorageFileFactory() {
+        
+    }
 
-    void put(File file, ConnectorConfiguration config) throws IOException;
-
-    void remove(File file) throws IOException;
-
-    String getServiceId(File file) throws IOException;
-
-    String getConnectorType(File file) throws IOException;
+    public static DeployerStorage createFileStorage() throws IOException {
+        String karafDataDirectory = System.getProperty("karaf.data");
+        String storageFile = String.format("%s/openengsb/deployer/connector", karafDataDirectory);
+        DeployerStorage storage = new DeployerStorageFile(new File(storageFile));
+        return storage;
+    }
 
 }
