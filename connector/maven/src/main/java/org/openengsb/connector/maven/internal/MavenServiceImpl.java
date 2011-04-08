@@ -18,7 +18,6 @@
 package org.openengsb.connector.maven.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,7 +100,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         } else if (!logDir.isDirectory()) {
             throw new IllegalStateException("cannot access log-directory");
         }
-
+        
         if (!isMavenInstalled()) {
             try {
                 installMaven();
@@ -116,17 +115,20 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
         Properties prop = new Properties();
         String version = null;
         try {
-            prop.load(new FileInputStream("src/main/resources/config.properties"));
+            prop.load(ClassLoader.getSystemResourceAsStream("config.properties"));
             version = prop.getProperty("mvnVersion");
         } catch (IOException e) {
         }
         return version;
     }
 
-    private List getListOfMirrors() {
+    private List<String> getListOfMirrors() {
         try {
-            Configuration config = new PropertiesConfiguration("src/main/resources/config.properties");
-            List mirrorList = config.getList("mirror1");
+            Configuration config = new PropertiesConfiguration(ClassLoader.getSystemResource("config.properties"));
+            List<String> mirrorList = new ArrayList<String>();
+            for (Object tmp : config.getList("mirror")) {
+                mirrorList.add((String) tmp);
+            }
             return mirrorList;
         } catch (ConfigurationException e1) {
             return new ArrayList<String>();
@@ -156,12 +158,11 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
     }
 
     public void installMaven() throws Exception {
-
-        String downloadPath = System.getProperty("java.io.tmpdir") + "/mvn_setup.zip";
-        List mirrors = getListOfMirrors();
+        File tmp = File.createTempFile("mvn_setup", "zip");
+        List<?> mirrors = getListOfMirrors();
         for (int i = 0; i < mirrors.size(); i++) {
             if (download(String.valueOf(mirrors.get(i)) + "apache-maven-" + readMvnVersionFromPropFile() + "-bin.zip",
-                    downloadPath)) {
+                    tmp.getAbsolutePath())) {
                 break;
             }
 
@@ -169,10 +170,12 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
                 log.error("No valid mirror found!");
             }
         }
-        unzipFile(downloadPath, System.getProperty("karaf.data"));
+        if (mirrors.size() != 0) {
+            unzipFile(tmp.getAbsolutePath(), System.getProperty("karaf.data"));
+        }
     }
 
-    public void unzipFile(String archivePath, String targetPath) {
+    public void unzipFile(String archivePath, String targetPath) throws Exception {
         try {
             File archiveFile = new File(archivePath);
             File targetFile = new File(targetPath);
@@ -195,9 +198,9 @@ public class MavenServiceImpl extends AbstractOpenEngSBService implements MavenD
                 }
             }
         } catch (ZipException e) {
-            log.error(e);
+            throw new Exception("Unzipping failed");
         } catch (IOException e) {
-            log.error(e);
+            throw new Exception();
         }
     }
 
