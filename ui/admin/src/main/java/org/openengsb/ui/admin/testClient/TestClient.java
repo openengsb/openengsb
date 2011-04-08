@@ -96,9 +96,6 @@ public class TestClient extends BasePage {
     @SpringBean
     private ProxyFactory proxyFactory;
 
-    @SpringBean
-    private WiringService wireingService;
-
     private DropDownChoice<MethodId> methodList;
 
     private final MethodCall call = new MethodCall();
@@ -280,6 +277,7 @@ public class TestClient extends BasePage {
         add(feedbackPanel);
     }
 
+    @SuppressWarnings("serial")
     private LoadableDetachableModel<Map<String, DomainProvider>> initAvailableDomainsMap() {
         return new LoadableDetachableModel<Map<String, DomainProvider>>() {
             @Override

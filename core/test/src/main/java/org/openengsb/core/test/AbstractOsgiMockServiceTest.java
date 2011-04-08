@@ -169,6 +169,10 @@ public abstract class AbstractOsgiMockServiceTest {
         registerService(service, props, interfaces);
     }
 
+    protected void registerServiceViaId(Object service, String id, Class<?>... interfaces) {
+        registerService(service, id, interfaces);
+    }
+
     private void putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
         when(serviceReference.getProperty(Constants.SERVICE_ID)).thenReturn(--serviceId);
@@ -179,4 +183,3 @@ public abstract class AbstractOsgiMockServiceTest {
     protected abstract void setBundleContext(BundleContext bundleContext);
 
 }
-

@@ -41,7 +41,7 @@ import org.osgi.framework.ServiceReference;
 public class DefaultWiringService implements WiringService {
 
     private static final long DEFAULT_TIMEOUT = 5000L;
-    private static Log LOGGER = LogFactory.getLog(DefaultWiringService.class);
+    private static final Log LOGGER = LogFactory.getLog(DefaultWiringService.class);
 
     private BundleContext bundleContext;
 

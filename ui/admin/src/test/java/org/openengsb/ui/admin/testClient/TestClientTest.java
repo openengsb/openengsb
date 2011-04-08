@@ -73,6 +73,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -81,6 +82,7 @@ import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
@@ -140,7 +142,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
-        context.putBean("wireingService", new DefaultWiringService());
         context.putBean(mock(ProxyFactory.class));
     }
 
@@ -502,6 +503,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         ServiceReference ref = Mockito.mock(ServiceReference.class);
         Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
         Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
+        when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
+            new ServiceReference[]{ ref });
 
         List<ServiceManager> managerList = new ArrayList<ServiceManager>();
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
@@ -541,6 +544,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void testForEachDomainVisibleInCreatePartIsAnEntryInTree() throws Exception {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
@@ -626,7 +630,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
             }
         });
         final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
-        List domainProviderMocks = createDomainProviderMocks();
+        List<DomainProvider> domainProviderMocks = createDomainProviderMocks();
         expectedProviders.addAll(domainProviderMocks);
         when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
             @Override
@@ -659,7 +663,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         return expected;
     }
 
-    private List createDomainProviderMocks() {
+    private List<DomainProvider> createDomainProviderMocks() {
         List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
@@ -700,6 +704,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(bundleContext);
         registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        DefaultWiringService defaultWiringService = new DefaultWiringService();
+        defaultWiringService.setBundleContext(bundleContext);
+        registerService(defaultWiringService, new Hashtable<String, Object>(), WiringService.class);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }
