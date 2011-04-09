@@ -67,7 +67,7 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
 
     @Override
     public Domain createServiceInstance(String id, Map<String, String> attributes) {
-        ProxyConnector handler = new ProxyConnector();
+        ProxyConnector handler = new ProxyConnector(id);
         handler.setCallRouter(router);
         updateHandlerAttributes(handler, attributes);
         Domain newProxyInstance =

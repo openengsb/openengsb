@@ -173,7 +173,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
         verify(callrouter).callSync(eq("jms+json"), eq("localhost"), any(MethodCall.class));
-        System.out.println(service.getInstanceId());
+        assertThat(service.getInstanceId(), is(connectorId.getInstanceId()));
     }
 
     @SuppressWarnings("unchecked")
