@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -29,11 +30,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
@@ -50,11 +53,16 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     private ServiceManager serviceManager;
     private DefaultOsgiUtilsService serviceUtils;
 
-    @Test
-    public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
         registerMockedDomainProvider();
         registerMockedFactory();
+    }
 
+    @Test
+    public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
         ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
         serviceManager = serviceManagerImpl;
@@ -69,6 +77,29 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         assertThat(service, notNullValue());
+    }
+
+    @Test
+    public void testDeleteService_shouldUnregisterService() throws Exception {
+        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
+        serviceManagerImpl.setBundleContext(bundleContext);
+        serviceManager = serviceManagerImpl;
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+        serviceManager.delete(connectorId);
+        try {
+            serviceUtils.getService("(foo=bar)", 100L);
+            fail("service was expected to be not available");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected
+        }
     }
 
     @SuppressWarnings("unchecked")

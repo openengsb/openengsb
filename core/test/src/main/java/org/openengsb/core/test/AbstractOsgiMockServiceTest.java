@@ -107,13 +107,15 @@ public abstract class AbstractOsgiMockServiceTest {
                 public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
                     String[] clazzes = (String[]) invocation.getArguments()[0];
                     final Object service = invocation.getArguments()[1];
+                    @SuppressWarnings("unchecked")
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
-                    registerService(service, dict, clazzes);
+                    final ServiceReference serviceReference = registerService(service, dict, clazzes);
                     ServiceRegistration result = mock(ServiceRegistration.class);
                     doAnswer(new Answer<Void>() {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
-                            services.remove(service);
+                            services.remove(serviceReference);
+                            serviceReferences.remove(serviceReference);
                             return null;
                         }
                     }).when(result).unregister();
@@ -158,9 +160,9 @@ public abstract class AbstractOsgiMockServiceTest {
     /**
      * registers the service with the given properties under the given interfaces
      */
-    protected void registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
+    protected ServiceReference registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
         props.put(Constants.OBJECTCLASS, interfazes);
-        putService(service, props);
+        return putService(service, props);
     }
 
     /**
@@ -203,11 +205,12 @@ public abstract class AbstractOsgiMockServiceTest {
         registerService(service, id, interfaces);
     }
 
-    private void putService(Object service, Dictionary<String, Object> props) {
+    private ServiceReference putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
         when(serviceReference.getProperty(Constants.SERVICE_ID)).thenReturn(--serviceId);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);
+        return serviceReference;
     }
 
     protected abstract void setBundleContext(BundleContext bundleContext);
