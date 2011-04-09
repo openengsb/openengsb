@@ -17,7 +17,10 @@
 
 package org.openengsb.core.common;
 
+import java.util.Collections;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
@@ -58,7 +61,48 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public void update(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException {
-        throw new UnsupportedOperationException("Not yet implemented");
+        ConnectorDescription old = getOldConfig(id);
+        registrationManager.update(id, connectorDescpription);
+        applyConfigChanges(old, connectorDescpription);
+        try {
+            configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void applyConfigChanges(ConnectorDescription old, ConnectorDescription diff) {
+        updateAttributes(old.getAttributes(), diff.getAttributes());
+        updateProperties(old.getProperties(), diff.getProperties());
+    }
+
+    private void updateProperties(Dictionary<String, Object> properties, Dictionary<String, Object> diff) {
+        for (String key : Collections.list(diff.keys())) {
+            properties.put(key, diff.get(key));
+        }
+    }
+
+    private void updateAttributes(Map<String, String> attributes, Map<String, String> diff) {
+        for (Map.Entry<String, String> entry : diff.entrySet()) {
+            if (entry.getValue() == null) {
+                attributes.remove(entry.getKey());
+            } else {
+                attributes.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private ConnectorDescription getOldConfig(ConnectorId id) {
+        List<ConnectorConfiguration> list;
+        try {
+            list = configPersistence.load(id.toMetaData());
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+        if (list.size() != 1) {
+            throw new IllegalStateException("multiple connectors with id " + id + " found");
+        }
+        return list.get(0).getContent();
     }
 
     @Override
