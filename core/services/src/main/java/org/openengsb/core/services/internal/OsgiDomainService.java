@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -45,32 +45,32 @@ public class OsgiDomainService implements DomainService {
     }
 
     @Override
-    public ServiceManager serviceManagerForConnector(String connectorName) {
+    public InternalServiceRegistrationManager serviceManagerForConnector(String connectorName) {
         try {
             String filter = "(connector=" + connectorName + ")";
             ServiceReference[] serviceReferences =
-                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+                bundleContext.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filter);
             if (serviceReferences == null || serviceReferences.length == 0) {
                 throw new IllegalStateException("No ServiceManager could be retrieved for domain");
             }
-            return (ServiceManager) bundleContext.getService(serviceReferences[0]);
+            return (InternalServiceRegistrationManager) bundleContext.getService(serviceReferences[0]);
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain) {
-        List<ServiceManager> serviceManagers = new ArrayList<ServiceManager>();
+    public List<InternalServiceRegistrationManager> serviceManagersForDomain(Class<? extends Domain> domain) {
+        List<InternalServiceRegistrationManager> serviceManagers = new ArrayList<InternalServiceRegistrationManager>();
         try {
             String filter = "(domain=" + domain.getName() + ")";
             ServiceReference[] allServiceReferences =
-                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+                bundleContext.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filter);
 
             if (allServiceReferences != null) {
                 for (ServiceReference serviceReference : allServiceReferences) {
                     Object service = bundleContext.getService(serviceReference);
-                    serviceManagers.add((ServiceManager) service);
+                    serviceManagers.add((InternalServiceRegistrationManager) service);
                 }
             }
         } catch (InvalidSyntaxException e) {

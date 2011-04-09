@@ -18,8 +18,8 @@
 package org.openengsb.core.api.remote;
 
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 
 public interface ProxyFactory {
-    ServiceManager createProxyForDomain(DomainProvider provider);
+    InternalServiceRegistrationManager createProxyForDomain(DomainProvider provider);
 }

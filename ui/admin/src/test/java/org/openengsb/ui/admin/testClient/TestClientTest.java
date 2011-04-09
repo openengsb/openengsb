@@ -72,7 +72,7 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -506,8 +506,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
             new ServiceReference[]{ ref });
 
-        List<ServiceManager> managerList = new ArrayList<ServiceManager>();
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        List<InternalServiceRegistrationManager> managerList = new ArrayList<InternalServiceRegistrationManager>();
+        InternalServiceRegistrationManager serviceManagerMock = Mockito.mock(InternalServiceRegistrationManager.class);
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
@@ -641,8 +641,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
 
         Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
 
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
-        List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();
+        InternalServiceRegistrationManager serviceManagerMock = Mockito.mock(InternalServiceRegistrationManager.class);
+        List<InternalServiceRegistrationManager> serviceManagerList = new ArrayList<InternalServiceRegistrationManager>();
         serviceManagerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
 

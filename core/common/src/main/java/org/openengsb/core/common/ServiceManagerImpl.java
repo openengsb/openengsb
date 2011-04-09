@@ -1,95 +1,67 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.core.common;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.ServiceValidationFailedException;
+import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceRegistration;
-
-/**
- * Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership.
- * The AASTI licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.persistence.PersistenceException;
 
 public class ServiceManagerImpl implements ServiceManager {
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
-    private BundleContext bundleContext;
-
-    private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
-    private Map<ConnectorId, Domain> instances = new HashMap<ConnectorId, Domain>();
+    private InternalServiceRegistrationManager registrationManager;
+    private ConfigPersistenceService configPersistence = OpenEngSBCoreServices.getConfigPersistenceService("Connector");
 
     @Override
-    public String getInstanceId() {
-        return this.getClass().getName();
-    }
-
-    @Override
-    public void createService(ConnectorId id, ConnectorDescription description)
+    public void createService(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
-        DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-        ServiceInstanceFactory service = getConnectorFactory(id.getConnectorType());
-
-        Domain serviceInstance = service.createServiceInstance(id.getInstanceId(), description.getAttributes());
-
-        String[] clazzes = new String[] {
-                OpenEngSBService.class.getName(),
-                Domain.class.getName(),
-                domainProvider.getDomainInterface().getName(),
-        };
-        Dictionary<String, Object> properties = description.getProperties();
-        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
-        registrations.put(id, serviceRegistration);
+        try {
+            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
+            if (!list.isEmpty()) {
+                throw new IllegalArgumentException("connector already exists");
+            }
+        } catch (PersistenceException e) {
+            throw new ServiceValidationFailedException(e);
+        }
+        registrationManager.createService(id, connectorDescription);
+        ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
+        try {
+            configPersistence.persist(configuration);
+        } catch (PersistenceException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
-    public void update(ConnectorId id, ConnectorDescription connectorDescription)
+    public void update(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException {
-        Map<String, String> attributes = connectorDescription.getAttributes();
-        if (attributes != null) {
-            udpateAttributes(id, attributes);
-        }
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
-        if (properties != null) {
-            updateProperties(id, properties);
-        }
-
-    }
-
-    private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
-        ServiceRegistration registration = registrations.get(id);
-        registration.setProperties(properties);
-    }
-
-    private void udpateAttributes(ConnectorId id, Map<String, String> attributes) {
-        ServiceInstanceFactory factory = getConnectorFactory(id.getConnectorType());
-        factory.updateServiceInstance(instances.get(id), attributes);
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public void delete(ConnectorId id) {
-        registrations.get(id).unregister();
-        registrations.remove(id);
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
@@ -98,41 +70,16 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void removeLocations(ConnectorId serviceId, String... locations) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    @Override
     public void assignLocations(ConnectorId serviceId, String... locations) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private ServiceInstanceFactory getConnectorFactory(String connectorType) {
-        Filter connectorFilter;
-        try {
-            connectorFilter =
-                serviceUtils.makeFilter(ServiceInstanceFactory.class, "(connector=" + connectorType + ")");
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        ServiceInstanceFactory service =
-                serviceUtils.getOsgiServiceProxy(connectorFilter, ServiceInstanceFactory.class);
-        return service;
+    @Override
+    public void removeLocations(ConnectorId serviceId, String... locations) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private DomainProvider getDomainProvider(String domain) {
-        Filter domainFilter;
-        try {
-            domainFilter = serviceUtils.makeFilter(DomainProvider.class, "(domain=" + domain + ")");
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
-        return domainProvider;
+    public void setRegistrationManager(InternalServiceRegistrationManager registrationManager) {
+        this.registrationManager = registrationManager;
     }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
 }

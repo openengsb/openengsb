@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -49,7 +49,7 @@ public class OsgiDomainServiceTest {
     private ArrayList<ServiceReference> allServices;
     private ServiceReference instanceServiceReferenceMock;
     private ServiceReference serviceManagerReferenceMock;
-    private ServiceManager serviceManagerMock;
+    private InternalServiceRegistrationManager serviceManagerMock;
     private NullDomain serviceMock;
     private String connectorName = "nullConnector";
 
@@ -89,12 +89,12 @@ public class OsgiDomainServiceTest {
 
         serviceManagerReferenceMock = mock(ServiceReference.class);
         filter = String.format("(domain=%s)", NullDomain.class.getName());
-        when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filter)).thenReturn(
+        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filter)).thenReturn(
                 new ServiceReference[]{ serviceManagerReferenceMock });
-        serviceManagerMock = mock(ServiceManager.class);
+        serviceManagerMock = mock(InternalServiceRegistrationManager.class);
         when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
         String filterConnector = String.format("(connector=%s)", connectorName);
-        when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filterConnector)).thenReturn(
+        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filterConnector)).thenReturn(
                 new ServiceReference[]{ serviceManagerReferenceMock });
     }
 
@@ -108,13 +108,13 @@ public class OsgiDomainServiceTest {
     @Test
     public void testServiceManagersForConnectorName_shouldReturnServiceManagerForRegisterdConnector()
         throws InvalidSyntaxException {
-        ServiceManager serviceManagers = service.serviceManagerForConnector(connectorName);
+        InternalServiceRegistrationManager serviceManagers = service.serviceManagerForConnector(connectorName);
         assertThat(serviceManagers, is(serviceManagerMock));
     }
 
     @Test
     public void serviceManagersForDomainClass() throws InvalidSyntaxException {
-        List<ServiceManager> serviceManagers = service.serviceManagersForDomain(NullDomain.class);
+        List<InternalServiceRegistrationManager> serviceManagers = service.serviceManagersForDomain(NullDomain.class);
 
         assertThat(serviceManagers, hasItem(serviceManagerMock));
     }
@@ -143,7 +143,7 @@ public class OsgiDomainServiceTest {
 
     @Test
     public void testGetService() throws Exception {
-        ServiceManager result = (ServiceManager) service.getService(serviceManagerReferenceMock);
+        InternalServiceRegistrationManager result = (InternalServiceRegistrationManager) service.getService(serviceManagerReferenceMock);
         assertThat(result, sameInstance(serviceManagerMock));
     }
 

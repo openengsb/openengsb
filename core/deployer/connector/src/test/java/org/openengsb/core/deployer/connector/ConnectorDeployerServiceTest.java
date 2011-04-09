@@ -41,7 +41,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
@@ -59,7 +59,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private ConnectorDeployerService connectorDeployerService;
     private AuthenticationManager authManagerMock;
     private Authentication authMock;
-    private ServiceManager serviceManagerMock;
+    private InternalServiceRegistrationManager serviceManagerMock;
     private DeployerStorage storageMock;
 
     @Rule
@@ -72,13 +72,13 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService = new ConnectorDeployerService();
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
-        serviceManagerMock = mock(ServiceManager.class);
+        serviceManagerMock = mock(InternalServiceRegistrationManager.class);
         storageMock = mock(DeployerStorage.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a-connector ");
-        registerService(serviceManagerMock, props, ServiceManager.class);
+        registerService(serviceManagerMock, props, InternalServiceRegistrationManager.class);
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setDeployerStorage(storageMock);

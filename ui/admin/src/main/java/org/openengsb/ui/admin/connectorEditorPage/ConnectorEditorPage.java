@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.validation.FormValidator;
@@ -80,17 +80,17 @@ public class ConnectorEditorPage extends BasePage {
         }
     }
 
-    private final transient ServiceManager serviceManager;
+    private final transient InternalServiceRegistrationManager serviceManager;
     private ServiceEditor editor;
 
-    public ConnectorEditorPage(ServiceManager serviceManager) {
+    public ConnectorEditorPage(InternalServiceRegistrationManager serviceManager) {
         this.serviceManager = serviceManager;
         HashMap<String, String> attributeValues = new HashMap<String, String>();
         initEditor(attributeValues);
         createEditor(attributeValues);
     }
 
-    public ConnectorEditorPage(ServiceManager serviceManager, String serviceId) {
+    public ConnectorEditorPage(InternalServiceRegistrationManager serviceManager, String serviceId) {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
         initEditor(attributeValues);

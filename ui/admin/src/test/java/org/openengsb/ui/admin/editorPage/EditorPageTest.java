@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
@@ -46,13 +46,13 @@ import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 public class EditorPageTest {
 
     private AttributeDefinition attrib1;
-    private ServiceManager manager;
+    private InternalServiceRegistrationManager manager;
     private WicketTester tester;
 
     @Before
     public void setup() {
         tester = new WicketTester();
-        manager = mock(ServiceManager.class);
+        manager = mock(InternalServiceRegistrationManager.class);
         attrib1 =
             AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();

@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
@@ -57,11 +57,11 @@ import org.osgi.framework.ServiceReference;
 
 public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
-    private ServiceManager serviceManagerMock;
+    private InternalServiceRegistrationManager serviceManagerMock;
     private WicketTester tester;
     private DomainService domainServiceMock;
     private List<ServiceReference> managedServiceInstances;
-    private List<ServiceManager> serviceManagerListMock;
+    private List<InternalServiceRegistrationManager> serviceManagerListMock;
     private BundleContext bundleContext;
 
     @Before
@@ -69,15 +69,15 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         Locale.setDefault(new Locale("en"));
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
-        serviceManagerMock = mock(ServiceManager.class);
+        serviceManagerMock = mock(InternalServiceRegistrationManager.class);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "bla");
-        registerService(serviceManagerMock, props, ServiceManager.class);
+        registerService(serviceManagerMock, props, InternalServiceRegistrationManager.class);
         domainServiceMock = mock(DomainService.class);
         ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();
-        serviceManagerListMock = new ArrayList<ServiceManager>();
+        serviceManagerListMock = new ArrayList<InternalServiceRegistrationManager>();
 
         bundleContext = mock(BundleContext.class);
         when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(

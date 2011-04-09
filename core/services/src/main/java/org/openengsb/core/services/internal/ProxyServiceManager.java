@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.api.remote.CallRouter;
@@ -42,7 +42,7 @@ import org.osgi.framework.ServiceRegistration;
  *
  * @see InvocationHandler handed to the constructor.
  */
-public class ProxyServiceManager extends AbstractServiceManagerParent implements ServiceManager {
+public class ProxyServiceManager extends AbstractServiceManagerParent implements InternalServiceRegistrationManager {
 
     private final DomainProvider provider;
 

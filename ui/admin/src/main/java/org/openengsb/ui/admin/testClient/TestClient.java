@@ -65,7 +65,7 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
@@ -149,7 +149,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        ServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
+                        InternalServiceRegistrationManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });
@@ -157,18 +157,18 @@ public class TestClient extends BasePage {
                         .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-                IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
+                IModel<List<InternalServiceRegistrationManager>> managersModel = new LoadableDetachableModel<List<InternalServiceRegistrationManager>>() {
                     @Override
-                    protected List<ServiceManager> load() {
+                    protected List<InternalServiceRegistrationManager> load() {
                         return services.serviceManagersForDomain(item.getModelObject().getDomainInterface());
                     }
                 };
-                item.add(new ListView<ServiceManager>("services", managersModel) {
+                item.add(new ListView<InternalServiceRegistrationManager>("services", managersModel) {
 
                     @Override
-                    protected void populateItem(ListItem<ServiceManager> item) {
+                    protected void populateItem(ListItem<InternalServiceRegistrationManager> item) {
                         ServiceDescriptor desc = item.getModelObject().getDescriptor();
-                        item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+                        item.add(new Link<InternalServiceRegistrationManager>("create.new", item.getModel()) {
 
                             @Override
                             public void onClick() {
@@ -194,7 +194,7 @@ public class TestClient extends BasePage {
                 log.info("edit button pressed");
 
                 if (lastServiceId != null) {
-                    ServiceManager lastManager = getLastManager(lastServiceId);
+                    InternalServiceRegistrationManager lastManager = getLastManager(lastServiceId);
                     if (lastManager != null) {
                         setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
                     }
@@ -334,7 +334,7 @@ public class TestClient extends BasePage {
         editButton.setEnabled(getLastManager(serviceId) != null);
     }
 
-    private ServiceManager getLastManager(ServiceId serviceId) {
+    private InternalServiceRegistrationManager getLastManager(ServiceId serviceId) {
         ServiceReference[] references = null;
         try {
             references =
@@ -346,7 +346,7 @@ public class TestClient extends BasePage {
                 id = (String) references[0].getProperty("managerId");
                 domain = (String) references[0].getProperty("domain");
             }
-            List<ServiceManager> managerList = new ArrayList<ServiceManager>();
+            List<InternalServiceRegistrationManager> managerList = new ArrayList<InternalServiceRegistrationManager>();
 
             for (DomainProvider ref : services.domains()) {
                 Class<? extends Domain> domainInterface = ref.getDomainInterface();
@@ -355,7 +355,7 @@ public class TestClient extends BasePage {
                 }
             }
 
-            for (ServiceManager sm : managerList) {
+            for (InternalServiceRegistrationManager sm : managerList) {
                 if (sm.getDescriptor().getId().equals(id)) {
                     lastServiceId = serviceId;
                     return sm;
