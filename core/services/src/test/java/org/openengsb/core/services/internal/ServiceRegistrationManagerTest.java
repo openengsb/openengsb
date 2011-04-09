@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.services.internal;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
@@ -44,6 +45,11 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.remote.CallRouter;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
@@ -54,6 +60,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
     private InternalServiceRegistrationManager serviceManager;
     private DefaultOsgiUtilsService serviceUtils;
+    private CallRouter callrouter;
 
     @Override
     @Before
@@ -61,6 +68,10 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         super.setUp();
         registerMockedDomainProvider();
         registerMockedFactory();
+        callrouter = mock(CallRouter.class);
+        when(callrouter.callSync(anyString(), anyString(), any(MethodCall.class))).thenReturn(
+            new MethodReturn(ReturnType.Void, null, null));
+        registerService(callrouter, new Hashtable<String, Object>(), CallRouter.class);
         ServiceRegistrationManagerImpl serviceManagerImpl = new ServiceRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
         serviceManager = serviceManagerImpl;
@@ -143,6 +154,24 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         serviceUtils.getService("(foo=bar)", 100L);
         ServiceInstanceFactory factory = serviceUtils.getService(ServiceInstanceFactory.class);
         verify(factory).updateServiceInstance(any(Domain.class), eq(newAttrs));
+    }
+
+    @Test
+    public void testCreateProxy_shouldInvokeProxyFactory() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("portId", "jms+json");
+        attributes.put("destination", "localhost");
+        attributes.put("serviceId", "foo");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", Constants.EXTERNAL_CONNECTOR_PROXY);
+        serviceManager.createService(connectorId, connectorDescription);
+
+        NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
+        service.nullMethod();
+        verify(callrouter).callSync(eq("jms+json"), eq("localhost"), any(MethodCall.class));
     }
 
     @SuppressWarnings("unchecked")

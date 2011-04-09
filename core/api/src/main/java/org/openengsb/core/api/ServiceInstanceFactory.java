@@ -39,6 +39,8 @@ public interface ServiceInstanceFactory {
      */
     void updateServiceInstance(Domain instance, Map<String, String> attributes);
 
+    void updateServiceInstance(Domain instance, Map<String, String> attributes, boolean validate);
+
     /**
      * The {@link AbstractServiceManager} calls this method each time a new service instance has to be started.
      *
@@ -46,5 +48,7 @@ public interface ServiceInstanceFactory {
      * @param attributes the initial service settings
      */
     Domain createServiceInstance(String id, Map<String, String> attributes);
+
+    Domain createServiceInstance(String id, Map<String, String> attributes, boolean validate);
 
 }

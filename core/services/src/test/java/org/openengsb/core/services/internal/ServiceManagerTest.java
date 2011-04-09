@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.services.internal;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -40,6 +40,9 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.CorePersistenceServiceBackend;
+import org.openengsb.core.common.DefaultConfigPersistenceService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;

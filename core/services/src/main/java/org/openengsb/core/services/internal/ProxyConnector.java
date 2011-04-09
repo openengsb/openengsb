@@ -36,6 +36,9 @@ public class ProxyConnector implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (method.getDeclaringClass().equals(Object.class)) {
+            return method.invoke(this, args);
+        }
         MethodReturn callSync =
             callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata));
         switch (callSync.getType()) {

@@ -40,6 +40,11 @@ public final class Constants {
      */
     public static final String CONNECTOR = "connector";
 
+    /**
+     * connectors of this type require special handling
+     */
+    public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
+
     private Constants() {
         // this class should not be instanciated.
     }

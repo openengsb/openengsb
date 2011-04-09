@@ -1,9 +1,10 @@
-package org.openengsb.core.common;
+package org.openengsb.core.services.internal;
 
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
@@ -13,6 +14,7 @@ import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -48,11 +50,12 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
     public void createService(ConnectorId id, ConnectorDescription description)
         throws ServiceValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-        ServiceInstanceFactory service = getConnectorFactory(id.getConnectorType());
 
-        Domain serviceInstance = service.createServiceInstance(id.getInstanceId(), description.getAttributes());
+        ServiceInstanceFactory factory = getConnectorFactory(id);
+        // TODO really validate
+        Domain serviceInstance = factory.createServiceInstance(id.getInstanceId(), description.getAttributes());
 
-        String[] clazzes = new String[] {
+        String[] clazzes = new String[]{
                 OpenEngSBService.class.getName(),
                 Domain.class.getName(),
                 domainProvider.getDomainInterface().getName(),
@@ -66,6 +69,7 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
     public void update(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
         Map<String, String> attributes = connectorDescription.getAttributes();
+        // TODO really validate
         if (attributes != null) {
             udpateAttributes(id, attributes);
         }
@@ -82,7 +86,7 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
     }
 
     private void udpateAttributes(ConnectorId id, Map<String, String> attributes) {
-        ServiceInstanceFactory factory = getConnectorFactory(id.getConnectorType());
+        ServiceInstanceFactory factory = getConnectorFactory(id);
         factory.updateServiceInstance(instances.get(id), attributes);
     }
 
@@ -107,7 +111,12 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private ServiceInstanceFactory getConnectorFactory(String connectorType) {
+    protected ServiceInstanceFactory getConnectorFactory(ConnectorId id) {
+        String connectorType = id.getConnectorType();
+        if (connectorType == Constants.EXTERNAL_CONNECTOR_PROXY) {
+            DomainProvider domainProvider = getDomainProvider(id.getDomainType());
+            return ProxyServiceFactory.getInstance(domainProvider);
+        }
         Filter connectorFilter;
         try {
             connectorFilter =

@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
@@ -40,7 +41,7 @@ public abstract class ServiceEditor extends Panel {
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
-    protected Model<String> idModel = new Model<String>();
+    protected Model<ConnectorId> idModel = new Model<ConnectorId>();
     private TextField<String> idfield;
 
     public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values) {

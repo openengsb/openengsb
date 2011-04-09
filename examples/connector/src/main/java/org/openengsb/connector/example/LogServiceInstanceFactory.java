@@ -17,19 +17,16 @@
 
 package org.openengsb.connector.example;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
-import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.core.common.NonValidatingServiceInstanceFactory;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
-public class LogServiceInstanceFactory implements ServiceInstanceFactory<ExampleDomain, LogService> {
+public class LogServiceInstanceFactory extends NonValidatingServiceInstanceFactory {
 
     private ExampleDomainEvents domainEventInterface;
 
@@ -48,9 +45,10 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
     }
 
     @Override
-    public void updateServiceInstance(LogService instance, Map<String, String> attributes) {
+    public void updateServiceInstance(Domain instance, Map<String, String> attributes) {
+        LogService internalInstance = (LogService) instance;
         if (attributes.containsKey("outputMode")) {
-            instance.setOutputMode(attributes.get("outputMode"));
+            internalInstance.setOutputMode(attributes.get("outputMode"));
         }
     }
 
@@ -59,16 +57,6 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
         LogService instance = new LogService(id, domainEventInterface);
         updateServiceInstance(instance, attributes);
         return instance;
-    }
-
-    @Override
-    public MultipleAttributeValidationResult updateValidation(LogService instance, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
-
-    @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 
     public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {

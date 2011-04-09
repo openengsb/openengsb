@@ -64,8 +64,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
@@ -139,7 +141,6 @@ public class TestClient extends BasePage {
         };
         availableDomains = initAvailableDomainsMap();
 
-
         serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
 
             @Override
@@ -149,7 +150,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        InternalServiceRegistrationManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
+                        ServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }
                 });
@@ -157,16 +158,17 @@ public class TestClient extends BasePage {
                         .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-                IModel<List<InternalServiceRegistrationManager>> managersModel = new LoadableDetachableModel<List<InternalServiceRegistrationManager>>() {
-                    @Override
-                    protected List<InternalServiceRegistrationManager> load() {
-                        return services.serviceManagersForDomain(item.getModelObject().getDomainInterface());
-                    }
-                };
-                item.add(new ListView<InternalServiceRegistrationManager>("services", managersModel) {
+                IModel<List<InternalServiceRegistrationManager>> managersModel =
+                    new LoadableDetachableModel<List<InternalServiceRegistrationManager>>() {
+                        @Override
+                        protected List<InternalServiceRegistrationManager> load() {
+                            return services.serviceManagersForDomain(item.getModelObject().getDomainInterface());
+                        }
+                    };
+                item.add(new ListView<ServiceInstanceFactory>("services", managersModel) {
 
                     @Override
-                    protected void populateItem(ListItem<InternalServiceRegistrationManager> item) {
+                    protected void populateItem(ListItem<ServiceInstanceFactory> item) {
                         ServiceDescriptor desc = item.getModelObject().getDescriptor();
                         item.add(new Link<InternalServiceRegistrationManager>("create.new", item.getModel()) {
 

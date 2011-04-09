@@ -17,11 +17,13 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ConnectorId {
+@SuppressWarnings("serial")
+public class ConnectorId implements Serializable {
 
     private String domainType;
     private String connectorType;

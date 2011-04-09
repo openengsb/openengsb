@@ -15,16 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.example;
+package org.openengsb.core.common;
 
-import org.openengsb.connector.example.internal.LogService;
-import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.domain.example.ExampleDomain;
+import java.util.Map;
 
-public class LogServiceManager extends AbstractServiceManager<ExampleDomain, LogService> {
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.ServiceInstanceFactory;
 
-    public LogServiceManager(LogServiceInstanceFactory factory) {
-        super(factory);
+public abstract class NonValidatingServiceInstanceFactory implements ServiceInstanceFactory {
+
+    @Override
+    public void updateServiceInstance(Domain instance, Map<String, String> attributes, boolean validate) {
+        updateServiceInstance(instance, attributes);
+    }
+
+    @Override
+    public Domain createServiceInstance(String id, Map<String, String> attributes, boolean validate) {
+        return createServiceInstance(id, attributes);
     }
 
 }

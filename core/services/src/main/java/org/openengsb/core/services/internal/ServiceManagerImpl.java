@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.services.internal;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -31,6 +31,7 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class ServiceManagerImpl implements ServiceManager {
 
@@ -47,7 +48,7 @@ public class ServiceManagerImpl implements ServiceManager {
                 throw new IllegalArgumentException("connector already exists");
             }
         } catch (PersistenceException e) {
-            throw new ServiceValidationFailedException(e);
+            throw new RuntimeException(e);
         }
         registrationManager.createService(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);

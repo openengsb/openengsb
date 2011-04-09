@@ -27,8 +27,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
@@ -56,6 +56,10 @@ public class ConnectorEditorPage extends BasePage {
         public void onSubmit() {
             boolean checkBoxValue = isValidating();
             if (checkBoxValue) {
+                ConnectorDescription connectorDescription = new ConnectorDescription();
+                connectorDescription.setAttributes(getValues());
+                serviceManager.update(idModel.getObject(), connectorDescription);
+
                 MultipleAttributeValidationResult updateWithValidation =
                     serviceManager.update(idModel.getObject(), getValues());
                 if (!updateWithValidation.isValid()) {

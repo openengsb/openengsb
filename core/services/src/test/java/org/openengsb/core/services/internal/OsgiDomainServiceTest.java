@@ -89,12 +89,14 @@ public class OsgiDomainServiceTest {
 
         serviceManagerReferenceMock = mock(ServiceReference.class);
         filter = String.format("(domain=%s)", NullDomain.class.getName());
-        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filter)).thenReturn(
+        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filter))
+            .thenReturn(
                 new ServiceReference[]{ serviceManagerReferenceMock });
         serviceManagerMock = mock(InternalServiceRegistrationManager.class);
         when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
         String filterConnector = String.format("(connector=%s)", connectorName);
-        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filterConnector)).thenReturn(
+        when(contextMock.getAllServiceReferences(InternalServiceRegistrationManager.class.getName(), filterConnector))
+            .thenReturn(
                 new ServiceReference[]{ serviceManagerReferenceMock });
     }
 
@@ -143,7 +145,8 @@ public class OsgiDomainServiceTest {
 
     @Test
     public void testGetService() throws Exception {
-        InternalServiceRegistrationManager result = (InternalServiceRegistrationManager) service.getService(serviceManagerReferenceMock);
+        InternalServiceRegistrationManager result =
+            (InternalServiceRegistrationManager) service.getService(serviceManagerReferenceMock);
         assertThat(result, sameInstance(serviceManagerMock));
     }
 

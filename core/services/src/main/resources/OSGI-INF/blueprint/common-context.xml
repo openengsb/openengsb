@@ -43,6 +43,26 @@
     </bean>
   </service>
 
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.ServiceManager</value>
+    </interfaces>
+    <bean class="org.openengsb.core.services.internal.ServiceManagerImpl">
+      <property name="registrationManager" ref="registrationManager" />
+    </bean>
+  </service>
+
+  <bean class="org.openengsb.core.services.internal.ServiceRegistrationManagerImpl" id="registrationManager">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.InternalServiceRegistrationManager</value>
+    </interfaces>
+    <ref component-id="registrationManager" />
+  </service>
+
   <service interface="org.openengsb.core.api.remote.RequestHandler">
     <bean class="org.openengsb.core.services.internal.RequestHandlerImpl" />
   </service>
@@ -72,7 +92,7 @@
     <service-properties>
       <entry key="service.pid" value="org.openengsb.persistence.config" />
     </service-properties>
-    <bean class="org.openengsb.core.services.internal.ConfigPersistenceServiceFactory" >
+    <bean class="org.openengsb.core.services.internal.ConfigPersistenceServiceFactory">
       <property name="bundleContext" ref="blueprintBundleContext" />
       <property name="serviceUtils" ref="serviceUtils" />
     </bean>
