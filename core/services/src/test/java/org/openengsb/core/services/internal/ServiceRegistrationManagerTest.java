@@ -17,7 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -85,10 +85,11 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        serviceManager.createService(ConnectorId.generate("test", "testc"), connectorDescription);
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
-        assertThat(service, notNullValue());
+        assertThat(service.getInstanceId(), is(connectorId.getInstanceId()));
     }
 
     @Test
@@ -172,12 +173,18 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
         verify(callrouter).callSync(eq("jms+json"), eq("localhost"), any(MethodCall.class));
+        System.out.println(service.getInstanceId());
     }
 
     @SuppressWarnings("unchecked")
     private void registerMockedFactory() {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
-        when(factory.createServiceInstance(anyString(), any(Map.class))).thenReturn(new NullDomainImpl());
+        when(factory.createServiceInstance(anyString(), any(Map.class))).thenAnswer(new Answer<Domain>() {
+            @Override
+            public Domain answer(InvocationOnMock invocation) throws Throwable {
+                return new NullDomainImpl((String) invocation.getArguments()[0]);
+            }
+        });
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put("connector", "testc");
         registerService(factory, factoryProps, ServiceInstanceFactory.class);
