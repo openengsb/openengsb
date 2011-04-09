@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 
 import java.util.List;
 
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.ServiceValidationFailedException;
@@ -31,7 +32,8 @@ import org.openengsb.core.api.persistence.PersistenceException;
 public class ServiceManagerImpl implements ServiceManager {
 
     private InternalServiceRegistrationManager registrationManager;
-    private ConfigPersistenceService configPersistence = OpenEngSBCoreServices.getConfigPersistenceService("Connector");
+    private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
+        .getConfigPersistenceService(Constants.CONNECTOR);
 
     @Override
     public void createService(ConnectorId id, ConnectorDescription connectorDescription)
@@ -61,7 +63,8 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public void delete(ConnectorId id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // TODO delete from config (OPENENGSB-1256)
+        registrationManager.delete(id);
     }
 
     @Override

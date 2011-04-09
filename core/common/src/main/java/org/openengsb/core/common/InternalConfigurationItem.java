@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.persistence.internal;
+package org.openengsb.core.common;
 
 import org.openengsb.core.api.model.ConfigItem;
 

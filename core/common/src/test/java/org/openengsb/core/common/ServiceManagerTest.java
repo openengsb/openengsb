@@ -17,7 +17,6 @@
 
 package org.openengsb.core.common;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -32,16 +31,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
@@ -65,7 +66,15 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerConfigPersistence() {
-
+        final CorePersistenceServiceBackend persistenceBackend = new CorePersistenceServiceBackend();
+        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        persistenceBackend.setPersistenceManager(persistenceManager);
+        persistenceBackend.setBundleContext(bundleContext);
+        persistenceBackend.init();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.CONFIGURATION_ID, Constants.CONNECTOR);
+        props.put(Constants.BACKEND_ID, "dummy");
+        registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
     }
 
     private void createServiceManager() {
@@ -85,15 +94,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
         serviceManager.createService(connectorId, connectorDescription);
 
-        createServiceManager();
-        serviceManager.delete(connectorId);
-
-        try {
-            serviceUtils.getService("(foo=bar)", 100L);
-            fail("service should have been deleted");
-        } catch (OsgiServiceNotAvailableException e) {
-            // expected
-        }
+        serviceUtils.getService("(foo=bar)", 100L);
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +102,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
         when(factory.createServiceInstance(anyString(), any(Map.class))).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
-        factoryProps.put("connector", "testc");
+        factoryProps.put(Constants.CONNECTOR, "testc");
         registerService(factory, factoryProps, ServiceInstanceFactory.class);
     }
 

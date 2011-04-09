@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.RuleConfiguration;
+import org.openengsb.core.common.CorePersistenceServiceBackend;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
