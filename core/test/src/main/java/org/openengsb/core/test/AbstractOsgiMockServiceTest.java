@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,6 +120,17 @@ public abstract class AbstractOsgiMockServiceTest {
                             return null;
                         }
                     }).when(result).unregister();
+                    doAnswer(new Answer<Void>() {
+                        @Override
+                        public Void answer(InvocationOnMock invocation) throws Throwable {
+                            Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[0];
+                            Dictionary<String, Object> orig = serviceReferences.get(serviceReference);
+                            for (String key : Collections.list(dict.keys())) {
+                                orig.put(key, dict.get(key));
+                            }
+                            return null;
+                        }
+                    }).when(result).setProperties(any(Dictionary.class));
                     return result;
                 }
             });

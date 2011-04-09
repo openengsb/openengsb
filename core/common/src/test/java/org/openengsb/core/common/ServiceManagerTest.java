@@ -22,7 +22,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
@@ -59,14 +61,13 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         super.setUp();
         registerMockedDomainProvider();
         registerMockedFactory();
+        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
+        serviceManagerImpl.setBundleContext(bundleContext);
+        serviceManager = serviceManagerImpl;
     }
 
     @Test
     public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
-        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
-        serviceManagerImpl.setBundleContext(bundleContext);
-        serviceManager = serviceManagerImpl;
-
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -81,10 +82,6 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testDeleteService_shouldUnregisterService() throws Exception {
-        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
-        serviceManagerImpl.setBundleContext(bundleContext);
-        serviceManager = serviceManagerImpl;
-
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -100,6 +97,52 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         } catch (OsgiServiceNotAvailableException e) {
             // expected
         }
+    }
+
+    @Test
+    public void testUpdateProperties_shouldMatchNewFilter() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+        ConnectorDescription updated = new ConnectorDescription();
+        Dictionary<String, Object> newProperties = new Hashtable<String, Object>();
+        newProperties.put("foo", "xxx");
+        updated.setProperties(newProperties);
+        serviceManager.update(connectorId, updated);
+
+        serviceUtils.getService("(foo=xxx)", 100L);
+        try {
+            serviceUtils.getService("(foo=bar)", 100L);
+            fail("service was expected to be not available");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testUpdateAttributes_shouldChangeInstance() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+        ConnectorDescription updated = new ConnectorDescription();
+        Map<String, String> newAttrs = new HashMap<String, String>();
+        newAttrs.put("answer", "43");
+        updated.setAttributes(newAttrs);
+        serviceManager.update(connectorId, updated);
+
+        serviceUtils.getService("(foo=bar)", 100L);
+        ServiceInstanceFactory factory = serviceUtils.getService(ServiceInstanceFactory.class);
+        verify(factory).updateServiceInstance(any(Domain.class), eq(newAttrs));
     }
 
     @SuppressWarnings("unchecked")

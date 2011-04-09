@@ -37,6 +37,7 @@ public class ServiceManagerImpl implements ServiceManager {
     private BundleContext bundleContext;
 
     private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
+    private Map<ConnectorId, Domain> instances = new HashMap<ConnectorId, Domain>();
 
     @Override
     public String getInstanceId() {
@@ -62,9 +63,27 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void update(ConnectorId id, ConnectorDescription connectorDescpription)
+    public void update(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
-        throw new UnsupportedOperationException("Not yet implemented");
+        Map<String, String> attributes = connectorDescription.getAttributes();
+        if (attributes != null) {
+            udpateAttributes(id, attributes);
+        }
+        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        if (properties != null) {
+            updateProperties(id, properties);
+        }
+
+    }
+
+    private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
+        ServiceRegistration registration = registrations.get(id);
+        registration.setProperties(properties);
+    }
+
+    private void udpateAttributes(ConnectorId id, Map<String, String> attributes) {
+        ServiceInstanceFactory factory = getConnectorFactory(id.getConnectorType());
+        factory.updateServiceInstance(instances.get(id), attributes);
     }
 
     @Override
