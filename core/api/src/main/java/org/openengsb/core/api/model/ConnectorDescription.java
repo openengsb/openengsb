@@ -15,30 +15,39 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.validation;
+package org.openengsb.core.api.model;
 
-import java.util.Collections;
+import java.util.Dictionary;
 import java.util.Map;
 
-public class MultipleAttributeValidationResultImpl implements MultipleAttributeValidationResult {
+public class ConnectorDescription {
 
-    private final boolean valid;
-    private final Map<String, String> attributeErrorMessages;
+    private Map<String, String> attributes;
+    private Dictionary<String, Object> properties;
 
-    public MultipleAttributeValidationResultImpl(boolean valid, Map<String, String> attributeErrorMessages) {
-        super();
-        this.valid = valid;
-        this.attributeErrorMessages = attributeErrorMessages;
+    public ConnectorDescription() {
     }
 
-    @Override
-    public boolean isValid() {
-        return this.valid;
+    public ConnectorDescription(Map<String, String> attributes,
+            Dictionary<String, Object> properties) {
+        this.attributes = attributes;
+        this.properties = properties;
     }
 
-    @Override
-    public Map<String, String> getAttributeErrorMessages() {
-        return Collections.unmodifiableMap(this.attributeErrorMessages);
+    public Map<String, String> getAttributes() {
+        return this.attributes;
+    }
+
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    public Dictionary<String, Object> getProperties() {
+        return this.properties;
+    }
+
+    public void setProperties(Dictionary<String, Object> properties) {
+        this.properties = properties;
     }
 
 }

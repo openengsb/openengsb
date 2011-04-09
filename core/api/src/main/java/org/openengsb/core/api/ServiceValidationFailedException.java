@@ -15,14 +15,37 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.validation;
+package org.openengsb.core.api;
 
 import java.util.Map;
 
-public interface MultipleAttributeValidationResult {
+@SuppressWarnings("serial")
+public class ServiceValidationFailedException extends Exception {
 
-    boolean isValid();
+    private Map<String, String> errorMessages;
 
-    Map<String, String> getAttributeErrorMessages();
+    public ServiceValidationFailedException() {
+        super();
+    }
+
+    public ServiceValidationFailedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ServiceValidationFailedException(String message) {
+        super(message);
+    }
+
+    public ServiceValidationFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    public ServiceValidationFailedException(Map<String, String> errorMessages) {
+        this.errorMessages = errorMessages;
+    }
+
+    public Map<String, String> getErrorMessages() {
+        return this.errorMessages;
+    }
 
 }

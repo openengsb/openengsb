@@ -19,6 +19,7 @@ package org.openengsb.core.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +44,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
@@ -99,6 +101,26 @@ public abstract class AbstractOsgiMockServiceTest {
                 return services.get(ref);
             }
         });
+        when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
+            new Answer<ServiceRegistration>() {
+                @Override
+                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                    String[] clazzes = (String[]) invocation.getArguments()[0];
+                    final Object service = invocation.getArguments()[1];
+                    Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
+                    registerService(service, dict, clazzes);
+                    ServiceRegistration result = mock(ServiceRegistration.class);
+                    doAnswer(new Answer<Void>() {
+                        @Override
+                        public Void answer(InvocationOnMock invocation) throws Throwable {
+                            services.remove(service);
+                            return null;
+                        }
+                    }).when(result).unregister();
+                    return result;
+                }
+            });
+
         bundle = mock(Bundle.class);
         when(bundle.getBundleContext()).thenReturn(bundleContext);
         when(bundleContext.getBundle()).thenReturn(bundle);
@@ -130,6 +152,14 @@ public abstract class AbstractOsgiMockServiceTest {
         }
         objectClasses.add(OpenEngSBService.class.getCanonicalName());
         props.put(Constants.OBJECTCLASS, objectClasses.toArray(new String[objectClasses.size()]));
+        putService(service, props);
+    }
+
+    /**
+     * registers the service with the given properties under the given interfaces
+     */
+    protected void registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
+        props.put(Constants.OBJECTCLASS, interfazes);
         putService(service, props);
     }
 

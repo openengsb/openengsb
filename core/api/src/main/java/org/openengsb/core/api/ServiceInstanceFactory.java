@@ -20,9 +20,8 @@ package org.openengsb.core.api;
 import java.util.Map;
 
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 
-public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType extends DomainType> {
+public interface ServiceInstanceFactory {
 
     /**
      * Called when the {@link #ServiceDescriptor} for the provided service is needed.
@@ -38,12 +37,7 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
      * @param instance the instance to update
      * @param attributes the new service settings
      */
-    void updateServiceInstance(InstanceType instance, Map<String, String> attributes);
-
-    /**
-     * Validates if the service is correct before updating.
-     */
-    MultipleAttributeValidationResult updateValidation(InstanceType instance, Map<String, String> attributes);
+    void updateServiceInstance(Domain instance, Map<String, String> attributes);
 
     /**
      * The {@link AbstractServiceManager} calls this method each time a new service instance has to be started.
@@ -51,11 +45,6 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
      * @param id the unique id this service has been assigned.
      * @param attributes the initial service settings
      */
-    InstanceType createServiceInstance(String id, Map<String, String> attributes);
-
-    /**
-     * Validates if the attributes are correct before creation.
-     */
-    MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes);
+    Domain createServiceInstance(String id, Map<String, String> attributes);
 
 }

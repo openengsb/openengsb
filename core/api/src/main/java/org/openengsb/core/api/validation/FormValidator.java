@@ -21,8 +21,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.ServiceValidationFailedException;
+
 public interface FormValidator extends Serializable {
-    MultipleAttributeValidationResult validate(Map<String, String> attributes);
+    void validate(Map<String, String> attributes) throws ServiceValidationFailedException;
 
     List<String> fieldsToValidate();
 }
