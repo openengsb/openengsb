@@ -71,8 +71,8 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -506,19 +506,11 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
             new ServiceReference[]{ ref });
 
-        List<InternalServiceRegistrationManager> managerList = new ArrayList<InternalServiceRegistrationManager>();
-        InternalServiceRegistrationManager serviceManagerMock = Mockito.mock(InternalServiceRegistrationManager.class);
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
                 new PassThroughLocalizableString("ServiceDescription"));
-
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-
-        managerList.add(serviceManagerMock);
-        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
 
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -642,7 +634,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
 
         InternalServiceRegistrationManager serviceManagerMock = Mockito.mock(InternalServiceRegistrationManager.class);
-        List<InternalServiceRegistrationManager> serviceManagerList = new ArrayList<InternalServiceRegistrationManager>();
+        List<InternalServiceRegistrationManager> serviceManagerList =
+            new ArrayList<InternalServiceRegistrationManager>();
         serviceManagerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
 
@@ -650,7 +643,6 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
         Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
                 new PassThroughLocalizableString("service.description"));
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         testService = mock(TestInterface.class);
         registerServiceViaId(testService, "test", TestInterface.class);

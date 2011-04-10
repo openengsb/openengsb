@@ -17,126 +17,104 @@
 
 package org.openengsb.ui.admin.editorPage;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.ITestPageSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.core.test.NullDomain;
-import org.openengsb.core.test.NullDomainImpl;
-import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 
 public class EditorPageTest {
 
     private AttributeDefinition attrib1;
     private InternalServiceRegistrationManager manager;
     private WicketTester tester;
-
-    @Before
-    public void setup() {
-        tester = new WicketTester();
-        manager = mock(InternalServiceRegistrationManager.class);
-        attrib1 =
-            AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
-                .name("a_name").build();
-        ServiceDescriptor d =
-            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(NullDomain.class)
-                .implementationType(NullDomainImpl.class).id("a").name("sn").description("sd").attribute(attrib1)
-                .build();
-        when(manager.getDescriptor()).thenReturn(d);
-    }
-
-    @Test
-    public void attributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
-        ConnectorEditorPage page = new ConnectorEditorPage(manager);
-        assertThat(page.getEditorPanel().getValues().get("a"), is("a_default"));
-    }
-
-    @Test
-    public void testIfValuesOfAttributesAreShown() {
-
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("a", "testValue");
-        when(manager.getAttributeValues("a")).thenReturn(attributes);
-
-        ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
-        tester.startPage(page);
-        tester.debugComponentTrees();
-
-        assertThat(page.getEditorPanel().getAttributes().size(), is(1));
-        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("a"));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testIdFieldIsEditable() {
-        ConnectorEditorPage page = new ConnectorEditorPage(manager);
-        tester.startPage(page);
-        tester.debugComponentTrees();
-        TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
-        assertThat(idField.isEnabled(), is(true));
-    }
-
-    @SuppressWarnings({ "unchecked", "serial" })
-    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
-        Map<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("a", "validation.service.not");
-        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-            new MultipleAttributeValidationResultImpl(false, errorMessages));
-        WicketTester tester = new WicketTester();
-        tester.startPage(new ITestPageSource() {
-            @Override
-            public Page getTestPage() {
-                return new ConnectorEditorPage(manager);
-            }
-        });
-        FormTester formTester = tester.newFormTester("editor:form");
-        formTester.setValue("fields:id:row:field", "someValue");
-        formTester.submit();
-        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
-        tester.assertRenderedPage(ConnectorEditorPage.class);
-    }
-
-    @Test
-    @SuppressWarnings({ "unchecked", "serial" })
-    @Ignore("OPENENGSB-277, what checks should be bypassed")
-    public void uncheckValidationCheckbox_shouldBypassValidation() {
-        Map<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("a", "validation.service.not");
-        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-            new MultipleAttributeValidationResultImpl(false, errorMessages));
-        WicketTester tester = new WicketTester();
-        tester.startPage(new ITestPageSource() {
-            @Override
-            public Page getTestPage() {
-                return new ConnectorEditorPage(manager);
-            }
-        });
-        FormTester formTester = tester.newFormTester("editor:form");
-        formTester.setValue("fields:id:row:field", "someValue");
-        formTester.setValue("validate", false);
-        formTester.submit();
-        tester.assertErrorMessages(new String[]{});
-        tester.assertInfoMessages(new String[]{ "Service can be added" });
-        Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
-        Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
-    }
+//
+//    @Before
+//    public void setup() {
+//        tester = new WicketTester();
+//        manager = mock(InternalServiceRegistrationManager.class);
+//        attrib1 =
+//            AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
+//                .name("a_name").build();
+//        ServiceDescriptor d =
+//            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(NullDomain.class)
+//                .implementationType(NullDomainImpl.class).id("a").name("sn").description("sd").attribute(attrib1)
+//                .build();
+//        when(manager.getDescriptor()).thenReturn(d);
+//    }
+//
+//    @Test
+//    public void attributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
+//        ConnectorEditorPage page = new ConnectorEditorPage(manager);
+//        assertThat(page.getEditorPanel().getValues().get("a"), is("a_default"));
+//    }
+//
+//    @Test
+//    public void testIfValuesOfAttributesAreShown() {
+//
+//        Map<String, String> attributes = new HashMap<String, String>();
+//        attributes.put("a", "testValue");
+//        when(manager.getAttributeValues("a")).thenReturn(attributes);
+//
+//        ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
+//        tester.startPage(page);
+//        tester.debugComponentTrees();
+//
+//        assertThat(page.getEditorPanel().getAttributes().size(), is(1));
+//        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("a"));
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    @Test
+//    public void testIdFieldIsEditable() {
+//        ConnectorEditorPage page = new ConnectorEditorPage(manager);
+//        tester.startPage(page);
+//        tester.debugComponentTrees();
+//        TextField<String> idField =
+//            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
+//        assertThat(idField.isEnabled(), is(true));
+//    }
+//
+//    @SuppressWarnings({ "unchecked", "serial" })
+//    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+//        Map<String, String> errorMessages = new HashMap<String, String>();
+//        errorMessages.put("a", "validation.service.not");
+//        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+//            new MultipleAttributeValidationResultImpl(false, errorMessages));
+//        WicketTester tester = new WicketTester();
+//        tester.startPage(new ITestPageSource() {
+//            @Override
+//            public Page getTestPage() {
+//                return new ConnectorEditorPage(manager);
+//            }
+//        });
+//        FormTester formTester = tester.newFormTester("editor:form");
+//        formTester.setValue("fields:id:row:field", "someValue");
+//        formTester.submit();
+//        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
+//        tester.assertRenderedPage(ConnectorEditorPage.class);
+//    }
+//
+//    @Test
+//    @SuppressWarnings({ "unchecked", "serial" })
+//    @Ignore("OPENENGSB-277, what checks should be bypassed")
+//    public void uncheckValidationCheckbox_shouldBypassValidation() {
+//        Map<String, String> errorMessages = new HashMap<String, String>();
+//        errorMessages.put("a", "validation.service.not");
+//        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+//            new MultipleAttributeValidationResultImpl(false, errorMessages));
+//        WicketTester tester = new WicketTester();
+//        tester.startPage(new ITestPageSource() {
+//            @Override
+//            public Page getTestPage() {
+//                return new ConnectorEditorPage(manager);
+//            }
+//        });
+//        FormTester formTester = tester.newFormTester("editor:form");
+//        formTester.setValue("fields:id:row:field", "someValue");
+//        formTester.setValue("validate", false);
+//        formTester.submit();
+//        tester.assertErrorMessages(new String[]{});
+//        tester.assertInfoMessages(new String[]{ "Service can be added" });
+//        Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
+//        Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
+//    }
 }

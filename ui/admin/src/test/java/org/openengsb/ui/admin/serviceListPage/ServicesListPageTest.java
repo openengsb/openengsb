@@ -40,9 +40,10 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
@@ -151,7 +152,12 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("name"));
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("desc"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
+        ConnectorProvider mock2 = mock(ConnectorProvider.class);
+        when(mock2.getDescriptor()).thenReturn(serviceDescriptorMock);
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("domain", "test");
+        props.put("connector", "test");
+        registerService(mock2, props, ConnectorProvider.class);
         startPage();
 
         ListView<ServiceReference> connectingService =
@@ -203,7 +209,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         startPage();
         tester.assertVisible("lazy:content:connectingServicePanel:noConServices");
@@ -263,7 +268,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         domainService.setAliveState(AliveState.CONNECTING);
         return domainService;
     }

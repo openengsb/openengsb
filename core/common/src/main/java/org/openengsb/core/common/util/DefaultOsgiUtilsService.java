@@ -21,7 +21,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
@@ -32,6 +36,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class DefaultOsgiUtilsService implements OsgiUtilsService {
@@ -273,6 +278,21 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         } finally {
             tracker.close();
         }
+    }
+
+    @Override
+    public List<ServiceReference> listServiceReferences(Class<?> clazz) {
+        return Arrays.asList(bundleContext.getServiceReference(clazz.getName()));
+    }
+
+    @Override
+    public <T> List<T> listServices(Class<T> clazz) {
+        ServiceTracker tracker = new ServiceTracker(bundleContext, clazz.getName(), null);
+        tracker.open();
+        Object[] services = tracker.getServices();
+        List<T> result = new ArrayList<T>();
+        CollectionUtils.addAll(result, services);
+        return result;
     }
 
     public void setBundleContext(BundleContext bundleContext) {

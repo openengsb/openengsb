@@ -61,16 +61,15 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -80,9 +79,6 @@ import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.common.model.LocalizableStringModel;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class TestClient extends BasePage {
@@ -90,13 +86,14 @@ public class TestClient extends BasePage {
     private static Log log = LogFactory.getLog(TestClient.class);
 
     @SpringBean
-    private DomainService services;
+    private List<DomainProvider> domainProvider;
 
     @SpringBean
-    private BundleContext bundleContext;
+    private ServiceManager serviceManager;
 
-    @SpringBean
-    private ProxyFactory proxyFactory;
+    private static WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+
+    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
     private DropDownChoice<MethodId> methodList;
 
@@ -133,48 +130,42 @@ public class TestClient extends BasePage {
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
         MetaDataRoleAuthorizationStrategy.authorize(serviceManagementContainer, RENDER, "ROLE_ADMIN");
-        IModel<List<DomainProvider>> domainModel = new LoadableDetachableModel<List<DomainProvider>>() {
-            @Override
-            protected List<DomainProvider> load() {
-                return services.domains();
-            }
-        };
+
         availableDomains = initAvailableDomainsMap();
 
-        serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
-
+        serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainProvider) {
             @Override
             protected void populateItem(final ListItem<DomainProvider> item) {
+                final String domainType = item.getModelObject().getId();
                 item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
                 item.add(new Link<DomainProvider>("proxy.create.new", item.getModel()) {
-
                     @Override
                     public void onClick() {
-                        ServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
-                        setResponsePage(new ConnectorEditorPage(serviceManager));
+                        setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
+                            Constants.EXTERNAL_CONNECTOR_PROXY));
                     }
                 });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                         .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-                IModel<List<InternalServiceRegistrationManager>> managersModel =
-                    new LoadableDetachableModel<List<InternalServiceRegistrationManager>>() {
+
+                IModel<? extends List<? extends ConnectorProvider>> connectorProviderModel =
+                    new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
                         @Override
-                        protected List<InternalServiceRegistrationManager> load() {
-                            return services.serviceManagersForDomain(item.getModelObject().getDomainInterface());
+                        protected List<? extends ConnectorProvider> load() {
+                            return serviceUtils.listServices(ConnectorProvider.class);
                         }
                     };
-                item.add(new ListView<ServiceInstanceFactory>("services", managersModel) {
+                item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
 
                     @Override
-                    protected void populateItem(ListItem<ServiceInstanceFactory> item) {
+                    protected void populateItem(ListItem<ConnectorProvider> item) {
                         ServiceDescriptor desc = item.getModelObject().getDescriptor();
-                        item.add(new Link<InternalServiceRegistrationManager>("create.new", item.getModel()) {
-
+                        item.add(new Link<ConnectorProvider>("create.new", item.getModel()) {
                             @Override
                             public void onClick() {
-                                setResponsePage(new ConnectorEditorPage(getModelObject()));
+                                setResponsePage(new ConnectorEditorPage(domainType, getModelObject().getId()));
                             }
                         });
                         item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
@@ -195,13 +186,14 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
 
-                if (lastServiceId != null) {
-                    InternalServiceRegistrationManager lastManager = getLastManager(lastServiceId);
-                    if (lastManager != null) {
-                        setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
-                    }
+                // if (lastServiceId != null) {
+                // TODO
+                // InternalServiceRegistrationManager lastManager = getLastManager(lastServiceId);
+                // if (lastManager != null) {
+                // setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
+                // }
 
-                }
+                // }
             }
 
         };
@@ -285,7 +277,7 @@ public class TestClient extends BasePage {
             @Override
             protected Map<String, DomainProvider> load() {
                 HashMap<String, DomainProvider> providerHashMap = new HashMap<String, DomainProvider>();
-                for (DomainProvider provider : services.domains()) {
+                for (DomainProvider provider : domainProvider) {
                     String providerName = provider.getName().getString(getSession().getLocale());
                     String name = String.format(DOMAINSTRING, providerName);
                     providerHashMap.put(name, provider);
@@ -333,47 +325,15 @@ public class TestClient extends BasePage {
     private void updateEditButton(ServiceId serviceId) {
         lastServiceId = null;
         editButton.setEnabled(false);
-        editButton.setEnabled(getLastManager(serviceId) != null);
-    }
-
-    private InternalServiceRegistrationManager getLastManager(ServiceId serviceId) {
-        ServiceReference[] references = null;
-        try {
-            references =
-                    bundleContext.getServiceReferences(Domain.class.getName(),
-                            String.format("(id=%s)", serviceId.getServiceId()));
-            String id = "";
-            String domain = null;
-            if (references != null && references.length > 0) {
-                id = (String) references[0].getProperty("managerId");
-                domain = (String) references[0].getProperty("domain");
-            }
-            List<InternalServiceRegistrationManager> managerList = new ArrayList<InternalServiceRegistrationManager>();
-
-            for (DomainProvider ref : services.domains()) {
-                Class<? extends Domain> domainInterface = ref.getDomainInterface();
-                if (domainInterface.getName().equals(domain)) {
-                    managerList.addAll(services.serviceManagersForDomain(domainInterface));
-                }
-            }
-
-            for (InternalServiceRegistrationManager sm : managerList) {
-                if (sm.getDescriptor().getId().equals(id)) {
-                    lastServiceId = serviceId;
-                    return sm;
-                }
-            }
-        } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
+        // TODO edit-button
+        // editButton.setEnabled(getLastManager(serviceId) != null);
     }
 
     private TreeModel createModel() {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
         TreeModel model = new DefaultTreeModel(node);
         log.info("adding domains");
-        for (DomainProvider provider : services.domains()) {
+        for (DomainProvider provider : domainProvider) {
             log.info("adding " + provider.getName());
             addDomainProvider(provider, node);
         }
@@ -396,8 +356,9 @@ public class TestClient extends BasePage {
         providerNode.add(endPointReferenceNode);
 
         // add all corresponding services
-        for (ServiceReference serviceReference : services.serviceReferencesForDomain(provider.getDomainInterface())) {
-            String id = (String) serviceReference.getProperty("id");
+        List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(provider.getDomainInterface(), "*");
+        for (Domain serviceReference : domainEndpoints) {
+            String id = serviceReference.getInstanceId();
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);

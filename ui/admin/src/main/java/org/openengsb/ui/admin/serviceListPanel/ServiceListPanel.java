@@ -37,11 +37,12 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
@@ -146,12 +147,13 @@ public class ServiceListPanel extends Panel {
             protected void populateItem(final ListItem<ServiceReference> item) {
                 final ServiceReference serv = item.getModelObject();
                 final String connector = (String) serv.getProperty("connector");
+                final String domain = (String) serv.getProperty("domain");
                 final String id = (String) serv.getProperty("id");
+                final ConnectorId connectorId = new ConnectorId(domain, connector, id);
                 LocalizableString description = new PassThroughLocalizableString("");
                 InternalServiceRegistrationManager sm;
                 try {
-                    sm = getServiceManager(connector);
-                    ServiceDescriptor desc = sm.getDescriptor();
+                    ServiceDescriptor desc = getServiceDescriptor(connector);
                     if (desc != null) {
                         description = desc.getDescription();
                     }
@@ -170,7 +172,7 @@ public class ServiceListPanel extends Panel {
                             error(e);
                             return;
                         }
-                        setResponsePage(new ConnectorEditorPage(sm, id));
+                        setResponsePage(new ConnectorEditorPage(connectorId));
                     }
                 });
                 item.add(new AjaxLink<String>("deleteService", new Model<String>(connector)) {
@@ -185,7 +187,7 @@ public class ServiceListPanel extends Panel {
                             error(e);
                             return;
                         }
-                        manager.delete(id);
+                        manager.delete(connectorId);
                         noServicesLabel.setVisible(getList().size() <= 0);
                         target.addComponent(noServicesLabel);
                         target.addComponent(serviceWebMarkupContainer);
@@ -193,18 +195,25 @@ public class ServiceListPanel extends Panel {
                 });
             }
 
-            private InternalServiceRegistrationManager getServiceManager(String connector) throws OsgiServiceNotAvailableException {
+            private InternalServiceRegistrationManager getServiceManager(String connector)
+                throws OsgiServiceNotAvailableException {
                 Filter filter;
                 try {
                     filter =
-                        OpenEngSBCoreServices.getServiceUtilsService().makeFilter(InternalServiceRegistrationManager.class,
+                        OpenEngSBCoreServices.getServiceUtilsService().makeFilter(
+                            InternalServiceRegistrationManager.class,
                             String.format("(connector=%s)", connector));
                 } catch (InvalidSyntaxException e) {
                     throw new IllegalStateException(e);
                 }
-                return (InternalServiceRegistrationManager) OpenEngSBCoreServices.getServiceUtilsService().getService(filter, 300);
+                return (InternalServiceRegistrationManager) OpenEngSBCoreServices.getServiceUtilsService().getService(
+                    filter, 300);
             }
         };
+    }
+
+    protected ServiceDescriptor getServiceDescriptor(String connector) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @SuppressWarnings("serial")

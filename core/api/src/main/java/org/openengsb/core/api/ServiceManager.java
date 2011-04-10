@@ -17,6 +17,7 @@ import org.openengsb.core.api.model.ConnectorId;
  */
 
 public interface ServiceManager {
+
     void createService(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException;
 

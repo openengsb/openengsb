@@ -17,10 +17,18 @@
 
 package org.openengsb.core.api;
 
+import java.util.List;
+
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 public interface OsgiUtilsService {
+
+    List<ServiceReference> listServiceReferences(Class<?> clazz);
+
+    <T> List<T> listServices(Class<T> clazz);
+
     /**
      * retrieves the highest ranked service exporting the given interface.
      *

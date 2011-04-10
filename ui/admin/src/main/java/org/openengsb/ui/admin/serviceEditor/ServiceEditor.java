@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
@@ -48,7 +49,7 @@ public abstract class ServiceEditor extends Panel {
         this(id, attributes, values, new DefaultPassingFormValidator());
     }
 
-    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
+    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
             Map<String, String> values) {
         this(id, attributes, values, new DefaultPassingFormValidator());
         idModel.setObject(serviceId);
@@ -63,7 +64,8 @@ public abstract class ServiceEditor extends Panel {
         createForm(attributes, values);
     }
 
-    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes, Map<String, String> values,
+    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+            Map<String, String> values,
             FormValidator validator) {
         this(id, attributes, values, validator);
         idModel.setObject(serviceId);
@@ -74,7 +76,7 @@ public abstract class ServiceEditor extends Panel {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
-        idfield = new TextField<String>("serviceId", idModel);
+        idfield = new TextField<String>("serviceId", new PropertyModel<String>(idModel.getObject(), "instanceId"));
         idfield.setRequired(true);
         form.add(idfield);
         serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values);

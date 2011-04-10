@@ -15,23 +15,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common.validation;
+package org.openengsb.core.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.LocalizableString;
 
-import org.openengsb.core.api.validation.FormValidator;
+public interface ConnectorProvider {
 
-@SuppressWarnings("serial")
-public class DefaultPassingFormValidator implements FormValidator {
-    @Override
-    public void validate(Map<String, String> attributes) {
-        // do nothing
-    }
+    String getId();
 
-    @Override
-    public List<String> fieldsToValidate() {
-        return new ArrayList<String>();
-    }
+    LocalizableString getName();
+
+    LocalizableString getDescription();
+
+    ServiceDescriptor getDescriptor();
+
 }

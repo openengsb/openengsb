@@ -33,9 +33,9 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
+import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
@@ -79,14 +79,16 @@ public class ServiceEditorPanel extends Panel {
                 for (Map.Entry<String, FormComponent<?>> entry : loadFormComponents.entrySet()) {
                     toValidate.put(entry.getKey(), entry.getValue().getValue());
                 }
-                MultipleAttributeValidationResult validate = validator.validate(toValidate);
-                if (!validate.isValid()) {
-                    Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
+                try {
+                    validator.validate(toValidate);
+                } catch (ServiceValidationFailedException e) {
+                    Map<String, String> attributeErrorMessages = e.getErrorMessages();
                     for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
                         FormComponent<?> fc = loadFormComponents.get(entry.getKey());
                         fc.error((IValidationError) new ValidationError().setMessage(entry.getValue()));
                     }
                 }
+
             }
 
             @Override
