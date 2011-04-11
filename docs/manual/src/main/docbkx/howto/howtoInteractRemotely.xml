@@ -99,7 +99,7 @@
       <title>Calling internal Services</title>
       <para>To call an internal Service send a methodcall as described before to the "receive" queue on the server you want to call.
         The service works exactly as defined before. For example if you want to execute a workflow via the WorkflowService send</para>
-      <code>{"callId":"12345","answer":true,"classes":["java.lang.String", "org.openengsb.core.api.workflow.model.ProcessBag"],"
+      <code>{"callId":"12345","answer":true,"classes":["java.lang.String", "org.openengsb.core.api.workflow.model.ProcessBag"],
         "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService", "contextId":"foo"},"args":["simpleFlow", {}]}</code>
       <para>Please be aware that the flow the above method tries to call (simpleFlow) is not available by default on the OpenEngSB.
         To make sure that there's a flow you can call install the flow in the OpenEngSB. Therefore start the OpenEngSB and go to the
