@@ -291,7 +291,9 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         tracker.open();
         Object[] services = tracker.getServices();
         List<T> result = new ArrayList<T>();
-        CollectionUtils.addAll(result, services);
+        if (services != null) {
+            CollectionUtils.addAll(result, services);
+        }
         return result;
     }
 

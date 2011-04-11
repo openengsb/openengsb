@@ -34,6 +34,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -52,6 +54,8 @@ import org.osgi.framework.ServiceRegistration;
  * the OpenEngSB osgi registry.
  */
 public abstract class AbstractOsgiMockServiceTest {
+
+    private Log log = LogFactory.getLog(AbstractOsgiMockServiceTest.class);
 
     protected BundleContext bundleContext;
     protected Bundle bundle;
@@ -219,9 +223,17 @@ public abstract class AbstractOsgiMockServiceTest {
 
     private ServiceReference putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
-        when(serviceReference.getProperty(Constants.SERVICE_ID)).thenReturn(--serviceId);
+        long serviceId = --this.serviceId;
+        log.info("registering service with ID: " + serviceId);
+        props.put(Constants.SERVICE_ID, serviceId);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);
+        when(serviceReference.getProperty(anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return serviceReferences.get(invocation.getMock()).get(invocation.getArguments()[0]);
+            }
+        });
         return serviceReference;
     }
 

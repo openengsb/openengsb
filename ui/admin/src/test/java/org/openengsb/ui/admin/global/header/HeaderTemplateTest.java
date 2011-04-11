@@ -27,7 +27,6 @@ import junit.framework.Assert;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +40,7 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -48,18 +48,11 @@ import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.osgi.framework.BundleContext;
 
-public class HeaderTemplateTest {
-
-    private WicketTester tester;
-    private ApplicationContextMock context;
+public class HeaderTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
-        tester = new WicketTester();
-        context = new ApplicationContextMock();
-        context.putBean(Mockito.mock(ContextCurrentService.class));
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
-        context.putBean("wireingService", new DefaultWiringService());
+
     }
 
     @Test
@@ -141,4 +134,5 @@ public class HeaderTemplateTest {
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
     }
+
 }

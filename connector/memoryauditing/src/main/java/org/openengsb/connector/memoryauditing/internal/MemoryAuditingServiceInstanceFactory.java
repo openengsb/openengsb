@@ -17,28 +17,24 @@
 
 package org.openengsb.connector.memoryauditing.internal;
 
-import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.core.common.NonValidatingServiceInstanceFactory;
 
-public class MemoryAuditingServiceInstanceFactory implements
-        ServiceInstanceFactory<AuditingDomain, MemoryAuditingServiceImpl> {
+public class MemoryAuditingServiceInstanceFactory extends NonValidatingServiceInstanceFactory {
 
     public MemoryAuditingServiceInstanceFactory() {
     }
 
     @Override
-    public void updateServiceInstance(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+    public void updateServiceInstance(Domain instance, Map<String, String> attributes) {
     }
 
     @Override
-    public MemoryAuditingServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
+    public Domain createServiceInstance(String id, Map<String, String> attributes) {
         MemoryAuditingServiceImpl service = new MemoryAuditingServiceImpl();
         updateServiceInstance(service, attributes);
         return service;
@@ -52,16 +48,4 @@ public class MemoryAuditingServiceInstanceFactory implements
         return builder.build();
     }
 
-    @Override
-    public MultipleAttributeValidationResult updateValidation(MemoryAuditingServiceImpl instance,
-        Map<String, String> attributes) {
-        Map<String, String> emptyMap = Collections.emptyMap();
-        return new MultipleAttributeValidationResultImpl(true, emptyMap);
-    }
-
-    @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        Map<String, String> emptyMap = Collections.emptyMap();
-        return new MultipleAttributeValidationResultImpl(true, emptyMap);
-    }
 }

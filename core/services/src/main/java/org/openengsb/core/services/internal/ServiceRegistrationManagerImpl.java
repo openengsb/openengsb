@@ -12,6 +12,7 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceValidationFailedException;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -61,6 +62,16 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
                 domainProvider.getDomainInterface().getName(),
         };
         Dictionary<String, Object> properties = description.getProperties();
+        properties.put("domain", id.getDomainType());
+        properties.put("connector", id.getConnectorType());
+        properties.put("id", id.getInstanceId());
+        if (properties.get("location.root") == null) {
+            properties.put("location.root", new String[]{ id.getInstanceId() });
+        }
+        String currentContextLocation = "location" + ContextHolder.get().getCurrentContextId();
+        if (properties.get(currentContextLocation) == null) {
+            properties.put(currentContextLocation, new String[0]);
+        }
         ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
         registrations.put(id, serviceRegistration);
     }

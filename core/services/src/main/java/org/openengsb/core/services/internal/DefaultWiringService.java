@@ -80,7 +80,8 @@ public class DefaultWiringService implements WiringService {
         }
         LOGGER.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
         for (ServiceReference ref : allServiceReferences) {
-            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
+            Object serviceId = ref.getProperty(Constants.SERVICE_ID);
+            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, serviceId);
             try {
                 T osgiServiceProxy =
                     getServiceUtils().getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);

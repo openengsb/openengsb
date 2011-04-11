@@ -60,7 +60,7 @@
     <module>workflow</module>
     <module>persistence</module>
     <module>security</module>
-    <module>deployer</module>
+    <!--<module>deployer</module>-->
   </modules>
 
 </project>

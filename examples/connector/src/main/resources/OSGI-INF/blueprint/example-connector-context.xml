@@ -45,25 +45,6 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service interface="org.openengsb.core.api.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.example.ExampleDomain" />
-      <entry key="connector" value="example" />
-    </service-properties>
-    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
-  </service>
-
-  <bean id="realServiceManager" class="org.openengsb.connector.example.LogServiceManager" init-method="init">
-    <argument>
-      <bean class="org.openengsb.connector.example.LogServiceInstanceFactory">
-        <property name="domainEventInterface" ref="domainEventInterface" />
-      </bean>
-    </argument>
-    <property name="connectorSetupStore" ref="connectorSetupStore" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-    <property name="securityInterceptor" ref="securityInterceptor" />
-  </bean>
-
   <reference id="domainEventInterface" interface="org.openengsb.domain.example.ExampleDomainEvents" />
 
 </blueprint>

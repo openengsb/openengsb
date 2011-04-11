@@ -22,10 +22,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -60,14 +58,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -84,12 +80,6 @@ import org.openengsb.ui.common.model.LocalizableStringModel;
 public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);
-
-    @SpringBean
-    private List<DomainProvider> domainProvider;
-
-    @SpringBean
-    private ServiceManager serviceManager;
 
     private static WiringService wiringService = OpenEngSBCoreServices.getWiringService();
 
@@ -109,10 +99,17 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
 
-    private ServiceId lastServiceId;
     private static final String DOMAINSTRING = "[domain.%1$s]";
-    private IModel<Map<String, DomainProvider>> availableDomains;
     private AjaxButton submitButton;
+
+    @SuppressWarnings("serial")
+    private IModel<? extends List<? extends DomainProvider>> domainProvider =
+        new LoadableDetachableModel<List<? extends DomainProvider>>() {
+            @Override
+            protected List<? extends DomainProvider> load() {
+                return serviceUtils.listServices(DomainProvider.class);
+            }
+        };;
 
     public TestClient() {
         super();
@@ -131,50 +128,7 @@ public class TestClient extends BasePage {
         add(serviceManagementContainer);
         MetaDataRoleAuthorizationStrategy.authorize(serviceManagementContainer, RENDER, "ROLE_ADMIN");
 
-        availableDomains = initAvailableDomainsMap();
-
-        serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainProvider) {
-            @Override
-            protected void populateItem(final ListItem<DomainProvider> item) {
-                final String domainType = item.getModelObject().getId();
-                item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
-                item.add(new Link<DomainProvider>("proxy.create.new", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
-                            Constants.EXTERNAL_CONNECTOR_PROXY));
-                    }
-                });
-                item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
-                        .getDescription())));
-
-                item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-
-                IModel<? extends List<? extends ConnectorProvider>> connectorProviderModel =
-                    new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
-                        @Override
-                        protected List<? extends ConnectorProvider> load() {
-                            return serviceUtils.listServices(ConnectorProvider.class);
-                        }
-                    };
-                item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
-
-                    @Override
-                    protected void populateItem(ListItem<ConnectorProvider> item) {
-                        ServiceDescriptor desc = item.getModelObject().getDescriptor();
-                        item.add(new Link<ConnectorProvider>("create.new", item.getModel()) {
-                            @Override
-                            public void onClick() {
-                                setResponsePage(new ConnectorEditorPage(domainType, getModelObject().getId()));
-                            }
-                        });
-                        item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
-                        item.add(new Label("service.description", new LocalizableStringModel(this, desc
-                                .getDescription())));
-                    }
-                });
-            }
-        });
+        serviceManagementContainer.add(makeServiceList());
 
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
@@ -201,7 +155,6 @@ public class TestClient extends BasePage {
         editButton.setOutputMarkupId(true);
 
         serviceList = new LinkTree("serviceList", createModel()) {
-
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
@@ -272,17 +225,47 @@ public class TestClient extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private LoadableDetachableModel<Map<String, DomainProvider>> initAvailableDomainsMap() {
-        return new LoadableDetachableModel<Map<String, DomainProvider>>() {
+    private ListView<DomainProvider> makeServiceList() {
+        return new ListView<DomainProvider>("domains", domainProvider) {
             @Override
-            protected Map<String, DomainProvider> load() {
-                HashMap<String, DomainProvider> providerHashMap = new HashMap<String, DomainProvider>();
-                for (DomainProvider provider : domainProvider) {
-                    String providerName = provider.getName().getString(getSession().getLocale());
-                    String name = String.format(DOMAINSTRING, providerName);
-                    providerHashMap.put(name, provider);
-                }
-                return providerHashMap;
+            protected void populateItem(final ListItem<DomainProvider> item) {
+                final String domainType = item.getModelObject().getId();
+                item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
+                item.add(new Link<DomainProvider>("proxy.create.new", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
+                            Constants.EXTERNAL_CONNECTOR_PROXY));
+                    }
+                });
+                item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
+                        .getDescription())));
+
+                item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
+
+                IModel<? extends List<? extends ConnectorProvider>> connectorProviderModel =
+                    new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
+                        @Override
+                        protected List<? extends ConnectorProvider> load() {
+                            return serviceUtils.listServices(ConnectorProvider.class);
+                        }
+                    };
+                item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
+
+                    @Override
+                    protected void populateItem(ListItem<ConnectorProvider> item) {
+                        ServiceDescriptor desc = item.getModelObject().getDescriptor();
+                        item.add(new Link<ConnectorProvider>("create.new", item.getModel()) {
+                            @Override
+                            public void onClick() {
+                                setResponsePage(new ConnectorEditorPage(domainType, getModelObject().getId()));
+                            }
+                        });
+                        item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
+                        item.add(new Label("service.description", new LocalizableStringModel(this, desc
+                                .getDescription())));
+                    }
+                });
             }
         };
     }
@@ -323,17 +306,22 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-        lastServiceId = null;
         editButton.setEnabled(false);
-        // TODO edit-button
-        // editButton.setEnabled(getLastManager(serviceId) != null);
+        editButton.setEnabled(serviceId.getServiceId() != null);
     }
 
     private TreeModel createModel() {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
         TreeModel model = new DefaultTreeModel(node);
         log.info("adding domains");
-        for (DomainProvider provider : domainProvider) {
+        List<? extends DomainProvider> providerList = domainProvider.getObject();
+        Collections.sort(providerList, new Comparator<DomainProvider>() {
+            @Override
+            public int compare(DomainProvider o1, DomainProvider o2) {
+                return o1.getId().compareToIgnoreCase(o2.getId());
+            }
+        });
+        for (DomainProvider provider : providerList) {
             log.info("adding " + provider.getName());
             addDomainProvider(provider, node);
         }
@@ -351,18 +339,19 @@ public class TestClient extends BasePage {
         ServiceId domainProviderServiceId = new ServiceId();
         String name = String.format(DOMAINSTRING, providerName);
         domainProviderServiceId.setServiceId(name);
-        domainProviderServiceId.setServiceClass(provider.getDomainInterface().getName());
+        Class<? extends Domain> domainInterface = provider.getDomainInterface();
+        domainProviderServiceId.setServiceClass(domainInterface.getName());
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
 
         // add all corresponding services
-        List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(provider.getDomainInterface(), "*");
+        List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
         for (Domain serviceReference : domainEndpoints) {
             String id = serviceReference.getInstanceId();
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                serviceId.setServiceClass(provider.getDomainInterface().getName());
+                serviceId.setServiceClass(domainInterface.getName());
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
@@ -410,11 +399,11 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            if (availableDomains.getObject().containsKey(service.getServiceId())) {
-                serviceObject = getServiceViaDomainEndpointFactory(service);
-            } else {
-                serviceObject = getService(service);
-            }
+            // if (availableDomains.getObject().containsKey(service.getServiceId())) {
+            // serviceObject = getServiceViaDomainEndpointFactory(service);
+            // } else {
+            serviceObject = getService(service);
+            // }
         } catch (OsgiServiceNotAvailableException e) {
             handleExceptionWithFeedback(e);
             return;
@@ -433,21 +422,21 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
     }
 
-    private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
-        DomainProvider domainProvider = availableDomains.getObject().get(serviceId.getServiceId());
-        Class<? extends Domain> aClass = domainProvider.getDomainInterface();
-        String name = domainProvider.getName().getString(Locale.getDefault());
-        Domain defaultDomain = null;
-        WiringService wireingService = OpenEngSBCoreServices.getWiringService();
-        if (wireingService.isConnectorCurrentlyPresent(aClass)) {
-            defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
-        }
-        if (defaultDomain != null) {
-            return defaultDomain;
-        }
-        throw new OsgiServiceNotAvailableException("no default service found for service: "
-                + serviceId.getServiceClass());
-    }
+    // private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
+    // DomainProvider domainProvider = availableDomains.getObject().get(serviceId.getServiceId());
+    // Class<? extends Domain> aClass = domainProvider.getDomainInterface();
+    // String name = domainProvider.getName().getString(Locale.getDefault());
+    // Domain defaultDomain = null;
+    // WiringService wireingService = OpenEngSBCoreServices.getWiringService();
+    // if (wireingService.isConnectorCurrentlyPresent(aClass)) {
+    // defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
+    // }
+    // if (defaultDomain != null) {
+    // return defaultDomain;
+    // }
+    // throw new OsgiServiceNotAvailableException("no default service found for service: "
+    // + serviceId.getServiceClass());
+    // }
 
     private void handleExceptionWithFeedback(Throwable e) {
         String stackTrace = ExceptionUtils.getFullStackTrace(e);

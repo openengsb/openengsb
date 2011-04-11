@@ -45,23 +45,6 @@
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <service interface="org.openengsb.core.api.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.auditing.AuditingDomain" />
-      <entry key="connector" value="memory-auditing" />
-      <entry key="openengsb.service.type" value="connector" />
-    </service-properties>
-    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
-  </service>
-
-  <bean id="realServiceManager" class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager"
-    init-method="init">
-    <argument ref="auditingServiceFactory" />
-    <property name="connectorSetupStore" ref="connectorSetupStore" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-    <property name="securityInterceptor" ref="securityInterceptor" />
-  </bean>
-
   <bean id="rootService" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl" />
 
   <service>
