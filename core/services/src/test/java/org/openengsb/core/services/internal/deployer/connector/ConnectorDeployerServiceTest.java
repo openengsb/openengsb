@@ -45,8 +45,6 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService;
-import org.openengsb.core.services.internal.deployer.connector.DeployerStorage;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
