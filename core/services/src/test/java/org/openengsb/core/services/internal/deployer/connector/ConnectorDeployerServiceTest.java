@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.deployer.connector;
+package org.openengsb.core.services.internal.deployer.connector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -45,8 +45,6 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.deployer.connector.internal.ConnectorDeployerService;
-import org.openengsb.core.deployer.connector.internal.DeployerStorage;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
