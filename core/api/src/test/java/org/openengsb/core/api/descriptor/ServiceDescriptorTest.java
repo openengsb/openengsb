@@ -129,6 +129,7 @@ public class ServiceDescriptorTest {
         public String getInstanceId() {
             return null;
         }
+
     }
 
     public class DomainImpl implements Domain {

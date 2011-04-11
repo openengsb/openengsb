@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin;
 
+import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -28,12 +29,16 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.CorePersistenceServiceBackend;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.services.internal.ServiceManagerImpl;
 import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 
@@ -57,8 +62,21 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         registrationManager.setBundleContext(bundleContext);
         ServiceManagerImpl serviceManager = new ServiceManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
+
+        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        backend.setPersistenceManager(new DummyPersistenceManager());
+        backend.setBundleContext(bundleContext);
+        backend.init();
+        DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("configuration.id", "connector");
+        registerService(persistenceService, props, ConfigPersistenceService.class);
+
+        // (&(objectClass=org.openengsb.core.api.persistence.ConfigPersistenceService)(configuration.id=connector))
+
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
+        context.putBean(serviceManager);
     }
 
     @Override

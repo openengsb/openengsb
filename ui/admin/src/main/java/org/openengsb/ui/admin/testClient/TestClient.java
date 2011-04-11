@@ -66,6 +66,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -139,15 +140,9 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
-                call.getService().getServiceId();
-                // if (lastServiceId != null) {
-                // TODO
-                // InternalServiceRegistrationManager lastManager = getLastManager(lastServiceId);
-                // if (lastManager != null) {
-                // setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
-                // }
-
-                // }
+                String serviceId = call.getService().getServiceId();
+                ConnectorId connectorId = ConnectorId.parse(serviceId);
+                setResponsePage(new ConnectorEditorPage(connectorId));
             }
 
         };
@@ -341,6 +336,7 @@ public class TestClient extends BasePage {
         domainProviderServiceId.setServiceId(name);
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
+        domainProviderServiceId.setDomainName(providerName);
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
 
@@ -399,11 +395,11 @@ public class TestClient extends BasePage {
         ServiceId service = call.getService();
         Object serviceObject;
         try {
-            // if (availableDomains.getObject().containsKey(service.getServiceId())) {
-            // serviceObject = getServiceViaDomainEndpointFactory(service);
-            // } else {
-            serviceObject = getService(service);
-            // }
+            if (service.getDomainName() != null) {
+                serviceObject = getServiceViaDomainEndpointFactory(service);
+            } else {
+                serviceObject = getService(service);
+            }
         } catch (OsgiServiceNotAvailableException e) {
             handleExceptionWithFeedback(e);
             return;
@@ -479,6 +475,23 @@ public class TestClient extends BasePage {
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
         return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
             service.getServiceId());
+    }
+
+    private Object getServiceViaDomainEndpointFactory(ServiceId service) {
+        String name = service.getDomainName();
+        Class<? extends Domain> aClass;
+        try {
+            aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+
+        if (wiringService.isConnectorCurrentlyPresent(aClass)) {
+            return wiringService.getDomainEndpoint(aClass, "domain/" + name + "/default");
+        }
+        throw new OsgiServiceNotAvailableException("no default service found for service: "
+                + service.getServiceClass());
     }
 
     private Method findMethod(Class<?> serviceClass, MethodId methodId) {

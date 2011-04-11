@@ -23,10 +23,17 @@ import java.io.Serializable;
 public class ServiceId implements Serializable {
     private String serviceClass;
     private String serviceId;
+    private String domainName;
 
     public ServiceId(String serviceClass, String serviceId) {
         this.serviceClass = serviceClass;
         this.serviceId = serviceId;
+    }
+
+    public ServiceId(String serviceClass, String serviceId, String domainName) {
+        this.serviceClass = serviceClass;
+        this.serviceId = serviceId;
+        this.domainName = domainName;
     }
 
     public ServiceId() {
@@ -46,6 +53,14 @@ public class ServiceId implements Serializable {
 
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    public String getDomainName() {
+        return this.domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
     @Override

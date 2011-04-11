@@ -54,7 +54,7 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
 
         ServiceInstanceFactory factory = getConnectorFactory(id);
         // TODO really validate
-        Domain serviceInstance = factory.createServiceInstance(id.getInstanceId(), description.getAttributes());
+        Domain serviceInstance = factory.createServiceInstance(id.toString(), description.getAttributes());
 
         String[] clazzes = new String[]{
                 OpenEngSBService.class.getName(),
@@ -64,7 +64,7 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
         Dictionary<String, Object> properties = description.getProperties();
         properties.put("domain", id.getDomainType());
         properties.put("connector", id.getConnectorType());
-        properties.put("id", id.getInstanceId());
+        properties.put("id", id.toString());
         if (properties.get("location.root") == null) {
             properties.put("location.root", new String[]{ id.getInstanceId() });
         }

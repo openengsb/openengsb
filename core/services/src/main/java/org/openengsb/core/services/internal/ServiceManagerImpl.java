@@ -114,7 +114,15 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public ConnectorDescription getAttributeValues(ConnectorId id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        try {
+            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
+            if (list.size() != 1) {
+                return null;
+            }
+            return list.get(0).getContent();
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

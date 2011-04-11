@@ -58,9 +58,10 @@ public class ConnectorEditorPage extends BasePage {
     @SuppressWarnings("serial")
     private final class ConnectorServiceEditor extends ServiceEditor {
 
-        private ConnectorServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values,
+        private ConnectorServiceEditor(String id, String domainType, String connectorType,
+                List<AttributeDefinition> attributes, Map<String, String> values,
                 FormValidator validator) {
-            super(id, attributes, values, validator);
+            super(id, domainType, connectorType, attributes, values, validator);
         }
 
         private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
@@ -94,7 +95,7 @@ public class ConnectorEditorPage extends BasePage {
         retrieveDescriptor(connectorType);
         HashMap<String, String> attributeValues = new HashMap<String, String>();
         initEditor(connectorType, attributeValues);
-        createEditor(attributeValues);
+        createEditor(domain, connectorType, attributeValues);
     }
 
     private void retrieveDescriptor(String connectorType) {
@@ -120,9 +121,11 @@ public class ConnectorEditorPage extends BasePage {
         add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
     }
 
-    private void createEditor(Map<String, String> values) {
+    private void createEditor(String domainType, String connectorType, Map<String, String> values) {
         List<AttributeDefinition> attributes = getAttributes(values);
-        editor = new ConnectorServiceEditor("editor", attributes, values, descriptor.getFormValidator());
+        editor =
+            new ConnectorServiceEditor("editor", domainType, connectorType, attributes, values,
+                descriptor.getFormValidator());
         add(editor);
     }
 

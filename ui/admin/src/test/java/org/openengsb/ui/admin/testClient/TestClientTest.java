@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -67,6 +68,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
@@ -113,6 +115,7 @@ public class TestClientTest extends AbstractUITest {
         public String getInstanceId() {
             return instanceId;
         }
+
     }
 
     public enum UpdateEnum {
@@ -180,8 +183,9 @@ public class TestClientTest extends AbstractUITest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test-service");
-
+        ServiceId reference =
+            new ServiceId(TestInterface.class.getName(),
+                new ConnectorId("testdomain", "testconnector", "test-service").toString());
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -189,7 +193,8 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test-service");
+        ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -459,9 +464,9 @@ public class TestClientTest extends AbstractUITest {
         Label description =
                 (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
                         + "0:services:0:service.description");
-        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testDomain"));
-        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testDomain"));
-        assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(TestInterface.class.getName()));
+        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("anotherTestDomain"));
+        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("anotherTestDomain"));
+        assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(AnotherTestInterface.class.getName()));
         Assert.assertEquals("service.name", name.getDefaultModel().getObject());
         Assert.assertEquals("service.description", description.getDefaultModel().getObject());
     }
@@ -508,6 +513,12 @@ public class TestClientTest extends AbstractUITest {
 
         ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
+    }
+
+    private LocalizableString mockString(String value) {
+        LocalizableString mock2 = mock(LocalizableString.class);
+        when(mock2.getString(any(Locale.class))).thenReturn(value);
+        return mock2;
     }
 
     @Test
@@ -563,7 +574,7 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(-1);
+        setServiceInDropDown(1);
         setMethodInDropDown(0);
         RepeatingView argList =
                 (RepeatingView) tester
@@ -577,7 +588,7 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(2);
+        setServiceInDropDown(-1);
         tester.debugComponentTrees();
         AjaxButton submitButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
         assertFalse(submitButton.isEnabled());
@@ -600,9 +611,11 @@ public class TestClientTest extends AbstractUITest {
 
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("value", "42");
-        registrationManager.createService(new ConnectorId("testdomain", "testconnector", "test-service"),
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("location.root", "domain/testdomain/default");
+        serviceManager.createService(new ConnectorId("testdomain", "testconnector", "test-service"),
             new ConnectorDescription(
-                attributes, new Hashtable<String, Object>()));
+                attributes, properties));
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
@@ -617,7 +630,7 @@ public class TestClientTest extends AbstractUITest {
     private void createProviderMocks() {
         createDomainProviderMock(TestInterface.class, "testdomain");
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
-
+        createConnectorProviderMock("testconnector");
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
         when(factory.createServiceInstance(anyString(), anyMap())).thenAnswer(new Answer<Domain>() {
             @Override
@@ -632,6 +645,22 @@ public class TestClientTest extends AbstractUITest {
         props.put("domain", "testdomain");
         props.put("connector", "testconnector");
         registerService(factory, props, ServiceInstanceFactory.class);
+    }
+
+    private ConnectorProvider createConnectorProviderMock(String connectorType) {
+        ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
+        when(connectorProvider.getId()).thenReturn(connectorType);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", connectorType);
+        registerService(connectorProvider, props, ConnectorProvider.class);
+        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
+        when(descriptor.getId()).thenReturn(connectorType);
+        LocalizableString name = mockString("service.name");
+        when(descriptor.getName()).thenReturn(name);
+        LocalizableString desc = mockString("service.description");
+        when(descriptor.getDescription()).thenReturn(desc);
+        when(connectorProvider.getDescriptor()).thenReturn(descriptor);
+        return connectorProvider;
     }
 
     private DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {

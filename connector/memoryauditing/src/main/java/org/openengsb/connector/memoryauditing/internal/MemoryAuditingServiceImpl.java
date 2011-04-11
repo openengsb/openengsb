@@ -50,4 +50,5 @@ public class MemoryAuditingServiceImpl implements AuditingDomain {
     public String getInstanceId() {
         return "auditing";
     }
+
 }

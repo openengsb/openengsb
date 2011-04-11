@@ -42,34 +42,37 @@ public abstract class ServiceEditor extends Panel {
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
-    protected Model<ConnectorId> idModel = new Model<ConnectorId>();
+    protected Model<ConnectorId> idModel;
     private TextField<String> idfield;
 
-    public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
-        this(id, attributes, values, new DefaultPassingFormValidator());
-    }
-
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-            Map<String, String> values) {
-        this(id, attributes, values, new DefaultPassingFormValidator());
-        idModel.setObject(serviceId);
-    }
-
-    public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values,
-            FormValidator validator) {
+            Map<String, String> values, FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.values = values;
         this.validator = validator;
+        idModel = new Model<ConnectorId>(serviceId);
         createForm(attributes, values);
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-            Map<String, String> values,
-            FormValidator validator) {
-        this(id, attributes, values, validator);
-        idModel.setObject(serviceId);
-        idfield.setEnabled(false);
+            Map<String, String> values) {
+        this(id, serviceId, attributes, values, new DefaultPassingFormValidator());
+    }
+
+    public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
+            Map<String, String> values, FormValidator validator) {
+        super(id);
+        this.attributes = attributes;
+        this.values = values;
+        this.validator = validator;
+        idModel = new Model<ConnectorId>(ConnectorId.generate(domainType, connectorType));
+        createForm(attributes, values);
+    }
+
+    public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
+            Map<String, String> values) {
+        this(id, domainType, connectorType, attributes, values, new DefaultPassingFormValidator());
     }
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {

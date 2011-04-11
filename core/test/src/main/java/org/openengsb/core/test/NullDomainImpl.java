@@ -58,4 +58,5 @@ public class NullDomainImpl implements NullDomain {
     public void setAliveState(AliveState state) {
         this.state = state;
     }
+
 }

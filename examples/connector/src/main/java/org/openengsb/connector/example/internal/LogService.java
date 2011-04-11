@@ -87,4 +87,5 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
     public String doSomethingWithLogEvent(LogEvent event) {
         return "Called: " + event.getMessage() + " " + event.getLevel();
     }
+
 }
