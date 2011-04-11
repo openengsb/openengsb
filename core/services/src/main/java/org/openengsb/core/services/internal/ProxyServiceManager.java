@@ -27,7 +27,6 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.core.common.AbstractServiceManagerParent;

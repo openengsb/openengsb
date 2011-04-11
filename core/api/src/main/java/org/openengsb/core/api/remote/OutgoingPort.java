@@ -17,12 +17,11 @@
 
 package org.openengsb.core.api.remote;
 
-
 /**
- * This interface is used by the {@link CallRouter} to route calls to the explicit ports implementations. If you like to
+ * This interface is used by the CallRouter to route calls to the explicit ports implementations. If you like to
  * implement a port you have to implement this interface and export is as an OSGi service adding a portsId. For example
  * this could look like the following in blueprint:
- *
+ * 
  * <code>
  * &lt;service interface=&quot;org.openengsb.core.common.communication.OutgoingPort&quot;&gt;
  *  &lt;service-properties&gt;
@@ -35,7 +34,7 @@ package org.openengsb.core.api.remote;
 public interface OutgoingPort {
 
     /**
-     * This method is typically called by the {@link CallRouter}. Since this method is called in an own thread it is not
+     * This method is typically called by the CallRouter. Since this method is called in an own thread it is not
      * required to implement such logic in the service.
      */
     void send(String destination, MethodCall call) throws RemoteCommunicationException;

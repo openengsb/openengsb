@@ -18,7 +18,6 @@
 package org.openengsb.core.services.internal;
 
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.osgi.framework.BundleContext;
 
