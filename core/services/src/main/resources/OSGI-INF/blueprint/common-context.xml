@@ -102,7 +102,19 @@
     <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl" />
   </service>
 
+  <bean id="deployerStorage" class="org.openengsb.core.services.internal.deployer.connector.StorageFileFactory"
+    factory-method="createFileStorage" />
+
+  <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
+      <property name="authenticationManager" ref="authenticationManager" />
+      <property name="deployerStorage" ref="deployerStorage" />
+    </bean>
+  </service>
+
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
+  <reference id="authenticationManager"
+    interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>
