@@ -46,7 +46,7 @@ public class ProxyConnector implements InvocationHandler {
             case Exception:
                 throw new RuntimeException(callSync.getArg().toString());
             default:
-                throw new IllegalStateException("Return Type has to be either Object or Exception");
+                throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
     }
 
