@@ -49,7 +49,6 @@ public class ServiceDescriptorTest {
         when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
         when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");
-        builder.serviceType(NullDomain.class);
         builder.implementationType(NullDomainImpl.class);
         builder.name("nameKey");
         builder.description("descKey");
@@ -76,7 +75,6 @@ public class ServiceDescriptorTest {
     @Test
     public void buildWithoutServiceTyp_shouldThrowISE() {
         expectMessage("service");
-        builder.serviceType(null);
         builder.build();
     }
 

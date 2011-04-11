@@ -18,6 +18,8 @@
 package org.openengsb.core.api.model;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class ConnectorDescription {
@@ -26,6 +28,15 @@ public class ConnectorDescription {
     private Dictionary<String, Object> properties;
 
     public ConnectorDescription() {
+        this(new HashMap<String, String>(), new Hashtable<String, Object>());
+    }
+
+    public ConnectorDescription(Map<String, String> attributes) {
+        this(attributes, new Hashtable<String, Object>());
+    }
+
+    public ConnectorDescription(Dictionary<String, Object> properties) {
+        this(new HashMap<String, String>(), properties);
     }
 
     public ConnectorDescription(Map<String, String> attributes,

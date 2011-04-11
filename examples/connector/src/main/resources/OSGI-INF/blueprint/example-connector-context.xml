@@ -21,30 +21,35 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
-
-  <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
-    <property name="proxyInterfaces">
-      <list>
-        <value>org.openengsb.core.api.ServiceManager</value>
-      </list>
-    </property>
-    <property name="target" ref="realServiceManager" />
-    <property name="advices">
-      <list>
-        <ref component-id="securityInterceptor" />
-      </list>
-    </property>
-  </bean>
-
-  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.PersistenceConnectorSetupStore"
-    init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
-
   <reference id="domainEventInterface" interface="org.openengsb.domain.example.ExampleDomainEvents" />
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.ServiceInstanceFactory</value>
+    </interfaces>
+    <service-properties>
+      <entry key="connector">
+        <value>example</value>
+      </entry>
+    </service-properties>
+    <bean class="org.openengsb.connector.example.LogServiceInstanceFactory">
+      <property name="domainEventInterface" ref="domainEventInterface" />
+    </bean>
+  </service>
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.ConnectorProvider</value>
+    </interfaces>
+    <service-properties>
+      <entry key="connector">
+        <value>example</value>
+      </entry>
+    </service-properties>
+    <bean class="org.openengsb.connector.example.internal.ExampleConnectorProvider">
+      <property name="id" value="example" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+  </service>
 
 </blueprint>

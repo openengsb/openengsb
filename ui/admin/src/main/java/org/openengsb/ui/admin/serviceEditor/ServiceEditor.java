@@ -53,6 +53,7 @@ public abstract class ServiceEditor extends Panel {
         this.validator = validator;
         idModel = new Model<ConnectorId>(serviceId);
         createForm(attributes, values);
+        idfield.setEnabled(false);
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,

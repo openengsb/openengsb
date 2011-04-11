@@ -38,7 +38,7 @@ public final class Constants {
      * The connector constants gives a connector a unique identification. The exacty semantic value is identified by the
      * conenctor itself. Possible values are git, trac, jira, ...
      */
-    public static final String CONNECTOR = "connector";
+    public static final String CONNECTOR = "CONNECTOR";
 
     /**
      * connectors of this type require special handling

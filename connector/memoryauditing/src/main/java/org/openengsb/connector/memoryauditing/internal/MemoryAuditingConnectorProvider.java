@@ -17,24 +17,20 @@
 
 package org.openengsb.connector.memoryauditing.internal;
 
-import java.util.Map;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.AbstractConnectorProvider;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.common.NonValidatingServiceInstanceFactory;
-
-public class MemoryAuditingServiceInstanceFactory extends NonValidatingServiceInstanceFactory {
-
-    public MemoryAuditingServiceInstanceFactory() {
-    }
+public class MemoryAuditingConnectorProvider extends AbstractConnectorProvider {
 
     @Override
-    public void updateServiceInstance(Domain instance, Map<String, String> attributes) {
+    public ServiceDescriptor getDescriptor() {
+        Builder builder = ServiceDescriptor.builder(strings);
+        builder.id(id);
+        builder.name("service.name").description("service.description");
+        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
+            .description("service.attr.description").build());
+        return builder.build();
     }
 
-    @Override
-    public Domain createServiceInstance(String id, Map<String, String> attributes) {
-        MemoryAuditingServiceImpl service = new MemoryAuditingServiceImpl();
-        updateServiceInstance(service, attributes);
-        return service;
-    }
 }

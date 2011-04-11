@@ -100,7 +100,10 @@ public class ServiceManagerImpl implements ServiceManager {
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
-        if (list.size() != 1) {
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException("no connector with id " + id + " found");
+        }
+        if (list.size() > 1) {
             throw new IllegalStateException("multiple connectors with id " + id + " found");
         }
         return list.get(0).getContent();

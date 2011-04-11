@@ -22,10 +22,9 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Constants;
@@ -83,13 +82,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                 return;
             }
 
-            MultipleAttributeValidationResult validationResult = serviceManager.update(serviceId,
-                    newConfig.getAttributes());
-            if (validationResult.isValid()) {
-                deployerStorage.put(artifact, newConfig);
-            }
-            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
-                    validationResult.isValid()));
+            // TODO update
+//            serviceManager.update(serviceId, newConfig.getAttributes());
+//                deployerStorage.put(artifact, newConfig);
+//            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
+//                    validationResult.isValid()));
         } catch (Exception e) {
             log.error(String.format("Installing connector failed: %s", e));
             throw e;
@@ -124,7 +121,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                 return;
             }
 
-            serviceManager.delete(serviceId);
+            // TODO delete
+//            serviceManager.delete(serviceId);
             deployerStorage.remove(artifact);
         } catch (Exception e) {
             log.error(String.format("Removing connector failed: %s", e));
@@ -132,7 +130,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
     }
 
-    private InternalServiceRegistrationManager getServiceManagerFor(String connectorType) throws OsgiServiceNotAvailableException {
+    private InternalServiceRegistrationManager getServiceManagerFor(String connectorType)
+        throws OsgiServiceNotAvailableException {
         return (InternalServiceRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
     }
 
@@ -141,7 +140,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     private String getFilterFor(String connectorType) {
-        return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS, InternalServiceRegistrationManager.class.getName(),
+        return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS,
+            InternalServiceRegistrationManager.class.getName(),
             connectorType);
     }
 

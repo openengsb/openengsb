@@ -58,23 +58,30 @@ public class ConnectorEditorPage extends BasePage {
     @SuppressWarnings("serial")
     private final class ConnectorServiceEditor extends ServiceEditor {
 
+        private boolean createMode;
+
         private ConnectorServiceEditor(String id, String domainType, String connectorType,
                 List<AttributeDefinition> attributes, Map<String, String> values,
                 FormValidator validator) {
             super(id, domainType, connectorType, attributes, values, validator);
+            createMode = true;
         }
 
         private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
                 Map<String, String> values, FormValidator validator) {
             super(id, serviceId, attributes, values, validator);
+            createMode = false;
         }
 
         @Override
         public void onSubmit() {
-            ConnectorDescription connectorDescription = new ConnectorDescription();
-            connectorDescription.setAttributes(getValues());
+            ConnectorDescription connectorDescription = new ConnectorDescription(getValues());
             try {
-                serviceManager.update(idModel.getObject(), connectorDescription); // , isValidating());
+                if (createMode) {
+                    serviceManager.createService(idModel.getObject(), connectorDescription);
+                } else {
+                    serviceManager.update(idModel.getObject(), connectorDescription); // , isValidating());
+                }
                 returnToTestClient();
             } catch (ServiceValidationFailedException e) {
                 for (String value : e.getErrorMessages().values()) {

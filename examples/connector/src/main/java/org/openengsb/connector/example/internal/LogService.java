@@ -29,6 +29,7 @@ import org.openengsb.domain.example.event.LogEvent.Level;
 public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
 
     private final Log log = LogFactory.getLog(getClass());
+    private String prefix;
     private String outputMode;
     private AliveState aliveState = AliveState.OFFLINE;
     private final ExampleDomainEvents domainEventInterface;
@@ -41,7 +42,7 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     @Override
     public String doSomething(String message) {
-        message = instanceId + ": " + message;
+        message = prefix + ": " + message;
         Level level = Level.INFO;
         if ("DEBUG".equals(outputMode)) {
             log.debug(message);
@@ -70,6 +71,10 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
     public void setOutputMode(String outputMode) {
         this.outputMode = outputMode;
         aliveState = AliveState.ONLINE;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     @Override

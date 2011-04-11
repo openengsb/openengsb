@@ -19,6 +19,7 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -74,6 +75,7 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
         }
         ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
         registrations.put(id, serviceRegistration);
+        instances.put(id, serviceInstance);
     }
 
     @Override
@@ -93,6 +95,14 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
 
     private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
         ServiceRegistration registration = registrations.get(id);
+        ServiceReference reference = registration.getReference();
+        String[] propertyKeys = reference.getPropertyKeys();
+        for (String k : propertyKeys) {
+            Object value = reference.getProperty(k);
+            if (value != null) {
+                properties.put(k, value);
+            }
+        }
         registration.setProperties(properties);
     }
 

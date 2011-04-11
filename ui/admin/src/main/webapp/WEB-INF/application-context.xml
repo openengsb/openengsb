@@ -40,18 +40,20 @@
     <property name="nameNoun" value="${openengsb.version.name.noun}" />
   </bean>
 
-  <osgi:reference id="memoryauditingService" interface="org.openengsb.core.api.ServiceManager" 
+  <!-- <osgi:reference id="memoryauditingService" interface="org.openengsb.core.api.ServiceManager" 
     filter="(connector=memory-auditing)" />
-  <osgi:list id="services" cardinality="0..N" interface="org.openengsb.core.api.ServiceManager" />
+  <osgi:list id="services" cardinality="0..N" interface="org.openengsb.core.api.ServiceManager" />-->
+
+  <osgi:reference id="serviceManager" interface="org.openengsb.core.api.ServiceManager" />
   <osgi:reference id="domainService" interface="org.openengsb.core.api.DomainService" />
   <osgi:reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
-  <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)"/>
-  <osgi:reference id="proxyFactory" interface="org.openengsb.core.api.remote.ProxyFactory" />
+  <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
+  
   <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
   <osgi:reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
-  
+
 </beans>

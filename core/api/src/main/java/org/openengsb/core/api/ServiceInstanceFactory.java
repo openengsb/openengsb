@@ -19,16 +19,7 @@ package org.openengsb.core.api;
 
 import java.util.Map;
 
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-
 public interface ServiceInstanceFactory {
-
-    /**
-     * Called when the {@link #ServiceDescriptor} for the provided service is needed.
-     *
-     * The {@code builder} already has the id, service type and implementation type set to defaults.
-     */
-    ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder);
 
     /**
      * Called by the {@link AbstractServiceManager} when updated service attributes for an instance are available. The

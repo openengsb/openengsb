@@ -31,7 +31,7 @@
     <service-properties>
       <entry key="backend.id" value="persistenceService" />
     </service-properties>
-    <bean class="org.openengsb.core.persistence.internal.CorePersistenceServiceBackend" init-method="init" >
+    <bean class="org.openengsb.core.common.CorePersistenceServiceBackend" init-method="init" >
       <property name="bundleContext" ref="blueprintBundleContext" />
       <property name="persistenceManager" ref="persistenceManager" />
     </bean>
