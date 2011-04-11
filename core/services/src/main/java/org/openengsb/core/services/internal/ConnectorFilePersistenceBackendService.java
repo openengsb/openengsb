@@ -43,8 +43,14 @@ public class ConnectorFilePersistenceBackendService implements ConfigPersistence
     }
 
     @Override
+    public void remove(Map<String, String> metadata) throws PersistenceException {
+
+    }
+
+    @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
         return false;
     }
+
 
 }
