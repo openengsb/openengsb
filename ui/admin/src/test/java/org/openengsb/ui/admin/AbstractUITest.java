@@ -24,6 +24,7 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
@@ -69,7 +70,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         backend.init();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("configuration.id", "connector");
+        props.put("configuration.id", Constants.CONNECTOR);
         registerService(persistenceService, props, ConfigPersistenceService.class);
 
         // (&(objectClass=org.openengsb.core.api.persistence.ConfigPersistenceService)(configuration.id=connector))

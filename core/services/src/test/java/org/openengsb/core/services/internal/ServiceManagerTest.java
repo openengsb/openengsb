@@ -100,6 +100,22 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         serviceUtils.getService("(foo=bar)", 100L);
     }
 
+    @Test
+    public void testUpdateService_shouldUpdateInstance() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+
+        connectorDescription.getProperties().put("foo", "42");
+        connectorDescription.getAttributes().put("answer", "43");
+        serviceManager.update(connectorId, connectorDescription);
+    }
+
     @SuppressWarnings("unchecked")
     private void registerMockedFactory() {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);

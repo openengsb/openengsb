@@ -595,7 +595,6 @@ public class TestClientTest extends AbstractUITest {
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString("No service found for domain"));
         assertThat(resultException, containsString(AnotherTestInterface.class.getName()));
-
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws Exception {

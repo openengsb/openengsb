@@ -73,26 +73,6 @@ public class ServiceDescriptorTest {
     }
 
     @Test
-    public void buildWithoutServiceTyp_shouldThrowISE() {
-        expectMessage("service");
-        builder.build();
-    }
-
-    @Test
-    public void buildWithoutImplType_shouldThrowISE() {
-        expectMessage("implementation");
-        builder.implementationType(null);
-        builder.build();
-    }
-
-    @Test
-    public void implementationTypeDoesNotImplementServiceType_shouldThrowISE() {
-        expectMessage("service");
-        builder.implementationType(DomainImpl.class);
-        builder.build();
-    }
-
-    @Test
     public void buildWithoutName_shouldThrowISE() {
         expectMessage("name");
         builder.name("unknownKey");

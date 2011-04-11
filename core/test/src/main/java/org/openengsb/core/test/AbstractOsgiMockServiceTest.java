@@ -26,14 +26,16 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -128,13 +130,11 @@ public abstract class AbstractOsgiMockServiceTest {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
                             Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[0];
-                            Dictionary<String, Object> orig = serviceReferences.get(serviceReference);
-                            for (String key : Collections.list(dict.keys())) {
-                                orig.put(key, dict.get(key));
-                            }
+                            serviceReferences.put(serviceReference, dict);
                             return null;
                         }
                     }).when(result).setProperties(any(Dictionary.class));
+                    when(result.getReference()).thenReturn(serviceReference);
                     return result;
                 }
             });
@@ -232,6 +232,15 @@ public abstract class AbstractOsgiMockServiceTest {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return serviceReferences.get(invocation.getMock()).get(invocation.getArguments()[0]);
+            }
+        });
+        when(serviceReference.getPropertyKeys()).thenAnswer(new Answer<String[]>() {
+            @Override
+            public String[] answer(InvocationOnMock invocation) throws Throwable {
+                Dictionary<String, Object> dictionary = serviceReferences.get(invocation.getMock());
+                List<?> list = EnumerationUtils.toList(dictionary.keys());
+                Collection<String> typedCollection = CollectionUtils.typedCollection(list, String.class);
+                return typedCollection.toArray(new String[0]);
             }
         });
         return serviceReference;
