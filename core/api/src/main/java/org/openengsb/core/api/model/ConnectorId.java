@@ -20,6 +20,7 @@ package org.openengsb.core.api.model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
@@ -73,7 +74,70 @@ public class ConnectorId implements Serializable {
     public static ConnectorId generate(String domainType, String connectorType) {
         String instanceId = UUID.randomUUID().toString();
         return new ConnectorId(domainType, connectorType, instanceId);
+    }
 
+    public static ConnectorId parse(String fullId) {
+        Scanner s = new Scanner(fullId);
+        s.useDelimiter("\\+");
+        String domain = s.next();
+        String connector = s.next();
+        String instanceId = s.next();
+        if (s.hasNext()) {
+            s.useDelimiter("\\\n");
+            instanceId += s.next();
+        }
+        return new ConnectorId(domain, connector, instanceId);
+    }
+
+    @Override
+    public String toString() {
+        return domainType + "+" + connectorType + "+" + instanceId;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.connectorType == null) ? 0 : this.connectorType.hashCode());
+        result = prime * result + ((this.domainType == null) ? 0 : this.domainType.hashCode());
+        result = prime * result + ((this.instanceId == null) ? 0 : this.instanceId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ConnectorId other = (ConnectorId) obj;
+        if (this.connectorType == null) {
+            if (other.connectorType != null) {
+                return false;
+            }
+        } else if (!this.connectorType.equals(other.connectorType)) {
+            return false;
+        }
+        if (this.domainType == null) {
+            if (other.domainType != null) {
+                return false;
+            }
+        } else if (!this.domainType.equals(other.domainType)) {
+            return false;
+        }
+        if (this.instanceId == null) {
+            if (other.instanceId != null) {
+                return false;
+            }
+        } else if (!this.instanceId.equals(other.instanceId)) {
+            return false;
+        }
+        return true;
     }
 
 }

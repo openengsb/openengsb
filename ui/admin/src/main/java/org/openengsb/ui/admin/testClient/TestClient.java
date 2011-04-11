@@ -139,7 +139,7 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
-
+                call.getService().getServiceId();
                 // if (lastServiceId != null) {
                 // TODO
                 // InternalServiceRegistrationManager lastManager = getLastManager(lastServiceId);

@@ -21,11 +21,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.api.model.ConnectorId;
-
 @SuppressWarnings("serial")
 public class MethodCall implements Serializable {
-    private ConnectorId service;
+    private ServiceId service;
     private MethodId method;
     private List<Argument> arguments = new ArrayList<Argument>();
 
@@ -45,11 +43,11 @@ public class MethodCall implements Serializable {
         this.arguments = arguments;
     }
 
-    public ConnectorId getService() {
+    public ServiceId getService() {
         return this.service;
     }
 
-    public void setService(ConnectorId service) {
+    public void setService(ServiceId service) {
         this.service = service;
     }
 
