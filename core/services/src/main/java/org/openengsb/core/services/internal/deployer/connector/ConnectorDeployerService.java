@@ -18,6 +18,7 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +27,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.ServiceRegistrationManager;
+import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -59,32 +61,38 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     @Override
-    public void install(File artifact) throws Exception {
+    public void install(File artifact) throws IOException {
         log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
 
+        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(new ConnectorFile(artifact));
+        authenticate(AUTH_USER, AUTH_PASSWORD);
+
+        // log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
+
         try {
-            ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(new ConnectorFile(artifact));
-            authenticate(AUTH_USER, AUTH_PASSWORD);
-
-            // log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
-
             serviceManager.createService(newConfig.getConnectorId(), newConfig.getContent());
-
-            // TODO update
-            // serviceManager.update(serviceId, newConfig.getAttributes());
-            // deployerStorage.put(artifact, newConfig);
-            // log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
-            // validationResult.isValid()));
-        } catch (Exception e) {
-            log.error(String.format("Installing connector failed: %s", e));
-            throw e;
+        } catch (ServiceValidationFailedException e) {
+            throw new RuntimeException(e);
         }
+
+        // TODO update
+        // serviceManager.update(serviceId, newConfig.getAttributes());
+        // deployerStorage.put(artifact, newConfig);
+        // log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
+        // validationResult.isValid()));
+
     }
 
     @Override
-    public void update(File artifact) throws Exception {
+    public void update(File artifact) throws IOException {
         log.debug(String.format("ConnectorDeployer.update(\"%s\")", artifact.getAbsolutePath()));
-        install(artifact);
+        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(new ConnectorFile(artifact));
+        authenticate(AUTH_USER, AUTH_PASSWORD);
+        try {
+            serviceManager.update(newConfig.getConnectorId(), newConfig.getContent());
+        } catch (ServiceValidationFailedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

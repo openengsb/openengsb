@@ -20,9 +20,14 @@ package org.openengsb.core.services.internal.deployer.connector;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.Transformer;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
@@ -82,6 +87,13 @@ public class ConnectorFile {
 
     private Map<String, String> getFilteredEntries(final String key) throws IOException {
         updateProperties();
+        @SuppressWarnings("unchecked")
+        Map<String, String> transformedMap = MapUtils.transformedMap(new HashMap<String, String>(), new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return ((String) input).replaceFirst(key + ".", "");
+            }
+        }, null);
         Map<String, String> filterEntries =
             Maps.filterEntries(propertiesMap, new Predicate<Map.Entry<String, String>>() {
                 @Override
@@ -89,7 +101,8 @@ public class ConnectorFile {
                     return input.getKey().startsWith(key + ".");
                 }
             });
-        return filterEntries;
+        transformedMap.putAll(filterEntries);
+        return Collections.unmodifiableMap(transformedMap);
     }
 
     public static Boolean isRootService(File connectorFile) {

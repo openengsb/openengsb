@@ -17,8 +17,8 @@
 
 package org.openengsb.core.services.internal;
 
-import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +32,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DictionaryAsMap;
 
 import com.google.common.base.Preconditions;
 
@@ -78,24 +79,20 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     private void applyConfigChanges(ConnectorDescription old, ConnectorDescription diff) {
-        updateAttributes(old.getAttributes(), diff.getAttributes());
+        Map<String, String> updatedAttributes = updateAttributes(old.getAttributes(), diff.getAttributes());
+        old.setAttributes(updatedAttributes);
         updateProperties(old.getProperties(), diff.getProperties());
+
     }
 
     private void updateProperties(Dictionary<String, Object> properties, Dictionary<String, Object> diff) {
-        for (String key : Collections.list(diff.keys())) {
-            properties.put(key, diff.get(key));
-        }
+        DictionaryAsMap.wrap(properties).putAll(DictionaryAsMap.wrap(diff));
     }
 
-    private void updateAttributes(Map<String, String> attributes, Map<String, String> diff) {
-        for (Map.Entry<String, String> entry : diff.entrySet()) {
-            if (entry.getValue() == null) {
-                attributes.remove(entry.getKey());
-            } else {
-                attributes.put(entry.getKey(), entry.getValue());
-            }
-        }
+    private Map<String, String> updateAttributes(Map<String, String> attributes, Map<String, String> diff) {
+        Map<String, String> result = new HashMap<String, String>(attributes);
+        result.putAll(diff);
+        return result;
     }
 
     private ConnectorDescription getOldConfig(ConnectorId id) {

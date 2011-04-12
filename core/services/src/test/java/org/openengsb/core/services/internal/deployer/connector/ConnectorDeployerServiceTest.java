@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,12 +31,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.ArgumentCaptor;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
@@ -61,11 +64,17 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private ConnectorDeployerService connectorDeployerService;
     private AuthenticationManager authManagerMock;
     private Authentication authMock;
-    private ServiceManager serviceManagerMock;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private NullDomain createdService;
+    private ServiceManager serviceManager;
+    private String testConnectorData = ""
+            + "connector=a-connector\n"
+            + "domain=mydomain\n"
+            + "id=service-id\n"
+            + "attribute.a-key=a-value";
+    private ServiceInstanceFactory factory;
 
     @Override
     @Before
@@ -74,12 +83,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService = new ConnectorDeployerService();
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
-        serviceManagerMock = mock(ServiceManager.class);
 
         ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
         ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
+        this.serviceManager = serviceManagerImpl;
 
         DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
         CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
@@ -98,7 +107,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setServiceManager(serviceManagerImpl);
 
-        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+        factory = mock(ServiceInstanceFactory.class);
         createdService = mock(NullDomain.class);
         when(factory.createServiceInstance(anyString(), anyMap())).thenReturn(createdService);
         registerService(factory, props, ServiceInstanceFactory.class);
@@ -111,14 +120,14 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testConnectorFiles_shouldBeHandledByDeployer() throws IOException {
+    public void testConnectorFiles_shouldBeHandledByDeployer() throws Exception {
         File connectorFile = temporaryFolder.newFile("example.connector");
 
         assertThat(connectorDeployerService.canHandle(connectorFile), is(true));
     }
 
     @Test
-    public void testUnknownFiles_shouldNotBeHandledByDeplyoer() throws IOException {
+    public void testUnknownFiles_shouldNotBeHandledByDeplyoer() throws Exception {
         File otherFile = temporaryFolder.newFile("other.txt");
 
         assertThat(connectorDeployerService.canHandle(otherFile), is(false));
@@ -126,13 +135,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testConnectorFile_shouldBeInstalled() throws Exception {
-        File connectorFile = temporaryFolder.newFile("example.connector");
-        FileUtils.writeStringToFile(connectorFile, ""
-                + "connector=a-connector\n"
-                + "domain=mydomain\n"
-                + "id=service-id\n"
-                + "attribute.a-key=a-value");
-
+        File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
 
         NullDomain domainEndpoints = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(NullDomain.class, "*");
@@ -140,20 +143,24 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         verify(createdService).nullMethod(42);
     }
 
-    // @Test
-    // @SuppressWarnings("unchecked")
-    // public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
-    // File connectorFile = temporaryFolder.newFile("example.connector");
-    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-    //
-    // when(updateResult.isValid()).thenReturn(true);
-    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-    //
-    // connectorDeployerService.update(connectorFile);
-    //
-    // verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
-    // }
+    private File createSampleConnectorFile() throws IOException {
+        File connectorFile = temporaryFolder.newFile("example.connector");
+        FileUtils.writeStringToFile(connectorFile, testConnectorData);
+        return connectorFile;
+    }
+
+    @Test
+    public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
+        File connectorFile = createSampleConnectorFile();
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nattribute.another=foo");
+        connectorDeployerService.update(connectorFile);
+        ArgumentCaptor<Map> attributeCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(factory).updateServiceInstance(eq(createdService), attributeCaptor.capture());
+        String value = (String) attributeCaptor.getValue().get("another");
+        assertThat(value, is("foo"));
+    }
+
     //
     // @Test
     // @SuppressWarnings("unchecked")
