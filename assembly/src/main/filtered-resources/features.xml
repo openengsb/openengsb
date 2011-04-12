@@ -67,6 +67,10 @@
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
+    <!-- OpenEngSB Remote Dependencies -->
+    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle>mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
@@ -87,10 +91,12 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
   </feature>
+
   <feature name="openengsb-infrastructure-jms" version="${project.version}" >
     <feature version="[5.5,6)">activemq-blueprint</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
+
   <feature name="openengsb-ports-jms" version="${project.version}" >
     <config name="org.openengsb.infrastructure.jms">
       openwire=6549
@@ -98,19 +104,13 @@
     </config>
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
-    <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
-    <bundle>mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>
-    <bundle>mvn:org.apache.geronimo.specs/com.springsource.javax.management.j2ee/${org.apache.geronimo.specs.version}</bundle>
-    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
-    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
   </feature>
   <feature name="openengsb-ui-core" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
+
   <feature name="openengsb-ui-admin" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-ports-jms</feature>
