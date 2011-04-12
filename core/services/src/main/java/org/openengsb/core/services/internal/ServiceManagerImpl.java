@@ -33,6 +33,8 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
+import com.google.common.base.Preconditions;
+
 public class ServiceManagerImpl implements ServiceManager {
 
     private ServiceRegistrationManager registrationManager;
@@ -42,6 +44,9 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public void createService(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
+        Preconditions.checkNotNull(id.getConnectorType());
+        Preconditions.checkNotNull(id.getDomainType());
+        Preconditions.checkNotNull(id.getInstanceId());
         try {
             List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
             if (!list.isEmpty()) {

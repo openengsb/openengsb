@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,10 +40,16 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.LocalizableString;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -247,5 +254,46 @@ public abstract class AbstractOsgiMockServiceTest {
     }
 
     protected abstract void setBundleContext(BundleContext bundleContext);
+
+    protected DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        LocalizableString testDomainLocalizedStringMock = mock(LocalizableString.class);
+        when(testDomainLocalizedStringMock.getString(Mockito.<Locale> any())).thenReturn(name);
+        when(domainProviderMock.getId()).thenReturn(name);
+        when(domainProviderMock.getName()).thenReturn(testDomainLocalizedStringMock);
+        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalizedStringMock);
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
+                return interfaze;
+            }
+        });
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("domain", name);
+        registerService(domainProviderMock, props, DomainProvider.class);
+        return domainProviderMock;
+    }
+
+    public LocalizableString mockLocalizeableString(String value) {
+        LocalizableString mock2 = mock(LocalizableString.class);
+        when(mock2.getString(any(Locale.class))).thenReturn(value);
+        return mock2;
+    }
+
+    protected ConnectorProvider createConnectorProviderMock(String connectorType) {
+        ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
+        when(connectorProvider.getId()).thenReturn(connectorType);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("connector", connectorType);
+        registerService(connectorProvider, props, ConnectorProvider.class);
+        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
+        when(descriptor.getId()).thenReturn(connectorType);
+        LocalizableString name = mockLocalizeableString("service.name");
+        when(descriptor.getName()).thenReturn(name);
+        LocalizableString desc = mockLocalizeableString("service.description");
+        when(descriptor.getDescription()).thenReturn(desc);
+        when(connectorProvider.getDescriptor()).thenReturn(descriptor);
+        return connectorProvider;
+    }
 
 }

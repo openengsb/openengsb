@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -68,14 +66,11 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -515,12 +510,6 @@ public class TestClientTest extends AbstractUITest {
         tester.assertRenderedPage(editorPage.getPageClass());
     }
 
-    private LocalizableString mockString(String value) {
-        LocalizableString mock2 = mock(LocalizableString.class);
-        when(mock2.getString(any(Locale.class))).thenReturn(value);
-        return mock2;
-    }
-
     @Test
     public void testStartWithContextAsParam() throws Exception {
         setupTestClientPage();
@@ -644,41 +633,6 @@ public class TestClientTest extends AbstractUITest {
         props.put("domain", "testdomain");
         props.put("connector", "testconnector");
         registerService(factory, props, ServiceInstanceFactory.class);
-    }
-
-    private ConnectorProvider createConnectorProviderMock(String connectorType) {
-        ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
-        when(connectorProvider.getId()).thenReturn(connectorType);
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", connectorType);
-        registerService(connectorProvider, props, ConnectorProvider.class);
-        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
-        when(descriptor.getId()).thenReturn(connectorType);
-        LocalizableString name = mockString("service.name");
-        when(descriptor.getName()).thenReturn(name);
-        LocalizableString desc = mockString("service.description");
-        when(descriptor.getDescription()).thenReturn(desc);
-        when(connectorProvider.getDescriptor()).thenReturn(descriptor);
-        return connectorProvider;
-    }
-
-    private DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {
-        DomainProvider domainProviderMock = mock(DomainProvider.class);
-        LocalizableString testDomainLocalizedStringMock = mock(LocalizableString.class);
-        when(testDomainLocalizedStringMock.getString(Mockito.<Locale> any())).thenReturn(name);
-        when(domainProviderMock.getId()).thenReturn(name);
-        when(domainProviderMock.getName()).thenReturn(testDomainLocalizedStringMock);
-        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalizedStringMock);
-        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-            @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return interfaze;
-            }
-        });
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("domain", name);
-        registerService(domainProviderMock, props, DomainProvider.class);
-        return domainProviderMock;
     }
 
     private void setupIndexPage() {

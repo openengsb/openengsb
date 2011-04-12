@@ -18,20 +18,25 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.osgi.framework.Constants;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class ConnectorFile {
 
     private static final String DEFAULT_ROOT_SERVICE_RANKING = "-1";
     private static final String PROPERTY_CONNECTOR = "connector";
+    private static final String PROPERTY_DOMAIN = "domain";
     private static final String PROPERTY_SERVICE_ID = "id";
 
+    private ImmutableMap<String, String> propertiesMap;
+    private long cacheTimestamp = 0;
     private File connectorFile;
 
     public ConnectorFile(File connectorFile) {
@@ -42,39 +47,49 @@ public class ConnectorFile {
         return readProperty(PROPERTY_CONNECTOR);
     }
 
+    public String getDomainName() throws IOException {
+        return readProperty(PROPERTY_DOMAIN);
+    }
+
     public String getServiceId() throws IOException {
         return readProperty(PROPERTY_SERVICE_ID);
     }
 
     private String readProperty(String propertyId) throws IOException {
-        Properties props = loadProperties();
-        return props.getProperty(propertyId);
+        updateProperties();
+        return propertiesMap.get(propertyId);
     }
 
-    private Properties loadProperties() throws IOException {
+    private synchronized void updateProperties() {
+        if (connectorFile.lastModified() == cacheTimestamp) {
+            return;
+        }
         Properties props = new Properties();
-        FileInputStream inputStream = new FileInputStream(connectorFile.getAbsoluteFile());
-        props.load(inputStream);
-        inputStream.close();
-        return props;
+        try {
+            FileReader reader = new FileReader(connectorFile);
+            props.load(reader);
+            reader.close();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        this.propertiesMap = Maps.fromProperties(props);
+        cacheTimestamp = connectorFile.lastModified();
     }
 
     public Map<String, String> getAttributes() throws IOException {
-        Properties props = loadProperties();
-        Map<String, String> instanceAttributes = createMapFrom(props);
-        instanceAttributes.remove(PROPERTY_CONNECTOR);
-        if (!instanceAttributes.containsKey(Constants.SERVICE_RANKING) && isRootService(connectorFile)) {
-            instanceAttributes.put(Constants.SERVICE_RANKING, DEFAULT_ROOT_SERVICE_RANKING);
-        }
-        return instanceAttributes;
+        return getFilteredEntries("attribute");
     }
 
-    private static Map<String, String> createMapFrom(Properties props) {
-        Map<String, String> instanceAttributes = new HashMap<String, String>();
-        for (String propertyName : props.stringPropertyNames()) {
-            instanceAttributes.put(propertyName, props.getProperty(propertyName));
-        }
-        return instanceAttributes;
+    private Map<String, String> getFilteredEntries(final String key) throws IOException {
+        updateProperties();
+        Map<String, String> filterEntries =
+            Maps.filterEntries(propertiesMap, new Predicate<Map.Entry<String, String>>() {
+                @Override
+                public boolean apply(Entry<String, String> input) {
+                    return input.getKey().startsWith(key + ".");
+                }
+            });
+        return filterEntries;
     }
 
     public static Boolean isRootService(File connectorFile) {

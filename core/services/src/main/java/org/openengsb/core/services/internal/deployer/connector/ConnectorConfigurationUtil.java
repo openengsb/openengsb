@@ -17,20 +17,22 @@
 
 package org.openengsb.core.services.internal.deployer.connector;
 
-import java.io.File;
 import java.io.IOException;
 
-public final class StorageFileFactory {
-    
-    private StorageFileFactory() {
-        
+import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
+
+public final class ConnectorConfigurationUtil {
+
+    private ConnectorConfigurationUtil() {
     }
 
-    public static DeployerStorage createFileStorage() throws IOException {
-        String karafDataDirectory = System.getProperty("karaf.data");
-        String storageFile = String.format("%s/openengsb/deployer/connector", karafDataDirectory);
-        DeployerStorage storage = new DeployerStorageFile(new File(storageFile));
-        return storage;
+    public static ConnectorConfiguration loadFromFile(ConnectorFile configFile) throws IOException {
+        ConnectorId connectorId =
+            new ConnectorId(configFile.getDomainName(), configFile.getConnectorName(), configFile.getServiceId());
+        ConnectorDescription description = new ConnectorDescription(configFile.getAttributes());
+        return new ConnectorConfiguration(connectorId, description);
     }
 
 }

@@ -40,4 +40,8 @@ public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
         this.content = content;
     }
 
+    public ConnectorId getConnectorId() {
+        return ConnectorId.fromMetaData(metaData);
+    }
+
 }

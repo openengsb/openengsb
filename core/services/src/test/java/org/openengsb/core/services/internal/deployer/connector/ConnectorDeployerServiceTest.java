@@ -20,7 +20,10 @@ package org.openengsb.core.services.internal.deployer.connector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -34,10 +37,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.descriptor.ServiceDescriptorTest.NullDomain;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.CorePersistenceServiceBackend;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.ServiceManagerImpl;
+import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,10 +62,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private AuthenticationManager authManagerMock;
     private Authentication authMock;
     private ServiceManager serviceManagerMock;
-    private DeployerStorage storageMock;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private NullDomain createdService;
 
     @Override
     @Before
@@ -62,15 +75,39 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
         serviceManagerMock = mock(ServiceManager.class);
-        storageMock = mock(DeployerStorage.class);
+
+        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
+        ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
+        registrationManager.setBundleContext(bundleContext);
+        serviceManagerImpl.setRegistrationManager(registrationManager);
+
+        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
+        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        backend.setBundleContext(bundleContext);
+        backend.setPersistenceManager(dummyPersistenceManager);
+        backend.init();
+        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
+        Dictionary<String, Object> props2 = new Hashtable<String, Object>();
+        props2.put("configuration.id", "CONNECTOR");
+        registerService(configPersistence, props2, ConfigPersistenceService.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", "a-connector ");
-        registerService(serviceManagerMock, props, ServiceManager.class);
+        props.put("connector", "a-connector");
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setDeployerStorage(storageMock);
+        connectorDeployerService.setServiceManager(serviceManagerImpl);
+
+        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+        createdService = mock(NullDomain.class);
+        when(factory.createServiceInstance(anyString(), anyMap())).thenReturn(createdService);
+        registerService(factory, props, ServiceInstanceFactory.class);
+
+        createDomainProviderMock(NullDomain.class, "mydomain");
+
+        DefaultWiringService defaultWiringService = new DefaultWiringService();
+        defaultWiringService.setBundleContext(bundleContext);
+        registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
     }
 
     @Test
@@ -88,108 +125,114 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testConnectorFile_shouldBeInstalled() throws Exception {
         File connectorFile = temporaryFolder.newFile("example.connector");
-        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+        FileUtils.writeStringToFile(connectorFile, ""
+                + "connector=a-connector\n"
+                + "domain=mydomain\n"
+                + "id=service-id\n"
+                + "attribute.a-key=a-value");
 
         connectorDeployerService.install(connectorFile);
 
+        NullDomain domainEndpoints = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(NullDomain.class, "*");
+        domainEndpoints.nullMethod(42);
+        verify(createdService).nullMethod(42);
     }
 
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
-//        File connectorFile = temporaryFolder.newFile("example.connector");
-//        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-//        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-//
-//        when(updateResult.isValid()).thenReturn(true);
-//        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-//
-//        connectorDeployerService.update(connectorFile);
-//
-//        verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
-//    }
-//
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testRootService_shouldHaveLowerRanking() throws Exception {
-//        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
-//        FileUtils.touch(connectorFile);
-//        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-//        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-//        @SuppressWarnings("rawtypes")
-//        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-//
-//        when(updateResult.isValid()).thenReturn(true);
-//        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-//
-//        connectorDeployerService.update(connectorFile);
-//
-//        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-//        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
-//        assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("-1"));
-//    }
-//
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
-//        File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
-//        FileUtils.touch(connectorFile);
-//        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-//        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-//        @SuppressWarnings("rawtypes")
-//        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-//
-//        when(updateResult.isValid()).thenReturn(true);
-//        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-//
-//        connectorDeployerService.update(connectorFile);
-//
-//        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-//        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(false));
-//    }
-//
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testOverridenRanking_shouldNotBeAltered() throws Exception {
-//        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
-//        FileUtils.touch(connectorFile);
-//        FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value \n "
-//                + Constants.SERVICE_RANKING + "=24");
-//        MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-//        @SuppressWarnings("rawtypes")
-//        ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-//
-//        when(updateResult.isValid()).thenReturn(true);
-//        when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-//
-//        connectorDeployerService.update(connectorFile);
-//
-//        verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-//        assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
-//        assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("24"));
-//    }
-//
-//    @Test
-//    public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
-//        File connectorFile = temporaryFolder.newFile("example.connector");
-//
-//        when(storageMock.getConnectorType(connectorFile)).thenReturn("a-connector ");
-//        when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
-//
-//        connectorDeployerService.uninstall(connectorFile);
-//
-//        verify(serviceManagerMock).delete("service-id");
-//    }
-//
-//    class IsSomething extends ArgumentMatcher<Map<String, String>> {
-//        @Override
-//        public boolean matches(Object o) {
-//            return true;
-//        }
-//    }
+    // @Test
+    // @SuppressWarnings("unchecked")
+    // public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
+    // File connectorFile = temporaryFolder.newFile("example.connector");
+    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+    //
+    // when(updateResult.isValid()).thenReturn(true);
+    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+    //
+    // connectorDeployerService.update(connectorFile);
+    //
+    // verify(serviceManagerMock).update(anyString(), argThat(new IsSomething()));
+    // }
+    //
+    // @Test
+    // @SuppressWarnings("unchecked")
+    // public void testRootService_shouldHaveLowerRanking() throws Exception {
+    // File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+    // FileUtils.touch(connectorFile);
+    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+    // @SuppressWarnings("rawtypes")
+    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+    //
+    // when(updateResult.isValid()).thenReturn(true);
+    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+    //
+    // connectorDeployerService.update(connectorFile);
+    //
+    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
+    // assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("-1"));
+    // }
+    //
+    // @Test
+    // @SuppressWarnings("unchecked")
+    // public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
+    // File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
+    // FileUtils.touch(connectorFile);
+    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
+    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+    // @SuppressWarnings("rawtypes")
+    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+    //
+    // when(updateResult.isValid()).thenReturn(true);
+    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+    //
+    // connectorDeployerService.update(connectorFile);
+    //
+    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(false));
+    // }
+    //
+    // @Test
+    // @SuppressWarnings("unchecked")
+    // public void testOverridenRanking_shouldNotBeAltered() throws Exception {
+    // File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+    // FileUtils.touch(connectorFile);
+    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value \n "
+    // + Constants.SERVICE_RANKING + "=24");
+    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
+    // @SuppressWarnings("rawtypes")
+    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
+    //
+    // when(updateResult.isValid()).thenReturn(true);
+    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
+    //
+    // connectorDeployerService.update(connectorFile);
+    //
+    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
+    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
+    // assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("24"));
+    // }
+    //
+    // @Test
+    // public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
+    // File connectorFile = temporaryFolder.newFile("example.connector");
+    //
+    // when(storageMock.getConnectorType(connectorFile)).thenReturn("a-connector ");
+    // when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
+    //
+    // connectorDeployerService.uninstall(connectorFile);
+    //
+    // verify(serviceManagerMock).delete("service-id");
+    // }
+    //
+    // class IsSomething extends ArgumentMatcher<Map<String, String>> {
+    // @Override
+    // public boolean matches(Object o) {
+    // return true;
+    // }
+    // }
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {

@@ -71,6 +71,10 @@ public class ConnectorId implements Serializable {
         return metaData;
     }
 
+    public static ConnectorId fromMetaData(Map<String, String> metaData) {
+        return new ConnectorId(metaData.get("domainType"), metaData.get("connectorType"), metaData.get("instanceId"));
+    }
+
     public static ConnectorId generate(String domainType, String connectorType) {
         String instanceId = UUID.randomUUID().toString();
         return new ConnectorId(domainType, connectorType, instanceId);

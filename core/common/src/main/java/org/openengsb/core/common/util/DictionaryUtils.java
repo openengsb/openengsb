@@ -15,19 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.deployer.connector;
+package org.openengsb.core.common.util;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Map;
 
-public interface DeployerStorage {
+public final class DictionaryUtils {
 
-    void put(File file, ConnectorConfiguration config) throws IOException;
+    public static <K, V> Dictionary<K, V> merge(Dictionary<K, V> master, Dictionary<K, V> diff) {
+        Map<K, V> wrapped = DictionaryAsMap.wrap(master);
+        wrapped.putAll(DictionaryAsMap.wrap(diff));
+        return master;
+    }
 
-    void remove(File file) throws IOException;
-
-    String getServiceId(File file) throws IOException;
-
-    String getConnectorType(File file) throws IOException;
+    private DictionaryUtils() {
+    }
 
 }
