@@ -64,9 +64,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     public void install(File artifact) throws IOException {
         log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
 
-        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(new ConnectorFile(artifact));
+        ConnectorFile configFile = new ConnectorFile(artifact);
+        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(configFile);
         authenticate(AUTH_USER, AUTH_PASSWORD);
-
+        if (newConfig.getContent().getProperties().get(Constants.SERVICE_RANKING) == null
+                && ConnectorFile.isRootService(artifact)) {
+            newConfig.getContent().getProperties().put(Constants.SERVICE_RANKING, "-1");
+        }
         // log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
 
         try {

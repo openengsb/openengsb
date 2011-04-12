@@ -39,6 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
+import org.mockito.internal.matchers.LessThan;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
@@ -55,6 +56,8 @@ import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -161,26 +164,19 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(value, is("foo"));
     }
 
-    //
-    // @Test
-    // @SuppressWarnings("unchecked")
-    // public void testRootService_shouldHaveLowerRanking() throws Exception {
-    // File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
-    // FileUtils.touch(connectorFile);
-    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-    // @SuppressWarnings("rawtypes")
-    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-    //
-    // when(updateResult.isValid()).thenReturn(true);
-    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-    //
-    // connectorDeployerService.update(connectorFile);
-    //
-    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
-    // assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("-1"));
-    // }
+    @Test
+    public void testRootService_shouldHaveLowerRanking() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData);
+
+        connectorDeployerService.install(connectorFile);
+
+        ServiceReference reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "")[0];
+        String ranking = (String) reference.getProperty(Constants.SERVICE_RANKING);
+        assertThat(new Long(ranking), new LessThan<Long>(0L));
+    }
+
     //
     // @Test
     // @SuppressWarnings("unchecked")
