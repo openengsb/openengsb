@@ -22,7 +22,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
 
-  <feature name="openengsb-specs" version="${project.version}">
+  <feature name="openengsb-core" version="${project.version}" >
+    <config name="org.openengsb.settings">
+      openengsb.version.number=${openengsb.version.number}
+      openengsb.version.name.adjective=${openengsb.version.name.adjective}
+      openengsb.version.name.noun=${openengsb.version.name.noun}
+    </config>
+    <feature version="[3,4)">spring</feature>
+    <feature version="[3,4)">spring-web</feature>
+    <feature version="[1.2,2)">spring-dm</feature>
+    <feature version="[1.2,2)">spring-dm-web</feature>
+    <feature version="${karaf.version}">war</feature>
+    <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/${geronimo.ws.metadata.version}</bundle>
@@ -33,27 +44,9 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
     <bundle start-level='10'>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
-  </feature>
-
-  <feature name='openengsb-jaxb' version='${project.version}'>
-    <feature version="${project.version}">openengsb-specs</feature>
+    <!-- jaxb -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/${jaxb.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
-  </feature>
-
-  <feature name="openengsb-core" version="${project.version}" >
-    <config name="org.openengsb.settings">
-      openengsb.version.number=${openengsb.version.number}
-      openengsb.version.name.adjective=${openengsb.version.name.adjective}
-      openengsb.version.name.noun=${openengsb.version.name.noun}
-    </config>
-    <feature version="${project.version}">openengsb-specs</feature>
-    <feature version="${project.version}">openengsb-jaxb</feature>
-    <feature version="[3,4)">spring</feature>
-    <feature version="[3,4)">spring-web</feature>
-    <feature version="[1.2,2)">spring-dm</feature>
-    <feature version="[1.2,2)">spring-dm-web</feature>
-    <feature version="${karaf.version}">war</feature>
     <!-- AspectJ -->
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
     <!-- Spring Security -->
