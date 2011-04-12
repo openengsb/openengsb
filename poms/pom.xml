@@ -72,8 +72,20 @@
     <docbkx.xml.version>5.0-all</docbkx.xml.version>
     <jai.version>1.1.3</jai.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
+    <jaxb.version>2.2.1</jaxb.version>
+    <jaxb.wrapped.version>2.2.1.1_1</jaxb.wrapped.version>
+    <axiom.version>1.2.10</axiom.version>
+    <abdera.version>1.1.2</abdera.version>
+    <xmlsec.version>1.4.4_1</xmlsec.version>
+    <xmlschema.version>2.0</xmlschema.version>
+    <cxf.version>2.4.0-SNAPSHOT</cxf.version>
+    <jaxb.api.version>1.7.0</jaxb.api.version>
+    <jaxws.api.version>1.7.0</jaxws.api.version>
+    <jsr311.api.version>1.7.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <pax.exam.version>1.2.4</pax.exam.version>
+    <saaj.api.version>1.7.0</saaj.api.version>
+    <saaj.impl.version>1.3.2_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
     <guava.version>r08</guava.version>
@@ -113,9 +125,13 @@
     <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <cglib.version>2.1_3_6</cglib.version>
-    <asm.version>2.2.3_4</asm.version>
+    <asm.version>3.3_1</asm.version>
+    <wsdl4j.version>1.6.2_3</wsdl4j.version>
+    <jettison.version>1.2</jettison.version>
+    <xmlbeans.version>2.4.0_4</xmlbeans.version>
+    <rhino.version>1.7R2_1</rhino.version>
+    <xmlresolver.version>1.2_3</xmlresolver.version>
     <util.concurrent.version>1.3.4</util.concurrent.version>
-    <javax.activation.version>1.1.0</javax.activation.version>
     <javax.validation.version>1.0.0.GA</javax.validation.version>
     <javax.persistence.version>2.0.0</javax.persistence.version>
     <spec.jms11.version>1.1.1</spec.jms11.version>
@@ -147,12 +163,14 @@
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
-    <jaxb.version>2.2.1</jaxb.version>
-    <jaxb.wrapped.version>${jaxb.version}.w1</jaxb.wrapped.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jgit.version>0.10.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
-    <joda.version>1.6</joda.version>
+    <joda.version>1.6.2</joda.version>
+    <xmltooling.version>1.3.1</xmltooling.version>
+    <openws.version>1.4.1</openws.version>
+    <opensaml.version>2.4.1</opensaml.version>
+    <wss4j.version>1.6-SNAPSHOT</wss4j.version>
     <log4j.version>1.2.14</log4j.version>
     <lucene.version>2.4.1</lucene.version>
     <maven.code.version>3.0-alpha-2</maven.code.version>
@@ -170,7 +188,10 @@
     <svnkit.version>1.3.0</svnkit.version>
     <twitter4j.version>2.1.0</twitter4j.version>
     <xbean.version>3.5</xbean.version>
-    <xerces.version>2.8.1</xerces.version>
+    <xerces.version>2.9.1_4</xerces.version>
+    <bcel.version>5.2_3</bcel.version>
+    <xalan.version>2.7.1_3</xalan.version>
+    <oro.version>2.0.8_4</oro.version>
     <xmlunit.version>1.3</xmlunit.version>
     <wrapped.axis.version>3.1.3.w1</wrapped.axis.version>
     <backport.util.concurrent.version>2.2</backport.util.concurrent.version>
@@ -179,16 +200,21 @@
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.vfs.version>20050307052300</commons.vfs.version>
     <derby.version>10.2.2.0</derby.version>
+    <velocity.version>1.6.2_4</velocity.version>
+    <jdom.version>1.1_3</jdom.version>
     <geronimo.ejb.version>1.1</geronimo.ejb.version>
     <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
     <geronimo.servlet.version>1.1.2</geronimo.servlet.version>
-    <geronimo.javamail.version>1.2</geronimo.javamail.version>
-    <geronimo.jaxws.version>1.0</geronimo.jaxws.version>
+    <geronimo.annotation.version>1.1.1</geronimo.annotation.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
-    <geronimo.ws.metadata.version>1.1.2</geronimo.ws.metadata.version>
+    <geronimo.ws.metadata.version>1.1.3</geronimo.ws.metadata.version>
+    <stax.api.version>1.7.0</stax.api.version>
+    <stax2.api.version>3.1.1</stax2.api.version>
+    <staxex.version>1.0.0</staxex.version>
+    <woodstox.version>4.1.1</woodstox.version>
+    <neethi.version>3.0.0</neethi.version>
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
-    <javax.activation.version>1.1</javax.activation.version>
     <javax.mail.version>1.4.1_3</javax.mail.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <quartz.version>1.5.2</quartz.version>
@@ -197,9 +223,8 @@
     <xml.apis.version>1.3.04</xml.apis.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
     <drools.version>5.1.1</drools.version>
-    <fastinfoset.version>1.2.2</fastinfoset.version>
-    <javax.activation.version>1.1.1</javax.activation.version>
-    <staxex.version>1.0.0</staxex.version>
+    <fastinfoset.version>1.2.7_3</fastinfoset.version>
+    <activation.api.version>1.7.0</activation.api.version>
     <xstream.version>1.3.1</xstream.version>
     <xmlpull.version>1.1.4.c</xmlpull.version>
     <mvel2.version>2.0.18</mvel2.version>
