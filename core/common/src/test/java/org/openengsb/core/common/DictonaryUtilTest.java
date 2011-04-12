@@ -25,6 +25,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -70,14 +71,15 @@ public class DictonaryUtilTest {
         assertThat(entry2.getValue(), is((Object) 42L));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void wrapMapToDictionary() throws Exception {
         Map<String, String> testMap = new HashMap<String, String>();
         testMap.put("test", "42");
         testMap.put("foo", "bar");
         Dictionary<String, String> dict = MapAsDictionary.wrap(testMap);
-        assertThat(EnumerationUtils.toList(dict.elements()), hasItems("42", "bar"));
+        @SuppressWarnings("unchecked")
+        List<String> list = EnumerationUtils.toList(dict.elements());
+        assertThat(list, hasItems("42", "bar"));
     }
 
 }
