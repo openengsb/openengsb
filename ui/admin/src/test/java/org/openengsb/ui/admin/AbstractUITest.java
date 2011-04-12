@@ -25,7 +25,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
@@ -49,7 +49,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected WicketTester tester;
     protected ApplicationContextMock context;
     protected ServiceManager serviceManager;
-    protected InternalServiceRegistrationManager registrationManager;
+    protected ServiceRegistrationManager registrationManager;
     protected WiringService wiringService;
 
     @Before

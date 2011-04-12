@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -35,7 +35,7 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class ServiceManagerImpl implements ServiceManager {
 
-    private InternalServiceRegistrationManager registrationManager;
+    private ServiceRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
         .getConfigPersistenceService(Constants.CONNECTOR);
 
@@ -50,7 +50,7 @@ public class ServiceManagerImpl implements ServiceManager {
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
-        registrationManager.createService(id, connectorDescription);
+        registrationManager.updateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
             configPersistence.persist(configuration);
@@ -63,7 +63,7 @@ public class ServiceManagerImpl implements ServiceManager {
     public void update(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException {
         ConnectorDescription old = getOldConfig(id);
-        registrationManager.update(id, connectorDescpription);
+        registrationManager.updateRegistration(id, connectorDescpription);
         applyConfigChanges(old, connectorDescpription);
         try {
             configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
@@ -112,7 +112,7 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public void delete(ConnectorId id) {
         // TODO delete from config (OPENENGSB-1256)
-        registrationManager.delete(id);
+        registrationManager.remove(id);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class ServiceManagerImpl implements ServiceManager {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void setRegistrationManager(InternalServiceRegistrationManager registrationManager) {
+    public void setRegistrationManager(ServiceRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
     }
 }

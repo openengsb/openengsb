@@ -7,10 +7,10 @@ import java.util.Map;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -35,7 +35,7 @@ import org.osgi.framework.ServiceRegistration;
  * specific language governing permissions and limitations under the License.
  */
 
-public class ServiceRegistrationManagerImpl implements InternalServiceRegistrationManager {
+public class ServiceRegistrationManagerImpl implements ServiceRegistrationManager {
 
     private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
     private BundleContext bundleContext;
@@ -48,12 +48,11 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
         return this.getClass().getName();
     }
 
-    @Override
-    public void createService(ConnectorId id, ConnectorDescription description)
+    private void createService(ConnectorId id, ConnectorDescription description)
         throws ServiceValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-
         ServiceInstanceFactory factory = getConnectorFactory(id);
+
         // TODO really validate
         Domain serviceInstance = factory.createServiceInstance(id.toString(), description.getAttributes());
 
@@ -62,30 +61,38 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
                 Domain.class.getName(),
                 domainProvider.getDomainInterface().getName(),
         };
-        Dictionary<String, Object> properties = description.getProperties();
+
+        Dictionary<String, Object> properties =
+            populatePropertiesWithRequiredAttributes(description.getProperties(), id);
+        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
+        registrations.put(id, serviceRegistration);
+        instances.put(id, serviceInstance);
+    }
+
+    private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(Dictionary<String, Object> properties,
+            ConnectorId id) {
         properties.put("domain", id.getDomainType());
         properties.put("connector", id.getConnectorType());
         properties.put("id", id.toString());
         if (properties.get("location.root") == null) {
             properties.put("location.root", new String[]{ id.getInstanceId() });
         }
-        String currentContextLocation = "location" + ContextHolder.get().getCurrentContextId();
+        String currentContextLocation = "location." + ContextHolder.get().getCurrentContextId();
         if (properties.get(currentContextLocation) == null) {
             properties.put(currentContextLocation, new String[0]);
         }
-        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
-        registrations.put(id, serviceRegistration);
-        instances.put(id, serviceInstance);
+        return properties;
     }
 
     @Override
-    public void update(ConnectorId id, ConnectorDescription connectorDescription)
+    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
-        Map<String, String> attributes = connectorDescription.getAttributes();
-        // TODO really validate
-        if (attributes != null) {
-            udpateAttributes(id, attributes);
+        if (!instances.containsKey(id)) {
+            createService(id, connectorDescription);
+        } else {
+            udpateAttributes(id, connectorDescription.getAttributes());
         }
+
         Dictionary<String, Object> properties = connectorDescription.getProperties();
         if (properties != null) {
             updateProperties(id, properties);
@@ -98,28 +105,26 @@ public class ServiceRegistrationManagerImpl implements InternalServiceRegistrati
         ServiceReference reference = registration.getReference();
         String[] propertyKeys = reference.getPropertyKeys();
         for (String k : propertyKeys) {
-            Object value = reference.getProperty(k);
-            if (value != null) {
-                properties.put(k, value);
+            Object newValue = properties.get(k);
+            if (newValue == null) {
+                properties.put(k, reference.getProperty(k));
             }
         }
         registration.setProperties(properties);
     }
 
     private void udpateAttributes(ConnectorId id, Map<String, String> attributes) {
+        if (attributes == null) {
+            return;
+        }
         ServiceInstanceFactory factory = getConnectorFactory(id);
         factory.updateServiceInstance(instances.get(id), attributes);
     }
 
     @Override
-    public void delete(ConnectorId id) {
+    public void remove(ConnectorId id) {
         registrations.get(id).unregister();
         registrations.remove(id);
-    }
-
-    @Override
-    public ConnectorDescription getAttributeValues(ConnectorId id) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override

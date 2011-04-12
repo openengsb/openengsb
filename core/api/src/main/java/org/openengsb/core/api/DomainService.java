@@ -32,17 +32,17 @@ public interface DomainService {
     List<DomainProvider> domains();
 
     /**
-     * Method to retrieve the {@link InternalServiceRegistrationManager} for a specific connector which can be used to
+     * Method to retrieve the {@link ServiceRegistrationManager} for a specific connector which can be used to
      * create, update or destroy instances of a specific type. E.g. this method can be used to retrieve the jira service
      * manager and add instances or remove them.
      */
-    InternalServiceRegistrationManager serviceManagerForConnector(String connectorName);
+    ServiceRegistrationManager serviceManagerForConnector(String connectorName);
 
     /**
-     * Retrieves the {@link InternalServiceRegistrationManager} instances for a specific {@link Domain} for all
+     * Retrieves the {@link ServiceRegistrationManager} instances for a specific {@link Domain} for all
      * connectors available in the OpenEngSB.
      */
-    List<InternalServiceRegistrationManager> serviceManagersForDomain(Class<? extends Domain> domain);
+    List<ServiceRegistrationManager> serviceManagersForDomain(Class<? extends Domain> domain);
 
     /**
      * Retrieves the osgi {@link ServiceReference} matching all instances implementing a specific {@link Domain}

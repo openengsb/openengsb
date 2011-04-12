@@ -37,7 +37,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
@@ -61,7 +61,7 @@ public class ServiceListPanel extends Panel {
     private final Map<AliveState, List<ServiceReference>> domainServiceMap;
 
     public ServiceListPanel(String id, BundleContext bundleContext, DomainService services,
-            List<InternalServiceRegistrationManager> serviceManager) {
+            List<ServiceRegistrationManager> serviceManager) {
         super(id);
         this.bundleContext = bundleContext;
         this.services = services;
@@ -151,7 +151,7 @@ public class ServiceListPanel extends Panel {
                 final String id = (String) serv.getProperty("id");
                 final ConnectorId connectorId = new ConnectorId(domain, connector, id);
                 LocalizableString description = new PassThroughLocalizableString("");
-                InternalServiceRegistrationManager sm;
+                ServiceRegistrationManager sm;
                 try {
                     ServiceDescriptor desc = getServiceDescriptor(connector);
                     if (desc != null) {
@@ -165,7 +165,7 @@ public class ServiceListPanel extends Panel {
                 item.add(new AjaxLink<String>("updateService", new Model<String>(connector)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        InternalServiceRegistrationManager sm;
+                        ServiceRegistrationManager sm;
                         try {
                             sm = getServiceManager(getModelObject());
                         } catch (OsgiServiceNotAvailableException e) {
@@ -180,14 +180,14 @@ public class ServiceListPanel extends Panel {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         getList().remove(item.getModelObject());
-                        InternalServiceRegistrationManager manager;
+                        ServiceRegistrationManager manager;
                         try {
                             manager = getServiceManager(getModelObject());
                         } catch (OsgiServiceNotAvailableException e) {
                             error(e);
                             return;
                         }
-                        manager.delete(connectorId);
+                        manager.remove(connectorId);
                         noServicesLabel.setVisible(getList().size() <= 0);
                         target.addComponent(noServicesLabel);
                         target.addComponent(serviceWebMarkupContainer);
@@ -195,18 +195,18 @@ public class ServiceListPanel extends Panel {
                 });
             }
 
-            private InternalServiceRegistrationManager getServiceManager(String connector)
+            private ServiceRegistrationManager getServiceManager(String connector)
                 throws OsgiServiceNotAvailableException {
                 Filter filter;
                 try {
                     filter =
                         OpenEngSBCoreServices.getServiceUtilsService().makeFilter(
-                            InternalServiceRegistrationManager.class,
+                            ServiceRegistrationManager.class,
                             String.format("(connector=%s)", connector));
                 } catch (InvalidSyntaxException e) {
                     throw new IllegalStateException(e);
                 }
-                return (InternalServiceRegistrationManager) OpenEngSBCoreServices.getServiceUtilsService().getService(
+                return (ServiceRegistrationManager) OpenEngSBCoreServices.getServiceUtilsService().getService(
                     filter, 300);
             }
         };

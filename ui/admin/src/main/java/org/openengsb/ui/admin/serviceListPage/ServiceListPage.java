@@ -25,7 +25,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceListPanel.ServiceListPanel;
 import org.osgi.framework.BundleContext;
@@ -40,7 +40,7 @@ public class ServiceListPage extends BasePage {
     private BundleContext bundleContext;
 
     @SpringBean(name = "services")
-    private List<InternalServiceRegistrationManager> serviceManager;
+    private List<ServiceRegistrationManager> serviceManager;
 
     public ServiceListPage() {
         initContent();

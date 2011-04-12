@@ -23,10 +23,7 @@ import org.openengsb.core.api.model.ConnectorId;
 /**
  * Instance provider for a specific service interface.
  */
-public interface InternalServiceRegistrationManager extends OpenEngSBService {
-
-    void createService(ConnectorId id, ConnectorDescription connectorDescpription)
-        throws ServiceValidationFailedException;
+public interface ServiceRegistrationManager extends OpenEngSBService {
 
     /**
      * updates a service instance. If the given id does not exist, this creates a new service instance.
@@ -35,7 +32,7 @@ public interface InternalServiceRegistrationManager extends OpenEngSBService {
      * @param attributes updates to maybe already set attributes.
      * @return the result of the validation
      */
-    void update(ConnectorId id, ConnectorDescription connectorDescpription)
+    void updateRegistration(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException;
 
     /**
@@ -45,14 +42,7 @@ public interface InternalServiceRegistrationManager extends OpenEngSBService {
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(ConnectorId id);
-
-    /**
-     * Returns the attributes with values for the specified service instance.
-     *
-     * @param id identifier for a already existing service instance
-     */
-    ConnectorDescription getAttributeValues(ConnectorId id);
+    void remove(ConnectorId id);
 
     void assignLocations(ConnectorId serviceId, String... locations);
 

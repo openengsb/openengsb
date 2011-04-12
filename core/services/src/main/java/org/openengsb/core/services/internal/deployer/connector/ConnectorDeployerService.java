@@ -22,9 +22,9 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Constants;
@@ -74,7 +74,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             }
 
             log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
-            InternalServiceRegistrationManager serviceManager = getServiceManagerFor(newConfig.getConnectorType());
+            ServiceRegistrationManager serviceManager = getServiceManagerFor(newConfig.getConnectorType());
             if (serviceManager == null) {
                 log.info(String.format(
                         "Retrieving ServiceManager for connector %s failed, cannot create connector instance",
@@ -113,7 +113,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             String connectorType = deployerStorage.getConnectorType(artifact);
 
             log.info(String.format("Removing instance %s of connector %s", serviceId, connectorType));
-            InternalServiceRegistrationManager serviceManager = getServiceManagerFor(connectorType);
+            ServiceRegistrationManager serviceManager = getServiceManagerFor(connectorType);
             if (serviceManager == null) {
                 log.info(String.format(
                         "Retrieving ServiceManager for connector %s failed, cannot remove connector instance",
@@ -130,9 +130,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
     }
 
-    private InternalServiceRegistrationManager getServiceManagerFor(String connectorType)
+    private ServiceRegistrationManager getServiceManagerFor(String connectorType)
         throws OsgiServiceNotAvailableException {
-        return (InternalServiceRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
+        return (ServiceRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
     }
 
     private OsgiUtilsService getOsgiUtils() {
@@ -141,7 +141,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private String getFilterFor(String connectorType) {
         return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS,
-            InternalServiceRegistrationManager.class.getName(),
+            ServiceRegistrationManager.class.getName(),
             connectorType);
     }
 

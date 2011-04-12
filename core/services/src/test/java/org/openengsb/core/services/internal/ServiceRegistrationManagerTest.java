@@ -39,10 +39,10 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.CallRouter;
@@ -58,7 +58,7 @@ import org.osgi.framework.BundleContext;
 
 public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest {
 
-    private InternalServiceRegistrationManager serviceManager;
+    private ServiceRegistrationManager registrationManager;
     private DefaultOsgiUtilsService serviceUtils;
     private CallRouter callrouter;
 
@@ -74,7 +74,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registerService(callrouter, new Hashtable<String, Object>(), CallRouter.class);
         ServiceRegistrationManagerImpl serviceManagerImpl = new ServiceRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
-        serviceManager = serviceManagerImpl;
+        registrationManager = serviceManagerImpl;
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        registrationManager.updateRegistration(connectorId, connectorDescription);
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         assertThat(service.getInstanceId(), is(connectorId.toString()));
@@ -101,8 +101,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
-        serviceManager.delete(connectorId);
+        registrationManager.updateRegistration(connectorId, connectorDescription);
+        registrationManager.remove(connectorId);
         try {
             serviceUtils.getService("(foo=bar)", 100L);
             fail("service was expected to be not available");
@@ -120,12 +120,12 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        registrationManager.updateRegistration(connectorId, connectorDescription);
         ConnectorDescription updated = new ConnectorDescription();
         Dictionary<String, Object> newProperties = new Hashtable<String, Object>();
         newProperties.put("foo", "xxx");
         updated.setProperties(newProperties);
-        serviceManager.update(connectorId, updated);
+        registrationManager.updateRegistration(connectorId, updated);
 
         serviceUtils.getService("(foo=xxx)", 100L);
         try {
@@ -145,12 +145,12 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        registrationManager.updateRegistration(connectorId, connectorDescription);
         ConnectorDescription updated = new ConnectorDescription();
         Map<String, String> newAttrs = new HashMap<String, String>();
         newAttrs.put("answer", "43");
         updated.setAttributes(newAttrs);
-        serviceManager.update(connectorId, updated);
+        registrationManager.updateRegistration(connectorId, updated);
 
         serviceUtils.getService("(foo=bar)", 100L);
         ServiceInstanceFactory factory = serviceUtils.getService(ServiceInstanceFactory.class);
@@ -168,7 +168,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", Constants.EXTERNAL_CONNECTOR_PROXY);
-        serviceManager.createService(connectorId, connectorDescription);
+        registrationManager.updateRegistration(connectorId, connectorDescription);
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();

@@ -18,13 +18,13 @@
 package org.openengsb.ui.admin.editorPage;
 
 import org.apache.wicket.util.tester.WicketTester;
-import org.openengsb.core.api.InternalServiceRegistrationManager;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 
 public class EditorPageTest {
 
     private AttributeDefinition attrib1;
-    private InternalServiceRegistrationManager manager;
+    private ServiceRegistrationManager manager;
     private WicketTester tester;
 //
 //    @Before
