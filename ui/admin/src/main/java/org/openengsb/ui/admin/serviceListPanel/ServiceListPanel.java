@@ -35,10 +35,8 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
@@ -54,17 +52,13 @@ import org.osgi.framework.ServiceReference;
 @SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
 
-    private final DomainService services;
-
     private final BundleContext bundleContext;
 
     private final Map<AliveState, List<ServiceReference>> domainServiceMap;
 
-    public ServiceListPanel(String id, BundleContext bundleContext, DomainService services,
-            List<ServiceRegistrationManager> serviceManager) {
+    public ServiceListPanel(String id, BundleContext bundleContext, List<ServiceRegistrationManager> serviceManager) {
         super(id);
         this.bundleContext = bundleContext;
-        this.services = services;
         domainServiceMap = new HashMap<AliveState, List<ServiceReference>>();
         domainServiceMap.put(AliveState.CONNECTING, new ArrayList<ServiceReference>());
         domainServiceMap.put(AliveState.DISCONNECTED, new ArrayList<ServiceReference>());
@@ -222,7 +216,7 @@ public class ServiceListPanel extends Panel {
             @Override
             protected List<ServiceReference> load() {
                 updateDomainServiceMap();
-                List<ServiceReference> managers = new ArrayList<ServiceReference>(services.domains().size());
+                List<ServiceReference> managers = null; // new ArrayList<ServiceReference>(services.domains().size());
                 managers.addAll(domainServiceMap.get(state));
                 return managers;
             }
@@ -230,17 +224,17 @@ public class ServiceListPanel extends Panel {
     }
 
     private void updateDomainServiceMap() {
-        ServiceReference[] managedServiceInstances = getAllManagedServices();
-        for (ServiceReference serviceReference : managedServiceInstances) {
-            if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
-                Domain domainService = (Domain) services.getService(serviceReference);
-
-                List<ServiceReference> serviceReferenceList = domainServiceMap.get(domainService.getAliveState());
-                if (!serviceReferenceList.contains(serviceReference)) {
-                    serviceReferenceList.add(serviceReference);
-                }
-            }
-        }
+//        ServiceReference[] managedServiceInstances = getAllManagedServices();
+//        for (ServiceReference serviceReference : managedServiceInstances) {
+//            if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
+//                Domain domainService = (Domain) services.getService(serviceReference);
+//
+//                List<ServiceReference> serviceReferenceList = domainServiceMap.get(domainService.getAliveState());
+//                if (!serviceReferenceList.contains(serviceReference)) {
+//                    serviceReferenceList.add(serviceReference);
+//                }
+//            }
+//        }
     }
 
     private ServiceReference[] getAllManagedServices() {

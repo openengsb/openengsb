@@ -17,11 +17,10 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
-import static junit.framework.Assert.assertEquals;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +37,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
@@ -77,9 +75,6 @@ public class EditActionTest {
             }
         });
         domainProviders.add(provider);
-        DomainService domainServiceMock = mock(DomainService.class);
-        when(domainServiceMock.domains()).thenReturn(domainProviders);
-        mock.putBean("domainService", domainServiceMock);
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new EditAction(parent, action));

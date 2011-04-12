@@ -47,12 +47,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
@@ -64,13 +65,12 @@ import org.openengsb.ui.common.util.MethodUtil;
 @AuthorizeInstantiation("ROLE_USER")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    private transient Log log = LogFactory.getLog(SendEventPage.class);
+    private static Log log = LogFactory.getLog(SendEventPage.class);
+
+    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
     @SpringBean
     private WorkflowService eventService;
-
-    @SpringBean
-    private DomainService domainService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
     @SpringBean
@@ -97,7 +97,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private void initContent() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
         classes.add(Event.class);
-        for (DomainProvider domain : domainService.domains()) {
+        for (DomainProvider domain : serviceUtils.listServices(DomainProvider.class)) {
             classes.addAll(domain.getEvents());
         }
         init(classes);

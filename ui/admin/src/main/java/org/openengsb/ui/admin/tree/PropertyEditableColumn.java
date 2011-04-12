@@ -33,20 +33,21 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.WiringService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.tree.dropDownPanel.DropDownPanel;
 import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
-import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
 public class PropertyEditableColumn extends PropertyRenderableColumn {
 
-    private DomainService domainService;
+    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
-    public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression,
-            DomainService domainService) {
+    private static WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+
+    public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {
         super(location, header, propertyExpression);
-        this.domainService = domainService;
     }
 
     @Override
@@ -77,19 +78,15 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
 
     private List<String> getServices(String keyPath) {
         List<String> services = new ArrayList<String>();
-        List<DomainProvider> domains = domainService.domains();
+        List<DomainProvider> domains = serviceUtils.listServices(DomainProvider.class);
         for (DomainProvider domainProvider : domains) {
             String domainProvierName = domainProvider.getId();
             if (("/domain/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {
                 Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
-                List<ServiceReference> serviceReferencesForConnector = domainService
-                        .serviceReferencesForDomain(domainInterface);
-                for (ServiceReference serviceReferce : serviceReferencesForConnector) {
-                    String type = (String) serviceReferce.getProperty("openengsb.service.type");
-                    if (!"domain".equals(type)) { // it is an connector
-                        services.add((String) serviceReferce.getProperty("id"));
-                    }
-
+                List<? extends Domain> connectorInstances =
+                    wiringService.getDomainEndpoints(domainInterface, "*");
+                for (Domain service : connectorInstances) {
+                    services.add(service.getInstanceId());
                 }
             }
         }

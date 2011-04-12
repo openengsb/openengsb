@@ -41,7 +41,6 @@ import org.apache.wicket.markup.html.tree.AbstractTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.Context;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -53,9 +52,6 @@ public class ContextSetPage extends BasePage {
 
     @SpringBean
     private ContextCurrentService contextService;
-
-    @SpringBean
-    private DomainService domainService;
 
     private TreeTable tree;
 
@@ -95,7 +91,7 @@ public class ContextSetPage extends BasePage {
             new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM), "Tree Column",
                         "userObject.niceKey"),
             new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
-                        "userObject.value", domainService) };
+                        "userObject.value") };
         Form<Object> form = new Form<Object>("form");
         tree = new TreeTable("treeTable", createTreeModel(contextService.getContext()), columns);
         tree.setRootLess(true);

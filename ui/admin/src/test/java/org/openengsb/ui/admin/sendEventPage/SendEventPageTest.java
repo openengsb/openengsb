@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -74,7 +73,6 @@ public class SendEventPageTest {
         Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{"123", "456"}));
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
-        context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("audit", domain);

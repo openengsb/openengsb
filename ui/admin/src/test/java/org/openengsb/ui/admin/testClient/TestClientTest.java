@@ -67,7 +67,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -636,8 +635,6 @@ public class TestClientTest extends AbstractUITest {
     }
 
     private void setupIndexPage() {
-        DomainService domainServiceMock = mock(DomainService.class);
-        context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
     }
 

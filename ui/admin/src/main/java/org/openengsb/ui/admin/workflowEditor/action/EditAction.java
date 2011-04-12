@@ -31,12 +31,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.NodeRepresentation;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
@@ -45,8 +45,7 @@ public class EditAction extends BasePage {
 
     private transient Method actionMethod;
 
-    @SpringBean
-    private DomainService domainService;
+    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
     public EditAction(final NodeRepresentation parent, final ActionRepresentation action) {
 
@@ -55,7 +54,7 @@ public class EditAction extends BasePage {
             @Override
             public List<Class<? extends Domain>> getObject() {
                 List<Class<? extends Domain>> domains = new ArrayList<Class<? extends Domain>>();
-                for (DomainProvider provider : domainService.domains()) {
+                for (DomainProvider provider : serviceUtils.listServices(DomainProvider.class)) {
                     domains.add(provider.getDomainInterface());
                 }
                 return domains;

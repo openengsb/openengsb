@@ -30,7 +30,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.services.internal.DefaultWiringService;
@@ -48,6 +47,7 @@ public class RoleAuthorizationTest extends AbstractLogin {
 
     private WicketTester tester;
 
+    @Override
     @Before
     public void setUp() {
         tester = getTester();
@@ -111,7 +111,6 @@ public class RoleAuthorizationTest extends AbstractLogin {
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(mock(BundleContext.class));
-        context.putBean(mock(DomainService.class));
         context.putBean(mock(ProxyFactory.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("wireingService", new DefaultWiringService());

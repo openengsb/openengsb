@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -48,7 +47,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.Context;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.test.NullDomain;
@@ -59,17 +57,14 @@ public class ContextSetPageTest {
 
     private WicketTester tester;
     private ContextCurrentService contextService;
-    private DomainService domainService;
     private Context context;
 
     @Before
     public void setup() {
         tester = new WicketTester();
         contextService = mock(ContextCurrentService.class);
-        domainService = mock(DomainService.class);
         AnnotApplicationContextMock appContext = new AnnotApplicationContextMock();
         appContext.putBean(contextService);
-        appContext.putBean(domainService);
         appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
@@ -173,8 +168,6 @@ public class ContextSetPageTest {
                 return Domain.class;
             }
         });
-        when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForDomain(any(Class.class))).thenReturn(serviceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
 
@@ -225,9 +218,6 @@ public class ContextSetPageTest {
                 return Domain.class;
             }
         });
-        when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForDomain(NullDomain.class)).thenReturn(serviceReferenceList);
-        when(domainService.serviceReferencesForDomain(Domain.class)).thenReturn(wrongServiceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
         String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
@@ -235,6 +225,7 @@ public class ContextSetPageTest {
         tester.executeAjaxEvent(node, "onclick");
         DropDownChoice<String> connectorChoices = (DropDownChoice<String>) tester
                 .getComponentFromLastRenderedPage(textFieldId);
+
         List<? extends String> choices = connectorChoices.getChoices();
 
         assertTrue(choices.contains("connectorService"));
@@ -262,8 +253,6 @@ public class ContextSetPageTest {
                 return Domain.class;
             }
         });
-        when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForDomain(any(Class.class))).thenReturn(serviceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
 

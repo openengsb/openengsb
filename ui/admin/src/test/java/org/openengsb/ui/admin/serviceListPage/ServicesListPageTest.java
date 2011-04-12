@@ -41,9 +41,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorProvider;
-import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
@@ -60,7 +59,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
     private ServiceRegistrationManager serviceManagerMock;
     private WicketTester tester;
-    private DomainService domainServiceMock;
     private List<ServiceReference> managedServiceInstances;
     private List<ServiceRegistrationManager> serviceManagerListMock;
     private BundleContext bundleContext;
@@ -75,7 +73,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "bla");
         registerService(serviceManagerMock, props, ServiceRegistrationManager.class);
-        domainServiceMock = mock(DomainService.class);
         ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();
         serviceManagerListMock = new ArrayList<ServiceRegistrationManager>();
@@ -86,7 +83,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
         context.putBean(serviceManagerMock);
         context.putBean("services", serviceManagerListMock);
-        context.putBean(domainServiceMock);
         context.putBean(contextCurrentServiceMock);
         context.putBean("bundleContext", bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
@@ -116,7 +112,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
 
         startPage();
         tester.dumpPage();
@@ -264,7 +259,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
         when(serRef.getProperty("connector")).thenReturn("bla");
         addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));

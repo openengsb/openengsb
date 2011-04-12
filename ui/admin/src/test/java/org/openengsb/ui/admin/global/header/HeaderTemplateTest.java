@@ -30,8 +30,6 @@ import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
@@ -93,17 +91,12 @@ public class HeaderTemplateTest extends AbstractUITest {
     }
 
     private void setupTestClientPage() {
-        DomainService domainServiceMock = Mockito.mock(DomainService.class);
-        context.putBean(domainServiceMock);
-        BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
     private void setupIndexPage() {
-        DomainService domainServiceMock = Mockito.mock(DomainService.class);
-        context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
         tester.startPage(Index.class);
     }
@@ -121,12 +114,11 @@ public class HeaderTemplateTest extends AbstractUITest {
             new SpringComponentInjector(tester.getApplication(), context, false));
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("auditing", mock(AuditingDomain.class));
-        context.putBean("wireingService", new DefaultWiringService());
+        context.putBean("wiringService", new DefaultWiringService());
         context.putBean(mock(ProxyFactory.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);

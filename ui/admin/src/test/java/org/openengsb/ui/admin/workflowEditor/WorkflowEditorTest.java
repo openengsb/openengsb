@@ -30,7 +30,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
@@ -56,7 +55,6 @@ public class WorkflowEditorTest {
         mock.putBean(mock(ContextCurrentService.class));
         mock.putBean("openengsbVersion", new OpenEngSBVersion());
         mock.putBean("workflowEditorService", service);
-        mock.putBean("domainService", mock(DomainService.class));
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new WorkflowEditor());
