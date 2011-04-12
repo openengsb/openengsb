@@ -75,7 +75,7 @@ public abstract class AbstractOsgiMockServiceTest {
     private Long serviceId = Long.MAX_VALUE;
 
     @Before
-    public void setUp() throws Exception {
+    public void prepareServiceRegistry() throws Exception {
         bundleContext = mock(BundleContext.class);
         setBundleContext(bundleContext);
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(

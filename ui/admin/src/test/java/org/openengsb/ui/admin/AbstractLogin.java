@@ -23,17 +23,13 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,27 +38,17 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public abstract class AbstractLogin extends AbstractUITest {
 
-    private WicketTester tester;
-    private ApplicationContextMock contextMock;
     private UserManagerImpl userManager;
 
     @Before
     public void setup() {
-        contextMock = new ApplicationContextMock();
         mockAuthentication();
-        mockIndex();
-
-        WebApplication app = new WicketApplication() {
+        tester = new WicketTester(new WicketApplication() {
             @Override
             protected void addInjector() {
-                addComponentInstantiationListener(new SpringComponentInjector(this, contextMock, true));
+                addComponentInstantiationListener(new SpringComponentInjector(this, context, true));
             }
-        };
-        tester = new WicketTester(app);
-    }
-
-    private void mockIndex() {
-        contextMock.putBean(mock(ContextCurrentService.class));
+        });
     }
 
     private void mockAuthentication() {
@@ -91,11 +77,6 @@ public abstract class AbstractLogin extends AbstractUITest {
                 return admin;
             }
         });
-        contextMock.putBean("authenticationManager", authManager);
-        contextMock.putBean("openengsbVersion", new OpenEngSBVersion());
-    }
-
-    public WicketTester getTester() {
-        return tester;
+        context.putBean("authenticationManager", authManager);
     }
 }

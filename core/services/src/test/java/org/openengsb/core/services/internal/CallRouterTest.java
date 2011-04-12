@@ -61,10 +61,8 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     private OutgoingPort outgoingPortMock;
     private final String testURI = "jms://localhost";
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
         callrouter = new CallRouterImpl();

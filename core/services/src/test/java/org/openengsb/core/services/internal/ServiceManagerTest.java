@@ -55,10 +55,8 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     private ServiceManager serviceManager;
     private ServiceRegistrationManagerImpl serviceRegistrationManagerImpl;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         registerMockedDomainProvider();
         registerMockedFactory();
         registerConfigPersistence();

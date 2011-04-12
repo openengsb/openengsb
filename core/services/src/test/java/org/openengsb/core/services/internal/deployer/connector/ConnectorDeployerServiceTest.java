@@ -79,10 +79,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
             + "attribute.a-key=a-value";
     private ServiceInstanceFactory factory;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         connectorDeployerService = new ConnectorDeployerService();
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);

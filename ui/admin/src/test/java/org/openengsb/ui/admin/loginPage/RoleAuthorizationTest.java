@@ -27,8 +27,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
@@ -45,13 +43,6 @@ import org.osgi.framework.BundleContext;
  */
 public class RoleAuthorizationTest extends AbstractLogin {
 
-    private WicketTester tester;
-
-    @Override
-    @Before
-    public void setUp() {
-        tester = getTester();
-    }
 
     @Test
     public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {

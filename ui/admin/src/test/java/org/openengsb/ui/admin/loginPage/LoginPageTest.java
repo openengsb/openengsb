@@ -24,8 +24,6 @@ import java.util.List;
 
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractLogin;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
@@ -33,13 +31,6 @@ import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.testClient.TestClient;
 
 public class LoginPageTest extends AbstractLogin {
-
-    WicketTester tester;
-
-    @Before
-    public void setUp() {
-        tester = getTester();
-    }
 
     @Test
     public void testLoginPageIsDisplayed() throws Exception {

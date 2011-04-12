@@ -60,10 +60,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         cleanup();
     }
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         setupRulemanager();
         service = new WorkflowServiceImpl();
         setupTaskbox();

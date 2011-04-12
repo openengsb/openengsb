@@ -62,10 +62,8 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     private DefaultOsgiUtilsService serviceUtils;
     private CallRouter callrouter;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         registerMockedDomainProvider();
         registerMockedFactory();
         callrouter = mock(CallRouter.class);
