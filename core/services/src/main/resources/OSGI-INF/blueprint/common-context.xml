@@ -37,7 +37,7 @@
     <interfaces>
       <value>org.openengsb.core.api.ServiceManager</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.ServiceManagerImpl">
+    <bean class="org.openengsb.core.services.internal.ServiceManagerImpl" init-method="init">
       <property name="registrationManager" ref="registrationManager" />
     </bean>
   </service>
@@ -92,7 +92,7 @@
     <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl" />
   </service>
 
-    <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+  <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
       <property name="authenticationManager" ref="authenticationManager" />
     </bean>
@@ -100,7 +100,6 @@
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
-  <reference id="authenticationManager"
-    interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>

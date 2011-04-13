@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DictionaryAsMap;
@@ -41,6 +43,25 @@ public class ServiceManagerImpl implements ServiceManager {
     private ServiceRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
         .getConfigPersistenceService(Constants.CONNECTOR);
+
+    public void init() {
+        List<ConnectorConfiguration> configs;
+        try {
+            Map<String, String> emptyMap = Collections.emptyMap();
+            configs = configPersistence.load(emptyMap);
+        } catch (InvalidConfigurationException e) {
+            throw new IllegalStateException(e);
+        } catch (PersistenceException e) {
+            throw new IllegalStateException(e);
+        }
+        for (ConnectorConfiguration c : configs) {
+            try {
+                registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
+            } catch (ServiceValidationFailedException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
 
     @Override
     public void createService(ConnectorId id, ConnectorDescription connectorDescription)
