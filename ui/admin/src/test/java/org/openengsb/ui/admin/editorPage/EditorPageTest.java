@@ -94,37 +94,36 @@ public class EditorPageTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:1:row:field");
         assertThat(value.getValue(), is("testValue"));
     }
-    //
-    // @SuppressWarnings("unchecked")
-    // @Test
-    // public void testIdFieldIsEditable() {
-    // ConnectorEditorPage page = new ConnectorEditorPage(manager);
-    // tester.startPage(page);
-    // tester.debugComponentTrees();
-    // TextField<String> idField =
-    // (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
-    // assertThat(idField.isEnabled(), is(true));
-    // }
-    //
+
+    @Test
+    public void testIdFieldIsEditable() {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        tester.debugComponentTrees();
+        @SuppressWarnings("unchecked")
+        TextField<String> idField =
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
+        assertThat(idField.isEnabled(), is(true));
+    }
+
     // @SuppressWarnings({ "unchecked", "serial" })
-    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
-    // Map<String, String> errorMessages = new HashMap<String, String>();
-    // errorMessages.put("a", "validation.service.not");
-    // when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-    // new MultipleAttributeValidationResultImpl(false, errorMessages));
-    // WicketTester tester = new WicketTester();
-    // tester.startPage(new ITestPageSource() {
-    // @Override
-    // public Page getTestPage() {
-    // return new ConnectorEditorPage(manager);
-    // }
-    // });
-    // FormTester formTester = tester.newFormTester("editor:form");
-    // formTester.setValue("fields:id:row:field", "someValue");
-    // formTester.submit();
-    // tester.assertErrorMessages(new String[]{ "Service Validation Error" });
-    // tester.assertRenderedPage(ConnectorEditorPage.class);
-    // }
+//    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+//        Map<String, String> errorMessages = new HashMap<String, String>();
+//        errorMessages.put("a", "validation.service.not");
+//        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+//            new MultipleAttributeValidationResultImpl(false, errorMessages));
+//        WicketTester tester = new WicketTester();
+//        tester.startPage(new ITestPageSource() {
+//            @Override
+//            public Page getTestPage() {
+//                return new ConnectorEditorPage(manager);
+//            }
+//        });
+//        FormTester formTester = tester.newFormTester("editor:form");
+//        formTester.setValue("fields:id:row:field", "someValue");
+//        formTester.submit();
+//        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
+//        tester.assertRenderedPage(ConnectorEditorPage.class);
+//    }
     //
     // @Test
     // @SuppressWarnings({ "unchecked", "serial" })
