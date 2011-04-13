@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -40,6 +39,24 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class DefaultOsgiUtilsService implements OsgiUtilsService {
+
+    private final class ServiceTrackerInvocationHandler implements InvocationHandler {
+        private ServiceTracker tracker;
+
+        private ServiceTrackerInvocationHandler(ServiceTracker tracker) {
+            this.tracker = tracker;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Object service = tracker.getService();
+            try {
+                return method.invoke(service, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
+        }
+    }
 
     private static final Log LOGGER = LogFactory.getLog(DefaultOsgiUtilsService.class);
     private static final long DEFAULT_TIMEOUT = 30000L;
@@ -156,6 +173,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final Class<T> targetClass, final long timeout) {
+
         return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
             new InvocationHandler() {
                 @Override
@@ -207,6 +225,9 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
+        if (otherFilter == null) {
+            return makeFilterForClass(className);
+        }
         return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
     }
 
@@ -282,7 +303,13 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public List<ServiceReference> listServiceReferences(Class<?> clazz) {
-        return Arrays.asList(bundleContext.getServiceReference(clazz.getName()));
+        List<ServiceReference> result = new ArrayList<ServiceReference>();
+        try {
+            CollectionUtils.addAll(result, bundleContext.getServiceReferences(clazz.getName(), null));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return result;
     }
 
     @Override
@@ -307,6 +334,16 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         ServiceTracker tracker = new ServiceTracker(bundleContext, filter, null);
         return getListFromTracker(tracker);
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getService(final Class<T> clazz, final ServiceReference reference) {
+        ServiceTracker tracker = new ServiceTracker(bundleContext, reference, null);
+        tracker.open();
+        Object newProxyInstance = Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] { clazz },
+            new ServiceTrackerInvocationHandler(tracker));
+        return (T) newProxyInstance;
     }
 
     public void setBundleContext(BundleContext bundleContext) {

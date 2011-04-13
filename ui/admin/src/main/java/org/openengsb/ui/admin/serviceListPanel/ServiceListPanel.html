@@ -20,59 +20,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
-<body>
-<wicket:panel>
-        <h2><wicket:message key="connectingServices.title">[connecting.services]</wicket:message></h2>
-        <div wicket:id="connectingServicePanel">
-          <ul wicket:id="connectingServices">
-            <li>
-            <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
-                wicket:id="service.description">[service.description]</span> <a href="ServiceListPanel.html#" wicket:id="updateService"> <wicket:message
-                key="updateService">[updateService]</wicket:message> </a> <a href="ServiceListPanel.html#" wicket:id="deleteService"> <wicket:message
-                key="deleteService">[deleteService]</wicket:message> </a></h3>
-            </li>
-          </ul>
-          <div wicket:id="noConServices" class="info">no results info window</div>
-        </div>
-
-        <h2><wicket:message key="onlineServices.title">[connecting.services]</wicket:message></h2>
-        <div wicket:id="onlineServicePanel">
-          <ul wicket:id="onlineServices">
-            <li>
-            <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
-                wicket:id="service.description">[service.description]</span> <a href="ServiceListPanel.html#" wicket:id="updateService"> <wicket:message
-                key="updateService">[updateService]</wicket:message> </a> <a href="ServiceListPanel.html#" wicket:id="deleteService"> <wicket:message
-                key="deleteService">[deleteService]</wicket:message> </a></h3>
-            </li>
-          </ul>
-          <div wicket:id="noOnServices" class="info">no results info window</div>
-        </div>
-
-        <h2><wicket:message key="offlineServices.title">[connecting.services]</wicket:message></h2>
-        <div wicket:id="offlineServicePanel">
-          <ul wicket:id="offlineServices">
-            <li>
-            <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
-                wicket:id="service.description">[service.description]</span> <a href="ServiceListPanel.html#" wicket:id="updateService"> <wicket:message
-                key="updateService">[updateService]</wicket:message> </a> <a href="ServiceListPanel.html#" wicket:id="deleteService"> <wicket:message
-                key="deleteService">[deleteService]</wicket:message> </a></h3>
-            </li>
-          </ul>
-          <div wicket:id="noOffServices" class="info">no results info window</div>
-        </div>
-
-        <h2><wicket:message key="disconnectedServices.title">[connecting.services]</wicket:message></h2>
-        <div wicket:id="disconnectedServicePanel">
-          <ul wicket:id="disconnectedServices">
-            <li>
-            <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
-                wicket:id="service.description">[service.description]</span> <a href="ServiceListPanel.html#" wicket:id="updateService"> <wicket:message
-                key="updateService">[updateService]</wicket:message> </a> <a href="ServiceListPanel.html#" wicket:id="deleteService"> <wicket:message
-                key="deleteService">[deleteService]</wicket:message> </a></h3>
-            </li>
-          </ul>
-          <div wicket:id="noDisServices" class="info">no results info window</div>
-        </div>
-</wicket:panel>
-</body>
+  <body>
+    <wicket:panel>
+      <div wicket:id="serviceListContainer">
+        <table>
+          <tr wicket:id="serviceListView">
+            <td>
+              <span wicket:id="service.name"></span>
+            </td>
+            <td>
+              <span wicket:id="service.state"></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </wicket:panel>
+  </body>
 </html>

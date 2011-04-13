@@ -31,6 +31,8 @@ public interface OsgiUtilsService {
 
     <T> List<T> listServices(Class<T> clazz, String filter) throws InvalidSyntaxException;
 
+    <T> T getService(Class<T> clazz, ServiceReference reference);
+
     /**
      * retrieves the highest ranked service exporting the given interface.
      *

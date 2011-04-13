@@ -17,26 +17,15 @@
 
 package org.openengsb.ui.admin.serviceListPage;
 
-import java.util.List;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceListPanel.ServiceListPanel;
-import org.osgi.framework.BundleContext;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class ServiceListPage extends BasePage {
-
-    @SpringBean
-    private BundleContext bundleContext;
-
-    @SpringBean(name = "services")
-    private List<ServiceRegistrationManager> serviceManager;
 
     public ServiceListPage() {
         initContent();
@@ -52,7 +41,7 @@ public class ServiceListPage extends BasePage {
         add(new AjaxLazyLoadPanel("lazy") {
             @Override
             public Component getLazyLoadComponent(String markupId) {
-                return new ServiceListPanel(markupId, bundleContext, serviceManager);
+                return new ServiceListPanel(markupId);
             }
         });
     }

@@ -45,7 +45,6 @@ import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;

@@ -24,9 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.common.AbstractOpenEngSBService;

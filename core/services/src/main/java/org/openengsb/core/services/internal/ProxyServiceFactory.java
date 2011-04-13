@@ -24,7 +24,6 @@ import java.util.Map;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class ProxyServiceFactory implements ServiceInstanceFactory {
