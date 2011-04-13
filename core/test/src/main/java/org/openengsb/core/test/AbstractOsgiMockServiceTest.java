@@ -95,9 +95,10 @@ public abstract class AbstractOsgiMockServiceTest {
                 String filterString = (String) invocation.getArguments()[1];
                 if (clazz != null) {
                     if (filterString == null) {
-                        filterString = "";
+                        filterString = String.format("(%s=%s)", Constants.OBJECTCLASS, clazz);
+                    } else {
+                        filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
                     }
-                    filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
                 }
                 Filter filter = FrameworkUtil.createFilter(filterString);
                 Collection<ServiceReference> result = new ArrayList<ServiceReference>();

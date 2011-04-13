@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -68,6 +67,7 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -109,7 +109,9 @@ public class TestClient extends BasePage {
         new LoadableDetachableModel<List<? extends DomainProvider>>() {
             @Override
             protected List<? extends DomainProvider> load() {
-                return serviceUtils.listServices(DomainProvider.class);
+                List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
+                Collections.sort(serviceList, Comparators.forDomainProvider());
+                return serviceList;
             }
         };;
 
@@ -316,12 +318,7 @@ public class TestClient extends BasePage {
         TreeModel model = new DefaultTreeModel(node);
         log.info("adding domains");
         List<? extends DomainProvider> providerList = domainProvider.getObject();
-        Collections.sort(providerList, new Comparator<DomainProvider>() {
-            @Override
-            public int compare(DomainProvider o1, DomainProvider o2) {
-                return o1.getId().compareToIgnoreCase(o2.getId());
-            }
-        });
+        Collections.sort(providerList, Comparators.forDomainProvider());
         for (DomainProvider provider : providerList) {
             log.info("adding " + provider.getName());
             addDomainProvider(provider, node);

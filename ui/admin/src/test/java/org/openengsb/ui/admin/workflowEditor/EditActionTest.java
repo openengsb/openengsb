@@ -24,11 +24,10 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -37,16 +36,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.test.NullDomain;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
-public class EditActionTest {
-
-    private WicketTester tester;
+public class EditActionTest extends AbstractUITest {
 
     private FormTester formTester;
 
@@ -54,19 +50,14 @@ public class EditActionTest {
 
     private ActionRepresentation parent;
 
-    private ApplicationContextMock mock;
-
     @Before
     public void setup() {
         parent = new ActionRepresentation();
         action = new ActionRepresentation();
         action.setLocation("test");
         tester = new WicketTester();
-        mock = new ApplicationContextMock();
-        mock.putBean(mock(ContextCurrentService.class));
-        mock.putBean("openengsbVersion", new OpenEngSBVersion());
-        mock.putBean("workflowEditorService", mock(WorkflowEditorService.class));
-        List<DomainProvider> domainProviders = new ArrayList<DomainProvider>();
+        context.putBean("workflowEditorService", mock(WorkflowEditorService.class));
+
         DomainProvider provider = mock(DomainProvider.class);
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
@@ -74,9 +65,11 @@ public class EditActionTest {
                 return NullDomain.class;
             }
         });
-        domainProviders.add(provider);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("domain", "example");
+        registerService(provider, props, DomainProvider.class);
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), mock, true));
+            new SpringComponentInjector(tester.getApplication(), context, true));
         tester.startPage(new EditAction(parent, action));
         formTester = tester.newFormTester("actionForm");
     }
@@ -87,6 +80,7 @@ public class EditActionTest {
         String location = "location";
         assertThat(action.getLocation(), equalTo(formTester.getTextComponentValue(location)));
         tester.dumpPage();
+        tester.debugComponentTrees();
         formTester.setValue(location, location);
         formTester.select("domainSelect", 0);
         formTester.submit();

@@ -19,18 +19,15 @@ package org.openengsb.ui.admin.workflowEditor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
@@ -38,25 +35,20 @@ import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.core.services.internal.WorkflowEditorServiceImpl;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
-public class WorkflowEditorTest {
+public class WorkflowEditorTest extends AbstractUITest {
 
-    private WicketTester tester;
-    private ApplicationContextMock mock;
     private WorkflowEditorService service;
 
     @Before
     public void setup() {
         tester = new WicketTester();
-        mock = new ApplicationContextMock();
         service = new WorkflowEditorServiceImpl();
-        mock.putBean(mock(ContextCurrentService.class));
-        mock.putBean("openengsbVersion", new OpenEngSBVersion());
-        mock.putBean("workflowEditorService", service);
+        context.putBean("workflowEditorService", service);
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), mock, true));
+            new SpringComponentInjector(tester.getApplication(), context, true));
         tester.startPage(new WorkflowEditor());
     }
 

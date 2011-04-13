@@ -287,17 +287,11 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public <T> List<T> listServices(Class<T> clazz) {
-        try {
-            return listServices(clazz, makeFilterForClass(clazz).toString());
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        ServiceTracker tracker = new ServiceTracker(bundleContext, clazz.getName(), null);
+        return getListFromTracker(tracker);
     }
 
-    @Override
-    public <T> List<T> listServices(Class<T> clazz, String filterString) throws InvalidSyntaxException {
-        Filter filter = makeFilter(clazz, filterString);
-        ServiceTracker tracker = new ServiceTracker(bundleContext, filter, null);
+    private <T> List<T> getListFromTracker(ServiceTracker tracker) {
         tracker.open();
         Object[] services = tracker.getServices();
         List<T> result = new ArrayList<T>();
@@ -305,6 +299,13 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             CollectionUtils.addAll(result, services);
         }
         return result;
+    }
+
+    @Override
+    public <T> List<T> listServices(Class<T> clazz, String filterString) throws InvalidSyntaxException {
+        Filter filter = makeFilter(clazz, filterString);
+        ServiceTracker tracker = new ServiceTracker(bundleContext, filter, null);
+        return getListFromTracker(tracker);
 
     }
 

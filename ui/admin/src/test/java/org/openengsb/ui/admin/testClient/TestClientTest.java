@@ -455,22 +455,23 @@ public class TestClientTest extends AbstractUITest {
         tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.name");
+                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
         Label domainDescription =
                 (Label) tester
-                        .getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.description");
+                        .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
         Label domainClass =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.class");
+                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
+        tester.debugComponentTrees();
         Label name =
                 (Label) tester
                         .getComponentFromLastRenderedPage(
-                                "serviceManagementContainer:domains:0:services:0:service.name");
+                                "serviceManagementContainer:domains:1:services:0:service.name");
         Label description =
                 (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
-                        + "0:services:0:service.description");
-        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("anotherTestDomain"));
-        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("anotherTestDomain"));
-        assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(AnotherTestInterface.class.getName()));
+                        + "1:services:0:service.description");
+        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testdomain"));
+        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testdomain"));
+        assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(TestInterface.class.getName()));
         Assert.assertEquals("service.name", name.getDefaultModel().getObject());
         Assert.assertEquals("service.description", description.getDefaultModel().getObject());
     }
