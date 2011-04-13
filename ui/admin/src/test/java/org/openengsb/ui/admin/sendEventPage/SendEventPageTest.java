@@ -33,26 +33,22 @@ import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
 import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.AbstractUITest;
 
-public class SendEventPageTest {
+public class SendEventPageTest extends AbstractUITest {
 
-    private WicketTester tester;
     private DropDownChoice<Class<?>> dropdown;
     private WorkflowService eventService;
     private List<Class<? extends Event>> eventClasses;
@@ -63,18 +59,14 @@ public class SendEventPageTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        tester = new WicketTester();
-        AnnotApplicationContextMock context = new AnnotApplicationContextMock();
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);
-        Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{"123", "456"}));
+        Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{ "123", "456" }));
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
-        context.putBean("contextCurrentService", mock(ContextCurrentService.class));
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("audit", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
