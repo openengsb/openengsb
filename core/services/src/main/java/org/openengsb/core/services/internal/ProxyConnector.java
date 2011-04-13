@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
@@ -64,7 +65,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
             case Exception:
                 throw new RuntimeException(callSync.getArg().toString());
             default:
-                throw new IllegalStateException("Return Type has to be either Object or Exception");
+                throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
     }
 

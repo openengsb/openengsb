@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.remote;
+package org.openengsb.core.services.internal;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.RemoteCommunicationException;
 
 /**
  * The {@link CallRouter} is registered as OSGi Service and should be used to send a {@link MethodCall} via a specific
- * {@link OutgoingPort} (via it's portId) to a specific destination.
+ * OutgoingPort (via it's portId) to a specific destination.
  */
 public interface CallRouter {
 
