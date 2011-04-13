@@ -63,7 +63,16 @@ public interface TaskboxService {
      * signaled that it can go on.
      * 
      * @throws WorkflowException if the workflow could not get the event (maybe due to an invalid processId in the tasks
-     *         processBag) the or the task could not be removed.
+     *         processBag) or the task could not be removed.
      */
     void finishTask(Task task) throws WorkflowException;
+
+    /**
+     * Updates a task by overriding the current task in the persistence with the parameter task. The old task gets
+     * identified through the task id.
+     * 
+     * @throws WorkflowException if the task cant get replaced, e.g. if the old task doesn't exist.
+     */
+    void updateTask(Task task) throws WorkflowException;
+
 }
