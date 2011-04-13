@@ -250,6 +250,7 @@ public abstract class AbstractOsgiMockServiceTest {
                 return serviceReferences.get(invocation.getMock()).get(invocation.getArguments()[0]);
             }
         });
+        when(serviceReference.getBundle()).thenReturn(bundle);
         when(serviceReference.getPropertyKeys()).thenAnswer(new Answer<String[]>() {
             @Override
             public String[] answer(InvocationOnMock invocation) throws Throwable {

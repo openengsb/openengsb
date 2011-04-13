@@ -17,6 +17,8 @@
 
 package org.openengsb.ui.admin.serviceListPage;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,18 +26,23 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Locale;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanelTester;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
-import org.openengsb.ui.admin.serviceListPanel.ServiceListPanel;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -54,16 +61,14 @@ public class ServicesListPageTest extends AbstractUITest {
     }
 
     private void startPage() {
-        tester.startPanel(ServiceListPanel.class);
-        // tester.startPage(ServiceListPage.class);
-        // AjaxLazyLoadPanelTester.executeAjaxLazyLoadPanel(tester, tester.getLastRenderedPage());
+        tester.startPage(ServiceListPage.class);
+        AjaxLazyLoadPanelTester.executeAjaxLazyLoadPanel(tester, tester.getLastRenderedPage());
     }
 
     @Test
     public void verifyRenderedPage_ShouldBeServiceListPage() {
         startPage();
-        //
-        // tester.assertRenderedPage(ServiceListPage.class);
+        tester.assertRenderedPage(ServiceListPage.class);
     }
 
     @Test
@@ -71,7 +76,20 @@ public class ServicesListPageTest extends AbstractUITest {
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
 
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("id", "test-service");
+        props.put("testprop", "42");
+        registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();
+        Label nameLabel =
+            (Label) tester
+                .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.name");
+        assertThat(nameLabel.getDefaultModelObjectAsString(), is("test-service"));
+        Component stateLabel =
+            tester
+                .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.state");
+        assertThat(stateLabel.getDefaultModelObjectAsString(), is(AliveState.CONNECTING.name()));
+        tester.debugComponentTrees();
     }
 
     // @Test
