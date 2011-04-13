@@ -42,9 +42,9 @@ import org.openengsb.ui.admin.tree.editablePanel.EditablePanel;
 @SuppressWarnings("serial")
 public class PropertyEditableColumn extends PropertyRenderableColumn {
 
-    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
-    private static WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+    private WiringService wiringService = OpenEngSBCoreServices.getWiringService();
 
     public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {
         super(location, header, propertyExpression);

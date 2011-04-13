@@ -50,12 +50,12 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.context.Context;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.osgi.framework.ServiceReference;
 
-public class ContextSetPageTest {
+public class ContextSetPageTest extends AbstractUITest {
 
-    private WicketTester tester;
     private ContextCurrentService contextService;
     private Context context;
 

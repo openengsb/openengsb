@@ -35,16 +35,6 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.core.api.DomainService</value>
-    </interfaces>
-    <bean class="org.openengsb.core.services.internal.OsgiDomainService">
-      <property name="domains" ref="domains" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
-
-  <service>
-    <interfaces>
       <value>org.openengsb.core.api.ServiceManager</value>
     </interfaces>
     <bean class="org.openengsb.core.services.internal.ServiceManagerImpl">
@@ -58,7 +48,7 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.core.api.InternalServiceRegistrationManager</value>
+      <value>org.openengsb.core.api.ServiceRegistrationManager</value>
     </interfaces>
     <ref component-id="registrationManager" />
   </service>
@@ -102,13 +92,9 @@
     <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl" />
   </service>
 
-  <bean id="deployerStorage" class="org.openengsb.core.services.internal.deployer.connector.StorageFileFactory"
-    factory-method="createFileStorage" />
-
-  <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
       <property name="authenticationManager" ref="authenticationManager" />
-      <property name="deployerStorage" ref="deployerStorage" />
     </bean>
   </service>
 

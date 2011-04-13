@@ -55,6 +55,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -154,7 +156,6 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.assertComponent("methodCallForm:serviceList:i:5:nodeComponent:contentLink", AjaxLink.class);
         Label serviceLabel =
             (Label) tester
@@ -167,6 +168,15 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
 
         tester.assertComponent("methodCallForm:methodList", DropDownChoice.class);
+    }
+
+    @Test
+    public void testServiceManagerList() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertComponent("serviceManagementContainer:domains:1:services:0:create.new", Link.class);
+        ListView<?> component = (ListView<?>)
+            tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:services");
+        assertThat("should only display service-factories for the current domain", component.size(), is(0));
     }
 
     @Test
@@ -617,7 +627,7 @@ public class TestClientTest extends AbstractUITest {
     private void createProviderMocks() {
         createDomainProviderMock(TestInterface.class, "testdomain");
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
-        createConnectorProviderMock("testconnector");
+        createConnectorProviderMock("testconnector", "testdomain");
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
         when(factory.createServiceInstance(anyString(), anyMap())).thenAnswer(new Answer<Domain>() {
             @Override

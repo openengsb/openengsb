@@ -288,11 +288,12 @@ public abstract class AbstractOsgiMockServiceTest {
         return mock2;
     }
 
-    protected ConnectorProvider createConnectorProviderMock(String connectorType) {
+    protected ConnectorProvider createConnectorProviderMock(String connectorType, String... domains) {
         ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
         when(connectorProvider.getId()).thenReturn(connectorType);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", connectorType);
+        props.put("domain", domains);
         registerService(connectorProvider, props, ConnectorProvider.class);
         ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
         when(descriptor.getId()).thenReturn(connectorType);

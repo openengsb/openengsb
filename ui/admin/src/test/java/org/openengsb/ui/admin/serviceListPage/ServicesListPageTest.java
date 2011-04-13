@@ -22,10 +22,8 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -34,60 +32,31 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.request.target.component.PageRequestTarget;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceRegistrationManager;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
-
-    private ServiceRegistrationManager serviceManagerMock;
-    private WicketTester tester;
-    private List<ServiceReference> managedServiceInstances;
-    private List<ServiceRegistrationManager> serviceManagerListMock;
-    private BundleContext bundleContext;
+public class ServicesListPageTest extends AbstractUITest {
 
     @Before
     public void setup() throws Exception {
         Locale.setDefault(new Locale("en"));
-        tester = new WicketTester();
-        ApplicationContextMock context = new ApplicationContextMock();
-        serviceManagerMock = mock(ServiceRegistrationManager.class);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "bla");
-        registerService(serviceManagerMock, props, ServiceRegistrationManager.class);
-        ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
-        managedServiceInstances = new ArrayList<ServiceReference>();
-        serviceManagerListMock = new ArrayList<ServiceRegistrationManager>();
 
-        bundleContext = mock(BundleContext.class);
-        when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
-            managedServiceInstances.toArray(new ServiceReference[0]));
-
-        context.putBean(serviceManagerMock);
-        context.putBean("services", serviceManagerListMock);
-        context.putBean(contextCurrentServiceMock);
-        context.putBean("bundleContext", bundleContext);
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
-        tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+        // tester.getApplication().addComponentInstantiationListener(
+        // new SpringComponentInjector(tester.getApplication(), context, true));
 
     }
 
@@ -105,11 +74,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("connector")).thenReturn("bla");
-        addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
 
@@ -127,16 +91,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
             (Label) tester.getComponentFromLastRenderedPage("lazy:content:"
                     + "connectingServicePanel:connectingServices:0:service.name");
         assertThat(nameLabel.getDefaultModelObjectAsString(), is("testService"));
-    }
-
-    private void addServiceRef(ServiceReference serRef) {
-        managedServiceInstances.add(serRef);
-        try {
-            when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
-                managedServiceInstances.toArray(new ServiceReference[0]));
-        } catch (InvalidSyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -199,8 +153,6 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testVisibiltyOfInfoMessages() {
-        serviceManagerListMock.add(serviceManagerMock);
-
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
@@ -252,12 +204,10 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     }
 
     private NullDomainImpl setUpServicesMap() {
-        serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
         when(serRef.getProperty("connector")).thenReturn("bla");
-        addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");

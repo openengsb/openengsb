@@ -76,6 +76,7 @@ import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.osgi.framework.InvalidSyntaxException;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class TestClient extends BasePage {
@@ -242,7 +243,12 @@ public class TestClient extends BasePage {
                     new LoadableDetachableModel<List<? extends ConnectorProvider>>() {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
-                            return serviceUtils.listServices(ConnectorProvider.class);
+                            try {
+                                return serviceUtils.listServices(ConnectorProvider.class,
+                                    String.format("(domain=%s)", domainType));
+                            } catch (InvalidSyntaxException e) {
+                                throw new IllegalStateException(e);
+                            }
                         }
                     };
                 item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {

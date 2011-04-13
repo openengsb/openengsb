@@ -45,6 +45,9 @@
       <value>org.openengsb.core.api.ServiceInstanceFactory</value>
     </interfaces>
     <service-properties>
+      <entry key="domain">
+        <value>auditing</value>
+      </entry>
       <entry key="connector">
         <value>memoryauditing</value>
       </entry>
@@ -57,6 +60,9 @@
       <value>org.openengsb.core.api.ConnectorProvider</value>
     </interfaces>
     <service-properties>
+      <entry key="domain">
+        <value>auditing</value>
+      </entry>
       <entry key="connector">
         <value>memoryauditing</value>
       </entry>
