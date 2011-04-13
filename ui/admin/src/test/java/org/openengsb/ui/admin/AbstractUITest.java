@@ -85,8 +85,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
         serviceUtils.setBundleContext(bundleContext);
         this.serviceUtils = serviceUtils;
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         DefaultWiringService wiringService = new DefaultWiringService();
         wiringService.setBundleContext(bundleContext);
         registerService(wiringService, "wiringService", WiringService.class);

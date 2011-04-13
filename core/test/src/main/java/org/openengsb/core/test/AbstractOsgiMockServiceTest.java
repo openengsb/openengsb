@@ -39,6 +39,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -155,6 +156,13 @@ public abstract class AbstractOsgiMockServiceTest {
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
+    }
+
+    @After
+    public void clearRegistry() throws Exception {
+        bundleContext = null;
+        serviceReferences = null;
+        services = null;
     }
 
     /**

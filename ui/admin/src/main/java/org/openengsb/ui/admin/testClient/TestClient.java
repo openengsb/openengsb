@@ -82,9 +82,9 @@ public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);
 
-    private static WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+    private WiringService wiringService = OpenEngSBCoreServices.getWiringService();
 
-    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
 
     private DropDownChoice<MethodId> methodList;
 
