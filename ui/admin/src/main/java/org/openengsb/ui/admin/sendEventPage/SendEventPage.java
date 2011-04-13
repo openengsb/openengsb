@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -59,7 +60,7 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
-import org.openengsb.ui.common.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.util.MethodUtil;
 
 @AuthorizeInstantiation("ROLE_USER")
@@ -178,12 +179,12 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
-    private RepeatingView createEditorPanelForClass(Class<?> theClass) {
+    private Panel createEditorPanelForClass(Class<?> theClass) {
         values.clear();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
-        return fieldList;
+        BeanEditorPanel panel = new BeanEditorPanel("fields", theClass, values);
+        return panel;
     }
 
     private List<AttributeDefinition> moveNameToFront(List<AttributeDefinition> attributes) {

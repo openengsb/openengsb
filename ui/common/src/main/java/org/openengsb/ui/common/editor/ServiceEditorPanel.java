@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
@@ -44,21 +45,21 @@ import org.openengsb.core.api.validation.FormValidator;
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
-    private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
     private final Map<String, String> attributeViewIds = new HashMap<String, String>();
     private Model<Boolean> validatingModel;
 
-    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
+            Map<String, IModel<String>> attributeModels) {
         super(id);
         this.attributes = attributes;
-        this.values = values;
-        initPanel(attributes, values);
+        initPanel(attributes, attributeModels);
     }
 
-    private void initPanel(List<AttributeDefinition> attributes, Map<String, String> values) {
+    private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels) {
         attributeViewIds.clear();
-        RepeatingView fields = AttributeEditorUtil.createFieldList("fields", attributes, values, attributeViewIds);
+        RepeatingView fields =
+            AttributeEditorUtil.createFieldList("fields", attributes, attributeModels, attributeViewIds);
         add(fields);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
@@ -123,10 +124,6 @@ public class ServiceEditorPanel extends Panel {
 
     public List<AttributeDefinition> getAttributes() {
         return attributes;
-    }
-
-    public Map<String, String> getValues() {
-        return values;
     }
 
     public String getAttributeViewId(String attribute) {

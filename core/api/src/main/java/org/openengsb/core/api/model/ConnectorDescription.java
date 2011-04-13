@@ -17,12 +17,13 @@
 
 package org.openengsb.core.api.model;
 
+import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class ConnectorDescription {
+public class ConnectorDescription implements Serializable {
 
     private Map<String, String> attributes;
     private Dictionary<String, Object> properties;

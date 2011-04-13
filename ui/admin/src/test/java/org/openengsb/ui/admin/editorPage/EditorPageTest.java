@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ConnectorProvider;
@@ -58,6 +60,8 @@ public class EditorPageTest extends AbstractUITest {
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
         createFactoryMock("testconnector", "testdomain");
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, false));
     }
 
     @Test
@@ -73,19 +77,22 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     public void testIfValuesOfAttributesAreShown() throws Exception {
-
+        ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
-
-        ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
-        serviceManager.createService(connectorId, new ConnectorDescription());
+        serviceManager.createService(connectorId, new ConnectorDescription(attributes));
         PageParameters pageParams =
             new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
         tester.startPage(ConnectorEditorPage.class, pageParams);
-        tester.debugComponentTrees();
-
-        // assertThat(page.getEditorPanel().getAttributes().size(), is(1));
-        // assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("a"));
+        FormComponentLabel nameLabel =
+            (FormComponentLabel) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:1:row:name");
+        assertThat(nameLabel.getDefaultModelObjectAsString(), is("a_name"));
+        @SuppressWarnings("unchecked")
+        TextField<String> value =
+            (TextField<String>) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:1:row:field");
+        assertThat(value.getValue(), is("testValue"));
     }
     //
     // @SuppressWarnings("unchecked")

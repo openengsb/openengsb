@@ -34,16 +34,16 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.tester.FormTester;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.fields.AbstractField;
+import org.openengsb.ui.common.model.MapModel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
@@ -56,10 +56,12 @@ public class ServiceEditorPanelTest {
     private AttributeDefinition attribBoolean;
     private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc").build();
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
+    private Map<String, String> editorValues;
 
     @Before
     public void setup() {
         Locale.setDefault(Locale.ENGLISH);
+        tester = new WicketTester();
         attribOption = newAttribute("attribOption", "option", "").option("label_a", "1").option("label_b", "2").build();
         attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
     }
@@ -81,15 +83,6 @@ public class ServiceEditorPanelTest {
     public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
         startEditorPanel(attribNoDesc);
         assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
-    }
-
-    @Test
-    @Ignore("empty string in model gets replaced with null, why is this happening")
-    public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
-        startEditorPanel(attrib, attribNoDesc);
-        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        formTester.submit();
-        assertThat(editor.getValues(), is(defaultValues));
     }
 
     @Test
@@ -125,12 +118,14 @@ public class ServiceEditorPanelTest {
     }
 
     private void startEditorPanel(final FormValidator validator, final AttributeDefinition... attributes) {
-        final HashMap<String, String> values = new HashMap<String, String>();
+        final Map<String, IModel<String>> values = new HashMap<String, IModel<String>>();
+        editorValues = new HashMap<String, String>();
+        defaultValues = new HashMap<String, String>();
         for (AttributeDefinition a : attributes) {
-            values.put(a.getId(), a.getDefaultValue().getString(null));
+            IModel<String> model = new MapModel<String, String>(editorValues, a.getId());
+            values.put(a.getId(), model);
+            defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        defaultValues = new HashMap<String, String>(values);
-        tester = new WicketTester();
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
