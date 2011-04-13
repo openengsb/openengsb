@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
@@ -101,7 +102,7 @@ public class ConnectorEditorPage extends BasePage {
     public ConnectorEditorPage(String domain, String connectorType) {
         retrieveDescriptor(connectorType);
         HashMap<String, String> attributeValues = new HashMap<String, String>();
-        initEditor(connectorType, attributeValues);
+        initEditor(connectorType);
         createEditor(domain, connectorType, attributeValues);
     }
 
@@ -118,12 +119,23 @@ public class ConnectorEditorPage extends BasePage {
 
     public ConnectorEditorPage(ConnectorId id) {
         retrieveDescriptor(id.getConnectorType());
-        ConnectorDescription connectorDesc = serviceManager.getAttributeValues(id);
-        initEditor(id.getConnectorType(), connectorDesc.getAttributes());
-        createEditor(connectorDesc.getAttributes(), id);
+        // ConnectorDescription connectorDesc = serviceManager.getAttributeValues(id);
+        initEditor(id.getConnectorType());
+        createEditor(id);
     }
 
-    private void initEditor(String connectorType, Map<String, String> attributeValues) {
+    public ConnectorEditorPage(PageParameters parameters) {
+        super(parameters);
+        String serviceId = parameters.getString("id");
+        String domainType = parameters.getString("domainType");
+        String connectorType = parameters.getString("connectorType");
+        ConnectorId connectorId = new ConnectorId(domainType, connectorType, serviceId);
+        retrieveDescriptor(connectorType);
+        initEditor(connectorType);
+        createEditor(connectorId);
+    }
+
+    private void initEditor(String connectorType) {
         add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
         add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
     }
@@ -136,7 +148,8 @@ public class ConnectorEditorPage extends BasePage {
         add(editor);
     }
 
-    private void createEditor(Map<String, String> values, ConnectorId serviceId) {
+    private void createEditor(ConnectorId serviceId) {
+        Map<String, String> values = serviceManager.getAttributeValues(serviceId).getAttributes();
         List<AttributeDefinition> attributes = getAttributes(values);
         editor = new ConnectorServiceEditor("editor", serviceId, attributes, values, descriptor.getFormValidator());
         add(editor);
