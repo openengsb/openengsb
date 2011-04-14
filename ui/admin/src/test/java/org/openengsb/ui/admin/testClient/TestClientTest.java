@@ -313,6 +313,25 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
+    public void testPerformMethodCallOnDomain() throws Exception {
+        setupAndStartTestClientPage();
+        tester.debugComponentTrees();
+        RepeatingView argList =
+                (RepeatingView) tester
+                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+
+        setServiceInDropDown(1);
+        setMethodInDropDown(0);
+        tester.debugComponentTrees();
+        for (int i = 0; i < argList.size(); i++) {
+            formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
+        }
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update("test", "test");
+    }
+
+    @Test
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
 

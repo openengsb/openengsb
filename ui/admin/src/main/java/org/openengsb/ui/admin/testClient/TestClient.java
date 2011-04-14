@@ -335,8 +335,6 @@ public class TestClient extends BasePage {
 
         // add domain entry to call via domain endpoint factory
         ServiceId domainProviderServiceId = new ServiceId();
-        String name = String.format(DOMAINSTRING, providerName);
-        domainProviderServiceId.setServiceId(name);
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
         domainProviderServiceId.setDomainName(providerName);
@@ -476,8 +474,23 @@ public class TestClient extends BasePage {
     }
 
     private Object getService(ServiceId service) throws OsgiServiceNotAvailableException {
-        return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
-            service.getServiceId());
+        String serviceId = service.getServiceId();
+        if (serviceId != null) {
+            return OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(service.getServiceClass(),
+                serviceId);
+        } else {
+            String domainName = service.getDomainName();
+            String location = "domain/" + domainName + "/default";
+            Class<?> serviceClazz;
+            try {
+                serviceClazz = this.getClass().getClassLoader().loadClass(service.getServiceClass());
+            } catch (ClassNotFoundException e) {
+                throw new OsgiServiceNotAvailableException(e);
+            }
+            return OpenEngSBCoreServices.getServiceUtilsService().getServiceForLocation(serviceClazz,
+                location);
+        }
+
     }
 
     private Object getServiceViaDomainEndpointFactory(ServiceId service) {

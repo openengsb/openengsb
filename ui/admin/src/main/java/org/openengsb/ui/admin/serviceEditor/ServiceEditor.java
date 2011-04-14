@@ -160,7 +160,9 @@ public abstract class ServiceEditor extends Panel {
 
     public final void onSubmit() {
         for (PropertyEntry p : propertyEntries) {
-            this.connectorDescModel.getObject().getProperties().put(p.getKey(), p.getValue());
+            if (p.getValue() != null) {
+                this.connectorDescModel.getObject().getProperties().put(p.getKey(), p.getValue());
+            }
         }
         internalOnSubmit();
     }
