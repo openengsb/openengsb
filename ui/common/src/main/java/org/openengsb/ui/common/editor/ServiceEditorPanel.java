@@ -31,12 +31,12 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -113,17 +113,21 @@ public class ServiceEditorPanel extends Panel {
                 Entry<String, Object> modelObject = item.getModelObject();
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
-                IModel<String> valueModel;
 
-                if (modelObject.getValue() instanceof String) {
-                    valueModel = new PropertyModel<String>(item.getModelObject(), "value");
-                    TextField<String> textField = new TextField<String>("value", valueModel);
-                    item.add(textField);
+                RepeatingView repeater = new RepeatingView("values");
+                item.add(repeater);
+                Object value = modelObject.getValue();
+                if (value.getClass().isArray()) {
+                    WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                    AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", new Model<String>("#array"));
+                    container.add(l);
+                    repeater.add(container);
                 } else {
-                    valueModel = new Model<String>("#array");
-                    TextField<String> textField = new TextField<String>("value", valueModel);
-                    textField.setEnabled(false);
-                    item.add(textField);
+                    WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                    IModel<String> valueModel = new PropertyModel<String>(modelObject, "value");
+                    AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
+                    container.add(l);
+                    repeater.add(container);
                 }
             }
         };

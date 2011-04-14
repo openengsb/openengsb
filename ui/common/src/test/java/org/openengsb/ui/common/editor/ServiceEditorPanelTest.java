@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -118,15 +119,18 @@ public class ServiceEditorPanelTest {
 
         Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
         assertThat(label1.getDefaultModelObjectAsString(), is("foo"));
-        TextField<String> value1 =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:value");
-        assertThat(value1.getModelObject(), is("bar"));
+        tester.debugComponentTrees();
+        Component comp = tester.getComponentFromLastRenderedPage("panel:properties:0:values:1:value");
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 = (AjaxEditableLabel<String>) comp;
+        assertThat((String) value1.getDefaultModelObject(), is("bar"));
 
         Label label2 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:1:key");
         assertThat(label2.getDefaultModelObjectAsString(), is("testpropx"));
-        TextField<String> value2 =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("panel:properties:1:value");
-        assertThat(value2.getModelObject(), is("42"));
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:1:values:1:value");
+        assertThat((String) value2.getDefaultModelObject(), is("42"));
     }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
