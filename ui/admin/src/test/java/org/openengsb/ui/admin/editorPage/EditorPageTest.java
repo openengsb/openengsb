@@ -188,8 +188,9 @@ public class EditorPageTest extends AbstractUITest {
         newFormTester.setValue("newPropertyKey", "newKey");
         tester.executeAjaxEvent(button, "onclick");
         tester.debugComponentTrees();
-        newFormTester.setValue("attributesPanel:properties:8:value", "42");
-        newFormTester.setValue("attributesPanel:properties:5:value", "foo");
+
+        newFormTester.setValue("attributesPanel:properties:2:value", "foo");
+        newFormTester.setValue("attributesPanel:properties:3:value", "42");
         AjaxButton submitButton =
             (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
         tester.executeAjaxEvent(submitButton, "onclick");

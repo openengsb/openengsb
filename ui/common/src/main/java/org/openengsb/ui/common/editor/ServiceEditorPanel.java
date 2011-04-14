@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.common.editor;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
@@ -49,6 +51,10 @@ import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.core.common.util.DictionaryAsMap;
+import org.osgi.framework.Constants;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
@@ -61,6 +67,8 @@ public class ServiceEditorPanel extends Panel {
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
     private ListView<Map.Entry<String, Object>> propertiesList;
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList("id", "connector", "domain",
+        Constants.SERVICE_ID, Constants.OBJECTCLASS);
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Dictionary<String, Object> properties) {
@@ -70,15 +78,23 @@ public class ServiceEditorPanel extends Panel {
     }
 
     public void reloadList(Dictionary<String, Object> properties) {
-        System.out.println("ServiceEditorPanel.reloadList()" + System.identityHashCode(properties));
         Map<String, Object> wrapped = DictionaryAsMap.wrap(properties);
-        List<Entry<String, Object>> entryList = new LinkedList<Map.Entry<String, Object>>(wrapped.entrySet());
+        Set<Entry<String, Object>> entrySet = wrapped.entrySet();
+        Collection<Entry<String, Object>> filtered =
+            Collections2.filter(entrySet, new Predicate<Entry<String, Object>>() {
+                @Override
+                public boolean apply(Entry<String, Object> input) {
+                    return !LOCKED_PROPERTIES.contains(input.getKey());
+                }
+            });
+        List<Entry<String, Object>> entryList = new LinkedList<Map.Entry<String, Object>>(filtered);
         Collections.sort(entryList, new Comparator<Map.Entry<String, Object>>() {
             @Override
             public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
+
         propertiesList.setList(entryList);
     }
 
