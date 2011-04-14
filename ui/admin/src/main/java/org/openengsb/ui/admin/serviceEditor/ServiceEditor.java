@@ -17,9 +17,12 @@
 
 package org.openengsb.ui.admin.serviceEditor;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -35,6 +38,7 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
@@ -55,8 +59,16 @@ public abstract class ServiceEditor extends Panel {
         idModel = new Model<ConnectorId>(serviceId);
 
         Map<String, IModel<String>> values = createModelMap(attributes, model);
-        createForm(attributes, values);
+        IModel<List<? extends Entry<String, Object>>> model2 = createPropertyModel(model);
+        createForm(attributes, values, model2);
         idfield.setEnabled(false);
+    }
+
+    private IModel<List<? extends Entry<String, Object>>> createPropertyModel(IModel<ConnectorDescription> model) {
+        Dictionary<String, Object> properties = model.getObject().getProperties();
+        Map<String, Object> wrappedProps = DictionaryAsMap.wrap(properties);
+        List<Map.Entry<String, Object>> list = new ArrayList<Map.Entry<String, Object>>(wrappedProps.entrySet());
+        return Model.ofList(list);
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
@@ -70,7 +82,7 @@ public abstract class ServiceEditor extends Panel {
         this.attributes = attributes;
         this.validator = validator;
         idModel = new Model<ConnectorId>(ConnectorId.generate(domainType, connectorType));
-        createForm(attributes, createModelMap(attributes, model));
+        createForm(attributes, createModelMap(attributes, model), createPropertyModel(model));
     }
 
     public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
@@ -88,7 +100,8 @@ public abstract class ServiceEditor extends Panel {
         return models;
     }
 
-    private void createForm(List<AttributeDefinition> attributes, Map<String, IModel<String>> values) {
+    private void createForm(List<AttributeDefinition> attributes, Map<String, IModel<String>> values,
+            IModel<List<? extends Entry<String, Object>>> model) {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
@@ -96,7 +109,7 @@ public abstract class ServiceEditor extends Panel {
         idfield.setRequired(true);
         form.add(idfield);
 
-        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values);
+        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values, model);
         form.add(serviceEditorPanel);
 
         if (validator != null) {

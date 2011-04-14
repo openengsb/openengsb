@@ -21,17 +21,26 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ServiceValidationFailedException;
@@ -47,21 +56,45 @@ public class ServiceEditorPanel extends Panel {
 
     private final List<AttributeDefinition> attributes;
     private Model<Boolean> validatingModel;
+    private WebMarkupContainer propertiesContainer;
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
-            Map<String, IModel<String>> attributeModels) {
+            Map<String, IModel<String>> attributeModels,
+            IModel<List<? extends Entry<String, Object>>> iModel) {
         super(id);
         this.attributes = attributes;
-        initPanel(attributes, attributeModels);
+        initPanel(attributes, attributeModels, iModel);
     }
 
-    private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels) {
+    private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels,
+            IModel<List<? extends Entry<String, Object>>> iModel) {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeModels);
         add(fields);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
+
+        final ListView<Entry<String, Object>> propertiesList =
+            new ListView<Entry<String, Object>>("properties", iModel) {
+                @Override
+                protected void populateItem(ListItem<Entry<String, Object>> item) {
+                    item.add(new Label("key", new PropertyModel<String>(item.getModelObject(), "key")));
+                    item.add(new TextField<String>("value", new PropertyModel<String>(item.getModelObject(), "value")));
+                }
+            };
+        propertiesList.setOutputMarkupId(true);
+
+        propertiesContainer = new WebMarkupContainer("propertiesContainer");
+        propertiesContainer.add(propertiesList);
+        add(new AjaxLink<String>("property.new") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                target.addComponent(propertiesContainer);
+            }
+        });
+
+        add(propertiesList);
     }
 
     /**

@@ -21,13 +21,21 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -35,16 +43,16 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.fields.AbstractField;
 import org.openengsb.ui.common.model.MapModel;
-import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
@@ -110,15 +118,32 @@ public class ServiceEditorPanelTest {
         assertThat(cb, notNullValue());
     }
 
+    @Test
+    public void containsInitialPropertiesFields() throws Exception {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", "42");
+        props.put("foo", "bar");
+        startEditorPanel(props, attribOption);
+        tester.debugComponentTrees();
+
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
+        assertThat(label1.getDefaultModelObjectAsString(), is("foo"));
+        TextField<String> value1 =
+            (TextField<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:value");
+        assertThat(value1.getModelObject(), is("bar"));
+
+        Label label2 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:1:key");
+        assertThat(label2.getDefaultModelObjectAsString(), is("testpropx"));
+        TextField<String> value2 =
+            (TextField<String>) tester.getComponentFromLastRenderedPage("panel:properties:1:value");
+        assertThat(value2.getModelObject(), is("42"));
+    }
+
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
-    private void startEditorPanel(final AttributeDefinition... attributes) {
-        this.startEditorPanel(new DefaultPassingFormValidator(), attributes);
-    }
-
-    private void startEditorPanel(final FormValidator validator, final AttributeDefinition... attributes) {
+    private void startEditorPanel(Dictionary<String, Object> properties, final AttributeDefinition... attributes) {
         final Map<String, IModel<String>> values = new HashMap<String, IModel<String>>();
         editorValues = new HashMap<String, String>();
         defaultValues = new HashMap<String, String>();
@@ -127,12 +152,26 @@ public class ServiceEditorPanelTest {
             values.put(a.getId(), model);
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
+        Set<Entry<String, Object>> entrySet = DictionaryAsMap.wrap(properties).entrySet();
+        ArrayList<Entry<String, Object>> list = new ArrayList<Entry<String, Object>>(entrySet);
+        Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+            @Override
+            public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        final IModel<List<? extends Entry<String, Object>>> model =
+            Model.ofList(list);
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values);
+                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values, model);
             }
         });
+    }
+
+    private void startEditorPanel(final AttributeDefinition... attributes) {
+        startEditorPanel(new Hashtable<String, Object>(), attributes);
     }
 
     @SuppressWarnings("unchecked")
