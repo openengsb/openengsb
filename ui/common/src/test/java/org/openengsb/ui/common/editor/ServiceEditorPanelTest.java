@@ -24,15 +24,12 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
@@ -53,6 +50,7 @@ import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.fields.AbstractField;
 import org.openengsb.ui.common.model.MapModel;
+import org.openengsb.ui.common.model.PropertyEntry;
 
 @SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
@@ -152,15 +150,12 @@ public class ServiceEditorPanelTest {
             values.put(a.getId(), model);
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        Set<Entry<String, Object>> entrySet = DictionaryAsMap.wrap(properties).entrySet();
-        ArrayList<Entry<String, Object>> list = new ArrayList<Entry<String, Object>>(entrySet);
-        Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
-            @Override
-            public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
-        final IModel<List<? extends Entry<String, Object>>> model =
+        List<PropertyEntry> list = new ArrayList<PropertyEntry>();
+        for (Map.Entry<String, Object> entry : DictionaryAsMap.wrap(properties).entrySet()) {
+            list.add(new PropertyEntry(entry));
+        }
+        Collections.sort(list);
+        final IModel<List<? extends PropertyEntry>> model =
             Model.ofList(list);
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override

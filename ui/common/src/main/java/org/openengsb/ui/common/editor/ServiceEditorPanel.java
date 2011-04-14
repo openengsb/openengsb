@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -46,6 +45,7 @@ import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.ui.common.model.PropertyEntry;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
@@ -60,14 +60,14 @@ public class ServiceEditorPanel extends Panel {
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
             Map<String, IModel<String>> attributeModels,
-            IModel<List<? extends Entry<String, Object>>> iModel) {
+            IModel<List<? extends PropertyEntry>> iModel) {
         super(id);
         this.attributes = attributes;
         initPanel(attributes, attributeModels, iModel);
     }
 
     private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels,
-            IModel<List<? extends Entry<String, Object>>> iModel) {
+            IModel<List<? extends PropertyEntry>> iModel) {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeModels);
         add(fields);
@@ -75,10 +75,10 @@ public class ServiceEditorPanel extends Panel {
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
 
-        final ListView<Entry<String, Object>> propertiesList =
-            new ListView<Entry<String, Object>>("properties", iModel) {
+        final ListView<PropertyEntry> propertiesList =
+            new ListView<PropertyEntry>("properties", iModel) {
                 @Override
-                protected void populateItem(ListItem<Entry<String, Object>> item) {
+                protected void populateItem(ListItem<PropertyEntry> item) {
                     item.add(new Label("key", new PropertyModel<String>(item.getModelObject(), "key")));
                     item.add(new TextField<String>("value", new PropertyModel<String>(item.getModelObject(), "value")));
                 }

@@ -18,6 +18,7 @@
 package org.openengsb.ui.admin.serviceEditor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,9 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
-import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
+import org.openengsb.ui.common.model.PropertyEntry;
+import org.openengsb.ui.common.validation.DefaultPassingFormValidator
+b.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
@@ -59,16 +62,20 @@ public abstract class ServiceEditor extends Panel {
         idModel = new Model<ConnectorId>(serviceId);
 
         Map<String, IModel<String>> values = createModelMap(attributes, model);
-        IModel<List<? extends Entry<String, Object>>> model2 = createPropertyModel(model);
+        IModel<List<? extends PropertyEntry>> model2 = createPropertyModel(model);
         createForm(attributes, values, model2);
         idfield.setEnabled(false);
     }
 
-    private IModel<List<? extends Entry<String, Object>>> createPropertyModel(IModel<ConnectorDescription> model) {
+    private IModel<List<? extends PropertyEntry>> createPropertyModel(IModel<ConnectorDescription> model) {
         Dictionary<String, Object> properties = model.getObject().getProperties();
         Map<String, Object> wrappedProps = DictionaryAsMap.wrap(properties);
-        List<Map.Entry<String, Object>> list = new ArrayList<Map.Entry<String, Object>>(wrappedProps.entrySet());
-        return Model.ofList(list);
+        List<PropertyEntry> entries = new ArrayList<PropertyEntry>();
+        for (Map.Entry<String, Object> entry : wrappedProps.entrySet()) {
+            entries.add(new PropertyEntry(entry));
+        }
+        Collections.sort(entries);
+        return Model.ofList(entries);
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
@@ -101,7 +108,7 @@ public abstract class ServiceEditor extends Panel {
     }
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, IModel<String>> values,
-            IModel<List<? extends Entry<String, Object>>> model) {
+            IModel<List<? extends PropertyEntry>> model) {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
