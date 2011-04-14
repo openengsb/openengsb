@@ -98,6 +98,10 @@ public class DictionaryAsMap<K, V> extends AbstractMap<K, V> {
 
     @Override
     public V put(K key, V value) {
+        if (value == null) {
+            dictionary.remove(key);
+            return value;
+        }
         return dictionary.put(key, value);
     }
 
@@ -118,6 +122,10 @@ public class DictionaryAsMap<K, V> extends AbstractMap<K, V> {
         }
 
         public V setValue(V value) {
+            if (value == null) {
+                DictionaryAsMap.this.dictionary.remove(key);
+                return null;
+            }
             return DictionaryAsMap.this.put(key, value);
         }
     }
