@@ -119,7 +119,6 @@ public class ServiceEditorPanelTest {
 
         Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
         assertThat(label1.getDefaultModelObjectAsString(), is("foo"));
-        tester.debugComponentTrees();
         Component comp = tester.getComponentFromLastRenderedPage("panel:properties:0:values:1:value");
         @SuppressWarnings("unchecked")
         AjaxEditableLabel<String> value1 = (AjaxEditableLabel<String>) comp;
@@ -131,6 +130,26 @@ public class ServiceEditorPanelTest {
         AjaxEditableLabel<String> value2 =
             (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:1:values:1:value");
         assertThat((String) value2.getDefaultModelObject(), is("42"));
+    }
+
+    @Test
+    public void containsInitialPropertiesFieldsWithArray() throws Exception {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        startEditorPanel(props, attribOption);
+
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
+        assertThat(label1.getDefaultModelObjectAsString(), is("testpropx"));
+        tester.debugComponentTrees();
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:1:value");
+        assertThat((String) value1.getDefaultModelObject(), is("42"));
+
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:2:value");
+        assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {

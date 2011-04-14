@@ -63,6 +63,32 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
+    private final class ArrayEntryModel implements IModel<String> {
+
+        private Object[] array;
+        private int index;
+
+        public ArrayEntryModel(Object[] array, int i) {
+            this.array = array;
+            this.index = i;
+        }
+
+        @Override
+        public void detach() {
+            // do nothing
+        }
+
+        @Override
+        public String getObject() {
+            return (String) array[index];
+        }
+
+        @Override
+        public void setObject(String object) {
+            array[index] = object;
+        }
+    }
+
     private final List<AttributeDefinition> attributes;
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
@@ -118,10 +144,14 @@ public class ServiceEditorPanel extends Panel {
                 item.add(repeater);
                 Object value = modelObject.getValue();
                 if (value.getClass().isArray()) {
-                    WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
-                    AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", new Model<String>("#array"));
-                    container.add(l);
-                    repeater.add(container);
+                    Object[] values = (Object[]) value;
+                    for (int i = 0; i < values.length; i++) {
+                        WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                        AjaxEditableLabel<String> l =
+                            new AjaxEditableLabel<String>("value", new ArrayEntryModel(values, i));
+                        container.add(l);
+                        repeater.add(container);
+                    }
                 } else {
                     WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
                     IModel<String> valueModel = new PropertyModel<String>(modelObject, "value");
