@@ -137,8 +137,4 @@ public abstract class ServiceEditor extends Panel {
     protected boolean isValidating() {
         return serviceEditorPanel.isValidating();
     }
-
-    public String getAttributeViewId(String attribute) {
-        return serviceEditorPanel.getAttributeViewId(attribute);
-    }
 }

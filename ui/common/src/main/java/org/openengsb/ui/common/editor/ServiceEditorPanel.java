@@ -46,7 +46,6 @@ import org.openengsb.core.api.validation.FormValidator;
 public class ServiceEditorPanel extends Panel {
 
     private final List<AttributeDefinition> attributes;
-    private final Map<String, String> attributeViewIds = new HashMap<String, String>();
     private Model<Boolean> validatingModel;
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
@@ -57,9 +56,8 @@ public class ServiceEditorPanel extends Panel {
     }
 
     private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels) {
-        attributeViewIds.clear();
         RepeatingView fields =
-            AttributeEditorUtil.createFieldList("fields", attributes, attributeModels, attributeViewIds);
+            AttributeEditorUtil.createFieldList("fields", attributes, attributeModels);
         add(fields);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
@@ -103,7 +101,7 @@ public class ServiceEditorPanel extends Panel {
                 if (validator != null) {
                     for (String attribute : validator.fieldsToValidate()) {
                         Component component =
-                            form.get("attributesPanel:fields:" + getAttributeViewId(attribute) + ":row:field");
+                            form.get("attributesPanel:fields:" + attribute + ":row:field");
                         if (component instanceof FormComponent<?>) {
                             formComponents.put(attribute, (FormComponent<?>) component);
                         }
@@ -124,10 +122,6 @@ public class ServiceEditorPanel extends Panel {
 
     public List<AttributeDefinition> getAttributes() {
         return attributes;
-    }
-
-    public String getAttributeViewId(String attribute) {
-        return attributeViewIds.get(attribute);
     }
 
     public boolean isValidating() {

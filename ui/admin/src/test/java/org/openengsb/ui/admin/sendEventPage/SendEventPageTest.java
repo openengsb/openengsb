@@ -99,7 +99,7 @@ public class SendEventPageTest extends AbstractUITest {
     @Test
     public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
         assertThat(fieldList.size(), is(3));
-        Component attributeName = fieldList.get("3:row:name");
+        Component attributeName = fieldList.get("testProperty:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
@@ -108,13 +108,13 @@ public class SendEventPageTest extends AbstractUITest {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
         assertThat(fieldList.size(), is(2));
-        Component attributeName = fieldList.get("1:row:name");
+        Component attributeName = fieldList.get("name:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("name"));
     }
 
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
-        formTester.setValue("fieldContainer:fields:3:row:field", "a");
+        formTester.setValue("fieldContainer:fields:testProperty:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());

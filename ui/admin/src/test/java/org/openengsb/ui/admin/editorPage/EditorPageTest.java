@@ -70,7 +70,7 @@ public class EditorPageTest extends AbstractUITest {
         RepeatingView list =
             (RepeatingView) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields");
         @SuppressWarnings("unchecked")
-        TextField<String> component = (TextField<String>) list.get("1:row:field");
+        TextField<String> component = (TextField<String>) list.get("a:row:field");
         assertThat(component.getModelObject(), is("a_default"));
         tester.debugComponentTrees();
     }
@@ -86,12 +86,12 @@ public class EditorPageTest extends AbstractUITest {
         tester.startPage(ConnectorEditorPage.class, pageParams);
         FormComponentLabel nameLabel =
             (FormComponentLabel) tester
-                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:1:row:name");
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:name");
         assertThat(nameLabel.getDefaultModelObjectAsString(), is("a_name"));
         @SuppressWarnings("unchecked")
         TextField<String> value =
             (TextField<String>) tester
-                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:1:row:field");
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:field");
         assertThat(value.getValue(), is("testValue"));
     }
 

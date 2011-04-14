@@ -69,6 +69,7 @@ public class ServiceEditorPanelTest {
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
         startEditorPanel(attrib);
+        tester.debugComponentTrees();
         TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
         assertThat(tf.getValue(), is(defaultValues.get(attrib.getId())));
     }
@@ -144,7 +145,7 @@ public class ServiceEditorPanelTest {
     }
 
     public String buildFormComponentId(String attributeId) {
-        return "fields:" + editor.getAttributeViewId(attributeId) + ":row:field";
+        return "fields:" + attributeId + ":row:field";
     }
 
     private AbstractField<?> getEditorField(String attributeId) {

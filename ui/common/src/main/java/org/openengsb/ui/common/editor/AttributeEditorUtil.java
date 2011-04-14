@@ -85,7 +85,7 @@ public final class AttributeEditorUtil {
     }
 
     private static String addRowToView(RepeatingView fields, IModel<String> model, AttributeDefinition a) {
-        String attributeViewId = fields.newChildId();
+        String attributeViewId = a.getId();
         WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
         fields.add(row);
         row.add(createEditorField("row", model, a, true));
