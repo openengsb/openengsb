@@ -81,8 +81,6 @@ public class HeaderTemplateTest extends AbstractUITest {
         tester.assertRenderedPage(Index.class);
         tester.clickLink("header:headerMenuItems:1:link");
         tester.assertRenderedPage(TestClient.class);
-        tester.clickLink("header:headerMenuItems:2:link");
-        tester.assertRenderedPage(SendEventPage.class);
     }
 
     private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
