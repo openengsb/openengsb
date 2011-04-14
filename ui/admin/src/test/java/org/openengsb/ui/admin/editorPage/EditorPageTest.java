@@ -19,12 +19,15 @@ package org.openengsb.ui.admin.editorPage;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.wicket.PageParameters;
@@ -38,6 +41,7 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -163,6 +167,35 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent("editor:form:submitButton", "onclick");
 
         serviceUtils.getService(NullDomain.class, 100L);
+    }
+
+    @Test
+    public void testEditService() throws Exception {
+        ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("test", "val");
+        serviceManager.createService(id, new ConnectorDescription(props));
+
+        try {
+            serviceUtils.getService("(test=val)", 100L);
+        } catch (OsgiServiceNotAvailableException e) {
+            fail("something is wrong, the servicemanager does not work properly");
+        }
+
+        tester.startPage(new ConnectorEditorPage(id));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "newKey");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.debugComponentTrees();
+        newFormTester.setValue("attributesPanel:properties:8:value", "42");
+        newFormTester.setValue("attributesPanel:properties:5:value", "foo");
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        serviceUtils.getService("(newKey=foo)", 100L);
+        serviceUtils.getService("(test=42)", 100L);
     }
 
     // @SuppressWarnings({ "unchecked", "serial" })

@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.connectorEditorPage;
 
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,9 +26,6 @@ import java.util.Map;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorProvider;
@@ -39,7 +37,6 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
@@ -58,31 +55,33 @@ public class ConnectorEditorPage extends BasePage {
 
     private ServiceEditor editor;
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    @SpringBean
+    private OsgiUtilsService serviceUtils;
 
     @SuppressWarnings("serial")
     private final class ConnectorServiceEditor extends ServiceEditor {
 
         private boolean createMode;
-        private IModel<ConnectorDescription> descriptionModel;
+        private Map<String, String> attributeMap;
 
         private ConnectorServiceEditor(String id, String domainType, String connectorType,
-                List<AttributeDefinition> attributes, IModel<ConnectorDescription> model, FormValidator validator) {
-            super(id, domainType, connectorType, attributes, model, validator);
-            this.descriptionModel = model;
+                List<AttributeDefinition> attributes, Map<String, String> attributeMap,
+                Dictionary<String, Object> properties, FormValidator validator) {
+            super(id, domainType, connectorType, attributes, attributeMap, properties, validator);
             createMode = true;
+            this.attributeMap = attributeMap;
         }
 
         private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-                IModel<ConnectorDescription> model, FormValidator validator) {
-            super(id, serviceId, attributes, model, validator);
-            this.descriptionModel = model;
+                Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
+            super(id, serviceId, attributes, attributeMap, properties, validator);
             createMode = false;
+            this.attributeMap = attributeMap;
         }
 
         @Override
-        public void internalOnSubmit() {
-            ConnectorDescription connectorDescription = descriptionModel.getObject();
+        public void onSubmit() {
+            ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
             try {
                 if (createMode) {
                     serviceManager.createService(idModel.getObject(), connectorDescription);
@@ -155,25 +154,18 @@ public class ConnectorEditorPage extends BasePage {
             }
         }
         ConnectorDescription description = new ConnectorDescription(values);
-        Model<ConnectorDescription> model = new Model<ConnectorDescription>(description);
         editor =
-            new ConnectorServiceEditor("editor", domainType, connectorType, attributes, model,
-                descriptor.getFormValidator());
+            new ConnectorServiceEditor("editor", domainType, connectorType, attributes, description.getAttributes(),
+                description.getProperties(), descriptor.getFormValidator());
         add(editor);
     }
 
     private void createEditor(final ConnectorId serviceId) {
-
-        IModel<ConnectorDescription> model = new LoadableDetachableModel<ConnectorDescription>() {
-            @Override
-            protected ConnectorDescription load() {
-                return serviceManager.getAttributeValues(serviceId);
-            }
-        };
+        ConnectorDescription description = serviceManager.getAttributeValues(serviceId);
 
         editor =
-            new ConnectorServiceEditor("editor", serviceId, descriptor.getAttributes(), model,
-                descriptor.getFormValidator());
+            new ConnectorServiceEditor("editor", serviceId, descriptor.getAttributes(), description.getAttributes(),
+                description.getProperties(), descriptor.getFormValidator());
         add(editor);
     }
 

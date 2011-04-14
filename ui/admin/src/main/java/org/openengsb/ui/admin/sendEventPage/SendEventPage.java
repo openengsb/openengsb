@@ -43,7 +43,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -61,7 +60,6 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
-import org.openengsb.ui.common.model.MapModel;
 import org.openengsb.ui.common.util.MethodUtil;
 
 @AuthorizeInstantiation("ROLE_USER")
@@ -80,8 +78,6 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     @SpringBean
     private AuditingDomain auditing;
-
-    private final Map<String, IModel<String>> values = new HashMap<String, IModel<String>>();
 
     private RepeatingView fieldList;
 
@@ -141,7 +137,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Event event = buildEvent(dropDownChoice.getModelObject(), values);
+                Event event = buildEvent(dropDownChoice.getModelObject(), realValues);
                 if (event != null) {
                     try {
                         eventService.processEvent(event);
@@ -183,14 +179,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     }
 
     private RepeatingView createEditorPanelForClass(Class<?> theClass) {
-        values.clear();
         realValues.clear();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        for (AttributeDefinition def : attributes) {
-            values.put(def.getId(), new MapModel<String, String>(realValues, def.getId()));
-        }
-        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
+
+        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, realValues);
         return fieldList;
     }
 
@@ -208,7 +201,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         return attributes;
     }
 
-    private Event buildEvent(Class<?> eventClass, Map<String, IModel<String>> values) {
+    private Event buildEvent(Class<?> eventClass, Map<String, String> values) {
         try {
             Event obj = (Event) eventClass.newInstance();
             BeanInfo beanInfo = Introspector.getBeanInfo(eventClass);
@@ -218,7 +211,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                String string = values.get(propertyDescriptor.getName()).getObject();
+                String string = values.get(propertyDescriptor.getName());
                 Object converted = valueConverter.convert(propertyDescriptor.getPropertyType(), string);
                 propertyDescriptor.getWriteMethod().invoke(obj, converted);
             }

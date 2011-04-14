@@ -57,6 +57,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -83,9 +84,11 @@ public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);
 
-    private WiringService wiringService = OpenEngSBCoreServices.getWiringService();
+    @SpringBean
+    private WiringService wiringService;
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    @SpringBean
+    private OsgiUtilsService serviceUtils;
 
     private DropDownChoice<MethodId> methodList;
 

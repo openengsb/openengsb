@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.ServiceRegistrationManager;
@@ -39,6 +41,8 @@ import org.openengsb.core.common.util.DictionaryAsMap;
 import com.google.common.base.Preconditions;
 
 public class ServiceManagerImpl implements ServiceManager {
+
+    private static final Log LOGGER = LogFactory.getLog(ServiceManagerImpl.class);
 
     private ServiceRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
@@ -142,8 +146,12 @@ public class ServiceManagerImpl implements ServiceManager {
     public ConnectorDescription getAttributeValues(ConnectorId id) {
         try {
             List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
-            if (list.size() != 1) {
+            if (list.isEmpty()) {
                 return null;
+            }
+            if (list.size() < 1) {
+                LOGGER.fatal("multiple values found for the same meta-data");
+                throw new IllegalStateException("multiple connectors with metadata: " + id + "found");
             }
             return list.get(0).getContent();
         } catch (PersistenceException e) {

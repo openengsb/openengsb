@@ -21,9 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -39,18 +37,13 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.fields.AbstractField;
-import org.openengsb.ui.common.model.MapModel;
-import org.openengsb.ui.common.model.PropertyEntry;
 
 @SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
@@ -140,26 +133,18 @@ public class ServiceEditorPanelTest {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
-    private void startEditorPanel(Dictionary<String, Object> properties, final AttributeDefinition... attributes) {
-        final Map<String, IModel<String>> values = new HashMap<String, IModel<String>>();
+    private void startEditorPanel(final Dictionary<String, Object> properties,
+            final AttributeDefinition... attributes) {
         editorValues = new HashMap<String, String>();
         defaultValues = new HashMap<String, String>();
         for (AttributeDefinition a : attributes) {
-            IModel<String> model = new MapModel<String, String>(editorValues, a.getId());
-            values.put(a.getId(), model);
+            editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        List<PropertyEntry> list = new ArrayList<PropertyEntry>();
-        for (Map.Entry<String, Object> entry : DictionaryAsMap.wrap(properties).entrySet()) {
-            list.add(new PropertyEntry(entry));
-        }
-        Collections.sort(list);
-        final IModel<List<? extends PropertyEntry>> model =
-            Model.ofList(list);
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values, model);
+                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties);
             }
         });
     }

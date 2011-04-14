@@ -49,7 +49,7 @@
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
-  
+  <osgi:reference id="osgiUtilsService" interface="org.openengsb.core.api.OsgiUtilsService" />
   <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />

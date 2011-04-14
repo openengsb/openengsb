@@ -18,9 +18,14 @@
 package org.openengsb.ui.common.editor;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
@@ -43,7 +48,7 @@ import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.ui.common.model.PropertyEntry;
+import org.openengsb.core.common.util.DictionaryAsMap;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
@@ -55,33 +60,59 @@ public class ServiceEditorPanel extends Panel {
     private final List<AttributeDefinition> attributes;
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
+    private ListView<Map.Entry<String, Object>> propertiesList;
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
-            Map<String, IModel<String>> attributeModels,
-            IModel<List<? extends PropertyEntry>> iModel) {
+            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
         super(id);
         this.attributes = attributes;
-        initPanel(attributes, attributeModels, iModel);
+        initPanel(attributes, attributeMap, properties);
     }
 
-    private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels,
-            final IModel<List<? extends PropertyEntry>> iModel) {
+    public void reloadList(Dictionary<String, Object> properties) {
+        System.out.println("ServiceEditorPanel.reloadList()" + System.identityHashCode(properties));
+        Map<String, Object> wrapped = DictionaryAsMap.wrap(properties);
+        List<Entry<String, Object>> entryList = new LinkedList<Map.Entry<String, Object>>(wrapped.entrySet());
+        Collections.sort(entryList, new Comparator<Map.Entry<String, Object>>() {
+            @Override
+            public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        propertiesList.setList(entryList);
+    }
+
+    private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
+            Dictionary<String, Object> properties) {
         RepeatingView fields =
-            AttributeEditorUtil.createFieldList("fields", attributes, attributeModels);
+            AttributeEditorUtil.createFieldList("fields", attributes, attributeMap);
         add(fields);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
 
-        final ListView<PropertyEntry> propertiesList =
-            new ListView<PropertyEntry>("properties", iModel) {
-                @Override
-                protected void populateItem(ListItem<PropertyEntry> item) {
-                    item.add(new Label("key", new PropertyModel<String>(item.getModelObject(), "key")));
-                    item.add(new TextField<String>("value", new PropertyModel<String>(item.getModelObject(), "value")));
+        propertiesList = new ListView<Map.Entry<String, Object>>("properties") {
+            @Override
+            protected void populateItem(ListItem<Map.Entry<String, Object>> item) {
+                Entry<String, Object> modelObject = item.getModelObject();
+                IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
+                item.add(new Label("key", keyModel));
+                IModel<String> valueModel;
+
+                if (modelObject.getValue() instanceof String) {
+                    valueModel = new PropertyModel<String>(item.getModelObject(), "value");
+                    TextField<String> textField = new TextField<String>("value", valueModel);
+                    item.add(textField);
+                } else {
+                    valueModel = new Model<String>("#array");
+                    TextField<String> textField = new TextField<String>("value", valueModel);
+                    textField.setEnabled(false);
+                    item.add(textField);
                 }
-            };
+            }
+        };
         propertiesList.setOutputMarkupId(true);
+        reloadList(properties);
 
         propertiesContainer = new WebMarkupContainer("propertiesContainer");
         propertiesContainer.add(propertiesList);

@@ -33,6 +33,7 @@ import org.openengsb.ui.common.editor.fields.CheckboxField;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
 import org.openengsb.ui.common.editor.fields.PasswordField;
+import org.openengsb.ui.common.model.MapModel;
 import org.openengsb.ui.common.util.MethodUtil;
 
 /**
@@ -47,7 +48,7 @@ public final class AttributeEditorUtil {
      *
      * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
-    public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, IModel<String>> values) {
+    public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(bean);
         return createFieldList(id, attributes, values);
     }
@@ -58,38 +59,15 @@ public final class AttributeEditorUtil {
      * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
-            Map<String, IModel<String>> values) {
+            Map<String, String> values) {
         RepeatingView fields = new RepeatingView(id);
         for (AttributeDefinition a : attributes) {
-            addRowToView(fields, values.get(a.getId()), a);
+            WebMarkupContainer row = new WebMarkupContainer(a.getId());
+            MapModel<String, String> model = new MapModel<String, String>(values, a.getId());
+            row.add(createEditorField("row", model, a));
+            fields.add(row);
         }
         return fields;
-    }
-
-    /**
-     * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
-     * @param attributeModels map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
-     * @param attributeViewIds this Map is populated with ids of the generated elements
-     * @return
-     */
-    public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
-            Map<String, IModel<String>> attributeModels, Map<String, String> attributeViewIds) {
-        RepeatingView fields = new RepeatingView(id);
-        for (AttributeDefinition a : attributes) {
-            IModel<String> model = attributeModels.get(a.getId());
-            String attributeViewId = addRowToView(fields, model, a);
-            attributeViewIds.put(a.getId(), attributeViewId);
-        }
-        return fields;
-    }
-
-    private static String addRowToView(RepeatingView fields, IModel<String> model, AttributeDefinition a) {
-        String attributeViewId = a.getId();
-        WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
-        fields.add(row);
-        row.add(createEditorField("row", model, a, true));
-        return attributeViewId;
     }
 
     /**
