@@ -152,6 +152,19 @@ public class EditorPageTest extends AbstractUITest {
         serviceUtils.getService("(testNew=foo)", 100L);
     }
 
+    @Test
+    public void testCreateServicePropertiesLeaveFieldEmpty() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService(NullDomain.class, 100L);
+    }
+
     // @SuppressWarnings({ "unchecked", "serial" })
     // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
     // Map<String, String> errorMessages = new HashMap<String, String>();
