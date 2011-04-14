@@ -26,25 +26,19 @@ import junit.framework.Assert;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
-import org.osgi.framework.BundleContext;
 
 public class HeaderTemplateTest extends AbstractUITest {
 
@@ -106,20 +100,11 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     @SuppressWarnings("unchecked")
     private void setUpSendEventPage() {
-        tester = new WicketTester();
-        AnnotApplicationContextMock context = new AnnotApplicationContextMock();
-        tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, false));
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         context.putBean("ruleManagerBean", mock(RuleManager.class));
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("auditing", mock(AuditingDomain.class));
-        context.putBean("wiringService", new DefaultWiringService());
         context.putBean(mock(ProxyFactory.class));
-        BundleContext bundleContext = mock(BundleContext.class);
-        context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

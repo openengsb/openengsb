@@ -20,6 +20,7 @@ package org.openengsb.ui.admin;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -56,9 +57,14 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     public void makeContextMock() throws Exception {
         tester = new WicketTester();
         context = new ApplicationContextMock();
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
         context.putBean(Mockito.mock(ContextCurrentService.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(OpenEngSBCoreServices.getWiringService());
+        OsgiUtilsService serviceUtilsService =
+            OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
+        context.putBean("serviceUtils", serviceUtilsService);
         ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         ServiceManagerImpl serviceManager = new ServiceManagerImpl();

@@ -72,8 +72,9 @@ public class ServiceId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (this.serviceClass == null ? 0 : this.serviceClass.hashCode());
-        result = prime * result + (this.serviceId == null ? 0 : this.serviceId.hashCode());
+        result = prime * result + ((this.domainName == null) ? 0 : this.domainName.hashCode());
+        result = prime * result + ((this.serviceClass == null) ? 0 : this.serviceClass.hashCode());
+        result = prime * result + ((this.serviceId == null) ? 0 : this.serviceId.hashCode());
         return result;
     }
 
@@ -85,11 +86,32 @@ public class ServiceId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ServiceId)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ServiceId other = (ServiceId) obj;
-        return other.serviceClass.equals(serviceClass) && other.serviceId.equals(serviceId);
+        if (this.domainName == null) {
+            if (other.domainName != null) {
+                return false;
+            }
+        } else if (!this.domainName.equals(other.domainName)) {
+            return false;
+        }
+        if (this.serviceClass == null) {
+            if (other.serviceClass != null) {
+                return false;
+            }
+        } else if (!this.serviceClass.equals(other.serviceClass)) {
+            return false;
+        }
+        if (this.serviceId == null) {
+            if (other.serviceId != null) {
+                return false;
+            }
+        } else if (!this.serviceId.equals(other.serviceId)) {
+            return false;
+        }
+        return true;
     }
 
 }
