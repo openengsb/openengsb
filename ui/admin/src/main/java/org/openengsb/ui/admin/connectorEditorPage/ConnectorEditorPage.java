@@ -81,7 +81,7 @@ public class ConnectorEditorPage extends BasePage {
         }
 
         @Override
-        public void onSubmit() {
+        public void internalOnSubmit() {
             ConnectorDescription connectorDescription = descriptionModel.getObject();
             try {
                 if (createMode) {

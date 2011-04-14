@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -67,7 +65,7 @@ public class ServiceEditorPanel extends Panel {
     }
 
     private void initPanel(List<AttributeDefinition> attributes, Map<String, IModel<String>> attributeModels,
-            IModel<List<? extends PropertyEntry>> iModel) {
+            final IModel<List<? extends PropertyEntry>> iModel) {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeModels);
         add(fields);
@@ -87,12 +85,7 @@ public class ServiceEditorPanel extends Panel {
 
         propertiesContainer = new WebMarkupContainer("propertiesContainer");
         propertiesContainer.add(propertiesList);
-        add(new AjaxLink<String>("property.new") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                target.addComponent(propertiesContainer);
-            }
-        });
+        propertiesContainer.setOutputMarkupId(true);
 
         add(propertiesList);
     }

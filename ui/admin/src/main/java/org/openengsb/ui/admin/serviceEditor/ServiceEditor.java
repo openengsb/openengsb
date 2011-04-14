@@ -23,7 +23,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -42,8 +41,7 @@ import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.PropertyEntry;
-import org.openengsb.ui.common.validation.DefaultPassingFormValidator
-b.ui.common.validation.DefaultPassingFormValidator;
+import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
@@ -53,6 +51,8 @@ public abstract class ServiceEditor extends Panel {
     private ServiceEditorPanel serviceEditorPanel;
     protected Model<ConnectorId> idModel;
     private TextField<String> idfield;
+    private List<PropertyEntry> propertyEntries;
+    private IModel<ConnectorDescription> connectorDescModel;
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
             IModel<ConnectorDescription> model, FormValidator validator) {
@@ -65,17 +65,6 @@ public abstract class ServiceEditor extends Panel {
         IModel<List<? extends PropertyEntry>> model2 = createPropertyModel(model);
         createForm(attributes, values, model2);
         idfield.setEnabled(false);
-    }
-
-    private IModel<List<? extends PropertyEntry>> createPropertyModel(IModel<ConnectorDescription> model) {
-        Dictionary<String, Object> properties = model.getObject().getProperties();
-        Map<String, Object> wrappedProps = DictionaryAsMap.wrap(properties);
-        List<PropertyEntry> entries = new ArrayList<PropertyEntry>();
-        for (Map.Entry<String, Object> entry : wrappedProps.entrySet()) {
-            entries.add(new PropertyEntry(entry));
-        }
-        Collections.sort(entries);
-        return Model.ofList(entries);
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
@@ -95,6 +84,18 @@ public abstract class ServiceEditor extends Panel {
     public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
             IModel<ConnectorDescription> model) {
         this(id, domainType, connectorType, attributes, model, new DefaultPassingFormValidator());
+    }
+
+    private IModel<List<? extends PropertyEntry>> createPropertyModel(IModel<ConnectorDescription> model) {
+        this.connectorDescModel = model;
+        Dictionary<String, Object> properties = model.getObject().getProperties();
+        Map<String, Object> wrappedProps = DictionaryAsMap.wrap(properties);
+        propertyEntries = new ArrayList<PropertyEntry>();
+        for (String entry : wrappedProps.keySet()) {
+            propertyEntries.add(new PropertyEntry(entry, model.getObject()));
+        }
+        Collections.sort(propertyEntries);
+        return Model.ofList(propertyEntries);
     }
 
     private Map<String, IModel<String>> createModelMap(List<AttributeDefinition> attributes,
@@ -122,6 +123,19 @@ public abstract class ServiceEditor extends Panel {
         if (validator != null) {
             serviceEditorPanel.attachFormValidator(form, validator);
         }
+        serviceEditorPanel.setOutputMarkupId(true);
+
+        final IModel<String> newKeyModel = new Model<String>();
+        TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        form.add(textField);
+
+        form.add(new AjaxButton("addProperty", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                propertyEntries.add(new PropertyEntry(newKeyModel.getObject(), ""));
+                target.addComponent(serviceEditorPanel);
+            }
+        });
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
@@ -144,7 +158,14 @@ public abstract class ServiceEditor extends Panel {
         form.add(submitButton);
     }
 
-    public abstract void onSubmit();
+    public final void onSubmit() {
+        for (PropertyEntry p : propertyEntries) {
+            this.connectorDescModel.getObject().getProperties().put(p.getKey(), p.getValue());
+        }
+        internalOnSubmit();
+    }
+
+    protected abstract void internalOnSubmit();
 
     public ServiceEditorPanel getServiceEditorPanel() {
         return serviceEditorPanel;

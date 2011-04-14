@@ -122,7 +122,6 @@ public class ServiceEditorPanelTest {
         props.put("testpropx", "42");
         props.put("foo", "bar");
         startEditorPanel(props, attribOption);
-        tester.debugComponentTrees();
 
         Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
         assertThat(label1.getDefaultModelObjectAsString(), is("foo"));

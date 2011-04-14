@@ -19,19 +19,26 @@ package org.openengsb.ui.admin.editorPage;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
@@ -45,6 +52,7 @@ import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 public class EditorPageTest extends AbstractUITest {
 
     private AttributeDefinition attrib1;
+    private ServiceInstanceFactory factoryMock;
 
     @Before
     public void setup() {
@@ -59,7 +67,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorProvider provider = createConnectorProviderMock("testconnector", "testdomain");
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
-        createFactoryMock("testconnector", "testdomain");
+        factoryMock = createFactoryMock("testconnector", "testdomain");
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, false));
     }
@@ -105,25 +113,64 @@ public class EditorPageTest extends AbstractUITest {
         assertThat(idField.isEnabled(), is(true));
     }
 
+    @Test
+    public void testAddProperty() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        Label propertyLabel =
+            (Label) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:properties:0:key");
+        assertThat(propertyLabel.getDefaultModelObjectAsString(), is("testNew"));
+    }
+
+    @Test
+    public void testCreateService() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        tester.debugComponentTrees();
+        newFormTester.submit("submitButton");
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+        Map<String, String> ref = new HashMap<String, String>();
+        ref.put("a", "a_default");
+        verify(factoryMock).createServiceInstance(anyString(), eq(ref));
+        serviceUtils.getService(NullDomain.class, 100L);
+    }
+
+    @Test
+    public void testCreateServiceProperties_shouldRegisterWithProperties() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:value", "foo");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService("(testNew=foo)", 100L);
+    }
+
     // @SuppressWarnings({ "unchecked", "serial" })
-//    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
-//        Map<String, String> errorMessages = new HashMap<String, String>();
-//        errorMessages.put("a", "validation.service.not");
-//        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-//            new MultipleAttributeValidationResultImpl(false, errorMessages));
-//        WicketTester tester = new WicketTester();
-//        tester.startPage(new ITestPageSource() {
-//            @Override
-//            public Page getTestPage() {
-//                return new ConnectorEditorPage(manager);
-//            }
-//        });
-//        FormTester formTester = tester.newFormTester("editor:form");
-//        formTester.setValue("fields:id:row:field", "someValue");
-//        formTester.submit();
-//        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
-//        tester.assertRenderedPage(ConnectorEditorPage.class);
-//    }
+    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+    // Map<String, String> errorMessages = new HashMap<String, String>();
+    // errorMessages.put("a", "validation.service.not");
+    // when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+    // new MultipleAttributeValidationResultImpl(false, errorMessages));
+    // WicketTester tester = new WicketTester();
+    // tester.startPage(new ITestPageSource() {
+    // @Override
+    // public Page getTestPage() {
+    // return new ConnectorEditorPage(manager);
+    // }
+    // });
+    // FormTester formTester = tester.newFormTester("editor:form");
+    // formTester.setValue("fields:id:row:field", "someValue");
+    // formTester.submit();
+    // tester.assertErrorMessages(new String[]{ "Service Validation Error" });
+    // tester.assertRenderedPage(ConnectorEditorPage.class);
+    // }
     //
     // @Test
     // @SuppressWarnings({ "unchecked", "serial" })
