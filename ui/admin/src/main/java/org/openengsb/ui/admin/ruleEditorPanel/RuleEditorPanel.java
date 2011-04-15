@@ -71,6 +71,7 @@ public class RuleEditorPanel extends Panel {
         add(form);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
+        error("");
         add(feedbackPanel);
     }
 
@@ -212,6 +213,7 @@ public class RuleEditorPanel extends Panel {
             try {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
+                target.addComponent(feedbackPanel);
                 error(e.getLocalizedMessage());
             }
         }
