@@ -21,8 +21,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -36,17 +34,19 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
 import org.openengsb.core.workflow.model.TestObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleFlowUT {
 
-    private Log log = LogFactory.getLog(RuleFlowUT.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleFlowUT.class);
 
     @Test
     public void testRunFlow() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("flowtest.drl", getClass()), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newClassPathResource("flowtest.rf", getClass()), ResourceType.DRF);
-        log.error(kbuilder.getErrors());
+        LOGGER.error("{}", kbuilder.getErrors());
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
@@ -68,7 +68,7 @@ public class RuleFlowUT {
 
         kbuilder.add(ResourceFactory.newClassPathResource("flowtest.drl", getClass()), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newClassPathResource("floweventtest.rf", getClass()), ResourceType.DRF);
-        log.error(kbuilder.getErrors());
+        LOGGER.error("{}", kbuilder.getErrors());
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
@@ -81,12 +81,12 @@ public class RuleFlowUT {
         ProcessEventListener listener = new DefaultProcessEventListener() {
             @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {
-                log.debug("Process complete " + event.getProcessInstance().getProcessId());
+                LOGGER.debug("Process complete {}", event.getProcessInstance().getProcessId());
                 ksession.halt();
             }
         };
         ksession.addEventListener(listener);
-        ksession.setGlobal("log", log);
+        ksession.setGlobal("log", LOGGER);
         ProcessInstance startProcess = ksession.startProcess("flowtest");
         Thread t = new Thread() {
             @Override

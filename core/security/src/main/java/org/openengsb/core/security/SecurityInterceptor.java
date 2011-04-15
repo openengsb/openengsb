@@ -19,19 +19,19 @@ package org.openengsb.core.security;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
 
 public class SecurityInterceptor extends MethodSecurityInterceptor {
 
-    private Log log = LogFactory.getLog(SecurityInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityInterceptor.class);
 
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
-        log.info("intercepting method " + mi.getMethod());
+        LOGGER.info("intercepting method {}", mi.getMethod());
         if (ArrayUtils.contains(Object.class.getMethods(), mi.getMethod())) {
-            logger.info("is Object-method; skipping");
+            LOGGER.info("is Object-method; skipping");
             return mi.proceed();
         }
         return super.invoke(mi);

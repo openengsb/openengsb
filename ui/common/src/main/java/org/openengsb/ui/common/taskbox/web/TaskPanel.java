@@ -19,8 +19,8 @@ package org.openengsb.ui.common.taskbox.web;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -41,7 +41,7 @@ import org.openengsb.core.api.workflow.model.Task;
 public class TaskPanel extends Panel {
     private Task task;
 
-    private static final Log LOG = LogFactory.getLog(TaskPanel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskPanel.class);
 
     @SpringBean(name = "taskboxService")
     private TaskboxService service;
@@ -77,7 +77,7 @@ public class TaskPanel extends Panel {
                     service.finishTask(task);
                     setResponsePage(getPage().getClass());
                 } catch (WorkflowException e) {
-                    LOG.error("Cant finish task", e);
+                    LOGGER.error("Cant finish task", e);
                 }
             }
 

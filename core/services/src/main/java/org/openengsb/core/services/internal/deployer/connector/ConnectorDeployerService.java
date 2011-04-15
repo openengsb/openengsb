@@ -19,8 +19,6 @@ package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -29,6 +27,8 @@ import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,17 +41,17 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     private static final String AUTH_USER = "admin";
     private static final String CONNECTOR_EXTENSION = ".connector";
 
-    private static Log log = LogFactory.getLog(ConnectorDeployerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
 
     private AuthenticationManager authenticationManager;
     private DeployerStorage deployerStorage;
 
     @Override
     public boolean canHandle(File artifact) {
-        log.debug(String.format("ConnectorDeployer.canHandle(\"%s\")", artifact.getAbsolutePath()));
+        LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
 
         if (artifact.isFile() && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
-            log.info("Found a .connector file to deploy.");
+            LOGGER.info("Found a .connector file to deploy.");
             return true;
         }
         return false;
@@ -59,7 +59,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     @Override
     public void install(File artifact) throws Exception {
-        log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
+        LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
 
         try {
             ConnectorConfiguration newConfig = ConnectorConfiguration.loadFromFile(new ConnectorFile(artifact));
@@ -74,12 +74,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                 serviceId = newConfig.getServiceId();
             }
 
-            log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
+            LOGGER.info("Loading instance {} of connector {}", serviceId, newConfig.getConnectorType());
             ServiceManager serviceManager = getServiceManagerFor(newConfig.getConnectorType());
             if (serviceManager == null) {
-                log.info(String.format(
-                        "Retrieving ServiceManager for connector %s failed, cannot create connector instance",
-                        newConfig.getConnectorType()));
+                LOGGER.info("Retrieving ServiceManager for connector {} failed, cannot create connector instance",
+                        newConfig.getConnectorType());
                 return;
             }
 
@@ -88,23 +87,23 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             if (validationResult.isValid()) {
                 deployerStorage.put(artifact, newConfig);
             }
-            log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
-                    validationResult.isValid()));
+            LOGGER.info("Connector {} of type {} valid: {}", new Object[] { newConfig.getConnectorType(), serviceId,
+                    validationResult.isValid() });
         } catch (Exception e) {
-            log.error(String.format("Installing connector failed: %s", e));
+            LOGGER.error("Installing connector failed: ", e);
             throw e;
         }
     }
 
     @Override
     public void update(File artifact) throws Exception {
-        log.debug(String.format("ConnectorDeployer.update(\"%s\")", artifact.getAbsolutePath()));
+        LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
         install(artifact);
     }
 
     @Override
     public void uninstall(File artifact) throws Exception {
-        log.debug(String.format("ConnectorDeployer.uninstall(\"%s\")", artifact.getAbsolutePath()));
+        LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
 
         try {
             authenticate(AUTH_USER, AUTH_PASSWORD);
@@ -115,19 +114,18 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             }
             String connectorType = deployerStorage.getConnectorType(artifact);
 
-            log.info(String.format("Removing instance %s of connector %s", serviceId, connectorType));
+            LOGGER.info("Removing instance {} of connector {}", serviceId, connectorType);
             ServiceManager serviceManager = getServiceManagerFor(connectorType);
             if (serviceManager == null) {
-                log.info(String.format(
-                        "Retrieving ServiceManager for connector %s failed, cannot remove connector instance",
-                        connectorType));
+                LOGGER.info("Retrieving ServiceManager for connector {} failed, cannot remove connector instance",
+                        connectorType);
                 return;
             }
 
             serviceManager.delete(serviceId);
             deployerStorage.remove(artifact);
         } catch (Exception e) {
-            log.error(String.format("Removing connector failed: %s", e));
+            LOGGER.error("Removing connector failed: ", e);
             throw e;
         }
     }
@@ -147,11 +145,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private void logConfigErrors(ConnectorConfiguration newConfig, File artifact) {
         if (newConfig.getConnectorType() == null) {
-            log.info(String.format("Malformed configuration file %s: Connector name missing", artifact.getName()));
+            LOGGER.info("Malformed configuration file {}: Connector name missing", artifact.getName());
         }
 
         if (newConfig.getServiceId() == null) {
-            log.info(String.format("Malformed configuration file %s: Service Id missing", artifact.getName()));
+            LOGGER.info("Malformed configuration file {}: Service Id missing", artifact.getName());
         }
     }
 
@@ -169,9 +167,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                     username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();
-            log.info(String.format("Connector deployer succesfully authenticated: %b", authenticated));
+            LOGGER.info("Connector deployer succesfully authenticated: {}", authenticated);
         } catch (AuthenticationException e) {
-            log.warn(String.format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
+            LOGGER.warn("User '{}' failed to login. Reason: ", username, e);
             authenticated = false;
         }
         return authenticated;

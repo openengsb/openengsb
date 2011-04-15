@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -60,11 +58,13 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    private transient Log log = LogFactory.getLog(SendEventPage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
@@ -165,7 +165,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         try {
             audits = auditing.getAudits();
         } catch (Exception e) {
-            log.error("Audits cannot be loaded", e);
+            LOGGER.error("Audits cannot be loaded", e);
         }
         ListView<String> listView = new ListView<String>("audits", audits) {
             @Override
@@ -216,7 +216,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             }
             return obj;
         } catch (Exception e) {
-            log.error("building event istance failed", e);
+            LOGGER.error("building event instance failed", e);
             return null;
         }
     }

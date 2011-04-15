@@ -33,8 +33,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -81,11 +79,13 @@ import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class TestClient extends BasePage {
 
-    private static Log log = LogFactory.getLog(TestClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
     @SpringBean
     private DomainService services;
@@ -191,7 +191,7 @@ public class TestClient extends BasePage {
         editButton = new AjaxButton("editButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                log.info("edit button pressed");
+                LOGGER.info("edit button pressed");
 
                 if (lastServiceId != null) {
                     ServiceManager lastManager = getLastManager(lastServiceId);
@@ -219,8 +219,7 @@ public class TestClient extends BasePage {
                 target.addComponent(methodList);
                 argumentList.removeAll();
                 target.addComponent(argumentListContainer);
-                log.info(node);
-                log.info(node.getClass());
+                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
 
                 updateEditButton((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
@@ -370,12 +369,12 @@ public class TestClient extends BasePage {
     private TreeModel createModel() {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
         TreeModel model = new DefaultTreeModel(node);
-        log.info("adding domains");
+        LOGGER.info("adding domains");
         for (DomainProvider provider : services.domains()) {
-            log.info("adding " + provider.getName());
+            LOGGER.info("adding {}", provider.getName());
             addDomainProvider(provider, node);
         }
-        log.info("done adding domains;");
+        LOGGER.info("done adding domains;");
         return model;
     }
 
@@ -433,7 +432,7 @@ public class TestClient extends BasePage {
             info("Methodcall called successfully");
             if (!m.getReturnType().equals(void.class)) {
                 info("Result: " + result);
-                log.info("result: " + result);
+                LOGGER.info("result: {}", result);
             }
         } catch (IllegalAccessException e) {
             handleExceptionWithFeedback(e);
@@ -489,7 +488,7 @@ public class TestClient extends BasePage {
     private void handleExceptionWithFeedback(Throwable e) {
         String stackTrace = ExceptionUtils.getFullStackTrace(e);
         error(stackTrace);
-        log.error(e);
+        LOGGER.error(e.getMessage(), e);
     }
 
     private void populateMethodList() {
@@ -500,7 +499,7 @@ public class TestClient extends BasePage {
             methodChoices.add(new MethodId(m));
         }
         methodList.setChoices(methodChoices);
-        log.info("populating list with: " + methodChoices);
+        LOGGER.info("populating list with: {}", methodChoices);
     }
 
     @SuppressWarnings("unchecked")

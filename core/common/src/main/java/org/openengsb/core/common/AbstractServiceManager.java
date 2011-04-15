@@ -27,8 +27,6 @@ import java.util.Set;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.ServiceInstanceFactory;
@@ -38,6 +36,8 @@ import org.openengsb.core.api.persistence.ConnectorDomainPair;
 import org.openengsb.core.api.persistence.ConnectorSetupStore;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
 
 /**
@@ -65,7 +65,7 @@ import org.springframework.aop.framework.ProxyFactory;
 public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> extends
         AbstractServiceManagerParent implements ServiceManager {
 
-    private final Log log = LogFactory.getLog(AbstractServiceManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServiceManager.class);
 
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
     private final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
@@ -157,14 +157,14 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             securityInterceptor = new MethodInterceptor() {
                 @Override
                 public Object invoke(MethodInvocation invocation) throws Throwable {
-                    log.error("This service manager has no security-manager attached");
+                    LOGGER.error("This service manager has no security-manager attached");
                     return invocation.proceed();
                 }
             };
         }
         factory.addAdvice(securityInterceptor);
         ClassLoader classLoader = getClass().getClassLoader();
-        log.info(String.format("creating aop-proxy using classloader %s (%s)", classLoader, classLoader.getClass()));
+        LOGGER.info("creating aop-proxy using classloader {} ({})", classLoader, classLoader.getClass());
         return (InstanceType) factory.getProxy(classLoader);
     }
 

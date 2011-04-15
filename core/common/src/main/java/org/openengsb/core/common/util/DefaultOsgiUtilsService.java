@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -33,12 +31,14 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
-    private static final Log LOGGER = LogFactory.getLog(DefaultOsgiUtilsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultOsgiUtilsService.class);
     private static final long DEFAULT_TIMEOUT = 30000L;
-
+    
     private BundleContext bundleContext;
 
     @Override
@@ -67,7 +67,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     public Object getService(Filter filter, long timeout) throws OsgiServiceNotAvailableException {
         ServiceTracker t = new ServiceTracker(bundleContext, filter, null);
-        LOGGER.debug("getting service for filter " + filter + " from tracker");
+        LOGGER.debug("getting service for filter {} from tracker", filter);
         Object result = getServiceFromTracker(t, timeout);
         if (result == null) {
             throw new OsgiServiceNotAvailableException(String.format(
@@ -127,7 +127,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for filter : " + filter);
+                    LOGGER.info("dynamically resolving service for filter : {}", filter);
                     Object service = getService(filter, timeout);
                     return method.invoke(service, args);
                 }
@@ -141,7 +141,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for filter : " + filter);
+                    LOGGER.info("dynamically resolving service for filter : {}", filter);
                     Object service = getService(filter, timeout);
                     return method.invoke(service, args);
                 }
@@ -155,7 +155,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for class : " + targetClass.toString());
+                    LOGGER.info("dynamically resolving service for class : {}", targetClass.toString());
                     Object service = getService(targetClass, timeout);
                     try {
                         return method.invoke(service, args);
@@ -254,7 +254,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException {
-        LOGGER.debug("retrieve service for location: " + location);
+        LOGGER.debug("retrieve service for location: {}", location);
         return getService(getFilterForLocation(location));
     }
 

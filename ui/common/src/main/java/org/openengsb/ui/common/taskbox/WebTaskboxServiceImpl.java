@@ -20,8 +20,6 @@ package org.openengsb.ui.common.taskbox;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
@@ -33,9 +31,11 @@ import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.ui.common.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.taskbox.web.TaskPanel;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebTaskboxServiceImpl implements TaskboxService, WebTaskboxService {
-    private Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebTaskboxServiceImpl.class);
 
     private PersistenceService persistence;
     private TaskboxService taskboxService;
@@ -77,7 +77,7 @@ public class WebTaskboxServiceImpl implements TaskboxService, WebTaskboxService 
                 persistence.delete(new PanelRegistryEntry(taskType));
             }
             persistence.create(new PanelRegistryEntry(taskType, panelClass));
-            log.info("Successfully registered " + panelClass.getName() + " for task type " + taskType);
+            LOGGER.info("Successfully registered {} for task type {}", panelClass.getName(), taskType);
         } catch (PersistenceException e) {
             throw new TaskboxException(e);
         }

@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.DomainService;
@@ -31,10 +29,12 @@ import org.openengsb.core.api.ServiceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OsgiDomainService implements DomainService {
 
-    private Log log = LogFactory.getLog(OsgiDomainService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OsgiDomainService.class);
 
     private List<DomainProvider> domains;
     private BundleContext bundleContext;
@@ -114,7 +114,7 @@ public class OsgiDomainService implements DomainService {
     @Override
     public Object getService(String serviceClass, String serviceId) {
         ServiceReference[] refs;
-        log.info(String.format("try to find service for class \"%s\", and id \"%s\"", serviceClass, serviceId));
+        LOGGER.info("try to find service for class \"{}\", and id \"{}\"", serviceClass, serviceId);
         try {
             refs = bundleContext.getAllServiceReferences(serviceClass, String.format("(id=%s)", serviceId));
         } catch (InvalidSyntaxException e) {

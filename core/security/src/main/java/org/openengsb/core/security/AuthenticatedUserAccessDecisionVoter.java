@@ -28,8 +28,6 @@ import java.util.Set;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
@@ -37,6 +35,8 @@ import org.openengsb.core.api.security.AuthorizedRoles;
 import org.openengsb.core.api.security.model.ServiceAuthorizedList;
 import org.openengsb.core.api.security.model.User;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
@@ -45,7 +45,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter {
 
-    private Log log = LogFactory.getLog(AuthenticatedUserAccessDecisionVoter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticatedUserAccessDecisionVoter.class);
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;
@@ -54,8 +54,8 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
         MethodInvocation invocation = (MethodInvocation) object;
-        log.info(String.format("intercepted call: %s on Object %s of type %s", invocation.getMethod().getName(),
-            invocation.getThis(), invocation.getThis().getClass()));
+        LOGGER.info("intercepted call: {} on Object {} of type {}", new Object[] {invocation.getMethod().getName(),
+            invocation.getThis(), invocation.getThis().getClass()});
         OpenEngSBService service = (OpenEngSBService) invocation.getThis();
         String instanceId = service.getInstanceId();
 
@@ -74,14 +74,14 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         Object user = authentication.getPrincipal();
         Collection<GrantedAuthority> userAuthorities = getAuthorities(user);
         if (userAuthorities == null) {
-            log.error("No authorities could be found");
+            LOGGER.error("No authorities could be found");
             return ACCESS_DENIED;
         }
-        if (log.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             @SuppressWarnings("unchecked")
             Collection<GrantedAuthority> authorities =
                 CollectionUtils.intersection(userAuthorities, allowedAuthorities);
-            log.debug("Intersection of Sets: " + authorities);
+            LOGGER.debug("Intersection of Sets: {}", authorities);
         }
         if (!Collections.disjoint(allowedAuthorities, userAuthorities)) {
             return ACCESS_GRANTED;
@@ -100,10 +100,10 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
                 addRolesFromMethodAnnotation(result, method);
             } catch (SecurityException e) {
                 // This exception should not happen and points to a real problem somewhere
-                log.error("error while looping through interfaces: ", e);
+                LOGGER.error("error while looping through interfaces: ", e);
             } catch (NoSuchMethodException e) {
                 // Well, this exception istn't really an error and should be logged at trace-level
-                log.trace("error while looping through interfaces: ", e);
+                LOGGER.trace("error while looping through interfaces: ", e);
             }
         }
         return result;
@@ -133,12 +133,12 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         Collection<GrantedAuthority> userAuthorities = null;
         if (user instanceof User) {
             User castUser = (User) user;
-            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            LOGGER.info("authenticated as {}", castUser.getUsername());
             userAuthorities = castUser.getAuthorities();
         } else if (user instanceof org.springframework.security.core.userdetails.User) {
             org.springframework.security.core.userdetails.User castUser =
                 (org.springframework.security.core.userdetails.User) user;
-            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            LOGGER.info("authenticated as {}", castUser.getUsername());
             userAuthorities = castUser.getAuthorities();
         }
         return userAuthorities;

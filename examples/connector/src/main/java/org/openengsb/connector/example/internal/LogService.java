@@ -17,18 +17,18 @@
 
 package org.openengsb.connector.example.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.event.LogEvent.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
     private String outputMode;
     private AliveState aliveState = AliveState.OFFLINE;
     private final ExampleDomainEvents domainEventInterface;
@@ -44,16 +44,16 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
         message = instanceId + ": " + message;
         Level level = Level.INFO;
         if ("DEBUG".equals(outputMode)) {
-            log.debug(message);
+            LOGGER.debug(message);
             level = Level.DEBUG;
         } else if ("INFO".equals(outputMode)) {
-            log.info(message);
+            LOGGER.info(message);
             level = Level.INFO;
         } else if ("WARN".equals(outputMode)) {
-            log.warn(message);
+            LOGGER.warn(message);
             level = Level.WARN;
         } else if ("ERROR".equals(outputMode)) {
-            log.error(message);
+            LOGGER.error(message);
             level = Level.ERROR;
         }
         raiseEvent(message, level);
@@ -79,7 +79,7 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     @Override
     public String doSomething(ExampleEnum exampleEnum) {
-        log.info(exampleEnum);
+        LOGGER.info("{}", exampleEnum);
         return "Called with: " + exampleEnum.toString();
     }
 

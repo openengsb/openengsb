@@ -19,8 +19,6 @@ package org.openengsb.ui.common.taskbox.web;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -41,11 +39,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.TaskboxException;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
 
-    public static final Log LOG = LogFactory.getLog(TaskOverviewPanel.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(TaskOverviewPanel.class);
 
     private TaskDataProvider dataProvider = new TaskDataProvider();
     private Panel panel = new EmptyPanel("taskPanel");
@@ -104,7 +104,7 @@ public class TaskOverviewPanel extends Panel {
                         panel.replaceWith(newPanel);
                         panel = newPanel;
                     } catch (TaskboxException e) {
-                        LOG.error("Taskbox panel could not be started", e);
+                        LOGGER.error("Taskbox panel could not be started", e);
                     }
                 }
             };

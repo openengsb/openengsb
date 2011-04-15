@@ -24,8 +24,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -33,6 +31,8 @@ import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegistrationServiceImpl extends AbstractOpenEngSBService implements EventRegistrationService {
 
@@ -44,7 +44,7 @@ public class RegistrationServiceImpl extends AbstractOpenEngSBService implements
     private static final String OSGI_HELPER_TEMPLATE2 =
         "OsgiHelper.sendRemoteEvent(\"%s\", \"%s\", re, \"%s\");";
 
-    private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationServiceImpl.class);
 
     private RuleManager ruleManager;
 
@@ -66,7 +66,7 @@ public class RegistrationServiceImpl extends AbstractOpenEngSBService implements
         } catch (RuleBaseException e) {
             throw new IllegalArgumentException(e);
         }
-        log.info("registering Event: " + event);
+        LOGGER.info("registering Event: {}", event);
     }
 
     private String getUniqueRuleName(String name) {

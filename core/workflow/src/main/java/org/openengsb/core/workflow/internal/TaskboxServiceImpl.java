@@ -19,8 +19,6 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
@@ -31,9 +29,11 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskboxServiceImpl implements TaskboxService {
-    private Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskboxServiceImpl.class);
 
     private WorkflowService workflowService;
     private PersistenceService persistence;
@@ -98,9 +98,9 @@ public class TaskboxServiceImpl implements TaskboxService {
             }
 
             workflowService.processEvent(finishedEvent);
-            log.info("finished task " + task.getTaskId());
+            LOGGER.info("finished task {}", task.getTaskId());
         } else {
-            log.warn("tried to finish task " + task.getTaskId() + " BUT there is no such task.");
+            LOGGER.warn("tried to finish task {}, BUT there is no such task.", task.getTaskId());
         }
     }
 }
