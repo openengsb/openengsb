@@ -118,9 +118,7 @@
     <bundle>mvn:org.apache.abdera/abdera-parser/${abdera.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlsec/${xmlsec.version}</bundle>
     <bundle>mvn:joda-time/joda-time/${joda.version}</bundle>
-    <bundle>wrap:mvn:org.opensaml/xmltooling/${xmltooling.version}</bundle>
-    <bundle>wrap:mvn:org.opensaml/openws/${openws.version}</bundle>
-    <bundle>wrap:mvn:org.opensaml/opensaml/${opensaml.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.version}</bundle>
     <bundle>mvn:org.apache.ws.security/wss4j/${wss4j.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.saaj-impl/${saaj.impl.version}</bundle>
     <bundle start-level='20'>mvn:org.codehaus.woodstox/stax2-api/${stax2.api.version}</bundle>
