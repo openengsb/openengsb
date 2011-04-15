@@ -107,16 +107,22 @@ public class RuleEditorPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 target.addComponent(textArea);
                 if (newRuleMode) {
+                    boolean error = false;
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
                             newRuleTextField.getModelObject());
                     try {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
+                        error = true;
                         target.addComponent(feedbackPanel);
                         error(e.getLocalizedMessage());
                     }
                     resetAfterNew(target);
                     ruleChoice.setModelObject(ruleBaseElementId);
+                    if (!error) {
+                        error("");
+                        target.addComponent(feedbackPanel);
+                    }
                 } else {
                     updateRule(target);
                 }
@@ -207,13 +213,19 @@ public class RuleEditorPanel extends Panel {
     private void updateRule(AjaxRequestTarget target) {
         RuleBaseElementId selection = ruleChoice.getModelObject();
         String text = textArea.getModelObject();
+        boolean error = false;
         if (selection != null && text != null) {
             try {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
+                error = true;
                 target.addComponent(feedbackPanel);
                 error(e.getLocalizedMessage());
             }
+        }
+        if (!error) {
+            error("");
+            target.addComponent(feedbackPanel);
         }
         disableButtons(target);
     }
