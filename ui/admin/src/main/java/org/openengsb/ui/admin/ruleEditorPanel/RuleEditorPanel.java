@@ -71,7 +71,6 @@ public class RuleEditorPanel extends Panel {
         add(form);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
-        error("");
         add(feedbackPanel);
     }
 
