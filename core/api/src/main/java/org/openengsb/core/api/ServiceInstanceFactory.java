@@ -21,44 +21,36 @@ import java.util.Map;
 
 public interface ServiceInstanceFactory {
 
-    void validate(Map<String, String> attributes) throws ServiceValidationFailedException;
+    /**
+     * validates the attribute combination. This is used for validating attributes before creating a new service.
+     * Therefore the supplied map contains all attributes
+     *
+     * returns a Collection of error-messages. should return an empty map if there are no errors
+     */
+    Map<String, String> getValidationErrors(Map<String, String> attributes);
 
-    void validate(Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException;
+    /**
+     * validates the attribute combination. This is used for validating attributes before updating new service.
+     * Therefore the supplied map contains only the attributes that should be changed. Other attributes must be
+     * retrieved from the instance directly.
+     *
+     * returns a Collection of error-messages. should return an empty map if there are no errors
+     */
+    Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes);
 
+    /**
+     * creates a new instance with the given service-id. The serviceId should then be the the same as returned by
+     * {@link OpenEngSBService#getInstanceId()}
+     *
+     * The created instance only contains default-values that are changed later.
+     */
     Domain createNewInstance(String id);
 
+    /**
+     * This method is used for filling in the attributes of a service. It can be assumed that the attributes have been
+     * validated before.
+     *
+     */
     void applyAttributes(Domain instance, Map<String, String> attributes);
-    //
-    // /**
-    // * Updates the attributes of the given service instance. Before the changes are applied they may be validated. The
-    // * attributes may only contain changed values and omit previously set attributes.
-    // *
-    // * @throws ServiceValidationFailedException if the attributes fail validation
-    // */
-    // void updateServiceInstance
-    // (Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException;
-    //
-    // /**
-    // * Updates the attributes of the given service instance. The difference to
-    // * {@link #updateServiceInstance(Domain, Map)} method is, that the attribute combination is not validated by the
-    // * implementation
-    // */
-    // void forceUpdateServiceInstance(Domain instance, Map<String, String> attributes);
-    //
-    // /**
-    // * creates a new service instance with the given attributes.
-    // *
-    // * @throws ServiceValidationFailedException if the attributes fail validation
-    // */
-    // Domain createServiceInstance(String id, Map<String, String> attributes) throws ServiceValidationFailedException;
-    //
-    // /**
-    // * creates a new service instance without validating the attributes first.
-    // *
-    // * @param id
-    // * @param attributes
-    // * @return
-    // */
-    // Domain forceCreateServiceInstance(String id, Map<String, String> attributes);
 
 }

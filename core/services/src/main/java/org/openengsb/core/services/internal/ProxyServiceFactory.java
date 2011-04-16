@@ -18,6 +18,7 @@
 package org.openengsb.core.services.internal;
 
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,16 +81,6 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
     }
 
     @Override
-    public void validate(Domain instance, Map<String, String> attributes) {
-        // TODO implement some validation if needed
-    }
-
-    @Override
-    public void validate(Map<String, String> attributes) {
-        // TODO implement some validation if needed
-    }
-
-    @Override
     public Domain createNewInstance(String id) {
         ProxyConnector handler = new ProxyConnector(id);
         handler.setCallRouter(router);
@@ -99,6 +90,18 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
                 handler);
         handlers.put(newProxyInstance, handler);
         return newProxyInstance;
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        // TODO implement some validation
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+        // TODO implement some validation
+        return Collections.emptyMap();
     }
 
 }

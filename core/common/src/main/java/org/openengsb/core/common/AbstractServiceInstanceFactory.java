@@ -17,11 +17,11 @@
 
 package org.openengsb.core.common;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceValidationFailedException;
 
 public abstract class AbstractServiceInstanceFactory<ConnectorType extends Domain> implements ServiceInstanceFactory {
 
@@ -35,18 +35,19 @@ public abstract class AbstractServiceInstanceFactory<ConnectorType extends Domai
 
     @SuppressWarnings("unchecked")
     @Override
-    public void validate(Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException {
-        doValidate((ConnectorType) instance, attributes);
+    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+        return getValidationErrorsInternally((ConnectorType) instance, attributes);
     }
 
-    public void doValidate(ConnectorType instance, Map<String, String> attributes)
-        throws ServiceValidationFailedException {
+    public Map<String, String> getValidationErrorsInternally(ConnectorType instance, Map<String, String> attributes) {
         // do nothing. override to add validation
+        return Collections.emptyMap();
     }
 
     @Override
-    public void validate(Map<String, String> attributes) throws ServiceValidationFailedException {
+    public Map<String, String> getValidationErrors(Map<String, String> attributes) {
         // do nothing. override to add validation
+        return Collections.emptyMap();
     }
 
 }

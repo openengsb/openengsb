@@ -52,7 +52,10 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ServiceInstanceFactory factory = getConnectorFactory(id);
 
-        factory.validate(description.getAttributes());
+        Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
+        if (!errors.isEmpty()) {
+            throw new ServiceValidationFailedException(errors);
+        }
 
         finishCreatingInstance(id, description, domainProvider, factory);
     }
@@ -141,7 +144,10 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
     private void updateAttributes(ConnectorId id, Map<String, String> attributes)
         throws ServiceValidationFailedException {
         ServiceInstanceFactory factory = getConnectorFactory(id);
-        factory.validate(instances.get(id), attributes);
+        Map<String, String> validationErrors = factory.getValidationErrors(instances.get(id), attributes);
+        if (!validationErrors.isEmpty()) {
+            throw new ServiceValidationFailedException(validationErrors);
+        }
         factory.applyAttributes(instances.get(id), attributes);
     }
 

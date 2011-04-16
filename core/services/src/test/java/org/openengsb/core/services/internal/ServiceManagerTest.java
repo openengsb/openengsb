@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -126,7 +125,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     public void testCreateServiceWithInvalidAttributes_shouldFail() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("all", "because I don't like you");
-        doThrow(new ServiceValidationFailedException(errorMessages)).when(factory).validate(anyMap());
+        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -154,8 +153,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     public void testUpdateServiceWithInvalidAttributes_shouldLeaveServiceUnchanged() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("all", "because I don't like you");
-        doThrow(new ServiceValidationFailedException(errorMessages)).when(factory)
-            .validate(any(Domain.class), anyMap());
+        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
 
         Map<String, String> attributes = new HashMap<String, String>();
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
