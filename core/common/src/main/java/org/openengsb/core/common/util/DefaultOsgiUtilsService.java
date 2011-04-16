@@ -49,11 +49,14 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            tracker.open();
             Object service = tracker.getService();
             try {
                 return method.invoke(service, args);
             } catch (InvocationTargetException e) {
                 throw e.getCause();
+            } finally {
+                tracker.close();
             }
         }
     }
@@ -145,15 +148,9 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, filter, null);
         return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
-            new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for filter : " + filter);
-                    Object service = getService(filter, timeout);
-                    return method.invoke(service, args);
-                }
-            });
+            new ServiceTrackerInvocationHandler(serviceTracker));
     }
 
     @Override

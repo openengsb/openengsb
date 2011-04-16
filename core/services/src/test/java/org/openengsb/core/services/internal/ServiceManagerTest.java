@@ -17,7 +17,12 @@
 
 package org.openengsb.core.services.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,9 +38,11 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -53,6 +60,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     private DefaultOsgiUtilsService serviceUtils;
     private ServiceManager serviceManager;
     private ServiceRegistrationManagerImpl serviceRegistrationManagerImpl;
+    private ServiceInstanceFactory factory;
 
     @Before
     public void setUp() throws Exception {
@@ -112,8 +120,35 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.update(connectorId, connectorDescription);
     }
 
+    @Test
+    public void testCreateServiceWithInvalidAttributes_shouldFail() throws Exception {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("all", "because I don't like you");
+        doThrow(new ServiceValidationFailedException(errorMessages)).when(factory).validate(anyMap());
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        try {
+            serviceManager.createService(connectorId, connectorDescription);
+            fail("Exception expected");
+        } catch (ServiceValidationFailedException e) {
+            assertThat(e.getErrorMessages(), is(errorMessages));
+        }
+
+        try {
+            serviceUtils.getService(NullDomain.class, 100L);
+            fail("service is available, but shouldn't be");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected
+        }
+    }
+
     private void registerMockedFactory() throws Exception {
-        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+        factory = mock(ServiceInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR, "testc");
