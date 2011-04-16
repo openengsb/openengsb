@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}-parent</artifactId>
+  <version>${version}</version>
+
+  <name>${name} :: Parent</name>
+
+  <description>${clientProjectDescription}</description>
+
+  <properties>
+    <openengsb.version>${openengsbVersion}</openengsb.version>
+    <openengsb.maven.plugin.version>${openengsbMavenPluginVersion}</openengsb.maven.plugin.version>
+    <plugin.assembly.version>${pluginAssemblyVersion}</plugin.assembly.version>
+
+    <jdk.version>1.6</jdk.version>
+    <plugin.pax.version>1.4</plugin.pax.version>
+    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.plugin.enforcer.version>1.0</maven.plugin.enforcer.version>
+    <plugin.resources.version>2.4.3</plugin.resources.version>
+    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
+    <maven.plugin.release.version>2.1</maven.plugin.release.version>
+    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
+    <maven.plugin.deploy.version>2.5</maven.plugin.deploy.version>
+    <karaf.version>2.1.3</karaf.version>
+  </properties>
+
+  <packaging>pom</packaging>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>core</module>
+    <module>docs</module>
+    <module>poms</module>
+    <module>assembly</module>
+  </modules>
+
+  <scm>
+    <connection>${scmConnection}</connection>
+    <developerConnection>${scmDeveloperConnection}</developerConnection>
+    <url>${scmUrl}</url>
+  </scm>
+
+
+  <developers>
+    <developer>
+      <name>${developerName}</name>
+      <email>${developerMail}</email>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <version>${openengsb.maven.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.plugin.compiler.version}</version>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+          <fork>true</fork>
+          <meminitial>128m</meminitial>
+          <maxmem>512m</maxmem>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven.plugin.enforcer.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[${mvn.version},)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${jdk.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${maven.plugin.release.version}</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <pushChanges>false</pushChanges>
+          <preparationGoals>clean install</preparationGoals>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>clean install</goals>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven.plugin.deploy.version}</version>
+        <configuration>
+          <remoteOBR>true</remoteOBR>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${plugin.resources.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven.plugin.install.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.plugin.surefire.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>run</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>run</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.ops4j</groupId>
+            <artifactId>maven-pax-plugin</artifactId>
+            <version>${plugin.pax.version}</version>
+            <configuration>
+              <runner>1.5.0</runner>
+              <framework>felix</framework>
+              <noDependencies>true</noDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>release</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.ops4j</groupId>
+            <artifactId>maven-pax-plugin</artifactId>
+            <version>${plugin.pax.version}</version>
+            <configuration>
+              <runner>1.5.0</runner>
+              <framework>felix</framework>
+              <noDependencies>true</noDependencies>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.karaf.tooling</groupId>
+            <artifactId>features-maven-plugin</artifactId>
+            <version>${karaf.version}</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jai.repository</id>
+      <name>JAI Repository (indirectly used by Docbook plugin)</name>
+      <url>https://m2proxy.atlassian.com/repository/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <repositories>
+    <repository>
+      <id>sonatype.repository</id>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+    </repository>
+    <repository>
+      <id>thirdparty</id>
+      <name>OpenEngSB 3rd Party Repository</name>
+      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty</url>
+    </repository>
+  </repositories>
+
+</project>
