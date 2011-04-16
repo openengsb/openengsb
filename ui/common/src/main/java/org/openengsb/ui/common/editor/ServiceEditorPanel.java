@@ -30,7 +30,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -63,14 +65,26 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
-    private final class ArrayEntryModel implements IModel<String> {
+    private final class EntryModel implements IModel<String> {
 
-        private Object[] array;
+        private Entry<String, Object> entry;
         private int index;
 
-        public ArrayEntryModel(Object[] array, int i) {
-            this.array = array;
+        public EntryModel(Entry<String, Object> entry, int i) {
+            this.entry = entry;
             this.index = i;
+            adjustArraySize();
+        }
+
+        private void adjustArraySize() {
+            if (isArray()) {
+                if (getArray().length <= index) {
+                    Object[] newArray = Arrays.copyOf(getArray(), index + 1);
+                    entry.setValue(newArray);
+                }
+            } else if (index > 0) {
+                entry.setValue(new Object[index + 1]);
+            }
         }
 
         @Override
@@ -80,13 +94,33 @@ public class ServiceEditorPanel extends Panel {
 
         @Override
         public String getObject() {
-            return (String) array[index];
+            if (isArray()) {
+                return (String) getArray()[index];
+            } else if (index == 0) {
+                return (String) entry.getValue();
+            } else {
+                throw new IllegalStateException("value is not an array");
+            }
         }
 
         @Override
         public void setObject(String object) {
-            array[index] = object;
+            if (!isArray() && index == 0) {
+                entry.setValue(object);
+            } else {
+                Object[] array = getArray();
+                array[index] = object;
+            }
         }
+
+        private Object[] getArray() {
+            return (Object[]) entry.getValue();
+        }
+
+        private boolean isArray() {
+            return entry.getValue().getClass().isArray();
+        }
+
     }
 
     private final List<AttributeDefinition> attributes;
@@ -135,8 +169,9 @@ public class ServiceEditorPanel extends Panel {
 
         propertiesList = new ListView<Map.Entry<String, Object>>("properties") {
             @Override
-            protected void populateItem(ListItem<Map.Entry<String, Object>> item) {
-                Entry<String, Object> modelObject = item.getModelObject();
+            protected void populateItem(final ListItem<Map.Entry<String, Object>> item) {
+                item.setOutputMarkupId(true);
+                final Entry<String, Object> modelObject = item.getModelObject();
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
 
@@ -148,17 +183,32 @@ public class ServiceEditorPanel extends Panel {
                     for (int i = 0; i < values.length; i++) {
                         WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
                         AjaxEditableLabel<String> l =
-                            new AjaxEditableLabel<String>("value", new ArrayEntryModel(values, i));
+                            new AjaxEditableLabel<String>("value", new EntryModel(modelObject, i));
                         container.add(l);
                         repeater.add(container);
                     }
                 } else {
                     WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
-                    IModel<String> valueModel = new PropertyModel<String>(modelObject, "value");
+                    IModel<String> valueModel = new EntryModel(modelObject, 0);
                     AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
                     container.add(l);
                     repeater.add(container);
                 }
+
+                AjaxLink<String> addLink = new AjaxLink<String>("newArrayEntry") {
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        Object value = modelObject.getValue();
+                        if (value.getClass().isArray()) {
+                            Object[] array = (Object[]) value;
+                            Object[] newArray = Arrays.copyOf(array, array.length + 1);
+                            newArray[array.length] = "";
+                            modelObject.setValue(newArray);
+                        }
+                        target.addComponent(item);
+                    }
+                };
+                item.add(addLink);
             }
         };
         propertiesList.setOutputMarkupId(true);

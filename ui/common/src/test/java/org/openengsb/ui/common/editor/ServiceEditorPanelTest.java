@@ -152,6 +152,17 @@ public class ServiceEditorPanelTest {
         assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
 
+    @Test
+    public void testExpandArrayPropertyField() throws Exception {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        startEditorPanel(props, attribOption);
+
+        tester.executeAjaxEvent("panel:properties:0:newArrayEntryForm:newArrayEntry", "onclick");
+
+        tester.debugComponentTrees();
+    }
+
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
