@@ -31,15 +31,17 @@ public class RuleFilePersistenceBackendService implements ConfigPersistenceBacke
     @Override
     public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
-        return null;
+        throw new UnsupportedOperationException("Method not implemented by now");
     }
 
     @Override
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
+        throw new UnsupportedOperationException("Method not implemented by now");
     }
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
+        throw new UnsupportedOperationException("Method not implemented by now");
     }
 
     @Override
