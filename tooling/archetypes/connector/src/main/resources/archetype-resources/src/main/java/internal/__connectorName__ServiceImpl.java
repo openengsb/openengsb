@@ -17,8 +17,9 @@
 
 package ${package}.internal;
 
-import org.openengsb.core.api.AliveState;
+
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.api.AliveState;
 
 import ${domainPackage}.${domainInterface};
 
