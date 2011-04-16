@@ -47,20 +47,7 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
         this.domainProvider = domainProvider;
     }
 
-    // @Override
-    // public ServiceDescriptor getDescriptor(Builder builder) {
-    // builder.id(domainProvider.getId()).serviceType(domainProvider.getDomainInterface())
-    // .implementationType(domainProvider.getDomainInterface())
-    // .name("proxy.name", domainProvider.getName().getString(Locale.getDefault()))
-    // .description("proxy.description");
-    // builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
-    // .description("proxy.port.description").build());
-    // builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
-    // .description("proxy.destination.description").build());
-    // builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
-    // .description("proxy.serviceId.description").build());
-    // return builder.build();
-    // }
+
 
     private void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));

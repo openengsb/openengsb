@@ -98,6 +98,18 @@
     </bean>
   </service>
 
+  <service id="proxyConnectorProvider" interface="org.openengsb.core.api.ConnectorProvider">
+    <service-properties>
+      <entry key="connector">
+        <value>external-connector-proxy</value>
+      </entry>
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.ProxyConnectorProvider">
+      <property name="id" value="external-connector-proxy" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+  </service>
+
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />

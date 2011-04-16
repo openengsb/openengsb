@@ -29,6 +29,9 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implemen
 
     private final List<String> messages = Collections.synchronizedList(new ArrayList<String>());
 
+    public MemoryAuditingServiceImpl() {
+    }
+
     public MemoryAuditingServiceImpl(String instanceId) {
         super(instanceId);
     }
