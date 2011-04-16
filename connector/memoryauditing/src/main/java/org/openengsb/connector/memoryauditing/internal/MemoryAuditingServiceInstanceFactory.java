@@ -20,18 +20,9 @@ package org.openengsb.connector.memoryauditing.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceValidationFailedException;
+import org.openengsb.core.common.AbstractServiceInstanceFactory;
 
-public class MemoryAuditingServiceInstanceFactory implements ServiceInstanceFactory {
-
-    public MemoryAuditingServiceInstanceFactory() {
-    }
-
-    @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+public class MemoryAuditingServiceInstanceFactory extends AbstractServiceInstanceFactory<MemoryAuditingServiceImpl> {
 
     @Override
     public Domain createNewInstance(String id) {
@@ -39,13 +30,8 @@ public class MemoryAuditingServiceInstanceFactory implements ServiceInstanceFact
     }
 
     @Override
-    public void validate(Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    @Override
-    public void validate(Map<String, String> attributes) throws ServiceValidationFailedException {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void doApplyAttributes(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+        // nothing to do
     }
 
 }
