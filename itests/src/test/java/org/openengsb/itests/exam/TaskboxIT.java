@@ -156,6 +156,11 @@ public class TaskboxIT extends AbstractExamTestHelper {
         task.addOrReplaceProperty("test", date);
         assertEquals(task.getTaskType(), "step1");
 
+        task.setName("test");
+        taskboxService.updateTask(task);
+        task = taskboxService.getOpenTasks().get(0);
+        assertEquals("test", task.getName());
+
         taskboxService.finishTask(task);
 
         task = taskboxService.getOpenTasks().get(0);

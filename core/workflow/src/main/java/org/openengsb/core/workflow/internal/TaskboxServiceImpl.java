@@ -100,8 +100,19 @@ public class TaskboxServiceImpl implements TaskboxService {
             workflowService.processEvent(finishedEvent);
             LOGGER.info("finished task {}", task.getTaskId());
         } else {
-            LOGGER.warn("tried to finish task {}, BUT there is no such task.", task.getTaskId());
+            LOGGER.error("tried to finish task {}, BUT there is no such task.", task.getTaskId());
+        }
+    }
+
+    @Override
+    public void updateTask(Task task) throws WorkflowException {
+        Task oldTask = getTaskForId(task.getTaskId());
+        try {
+            persistence.update(oldTask, task);
+            LOGGER.info("updated task {}", task.getTaskId());
+        } catch (PersistenceException e) {
+            LOGGER.error("tried to update task {}, but it didnt work!", task.getTaskId());
+            throw new WorkflowException(e);
         }
     }
 }
-

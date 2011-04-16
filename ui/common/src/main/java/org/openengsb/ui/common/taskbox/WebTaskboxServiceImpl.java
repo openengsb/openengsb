@@ -108,6 +108,11 @@ public class WebTaskboxServiceImpl implements TaskboxService, WebTaskboxService 
         taskboxService.finishTask(task);
     }
 
+    @Override
+    public void updateTask(Task task) throws WorkflowException {
+        taskboxService.updateTask(task);
+    }
+
     public void setTaskboxService(TaskboxService taskboxService) {
         this.taskboxService = taskboxService;
     }
