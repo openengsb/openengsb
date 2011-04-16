@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -90,8 +90,9 @@ public class ConnectorEditorPage extends BasePage {
                 }
                 returnToTestClient();
             } catch (ServiceValidationFailedException e) {
-                for (String value : e.getErrorMessages().values()) {
-                    error(new StringResourceModel(value, this, null).getString());
+                for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
+                    error(String.format("%s: %s", entry.getKey(), entry.getValue()));
+//                    error(new StringResourceModel(value, this, null).getString());
                 }
             }
         }
