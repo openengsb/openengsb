@@ -24,8 +24,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
@@ -39,6 +37,8 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestObject;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleManagerFlowTest {
 
