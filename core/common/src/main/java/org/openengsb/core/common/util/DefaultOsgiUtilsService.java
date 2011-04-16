@@ -42,6 +42,12 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
+        private Long timeout = -1L;
+
+        private ServiceTrackerInvocationHandler(ServiceTracker tracker, long timeout) {
+            this.tracker = tracker;
+            this.timeout = timeout;
+        }
 
         private ServiceTrackerInvocationHandler(ServiceTracker tracker) {
             this.tracker = tracker;
@@ -49,15 +55,27 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            tracker.open();
-            Object service = tracker.getService();
+            Object service = getService();
+            if (service == null) {
+                throw new OsgiServiceNotAvailableException("could not resolve service with tracker : " + tracker);
+            }
             try {
                 return method.invoke(service, args);
             } catch (InvocationTargetException e) {
                 throw e.getCause();
-            } finally {
-                tracker.close();
             }
+        }
+
+        private Object getService() throws InterruptedException {
+            if (timeout < 0) {
+                tracker.open();
+                try {
+                    return tracker.getService();
+                } finally {
+                    tracker.close();
+                }
+            }
+            return getServiceFromTracker(tracker, timeout);
         }
     }
 
@@ -98,6 +116,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             throw new OsgiServiceNotAvailableException(String.format(
                 "no service matching filter \"%s\" available at the time", filter.toString()));
         }
+        t.close();
         return result;
     }
 
@@ -108,13 +127,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getService(String filterString, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter;
-        try {
-            filter = FrameworkUtil.createFilter(filterString);
-        } catch (InvalidSyntaxException e1) {
-            throw new IllegalArgumentException(e1);
-        }
-        return getService(filter, timeout);
+        return getService(createFilter(filterString), timeout);
     }
 
     @Override
@@ -146,44 +159,31 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
         ServiceTracker serviceTracker = new ServiceTracker(bundleContext, filter, null);
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
-            new ServiceTrackerInvocationHandler(serviceTracker));
+        return getProxyForTracker(serviceTracker, targetClass, timeout);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
-            new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for filter : " + filter);
-                    Object service = getService(filter, timeout);
-                    return method.invoke(service, args);
-                }
-            });
+    public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout) {
+        return getOsgiServiceProxy(createFilter(filter), targetClass, timeout);
+    }
+
+    /**
+     * creates a Filter, but wraps the {@link InvalidSyntaxException} into an {@link IllegalArgumentException}
+     */
+    public static Filter createFilter(String filterString) {
+        try {
+            return FrameworkUtil.createFilter(filterString);
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getOsgiServiceProxy(final Class<T> targetClass, final long timeout) {
-
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
-            new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    LOGGER.info("dynamically resolving service for class : " + targetClass.toString());
-                    Object service = getService(targetClass, timeout);
-                    try {
-                        return method.invoke(service, args);
-                    } catch (InvocationTargetException e) {
-                        throw e.getCause();
-                    }
-                }
-            });
+    public <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout) {
+        ServiceTracker tracker = new ServiceTracker(bundleContext, targetClass.getName(), null);
+        return getProxyForTracker(tracker, targetClass, timeout);
     }
 
     @Override
@@ -322,6 +322,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         if (services != null) {
             CollectionUtils.addAll(result, services);
         }
+        tracker.close();
         return result;
     }
 
@@ -337,10 +338,15 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     public <T> T getService(final Class<T> clazz, final ServiceReference reference) {
         ServiceTracker tracker = new ServiceTracker(bundleContext, reference, null);
-        tracker.open();
         Object newProxyInstance = Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] { clazz },
             new ServiceTrackerInvocationHandler(tracker));
         return (T) newProxyInstance;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getProxyForTracker(ServiceTracker tracker, Class<T> targetClass, long timeout) {
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+            new ServiceTrackerInvocationHandler(tracker, timeout));
     }
 
     public void setBundleContext(BundleContext bundleContext) {
