@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -113,10 +112,9 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.update(connectorId, connectorDescription);
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerMockedFactory() {
+    private void registerMockedFactory() throws Exception {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
-        when(factory.createServiceInstance(anyString(), any(Map.class))).thenReturn(new NullDomainImpl());
+        when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR, "testc");
         registerService(factory, factoryProps, ServiceInstanceFactory.class);

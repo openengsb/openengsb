@@ -21,6 +21,8 @@ public interface ServiceManager {
     void createService(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException;
 
+    void forceCreateService(ConnectorId id, ConnectorDescription connectorDescpription);
+
     /**
      * updates a service instance. If the given id does not exist, this creates a new service instance.
      *
@@ -30,6 +32,8 @@ public interface ServiceManager {
      */
     void update(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException;
+
+    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescpription);
 
     /**
      * Deletes the service instanced with the given {@code id}.

@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -649,7 +648,7 @@ public class TestClientTest extends AbstractUITest {
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
         createConnectorProviderMock("testconnector", "testdomain");
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
-        when(factory.createServiceInstance(anyString(), anyMap())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
                 TestInterface newMock = mock(TestInterface.class);

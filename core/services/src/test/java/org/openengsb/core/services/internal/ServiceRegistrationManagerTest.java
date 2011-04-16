@@ -147,11 +147,12 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         Map<String, String> newAttrs = new HashMap<String, String>();
         newAttrs.put("answer", "43");
         updated.setAttributes(newAttrs);
+        updated.setProperties(properties);
         registrationManager.updateRegistration(connectorId, updated);
 
         serviceUtils.getService("(foo=bar)", 100L);
         ServiceInstanceFactory factory = serviceUtils.getService(ServiceInstanceFactory.class);
-        verify(factory).updateServiceInstance(any(Domain.class), eq(newAttrs));
+        verify(factory).applyAttributes(any(Domain.class), eq(newAttrs));
     }
 
     @Test
@@ -173,10 +174,9 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerMockedFactory() {
+    private void registerMockedFactory() throws Exception {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
-        when(factory.createServiceInstance(anyString(), any(Map.class))).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
                 return new NullDomainImpl((String) invocation.getArguments()[0]);

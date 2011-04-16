@@ -21,37 +21,42 @@ import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.common.NonValidatingServiceInstanceFactory;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
-public class LogServiceInstanceFactory extends NonValidatingServiceInstanceFactory {
+public class LogServiceInstanceFactory implements ServiceInstanceFactory {
 
     private ExampleDomainEvents domainEventInterface;
 
     @Override
-    public void updateServiceInstance(Domain instance, Map<String, String> attributes) {
-        applyAllAttributes((LogService) instance, attributes);
-
-    }
-
-    @Override
-    public LogService createServiceInstance(String id, Map<String, String> attributes) {
-        LogService instance = new LogService(id, domainEventInterface);
-        updateServiceInstance(instance, attributes);
-        return instance;
+    public Domain createNewInstance(String id) {
+        return new LogService(id, domainEventInterface);
     }
 
     public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {
         this.domainEventInterface = domainEventInterface;
     }
 
-    private void applyAllAttributes(LogService instance, Map<String, String> attributes) {
+    @Override
+    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+        LogService internalInstance = (LogService) instance;
         if (attributes.containsKey("outputMode")) {
-            instance.setOutputMode(attributes.get("outputMode"));
+            internalInstance.setOutputMode(attributes.get("outputMode"));
         }
         if (attributes.containsKey("prefix")) {
-            instance.setPrefix(attributes.get("prefix"));
+            internalInstance.setPrefix(attributes.get("prefix"));
         }
+    }
+
+    @Override
+    public void validate(Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException {
+        // do nothing
+    }
+
+    @Override
+    public void validate(Map<String, String> attributes) throws ServiceValidationFailedException {
+        // do nothing
     }
 
 }

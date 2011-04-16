@@ -22,13 +22,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.auditing.AuditingDomain;
 
-public class MemoryAuditingServiceImpl implements AuditingDomain {
+public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implements AuditingDomain {
 
     private final List<String> messages = Collections.synchronizedList(new ArrayList<String>());
 
-    public MemoryAuditingServiceImpl() {
+    public MemoryAuditingServiceImpl(String instanceId) {
+        super(instanceId);
     }
 
     @Override

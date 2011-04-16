@@ -21,25 +21,44 @@ import java.util.Map;
 
 public interface ServiceInstanceFactory {
 
-    /**
-     * Called by the {@link AbstractServiceManager} when updated service attributes for an instance are available. The
-     * attributes may only contain changed values and omit previously set attributes.
-     *
-     * @param instance the instance to update
-     * @param attributes the new service settings
-     */
-    void updateServiceInstance(Domain instance, Map<String, String> attributes);
+    void validate(Map<String, String> attributes) throws ServiceValidationFailedException;
 
-    void updateServiceInstance(Domain instance, Map<String, String> attributes, boolean validate);
+    void validate(Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException;
 
-    /**
-     * The {@link AbstractServiceManager} calls this method each time a new service instance has to be started.
-     *
-     * @param id the unique id this service has been assigned.
-     * @param attributes the initial service settings
-     */
-    Domain createServiceInstance(String id, Map<String, String> attributes);
+    Domain createNewInstance(String id);
 
-    Domain createServiceInstance(String id, Map<String, String> attributes, boolean validate);
+    void applyAttributes(Domain instance, Map<String, String> attributes);
+    //
+    // /**
+    // * Updates the attributes of the given service instance. Before the changes are applied they may be validated. The
+    // * attributes may only contain changed values and omit previously set attributes.
+    // *
+    // * @throws ServiceValidationFailedException if the attributes fail validation
+    // */
+    // void updateServiceInstance
+    // (Domain instance, Map<String, String> attributes) throws ServiceValidationFailedException;
+    //
+    // /**
+    // * Updates the attributes of the given service instance. The difference to
+    // * {@link #updateServiceInstance(Domain, Map)} method is, that the attribute combination is not validated by the
+    // * implementation
+    // */
+    // void forceUpdateServiceInstance(Domain instance, Map<String, String> attributes);
+    //
+    // /**
+    // * creates a new service instance with the given attributes.
+    // *
+    // * @throws ServiceValidationFailedException if the attributes fail validation
+    // */
+    // Domain createServiceInstance(String id, Map<String, String> attributes) throws ServiceValidationFailedException;
+    //
+    // /**
+    // * creates a new service instance without validating the attributes first.
+    // *
+    // * @param id
+    // * @param attributes
+    // * @return
+    // */
+    // Domain forceCreateServiceInstance(String id, Map<String, String> attributes);
 
 }

@@ -70,17 +70,8 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public void createService(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException {
-        Preconditions.checkNotNull(id.getConnectorType());
-        Preconditions.checkNotNull(id.getDomainType());
-        Preconditions.checkNotNull(id.getInstanceId());
-        try {
-            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
-            if (!list.isEmpty()) {
-                throw new IllegalArgumentException("connector already exists");
-            }
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
+        validateId(id);
+        checkForExistingServices(id);
         registrationManager.updateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
@@ -91,13 +82,57 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
+    public void forceCreateService(ConnectorId id, ConnectorDescription connectorDescription) {
+        validateId(id);
+        checkForExistingServices(id);
+        registrationManager.forceUpdateRegistration(id, connectorDescription);
+        ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
+        try {
+            configPersistence.persist(configuration);
+        } catch (PersistenceException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private void validateId(ConnectorId id) {
+        Preconditions.checkNotNull(id.getConnectorType());
+        Preconditions.checkNotNull(id.getDomainType());
+        Preconditions.checkNotNull(id.getInstanceId());
+    }
+
+    private void checkForExistingServices(ConnectorId id) {
+        try {
+            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
+            if (!list.isEmpty()) {
+                throw new IllegalArgumentException("connector already exists");
+            }
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void update(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException {
+        validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.updateRegistration(id, connectorDescpription);
         applyConfigChanges(old, connectorDescpription);
         try {
             configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) {
+        validateId(id);
+        ConnectorDescription old = getOldConfig(id);
+        registrationManager.forceUpdateRegistration(id, connectorDescription);
+        applyConfigChanges(old, connectorDescription);
+        try {
+            configPersistence.persist(new ConnectorConfiguration(id, connectorDescription));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }

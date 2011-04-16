@@ -20,10 +20,10 @@ package org.openengsb.core.services.internal.deployer.connector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -110,7 +110,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         factory = mock(ServiceInstanceFactory.class);
         createdService = mock(NullDomain.class);
-        when(factory.createServiceInstance(anyString(), anyMap())).thenReturn(createdService);
+        when(factory.createNewInstance(anyString())).thenReturn(createdService);
         registerService(factory, props, ServiceInstanceFactory.class);
 
         createDomainProviderMock(NullDomain.class, "mydomain");
@@ -157,8 +157,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nattribute.another=foo");
         connectorDeployerService.update(connectorFile);
         ArgumentCaptor<Map> attributeCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(factory).updateServiceInstance(eq(createdService), attributeCaptor.capture());
-        String value = (String) attributeCaptor.getValue().get("another");
+        verify(factory, times(2)).applyAttributes(eq(createdService), attributeCaptor.capture());
+        String value = (String) attributeCaptor.getAllValues().get(1).get("another");
         assertThat(value, is("foo"));
     }
 

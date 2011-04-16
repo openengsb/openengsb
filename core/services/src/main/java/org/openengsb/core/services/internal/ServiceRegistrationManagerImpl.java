@@ -52,8 +52,15 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ServiceInstanceFactory factory = getConnectorFactory(id);
 
-        // TODO really validate
-        Domain serviceInstance = factory.createServiceInstance(id.toString(), description.getAttributes());
+        factory.validate(description.getAttributes());
+
+        finishCreatingInstance(id, description, domainProvider, factory);
+    }
+
+    private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
+            DomainProvider domainProvider, ServiceInstanceFactory factory) {
+        Domain serviceInstance = factory.createNewInstance(id.toString());
+        factory.applyAttributes(serviceInstance, description.getAttributes());
 
         String[] clazzes = new String[]{
                 OpenEngSBService.class.getName(),
@@ -66,6 +73,16 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
         registrations.put(id, serviceRegistration);
         instances.put(id, serviceInstance);
+    }
+
+    private void forceCreateService(ConnectorId id, ConnectorDescription description) {
+        DomainProvider domainProvider = getDomainProvider(id.getDomainType());
+        ServiceInstanceFactory factory = getConnectorFactory(id);
+
+        Domain serviceInstance = factory.createNewInstance(id.toString());
+        factory.applyAttributes(serviceInstance, description.getAttributes());
+
+        finishCreatingInstance(id, description, domainProvider, factory);
     }
 
     private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(Dictionary<String, Object> properties,
@@ -88,15 +105,32 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         throws ServiceValidationFailedException {
         if (!instances.containsKey(id)) {
             createService(id, connectorDescription);
-        } else {
-            udpateAttributes(id, connectorDescription.getAttributes());
+        } else if (connectorDescription.getAttributes() != null) {
+            updateAttributes(id, connectorDescription.getAttributes());
         }
 
         Dictionary<String, Object> properties = connectorDescription.getProperties();
         if (properties != null) {
             updateProperties(id, properties);
         }
+    }
 
+    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription) {
+        if (!instances.containsKey(id)) {
+            forceCreateService(id, connectorDescription);
+        } else if (connectorDescription.getAttributes() == null) {
+            forceUpdateAttributes(id, connectorDescription.getAttributes());
+        }
+
+        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        if (properties != null) {
+            updateProperties(id, properties);
+        }
+    };
+
+    private void forceUpdateAttributes(ConnectorId id, Map<String, String> attributes) {
+        ServiceInstanceFactory factory = getConnectorFactory(id);
+        factory.applyAttributes(instances.get(id), attributes);
     }
 
     private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
@@ -104,28 +138,17 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         registration.setProperties(properties);
     }
 
-    private void udpateAttributes(ConnectorId id, Map<String, String> attributes) {
-        if (attributes == null) {
-            return;
-        }
+    private void updateAttributes(ConnectorId id, Map<String, String> attributes)
+        throws ServiceValidationFailedException {
         ServiceInstanceFactory factory = getConnectorFactory(id);
-        factory.updateServiceInstance(instances.get(id), attributes);
+        factory.validate(instances.get(id), attributes);
+        factory.applyAttributes(instances.get(id), attributes);
     }
 
     @Override
     public void remove(ConnectorId id) {
         registrations.get(id).unregister();
         registrations.remove(id);
-    }
-
-    @Override
-    public void removeLocations(ConnectorId serviceId, String... locations) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    @Override
-    public void assignLocations(ConnectorId serviceId, String... locations) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     protected ServiceInstanceFactory getConnectorFactory(ConnectorId id) {

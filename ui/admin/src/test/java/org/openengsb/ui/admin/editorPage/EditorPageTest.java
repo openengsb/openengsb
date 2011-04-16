@@ -20,7 +20,7 @@ package org.openengsb.ui.admin.editorPage;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +41,7 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
@@ -59,7 +60,7 @@ public class EditorPageTest extends AbstractUITest {
     private ServiceInstanceFactory factoryMock;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         attrib1 =
             AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();
@@ -138,7 +139,7 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent("editor:form:submitButton", "onclick");
         Map<String, String> ref = new HashMap<String, String>();
         ref.put("a", "a_default");
-        verify(factoryMock).createServiceInstance(anyString(), eq(ref));
+        verify(factoryMock).applyAttributes(any(Domain.class), eq(ref));
         serviceUtils.getService(NullDomain.class, 100L);
     }
 

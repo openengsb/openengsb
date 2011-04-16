@@ -158,7 +158,7 @@ public class ServiceEditorPanelTest {
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);
 
-        tester.executeAjaxEvent("panel:properties:0:newArrayEntryForm:newArrayEntry", "onclick");
+        tester.executeAjaxEvent("panel:properties:0:newArrayEntry", "onclick");
 
         tester.debugComponentTrees();
     }

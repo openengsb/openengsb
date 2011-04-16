@@ -42,38 +42,24 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
         return instances.get(domainProvider);
     }
 
-    public ProxyServiceFactory(DomainProvider domainProvider) {
+    protected ProxyServiceFactory(DomainProvider domainProvider) {
         this.domainProvider = domainProvider;
     }
 
-//    @Override
-//    public ServiceDescriptor getDescriptor(Builder builder) {
-//        builder.id(domainProvider.getId()).serviceType(domainProvider.getDomainInterface())
-//            .implementationType(domainProvider.getDomainInterface())
-//            .name("proxy.name", domainProvider.getName().getString(Locale.getDefault()))
-//            .description("proxy.description");
-//        builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
-//            .description("proxy.port.description").build());
-//        builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
-//            .description("proxy.destination.description").build());
-//        builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
-//            .description("proxy.serviceId.description").build());
-//        return builder.build();
-//    }
-
-    @Override
-    public Domain createServiceInstance(String id, Map<String, String> attributes) {
-        ProxyConnector handler = new ProxyConnector(id);
-        handler.setCallRouter(router);
-        updateHandlerAttributes(handler, attributes);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), },
-                handler);
-        newProxyInstance.hashCode();
-        handlers.put(newProxyInstance, handler);
-        return newProxyInstance;
-    }
+    // @Override
+    // public ServiceDescriptor getDescriptor(Builder builder) {
+    // builder.id(domainProvider.getId()).serviceType(domainProvider.getDomainInterface())
+    // .implementationType(domainProvider.getDomainInterface())
+    // .name("proxy.name", domainProvider.getName().getString(Locale.getDefault()))
+    // .description("proxy.description");
+    // builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
+    // .description("proxy.port.description").build());
+    // builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
+    // .description("proxy.destination.description").build());
+    // builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
+    // .description("proxy.serviceId.description").build());
+    // return builder.build();
+    // }
 
     private void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));
@@ -84,7 +70,7 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
     }
 
     @Override
-    public void updateServiceInstance(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Domain instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
@@ -94,13 +80,25 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
     }
 
     @Override
-    public void updateServiceInstance(Domain instance, Map<String, String> attributes, boolean validate) {
-        updateServiceInstance(instance, attributes);
+    public void validate(Domain instance, Map<String, String> attributes) {
+        // TODO implement some validation if needed
     }
 
     @Override
-    public Domain createServiceInstance(String id, Map<String, String> attributes, boolean validate) {
-        return createServiceInstance(id, attributes);
+    public void validate(Map<String, String> attributes) {
+        // TODO implement some validation if needed
+    }
+
+    @Override
+    public Domain createNewInstance(String id) {
+        ProxyConnector handler = new ProxyConnector(id);
+        handler.setCallRouter(router);
+        Domain newProxyInstance =
+            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
+                new Class<?>[]{ domainProvider.getDomainInterface(), },
+                handler);
+        handlers.put(newProxyInstance, handler);
+        return newProxyInstance;
     }
 
 }

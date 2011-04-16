@@ -18,7 +18,6 @@
 package org.openengsb.core.test;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -267,9 +266,9 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected abstract void setBundleContext(BundleContext bundleContext);
 
-    protected ServiceInstanceFactory createFactoryMock(String connector, String... domains) {
+    protected ServiceInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
         ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
-        when(factory.createServiceInstance(anyString(), anyMap())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
                 Domain result = mock(Domain.class);

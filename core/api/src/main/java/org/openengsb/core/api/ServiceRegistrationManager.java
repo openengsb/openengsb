@@ -35,6 +35,8 @@ public interface ServiceRegistrationManager extends OpenEngSBService {
     void updateRegistration(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ServiceValidationFailedException;
 
+    void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescpription);
+
     /**
      * Deletes the service instanced with the given {@code id}.
      *
@@ -43,9 +45,5 @@ public interface ServiceRegistrationManager extends OpenEngSBService {
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void remove(ConnectorId id);
-
-    void assignLocations(ConnectorId serviceId, String... locations);
-
-    void removeLocations(ConnectorId serviceId, String... locations);
 
 }
