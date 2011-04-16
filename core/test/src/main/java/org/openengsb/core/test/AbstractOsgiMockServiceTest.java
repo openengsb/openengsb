@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -139,8 +140,14 @@ public abstract class AbstractOsgiMockServiceTest {
                     doAnswer(new Answer<Void>() {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
-                            Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[0];
-                            serviceReferences.put(serviceReference, dict);
+                            Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
+                            Dictionary<String, Object> newDict = new Hashtable<String, Object>();
+                            Enumeration<String> keys = arg.keys();
+                            while (keys.hasMoreElements()) {
+                                String next = keys.nextElement();
+                                newDict.put(next, arg.get(next));
+                            }
+                            serviceReferences.put(serviceReference, newDict);
                             return null;
                         }
                     }).when(result).setProperties(any(Dictionary.class));

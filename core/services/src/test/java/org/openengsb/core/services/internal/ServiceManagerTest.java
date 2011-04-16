@@ -20,6 +20,7 @@ package org.openengsb.core.services.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -120,6 +121,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         serviceManager.update(connectorId, connectorDescription);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCreateServiceWithInvalidAttributes_shouldFail() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
@@ -142,6 +144,45 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         try {
             serviceUtils.getService(NullDomain.class, 100L);
             fail("service is available, but shouldn't be");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testUpdateServiceWithInvalidAttributes_shouldLeaveServiceUnchanged() throws Exception {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("all", "because I don't like you");
+        doThrow(new ServiceValidationFailedException(errorMessages)).when(factory)
+            .validate(any(Domain.class), anyMap());
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+        serviceUtils.getService("(foo=bar)", 1L);
+
+        connectorDescription.getProperties().put("foo", "42");
+        try {
+            serviceManager.update(connectorId, connectorDescription);
+            fail("Exception expected");
+        } catch (ServiceValidationFailedException e) {
+            assertThat(e.getErrorMessages(), is(errorMessages));
+        }
+
+        try {
+            serviceUtils.getService("(foo=bar)", 1L);
+        } catch (OsgiServiceNotAvailableException e) {
+            fail("Service is not available with the old attributes");
+        }
+
+        try {
+            serviceUtils.getService("(foo=42)", 1L);
+            fail("Service should not be available with the new properties, but it is");
         } catch (OsgiServiceNotAvailableException e) {
             // expected
         }
