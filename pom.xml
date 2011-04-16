@@ -404,6 +404,11 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-contact</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb</artifactId>
         <version>${project.version}</version>
