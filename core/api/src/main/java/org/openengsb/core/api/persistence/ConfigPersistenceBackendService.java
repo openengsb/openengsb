@@ -50,6 +50,16 @@ public interface ConfigPersistenceBackendService {
     void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException;
 
     /**
+     * Removes all configurations which match the matadata specified. Be careful that the meta-data pattern matches to
+     * more entries than you've expected. If you want make sure that you only get all entries you like try a
+     * {@link #load(Map)} first and call foreach meta-data entry in the right entries you've found.
+     * 
+     * @throws PersistenceException thrown if the access to the persistence base is not possible or an error occurred
+     *         during the remove operation.
+     */
+    void remove(Map<String, String> metadata) throws PersistenceException;
+
+    /**
      * Returns if the backend is applicable for a specific {@link ConfigItem} type.
      */
     boolean supports(Class<? extends ConfigItem<?>> configItemType);

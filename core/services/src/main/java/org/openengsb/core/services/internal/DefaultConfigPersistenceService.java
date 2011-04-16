@@ -58,6 +58,11 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
     }
 
     @Override
+    public void remove(Map<String, String> metadata) throws PersistenceException {
+        backendService.remove(metadata);
+    }
+
+    @Override
     public <ConfigType extends ConfigItem<?>> void persist(ConfigType configuration) throws PersistenceException,
         InvalidConfigurationException {
         backendService.persist(configuration);
