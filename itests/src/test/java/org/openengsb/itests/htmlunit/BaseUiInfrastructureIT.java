@@ -66,8 +66,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(testClient.asText().contains("Current Project"));
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
         assertTrue(sendEventpage.asText().contains("Current Project"));
-        HtmlPage contextPage = testClient.getAnchorByText("Context").click();
-        assertTrue(contextPage.asText().contains("Current Project"));
         HtmlPage servicePage = testClient.getAnchorByText("Services").click();
         webClient.waitForBackgroundJavaScript(1000);
         assertTrue(servicePage.asText().contains("Services with state = Connecting"));
