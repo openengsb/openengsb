@@ -41,7 +41,8 @@ public final class Constants {
     public static final String CONNECTOR = "CONNECTOR";
 
     /**
-     * connectors of this type require special handling
+     * connectors of this type require special handling. They represent proxies to connector-services running outside
+     * the OpenEngSB and can represent any domain.
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
 
