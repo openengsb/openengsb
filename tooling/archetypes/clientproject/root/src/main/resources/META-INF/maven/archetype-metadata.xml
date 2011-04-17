@@ -104,6 +104,12 @@
         <include>*</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true">
+      <directory>assembly/src/main/filtered-resources/etc</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
     <fileSet filtered="true" packaged="false">
       <directory>poms</directory>
       <includes>
