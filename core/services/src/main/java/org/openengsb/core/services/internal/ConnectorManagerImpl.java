@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -37,12 +35,14 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DictionaryAsMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
 public class ConnectorManagerImpl implements ConnectorManager {
 
-    private static final Log LOGGER = LogFactory.getLog(ConnectorManagerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorManagerImpl.class);
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
@@ -185,7 +185,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 throw new IllegalArgumentException("no connector with metadata: " + id + " found");
             }
             if (list.size() < 1) {
-                LOGGER.fatal("multiple values found for the same meta-data");
+                LOGGER.error("multiple values found for the same meta-data");
                 throw new IllegalStateException("multiple connectors with metadata: " + id + " found");
             }
             return list.get(0).getContent();
