@@ -172,9 +172,9 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void delete(ConnectorId id) {
-        // TODO delete from config (OPENENGSB-1256)
+    public void delete(ConnectorId id) throws PersistenceException {
         registrationManager.remove(id);
+        configPersistence.remove(id.toMetaData());
     }
 
     @Override
@@ -182,11 +182,11 @@ public class ServiceManagerImpl implements ServiceManager {
         try {
             List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
             if (list.isEmpty()) {
-                return null;
+                throw new IllegalArgumentException("no connector with metadata: " + id + " found");
             }
             if (list.size() < 1) {
                 LOGGER.fatal("multiple values found for the same meta-data");
-                throw new IllegalStateException("multiple connectors with metadata: " + id + "found");
+                throw new IllegalStateException("multiple connectors with metadata: " + id + " found");
             }
             return list.get(0).getContent();
         } catch (PersistenceException e) {

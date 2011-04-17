@@ -186,6 +186,33 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         }
     }
 
+    @Test
+    public void testDeleteService_shouldNotBeAvailableAnymore() throws Exception {
+        Map<String, String> attributes = new HashMap<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.createService(connectorId, connectorDescription);
+
+        serviceManager.delete(connectorId);
+
+        try {
+            serviceUtils.getService("(foo=bar)", 100L);
+            fail("service should not be available anymore");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected
+        }
+
+        try {
+            serviceManager.getAttributeValues(connectorId);
+            fail("service was still in persistence after deletion");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
     private void registerMockedFactory() throws Exception {
         factory = mock(ServiceInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());

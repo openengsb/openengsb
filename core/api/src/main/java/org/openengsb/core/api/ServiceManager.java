@@ -2,6 +2,7 @@ package org.openengsb.core.api;
 
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.PersistenceException;
 
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license
@@ -38,11 +39,9 @@ public interface ServiceManager {
     /**
      * Deletes the service instanced with the given {@code id}.
      *
-     * @param id identifier for a service instance provided by this {@code ServiceManager}.
-     *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(ConnectorId id);
+    void delete(ConnectorId id) throws PersistenceException;
 
     /**
      * Returns the attributes with values for the specified service instance.
