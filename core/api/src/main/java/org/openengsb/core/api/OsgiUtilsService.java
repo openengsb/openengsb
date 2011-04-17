@@ -25,14 +25,6 @@ import org.osgi.framework.ServiceReference;
 
 public interface OsgiUtilsService {
 
-    List<ServiceReference> listServiceReferences(Class<?> clazz);
-
-    <T> List<T> listServices(Class<T> clazz);
-
-    <T> List<T> listServices(Class<T> clazz, String filter) throws InvalidSyntaxException;
-
-    <T> T getService(Class<T> clazz, ServiceReference reference);
-
     /**
      * retrieves the highest ranked service exporting the given interface.
      *
@@ -74,6 +66,13 @@ public interface OsgiUtilsService {
      * @throws OsgiServiceNotAvailableException when the service is not available after the given timeout
      */
     Object getService(String filterString, long timeout) throws OsgiServiceNotAvailableException;
+
+    /**
+     * resolves the service-reference to the service-object
+     *
+     * @throws OsgiServiceNotAvailableException if the service is represented by the reference is not available anymore
+     */
+    <T> T getService(Class<T> clazz, ServiceReference reference) throws OsgiServiceNotAvailableException;
 
     /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
@@ -221,5 +220,26 @@ public interface OsgiUtilsService {
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
      */
     <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException;
+
+    /**
+     * list all service-references that are exported with the given interface.
+     *
+     * NOTE that the returned references may become invalid at any time.
+     */
+    List<ServiceReference> listServiceReferences(Class<?> clazz);
+
+    /**
+     * returns a list of all serivce-objects of services exported with the given interface.
+     *
+     * NOTE that the returned references may become invalid at any time.
+     */
+    <T> List<T> listServices(Class<T> clazz);
+
+    /**
+     * returns a list of all serivce-objects of services exported with the given interface matching the given filter.
+     *
+     * NOTE that the returned references may become invalid at any time.
+     */
+    <T> List<T> listServices(Class<T> clazz, String filter) throws InvalidSyntaxException;
 
 }
