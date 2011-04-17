@@ -98,7 +98,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         backend.init();
         DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
         Dictionary<String, Object> props2 = new Hashtable<String, Object>();
-        props2.put("configuration.id", "CONNECTOR");
+        props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
         registerService(configPersistence, props2, ConfigPersistenceService.class);
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
