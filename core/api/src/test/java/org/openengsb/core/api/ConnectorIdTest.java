@@ -20,6 +20,8 @@ package org.openengsb.core.api;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.openengsb.core.api.model.ConnectorId;
 
@@ -39,5 +41,48 @@ public class ConnectorIdTest {
         String text = id.toString();
         ConnectorId id2 = ConnectorId.fromFullId(text);
         assertThat(id2, is(id));
+    }
+
+    @Test
+    public void testConnectorIdEqualsConnectorId_shouldBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorId id2 = new ConnectorId("test", "testc", id1.getInstanceId());
+        assertThat(id1.equals(id2), is(true));
+    }
+
+    @Test
+    public void testConnectorIdEqualsDifferentId_shouldNotBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorId id2 = new ConnectorId("test", "testc", "not-equal");
+        assertThat(id1.equals(id2), is(false));
+    }
+
+    @Test
+    public void testConnectorIdEqualsMetadata_shouldBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        Map<String, String> metaData = id1.toMetaData();
+        assertThat(id1.equals(metaData), is(true));
+    }
+
+    @Test
+    public void testConnectorIdEqualsOtherMetadata_shouldNotBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        Map<String, String> metaData = id1.toMetaData();
+        metaData.put("connector", "something-different");
+        assertThat(id1.equals(metaData), is(false));
+    }
+
+    @Test
+    public void testConnectorIdEqualsFullIdString_shouldBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        String fullId = id1.toFullID();
+        assertThat(id1.equals(fullId), is(true));
+    }
+
+    @Test
+    public void testConnectorIdEqualsOtherString_shouldNotBeEqual() throws Exception {
+        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        String otherId = id1.toFullID() + " ";
+        assertThat(id1.equals(otherId), is(false));
     }
 }

@@ -153,10 +153,21 @@ public class ConnectorId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        if (getClass() == obj.getClass()) {
+            ConnectorId other = (ConnectorId) obj;
+            return equals(other);
         }
-        ConnectorId other = (ConnectorId) obj;
+        if (Map.class.isInstance(obj)) {
+            Map<?, ?> metadata = (Map<?, ?>) obj;
+            return toMetaData().equals(metadata);
+        }
+        if (obj instanceof String) {
+            return toFullID().equals(obj);
+        }
+        return false;
+    }
+
+    private boolean equals(ConnectorId other) {
         if (this.connectorType == null) {
             if (other.connectorType != null) {
                 return false;
