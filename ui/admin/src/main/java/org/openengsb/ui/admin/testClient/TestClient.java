@@ -184,7 +184,7 @@ public class TestClient extends BasePage {
         });
         Form<Object> organize = createOrganizeForm();
         add(organize);
-        
+
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
@@ -277,14 +277,14 @@ public class TestClient extends BasePage {
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
     }
-    
+
     /**
      * creates the form for organize section (globals, imports)
      */
     private Form<Object> createOrganizeForm() {
         Form<Object> organize = new Form<Object>("organizeForm");
         organize.setOutputMarkupId(true);
-        
+
         @SuppressWarnings("serial")
         AjaxButton importsButton = new AjaxButton("importsButton", organize) {
             @Override
@@ -294,7 +294,7 @@ public class TestClient extends BasePage {
         };
         importsButton.setOutputMarkupId(true);
         organize.add(importsButton);
-        
+
         return organize;
     }
 
