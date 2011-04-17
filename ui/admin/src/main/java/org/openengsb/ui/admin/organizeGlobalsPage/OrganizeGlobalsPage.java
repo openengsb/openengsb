@@ -100,7 +100,9 @@ public class OrganizeGlobalsPage extends BasePage {
                     ruleManager.addGlobal(className, globalName);
                     String message = new StringResourceModel("insertedGlobal", this, null).getString();
                     info(globalName + " " + message);
+                    LOGGER.info("successfully inserted global " + globalName);
                 } catch (RuleBaseException e) {
+                    LOGGER.debug("error while inserting global " + globalName, e);
                     String temp = ruleManager.getGlobalType(globalName);
                     try {
                         // it comes here if the global already exists
@@ -109,6 +111,7 @@ public class OrganizeGlobalsPage extends BasePage {
                         String message = new StringResourceModel("updatedGlobal", this, null).getString();
                         info(globalName + " " + message);
                     } catch (RuleBaseException ex) {
+                        LOGGER.debug("error while updating global " + globalName, e);
                         // it restores the old value if the new value for global is invalid
                         ruleManager.removeGlobal(globalName);
                         ruleManager.addGlobal(temp, globalName);
@@ -139,8 +142,9 @@ public class OrganizeGlobalsPage extends BasePage {
                     ruleManager.removeGlobal(globalName);
                     String message = new StringResourceModel("deletedGlobal", this, null).getString();
                     info(globalName + " " + message);
+                    LOGGER.info("successfully deleted global " + globalName);
                 } catch (RuleBaseException e) {
-                    LOGGER.error("error");
+                    LOGGER.debug("error while deleting global " + globalName, e);
                     if (e.getMessage().startsWith("Rule Compilation error")) {
                         ruleManager.addGlobal(temp, globalName);
                         String message = new StringResourceModel("deletingError", this, null).getString();
