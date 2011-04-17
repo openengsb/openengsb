@@ -91,6 +91,9 @@ public class TestClient extends BasePage {
     @SpringBean
     private OsgiUtilsService serviceUtils;
 
+    @SpringBean
+    private ConnectorManager serviceManager;
+
     private DropDownChoice<MethodId> methodList;
 
     private final MethodCall call = new MethodCall();
@@ -104,6 +107,7 @@ public class TestClient extends BasePage {
     private FeedbackPanel feedbackPanel;
 
     private AjaxButton editButton;
+    private AjaxButton deleteButton;
 
     private AjaxButton submitButton;
 
@@ -157,6 +161,35 @@ public class TestClient extends BasePage {
         editButton.setEnabled(false);
         editButton.setOutputMarkupId(true);
 
+        deleteButton = new AjaxButton("deleteButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.info("delete button pressed");
+                String serviceId = call.getService().getServiceId();
+                serviceManager.delete(serviceId);
+                info("service " + lastServiceId.getServiceId() + " successfully deleted");
+                serviceList.setModelObject(createModel());
+                serviceList.getTreeState().expandAll();
+                target.addComponent(feedbackPanel);
+                target.addComponent(serviceList);
+
+                /*if (lastServiceId != null) {
+                    ServiceManager lastManager = getLastManager(lastServiceId);
+                    if (lastManager != null) {
+                        lastManager.delete(lastServiceId.getServiceId());
+                        info("service " + lastServiceId.getServiceId() + " successfully deleted");
+                        serviceList.setModelObject(createModel());
+                        serviceList.getTreeState().expandAll();
+                        target.addComponent(feedbackPanel);
+                        target.addComponent(serviceList);
+                    }
+
+                }*/
+            }
+        };
+        deleteButton.setEnabled(false);
+        deleteButton.setOutputMarkupId(true);
+
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
@@ -171,8 +204,9 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
                 LOGGER.info("clicked on node {} of type {}", node, node.getClass());
 
-                updateEditButton((ServiceId) mnode.getUserObject());
+                updateModifyButtons((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
+                target.addComponent(deleteButton);
                 target.addComponent(submitButton);
                 target.addComponent(feedbackPanel);
             }
@@ -221,6 +255,7 @@ public class TestClient extends BasePage {
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
         form.add(editButton);
+        form.add(deleteButton);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
@@ -336,10 +371,48 @@ public class TestClient extends BasePage {
         return null;
     }
 
-    private void updateEditButton(ServiceId serviceId) {
+    private void updateModifyButtons(ServiceId serviceId) {
+        // lastServiceId = null; not sure about this
         editButton.setEnabled(false);
         editButton.setEnabled(serviceId.getServiceId() != null);
+        // editButton.setEnabled(getLastManager(serviceId) != null);
+        deleteButton.setEnabled(false);
+        deleteButton.setEnabled(serviceId.getServiceId() != null);
+        // deleteButton.setEnabled(getLastManager(serviceId) != null);
     }
+
+    /*private ServiceManager getLastManager(ServiceId serviceId) {
+        ServiceReference[] references = null;
+        try {
+            references =
+                    bundleContext.getServiceReferences(Domain.class.getName(),
+                            String.format("(id=%s)", serviceId.getServiceId()));
+            String id = "";
+            String domain = null;
+            if (references != null && references.length > 0) {
+                id = (String) references[0].getProperty("managerId");
+                domain = (String) references[0].getProperty("domain");
+            }
+            List<ServiceManager> managerList = new ArrayList<ServiceManager>();
+
+            for (DomainProvider ref : services.domains()) {
+                Class<? extends Domain> domainInterface = ref.getDomainInterface();
+                if (domainInterface.getName().equals(domain)) {
+                    managerList.addAll(services.serviceManagersForDomain(domainInterface));
+                }
+            }
+
+            for (ServiceManager sm : managerList) {
+                if (sm.getDescriptor().getId().equals(id)) {
+                    lastServiceId = serviceId;
+                    return sm;
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }*/
 
     private TreeModel createModel() {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
