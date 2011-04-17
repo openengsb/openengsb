@@ -63,6 +63,41 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         return this.getClass().getName();
     }
 
+    @Override
+    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
+        throws ConnectorValidationFailedException {
+        if (!instances.containsKey(id)) {
+            createService(id, connectorDescription);
+        } else if (connectorDescription.getAttributes() != null) {
+            updateAttributes(id, connectorDescription.getAttributes());
+        }
+
+        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        if (properties != null) {
+            updateProperties(id, properties);
+        }
+    }
+
+    @Override
+    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription) {
+        if (!instances.containsKey(id)) {
+            forceCreateService(id, connectorDescription);
+        } else if (connectorDescription.getAttributes() == null) {
+            forceUpdateAttributes(id, connectorDescription.getAttributes());
+        }
+
+        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        if (properties != null) {
+            updateProperties(id, properties);
+        }
+    };
+
+    @Override
+    public void remove(ConnectorId id) {
+        registrations.get(id).unregister();
+        registrations.remove(id);
+    }
+
     private void createService(ConnectorId id, ConnectorDescription description)
         throws ConnectorValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
@@ -76,24 +111,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         finishCreatingInstance(id, description, domainProvider, factory);
     }
 
-    private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
-            DomainProvider domainProvider, ConnectorInstanceFactory factory) {
-        Domain serviceInstance = factory.createNewInstance(id.toString());
-        factory.applyAttributes(serviceInstance, description.getAttributes());
-
-        String[] clazzes = new String[]{
-                OpenEngSBService.class.getName(),
-                Domain.class.getName(),
-                domainProvider.getDomainInterface().getName(),
-        };
-
-        Dictionary<String, Object> properties =
-            populatePropertiesWithRequiredAttributes(description.getProperties(), id);
-        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
-        registrations.put(id, serviceRegistration);
-        instances.put(id, serviceInstance);
-    }
-
     private void forceCreateService(ConnectorId id, ConnectorDescription description) {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
@@ -102,6 +119,24 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
         finishCreatingInstance(id, description, domainProvider, factory);
+    }
+
+    private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
+            DomainProvider domainProvider, ConnectorInstanceFactory factory) {
+        Domain serviceInstance = factory.createNewInstance(id.toString());
+        factory.applyAttributes(serviceInstance, description.getAttributes());
+
+        String[] clazzes = new String[]{
+            OpenEngSBService.class.getName(),
+            Domain.class.getName(),
+            domainProvider.getDomainInterface().getName(),
+        };
+
+        Dictionary<String, Object> properties =
+            populatePropertiesWithRequiredAttributes(description.getProperties(), id);
+        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
+        registrations.put(id, serviceRegistration);
+        instances.put(id, serviceInstance);
     }
 
     private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(Dictionary<String, Object> properties,
@@ -118,34 +153,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         }
         return properties;
     }
-
-    @Override
-    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
-        throws ConnectorValidationFailedException {
-        if (!instances.containsKey(id)) {
-            createService(id, connectorDescription);
-        } else if (connectorDescription.getAttributes() != null) {
-            updateAttributes(id, connectorDescription.getAttributes());
-        }
-
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
-        if (properties != null) {
-            updateProperties(id, properties);
-        }
-    }
-
-    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription) {
-        if (!instances.containsKey(id)) {
-            forceCreateService(id, connectorDescription);
-        } else if (connectorDescription.getAttributes() == null) {
-            forceUpdateAttributes(id, connectorDescription.getAttributes());
-        }
-
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
-        if (properties != null) {
-            updateProperties(id, properties);
-        }
-    };
 
     private void forceUpdateAttributes(ConnectorId id, Map<String, String> attributes) {
         ConnectorInstanceFactory factory = getConnectorFactory(id);
@@ -165,12 +172,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             throw new ConnectorValidationFailedException(validationErrors);
         }
         factory.applyAttributes(instances.get(id), attributes);
-    }
-
-    @Override
-    public void remove(ConnectorId id) {
-        registrations.get(id).unregister();
-        registrations.remove(id);
     }
 
     protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
@@ -196,5 +197,4 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
-
 }
