@@ -36,13 +36,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.MethodCall;
@@ -57,7 +57,7 @@ import org.osgi.framework.BundleContext;
 
 public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest {
 
-    private ServiceRegistrationManager registrationManager;
+    private ConnectorRegistrationManager registrationManager;
     private DefaultOsgiUtilsService serviceUtils;
     private CallRouter callrouter;
 
@@ -151,7 +151,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registrationManager.updateRegistration(connectorId, updated);
 
         serviceUtils.getService("(foo=bar)", 100L);
-        ServiceInstanceFactory factory = serviceUtils.getService(ServiceInstanceFactory.class);
+        ConnectorInstanceFactory factory = serviceUtils.getService(ConnectorInstanceFactory.class);
         verify(factory).applyAttributes(any(Domain.class), eq(newAttrs));
     }
 
@@ -175,7 +175,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     }
 
     private void registerMockedFactory() throws Exception {
-        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+        ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
@@ -184,7 +184,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         });
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put("connector", "testc");
-        registerService(factory, factoryProps, ServiceInstanceFactory.class);
+        registerService(factory, factoryProps, ConnectorInstanceFactory.class);
     }
 
     private void registerMockedDomainProvider() {

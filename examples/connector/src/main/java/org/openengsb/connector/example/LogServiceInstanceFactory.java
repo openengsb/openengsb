@@ -21,10 +21,10 @@ import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.common.AbstractServiceInstanceFactory;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
-public class LogServiceInstanceFactory extends AbstractServiceInstanceFactory<LogService> {
+public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<LogService> {
 
     private ExampleDomainEvents domainEventInterface;
 

@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.ConnectorRegistrationManager;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.ServiceRegistrationManager;
-import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -47,7 +47,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
 
     private AuthenticationManager authenticationManager;
-    private ServiceManager serviceManager;
+    private ConnectorManager serviceManager;
 
     @Override
     public boolean canHandle(File artifact) {
@@ -74,8 +74,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         // log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
 
         try {
-            serviceManager.createService(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ServiceValidationFailedException e) {
+            serviceManager.create(newConfig.getConnectorId(), newConfig.getContent());
+        } catch (ConnectorValidationFailedException e) {
             throw new RuntimeException(e);
         }
 
@@ -94,7 +94,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         authenticate(AUTH_USER, AUTH_PASSWORD);
         try {
             serviceManager.update(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ServiceValidationFailedException e) {
+        } catch (ConnectorValidationFailedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -116,9 +116,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
     }
 
-    private ServiceRegistrationManager getServiceManagerFor(String connectorType)
+    private ConnectorRegistrationManager getServiceManagerFor(String connectorType)
         throws OsgiServiceNotAvailableException {
-        return (ServiceRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
+        return (ConnectorRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
     }
 
     private OsgiUtilsService getOsgiUtils() {
@@ -127,7 +127,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private String getFilterFor(String connectorType) {
         return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS,
-            ServiceRegistrationManager.class.getName(),
+            ConnectorRegistrationManager.class.getName(),
             connectorType);
     }
 
@@ -150,7 +150,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         this.authenticationManager = authenticationManager;
     }
 
-    public void setServiceManager(ServiceManager serviceManager) {
+    public void setServiceManager(ConnectorManager serviceManager) {
         this.serviceManager = serviceManager;
     }
 

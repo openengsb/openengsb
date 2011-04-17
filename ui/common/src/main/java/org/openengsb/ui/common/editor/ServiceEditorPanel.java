@@ -49,7 +49,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
-import org.openengsb.core.api.ServiceValidationFailedException;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.core.common.util.DictionaryAsMap;
@@ -237,7 +237,7 @@ public class ServiceEditorPanel extends Panel {
                 }
                 try {
                     validator.validate(toValidate);
-                } catch (ServiceValidationFailedException e) {
+                } catch (ConnectorValidationFailedException e) {
                     Map<String, String> attributeErrorMessages = e.getErrorMessages();
                     for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
                         FormComponent<?> fc = loadFormComponents.get(entry.getKey());

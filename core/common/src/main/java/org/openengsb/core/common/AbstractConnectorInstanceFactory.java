@@ -20,10 +20,11 @@ package org.openengsb.core.common;
 import java.util.Collections;
 import java.util.Map;
 
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.ServiceInstanceFactory;
 
-public abstract class AbstractServiceInstanceFactory<ConnectorType extends Domain> implements ServiceInstanceFactory {
+public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Domain> implements
+        ConnectorInstanceFactory {
 
     @SuppressWarnings("unchecked")
     @Override

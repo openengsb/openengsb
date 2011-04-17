@@ -25,10 +25,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.ConnectorRegistrationManager;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.ServiceRegistrationManager;
-import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -40,11 +40,11 @@ import org.openengsb.core.common.util.DictionaryAsMap;
 
 import com.google.common.base.Preconditions;
 
-public class ServiceManagerImpl implements ServiceManager {
+public class ConnectorManagerImpl implements ConnectorManager {
 
-    private static final Log LOGGER = LogFactory.getLog(ServiceManagerImpl.class);
+    private static final Log LOGGER = LogFactory.getLog(ConnectorManagerImpl.class);
 
-    private ServiceRegistrationManager registrationManager;
+    private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
         .getConfigPersistenceService(Constants.CONNECTOR);
 
@@ -61,15 +61,15 @@ public class ServiceManagerImpl implements ServiceManager {
         for (ConnectorConfiguration c : configs) {
             try {
                 registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
-            } catch (ServiceValidationFailedException e) {
+            } catch (ConnectorValidationFailedException e) {
                 throw new IllegalStateException(e);
             }
         }
     }
 
     @Override
-    public void createService(ConnectorId id, ConnectorDescription connectorDescription)
-        throws ServiceValidationFailedException {
+    public void create(ConnectorId id, ConnectorDescription connectorDescription)
+        throws ConnectorValidationFailedException {
         validateId(id);
         checkForExistingServices(id);
         registrationManager.updateRegistration(id, connectorDescription);
@@ -82,7 +82,7 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void forceCreateService(ConnectorId id, ConnectorDescription connectorDescription) {
+    public void forceCreate(ConnectorId id, ConnectorDescription connectorDescription) {
         validateId(id);
         checkForExistingServices(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
@@ -113,7 +113,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public void update(ConnectorId id, ConnectorDescription connectorDescpription)
-        throws ServiceValidationFailedException, IllegalArgumentException {
+        throws ConnectorValidationFailedException, IllegalArgumentException {
         validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.updateRegistration(id, connectorDescpription);
@@ -194,7 +194,7 @@ public class ServiceManagerImpl implements ServiceManager {
         }
     }
 
-    public void setRegistrationManager(ServiceRegistrationManager registrationManager) {
+    public void setRegistrationManager(ConnectorRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
     }
 }

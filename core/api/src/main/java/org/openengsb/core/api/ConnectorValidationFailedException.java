@@ -20,27 +20,27 @@ package org.openengsb.core.api;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class ServiceValidationFailedException extends Exception {
+public class ConnectorValidationFailedException extends Exception {
 
     private Map<String, String> errorMessages;
 
-    public ServiceValidationFailedException() {
+    public ConnectorValidationFailedException() {
         super();
     }
 
-    public ServiceValidationFailedException(String message, Throwable cause) {
+    public ConnectorValidationFailedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ServiceValidationFailedException(String message) {
+    public ConnectorValidationFailedException(String message) {
         super(message);
     }
 
-    public ServiceValidationFailedException(Throwable cause) {
+    public ConnectorValidationFailedException(Throwable cause) {
         super(cause);
     }
 
-    public ServiceValidationFailedException(Map<String, String> errorMessages) {
+    public ConnectorValidationFailedException(Map<String, String> errorMessages) {
         this.errorMessages = errorMessages;
     }
 

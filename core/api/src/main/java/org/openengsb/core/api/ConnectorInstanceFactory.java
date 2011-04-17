@@ -19,7 +19,7 @@ package org.openengsb.core.api;
 
 import java.util.Map;
 
-public interface ServiceInstanceFactory {
+public interface ConnectorInstanceFactory {
 
     /**
      * validates the attribute combination. This is used for validating attributes before creating a new service.

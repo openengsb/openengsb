@@ -20,9 +20,9 @@ package org.openengsb.connector.memoryauditing.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.common.AbstractServiceInstanceFactory;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class MemoryAuditingServiceInstanceFactory extends AbstractServiceInstanceFactory<MemoryAuditingServiceImpl> {
+public class MemoryAuditingServiceInstanceFactory extends AbstractConnectorInstanceFactory<MemoryAuditingServiceImpl> {
 
     @Override
     public Domain createNewInstance(String id) {

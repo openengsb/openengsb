@@ -42,7 +42,7 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.core.api.ServiceInstanceFactory</value>
+      <value>org.openengsb.core.api.ConnectorInstanceFactory</value>
     </interfaces>
     <service-properties>
       <entry key="domain">

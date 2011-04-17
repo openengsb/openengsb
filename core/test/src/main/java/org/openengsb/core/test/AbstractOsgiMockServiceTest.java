@@ -43,11 +43,11 @@ import org.junit.Before;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
@@ -273,8 +273,8 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected abstract void setBundleContext(BundleContext bundleContext);
 
-    protected ServiceInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
-        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+    protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
+        ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
@@ -287,7 +287,7 @@ public abstract class AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", connector);
         props.put("domain", domains);
-        registerService(factory, props, ServiceInstanceFactory.class);
+        registerService(factory, props, ConnectorInstanceFactory.class);
         return factory;
     }
 

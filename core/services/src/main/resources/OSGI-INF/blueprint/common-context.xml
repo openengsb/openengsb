@@ -35,23 +35,16 @@
 
   <service>
     <interfaces>
-      <value>org.openengsb.core.api.ServiceManager</value>
+      <value>org.openengsb.core.api.ConnectorManager</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.ServiceManagerImpl" init-method="init">
+    <bean class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
       <property name="registrationManager" ref="registrationManager" />
     </bean>
   </service>
 
-  <bean class="org.openengsb.core.services.internal.ServiceRegistrationManagerImpl" id="registrationManager">
+  <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
-
-  <service>
-    <interfaces>
-      <value>org.openengsb.core.api.ServiceRegistrationManager</value>
-    </interfaces>
-    <ref component-id="registrationManager" />
-  </service>
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
     <bean class="org.openengsb.core.services.internal.RequestHandlerImpl" />
@@ -62,16 +55,7 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-<!-- 
-  <service interface="org.openengsb.core.api.remote.ProxyFactory">
-    <bean class="org.openengsb.core.services.internal.ProxyFactoryImpl">
-      <property name="callRouter">
-        <bean class="org.openengsb.core.services.internal.CallRouterImpl" />
-      </property>
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
--->
+
   <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>

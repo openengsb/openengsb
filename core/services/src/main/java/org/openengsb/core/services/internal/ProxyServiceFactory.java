@@ -22,12 +22,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
-public class ProxyServiceFactory implements ServiceInstanceFactory {
+public class ProxyServiceFactory implements ConnectorInstanceFactory {
 
     private CallRouter router = OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(CallRouter.class);
     private DomainProvider domainProvider;
@@ -36,7 +36,7 @@ public class ProxyServiceFactory implements ServiceInstanceFactory {
     private static Map<DomainProvider, ProxyServiceFactory> instances =
         new HashMap<DomainProvider, ProxyServiceFactory>();
 
-    public static ServiceInstanceFactory getInstance(DomainProvider domainProvider) {
+    public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
         if (!instances.containsKey(domainProvider)) {
             instances.put(domainProvider, new ProxyServiceFactory(domainProvider));
         }

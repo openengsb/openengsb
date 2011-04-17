@@ -40,17 +40,17 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.internal.matchers.LessThan;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.CorePersistenceServiceBackend;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.services.internal.ServiceManagerImpl;
 import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
@@ -71,13 +71,13 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private NullDomain createdService;
-    private ServiceManager serviceManager;
+    private ConnectorManager serviceManager;
     private String testConnectorData = ""
             + "connector=a-connector\n"
             + "domain=mydomain\n"
             + "id=service-id\n"
             + "attribute.a-key=a-value";
-    private ServiceInstanceFactory factory;
+    private ConnectorInstanceFactory factory;
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +85,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
 
-        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
+        ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
@@ -108,10 +108,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setServiceManager(serviceManagerImpl);
 
-        factory = mock(ServiceInstanceFactory.class);
+        factory = mock(ConnectorInstanceFactory.class);
         createdService = mock(NullDomain.class);
         when(factory.createNewInstance(anyString())).thenReturn(createdService);
-        registerService(factory, props, ServiceInstanceFactory.class);
+        registerService(factory, props, ConnectorInstanceFactory.class);
 
         createDomainProviderMock(NullDomain.class, "mydomain");
 

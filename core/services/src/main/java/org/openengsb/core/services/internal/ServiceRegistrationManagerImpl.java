@@ -21,14 +21,14 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorRegistrationManager;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceRegistrationManager;
-import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -50,7 +50,7 @@ import org.osgi.framework.ServiceRegistration;
  * specific language governing permissions and limitations under the License.
  */
 
-public class ServiceRegistrationManagerImpl implements ServiceRegistrationManager {
+public class ServiceRegistrationManagerImpl implements ConnectorRegistrationManager {
 
     private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
     private BundleContext bundleContext;
@@ -64,20 +64,20 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
     }
 
     private void createService(ConnectorId id, ConnectorDescription description)
-        throws ServiceValidationFailedException {
+        throws ConnectorValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-        ServiceInstanceFactory factory = getConnectorFactory(id);
+        ConnectorInstanceFactory factory = getConnectorFactory(id);
 
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
         if (!errors.isEmpty()) {
-            throw new ServiceValidationFailedException(errors);
+            throw new ConnectorValidationFailedException(errors);
         }
 
         finishCreatingInstance(id, description, domainProvider, factory);
     }
 
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
-            DomainProvider domainProvider, ServiceInstanceFactory factory) {
+            DomainProvider domainProvider, ConnectorInstanceFactory factory) {
         Domain serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
@@ -96,7 +96,7 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
 
     private void forceCreateService(ConnectorId id, ConnectorDescription description) {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-        ServiceInstanceFactory factory = getConnectorFactory(id);
+        ConnectorInstanceFactory factory = getConnectorFactory(id);
 
         Domain serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
@@ -121,7 +121,7 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
 
     @Override
     public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
-        throws ServiceValidationFailedException {
+        throws ConnectorValidationFailedException {
         if (!instances.containsKey(id)) {
             createService(id, connectorDescription);
         } else if (connectorDescription.getAttributes() != null) {
@@ -148,7 +148,7 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
     };
 
     private void forceUpdateAttributes(ConnectorId id, Map<String, String> attributes) {
-        ServiceInstanceFactory factory = getConnectorFactory(id);
+        ConnectorInstanceFactory factory = getConnectorFactory(id);
         factory.applyAttributes(instances.get(id), attributes);
     }
 
@@ -158,11 +158,11 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
     }
 
     private void updateAttributes(ConnectorId id, Map<String, String> attributes)
-        throws ServiceValidationFailedException {
-        ServiceInstanceFactory factory = getConnectorFactory(id);
+        throws ConnectorValidationFailedException {
+        ConnectorInstanceFactory factory = getConnectorFactory(id);
         Map<String, String> validationErrors = factory.getValidationErrors(instances.get(id), attributes);
         if (!validationErrors.isEmpty()) {
-            throw new ServiceValidationFailedException(validationErrors);
+            throw new ConnectorValidationFailedException(validationErrors);
         }
         factory.applyAttributes(instances.get(id), attributes);
     }
@@ -173,17 +173,17 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
         registrations.remove(id);
     }
 
-    protected ServiceInstanceFactory getConnectorFactory(ConnectorId id) {
+    protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
         String connectorType = id.getConnectorType();
         if (connectorType == Constants.EXTERNAL_CONNECTOR_PROXY) {
             DomainProvider domainProvider = getDomainProvider(id.getDomainType());
             return ProxyServiceFactory.getInstance(domainProvider);
         }
         Filter connectorFilter =
-                serviceUtils.makeFilter(ServiceInstanceFactory.class, "(connector=" + connectorType + ")");
+                serviceUtils.makeFilter(ConnectorInstanceFactory.class, "(connector=" + connectorType + ")");
 
-        ServiceInstanceFactory service =
-                serviceUtils.getOsgiServiceProxy(connectorFilter, ServiceInstanceFactory.class);
+        ConnectorInstanceFactory service =
+                serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
     }
 

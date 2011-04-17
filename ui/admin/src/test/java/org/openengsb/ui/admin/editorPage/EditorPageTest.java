@@ -40,10 +40,10 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
@@ -57,7 +57,7 @@ import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 public class EditorPageTest extends AbstractUITest {
 
     private AttributeDefinition attrib1;
-    private ServiceInstanceFactory factoryMock;
+    private ConnectorInstanceFactory factoryMock;
 
     @Before
     public void setup() throws Exception {
@@ -93,7 +93,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
-        serviceManager.createService(connectorId, new ConnectorDescription(attributes));
+        serviceManager.create(connectorId, new ConnectorDescription(attributes));
         PageParameters pageParams =
             new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
         tester.startPage(ConnectorEditorPage.class, pageParams);
@@ -176,7 +176,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("test", "val");
-        serviceManager.createService(id, new ConnectorDescription(props));
+        serviceManager.create(id, new ConnectorDescription(props));
 
         try {
             serviceUtils.getService("(test=val)", 100L);

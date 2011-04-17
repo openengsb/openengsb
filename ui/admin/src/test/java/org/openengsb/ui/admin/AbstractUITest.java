@@ -25,19 +25,19 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
+import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.ServiceRegistrationManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.CorePersistenceServiceBackend;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.services.internal.ServiceManagerImpl;
 import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
@@ -49,8 +49,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected OsgiUtilsService serviceUtils;
     protected WicketTester tester;
     protected ApplicationContextMock context;
-    protected ServiceManager serviceManager;
-    protected ServiceRegistrationManager registrationManager;
+    protected ConnectorManager serviceManager;
+    protected ConnectorRegistrationManager registrationManager;
     protected WiringService wiringService;
 
     @Before
@@ -67,7 +67,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("serviceUtils", serviceUtilsService);
         ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
-        ServiceManagerImpl serviceManager = new ServiceManagerImpl();
+        ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
         CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();

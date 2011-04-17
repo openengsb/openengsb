@@ -35,14 +35,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -55,12 +55,12 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
 
-public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
+public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
-    private ServiceManager serviceManager;
+    private ConnectorManager serviceManager;
     private ServiceRegistrationManagerImpl serviceRegistrationManagerImpl;
-    private ServiceInstanceFactory factory;
+    private ConnectorInstanceFactory factory;
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +85,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     private void createServiceManager() {
-        ServiceManagerImpl serviceManagerImpl = new ServiceManagerImpl();
+        ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         serviceManagerImpl.setRegistrationManager(serviceRegistrationManagerImpl);
         serviceManager = serviceManagerImpl;
     }
@@ -99,7 +99,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        serviceManager.create(connectorId, connectorDescription);
 
         serviceUtils.getService("(foo=bar)", 100L);
     }
@@ -113,7 +113,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        serviceManager.create(connectorId, connectorDescription);
 
         connectorDescription.getProperties().put("foo", "42");
         connectorDescription.getAttributes().put("answer", "43");
@@ -134,9 +134,9 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
         try {
-            serviceManager.createService(connectorId, connectorDescription);
+            serviceManager.create(connectorId, connectorDescription);
             fail("Exception expected");
-        } catch (ServiceValidationFailedException e) {
+        } catch (ConnectorValidationFailedException e) {
             assertThat(e.getErrorMessages(), is(errorMessages));
         }
 
@@ -161,14 +161,14 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        serviceManager.create(connectorId, connectorDescription);
         serviceUtils.getService("(foo=bar)", 1L);
 
         connectorDescription.getProperties().put("foo", "42");
         try {
             serviceManager.update(connectorId, connectorDescription);
             fail("Exception expected");
-        } catch (ServiceValidationFailedException e) {
+        } catch (ConnectorValidationFailedException e) {
             assertThat(e.getErrorMessages(), is(errorMessages));
         }
 
@@ -194,7 +194,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
-        serviceManager.createService(connectorId, connectorDescription);
+        serviceManager.create(connectorId, connectorDescription);
 
         serviceManager.delete(connectorId);
 
@@ -214,11 +214,11 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerMockedFactory() throws Exception {
-        factory = mock(ServiceInstanceFactory.class);
+        factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR, "testc");
-        registerService(factory, factoryProps, ServiceInstanceFactory.class);
+        registerService(factory, factoryProps, ConnectorInstanceFactory.class);
     }
 
     private void registerMockedDomainProvider() {

@@ -28,10 +28,10 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.ServiceValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -43,13 +43,12 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
 
     @SpringBean
-    private ServiceManager serviceManager;
+    private ConnectorManager serviceManager;
 
     private ServiceDescriptor descriptor;
 
@@ -84,15 +83,15 @@ public class ConnectorEditorPage extends BasePage {
             ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
             try {
                 if (createMode) {
-                    serviceManager.createService(idModel.getObject(), connectorDescription);
+                    serviceManager.create(idModel.getObject(), connectorDescription);
                 } else {
                     serviceManager.update(idModel.getObject(), connectorDescription); // , isValidating());
                 }
                 returnToTestClient();
-            } catch (ServiceValidationFailedException e) {
+            } catch (ConnectorValidationFailedException e) {
                 for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
                     error(String.format("%s: %s", entry.getKey(), entry.getValue()));
-//                    error(new StringResourceModel(value, this, null).getString());
+                    // error(new StringResourceModel(value, this, null).getString());
                 }
             }
         }
@@ -112,12 +111,9 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     private void retrieveDescriptor(String connectorType) {
-        Filter filter;
-        try {
-            filter = serviceUtils.makeFilter(ConnectorProvider.class, String.format("(connector=%s)", connectorType));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Filter filter =
+            serviceUtils.makeFilter(ConnectorProvider.class, String.format("(connector=%s)", connectorType));
+
         ConnectorProvider connectorProvider = serviceUtils.getOsgiServiceProxy(filter, ConnectorProvider.class);
         descriptor = connectorProvider.getDescriptor();
     }

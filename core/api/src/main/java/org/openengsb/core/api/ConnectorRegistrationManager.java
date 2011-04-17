@@ -23,24 +23,27 @@ import org.openengsb.core.api.model.ConnectorId;
 /**
  * Instance provider for a specific service interface.
  */
-public interface ServiceRegistrationManager extends OpenEngSBService {
+public interface ConnectorRegistrationManager extends OpenEngSBService {
 
     /**
-     * updates a service instance. If the given id does not exist, this creates a new service instance.
+     * updates a the registration service instance. If no service with the given ID is registered a new registration is
+     * created.
      *
-     * @param id identifier for a new or already existing service instance.
-     * @param attributes updates to maybe already set attributes.
-     * @return the result of the validation
+     * @throws ConnectorValidationFailedException if the validation of the connector-attributes fails.
      */
     void updateRegistration(ConnectorId id, ConnectorDescription connectorDescpription)
-        throws ServiceValidationFailedException;
+        throws ConnectorValidationFailedException;
 
+    /**
+     * updates a the registration service instance. If no service with the given ID is registered a new registration is
+     * created.
+     *
+     * As opposed to {@link ConnectorRegistrationManager#updateRegistration} this method skips the validation-step.
+     */
     void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescpription);
 
     /**
-     * Deletes the service instanced with the given {@code id}.
-     *
-     * @param id identifier for a service instance provided by this {@code ServiceManager}.
+     * Removes the connector instance with the given {@code id} from the service registry.
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */

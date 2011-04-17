@@ -67,8 +67,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.ServiceInstanceFactory;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
@@ -629,7 +629,7 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.createService(new ConnectorId("testdomain", "testconnector", "test-service"),
+        serviceManager.create(new ConnectorId("testdomain", "testconnector", "test-service"),
             new ConnectorDescription(
                 attributes, properties));
 
@@ -647,7 +647,7 @@ public class TestClientTest extends AbstractUITest {
         createDomainProviderMock(TestInterface.class, "testdomain");
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
         createConnectorProviderMock("testconnector", "testdomain");
-        ServiceInstanceFactory factory = mock(ServiceInstanceFactory.class);
+        ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
@@ -660,7 +660,7 @@ public class TestClientTest extends AbstractUITest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("domain", "testdomain");
         props.put("connector", "testconnector");
-        registerService(factory, props, ServiceInstanceFactory.class);
+        registerService(factory, props, ConnectorInstanceFactory.class);
     }
 
     private void setupIndexPage() {
