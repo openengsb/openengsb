@@ -51,7 +51,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
         private Long timeout = -1L;
-        private String info;
+        private final String info;
 
         protected ServiceTrackerInvocationHandler(Filter filter, long timeout) {
             this(filter);
@@ -70,14 +70,11 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
         protected ServiceTrackerInvocationHandler(String className) {
             this.tracker = new ServiceTracker(bundleContext, className, null);
+            this.info = "Class: " + className;
         }
 
         protected ServiceTrackerInvocationHandler(Class<?> targetClass, long timeout) {
             this(targetClass.getName(), timeout);
-        }
-
-        public ServiceTrackerInvocationHandler(ServiceReference reference) {
-            this.tracker = new ServiceTracker(bundleContext, reference, null);
         }
 
         @Override
@@ -370,10 +367,13 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getService(final Class<T> clazz, final ServiceReference reference) {
-        Object newProxyInstance = Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] { clazz },
-            new ServiceTrackerInvocationHandler(reference));
-        return (T) newProxyInstance;
+    public <T> T getService(final Class<T> clazz, final ServiceReference reference)
+        throws OsgiServiceNotAvailableException {
+        Object service = bundleContext.getService(reference);
+        if (service == null) {
+            throw new OsgiServiceNotAvailableException("service retrieved from the bundlecontext was null");
+        }
+        return (T) service;
     }
 
     public void setBundleContext(BundleContext bundleContext) {
