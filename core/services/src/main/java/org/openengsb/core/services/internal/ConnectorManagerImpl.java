@@ -49,22 +49,27 @@ public class ConnectorManagerImpl implements ConnectorManager {
         .getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
 
     public void init() {
-        List<ConnectorConfiguration> configs;
-        try {
-            Map<String, String> emptyMap = Collections.emptyMap();
-            configs = configPersistence.load(emptyMap);
-        } catch (InvalidConfigurationException e) {
-            throw new IllegalStateException(e);
-        } catch (PersistenceException e) {
-            throw new IllegalStateException(e);
-        }
-        for (ConnectorConfiguration c : configs) {
-            try {
-                registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
-            } catch (ConnectorValidationFailedException e) {
-                throw new IllegalStateException(e);
+        new Thread() {
+            @Override
+            public void run() {
+                List<ConnectorConfiguration> configs;
+                try {
+                    Map<String, String> emptyMap = Collections.emptyMap();
+                    configs = configPersistence.load(emptyMap);
+                } catch (InvalidConfigurationException e) {
+                    throw new IllegalStateException(e);
+                } catch (PersistenceException e) {
+                    throw new IllegalStateException(e);
+                }
+                for (ConnectorConfiguration c : configs) {
+                    try {
+                        registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
+                    } catch (ConnectorValidationFailedException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
             }
-        }
+        }.start();
     }
 
     @Override
