@@ -23,6 +23,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * Representation of a unique identification of connector instances.
+ *
+ * A connector instance is identified by the name of the connector type, the name of the domain it represents and an
+ * additional String-identifier
+ *
+ */
 @SuppressWarnings("serial")
 public class ConnectorId implements Serializable {
 
@@ -63,6 +70,10 @@ public class ConnectorId implements Serializable {
         this.instanceId = instanceId;
     }
 
+    /**
+     * returns a map-representation of the ID for use with
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     */
     public Map<String, String> toMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("domainType", domainType);
@@ -71,15 +82,31 @@ public class ConnectorId implements Serializable {
         return metaData;
     }
 
+    /**
+     * parses a ConnectorId object from a Map-representation used in
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     */
     public static ConnectorId fromMetaData(Map<String, String> metaData) {
         return new ConnectorId(metaData.get("domainType"), metaData.get("connectorType"), metaData.get("instanceId"));
     }
 
+    /**
+     * generates a new unique ConnectorID for the given domain and connector.
+     *
+     * A {@link UUID} is used as unique string-identifier.
+     */
     public static ConnectorId generate(String domainType, String connectorType) {
         String instanceId = UUID.randomUUID().toString();
         return new ConnectorId(domainType, connectorType, instanceId);
     }
 
+    /**
+     * parses a connectorID from a string-representation of the format:
+     *
+     * "&lt;domainType&gt;+&lt;connectorType&gt;+&lt;instanceId&gt;"
+     *
+     * Example: "scm+git+projectx-main-repo"
+     */
     public static ConnectorId parse(String fullId) {
         Scanner s = new Scanner(fullId);
         s.useDelimiter("\\+");
@@ -93,9 +120,19 @@ public class ConnectorId implements Serializable {
         return new ConnectorId(domain, connector, instanceId);
     }
 
+    /**
+     * returns a string-representation of the ConnectorId for use with the service-registry. It is also used as
+     * instanceId returned by {@link org.openengsb.core.api.OpenEngSBService#getInstanceId()}
+     *
+     * The resulting String can be parsed to a ConnectorId again using the {@link ConnectorId#parse} method
+     */
+    public String toFullID() {
+        return domainType + "+" + connectorType + "+" + instanceId;
+    }
+
     @Override
     public String toString() {
-        return domainType + "+" + connectorType + "+" + instanceId;
+        return toFullID();
     }
 
     @Override
