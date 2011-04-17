@@ -79,13 +79,13 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
 
     @Override
     public Map<String, String> getValidationErrors(Map<String, String> attributes) {
-        // TODO implement some validation
+        // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }
 
     @Override
     public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
-        // TODO implement some validation
+        // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }
 
