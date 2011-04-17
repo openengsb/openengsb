@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * Specific configuration model for the configuration to get up an connector.
  */
-// TODO: [OPENENGSB-1251] Provide configuration object for connector
 public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
 
     public static final String TYPE_ID = "CONNECTOR";
