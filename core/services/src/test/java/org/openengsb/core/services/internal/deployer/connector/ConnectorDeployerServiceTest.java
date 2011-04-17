@@ -51,7 +51,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
+import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
@@ -86,7 +86,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         authMock = mock(Authentication.class);
 
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
-        ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
+        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
         this.serviceManager = serviceManagerImpl;

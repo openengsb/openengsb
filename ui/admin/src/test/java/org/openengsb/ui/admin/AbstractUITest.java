@@ -38,7 +38,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.services.internal.ServiceRegistrationManagerImpl;
+import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -65,7 +65,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         OsgiUtilsService serviceUtilsService =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
         context.putBean("serviceUtils", serviceUtilsService);
-        ServiceRegistrationManagerImpl registrationManager = new ServiceRegistrationManagerImpl();
+        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);

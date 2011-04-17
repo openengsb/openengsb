@@ -50,7 +50,7 @@ import org.osgi.framework.ServiceRegistration;
  * specific language governing permissions and limitations under the License.
  */
 
-public class ServiceRegistrationManagerImpl implements ConnectorRegistrationManager {
+public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationManager {
 
     private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
     private BundleContext bundleContext;
