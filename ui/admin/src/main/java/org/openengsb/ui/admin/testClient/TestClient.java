@@ -67,6 +67,8 @@ import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.remote.ProxyFactory;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -95,6 +97,9 @@ public class TestClient extends BasePage {
 
     @SpringBean
     private ProxyFactory proxyFactory;
+
+    @SpringBean
+    private RuleManager ruleManager;
 
     private DropDownChoice<MethodId> methodList;
 
@@ -138,7 +143,6 @@ public class TestClient extends BasePage {
             }
         };
         availableDomains = initAvailableDomainsMap();
-
 
         serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
 
@@ -294,6 +298,15 @@ public class TestClient extends BasePage {
 
     public TestClient(ServiceId jumpToService) {
         this();
+        try {
+            ruleManager.addGlobal(jumpToService.getServiceClass(), jumpToService.getServiceId());
+            ruleManager.addImport(jumpToService.getServiceClass());
+        } catch (RuleBaseException e) {
+            LOGGER.debug("Unable to add global " + jumpToService.getServiceId() + " to the rulebase");
+            error("Unable to add global to the rulebase " + e.getLocalizedMessage());
+            // if the global already exists we can't show it on the website.
+        }
+
         serviceList.getTreeState().collapseAll();
         TreeModel treeModel = serviceList.getModelObject();
         DefaultMutableTreeNode serviceNode = findService((DefaultMutableTreeNode) treeModel.getRoot(), jumpToService);
@@ -301,7 +314,6 @@ public class TestClient extends BasePage {
         serviceList.getTreeState().selectNode(serviceNode, true);
         call.setService(jumpToService);
         populateMethodList();
-
     }
 
     private void expandAllUntilChild(DefaultMutableTreeNode child) {
