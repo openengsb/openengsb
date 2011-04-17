@@ -83,15 +83,23 @@ public class ConnectorEditorPage extends BasePage {
             ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
             try {
                 if (createMode) {
-                    serviceManager.create(idModel.getObject(), connectorDescription);
+                    if (isValidating()) {
+                        serviceManager.create(idModel.getObject(), connectorDescription);
+                    } else {
+                        serviceManager.forceCreate(idModel.getObject(), connectorDescription);
+                    }
                 } else {
-                    serviceManager.update(idModel.getObject(), connectorDescription); // , isValidating());
+                    if (isValidating()) {
+                        serviceManager.update(idModel.getObject(), connectorDescription);
+                    } else {
+                        serviceManager.forceUpdate(idModel.getObject(), connectorDescription);
+                    }
+
                 }
                 returnToTestClient();
             } catch (ConnectorValidationFailedException e) {
                 for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
                     error(String.format("%s: %s", entry.getKey(), entry.getValue()));
-                    // error(new StringResourceModel(value, this, null).getString());
                 }
             }
         }
