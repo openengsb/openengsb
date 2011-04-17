@@ -36,34 +36,64 @@ import org.openengsb.core.api.persistence.PersistenceException;
 
 public interface ServiceManager {
 
-    void createService(ConnectorId id, ConnectorDescription connectorDescpription)
-        throws ServiceValidationFailedException;
-
-    void forceCreateService(ConnectorId id, ConnectorDescription connectorDescpription);
-
     /**
-     * updates a service instance. If the given id does not exist, this creates a new service instance.
+     * creates a new connector with the given id and description. The new connectorDescription is validated before the
+     * connector is created. In this validation-step only the combination of the attributes is validated. Each valid is
+     * assumed to be valid by itself (e.g. number-attributes)
      *
-     * @param id identifier for a new or already existing service instance.
-     * @param attributes updates to maybe already set attributes.
-     * @return the result of the validation
+     * The connector is then registered in the OSGi-registry and persisted using
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     *
+     * @throws ServiceValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void update(ConnectorId id, ConnectorDescription connectorDescpription)
+    void createService(ConnectorId id, ConnectorDescription connectorDescription)
         throws ServiceValidationFailedException;
 
-    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescpription);
+    /**
+     * creates a new connector with the given id and description. It works similar to
+     * {@link ServiceManager#createService} but skips the validation step. However this method still assumes that each
+     * attribute is valid by itself (e.g. number-attributes)
+     *
+     * The connector is then registered in the OSGi-registry and persisted using
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     *
+     * @throws ServiceValidationFailedException if the attributes supplied with the connectorDescription are invalid
+     */
+    void forceCreateService(ConnectorId id, ConnectorDescription connectorDescription);
 
     /**
-     * Deletes the service instanced with the given {@code id}.
+     * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
+     * that attributes and properties that are not present in the new description are removed.
+     *
+     * If the attributes are invalid, the connector remains unchanged.
+     *
+     * @throws ServiceValidationFailedException if the combination of the new attributes are not valid
+     * @throws IllegalArgumentException if no connector with the given id is available
+     */
+    void update(ConnectorId id, ConnectorDescription connectorDescription)
+        throws ServiceValidationFailedException, IllegalArgumentException;
+
+    /**
+     * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
+     * that attributes and properties that are not present in the new description are removed.
+     *
+     * Unlike {@link ServiceManager#update} this method skips the attribute validation before the update.
+     *
+     * @throws IllegalArgumentException if no connector with the given id is available
+     */
+    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException;
+
+    /**
+     * Deletes the connector instanced with the given {@code id}.
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(ConnectorId id) throws PersistenceException;
 
     /**
-     * Returns the attributes with values for the specified service instance.
+     * Returns the description for the specified connector instance.
      *
-     * @param id identifier for a already existing service instance
+     * @param id identifier for a already existing connector instance
      */
     ConnectorDescription getAttributeValues(ConnectorId id);
 

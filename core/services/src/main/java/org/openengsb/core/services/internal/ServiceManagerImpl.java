@@ -113,7 +113,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
     @Override
     public void update(ConnectorId id, ConnectorDescription connectorDescpription)
-        throws ServiceValidationFailedException {
+        throws ServiceValidationFailedException, IllegalArgumentException {
         validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.updateRegistration(id, connectorDescpription);
@@ -126,7 +126,7 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) {
+    public void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException {
         validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
