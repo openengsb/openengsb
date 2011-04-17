@@ -68,7 +68,7 @@
       </entry>
     </service-properties>
     <bean class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingConnectorProvider">
-      <property name="id" value="example" />
+      <property name="id" value="memoryauditing" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
