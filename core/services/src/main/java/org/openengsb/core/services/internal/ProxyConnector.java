@@ -29,8 +29,16 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 
+/**
+ * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
+ * port-implementation (like jms+json)
+ */
 public class ProxyConnector extends AbstractOpenEngSBService implements InvocationHandler {
 
+    /**
+     * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
+     * to the remote object
+     */
     @SuppressWarnings("unchecked")
     private static final List<Class<? extends Object>> SELF_HANDLED_CLASSES = Arrays.asList(Object.class,
         OpenEngSBService.class);
