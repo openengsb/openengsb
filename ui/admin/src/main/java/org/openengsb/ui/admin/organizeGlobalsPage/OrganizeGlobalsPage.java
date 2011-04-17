@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -89,26 +90,30 @@ public class OrganizeGlobalsPage extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
                 if (globalName == null || globalName.equals("") || className == null || className.equals("")) {
-                    error("at least one of the textfields is empty, please insert data");
+                    String message = new StringResourceModel("emptyError", this, null).getString();
+                    error(message);
                     target.addComponent(feedbackPanel);
                     return;
                 }
 
                 try {
                     ruleManager.addGlobal(className, globalName);
-                    info("Successfully inserted global " + globalName);
+                    String message = new StringResourceModel("insertedGlobal", this, null).getString();
+                    info(globalName + " " + message);
                 } catch (RuleBaseException e) {
                     String temp = ruleManager.getGlobalType(globalName);
                     try {
                         // it comes here if the global already exists
                         ruleManager.removeGlobal(globalName);
                         ruleManager.addGlobal(className, globalName);
-                        info("Successfully updated global " + globalName);
+                        String message = new StringResourceModel("updatedGlobal", this, null).getString();
+                        info(globalName + " " + message);
                     } catch (RuleBaseException ex) {
                         // it restores the old value if the new value for global is invalid
                         ruleManager.removeGlobal(globalName);
                         ruleManager.addGlobal(temp, globalName);
-                        error("Could not update global " + globalName + " due to:\n" + ex.getLocalizedMessage());
+                        String message = new StringResourceModel("savingError", this, null).getString();
+                        error(globalName + " " + message + "\n" + ex.getLocalizedMessage());
                     }
                 }
                 tree.setModelObject(createTreeModel());
@@ -132,14 +137,17 @@ public class OrganizeGlobalsPage extends BasePage {
                 String temp = ruleManager.getGlobalType(globalName);
                 try {
                     ruleManager.removeGlobal(globalName);
-                    info("Successfully deleted global " + globalName);
+                    String message = new StringResourceModel("deletedGlobal", this, null).getString();
+                    info(globalName + " " + message);
                 } catch (RuleBaseException e) {
                     LOGGER.error("error");
                     if (e.getMessage().startsWith("Rule Compilation error")) {
                         ruleManager.addGlobal(temp, globalName);
-                        error("Could not delete global " + globalName + " due to:\n" + e.getLocalizedMessage());
+                        String message = new StringResourceModel("deletingError", this, null).getString();
+                        error(globalName + " " + message + "\n" + e.getLocalizedMessage());
                     } else {
-                        error("global \"" + globalName + "\" isn't in the rulebase");
+                        String message = new StringResourceModel("notExistingError", this, null).getString();
+                        error(globalName + " " + message);
                     }
                     target.addComponent(feedbackPanel);
                     return;
@@ -180,9 +188,9 @@ public class OrganizeGlobalsPage extends BasePage {
         for (String key : globals.keySet()) {
             glob.add(new Global(key, globals.get(key)));
         }
-        
+
         TreeModel model = null;
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("globals");
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Globals");
         for (Global global : glob) {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(global);
             rootNode.add(child);
