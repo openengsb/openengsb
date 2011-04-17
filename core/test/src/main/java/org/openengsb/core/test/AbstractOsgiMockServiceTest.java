@@ -312,7 +312,7 @@ public abstract class AbstractOsgiMockServiceTest {
         return domainProviderMock;
     }
 
-    public LocalizableString mockLocalizeableString(String value) {
+    protected LocalizableString mockLocalizeableString(String value) {
         LocalizableString mock2 = mock(LocalizableString.class);
         when(mock2.getString(any(Locale.class))).thenReturn(value);
         return mock2;
