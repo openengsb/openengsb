@@ -29,7 +29,7 @@ public class ConnectorIdTest {
     public void testParseConnectorId() throws Exception {
         ConnectorId id = new ConnectorId("mydomain", "myconnector", "xxx");
         String text = id.toString();
-        ConnectorId id2 = ConnectorId.parse(text);
+        ConnectorId id2 = ConnectorId.fromFullId(text);
         assertThat(id2, is(id));
     }
 
@@ -37,7 +37,7 @@ public class ConnectorIdTest {
     public void testParseIdWithSpecial() throws Exception {
         ConnectorId id = new ConnectorId("mydomain", "myconnector", "x+x-x");
         String text = id.toString();
-        ConnectorId id2 = ConnectorId.parse(text);
+        ConnectorId id2 = ConnectorId.fromFullId(text);
         assertThat(id2, is(id));
     }
 }

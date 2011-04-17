@@ -146,7 +146,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("edit button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorId connectorId = ConnectorId.parse(serviceId);
+                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
                 setResponsePage(new ConnectorEditorPage(connectorId));
             }
 

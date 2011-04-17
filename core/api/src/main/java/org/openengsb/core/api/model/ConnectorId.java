@@ -107,7 +107,7 @@ public class ConnectorId implements Serializable {
      *
      * Example: "scm+git+projectx-main-repo"
      */
-    public static ConnectorId parse(String fullId) {
+    public static ConnectorId fromFullId(String fullId) {
         Scanner s = new Scanner(fullId);
         s.useDelimiter("\\+");
         String domain = s.next();
