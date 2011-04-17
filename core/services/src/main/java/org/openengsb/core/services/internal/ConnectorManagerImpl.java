@@ -95,6 +95,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     private void validateId(ConnectorId id) {
+        Preconditions.checkNotNull(id);
         Preconditions.checkNotNull(id.getConnectorType());
         Preconditions.checkNotNull(id.getDomainType());
         Preconditions.checkNotNull(id.getInstanceId());
