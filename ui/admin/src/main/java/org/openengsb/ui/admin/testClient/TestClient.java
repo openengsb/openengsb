@@ -277,14 +277,14 @@ public class TestClient extends BasePage {
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
     }
-    
+
     /**
      * creates the form for organize section (globals, imports)
      */
     private Form<Object> createOrganizeForm() {
         Form<Object> organize = new Form<Object>("organizeForm");
         organize.setOutputMarkupId(true);
-        
+
         @SuppressWarnings("serial")
         AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
             @Override
@@ -294,7 +294,7 @@ public class TestClient extends BasePage {
         };
         globalsButton.setOutputMarkupId(true);
         organize.add(globalsButton);
-        
+
         return organize;
     }
 
