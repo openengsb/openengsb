@@ -47,8 +47,6 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
         this.domainProvider = domainProvider;
     }
 
-
-
     private void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));
         String destination = attributes.get("destination");

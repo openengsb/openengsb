@@ -142,7 +142,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
         Map<String, String> updatedAttributes = updateAttributes(old.getAttributes(), diff.getAttributes());
         old.setAttributes(updatedAttributes);
         updateProperties(old.getProperties(), diff.getProperties());
-
     }
 
     private void updateProperties(Dictionary<String, Object> properties, Dictionary<String, Object> diff) {
