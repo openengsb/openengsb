@@ -23,6 +23,12 @@ import java.util.Map;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 
+/**
+ * Abstract baseclass that may help when implementing {@link ConnectorInstanceFactory}s
+ *
+ * It takes care of the type-conversion and implements validation-functions that do not do anything. If validation is
+ * required these methods should be overridden.
+ */
 public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Domain> implements
         ConnectorInstanceFactory {
 
@@ -32,6 +38,9 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Dom
         doApplyAttributes((ConnectorType) instance, attributes);
     }
 
+    /**
+     * should set the given attributes to the corresponding fields in the instance-object.
+     */
     public abstract void doApplyAttributes(ConnectorType instance, Map<String, String> attributes);
 
     @SuppressWarnings("unchecked")
