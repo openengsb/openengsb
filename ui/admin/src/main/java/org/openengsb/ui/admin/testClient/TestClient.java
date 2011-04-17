@@ -144,10 +144,19 @@ public class TestClient extends BasePage {
         Form<Object> organize = createOrganizeForm();
         add(organize);
 
+        Form<MethodCall> form = createMethodCallForm();
+        add(form);
+
+        feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
+    }
+
+    @SuppressWarnings("serial")
+    private Form<MethodCall> createMethodCallForm() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
-        add(form);
 
         editButton = new AjaxButton("editButton", form) {
             @Override
@@ -256,9 +265,8 @@ public class TestClient extends BasePage {
         form.add(submitButton);
         form.add(editButton);
         form.add(deleteButton);
-        feedbackPanel = new FeedbackPanel("feedback");
-        feedbackPanel.setOutputMarkupId(true);
-        add(feedbackPanel);
+
+        return form;
     }
 
     /**
