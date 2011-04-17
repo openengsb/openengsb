@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
 /**
- * Base class for {@code DomainProvider} implementations with the following unctionality:
+ * Base class for {@code DomainProvider} implementations with the following functionality:
  * <ul>
  * <li>extracts domain interface through parameterized type</li>
  * <li>id is class name of domain interface</li>

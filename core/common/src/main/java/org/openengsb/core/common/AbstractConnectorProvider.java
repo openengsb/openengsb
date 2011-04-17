@@ -23,13 +23,11 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.osgi.framework.BundleContext;
 
 /**
- * Base class for {@code DomainProvider} implementations with the following unctionality:
+ * Base class for {@code ConnectorProvider} implementations with the following functionality:
  * <ul>
- * <li>extracts domain interface through parameterized type</li>
- * <li>id is class name of domain interface</li>
- * <li>name is looked up through localized {@code BundleStrings.getString("domain.name")}</li>
- * <li>description is looked up through localized {@code BundleStrings.getString("domain.description")}</li>
- * <li>returns an empty event list</li>
+ * <li>id is a unique human readable name of the connector-type (e.g. "git")</li>
+ * <li>name is looked up through localized {@code BundleStrings.getString("connector.name")}</li>
+ * <li>description is looked up through localized {@code BundleStrings.getString("connector.description")}</li>
  * </ul>
  */
 public abstract class AbstractConnectorProvider implements ConnectorProvider {
@@ -56,6 +54,9 @@ public abstract class AbstractConnectorProvider implements ConnectorProvider {
         return strings.getString("connector.description");
     }
 
+    /**
+     * It is important to set the bundlecontext here so that the localized strings are found
+     */
     public void setBundleContext(BundleContext bundleContext) {
         this.strings = new BundleStrings(bundleContext.getBundle());
     }

@@ -20,14 +20,34 @@ package org.openengsb.core.api;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
 
+/**
+ * Provides metadata describing a connector implementation.
+ *
+ * Each connector-implementation needs to export a service of this type, so it can be found by management services and
+ * interface.
+ */
 public interface ConnectorProvider {
 
+    /**
+     * unique short human readable id to identify the connector-type (e.g. "git")
+     */
     String getId();
 
+    /**
+     * The full name of the connector. This String is localized. It is recommended to use
+     * {@link org.openengsb.core.api.l10n.BundleStrings} and bundle-properties to achieve this.
+     */
     LocalizableString getName();
 
+    /**
+     * A description of the connector implementation. This String is localized. It is recommended to use
+     * {@link org.openengsb.core.api.l10n.BundleStrings} and bundle-properties to achieve this.
+     */
     LocalizableString getDescription();
 
+    /**
+     * A service-descriptor for determining what attributes this connector-implementation uses.
+     */
     ServiceDescriptor getDescriptor();
 
 }
