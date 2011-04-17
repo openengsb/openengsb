@@ -68,6 +68,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -642,7 +643,6 @@ public class TestClientTest extends AbstractUITest {
         setupTesterWithSpringMockContext();
     }
 
-    @SuppressWarnings("unchecked")
     private void createProviderMocks() {
         createDomainProviderMock(TestInterface.class, "testdomain");
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
@@ -658,8 +658,8 @@ public class TestClientTest extends AbstractUITest {
             }
         });
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("domain", "testdomain");
-        props.put("connector", "testconnector");
+        props.put(Constants.DOMAIN_KEY, "testdomain");
+        props.put(Constants.CONNECTOR_KEY, "testconnector");
         registerService(factory, props, ConnectorInstanceFactory.class);
     }
 

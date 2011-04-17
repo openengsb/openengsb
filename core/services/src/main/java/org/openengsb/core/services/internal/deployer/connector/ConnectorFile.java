@@ -18,6 +18,7 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
@@ -28,6 +29,8 @@ import java.util.Properties;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.IOUtils;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -37,11 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public class ConnectorFile {
-
-    private static final String PROPERTY_CONNECTOR = "connector";
-    private static final String PROPERTY_DOMAIN = "domain";
-    private static final String PROPERTY_SERVICE_ID = "id";
-
+    private static final String ATTRIBUTE = "attribute";
     private ImmutableMap<String, String> propertiesMap;
     private long cacheTimestamp = 0;
     private File connectorFile;
@@ -51,15 +50,15 @@ public class ConnectorFile {
     }
 
     public String getConnectorName() throws IOException {
-        return readProperty(PROPERTY_CONNECTOR);
+        return readProperty(Constants.CONNECTOR_KEY);
     }
 
     public String getDomainName() throws IOException {
-        return readProperty(PROPERTY_DOMAIN);
+        return readProperty(Constants.DOMAIN_KEY);
     }
 
     public String getServiceId() throws IOException {
-        return readProperty(PROPERTY_SERVICE_ID);
+        return readProperty(Constants.ID_KEY);
     }
 
     private String readProperty(String propertyId) throws IOException {
@@ -72,19 +71,25 @@ public class ConnectorFile {
             return;
         }
         Properties props = new Properties();
+        FileReader reader;
         try {
-            FileReader reader = new FileReader(connectorFile);
+            reader = new FileReader(connectorFile);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        try {
             props.load(reader);
-            reader.close();
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        } finally {
+            IOUtils.closeQuietly(reader);
         }
         this.propertiesMap = Maps.fromProperties(props);
         cacheTimestamp = connectorFile.lastModified();
     }
 
     public Map<String, String> getAttributes() throws IOException {
-        return getFilteredEntries("attribute");
+        return getFilteredEntries(ATTRIBUTE);
     }
 
     private Map<String, String> getFilteredEntries(final String key) throws IOException {

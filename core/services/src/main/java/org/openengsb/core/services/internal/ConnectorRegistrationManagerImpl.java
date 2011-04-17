@@ -141,9 +141,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(Dictionary<String, Object> properties,
             ConnectorId id) {
-        properties.put("domain", id.getDomainType());
-        properties.put("connector", id.getConnectorType());
-        properties.put("id", id.toString());
+        properties.put(Constants.ID_KEY, id.getDomainType());
+        properties.put(Constants.CONNECTOR_KEY, id.getConnectorType());
+        properties.put(Constants.ID_KEY, id.toFullID());
         if (properties.get("location.root") == null) {
             properties.put("location.root", new String[]{ id.getInstanceId() });
         }
@@ -181,15 +181,16 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             return ProxyServiceFactory.getInstance(domainProvider);
         }
         Filter connectorFilter =
-                serviceUtils.makeFilter(ConnectorInstanceFactory.class, "(connector=" + connectorType + ")");
-
+                serviceUtils.makeFilter(ConnectorInstanceFactory.class,
+                    String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
         ConnectorInstanceFactory service =
-                serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
+            serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
     }
 
     private DomainProvider getDomainProvider(String domain) {
-        Filter domainFilter = serviceUtils.makeFilter(DomainProvider.class, "(domain=" + domain + ")");
+        Filter domainFilter =
+            serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domain));
         DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
         return domainProvider;
     }

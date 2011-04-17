@@ -127,7 +127,8 @@ public class ServiceEditorPanel extends Panel {
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
     private ListView<Map.Entry<String, Object>> propertiesList;
-    private static final List<String> LOCKED_PROPERTIES = Arrays.asList("id", "connector", "domain",
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
+        org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
         Constants.SERVICE_ID, Constants.OBJECTCLASS);
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,

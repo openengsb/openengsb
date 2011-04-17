@@ -73,9 +73,9 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private NullDomain createdService;
     private ConnectorManager serviceManager;
     private String testConnectorData = ""
-            + "connector=a-connector\n"
-            + "domain=mydomain\n"
-            + "id=service-id\n"
+            + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=a-connector\n"
+            + org.openengsb.core.api.Constants.DOMAIN_KEY + "=mydomain\n"
+            + org.openengsb.core.api.Constants.ID_KEY + "=service-id\n"
             + "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
 
@@ -103,7 +103,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", "a-connector");
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "a-connector");
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setServiceManager(serviceManagerImpl);
@@ -150,12 +150,14 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         return connectorFile;
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testUpdateConnectorFile_shouldBeUpdated() throws Exception {
         File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nattribute.another=foo");
         connectorDeployerService.update(connectorFile);
+        @SuppressWarnings("rawtypes")
         ArgumentCaptor<Map> attributeCaptor = ArgumentCaptor.forClass(Map.class);
         verify(factory, times(2)).applyAttributes(eq(createdService), attributeCaptor.capture());
         String value = (String) attributeCaptor.getAllValues().get(1).get("another");

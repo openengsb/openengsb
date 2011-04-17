@@ -46,7 +46,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private ConnectorRegistrationManager registrationManager;
     private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
-        .getConfigPersistenceService(Constants.CONNECTOR);
+        .getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
 
     public void init() {
         List<ConnectorConfiguration> configs;

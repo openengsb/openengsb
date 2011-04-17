@@ -140,6 +140,7 @@ public abstract class AbstractOsgiMockServiceTest {
                     doAnswer(new Answer<Void>() {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
+                            @SuppressWarnings("unchecked")
                             Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
                             Dictionary<String, Object> newDict = new Hashtable<String, Object>();
                             Enumeration<String> keys = arg.keys();
@@ -237,7 +238,7 @@ public abstract class AbstractOsgiMockServiceTest {
      */
     protected void registerService(Object service, String id, Class<?>... interfaces) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("id", id);
+        props.put(org.openengsb.core.api.Constants.ID_KEY, id);
         registerService(service, props, interfaces);
     }
 
@@ -264,6 +265,7 @@ public abstract class AbstractOsgiMockServiceTest {
             public String[] answer(InvocationOnMock invocation) throws Throwable {
                 Dictionary<String, Object> dictionary = serviceReferences.get(invocation.getMock());
                 List<?> list = EnumerationUtils.toList(dictionary.keys());
+                @SuppressWarnings("unchecked")
                 Collection<String> typedCollection = CollectionUtils.typedCollection(list, String.class);
                 return typedCollection.toArray(new String[0]);
             }
@@ -285,8 +287,8 @@ public abstract class AbstractOsgiMockServiceTest {
             }
         });
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", connector);
-        props.put("domain", domains);
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, connector);
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, domains);
         registerService(factory, props, ConnectorInstanceFactory.class);
         return factory;
     }
@@ -305,7 +307,7 @@ public abstract class AbstractOsgiMockServiceTest {
             }
         });
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("domain", name);
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, name);
         registerService(domainProviderMock, props, DomainProvider.class);
         return domainProviderMock;
     }
@@ -320,8 +322,8 @@ public abstract class AbstractOsgiMockServiceTest {
         ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
         when(connectorProvider.getId()).thenReturn(connectorType);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", connectorType);
-        props.put("domain", domains);
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, connectorType);
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, domains);
         registerService(connectorProvider, props, ConnectorProvider.class);
         ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
         when(descriptor.getId()).thenReturn(connectorType);

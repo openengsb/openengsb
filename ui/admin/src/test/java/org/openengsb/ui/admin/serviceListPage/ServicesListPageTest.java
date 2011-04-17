@@ -33,6 +33,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -53,7 +54,7 @@ public class ServicesListPageTest extends AbstractUITest {
         Locale.setDefault(new Locale("en"));
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", "bla");
+        props.put(Constants.CONNECTOR_KEY, "bla");
 
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
@@ -77,7 +78,7 @@ public class ServicesListPageTest extends AbstractUITest {
         domainService.setAliveState(AliveState.CONNECTING);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("id", "test-service");
+        props.put(Constants.ID_KEY, "test-service");
         props.put("testprop", "42");
         registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
+import org.openengsb.core.api.Constants;
+
 /**
  * Representation of a unique identification of connector instances.
  *
@@ -33,6 +35,7 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class ConnectorId implements Serializable {
 
+    private static final String CONNECTOR_ID_SEPARATOR = "+";
     private String domainType;
     private String connectorType;
     private String instanceId;
@@ -76,9 +79,9 @@ public class ConnectorId implements Serializable {
      */
     public Map<String, String> toMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
-        metaData.put("domainType", domainType);
-        metaData.put("connectorType", connectorType);
-        metaData.put("instanceId", instanceId);
+        metaData.put(Constants.DOMAIN_KEY, domainType);
+        metaData.put(Constants.CONNECTOR_KEY, connectorType);
+        metaData.put(Constants.ID_KEY, instanceId);
         return metaData;
     }
 
@@ -87,7 +90,8 @@ public class ConnectorId implements Serializable {
      * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
      */
     public static ConnectorId fromMetaData(Map<String, String> metaData) {
-        return new ConnectorId(metaData.get("domainType"), metaData.get("connectorType"), metaData.get("instanceId"));
+        return new ConnectorId(metaData.get(Constants.DOMAIN_KEY), metaData.get(Constants.CONNECTOR_KEY),
+            metaData.get(Constants.ID_KEY));
     }
 
     /**
@@ -127,7 +131,7 @@ public class ConnectorId implements Serializable {
      * The resulting String can be parsed to a ConnectorId again using the {@link ConnectorId#parse} method
      */
     public String toFullID() {
-        return domainType + "+" + connectorType + "+" + instanceId;
+        return domainType + CONNECTOR_ID_SEPARATOR + connectorType + CONNECTOR_ID_SEPARATOR + instanceId;
     }
 
     @Override

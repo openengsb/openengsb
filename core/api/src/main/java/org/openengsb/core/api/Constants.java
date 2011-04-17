@@ -38,7 +38,22 @@ public final class Constants {
      * The connector constants gives a connector a unique identification. The exacty semantic value is identified by the
      * conenctor itself. Possible values are git, trac, jira, ...
      */
-    public static final String CONNECTOR = "CONNECTOR";
+    public static final String CONFIG_CONNECTOR = "CONNECTOR";
+
+    /**
+     * represents the property-key for type of connector in osgi-service-properties
+     */
+    public static final String CONNECTOR_KEY = "connector";
+
+    /**
+     * represents the property-key for type of domain in osgi-service-properties
+     */
+    public static final String DOMAIN_KEY = "domain";
+
+    /**
+     * represents the property-key for a connector's instanceid in osgi-service-properties
+     */
+    public static final String ID_KEY = "id";
 
     /**
      * connectors of this type require special handling. They represent proxies to connector-services running outside

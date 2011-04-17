@@ -68,7 +68,7 @@ public class ConnectorIdTest {
     public void testConnectorIdEqualsOtherMetadata_shouldNotBeEqual() throws Exception {
         ConnectorId id1 = ConnectorId.generate("test", "testc");
         Map<String, String> metaData = id1.toMetaData();
-        metaData.put("connector", "something-different");
+        metaData.put(Constants.CONNECTOR_KEY, "something-different");
         assertThat(id1.equals(metaData), is(false));
     }
 

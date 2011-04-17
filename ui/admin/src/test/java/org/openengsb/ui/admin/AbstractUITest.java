@@ -76,7 +76,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         backend.init();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("configuration.id", Constants.CONNECTOR);
+        props.put("configuration.id", Constants.CONFIG_CONNECTOR);
         registerService(persistenceService, props, ConfigPersistenceService.class);
 
         // (&(objectClass=org.openengsb.core.api.persistence.ConfigPersistenceService)(configuration.id=connector))

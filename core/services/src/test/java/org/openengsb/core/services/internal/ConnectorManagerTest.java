@@ -79,7 +79,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         persistenceBackend.setBundleContext(bundleContext);
         persistenceBackend.init();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(Constants.CONFIGURATION_ID, Constants.CONNECTOR);
+        props.put(Constants.CONFIGURATION_ID, Constants.CONFIG_CONNECTOR);
         props.put(Constants.BACKEND_ID, "dummy");
         registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
     }
@@ -217,7 +217,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
-        factoryProps.put(Constants.CONNECTOR, "testc");
+        factoryProps.put(Constants.CONNECTOR_KEY, "testc");
         registerService(factory, factoryProps, ConnectorInstanceFactory.class);
     }
 
