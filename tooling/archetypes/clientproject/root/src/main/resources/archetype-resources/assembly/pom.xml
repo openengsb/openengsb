@@ -54,11 +54,11 @@
       <artifactId>openengsb</artifactId>
       <type>zip</type>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb</artifactId>
-      <type>tar.gz</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.openengsb</groupId>-->
+      <!--<artifactId>openengsb</artifactId>-->
+      <!--<type>tar.gz</type>-->
+    <!--</dependency>-->
   </dependencies>
 
   <build>
@@ -129,7 +129,7 @@
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
-                <feature>${name}-core</feature>
+                <feature>${artifactId}-core</feature>
               </features>
               <repository>target/features-repo</repository>
               <failOnArtifactResolutionError>true</failOnArtifactResolutionError>
@@ -142,12 +142,12 @@
         <artifactId>openengsb-maven-plugin</artifactId>
         <version>${openengsb.maven.plugin.version}</version>
         <configuration>
-          <provisionArchivePathUnix>${project.basedir}/target/${name}-${project.version}.tar.gz
+          <provisionArchivePathUnix>${project.basedir}/target/${artifactId}-${project.version}.zip
           </provisionArchivePathUnix>
-          <provisionExecutionPathUnix>bin/${name}</provisionExecutionPathUnix>
-          <provisionArchivePathWindows>${project.basedir}/target/${name}-${project.version}.zip
+          <provisionExecutionPathUnix>bin/${artifactId}</provisionExecutionPathUnix>
+          <provisionArchivePathWindows>${project.basedir}/target/${artifactId}-${project.version}.zip
           </provisionArchivePathWindows>
-          <provisionExecutionPathWindows>bin/${name}.bat</provisionExecutionPathWindows>
+          <provisionExecutionPathWindows>bin/${artifactId}.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>
     </plugins>
@@ -171,7 +171,7 @@
             </configuration>
             <executions>
               <execution>
-                <id>assembly-${name}</id>
+                <id>assembly-${artifactId}</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>

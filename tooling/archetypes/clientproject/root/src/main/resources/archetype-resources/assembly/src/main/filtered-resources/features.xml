@@ -19,7 +19,7 @@
 -->
 
 <features name="${artifactId}-${project.version}">
-  <feature name="${name}-core" version="${project.version}" >
+  <feature name="${artifactId}-core" version="${project.version}" >
   </feature>
 
 </features> 

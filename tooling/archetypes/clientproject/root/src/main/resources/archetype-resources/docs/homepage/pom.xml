@@ -131,21 +131,21 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>${groupId}.docs</groupId>
-                  <artifactId>${name}-docs-manual</artifactId>
+                  <artifactId>${artifactId}-docs-manual</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                   <classifier>html-multi</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${groupId}.docs</groupId>
-                  <artifactId>${name}-docs-manual</artifactId>
+                  <artifactId>${artifactId}-docs-manual</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                   <classifier>html-single</classifier>
                 </artifactItem>
                 <!--<artifactItem>-->
                   <!--<groupId>${groupId}.docs</groupId>-->
-                  <!--<artifactId>${name}-docs-manual</artifactId>-->
+                  <!--<artifactId>${artifactId}-docs-manual</artifactId>-->
                   <!--<version>${project.version}</version>-->
                   <!--<type>zip</type>-->
                   <!--<classifier>pdf</classifier>-->
@@ -168,7 +168,7 @@
             <configuration>
               <target>
                 <copy todir="${basedir}/target/site/">
-                  <fileset dir="${basedir}/target/${name}-docs-manual-${project.version}/">
+                  <fileset dir="${basedir}/target/${artifactId}-docs-manual-${project.version}/">
                     <include name="**/*" />
                   </fileset>
                 </copy>
