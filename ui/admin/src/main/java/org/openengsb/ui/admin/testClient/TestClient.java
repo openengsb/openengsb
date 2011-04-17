@@ -302,9 +302,9 @@ public class TestClient extends BasePage {
             ruleManager.addGlobal(jumpToService.getServiceClass(), jumpToService.getServiceId());
             ruleManager.addImport(jumpToService.getServiceClass());
         } catch (RuleBaseException e) {
-            LOGGER.debug("Unable to add global " + jumpToService.getServiceId() + " to the rulebase");
-            error("Unable to add global to the rulebase " + e.getLocalizedMessage());
-            // if the global already exists we can't show it on the website.
+            // in most cases we come here if we update a service, but there is no possibility I have
+            // found so far to tell the user easily that the global wasn't set.
+            LOGGER.debug("Unable to add global " + jumpToService.getServiceId() + " to the rulebase", e);
         }
 
         serviceList.getTreeState().collapseAll();
