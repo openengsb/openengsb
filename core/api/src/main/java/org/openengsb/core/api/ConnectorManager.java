@@ -34,6 +34,12 @@ import org.openengsb.core.api.persistence.PersistenceException;
  * specific language governing permissions and limitations under the License.
  */
 
+/**
+ * Manages connector instances.
+ *
+ * This class is responsible for creating new connector-instances as well as updating an deleting them. All instances
+ * created with this service are persisted using {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+ */
 public interface ConnectorManager {
 
     /**

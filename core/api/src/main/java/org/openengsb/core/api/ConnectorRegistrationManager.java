@@ -21,7 +21,11 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 
 /**
- * Instance provider for a specific service interface.
+ * Manages the registration of services for connector-instances at runtime.
+ *
+ * It does not handle persistence.
+ *
+ * This class is meant to be used with {@link ConnectorManager} which handles the persistence.
  */
 public interface ConnectorRegistrationManager extends OpenEngSBService {
 
