@@ -375,6 +375,9 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         return (T) service;
     }
 
+    /**
+     * Any bundle-context is fine here, since it does not matter from which bundlecontext services are retrieved.
+     */
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
