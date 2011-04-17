@@ -42,16 +42,32 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * A wrapper around a {@link Map} access it as a {@link Dictionary}.
+ *
+ * This class is a Dictionary-implementation that delegates operations to a backing {@link Map}. The resulting
+ * Dictionary can be accessed an manipulated like any other Dictionary.
+ *
  * Adapted code from apache felix utils.collections
+ *
+ * As opposed to the original felix-implementation this Map is not immutable and can be manipulated, with the
+ * restriction(s) described above.
  */
 public class MapAsDictionary<K, V> extends Dictionary<K, V> {
 
     private Map<K, V> map;
 
+    /**
+     * creates a new instance backed by the given map. Please use {@link MapAsDictionary#wrap} to prevent nesting of
+     * {@link MapAsDictionary} and {@link DictionaryAsMap}
+     */
     public MapAsDictionary(Map<K, V> map) {
         this.map = map;
     }
 
+    /**
+     * creates a Dictionary-representation of the map. If the map is an instance of {@link DictionaryAsMap} the original
+     * dictionary is returned to prevent deeper nesting.
+     */
     public static <K, V> Dictionary<K, V> wrap(Map<K, V> map) {
         if (map instanceof DictionaryAsMap) {
             return ((DictionaryAsMap<K, V>) map).getDictionary();

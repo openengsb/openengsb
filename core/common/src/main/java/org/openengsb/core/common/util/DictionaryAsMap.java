@@ -44,17 +44,33 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A wrapper around a dictionary access it as a Map
+ * A wrapper around a dictionary access it as a Map.
+ *
+ * This class is a Map-implementation that delegates operations to a backing {@link Dictionary}. The resulting Map can
+ * be accessed an manipulated like any other Map with a limitation: When assigning a null-value to a key (map.put(key,
+ * null)), the key is removed from the dictionary, since it does not support null-values.
+ *
  * Adapted code from apache felix utils.collections
+ *
+ * As opposed to the original felix-implementation this Map is not immutable and can be manipulated, with the
+ * restriction(s) described above.
  */
 public class DictionaryAsMap<K, V> extends AbstractMap<K, V> {
 
     private Dictionary<K, V> dictionary;
 
+    /**
+     * creates a new instance backed by the given dictionary. Please use {@link DictionaryAsMap#wrap} to prevent nesting
+     * of {@link MapAsDictionary} and {@link DictionaryAsMap}
+     */
     public DictionaryAsMap(Dictionary<K, V> dict) {
         this.dictionary = dict;
     }
 
+    /**
+     * creates a Map-representation of the dictionary. If the dictionary is an instance of {@link MapAsDictionary} the
+     * original map is returned to prevent deeper nesting.
+     */
     public static <K, V> Map<K, V> wrap(Dictionary<K, V> dictionary) {
         if (dictionary instanceof MapAsDictionary) {
             return ((MapAsDictionary<K, V>) dictionary).getMap();
