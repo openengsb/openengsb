@@ -22,13 +22,9 @@ import java.io.IOException;
 
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +61,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
 
         ConnectorFile configFile = new ConnectorFile(artifact);
-        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(configFile);
+        ConnectorConfiguration newConfig = configFile.load();
         authenticate(AUTH_USER, AUTH_PASSWORD);
         if (newConfig.getContent().getProperties().get(Constants.SERVICE_RANKING) == null
                 && ConnectorFile.isRootService(artifact)) {
@@ -90,7 +86,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void update(File artifact) throws IOException {
         LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        ConnectorConfiguration newConfig = ConnectorConfigurationUtil.loadFromFile(new ConnectorFile(artifact));
+        ConnectorConfiguration newConfig = new ConnectorFile(artifact).load();
         authenticate(AUTH_USER, AUTH_PASSWORD);
         try {
             serviceManager.update(newConfig.getConnectorId(), newConfig.getContent());
@@ -114,21 +110,6 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             LOGGER.error("Removing connector failed: ", e);
             throw e;
         }
-    }
-
-    private ConnectorRegistrationManager getServiceManagerFor(String connectorType)
-        throws OsgiServiceNotAvailableException {
-        return (ConnectorRegistrationManager) getOsgiUtils().getService(getFilterFor(connectorType));
-    }
-
-    private OsgiUtilsService getOsgiUtils() {
-        return OpenEngSBCoreServices.getServiceUtilsService();
-    }
-
-    private String getFilterFor(String connectorType) {
-        return String.format("(&(%s=%s)(connector=%s))", Constants.OBJECTCLASS,
-            ConnectorRegistrationManager.class.getName(),
-            connectorType);
     }
 
     private boolean authenticate(String username, String password) {

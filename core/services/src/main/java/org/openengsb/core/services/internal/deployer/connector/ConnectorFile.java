@@ -28,6 +28,9 @@ import java.util.Properties;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
+import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
@@ -35,7 +38,6 @@ import com.google.common.collect.Maps;
 
 public class ConnectorFile {
 
-    private static final String DEFAULT_ROOT_SERVICE_RANKING = "-1";
     private static final String PROPERTY_CONNECTOR = "connector";
     private static final String PROPERTY_DOMAIN = "domain";
     private static final String PROPERTY_SERVICE_ID = "id";
@@ -111,6 +113,13 @@ public class ConnectorFile {
 
     private static Boolean isRootServiceDirectory(File directory) {
         return directory.isDirectory() && directory.getName().equals("etc");
+    }
+
+    public ConnectorConfiguration load() throws IOException {
+        ConnectorId connectorId =
+            new ConnectorId(getDomainName(), getConnectorName(), getServiceId());
+        ConnectorDescription description = new ConnectorDescription(getAttributes());
+        return new ConnectorConfiguration(connectorId, description);
     }
 
 }
