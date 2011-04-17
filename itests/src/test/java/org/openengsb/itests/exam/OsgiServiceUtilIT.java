@@ -47,11 +47,10 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
         assertThat(provider, notNullValue());
         provider =
             (DomainProvider) getServiceUtils().getService(getServiceUtils().makeFilter(DomainProvider.class,
-                "(domain=example)"));
+                String.format("(%s=example)", org.openengsb.core.api.Constants.DOMAIN_KEY)));
         assertThat(provider, notNullValue());
 
-        DomainProvider provider2 = getServiceUtils().getService(DomainProvider.class);
-        assertThat(provider2.getId(), is(provider.getId()));
+        assertThat(provider.getId(), is("example"));
     }
 
     @Test
