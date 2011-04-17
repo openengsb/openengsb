@@ -51,6 +51,69 @@ public class CorePersistenceServiceBackendTest {
 
     @Test
     public void testQuery_shouldFindPersistedFile() throws Exception {
+        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
+
+        HashMap<String, String> meta =
+            createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
+        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, "rule");
+        corePersistenceServiceBackend.persist(ruleConfiguration);
+        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(meta);
+
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getContent().toString(), is("rule"));
+        assertThat(result.get(0), instanceOf(RuleConfiguration.class));
+    }
+
+    @Test
+    public void testRemove_shouldRemoveEntries() throws Exception {
+        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
+
+        HashMap<String, String> meta1 =
+            createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
+        HashMap<String, String> meta2 = createHashMap(new KeyValuePair("test3", "test3"));
+        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta1, "rule");
+        RuleConfiguration ruleConfiguration2 = new RuleConfiguration(meta2, "rule");
+        corePersistenceServiceBackend.persist(ruleConfiguration);
+        corePersistenceServiceBackend.persist(ruleConfiguration2);
+        corePersistenceServiceBackend.remove(meta2);
+        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(meta1);
+
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0).getContent().toString(), is("rule"));
+        assertThat(result.get(0), instanceOf(RuleConfiguration.class));
+    }
+
+    @Test
+    public void testRemoveWithCommonEntry_shouldRemoveBothEntries() throws Exception {
+        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
+
+        HashMap<String, String> meta1 =
+            createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
+        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta1, "rule");
+        HashMap<String, String> meta2 =
+            createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test3", "test3"));
+        RuleConfiguration ruleConfiguration2 = new RuleConfiguration(meta2, "rule");
+        corePersistenceServiceBackend.persist(ruleConfiguration);
+        corePersistenceServiceBackend.persist(ruleConfiguration2);
+        HashMap<String, String> query = createHashMap(new KeyValuePair("test1", "test1"));
+        corePersistenceServiceBackend.remove(query);
+        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(query);
+
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(0));
+    }
+
+    private HashMap<String, String> createHashMap(KeyValuePair... keyValuePairs) {
+        HashMap<String, String> meta = new HashMap<String, String>();
+        for (KeyValuePair keyValuePair : keyValuePairs) {
+            meta.put(keyValuePair.key, keyValuePair.value);
+        }
+        return meta;
+    }
+
+    private CorePersistenceServiceBackend setupCorePersistenceService() {
         Bundle bundleMock = mock(Bundle.class);
         when(bundleMock.getSymbolicName()).thenReturn("db");
         BundleContext bundleContextMock = mock(BundleContext.class);
@@ -62,22 +125,7 @@ public class CorePersistenceServiceBackendTest {
         corePersistenceServiceBackend.setPersistenceManager(persistenceManager);
         corePersistenceServiceBackend.setBundleContext(bundleContextMock);
         corePersistenceServiceBackend.init();
-
-        HashMap<String, String> meta = new HashMap<String, String>();
-        meta.put("test1", "test1");
-        meta.put("test2", "test2");
-        String rule = "rule";
-        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, rule);
-        corePersistenceServiceBackend.persist(ruleConfiguration);
-        HashMap<String, String> found = new HashMap<String, String>();
-        found.put("test1", "test1");
-        found.put("test2", "test2");
-        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(meta);
-
-        assertThat(result, notNullValue());
-        assertThat(result.size(), is(1));
-        assertThat(result.get(0).getContent().toString(), is("rule"));
-        assertThat(result.get(0), instanceOf(RuleConfiguration.class));
+        return corePersistenceServiceBackend;
     }
 
     @After
@@ -87,6 +135,17 @@ public class CorePersistenceServiceBackendTest {
             return;
         }
         FileUtils.forceDelete(dbDirectory);
+    }
+
+    private static class KeyValuePair {
+        String key;
+        String value;
+
+        public KeyValuePair(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
     }
 
 }

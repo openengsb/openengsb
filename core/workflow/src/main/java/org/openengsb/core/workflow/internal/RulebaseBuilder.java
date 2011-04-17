@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -41,10 +39,12 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RulebaseBuilder {
 
-    private Log log = LogFactory.getLog(RulebaseBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RulebaseBuilder.class);
 
     private static final String RULE_TEMPLATE = "rule \"%s\"\n"
             + "%s"
@@ -100,7 +100,7 @@ public class RulebaseBuilder {
         clearRulebase();
         base.addKnowledgePackages(compiledPackages);
 
-        log.info(String.format("Reloading the rulebase took %dms", System.currentTimeMillis() - start));
+        LOGGER.info("Reloading the rulebase took {}ms", System.currentTimeMillis() - start);
     }
 
     private Collection<String> queryFlows(String packageName) {
@@ -133,7 +133,7 @@ public class RulebaseBuilder {
             base.removeKnowledgePackage(packageName);
         }
         base.addKnowledgePackages(compiledPackage);
-        log.info(String.format("Reloading only package %s took %dms", packageName, System.currentTimeMillis() - start));
+        LOGGER.info("Reloading only package {} took {}ms", packageName, System.currentTimeMillis() - start);
     }
 
     private void clearRulebase() {

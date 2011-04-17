@@ -38,8 +38,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.EnumerationUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -60,6 +58,8 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
@@ -67,7 +67,7 @@ import org.osgi.framework.ServiceRegistration;
  */
 public abstract class AbstractOsgiMockServiceTest {
 
-    private Log log = LogFactory.getLog(AbstractOsgiMockServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOsgiMockServiceTest.class);
 
     protected BundleContext bundleContext;
     protected Bundle bundle;
@@ -248,7 +248,7 @@ public abstract class AbstractOsgiMockServiceTest {
     private ServiceReference putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
         long serviceId = --this.serviceId;
-        log.info("registering service with ID: " + serviceId);
+        LOGGER.info("registering service with ID: " + serviceId);
         props.put(Constants.SERVICE_ID, serviceId);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);

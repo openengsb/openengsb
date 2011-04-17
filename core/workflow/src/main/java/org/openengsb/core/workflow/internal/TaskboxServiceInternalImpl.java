@@ -17,8 +17,6 @@
 
 package org.openengsb.core.workflow.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
@@ -26,9 +24,11 @@ import org.openengsb.core.api.workflow.TaskboxServiceInternal;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskboxServiceInternalImpl implements TaskboxServiceInternal {
-    private Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskboxServiceInternalImpl.class);
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;
@@ -50,7 +50,7 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal {
     public void createNewTask(ProcessBag bag) throws PersistenceException {
         Task task = new Task(bag);
         persistence.create(task);
-        log.info("New human task with id " + task.getTaskId() + " created");
+        LOGGER.info("New human task with id {} created", task.getTaskId());
     }
 
 }

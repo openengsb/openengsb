@@ -22,15 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 public final class RemoteEventUtil {
 
-    private static Log log = LogFactory.getLog(RemoteEventUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteEventUtil.class);
 
     private RemoteEventUtil() {
     }
@@ -41,7 +41,7 @@ public final class RemoteEventUtil {
         Map<String, String> nestedEventProperties = result.getNestedEventProperties();
         for (PropertyDescriptor pd : propertyDescriptors) {
             Method readMethod = pd.getReadMethod();
-            log.debug(String.format("writing property %s to event", pd.getName()));
+            LOGGER.debug("writing property {} to event", pd.getName());
             try {
                 Object value = readMethod.invoke(event);
                 if (value != null) {

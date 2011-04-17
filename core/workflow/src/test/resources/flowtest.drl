@@ -19,7 +19,7 @@ package org.openengsb
 
 #list any import classes here.
 import org.openengsb.core.workflow.model.TestObject
-import org.apache.commons.logging.Log
+import org.slf4j.Logger
 
 #declare any global variables here
-global Log log
+global Logger log

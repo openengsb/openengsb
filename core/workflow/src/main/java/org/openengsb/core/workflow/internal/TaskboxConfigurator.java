@@ -20,8 +20,6 @@ package org.openengsb.core.workflow.internal;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
@@ -30,12 +28,14 @@ import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adds everything needed for humann interaction into the rulemanager, (humantask workflow, taskbox global etc.).
  */
 public class TaskboxConfigurator {
-    private Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskboxConfigurator.class);
 
     private RuleManager ruleManager;
 
@@ -65,11 +65,11 @@ public class TaskboxConfigurator {
             RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, "humantask");
             ruleManager.add(id, testWorkflow);
 
-            log.info("loaded workflow 'humanTask'");
+            LOGGER.info("loaded workflow 'humanTask'");
         } catch (RuleBaseException e) {
-            log.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             IOUtils.closeQuietly(is);

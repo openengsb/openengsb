@@ -125,7 +125,7 @@ public class ServiceManagerTest extends AbstractOsgiMockServiceTest {
     public void testCreateServiceWithInvalidAttributes_shouldFail() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("all", "because I don't like you");
-        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
+        when(factory.getValidationErrors(anyMap())).thenReturn(errorMessages);
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
         Dictionary<String, Object> properties = new Hashtable<String, Object>();

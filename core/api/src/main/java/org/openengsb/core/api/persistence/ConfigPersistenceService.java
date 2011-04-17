@@ -40,6 +40,11 @@ public interface ConfigPersistenceService {
         InvalidConfigurationException;
 
     /**
+     * Small wrapper around {@link ConfigPersistenceBackendService#remove(Map)}
+     */
+    void remove(Map<String, String> metadata) throws PersistenceException;
+
+    /**
      * Returns if the backend is applicable for a specific {@link ConfigItem} type.
      */
     boolean supports(Class<? extends ConfigItem<?>> configItemType);

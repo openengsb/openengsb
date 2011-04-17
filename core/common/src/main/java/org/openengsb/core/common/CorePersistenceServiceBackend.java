@@ -67,6 +67,13 @@ public class CorePersistenceServiceBackend implements ConfigPersistenceBackendSe
     }
 
     @Override
+    public void remove(Map<String, String> metadata) throws PersistenceException {
+        List<InternalConfigurationItem> result =
+            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(metadata, null)));
+        persistenceService.delete(result);
+    }
+
+    @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
         // as an object persistence this backend supports everything
         return true;

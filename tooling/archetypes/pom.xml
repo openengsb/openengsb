@@ -54,6 +54,7 @@
   <modules>
     <module>connector</module>
     <module>domain</module>
+    <module>clientproject</module>
   </modules>
 
 </project>

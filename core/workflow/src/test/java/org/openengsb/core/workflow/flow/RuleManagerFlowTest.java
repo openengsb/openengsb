@@ -24,8 +24,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
@@ -39,10 +37,12 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestObject;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleManagerFlowTest {
 
-    private Log log = LogFactory.getLog(RuleManagerFlowTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleManagerFlowTest.class);
 
     private RuleManager source;
     private KnowledgeBase rulebase;
@@ -115,14 +115,14 @@ public class RuleManagerFlowTest {
     @Test(timeout = 10000)
     public void testRunFlowWithEvents() throws Exception {
         source.addImport(TestObject.class.getName());
-        source.addGlobal(Log.class.getName(), "log");
+        source.addGlobal(Logger.class.getName(), "log");
 
         URL systemResource = ClassLoader.getSystemResource("floweventtest.rf");
         File flowFile = FileUtils.toFile(systemResource);
         String flowString = FileUtils.readFileToString(flowFile);
         source.add(new RuleBaseElementId(RuleBaseElementType.Process, "flowtest"), flowString);
         session = rulebase.newStatefulKnowledgeSession();
-        session.setGlobal("log", log);
+        session.setGlobal("log", LOGGER);
         session.addEventListener(new DefaultProcessEventListener() {
             @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {

@@ -21,16 +21,16 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.neodatis.odb.OdbConfiguration;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NeodatisPersistenceManager implements PersistenceManager {
 
-    private final Log log = LogFactory.getLog(NeodatisPersistenceManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodatisPersistenceManager.class);
 
     private String persistenceRootDir;
 
@@ -62,13 +62,13 @@ public class NeodatisPersistenceManager implements PersistenceManager {
 
     private File getAbsoluteRootDir() {
         String karafData = System.getProperty("karaf.data");
-        log.info("karafData: " + karafData);
+        LOGGER.info("karafData: {}", karafData);
         return new File(karafData, persistenceRootDir);
     }
 
     private String getFileName(Bundle bundle) {
         final String name = bundle.getSymbolicName() + ".data";
-        log.info("generated persitence-filename: " + name);
+        LOGGER.info("generated persitence-filename: {}", name);
         return name;
     }
 
