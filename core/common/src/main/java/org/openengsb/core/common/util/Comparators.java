@@ -21,6 +21,9 @@ import java.util.Comparator;
 
 import org.openengsb.core.api.DomainProvider;
 
+/**
+ * provides comparators for sorting some OpenEngSB internals that are not comparable.
+ */
 public final class Comparators {
 
     /**
