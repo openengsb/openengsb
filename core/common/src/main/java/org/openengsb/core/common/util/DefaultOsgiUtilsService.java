@@ -333,7 +333,11 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     public List<ServiceReference> listServiceReferences(Class<?> clazz) {
         List<ServiceReference> result = new ArrayList<ServiceReference>();
         try {
-            CollectionUtils.addAll(result, bundleContext.getServiceReferences(clazz.getName(), null));
+            ServiceReference[] serviceReferences = bundleContext.getServiceReferences(clazz.getName(), null);
+            if (serviceReferences == null) {
+                return result;
+            }
+            CollectionUtils.addAll(result, serviceReferences);
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
