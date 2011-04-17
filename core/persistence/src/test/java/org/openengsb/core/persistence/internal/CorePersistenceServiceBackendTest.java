@@ -40,19 +40,19 @@ import org.osgi.framework.BundleContext;
 
 public class CorePersistenceServiceBackendTest {
 
+    private CorePersistenceServiceBackend corePersistenceServiceBackend;
+
     @Before
     public void setUp() throws Exception {
         File dbDirectory = new File("target/data");
-        if (!dbDirectory.exists()) {
-            return;
+        if (dbDirectory.exists()) {
+            FileUtils.forceDelete(dbDirectory);
         }
-        FileUtils.forceDelete(dbDirectory);
+        corePersistenceServiceBackend = setupCorePersistenceService();
     }
 
     @Test
     public void testQuery_shouldFindPersistedFile() throws Exception {
-        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
-
         HashMap<String, String> meta =
             createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
         RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, "rule");
@@ -67,8 +67,6 @@ public class CorePersistenceServiceBackendTest {
 
     @Test
     public void testRemove_shouldRemoveEntries() throws Exception {
-        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
-
         HashMap<String, String> meta1 =
             createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
         HashMap<String, String> meta2 = createHashMap(new KeyValuePair("test3", "test3"));
@@ -87,8 +85,6 @@ public class CorePersistenceServiceBackendTest {
 
     @Test
     public void testRemoveWithCommonEntry_shouldRemoveBothEntries() throws Exception {
-        CorePersistenceServiceBackend corePersistenceServiceBackend = setupCorePersistenceService();
-
         HashMap<String, String> meta1 =
             createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
         RuleConfiguration ruleConfiguration = new RuleConfiguration(meta1, "rule");
@@ -103,6 +99,20 @@ public class CorePersistenceServiceBackendTest {
 
         assertThat(result, notNullValue());
         assertThat(result.size(), is(0));
+    }
+
+    @Test
+    public void testPersistTwice_shouldUpdateEntry() throws Exception {
+        HashMap<String, String> meta =
+            createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
+        RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, "rule");
+        corePersistenceServiceBackend.persist(ruleConfiguration);
+        ruleConfiguration.setContent("difference");
+        corePersistenceServiceBackend.persist(ruleConfiguration);
+
+        List<ConfigItem<?>> list = corePersistenceServiceBackend.load(meta);
+        assertThat(list.size(), is(1));
+        assertThat((RuleConfiguration) list.get(0), is(ruleConfiguration));
     }
 
     private HashMap<String, String> createHashMap(KeyValuePair... keyValuePairs) {
