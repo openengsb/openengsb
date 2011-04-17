@@ -75,6 +75,7 @@ import org.openengsb.ui.admin.model.Argument;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -139,7 +140,6 @@ public class TestClient extends BasePage {
         };
         availableDomains = initAvailableDomainsMap();
 
-
         serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
 
             @Override
@@ -183,6 +183,9 @@ public class TestClient extends BasePage {
             }
         });
 
+        Form<Object> organize = createOrganizeForm();
+        add(organize);
+
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
@@ -198,7 +201,6 @@ public class TestClient extends BasePage {
                     if (lastManager != null) {
                         setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
                     }
-
                 }
             }
 
@@ -274,6 +276,26 @@ public class TestClient extends BasePage {
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+    }
+    
+    /**
+     * creates the form for organize section (globals, imports)
+     */
+    private Form<Object> createOrganizeForm() {
+        Form<Object> organize = new Form<Object>("organizeForm");
+        organize.setOutputMarkupId(true);
+        
+        @SuppressWarnings("serial")
+        AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                setResponsePage(new OrganizeGlobalsPage());
+            }
+        };
+        globalsButton.setOutputMarkupId(true);
+        organize.add(globalsButton);
+        
+        return organize;
     }
 
     @SuppressWarnings("serial")
