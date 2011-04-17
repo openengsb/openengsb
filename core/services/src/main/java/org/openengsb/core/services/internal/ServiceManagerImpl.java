@@ -194,16 +194,6 @@ public class ServiceManagerImpl implements ServiceManager {
         }
     }
 
-    @Override
-    public void assignLocations(ConnectorId serviceId, String... locations) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    @Override
-    public void removeLocations(ConnectorId serviceId, String... locations) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     public void setRegistrationManager(ServiceRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
     }

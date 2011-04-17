@@ -97,7 +97,4 @@ public interface ServiceManager {
      */
     ConnectorDescription getAttributeValues(ConnectorId id);
 
-    void assignLocations(ConnectorId serviceId, String... locations);
-
-    void removeLocations(ConnectorId serviceId, String... locations);
 }
