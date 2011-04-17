@@ -34,7 +34,6 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
@@ -60,7 +59,8 @@ public class ServiceListPanel extends Panel {
     @SpringBean
     private ConnectorManager serviceManager;
 
-    private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    @SpringBean
+    private OsgiUtilsService serviceUtils;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {
         @Override

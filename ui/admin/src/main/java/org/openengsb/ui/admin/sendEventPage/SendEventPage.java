@@ -51,7 +51,6 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
@@ -67,7 +66,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
-    private static OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+    @SpringBean
+    private OsgiUtilsService serviceUtils;
 
     @SpringBean
     private WorkflowService eventService;
