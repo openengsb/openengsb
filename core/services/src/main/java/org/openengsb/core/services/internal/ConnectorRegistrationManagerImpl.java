@@ -176,7 +176,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
         String connectorType = id.getConnectorType();
-        if (connectorType == Constants.EXTERNAL_CONNECTOR_PROXY) {
+        if (connectorType.equals(Constants.EXTERNAL_CONNECTOR_PROXY)) {
             DomainProvider domainProvider = getDomainProvider(id.getDomainType());
             return ProxyServiceFactory.getInstance(domainProvider);
         }

@@ -33,14 +33,13 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     private DomainProvider domainProvider;
     private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
 
-    private static Map<DomainProvider, ProxyServiceFactory> instances =
-        new HashMap<DomainProvider, ProxyServiceFactory>();
+    private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
 
     public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
-        if (!instances.containsKey(domainProvider)) {
-            instances.put(domainProvider, new ProxyServiceFactory(domainProvider));
+        if (!instances.containsKey(domainProvider.getId())) {
+            instances.put(domainProvider.getId(), new ProxyServiceFactory(domainProvider));
         }
-        return instances.get(domainProvider);
+        return instances.get(domainProvider.getId());
     }
 
     protected ProxyServiceFactory(DomainProvider domainProvider) {
