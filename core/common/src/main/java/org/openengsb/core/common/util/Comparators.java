@@ -23,15 +23,20 @@ import org.openengsb.core.api.DomainProvider;
 
 public final class Comparators {
 
-    private Comparators() {
+    /**
+     * returns a comparator that compares domain providers by providing their id-values {@link DomainProvider#getId()}.
+     */
+    public static Comparator<? super DomainProvider> forDomainProvider() {
+        return new DomainProviderComparator();
     }
 
-    public static Comparator<? super DomainProvider> forDomainProvider() {
-        return new Comparator<DomainProvider>() {
-            @Override
-            public int compare(DomainProvider o1, DomainProvider o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        };
+    private static final class DomainProviderComparator implements Comparator<DomainProvider> {
+        @Override
+        public int compare(DomainProvider o1, DomainProvider o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
+    }
+
+    private Comparators() {
     }
 }
