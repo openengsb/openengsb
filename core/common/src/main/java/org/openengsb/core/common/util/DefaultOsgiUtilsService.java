@@ -173,12 +173,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter;
-        try {
-            filter = makeFilter(className, String.format("(id=%s)", id));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Filter filter = makeFilter(className, String.format("(id=%s)", id));
         return getService(filter, timeout);
     }
 
@@ -242,73 +237,77 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     }
 
     @Override
-    public Filter makeFilter(Class<?> clazz, String otherFilter) throws InvalidSyntaxException {
+    public Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException {
         return makeFilter(clazz.getName(), otherFilter);
     }
 
     @Override
-    public Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException {
+    public Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException {
         if (otherFilter == null) {
             return makeFilterForClass(className);
         }
-        return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
+        try {
+            return FrameworkUtil.createFilter("(&" + makeFilterForClass(className) + otherFilter + ")");
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getServiceForLocation(Class<T> clazz, String location, String context)
-        throws OsgiServiceNotAvailableException {
+        throws OsgiServiceNotAvailableException, IllegalArgumentException {
         Filter compiled = getFilterForLocation(clazz, location, context);
         return (T) getService(compiled);
     }
 
     @Override
-    public Filter getFilterForLocation(Class<?> clazz, String location, String context) {
+    public Filter getFilterForLocation(Class<?> clazz, String location, String context)
+        throws IllegalArgumentException {
         String filter = makeLocationFilterString(location, context);
-        try {
-            return makeFilter(clazz, filter);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException("location is invalid", e);
-        }
+        return makeFilter(clazz, filter);
     }
 
     @Override
-    public Filter getFilterForLocation(Class<?> clazz, String location) {
+    public Filter getFilterForLocation(Class<?> clazz, String location) throws IllegalArgumentException {
         return getFilterForLocation(clazz, location, ContextHolder.get().getCurrentContextId());
     }
 
     @Override
-    public Filter getFilterForLocation(String location, String context) {
+    public Filter getFilterForLocation(String location, String context) throws IllegalArgumentException {
         String filter = makeLocationFilterString(location, context);
         try {
             return FrameworkUtil.createFilter(filter);
         } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException("location is invalid", e);
+            throw new IllegalArgumentException("location is invalid: " + location, e);
         }
     }
 
     @Override
-    public Filter getFilterForLocation(String location) {
+    public Filter getFilterForLocation(String location) throws IllegalArgumentException {
         return getFilterForLocation(location, ContextHolder.get().getCurrentContextId());
     }
 
-    private String makeLocationFilterString(String location, String context) {
+    private String makeLocationFilterString(String location, String context) throws IllegalArgumentException {
         return String.format("(|(location.%s=%s)(location.root=%s))", context, location, location);
     }
 
     @Override
-    public Object getServiceForLocation(String location, String context) throws OsgiServiceNotAvailableException {
+    public Object getServiceForLocation(String location, String context) throws OsgiServiceNotAvailableException,
+        IllegalArgumentException {
         return getService(getFilterForLocation(location, context));
     }
 
     @Override
-    public Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException {
+    public Object getServiceForLocation(String location) throws OsgiServiceNotAvailableException,
+        IllegalArgumentException {
         LOGGER.debug("retrieve service for location: {}", location);
         return getService(getFilterForLocation(location));
     }
 
     @Override
-    public <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException {
+    public <T> T getServiceForLocation(Class<T> clazz, String location) throws OsgiServiceNotAvailableException,
+        IllegalArgumentException {
         return getServiceForLocation(clazz, location, ContextHolder.get().getCurrentContextId());
     }
 
@@ -359,7 +358,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     }
 
     @Override
-    public <T> List<T> listServices(Class<T> clazz, String filterString) throws InvalidSyntaxException {
+    public <T> List<T> listServices(Class<T> clazz, String filterString) throws IllegalArgumentException {
         Filter filter = makeFilter(clazz, filterString);
         ServiceTracker tracker = new ServiceTracker(bundleContext, filter, null);
         return getListFromTracker(tracker);

@@ -18,7 +18,6 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -163,25 +162,16 @@ public class ServiceRegistrationManagerImpl implements ServiceRegistrationManage
             DomainProvider domainProvider = getDomainProvider(id.getDomainType());
             return ProxyServiceFactory.getInstance(domainProvider);
         }
-        Filter connectorFilter;
-        try {
-            connectorFilter =
+        Filter connectorFilter =
                 serviceUtils.makeFilter(ServiceInstanceFactory.class, "(connector=" + connectorType + ")");
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+
         ServiceInstanceFactory service =
                 serviceUtils.getOsgiServiceProxy(connectorFilter, ServiceInstanceFactory.class);
         return service;
     }
 
     private DomainProvider getDomainProvider(String domain) {
-        Filter domainFilter;
-        try {
-            domainFilter = serviceUtils.makeFilter(DomainProvider.class, "(domain=" + domain + ")");
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Filter domainFilter = serviceUtils.makeFilter(DomainProvider.class, "(domain=" + domain + ")");
         DomainProvider domainProvider = serviceUtils.getOsgiServiceProxy(domainFilter, DomainProvider.class);
         return domainProvider;
     }

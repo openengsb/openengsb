@@ -20,7 +20,6 @@ package org.openengsb.core.api;
 import java.util.List;
 
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public interface OsgiUtilsService {
@@ -134,8 +133,10 @@ public interface OsgiUtilsService {
      * returns a proxy that looks up an OSGi-service with the given Filter as soon as a method is called. Note that the
      * returned proxy may throw an {@link OsgiServiceNotAvailableException} if the service is not found within the given
      * timeout (in milliseconds)
+     *
+     * @throws IllegalArgumentException if the given filter could not be compiled
      */
-    <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout);
+    <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, long timeout) throws IllegalArgumentException;
 
     /**
      * returns a proxy that looks up an OSGi-service according to the targetClass as soon as a method is called. Note
@@ -155,55 +156,74 @@ public interface OsgiUtilsService {
     Filter makeFilterForClass(String className);
 
     /**
-     *
      * creates a filter that matches all services exporting the class as interface and applies to the other Filter
+     *
+     * @throws IllegalArgumentException if the given filter could not be compiled
      */
-    Filter makeFilter(Class<?> clazz, String otherFilter) throws InvalidSyntaxException;
+    Filter makeFilter(Class<?> clazz, String otherFilter) throws IllegalArgumentException;
 
     /**
-     *
      * creates a filter that matches all services exporting the class as interface and applies to the other Filter
+     *
+     * @throws IllegalArgumentException if the given filter could not be compiled
      */
-    Filter makeFilter(String className, String otherFilter) throws InvalidSyntaxException;
+    Filter makeFilter(String className, String otherFilter) throws IllegalArgumentException;
 
     /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in
      * this context), the service at the same location in the root-context is returned
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
     <T> T getServiceForLocation(Class<T> clazz, String location, String context)
-        throws OsgiServiceNotAvailableException;
+        throws OsgiServiceNotAvailableException, IllegalArgumentException;
 
     /**
      * returns a filter that matches services with the given class and location in both the given context and the
      * root-context
+     *
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
-    Filter getFilterForLocation(Class<?> clazz, String location, String context);
+    Filter getFilterForLocation(Class<?> clazz, String location, String context) throws IllegalArgumentException;
 
     /**
      * returns a filter that matches services with the given class and location in both the current context and the
      * root-context
+     *
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
-    Filter getFilterForLocation(Class<?> clazz, String location);
+    Filter getFilterForLocation(Class<?> clazz, String location) throws IllegalArgumentException;
 
     /**
      * returns a filter that matches services with the given location in both the given context and the root-context
+     *
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
-    Filter getFilterForLocation(String location, String context);
+    Filter getFilterForLocation(String location, String context) throws IllegalArgumentException;
 
     /**
      * returns a filter that matches services with the given location in both the current context and the root-context
+     *
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
-    Filter getFilterForLocation(String location);
+    Filter getFilterForLocation(String location) throws IllegalArgumentException;
 
     /**
      * retrieves a service that has the given location in the given context. If there is no service at this location (in
      * this context), the service at the same location in the root-context is returned
      *
-     * @throws OsgiServiceNotAvailableException when the service is not available after 30 secondss
+     * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
+     * @throws IllegalArgumentException if the location contains special characters that prevent the filter from
+     *         compiling
      */
-    Object getServiceForLocation(String location, String context) throws OsgiServiceNotAvailableException;
+    Object getServiceForLocation(String location, String context) throws OsgiServiceNotAvailableException,
+        IllegalArgumentException;
 
     /**
      * retrieves a service that has the given location in the current context. If there is no service at this location
@@ -239,7 +259,9 @@ public interface OsgiUtilsService {
      * returns a list of all serivce-objects of services exported with the given interface matching the given filter.
      *
      * NOTE that the returned references may become invalid at any time.
+     *
+     * @throws IllegalArgumentException if the given filter can not be compiled
      */
-    <T> List<T> listServices(Class<T> clazz, String filter) throws InvalidSyntaxException;
+    <T> List<T> listServices(Class<T> clazz, String filter) throws IllegalArgumentException;
 
 }
