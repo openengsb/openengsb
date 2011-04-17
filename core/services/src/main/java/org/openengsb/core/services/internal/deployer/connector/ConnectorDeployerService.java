@@ -67,20 +67,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
                 && ConnectorFile.isRootService(artifact)) {
             newConfig.getContent().getProperties().put(Constants.SERVICE_RANKING, "-1");
         }
-        // log.info(String.format("Loading instance %s of connector %s", serviceId, newConfig.getConnectorType()));
+        LOGGER.info("Loading instance {}", newConfig.getConnectorId());
 
         try {
             serviceManager.create(newConfig.getConnectorId(), newConfig.getContent());
         } catch (ConnectorValidationFailedException e) {
             throw new RuntimeException(e);
         }
-
-        // TODO update
-        // serviceManager.update(serviceId, newConfig.getAttributes());
-        // deployerStorage.put(artifact, newConfig);
-        // log.info(String.format("Connector %s of type %s valid: %b", newConfig.getConnectorType(), serviceId,
-        // validationResult.isValid()));
-
     }
 
     @Override
@@ -98,10 +91,8 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void uninstall(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-
         try {
             authenticate(AUTH_USER, AUTH_PASSWORD);
-
             // log.info(String.format("Removing instance %s of connector %s", serviceId, connectorType));
 
             // TODO delete
