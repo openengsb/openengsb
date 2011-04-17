@@ -377,7 +377,6 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-
     }
 
 }

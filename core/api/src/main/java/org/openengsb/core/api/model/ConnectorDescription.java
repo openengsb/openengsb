@@ -23,6 +23,22 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+/**
+ * Container class that describes a connector. It serves as common model for
+ * {@link org.openengsb.core.api.model.ConnectorConfiguration} in
+ * {@link org.openengsb.core.api.persistence.ConfigPersistenceService} and the registration
+ * {@link org.openengsb.core.api.ConnectorRegistrationManage}.
+ *
+ * The description has two components: "attributes" and "properties".
+ *
+ * Attributes are used to describe the field-values of the service objects. A
+ * {@link org.openengsb.core.api.ConnectorInstanceFactory} defines the mapping of attributes to the corresponding
+ * fields.
+ *
+ * Properties are a collection of additional Service-properties for the osgi-service-registry (see OSGi 4.2 core
+ * specification for more details http://www.osgi.org/Download/Release4V42).
+ */
+@SuppressWarnings("serial")
 public class ConnectorDescription implements Serializable {
 
     private Map<String, String> attributes;
