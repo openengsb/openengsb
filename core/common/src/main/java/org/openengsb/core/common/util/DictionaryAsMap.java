@@ -35,6 +35,7 @@
  */
 package org.openengsb.core.common.util;
 
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Dictionary;
@@ -121,7 +122,8 @@ public class DictionaryAsMap<K, V> extends AbstractMap<K, V> {
         return dictionary.put(key, value);
     }
 
-    class KeyEntry implements Map.Entry<K, V> {
+    @SuppressWarnings("serial")
+    class KeyEntry implements Map.Entry<K, V>, Serializable {
 
         private final K key;
 
