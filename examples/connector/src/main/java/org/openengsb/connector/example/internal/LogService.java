@@ -30,6 +30,7 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
     private String outputMode;
+    private String prefix;
     private AliveState aliveState = AliveState.OFFLINE;
     private final ExampleDomainEvents domainEventInterface;
 
@@ -41,7 +42,7 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     @Override
     public String doSomething(String message) {
-        message = instanceId + ": " + message;
+        message = prefix + ": " + message;
         Level level = Level.INFO;
         if ("DEBUG".equals(outputMode)) {
             LOGGER.debug(message);
@@ -70,6 +71,10 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
     public void setOutputMode(String outputMode) {
         this.outputMode = outputMode;
         aliveState = AliveState.ONLINE;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     @Override
