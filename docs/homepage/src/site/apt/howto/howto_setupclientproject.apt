@@ -17,7 +17,7 @@
 
 HowTo - Create a Client-Project for OpenEngSB
 
-  This section describes the setup a client project for OpenEngSB using maven archetype.
+  This section describes how to setup a client project for OpenEngSB using maven archetype.
 
 * Java Development Kit 6
 
@@ -36,7 +36,7 @@ HowTo - Create a Client-Project for OpenEngSB
   The OpenEngSB provides an maven archetype to create a client project. To use it type in a shell
 
 ----
-mvn org.openengsb:openengsb-maven-plugin:1.4.0-SNAPSHOT:genClientProjectRoot
+mvn org.openengsb:openengsb-maven-plugin:genClientProjectRoot ( since version 1.4.0 )
 ----
 
   You will be asked what the groupId, artifactId and a name of your client project should look like.
@@ -50,6 +50,17 @@ mvn org.openengsb:openengsb-maven-plugin:1.4.0-SNAPSHOT:genClientProjectRoot
 [../images/howto/clientproject-structure.png]
 
   You can find further information about these modules in the {{{../manual/index.html}OpenEngSB-Manual}}
+
+* Install features
+
+  To install features to the project have a look at the file org.apache.karaf.features.cfg in
+  assembly/src/main/filtered-resource/etc. Here you can define features to be registered by default or which feature
+  should be installed on startup.
+  To install your own features see the file features.xml in assembly/src/main/filtered-resource. So if you want to
+  add an UI your have to add a line to the core features, e.g.:
+
+   \<bundle\>mvn:org.openengsb.clientproject.ui/clientproject-ui-web/$\{project.version\}/war\</bundle\>
+
 
 * Start
 
