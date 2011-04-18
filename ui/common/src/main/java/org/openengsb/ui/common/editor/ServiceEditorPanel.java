@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -127,14 +127,16 @@ public class ServiceEditorPanel extends Panel {
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
     private ListView<Map.Entry<String, Object>> propertiesList;
+    private final Form<?> parentForm;
     private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
         org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
         Constants.SERVICE_ID, Constants.OBJECTCLASS);
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
+            Map<String, String> attributeMap, Dictionary<String, Object> properties, Form<?> parentForm) {
         super(id);
         this.attributes = attributes;
+        this.parentForm = parentForm;
         initPanel(attributes, attributeMap, properties);
     }
 
@@ -196,20 +198,26 @@ public class ServiceEditorPanel extends Panel {
                     repeater.add(container);
                 }
 
-                AjaxLink<String> addLink = new AjaxLink<String>("newArrayEntry") {
+                AjaxButton button = new AjaxButton("newArrayEntry", parentForm) {
                     @Override
-                    public void onClick(AjaxRequestTarget target) {
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         Object value = modelObject.getValue();
                         if (value.getClass().isArray()) {
                             Object[] array = (Object[]) value;
                             Object[] newArray = Arrays.copyOf(array, array.length + 1);
                             newArray[array.length] = "";
                             modelObject.setValue(newArray);
+                        } else {
+                            Object[] newArray = new Object[2];
+                            newArray[0] = value;
+                            newArray[1] = "";
+                            modelObject.setValue(newArray);
                         }
                         target.addComponent(item);
+                        target.addComponent(ServiceEditorPanel.this);
                     }
                 };
-                item.add(addLink);
+                item.add(button);
             }
         };
         propertiesList.setOutputMarkupId(true);

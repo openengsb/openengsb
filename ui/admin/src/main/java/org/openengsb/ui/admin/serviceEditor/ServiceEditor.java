@@ -86,7 +86,7 @@ public abstract class ServiceEditor extends Panel {
         idfield.setRequired(true);
         form.add(idfield);
 
-        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, attributeMap, properties);
+        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, attributeMap, properties, form);
         form.add(serviceEditorPanel);
 
         if (validator != null) {

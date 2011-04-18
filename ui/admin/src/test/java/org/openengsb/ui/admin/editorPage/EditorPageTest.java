@@ -240,4 +240,21 @@ public class EditorPageTest extends AbstractUITest {
         tester.assertErrorMessages(new String[]{});
         serviceUtils.getService(NullDomain.class, 100L);
     }
+
+    @Test
+    public void testMultiValueServiceProperties_shouldAddFields() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:newArrayEntry", "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:2:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService("(testNew=bar)", 100L);
+    }
 }

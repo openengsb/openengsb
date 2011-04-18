@@ -20,6 +20,7 @@ package org.openengsb.ui.common.editor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -34,6 +35,7 @@ import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
@@ -152,17 +154,6 @@ public class ServiceEditorPanelTest {
         assertThat((String) value2.getDefaultModelObject(), is("foo"));
     }
 
-    @Test
-    public void testExpandArrayPropertyField() throws Exception {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("testpropx", new String[]{ "42", "foo" });
-        startEditorPanel(props, attribOption);
-
-        tester.executeAjaxEvent("panel:properties:0:newArrayEntry", "onclick");
-
-        tester.debugComponentTrees();
-    }
-
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
@@ -178,7 +169,8 @@ public class ServiceEditorPanelTest {
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties);
+                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties,
+                    mock(Form.class));
             }
         });
     }
