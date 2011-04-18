@@ -55,16 +55,6 @@
     </para>
   </section>
   <section>
-	<title>Managing global variables</title>
-
-	<para>As already mentioned, global variables are needed to access domain-services 
-    and other helper-objects. To manage this variables there is a button in the testclient
-    which brings you to a own site where you can manage this variables. Here you can add,
-    edit and delete them. If some error occeur while managing the variables(deleting a variable
-    that is already in a rule, ...), the site tells you what did go wrong.
-    </para>
-  </section>
-  <section>
     <title>Rulemanager</title>
     <para>The <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/workflow/RuleManager.java">rule manager</link>
     provides methods for modifying the rulebase. As opposed to plain drl-files,
