@@ -257,4 +257,14 @@ public class EditorPageTest extends AbstractUITest {
 
         serviceUtils.getService("(testNew=bar)", 100L);
     }
+
+    @Test
+    public void testAddNewPropertyEntry_shouldResetKeyNameTextField() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        assertThat(newFormTester.getTextComponentValue("newPropertyKey").isEmpty(), is(true));
+    }
 }

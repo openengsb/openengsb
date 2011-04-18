@@ -102,6 +102,7 @@ public abstract class ServiceEditor extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ServiceEditor.this.properties.put(newKeyModel.getObject(), "new Value");
+                newKeyModel.setObject("");
                 serviceEditorPanel.reloadList(ServiceEditor.this.properties);
                 target.addComponent(serviceEditorPanel);
             }
