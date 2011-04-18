@@ -143,7 +143,29 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             serviceUtils.getService(NullDomain.class, 100L);
             fail("service is available, but shouldn't be");
         } catch (OsgiServiceNotAvailableException e) {
-            // expected
+            // expected. No service should be available because the attributes were invalid
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testForceCreateServiceWithInvalidAttributes_shouldCreateConnector() throws Exception {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("all", "because I don't like you");
+        when(factory.getValidationErrors(anyMap())).thenReturn(errorMessages);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("answer", "42");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.forceCreate(connectorId, connectorDescription);
+
+        try {
+            serviceUtils.getService("(foo=bar)", 100L);
+        } catch (OsgiServiceNotAvailableException e) {
+            fail("service should be available because validation should have been skipped");
         }
     }
 
@@ -181,7 +203,40 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
             serviceUtils.getService("(foo=42)", 1L);
             fail("Service should not be available with the new properties, but it is");
         } catch (OsgiServiceNotAvailableException e) {
-            // expected
+            // expected. The properties should not have been updated, so no service is available.
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testForceUpdateServiceWithInvalidAttributes_shouldUpdateService() throws Exception {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("all", "because I don't like you");
+        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
+
+        Map<String, String> attributes = new HashMap<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
+
+        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        serviceManager.create(connectorId, connectorDescription);
+        serviceUtils.getService("(foo=bar)", 1L);
+
+        connectorDescription.getProperties().put("foo", "42");
+        serviceManager.forceUpdate(connectorId, connectorDescription);
+
+        try {
+            serviceUtils.getService("(foo=bar)", 1L);
+            fail("Service is only available with the old attributes");
+        } catch (OsgiServiceNotAvailableException e) {
+            // expected. The attributes have been overwritten
+        }
+
+        try {
+            serviceUtils.getService("(foo=42)", 1L);
+        } catch (OsgiServiceNotAvailableException e) {
+            fail("Service should be available with the new properties, since validation should have been skipped");
         }
     }
 
