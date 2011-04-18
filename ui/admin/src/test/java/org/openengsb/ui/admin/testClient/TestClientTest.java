@@ -517,8 +517,9 @@ public class TestClientTest extends AbstractUITest {
         ServiceReference ref = Mockito.mock(ServiceReference.class);
         Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
         Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-        when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
-            new ServiceReference[]{ ref });
+        when(
+            bundleContext.getServiceReferences(Domain.class.getName(),
+                String.format("(%s=%s)", Constants.ID_KEY, "test"))).thenReturn(new ServiceReference[]{ ref });
 
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");

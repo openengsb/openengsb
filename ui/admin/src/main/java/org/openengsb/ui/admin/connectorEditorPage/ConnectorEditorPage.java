@@ -31,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -120,7 +121,8 @@ public class ConnectorEditorPage extends BasePage {
 
     private void retrieveDescriptor(String connectorType) {
         Filter filter =
-            serviceUtils.makeFilter(ConnectorProvider.class, String.format("(connector=%s)", connectorType));
+            serviceUtils.makeFilter(ConnectorProvider.class,
+                String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
 
         ConnectorProvider connectorProvider = serviceUtils.getOsgiServiceProxy(filter, ConnectorProvider.class);
         descriptor = connectorProvider.getDescriptor();

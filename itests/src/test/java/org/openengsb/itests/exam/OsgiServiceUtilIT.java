@@ -57,7 +57,9 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
     public void testOsgiServiceProxy() throws Exception {
         ConnectorProvider proxy =
             getServiceUtils().getOsgiServiceProxy(
-                getServiceUtils().makeFilter(ConnectorProvider.class, "(connector=example)"), ConnectorProvider.class);
+                getServiceUtils().makeFilter(ConnectorProvider.class,
+                    String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
+                    ConnectorProvider.class);
         assertThat(proxy.getId(), is("example"));
     }
 

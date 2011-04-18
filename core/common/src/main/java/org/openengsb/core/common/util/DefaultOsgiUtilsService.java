@@ -173,7 +173,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
-        Filter filter = makeFilter(className, String.format("(id=%s)", id));
+        Filter filter = makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.ID_KEY, id));
         return getService(filter, timeout);
     }
 

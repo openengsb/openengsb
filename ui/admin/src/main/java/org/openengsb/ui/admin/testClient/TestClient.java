@@ -247,7 +247,7 @@ public class TestClient extends BasePage {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
                             return serviceUtils.listServices(ConnectorProvider.class,
-                                    String.format("(domain=%s)", domainType));
+                                    String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
                         }
                     };
                 item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
