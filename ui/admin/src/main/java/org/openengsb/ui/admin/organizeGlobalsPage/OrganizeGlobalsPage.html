@@ -25,7 +25,9 @@
 
     <span wicket:id="tree"/>
     <form wicket:id="editForm">
+      <label for="globalName"><wicket:message key="globalName.description" /></label><br/>
       <input type="text" wicket:id="globalName" id="globalName" size="60"/><br/>
+      <label for="className"><wicket:message key="className.description" /></label><br/>
       <input type="text" wicket:id="className" id="className" size="60"/><br/>
       <input type="submit" wicket:id="submitButton" wicket:message="value:save.global"/>
       <input type="submit" wicket:id="deleteButton" wicket:message="value:delete.global"/>
