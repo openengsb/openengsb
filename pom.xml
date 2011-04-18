@@ -50,12 +50,6 @@
     <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
     <!-- Dependency Versions -->
     <javax.xml.soap>1.3.0</javax.xml.soap>
-    <junit.version>4.8.2</junit.version>
-    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
-    <mvn.core.version>3.0</mvn.core.version>
-    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
-    <paxrunner.version>1.5.0</paxrunner.version>
-    <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
