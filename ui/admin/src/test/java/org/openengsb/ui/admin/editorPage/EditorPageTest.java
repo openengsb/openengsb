@@ -36,6 +36,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.repeater.AbstractRepeater;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
@@ -266,5 +267,15 @@ public class EditorPageTest extends AbstractUITest {
         newFormTester.setValue("newPropertyKey", "testNew");
         tester.executeAjaxEvent(button, "onclick");
         assertThat(newFormTester.getTextComponentValue("newPropertyKey").isEmpty(), is(true));
+    }
+
+    @Test
+    public void testAddPropertyWithoutName_shouldLeaveListUnchanged() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        AbstractRepeater properties =
+            (AbstractRepeater) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:properties");
+        tester.executeAjaxEvent(button, "onclick");
+        assertThat(properties.size(), is(0));
     }
 }
