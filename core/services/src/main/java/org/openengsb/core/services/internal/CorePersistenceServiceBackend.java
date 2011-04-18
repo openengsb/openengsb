@@ -27,7 +27,6 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.common.InternalConfigurationItem;
 import org.osgi.framework.BundleContext;
 
 /**
