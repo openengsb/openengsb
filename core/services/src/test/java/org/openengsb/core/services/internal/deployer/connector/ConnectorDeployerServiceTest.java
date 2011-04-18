@@ -17,6 +17,8 @@
 
 package org.openengsb.core.services.internal.deployer.connector;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
@@ -177,65 +179,33 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(new Long(ranking), new LessThan<Long>(0L));
     }
 
-    //
-    // @Test
-    // @SuppressWarnings("unchecked")
-    // public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
-    // File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
-    // FileUtils.touch(connectorFile);
-    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value");
-    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-    // @SuppressWarnings("rawtypes")
-    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-    //
-    // when(updateResult.isValid()).thenReturn(true);
-    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-    //
-    // connectorDeployerService.update(connectorFile);
-    //
-    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(false));
-    // }
-    //
-    // @Test
-    // @SuppressWarnings("unchecked")
-    // public void testOverridenRanking_shouldNotBeAltered() throws Exception {
-    // File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
-    // FileUtils.touch(connectorFile);
-    // FileUtils.writeStringToFile(connectorFile, "connector=a-connector \n id=service-id \n a-key=a-value \n "
-    // + Constants.SERVICE_RANKING + "=24");
-    // MultipleAttributeValidationResult updateResult = mock(MultipleAttributeValidationResult.class);
-    // @SuppressWarnings("rawtypes")
-    // ArgumentCaptor<Map> attributesCaptor = ArgumentCaptor.forClass(Map.class);
-    //
-    // when(updateResult.isValid()).thenReturn(true);
-    // when(serviceManagerMock.update(anyString(), anyMap())).thenReturn(updateResult);
-    //
-    // connectorDeployerService.update(connectorFile);
-    //
-    // verify(serviceManagerMock).update(anyString(), attributesCaptor.capture());
-    // assertThat(attributesCaptor.getValue().containsKey(Constants.SERVICE_RANKING), is(true));
-    // assertThat(attributesCaptor.getValue().get(Constants.SERVICE_RANKING).toString(), is("24"));
-    // }
-    //
-    // @Test
-    // public void testRemoveConnectorFile_shouldRemoveConnector() throws Exception {
-    // File connectorFile = temporaryFolder.newFile("example.connector");
-    //
-    // when(storageMock.getConnectorType(connectorFile)).thenReturn("a-connector ");
-    // when(storageMock.getServiceId(any(File.class))).thenReturn("service-id");
-    //
-    // connectorDeployerService.uninstall(connectorFile);
-    //
-    // verify(serviceManagerMock).delete("service-id");
-    // }
-    //
-    // class IsSomething extends ArgumentMatcher<Map<String, String>> {
-    // @Override
-    // public boolean matches(Object o) {
-    // return true;
-    // }
-    // }
+    @Test
+    public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData);
+
+        connectorDeployerService.install(connectorFile);
+
+        ServiceReference reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "")[0];
+
+        assertThat(reference.getProperty(Constants.SERVICE_RANKING), nullValue());
+    }
+
+    @Test
+    public void testOverridenRanking_shouldNotBeAltered() throws Exception {
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        FileUtils.touch(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\n"
+                + "property." + Constants.SERVICE_RANKING + "=24");
+
+        connectorDeployerService.install(connectorFile);
+
+        ServiceReference ref =
+            bundleContext.getServiceReferences(NullDomain.class.getName(),
+                String.format("(%s=%s)", Constants.SERVICE_RANKING, 24))[0];
+        assertThat(ref, not(nullValue()));
+    }
 
     @Override
     protected void setBundleContext(BundleContext bundleContext) {

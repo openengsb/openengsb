@@ -22,7 +22,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -40,6 +42,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public class ConnectorFile {
+    private static final String PROPERTY = "property";
     private static final String ATTRIBUTE = "attribute";
     private ImmutableMap<String, String> propertiesMap;
     private long cacheTimestamp = 0;
@@ -92,6 +95,15 @@ public class ConnectorFile {
         return getFilteredEntries(ATTRIBUTE);
     }
 
+    private Dictionary<String, Object> getServiceProperties() throws IOException {
+        Map<String, String> entries = getFilteredEntries(PROPERTY);
+        Dictionary<String, Object> result = new Hashtable<String, Object>();
+        for (Entry<String, String> entry : entries.entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
     private Map<String, String> getFilteredEntries(final String key) throws IOException {
         updateProperties();
         @SuppressWarnings("unchecked")
@@ -123,7 +135,8 @@ public class ConnectorFile {
     public ConnectorConfiguration load() throws IOException {
         ConnectorId connectorId =
             new ConnectorId(getDomainName(), getConnectorName(), getServiceId());
-        ConnectorDescription description = new ConnectorDescription(getAttributes());
+
+        ConnectorDescription description = new ConnectorDescription(getAttributes(), getServiceProperties());
         return new ConnectorConfiguration(connectorId, description);
     }
 

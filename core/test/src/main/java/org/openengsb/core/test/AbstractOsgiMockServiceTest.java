@@ -125,6 +125,9 @@ public abstract class AbstractOsgiMockServiceTest {
                         result.add(entry.getKey());
                     }
                 }
+                if (result.isEmpty()) {
+                    return null;
+                }
                 return result.toArray(new ServiceReference[result.size()]);
             }
         });

@@ -93,9 +93,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
         try {
             authenticate(AUTH_USER, AUTH_PASSWORD);
-            // log.info(String.format("Removing instance %s of connector %s", serviceId, connectorType));
-
-            // TODO delete
+            // TODO OPENENGSB-1317 implement delete
             // serviceManager.delete(serviceId);
         } catch (Exception e) {
             LOGGER.error("Removing connector failed: ", e);
