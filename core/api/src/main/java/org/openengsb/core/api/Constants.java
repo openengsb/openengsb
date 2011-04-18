@@ -40,6 +40,12 @@ public final class Constants {
      */
     public static final String CONNECTOR = "connector";
 
+    /**
+     * Some openengsb parts required services to have an ID to identify them uniquly for some parts of the
+     * infrastructure. They have to be registered as properties
+     */
+    public static final String SERVICE_ID = "id";
+
     private Constants() {
         // this class should not be instanciated.
     }

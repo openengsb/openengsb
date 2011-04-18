@@ -38,7 +38,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultOsgiUtilsService.class);
     private static final long DEFAULT_TIMEOUT = 30000L;
-    
+
     private BundleContext bundleContext;
 
     @Override
@@ -113,7 +113,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     public Object getServiceWithId(String className, String id, long timeout) throws OsgiServiceNotAvailableException {
         Filter filter;
         try {
-            filter = makeFilter(className, String.format("(id=%s)", id));
+            filter = makeFilter(className, String.format("(%s=%s)", org.openengsb.core.api.Constants.SERVICE_ID, id));
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
@@ -123,7 +123,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -137,7 +137,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final String filter, Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -151,7 +151,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getOsgiServiceProxy(final Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
