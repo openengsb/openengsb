@@ -53,7 +53,7 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
             instance.setOutputMode(attributes.get("outputMode"));
         }
         if (attributes.containsKey("prefix")) {
-            instance.setOutputMode(attributes.get("prefix"));
+            instance.setPrefix(attributes.get("prefix"));
         }
     }
 
