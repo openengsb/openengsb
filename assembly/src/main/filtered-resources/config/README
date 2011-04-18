@@ -24,3 +24,5 @@ For detailed information please check the manual.
 Supported file types
 --------------------
 .connector (property file) - Connector instance configuration
+.context - Context configuration
+

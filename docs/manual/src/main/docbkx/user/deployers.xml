@@ -76,5 +76,11 @@ smtpHost = smtp.testserver.com
 	    </para>
     </section>
   </section>
+  <section xml:id="user.deployers.context">
+	  <title>Context configuration</title>
+	  <para>
+		  The context deployer service creates contexts according to .context files found in the config directory. The context id is the file-name (without the extension). The file content will be ignored. 
+	  </para>
+  </section>
 </chapter>
 

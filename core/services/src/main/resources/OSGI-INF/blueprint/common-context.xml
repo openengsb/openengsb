@@ -22,15 +22,16 @@
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <service>
+  <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl" init-method="init">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service ref="contextService">
     <interfaces>
       <value>org.openengsb.core.api.context.ContextService</value>
       <value>org.openengsb.core.api.context.ContextCurrentService</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.ContextServiceImpl" init-method="init">
-      <property name="persistenceManager" ref="persistenceManager" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
   </service>
 
   <service>
@@ -92,6 +93,12 @@
     </bean>
   </service>
 
+  <service id="contextDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.services.internal.deployer.context.ContextDeployerService">
+      <property name="contextCurrentService" ref="contextService" />
+    </bean>
+  </service>
+  
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
   <reference id="authenticationManager"
