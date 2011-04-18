@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -202,48 +203,41 @@ public class EditorPageTest extends AbstractUITest {
         serviceUtils.getService("(test=42)", 100L);
     }
 
-    // @SuppressWarnings({ "unchecked", "serial" })
-    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
-    // Map<String, String> errorMessages = new HashMap<String, String>();
-    // errorMessages.put("a", "validation.service.not");
-    // when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-    // new MultipleAttributeValidationResultImpl(false, errorMessages));
-    // WicketTester tester = new WicketTester();
-    // tester.startPage(new ITestPageSource() {
-    // @Override
-    // public Page getTestPage() {
-    // return new ConnectorEditorPage(manager);
-    // }
-    // });
-    // FormTester formTester = tester.newFormTester("editor:form");
-    // formTester.setValue("fields:id:row:field", "someValue");
-    // formTester.submit();
-    // tester.assertErrorMessages(new String[]{ "Service Validation Error" });
-    // tester.assertRenderedPage(ConnectorEditorPage.class);
-    // }
-    //
-    // @Test
-    // @SuppressWarnings({ "unchecked", "serial" })
-    // @Ignore("OPENENGSB-277, what checks should be bypassed")
-    // public void uncheckValidationCheckbox_shouldBypassValidation() {
-    // Map<String, String> errorMessages = new HashMap<String, String>();
-    // errorMessages.put("a", "validation.service.not");
-    // when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-    // new MultipleAttributeValidationResultImpl(false, errorMessages));
-    // WicketTester tester = new WicketTester();
-    // tester.startPage(new ITestPageSource() {
-    // @Override
-    // public Page getTestPage() {
-    // return new ConnectorEditorPage(manager);
-    // }
-    // });
-    // FormTester formTester = tester.newFormTester("editor:form");
-    // formTester.setValue("fields:id:row:field", "someValue");
-    // formTester.setValue("validate", false);
-    // formTester.submit();
-    // tester.assertErrorMessages(new String[]{});
-    // tester.assertInfoMessages(new String[]{ "Service can be added" });
-    // Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
-    // Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
-    // }
+    @SuppressWarnings("unchecked")
+    @Test
+    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("a", "Service Validation Error");
+        when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        tester.assertErrorMessages(new String[]{ "a: Service Validation Error" });
+        tester.assertRenderedPage(ConnectorEditorPage.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void uncheckValidationCheckbox_shouldBypassValidation() {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("a", "Service Validation Error");
+        when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+        tester.debugComponentTrees();
+        formTester.setValue("attributesPanel:validate", false);
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        tester.assertErrorMessages(new String[]{});
+        serviceUtils.getService(NullDomain.class, 100L);
+    }
 }
