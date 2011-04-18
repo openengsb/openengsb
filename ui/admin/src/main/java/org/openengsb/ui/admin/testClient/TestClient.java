@@ -103,7 +103,6 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
 
-    private static final String DOMAINSTRING = "[domain.%1$s]";
     private AjaxButton submitButton;
 
     @SuppressWarnings("serial")
@@ -415,22 +414,6 @@ public class TestClient extends BasePage {
         }
         call.setArguments(arguments);
     }
-
-    // private Domain getServiceViaDomainEndpointFactory(ServiceId serviceId) {
-    // DomainProvider domainProvider = availableDomains.getObject().get(serviceId.getServiceId());
-    // Class<? extends Domain> aClass = domainProvider.getDomainInterface();
-    // String name = domainProvider.getName().getString(Locale.getDefault());
-    // Domain defaultDomain = null;
-    // WiringService wireingService = OpenEngSBCoreServices.getWiringService();
-    // if (wireingService.isConnectorCurrentlyPresent(aClass)) {
-    // defaultDomain = wireingService.getDomainEndpoint(aClass, "domain/" + name + "/default");
-    // }
-    // if (defaultDomain != null) {
-    // return defaultDomain;
-    // }
-    // throw new OsgiServiceNotAvailableException("no default service found for service: "
-    // + serviceId.getServiceClass());
-    // }
 
     private void handleExceptionWithFeedback(Throwable e) {
         String stackTrace = ExceptionUtils.getFullStackTrace(e);

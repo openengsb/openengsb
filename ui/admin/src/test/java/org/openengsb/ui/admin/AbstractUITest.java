@@ -86,8 +86,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         props.put("configuration.id", Constants.CONFIG_CONNECTOR);
         registerService(persistenceService, props, ConfigPersistenceService.class);
 
-        // (&(objectClass=org.openengsb.core.api.persistence.ConfigPersistenceService)(configuration.id=connector))
-
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
         context.putBean(serviceManager);
