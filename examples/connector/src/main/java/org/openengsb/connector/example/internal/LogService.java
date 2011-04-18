@@ -30,7 +30,6 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
 
-    private String prefix;
     private String outputMode;
     private String prefix;
     private AliveState aliveState = AliveState.OFFLINE;
