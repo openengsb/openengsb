@@ -57,6 +57,7 @@
       <para>This part contains tutorials for the OpenEngSB.</para>
     </partintro>
     <xi:include href="howto/howtoCreateConnector.xml" />
+    <xi:include href="howto/howtoCreateClientProject.xml" />
     <xi:include href="howto/howtoInteractRemotely.xml" />
   </part>
 
