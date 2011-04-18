@@ -278,4 +278,31 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent(button, "onclick");
         assertThat(properties.size(), is(0));
     }
+
+    @Test
+    public void testAddPropertyWithSameName_shouldLeaveListUnchanged() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton newPropertyButton = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(newPropertyButton, "onclick");
+
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:newArrayEntry", "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:2:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
+
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(newPropertyButton, "onclick");
+
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        serviceUtils.getService("(testNew=bar)", 100L);
+    }
+
 }

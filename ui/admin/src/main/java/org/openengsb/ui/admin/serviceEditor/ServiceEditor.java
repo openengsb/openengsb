@@ -105,7 +105,12 @@ public abstract class ServiceEditor extends Panel {
                 if (newKey == null) {
                     return;
                 }
-                ServiceEditor.this.properties.put(newKey, "new Value");
+                Dictionary<String, Object> properties = ServiceEditor.this.properties;
+                if (properties.get(newKey) != null) {
+                    error("property with the name already exists");
+                    return;
+                }
+                properties.put(newKey, "new Value");
                 newKeyModel.setObject("");
                 serviceEditorPanel.reloadList(ServiceEditor.this.properties);
                 target.addComponent(serviceEditorPanel);
