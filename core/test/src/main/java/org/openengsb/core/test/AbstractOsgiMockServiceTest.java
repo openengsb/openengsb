@@ -64,6 +64,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
  * the OpenEngSB osgi registry.
+ *
+ * ServiceManagement-operations are performed via the {@link BundleContext}. All these calls are handled using two maps
+ * to mock a service-registry (serviceReferences, services)
  */
 public abstract class AbstractOsgiMockServiceTest {
 
@@ -72,8 +75,14 @@ public abstract class AbstractOsgiMockServiceTest {
     protected BundleContext bundleContext;
     protected Bundle bundle;
 
+    /**
+     * This map keeps track of service-references and their properties
+     */
     private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
         new HashMap<ServiceReference, Dictionary<String, Object>>();
+    /**
+     * This map keeps track of service-references and their corresponding service-object
+     */
     private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
     private Long serviceId = Long.MAX_VALUE;
 
@@ -81,6 +90,10 @@ public abstract class AbstractOsgiMockServiceTest {
     public void prepareServiceRegistry() throws Exception {
         bundleContext = mock(BundleContext.class);
         setBundleContext(bundleContext);
+        /*
+         * redirect calls to getAllServiceReferences to getServiceReferences, since we do not care for
+         * Classloader-restrictions in unit-tests
+         */
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override
@@ -90,6 +103,9 @@ public abstract class AbstractOsgiMockServiceTest {
                     return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
                 }
             });
+        /*
+         * retrieve a service-instance from the serviceReferencesMap
+         */
         when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(new Answer<ServiceReference[]>() {
             @Override
             public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
@@ -112,6 +128,9 @@ public abstract class AbstractOsgiMockServiceTest {
                 return result.toArray(new ServiceReference[result.size()]);
             }
         });
+        /*
+         * retrieves a service-object from the services-map
+         */
         when(bundleContext.getService(any(ServiceReference.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -119,6 +138,10 @@ public abstract class AbstractOsgiMockServiceTest {
                 return services.get(ref);
             }
         });
+        /*
+         * register a new service. This step involves creating mock-objects for ServiceRegistration and
+         * ServiceReference.
+         */
         when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
             new Answer<ServiceRegistration>() {
                 @Override
@@ -129,6 +152,8 @@ public abstract class AbstractOsgiMockServiceTest {
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
                     final ServiceReference serviceReference = registerService(service, dict, clazzes);
                     ServiceRegistration result = mock(ServiceRegistration.class);
+
+                    // unregistering removes the service from both maps
                     doAnswer(new Answer<Void>() {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -137,6 +162,9 @@ public abstract class AbstractOsgiMockServiceTest {
                             return null;
                         }
                     }).when(result).unregister();
+
+                    // when properties are replaced, place a copy of the new properties-dictionary in the
+                    // serviceReferences-map (that overwrites the old dictionary)
                     doAnswer(new Answer<Void>() {
                         @Override
                         public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -152,6 +180,7 @@ public abstract class AbstractOsgiMockServiceTest {
                             return null;
                         }
                     }).when(result).setProperties(any(Dictionary.class));
+
                     when(result.getReference()).thenReturn(serviceReference);
                     return result;
                 }
@@ -160,6 +189,9 @@ public abstract class AbstractOsgiMockServiceTest {
         bundle = mock(Bundle.class);
         when(bundle.getBundleContext()).thenReturn(bundleContext);
         when(bundleContext.getBundle()).thenReturn(bundle);
+        /*
+         * since we ignore ClassLoader-visibility issues in unit-tests, just load the class
+         */
         when(bundle.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
             @Override
             public Class<?> answer(InvocationOnMock invocation) throws Throwable {
@@ -275,6 +307,14 @@ public abstract class AbstractOsgiMockServiceTest {
 
     protected abstract void setBundleContext(BundleContext bundleContext);
 
+    /**
+     * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
+     *
+     * Only {@link ConnectorInstanceFactory#createNewInstance(String)} is mocked to return a {@link Domain}-mock that
+     * contains the given String as id.
+     *
+     * Also the factory is registered as a service with the required properties
+     */
     protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
@@ -293,6 +333,12 @@ public abstract class AbstractOsgiMockServiceTest {
         return factory;
     }
 
+    /**
+     * creates a DomainProvider with for the given interface and name. This creates a mock of {@link DomainProvider}
+     * where all String-methods return the name again.
+     *
+     * Also the service is registered with the mocked service-registry with the given name as domain-value
+     */
     protected DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         LocalizableString testDomainLocalizedStringMock = mock(LocalizableString.class);
@@ -312,19 +358,29 @@ public abstract class AbstractOsgiMockServiceTest {
         return domainProviderMock;
     }
 
+    /**
+     * creates a {@link LocalizableString} that returns the given value for all {@link Locale}s
+     */
     protected LocalizableString mockLocalizeableString(String value) {
         LocalizableString mock2 = mock(LocalizableString.class);
         when(mock2.getString(any(Locale.class))).thenReturn(value);
         return mock2;
     }
 
+    /**
+     * creates a ConnectorProvider with for the given connectorType and domains. This creates a mock of
+     * {@link ConnectorProvider} that returns a descriptor-mock when calling {@link ConnectorProvider#getDescriptor()}
+     * Also the service is registered with the mocked service-registry
+     */
     protected ConnectorProvider createConnectorProviderMock(String connectorType, String... domains) {
         ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
         when(connectorProvider.getId()).thenReturn(connectorType);
+
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, connectorType);
         props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, domains);
         registerService(connectorProvider, props, ConnectorProvider.class);
+
         ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
         when(descriptor.getId()).thenReturn(connectorType);
         LocalizableString name = mockLocalizeableString("service.name");
