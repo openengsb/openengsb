@@ -111,7 +111,7 @@
     <el.version>2.1.0</el.version>
     <wicket.version>1.4.16</wicket.version>
     <wicket.wrapped.version>${wicket.version}.w1</wicket.wrapped.version>
-    <jackson.version>1.5.3</jackson.version>
+    <jackson.version>1.7.6</jackson.version>
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
