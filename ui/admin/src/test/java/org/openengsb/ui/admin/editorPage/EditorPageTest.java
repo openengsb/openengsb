@@ -279,30 +279,49 @@ public class EditorPageTest extends AbstractUITest {
         assertThat(properties.size(), is(0));
     }
 
+    // @SuppressWarnings("unchecked")
+    // @Test
+    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+    // Map<String, String> errorMessages = new HashMap<String, String>();
+    // errorMessages.put("a", "Service Validation Error");
+    // when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+    //
+    // tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+    // FormTester formTester = tester.newFormTester("editor:form");
+    // formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+    // AjaxButton submitButton =
+    // (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+    // tester.executeAjaxEvent(submitButton, "onclick");
+    //
+    // tester.assertErrorMessages(new String[]{ "a: Service Validation Error" });
+    // tester.assertRenderedPage(ConnectorEditorPage.class);
+    // }
+
     @Test
     public void testAddPropertyWithSameName_shouldLeaveListUnchanged() throws Exception {
         tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
-        FormTester newFormTester = tester.newFormTester("editor:form");
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+
         AjaxButton newPropertyButton = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
 
-        newFormTester.setValue("newPropertyKey", "testNew");
+        formTester.setValue("newPropertyKey", "testNew");
         tester.executeAjaxEvent(newPropertyButton, "onclick");
 
         tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
-        newFormTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+        formTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
 
         tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:newArrayEntry", "onclick");
         tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:2:value:label", "onclick");
-        newFormTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
+        formTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
 
-        newFormTester.setValue("newPropertyKey", "testNew");
+        formTester.setValue("newPropertyKey", "testNew");
         tester.executeAjaxEvent(newPropertyButton, "onclick");
 
-        AjaxButton submitButton =
-            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
-        tester.executeAjaxEvent(submitButton, "onclick");
-
-        serviceUtils.getService("(testNew=bar)", 100L);
+        AbstractRepeater list =
+            (AbstractRepeater) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:properties:0:values");
+        assertThat(list.size(), is(2));
     }
 
 }
