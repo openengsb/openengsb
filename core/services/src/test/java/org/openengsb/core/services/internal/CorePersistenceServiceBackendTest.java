@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.persistence.internal;
+package org.openengsb.core.services.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.RuleConfiguration;
-import org.openengsb.core.common.CorePersistenceServiceBackend;
+import org.openengsb.core.persistence.internal.NeodatisPersistenceManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

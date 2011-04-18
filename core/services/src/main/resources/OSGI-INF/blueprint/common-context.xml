@@ -94,6 +94,16 @@
     </bean>
   </service>
 
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="persistenceService" />
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.CorePersistenceServiceBackend" init-method="init">
+      <property name="bundleContext" ref="blueprintBundleContext" />
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </service>
+
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
