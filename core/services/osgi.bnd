@@ -24,4 +24,6 @@ org.springframework.aop.framework,\
 org.apache.felix.fileinstall;version="[3,4)",\
 *
 
+# We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
+# Additional domains can be installed any time. 
 DynamicImport-Package: *
