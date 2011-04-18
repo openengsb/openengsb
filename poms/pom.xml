@@ -117,7 +117,7 @@
     <xml.stream.version>1.5.0</xml.stream.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>2.0.1</commons.io.version>
-    <commons.lang.version>2.5</commons.lang.version>
+    <commons.lang.version>2.6</commons.lang.version>
     <commons.compress.version>1.1</commons.compress.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
