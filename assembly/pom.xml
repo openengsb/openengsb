@@ -217,6 +217,9 @@
                 <feature>war</feature>
                 <!-- ActiveMq Features -->
                 <feature>activemq-blueprint</feature>
+                <!-- CXF Features -->
+                <feature>openengsb-ports-ws</feature>
+                <feature>openengsb-ports-rs</feature>
                 <!-- OpenEngSB Features -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->

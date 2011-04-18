@@ -32,6 +32,7 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
 
     private String prefix;
     private String outputMode;
+    private String prefix;
     private AliveState aliveState = AliveState.OFFLINE;
     private final ExampleDomainEvents domainEventInterface;
 
