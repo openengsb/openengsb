@@ -49,6 +49,10 @@ public class ConnectorManagerImpl implements ConnectorManager {
         .getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
 
     public void init() {
+        /*
+         * FIXME [OPENENGSB-1301] This is done in background because integration-tests would break otherwise. It makes
+         * no difference for the runtime-system. This can hack can be removed as soon as OPENENGSB-1301 is fixed.
+         */
         new Thread() {
             @Override
             public void run() {
