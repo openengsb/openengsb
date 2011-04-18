@@ -28,7 +28,7 @@ import org.openengsb.core.api.model.ConnectorId;
 public class ConnectorIdTest {
 
     @Test
-    public void testParseConnectorId() throws Exception {
+    public void testParseConnectorId_shouldReturnCorrectId() throws Exception {
         ConnectorId id = new ConnectorId("mydomain", "myconnector", "xxx");
         String text = id.toString();
         ConnectorId id2 = ConnectorId.fromFullId(text);
@@ -36,7 +36,7 @@ public class ConnectorIdTest {
     }
 
     @Test
-    public void testParseIdWithSpecial() throws Exception {
+    public void testParseIdWithSpecial_shouldReturnCorrectId() throws Exception {
         ConnectorId id = new ConnectorId("mydomain", "myconnector", "x+x-x");
         String text = id.toString();
         ConnectorId id2 = ConnectorId.fromFullId(text);
