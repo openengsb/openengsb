@@ -74,7 +74,11 @@ import org.openengsb.ui.admin.model.Argument;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+<<<<<<< HEAD
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
+=======
+import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
+>>>>>>> 70181519016c268a4bbe96e831f5062120b3ff7e
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,6 +245,14 @@ public class TestClient extends BasePage {
         };
         globalsButton.setOutputMarkupId(true);
         organize.add(globalsButton);
+        AjaxButton importsButton = new AjaxButton("importsButton", organize) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                setResponsePage(new OrganizeImportsPage());
+            }
+        };
+        importsButton.setOutputMarkupId(true);
+        organize.add(importsButton);
 
         return organize;
     }

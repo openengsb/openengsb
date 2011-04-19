@@ -28,13 +28,12 @@
   <para>The admin interface for the user to manage domains, connectors(services) and things that have things in common with this. Also you can test services here.</para>
 
   <section>
-	<title>Managing global variables</title>
-
-	<para>Global variables are needed to access domain-services 
-    and other helper-objects. To manage this variables there is a button in the testclient
-    which brings you to a own site where you can manage this variables. Here you can add,
-    edit and delete them. If some error occeur while managing the variables(deleting a variable
-    that is already in a rule, ...), the site tells you what did go wrong.
+    <title>Managing imports</title>
+    <para>Imports are important so that global variables can work. If the class of the global
+    variable isn't imported an error occeurs because the neccessary classes can't be loaded.
+    To manage this imports there is a button in the testclient which brings you to a own site 
+    where you can manage this imports. Here you can add, edit and delete them. If some error 
+    occur while managing the imports, the site tells you what did go wrong.
     </para>
   </section>
 
