@@ -175,10 +175,8 @@ public class RulebaseBuilder {
         builder.add(ResourceFactory.newReaderResource(new StringReader(content)), ResourceType.DRL);
         if (flows != null) {
             for (String drf : flows) {
-                if (drf != null) {
-                    Resource resource = ResourceFactory.newReaderResource(new StringReader(drf));
-                    builder.add(resource, ResourceType.DRF);
-                }
+                Resource resource = ResourceFactory.newReaderResource(new StringReader(drf));
+                builder.add(resource, ResourceType.DRF);
             }
         }
         if (builder.hasErrors()) {

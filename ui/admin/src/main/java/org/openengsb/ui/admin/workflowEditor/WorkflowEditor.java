@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -104,6 +105,7 @@ public class WorkflowEditor extends BasePage {
                 try {
                     String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
                     System.out.println(convert);
+                    addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
                     ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
                         .getCurrentWorkflow().getName()),
                         convert);
@@ -115,7 +117,8 @@ public class WorkflowEditor extends BasePage {
         add(exportForm);
 
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        final WorkflowRepresentation currentWorkflow = workflowEditorService.getCurrentWorkflow();
+        final Model<WorkflowRepresentation> currentworkflow =
+            new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
         DefaultTreeModel model = new DefaultTreeModel(node);
         IColumn[] columns =
             new IColumn[]{
@@ -128,7 +131,7 @@ public class WorkflowEditor extends BasePage {
                         NodeRepresentation userObject = (NodeRepresentation) treeNode.getUserObject();
                         if (userObject instanceof ActionRepresentation) {
                             return new ActionLinks("links", (ActionRepresentation) userObject, treeNode,
-                                currentWorkflow);
+                                currentworkflow);
                         }
                         if (userObject instanceof EventRepresentation) {
                             return new EventLinks("links", (EventRepresentation) userObject, treeNode);
@@ -144,22 +147,42 @@ public class WorkflowEditor extends BasePage {
 
         table = new TreeTable("treeTable", model, columns);
         String label = "";
-        if (currentWorkflow == null) {
+        if (currentworkflow.getObject() == null) {
             label = getString("workflow.create.first");
             node.setUserObject(new ActionRepresentation());
             table.setVisible(false);
             selectForm.setVisible(false);
             exportForm.setVisible(false);
         } else {
-            label = currentWorkflow.getName();
-            node.setUserObject(currentWorkflow.getRoot());
-            ActionRepresentation root = currentWorkflow.getRoot();
+            label = currentworkflow.getObject().getName();
+            node.setUserObject(currentworkflow.getObject().getRoot());
+            ActionRepresentation root = currentworkflow.getObject().getRoot();
             addActionsToNode(root.getActions(), node);
             addEventsToNode(root.getEvents(), node);
         }
         add(new Label("currentWorkflowName", label));
         table.getTreeState().expandAll();
         add(table);
+    }
+
+    private void addGlobal(ActionRepresentation action) {
+        ruleManager.addGlobal(action.getDomain().getName(), action.getLocation());
+        
+        for (ActionRepresentation newAction : action.getActions()) {
+            addGlobal(newAction);
+        }
+        for (EventRepresentation event : action.getEvents()) {
+            addGlobalForEvents(event);
+        }
+    }
+
+    private void addGlobalForEvents(EventRepresentation event) {
+        for (EventRepresentation newEvent : event.getEvents()) {
+            addGlobalForEvents(newEvent);
+        }
+        for (ActionRepresentation action : event.getActions()) {
+            addGlobal(action);
+        }
     }
 
     private void addTreeNodeForEvent(DefaultMutableTreeNode node, EventRepresentation event) {

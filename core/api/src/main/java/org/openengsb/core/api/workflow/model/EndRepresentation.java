@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api.workflow.model;
 
+/**
+ * Represents a Leaf in the Workflow Tree. When the Workflow reaches an End node the branch of the Eorkflow ends.
+ */
 public class EndRepresentation {
 
     private String name;

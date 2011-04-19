@@ -466,6 +466,7 @@
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
         <version>${xmlunit.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>

@@ -17,10 +17,11 @@
 
 package org.openengsb.core.api.workflow.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkflowRepresentation {
+public class WorkflowRepresentation implements Serializable {
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();

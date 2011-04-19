@@ -37,6 +37,11 @@ public class NullDomainImpl implements NullDomain {
         return o;
     }
 
+    @Override
+    public Object nullMethod(Object o, String b) {
+        return o;
+    }
+
     protected String instanceId;
 
     public NullDomainImpl() {
@@ -58,4 +63,5 @@ public class NullDomainImpl implements NullDomain {
     public void setAliveState(AliveState state) {
         this.state = state;
     }
+
 }

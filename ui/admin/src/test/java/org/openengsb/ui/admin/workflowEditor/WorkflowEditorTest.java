@@ -206,8 +206,11 @@ public class WorkflowEditorTest {
     }
 
     @Test
-    public void exportWorkflow_ShouldCallRuleManagerAddWithConverterReturn() throws RuleBaseException {
+    public void exportWorkflow_ShouldCallRuleManagerAddWithConverterReturnAndAddGlobal() throws RuleBaseException {
         service.createWorkflow("workflow");
+        ActionRepresentation root = service.getCurrentWorkflow().getRoot();
+        root.setDomain(NullDomain.class);
+        root.setLocation("location");
         tester.startPage(WorkflowEditor.class);
         String converted = "converted";
         Mockito.when(workflowConverter.convert(service.getCurrentWorkflow())).thenReturn(converted);

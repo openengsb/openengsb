@@ -44,12 +44,16 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.xml.sax.SAXException;
 
+/**
+ * Test Method use different naming scheme here, to be clearer which potential structures in the Workflow are tested by
+ * each method.
+ */
 public class DroolsConverterTest {
 
     private WorkflowRepresentation workflow;
 
     @Before
-    public void before() {
+    public void setUp() {
         XMLUnit.setIgnoreWhitespace(true);
         workflow = new WorkflowRepresentation();
         workflow.setName("workflow");
@@ -57,7 +61,7 @@ public class DroolsConverterTest {
     }
 
     @Test
-    public void callWorkflow_ShouldConvertCorrectly() throws SAXException, IOException,
+    public void testCallsWorkflow_shouldConvertCorrectly() throws SAXException, IOException,
         JAXBException {
         ActionRepresentation root = workflow.getRoot();
         EndRepresentation end = new EndRepresentation();
@@ -199,6 +203,7 @@ public class DroolsConverterTest {
         Method method = NullDomain.class.getMethods()[0];
         root.setMethodName(method.getName());
         root.setMethodParameters(Arrays.asList(method.getParameterTypes()));
+        root.setCode("location.nullMethod();");
         return root;
     }
 }
