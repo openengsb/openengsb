@@ -161,10 +161,9 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (!mnode.isLeaf()) {
-                    return;
-                }
-                if (!mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                    editButton.setEnabled(false);
+                    target.addComponent(editButton);
                     return;
                 }
                 call.setService((ServiceId) mnode.getUserObject());
