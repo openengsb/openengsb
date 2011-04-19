@@ -31,12 +31,12 @@ public class ActionNode {
     public ActionNode() {
     }
 
-    public ActionNode(int id, String name, String location, String methodName) {
+    public ActionNode(int id, String name, String location, String code) {
         super();
         this.id = id;
         this.name = name;
         this.action = new Action();
-        action.setValue(location + "." + methodName + "();");
+        this.action.value = code;
     }
 
     @XmlAttribute

@@ -23,11 +23,14 @@
 	xml:lang="en" lang="en">
 <body>
 <wicket:extend>
+    <div wicket:id="feedback">[feedback]</div>
 	<form wicket:id="actionForm" id="actionForm">
 	<select wicket:id="domainSelect" onchange="this.form.submit()"></select>
 	<select wicket:id="methodSelect"></select>
 	<input type="text" wicket:id="location" />
-	<input type="submit" value="Submit" id="formsubmit" />
+    <input wicket:id="create-template-code" type="submit" value="Create template code" />
+    <textarea wicket:id="code"> </textarea>
+	<input wicket:id="submit-button" type="submit" value="Submit"/>
 	<input wicket:id="cancel-button" type="submit" value="Cancel" />
 	</form>
 </wicket:extend>

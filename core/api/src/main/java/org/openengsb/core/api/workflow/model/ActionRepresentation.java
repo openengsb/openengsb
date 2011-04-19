@@ -33,6 +33,8 @@ public class ActionRepresentation implements Serializable, NodeRepresentation {
     private Class<? extends Domain> domain;
     private String methodName;
 
+    private String code;
+
     private List<Class<?>> methodParameters = new ArrayList<Class<?>>();
     private String location;
 
@@ -92,6 +94,14 @@ public class ActionRepresentation implements Serializable, NodeRepresentation {
 
     public void setMethodParameters(List<Class<?>> methodParameters) {
         this.methodParameters = methodParameters;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public EndRepresentation getEnd() {

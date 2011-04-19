@@ -217,7 +217,7 @@ public class Process {
     private static void processAction(Process process, ActionRepresentation root, int parentId) {
         int counter = process.getIdCounter();
         process.addNode(new ActionNode(counter, root.getMethodName(), root.getLocation(), root
-            .getMethodName()));
+            .getCode()));
         process.connection.add(new Connection(parentId, counter));
         if (root.isLeaf()) {
             EndRepresentation end;

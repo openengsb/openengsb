@@ -64,7 +64,6 @@ public class EditActionTest {
     public void setup() {
         parent = new ActionRepresentation();
         action = new ActionRepresentation();
-        action.setLocation("test");
         tester = new WicketTester();
         mock = new ApplicationContextMock();
         mock.putBean(mock(ContextCurrentService.class));
@@ -93,21 +92,54 @@ public class EditActionTest {
     @Test
     public void editForm_shouldUpdateAction() {
         assertThat(parent.getActions().size(), equalTo(0));
-        String location = "location";
-        assertThat(action.getLocation(), equalTo(formTester.getTextComponentValue(location)));
-        tester.dumpPage();
-        formTester.setValue(location, location);
+        String locationName = "location";
+        formTester.submit("submit-button");
+        formTester = tester.newFormTester("actionForm");
         formTester.select("domainSelect", 0);
-        formTester.submit();
+        formTester.submit("submit-button");
         formTester = tester.newFormTester("actionForm");
         formTester.select("methodSelect", 1);
-        formTester.submit();
+        formTester.submit("submit-button");
+        formTester = tester.newFormTester("actionForm");
+        formTester.setValue(locationName, locationName);
+        formTester.submit("submit-button");
+        formTester = tester.newFormTester("actionForm");
+        String code = "code";
+        formTester.setValue(code, code);
+        formTester.submit("submit-button");
         tester.assertRenderedPage(WorkflowEditor.class);
-        assertThat(action.getLocation(), equalTo(location));
+        assertThat(action.getLocation(), equalTo(locationName));
         assertEquals(action.getDomain(), NullDomain.class);
         assertThat(action.getMethodName(), equalTo(NullDomain.class.getMethods()[1].getName()));
+        assertThat(action.getCode(), equalTo(code));
         assertThat(parent.getActions().size(), equalTo(1));
         assertThat(parent.getActions().get(0), sameInstance(action));
+    }
+
+    @Test
+    public void testCallCreateTemplateButton_shouldSetCode() {
+        String domain = "Domain has to be set";
+        String method = "Method has to be set";
+        String location = "Location has to be set";
+        formTester.submit("create-template-code");
+        tester.assertErrorMessages(new String[]{ domain, method, location });
+        formTester = tester.newFormTester("actionForm");
+        formTester.select("domainSelect", 0);
+        formTester.submit("create-template-code");
+
+        tester.assertErrorMessages(new String[]{ method, location });
+        formTester = tester.newFormTester("actionForm");
+        formTester.select("methodSelect", 2);
+        formTester.submit("create-template-code");
+
+        tester.assertErrorMessages(new String[]{ location });
+
+        formTester = tester.newFormTester("actionForm");
+        formTester.setValue("location", "location");
+        formTester.submit("create-template-code");
+        tester.assertErrorMessages(new String[]{});
+        assertThat(action.getCode(), equalTo("location." + action.getMethodName() + "(" + Object.class.getName() + ", "
+                + String.class.getName() + ");"));
     }
 
     @Test
