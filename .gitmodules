@@ -107,3 +107,15 @@
 [submodule "features/domain/test"]
 	path = features/domain/test
 	url = git://github.com/openengsb/openengsb-domain-test
+[submodule "features/connector/promreport"]
+	path = features/connector/promreport
+	url = git://github.com/openengsb/openengsb-connector-promreport
+[submodule "features/connector/gcalendar"]
+	path = features/connector/gcalendar
+	url = git://github.com/openengsb/openengsb-connector-gcalendar
+[submodule "features/connector/gcontacts"]
+	path = features/connector/gcontacts
+	url = git://github.com/openengsb/openengsb-connector-gcontacts
+[submodule "features/connector/github"]
+	path = features/connector/github
+	url = git://github.com/openengsb/openengsb-connector-github
