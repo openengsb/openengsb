@@ -23,7 +23,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.openengsb.core.api.workflow.model.WorkflowConverter;
+import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.core.workflow.editor.converter.Process.Connection;
 import org.openengsb.core.workflow.editor.converter.Process.EndNode;

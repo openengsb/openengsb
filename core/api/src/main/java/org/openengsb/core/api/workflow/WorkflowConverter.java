@@ -15,8 +15,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow.model;
+package org.openengsb.core.api.workflow;
 
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+
+/**
+ * Converts a Workflow into a format that can be processed by the OpenENGSb Workflow service (e.g. Drools Flow). 
+ */
 public interface WorkflowConverter {
 
     String convert(WorkflowRepresentation workflow);
