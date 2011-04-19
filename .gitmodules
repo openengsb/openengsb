@@ -1,33 +1,3 @@
-[submodule "wrapped/openengsb-wrapped-parent"]
-	path = wrapped/openengsb-wrapped-parent
-	url = git://github.com/openengsb/openengsb-wrapped-parent.git
-[submodule "wrapped/openengsb-wrapped-com.google.guava"]
-	path = wrapped/openengsb-wrapped-com.google.guava
-	url = git://github.com/openengsb/openengsb-wrapped-com.google.guava.git
-[submodule "wrapped/openengsb-wrapped-com.jcraft.jsch"]
-	path = wrapped/openengsb-wrapped-com.jcraft.jsch
-	url = git://github.com/openengsb/openengsb-wrapped-com.jcraft.jsch.git
-[submodule "wrapped/openengsb-wrapped-javax.xml.jaxb"]
-	path = wrapped/openengsb-wrapped-javax.xml.jaxb
-	url = git://github.com/openengsb/openengsb-wrapped-javax.xml.jaxb.git
-[submodule "wrapped/openengsb-wrapped-net.sourceforge.htmlunit"]
-	path = wrapped/openengsb-wrapped-net.sourceforge.htmlunit
-	url = git://github.com/openengsb/openengsb-wrapped-net.sourceforge.htmlunit.git
-[submodule "wrapped/openengsb-wrapped-org.apache.wicket"]
-	path = wrapped/openengsb-wrapped-org.apache.wicket
-	url = git://github.com/openengsb/openengsb-wrapped-org.apache.wicket.git
-[submodule "wrapped/openengsb-wrapped-org.apache.xmlrpc"]
-	path = wrapped/openengsb-wrapped-org.apache.xmlrpc
-	url = git://github.com/openengsb/openengsb-wrapped-org.apache.xmlrpc.git
-[submodule "wrapped/openengsb-wrapped-org.neobatis.odb"]
-	path = wrapped/openengsb-wrapped-org.neobatis.odb
-	url = git://github.com/openengsb/openengsb-wrapped-org.neobatis.odb.git
-[submodule "wrapped/openengsb-wrapped-org.apache.axis"]
-	path = wrapped/openengsb-wrapped-org.apache.axis
-	url = git://github.com/openengsb/openengsb-wrapped-org.apache.axis.git
-[submodule "wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap"]
-	path = wrapped/openengsb-wrapped-com.dolby.jira.net.jira-soap
-	url = git://github.com/openengsb/openengsb-wrapped-com.dolby.jira.net.git
 [submodule "connector/email"]
 	path = connector/email
 	url = git://github.com:openengsb/openengsb-connector-email.git
@@ -55,13 +25,6 @@
 [submodule "connector/openengsb-connector-gcontacts"]
 	path = connector/openengsb-connector-gcontacts
 	url = git://github.com/openengsb/openengsb-connector-gcontacts.git
-[submodule "wrapped/openengsb-wrapped-com.google.gdata-calendar"]
-	path = wrapped/openengsb-wrapped-com.google.gdata-calendar
-	url = git://github.com/openengsb/openengsb-wrapped-com.google.gdata-calendar.git
-
-[submodule "wrapped/openengsb-wrapped-com.google.gdata-contacts"]
-	path = wrapped/openengsb-wrapped-com.google.gdata-contacts
-	url = git://github.com/openengsb/openengsb-wrapped-com.google.gdata-contacts.git
 [submodule "features/connector/email"]
 	path = features/connector/email
 	url = git://github.com/openengsb/openengsb-connector-email
