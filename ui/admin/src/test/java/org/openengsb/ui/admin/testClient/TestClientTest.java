@@ -564,33 +564,25 @@ public class TestClientTest extends AbstractUITest {
         Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
         when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
             new ServiceReference[]{ ref });
-
-        List<ServiceManager> managerList = new ArrayList<ServiceManager>();
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
                 new PassThroughLocalizableString("ServiceDescription"));
 
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-
-        managerList.add(serviceManagerMock);
-        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
-
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
         tester.debugComponentTrees();
-        tester.clickLink("methodCallForm:serviceList:i:3:nodeComponent:contentLink", true);
+        tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
         Assert.assertEquals(true, deleteButton.isEnabled());
         tester.executeAjaxEvent(deleteButton, "onclick");
-
+        
         boolean works = false;
         try {
-            tester.clickLink("methodCallForm:serviceList:i:3:nodeComponent:contentLink", true);
+            tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         } catch (Exception e) {
             works = true;
         }

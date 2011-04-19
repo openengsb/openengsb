@@ -53,9 +53,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -65,6 +65,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -132,7 +133,6 @@ public class TestClient extends BasePage {
         initContent();
     }
 
-    @SuppressWarnings("serial")
     private void initContent() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
@@ -175,25 +175,18 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("delete button pressed");
                 String serviceId = call.getService().getServiceId();
-                serviceManager.delete(serviceId);
-                info("service " + lastServiceId.getServiceId() + " successfully deleted");
-                serviceList.setModelObject(createModel());
-                serviceList.getTreeState().expandAll();
+                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
+                try {
+                    serviceManager.delete(connectorId);
+                    info("service " + serviceId + " successfully deleted");
+                    serviceList.setModelObject(createModel());
+                    serviceList.getTreeState().expandAll();
+                    target.addComponent(serviceList);
+                } catch (PersistenceException e) {
+                    error("Unable to delete Service due to: " + e.getLocalizedMessage());
+                }
+                
                 target.addComponent(feedbackPanel);
-                target.addComponent(serviceList);
-
-                /*if (lastServiceId != null) {
-                    ServiceManager lastManager = getLastManager(lastServiceId);
-                    if (lastManager != null) {
-                        lastManager.delete(lastServiceId.getServiceId());
-                        info("service " + lastServiceId.getServiceId() + " successfully deleted");
-                        serviceList.setModelObject(createModel());
-                        serviceList.getTreeState().expandAll();
-                        target.addComponent(feedbackPanel);
-                        target.addComponent(serviceList);
-                    }
-
-                }*/
             }
         };
         deleteButton.setEnabled(false);
@@ -261,7 +254,7 @@ public class TestClient extends BasePage {
         };
         submitButton.setOutputMarkupId(true);
         // the message-attribute doesn't work for some reason
-        submitButton.setModel(new ResourceModel("form.call"));
+//        submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
         form.add(editButton);
         form.add(deleteButton);
@@ -285,6 +278,8 @@ public class TestClient extends BasePage {
         };
         globalsButton.setOutputMarkupId(true);
         organize.add(globalsButton);
+        
+        @SuppressWarnings("serial")
         AjaxButton importsButton = new AjaxButton("importsButton", organize) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -380,47 +375,11 @@ public class TestClient extends BasePage {
     }
 
     private void updateModifyButtons(ServiceId serviceId) {
-        // lastServiceId = null; not sure about this
         editButton.setEnabled(false);
         editButton.setEnabled(serviceId.getServiceId() != null);
-        // editButton.setEnabled(getLastManager(serviceId) != null);
         deleteButton.setEnabled(false);
         deleteButton.setEnabled(serviceId.getServiceId() != null);
-        // deleteButton.setEnabled(getLastManager(serviceId) != null);
     }
-
-    /*private ServiceManager getLastManager(ServiceId serviceId) {
-        ServiceReference[] references = null;
-        try {
-            references =
-                    bundleContext.getServiceReferences(Domain.class.getName(),
-                            String.format("(id=%s)", serviceId.getServiceId()));
-            String id = "";
-            String domain = null;
-            if (references != null && references.length > 0) {
-                id = (String) references[0].getProperty("managerId");
-                domain = (String) references[0].getProperty("domain");
-            }
-            List<ServiceManager> managerList = new ArrayList<ServiceManager>();
-
-            for (DomainProvider ref : services.domains()) {
-                Class<? extends Domain> domainInterface = ref.getDomainInterface();
-                if (domainInterface.getName().equals(domain)) {
-                    managerList.addAll(services.serviceManagersForDomain(domainInterface));
-                }
-            }
-
-            for (ServiceManager sm : managerList) {
-                if (sm.getDescriptor().getId().equals(id)) {
-                    lastServiceId = serviceId;
-                    return sm;
-                }
-            }
-        } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     private TreeModel createModel() {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
