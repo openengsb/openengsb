@@ -212,6 +212,9 @@
               </descriptors>
               <features>
                 <!-- Missing Karaf Features -->
+                <feature>config</feature>
+                <feature>ssh</feature>
+                <feature>management</feature>
                 <feature>obr</feature>
                 <feature>wrapper</feature>
                 <feature>war</feature>

@@ -20,6 +20,8 @@
 
 <features name="openengsb-itests-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
+  <repository>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</repository>
+  <repository>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</repository>
   <repository>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</repository>
   <repository>mvn:org.openengsb/openengsb/${project.version}/xml/features</repository>
 </features>
