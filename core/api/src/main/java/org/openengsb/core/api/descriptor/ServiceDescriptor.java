@@ -125,11 +125,6 @@ public class ServiceDescriptor implements Serializable {
             return this;
         }
 
-        public Builder serviceType(Class<? extends Domain> serviceType) {
-            desc.serviceType = serviceType;
-            return this;
-        }
-
         public Builder implementationType(Class<? extends Domain> type) {
             desc.implementationType = type;
             return this;
@@ -157,10 +152,6 @@ public class ServiceDescriptor implements Serializable {
 
         public ServiceDescriptor build() {
             Preconditions.checkState(desc.id != null && !desc.id.trim().isEmpty(), "id has not been set");
-            Preconditions.checkState(desc.serviceType != null, "service type has not been set");
-            Preconditions.checkState(desc.implementationType != null, "implementation type has not been set");
-            Preconditions.checkState(desc.serviceType.isAssignableFrom(desc.implementationType),
-                    "implementatio type is not compatible to service type");
             Preconditions.checkState(desc.name != null && !desc.name.getKey().trim().isEmpty(),
                     "service name has not been set");
             Preconditions.checkState(desc.description != null && !desc.description.getKey().trim().isEmpty(),

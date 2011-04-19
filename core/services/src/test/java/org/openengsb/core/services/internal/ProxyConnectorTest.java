@@ -17,10 +17,9 @@
 
 package org.openengsb.core.services.internal;
 
-import static junit.framework.Assert.fail;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -53,9 +52,9 @@ public class ProxyConnectorTest {
         MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>());
         when(router.callSync(Mockito.eq(id), Mockito.eq(test), captor.capture())).thenReturn(methodReturn);
 
-        Object[] args = new Object[]{id, test};
+        Object[] args = new Object[]{ id, test };
         Interface newProxyInstance =
-            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
+            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);
         String result = newProxyInstance.test(id, test);
 
         MethodCall value = captor.getValue();
@@ -76,7 +75,7 @@ public class ProxyConnectorTest {
         MethodReturn methodReturn = new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>());
         when(router.callSync(any(String.class), any(String.class), any(MethodCall.class))).thenReturn(methodReturn);
         Interface newProxyInstance =
-            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
+            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);
         try {
             newProxyInstance.testException();
             fail();

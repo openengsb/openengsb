@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<assembly>
+  <id>multi</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <!-- Expanded Karaf Runtime -->
+    <fileSet>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+        <exclude>bin/**</exclude>
+        <exclude>etc/org.apache.karaf.features.cfg</exclude>
+        <exclude>LICENSE</exclude>
+        <exclude>NOTICE</exclude>
+        <exclude>KNOWN_ISSUES</exclude>
+        <exclude>CHANGELOG</exclude>
+        <exclude>README</exclude>
+        <exclude>openengsb-manual.pdf</exclude>
+      </excludes>
+    </fileSet>
+
+    <!-- Copy over bin/karaf separately to get the correct file mode -->
+    <fileSet>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>bin/admin</include>
+        <include>bin/karaf</include>
+        <include>bin/openengsb</include>
+        <include>bin/start</include>
+        <include>bin/stop</include>
+      </includes>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <!-- Copy over bin/karaf separately to get the correct file mode -->
+    <fileSet>
+      <directory>target/dependencies/openengsb-${openengsb.version}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>bin/admin.bat</include>
+        <include>bin/karaf.bat</include>
+        <include>bin/openengsb.bat</include>
+        <include>bin/start.bat</include>
+        <include>bin/stop.bat</include>
+      </includes>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <!-- copy lib directory -->
+    <fileSet>
+      <directory>target/dependencies/lib</directory>
+      <outputDirectory>/lib/</outputDirectory>
+    </fileSet>
+
+    <!-- Copy license and other files from root -->
+    <fileSet>
+      <directory>${basedir}/..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>LICENSE</include>
+        <include>NOTICE</include>
+      </includes>
+      <lineEnding>dos</lineEnding>
+      <fileMode>0644</fileMode>
+    </fileSet>
+
+    <!-- Copy over everything that needs to get win line endings -->
+    <fileSet>
+      <directory>target/classes/etc</directory>
+      <outputDirectory>/etc/</outputDirectory>
+      <lineEnding>dos</lineEnding>
+      <fileMode>0644</fileMode>
+    </fileSet>
+
+    <!-- Copy openengsb system repo -->
+    <fileSet>
+      <directory>target/features-repo</directory>
+      <outputDirectory>system</outputDirectory>
+    </fileSet>
+
+  </fileSets>
+
+  <files>
+    <file>
+      <source>${basedir}/target/dependencies/openengsb-${openengsb.version}/bin/openengsb.bat</source>
+      <outputDirectory>/bin/</outputDirectory>
+      <destName>${artifactId}.bat</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>dos</lineEnding>
+    </file>
+    <file>
+      <source>${basedir}/target/dependencies/openengsb-${openengsb.version}/bin/openengsb</source>
+      <outputDirectory>/bin/</outputDirectory>
+      <destName>${artifactId}</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>${basedir}/target/classes/features.xml</source>
+      <outputDirectory>system/${packageInPathFormat}/${artifactId}/${version}</outputDirectory>
+      <destName>${artifactId}-${version}-features.xml</destName>
+      <fileMode>0644</fileMode>
+      <lineEnding>dos</lineEnding>
+    </file>
+    <file>
+      <source>${basedir}/target/classes/README.txt</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>README</destName>
+      <fileMode>0644</fileMode>
+      <lineEnding>dos</lineEnding>
+    </file>
+  </files>
+
+</assembly>
+

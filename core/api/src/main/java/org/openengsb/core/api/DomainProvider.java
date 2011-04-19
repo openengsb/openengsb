@@ -29,8 +29,7 @@ import org.openengsb.core.api.security.AuthorizedRoles;
 public interface DomainProvider {
 
     /**
-     * Returns the global identifier for this domain. This should be either the package name of this domain, or the full
-     * class name of the provided Domain interface.
+     * Returns the global identifier for this domain. This should be a short and unique human-readable id (e.g. "scm")
      */
     @AuthorizedRoles("ROLE_USER")
     String getId();

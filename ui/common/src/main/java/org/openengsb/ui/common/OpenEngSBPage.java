@@ -20,13 +20,13 @@ package org.openengsb.ui.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
@@ -38,7 +38,7 @@ public class OpenEngSBPage extends WebPage {
 
     public static final String CONTEXT_PARAM = "context";
 
-    private static Log log = LogFactory.getLog(OpenEngSBPage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
     @SpringBean
     protected ContextCurrentService contextService;
@@ -49,11 +49,11 @@ public class OpenEngSBPage extends WebPage {
 
     public OpenEngSBPage(PageParameters parameters) {
         super(parameters);
-        log.debug("creating new page using parameters: " + parameters);
+        LOGGER.debug("creating new page using parameters: {}", parameters);
         Object object = parameters.get(CONTEXT_PARAM);
         if (object != null && object instanceof String[]) {
             final String contextId = ((String[]) object)[0];
-            log.debug("setting context-id from pageparameter: " + contextId);
+            LOGGER.debug("setting context-id from pageparameter: {}", contextId);
             ContextHolder.get().setCurrentContextId(contextId);
         }
     }
@@ -75,7 +75,7 @@ public class OpenEngSBPage extends WebPage {
                 contextService.setThreadLocalContext(sessionContextId);
             }
         } catch (IllegalArgumentException e) {
-            log.debug("initialize default-values in contexts");
+            LOGGER.debug("initialize default-values in contexts");
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
             contextService.setThreadLocalContext(sessionContextId);

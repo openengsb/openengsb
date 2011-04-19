@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
 /**
- * Base class for {@code DomainProvider} implementations with the following unctionality:
+ * Base class for {@code DomainProvider} implementations with the following functionality:
  * <ul>
  * <li>extracts domain interface through parameterized type</li>
  * <li>id is class name of domain interface</li>
@@ -48,6 +48,7 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
     private BundleStrings strings;
     private final Class<DomainType> domainInterface;
     private final Class<DomainEventType> domainEventInterface;
+    protected String id;
 
     @SuppressWarnings("unchecked")
     public AbstractDomainProvider() {
@@ -58,7 +59,11 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
 
     @Override
     public String getId() {
-        return domainInterface.getSimpleName();
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

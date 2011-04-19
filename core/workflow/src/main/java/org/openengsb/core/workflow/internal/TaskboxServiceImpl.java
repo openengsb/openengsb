@@ -19,8 +19,6 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
@@ -31,9 +29,11 @@ import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.Task;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskboxServiceImpl implements TaskboxService {
-    private Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskboxServiceImpl.class);
 
     private WorkflowService workflowService;
     private PersistenceService persistence;
@@ -98,10 +98,21 @@ public class TaskboxServiceImpl implements TaskboxService {
             }
 
             workflowService.processEvent(finishedEvent);
-            log.info("finished task " + task.getTaskId());
+            LOGGER.info("finished task {}", task.getTaskId());
         } else {
-            log.warn("tried to finish task " + task.getTaskId() + " BUT there is no such task.");
+            LOGGER.error("tried to finish task {}, BUT there is no such task.", task.getTaskId());
+        }
+    }
+
+    @Override
+    public void updateTask(Task task) throws WorkflowException {
+        Task oldTask = getTaskForId(task.getTaskId());
+        try {
+            persistence.update(oldTask, task);
+            LOGGER.info("updated task {}", task.getTaskId());
+        } catch (PersistenceException e) {
+            LOGGER.error("tried to update task {}, but it didnt work!", task.getTaskId());
+            throw new WorkflowException(e);
         }
     }
 }
-

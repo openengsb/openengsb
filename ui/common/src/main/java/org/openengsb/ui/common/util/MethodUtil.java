@@ -29,14 +29,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class MethodUtil {
-    private static Log log = LogFactory.getLog(MethodUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -68,7 +68,7 @@ public final class MethodUtil {
                 attributes.add(a);
             }
         } catch (IntrospectionException ex) {
-            log.error("building attribute list failed", ex);
+            LOGGER.error("building attribute list failed", ex);
         }
         return attributes;
     }
@@ -142,7 +142,7 @@ public final class MethodUtil {
         try {
             return type.getConstructor(String.class);
         } catch (SecurityException e) {
-            log.error("unexpected security-exception occured", e);
+            LOGGER.error("unexpected security-exception occured", e);
             return null;
         } catch (NoSuchMethodException e) {
             return null;

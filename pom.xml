@@ -50,12 +50,6 @@
     <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
     <!-- Dependency Versions -->
     <javax.xml.soap>1.3.0</javax.xml.soap>
-    <junit.version>4.8.2</junit.version>
-    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
-    <mvn.core.version>3.0</mvn.core.version>
-    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
-    <paxrunner.version>1.5.0</paxrunner.version>
-    <log4j.version>1.2.14</log4j.version>
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/integration</github>
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
@@ -69,7 +63,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>13</version>
+    <version>14</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -204,112 +198,7 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  <profile><id>4aa715e0-69f0-4be6-a1b3-7ebdbbf3de1f</id><build><plugins>
-  <plugin>
-    <inherited>false</inherited>
-    <groupId>com.mycila.maven-license-plugin</groupId>
-    <artifactId>maven-license-plugin</artifactId>
-    <version>1.8.0</version>
-    <configuration>
-      <!-- header is added dynamically -->
-      <failIfMissing>true</failIfMissing>
-      <aggregate>true</aggregate>
-      <strictCheck>true</strictCheck>
-      <excludes>
-        <!-- openengs-maven-plugin test resources -->
-        <exclude>src/main/resources/license/header.txt</exclude>
-        <eclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
-        <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
-        <!-- #################################### -->
-        <exclude>docs/examples/**/*.config</exclude>
-        <exclude>etc/eclipse/checkstyle.xml</exclude>
-        <exclude>license.txt</exclude>
-        <exclude>**/*.vm</exclude>
-        <exclude>**/license.txt</exclude>
-        <exclude>runner/**</exclude>
-        <exclude>assembly/runner/**</exclude>
-        <exclude>features/**</exclude>
-        <exclude>NOTICE</exclude>
-        <exclude>**/*.3pm</exclude>
-        <exclude>**/*.dll</exclude>
-        <exclude>**/*.pdb</exclude>
-        <exclude>**/*.pdf</exclude>
-        <exclude>**/LICENSE</exclude>
-        <exclude>**/*checkstyle.xml</exclude>
-        <exclude>**/*.log.*</exclude>
-        <exclude>**/*.log</exclude>
-        <exclude>**/*.packlist</exclude>
-        <exclude>**/*.pod</exclude>
-        <exclude>**/imports</exclude>
-        <exclude>**/globals</exclude>
-        <exclude>**/.keep</exclude>
-        <exclude>**/EngSB.sln</exclude>
-        <exclude>**/nb-configuration.xml</exclude>
-        <exclude>**/*.checkstyle</exclude>
-        <exclude>**/*.rf</exclude>
-      </excludes>
-      <mapping>
-        <bnd>SCRIPT_STYLE</bnd>
-        <drl>SCRIPT_STYLE</drl>
-        <index>SCRIPT_STYLE</index>
-        <gitignore>SCRIPT_STYLE</gitignore>
-        <cfg>SCRIPT_STYLE</cfg>
-        <wsdl>XML_STYLE</wsdl>
-        <csproj>XML_STYLE</csproj>
-        <rf>XML_STYLE</rf>
-        <composite>SCRIPT_STYLE</composite>
-        <config>XML_STYLE</config>
-        <script>DOUBLESLASH_STYLE</script>
-        <rule>SCRIPT_STYLE</rule>
-      </mapping>
-    <header>/tmp/96c3bc22-ae7f-4e16-90e3-b905eb4f329c8457763666101179830.txt</header></configuration>
-    <executions>
-      <execution>
-        <id>check-headers</id>
-        <phase>validate</phase>
-        <goals>
-          <!-- the goal (check/format) is added dynamically -->
-        <goal>check</goal></goals>
-      </execution>
-    </executions>
-  </plugin>
-
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-checkstyle-plugin</artifactId>
-    <version>${maven.plugin.checkstyle.version}</version>
-    <configuration>
-      <!-- the config location is added dynamically by the mojo -->
-      <consoleOutput>true</consoleOutput>
-      <enableRulesSummary>true</enableRulesSummary>
-      <failsOnError>true</failsOnError>
-      <includeTestSourceDirectory>true</includeTestSourceDirectory>
-    <configLocation>file:/tmp/a06cf376-2938-4589-a703-1c1bb81a87f4324230301398697241.xml</configLocation></configuration>
-    <executions>
-      <execution>
-        <id>check</id>
-        <phase>verify</phase>
-        <goals>
-          <goal>checkstyle</goal>
-        </goals>
-      </execution>
-    </executions>
-  </plugin>
-
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <configuration>
-      <excludes>
-        <exclude>*</exclude>
-      </excludes>
-      <includes>
-        <include>**/*Test.java</include>
-        <include>**/*IT.java</include>
-      </includes>
-    </configuration>
-  </plugin>
-</plugins></build></profile></profiles>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
@@ -401,6 +290,11 @@
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-contact</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

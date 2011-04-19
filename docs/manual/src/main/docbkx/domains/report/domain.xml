@@ -44,6 +44,7 @@
   <section>
     <title>Connectors</title>  
     <xi:include href="plaintext.xml" />
+    <xi:include href="prom.xml" />
   </section>
 
 </chapter>

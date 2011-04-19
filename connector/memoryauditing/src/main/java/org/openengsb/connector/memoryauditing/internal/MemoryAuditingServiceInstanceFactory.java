@@ -17,51 +17,21 @@
 
 package org.openengsb.connector.memoryauditing.internal;
 
-import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class MemoryAuditingServiceInstanceFactory implements
-        ServiceInstanceFactory<AuditingDomain, MemoryAuditingServiceImpl> {
+public class MemoryAuditingServiceInstanceFactory extends AbstractConnectorInstanceFactory<MemoryAuditingServiceImpl> {
 
-    public MemoryAuditingServiceInstanceFactory() {
+    @Override
+    public Domain createNewInstance(String id) {
+        return new MemoryAuditingServiceImpl(id);
     }
 
     @Override
-    public void updateServiceInstance(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+    public void doApplyAttributes(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
+        // nothing to do
     }
 
-    @Override
-    public MemoryAuditingServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        MemoryAuditingServiceImpl service = new MemoryAuditingServiceImpl();
-        updateServiceInstance(service, attributes);
-        return service;
-    }
-
-    @Override
-    public ServiceDescriptor getDescriptor(Builder builder) {
-        builder.name("service.name").description("service.description");
-        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
-            .description("service.attr.description").build());
-        return builder.build();
-    }
-
-    @Override
-    public MultipleAttributeValidationResult updateValidation(MemoryAuditingServiceImpl instance,
-        Map<String, String> attributes) {
-        Map<String, String> emptyMap = Collections.emptyMap();
-        return new MultipleAttributeValidationResultImpl(true, emptyMap);
-    }
-
-    @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        Map<String, String> emptyMap = Collections.emptyMap();
-        return new MultipleAttributeValidationResultImpl(true, emptyMap);
-    }
 }

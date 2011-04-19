@@ -60,7 +60,7 @@ public class WorkflowEditor extends BasePage {
     private String name = "";
 
     @SpringBean
-    WorkflowEditorService workflowEditorService;
+    private WorkflowEditorService workflowEditorService;
 
     public WorkflowEditor() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {

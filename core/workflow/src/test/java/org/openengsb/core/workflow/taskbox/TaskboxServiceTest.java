@@ -149,8 +149,8 @@ public class TaskboxServiceTest {
         service.finishTask(task);
 
         result = new ArrayList<Task>();
-        //mocking Persistence-Behaviour again, since the task
-        //would have been deleted by the TaskBoxService
+        // mocking Persistence-Behaviour again, since the task
+        // would have been deleted by the TaskBoxService
         when(persistenceService.query(any(Task.class))).thenReturn(result);
         service.finishTask(task);
 
@@ -172,5 +172,20 @@ public class TaskboxServiceTest {
 
         verify(persistenceService).delete(any(Task.class));
         verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
+    }
+
+    @Test
+    public void testUpdateTask_shouldReturnUpdatedTask() throws PersistenceException {
+        Task task = new Task();
+        List<Task> result = new ArrayList<Task>();
+        result.add(task);
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+
+        Task newTask = Task.createTaskWithAllValuesSetToNull();
+        newTask.setTaskId(task.getTaskId());
+        newTask.setDescription("test");
+
+        service.updateTask(newTask);
+        verify(persistenceService).update(task, newTask);
     }
 }

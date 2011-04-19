@@ -17,78 +17,40 @@
 
 package org.openengsb.ui.admin.serviceListPage;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanelTester;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-import org.apache.wicket.request.target.component.PageRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.DomainService;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.context.ContextCurrentService;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
-public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
-
-    private ServiceManager serviceManagerMock;
-    private WicketTester tester;
-    private DomainService domainServiceMock;
-    private List<ServiceReference> managedServiceInstances;
-    private List<ServiceManager> serviceManagerListMock;
-    private BundleContext bundleContext;
+public class ServicesListPageTest extends AbstractUITest {
 
     @Before
     public void setup() throws Exception {
         Locale.setDefault(new Locale("en"));
-        tester = new WicketTester();
-        ApplicationContextMock context = new ApplicationContextMock();
-        serviceManagerMock = mock(ServiceManager.class);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("connector", "bla");
-        registerService(serviceManagerMock, props, ServiceManager.class);
-        domainServiceMock = mock(DomainService.class);
-        ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
-        managedServiceInstances = new ArrayList<ServiceReference>();
-        serviceManagerListMock = new ArrayList<ServiceManager>();
+        props.put(Constants.CONNECTOR_KEY, "bla");
 
-        bundleContext = mock(BundleContext.class);
-        when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
-            managedServiceInstances.toArray(new ServiceReference[0]));
-
-        context.putBean(serviceManagerMock);
-        context.putBean("services", serviceManagerListMock);
-        context.putBean(domainServiceMock);
-        context.putBean(contextCurrentServiceMock);
-        context.putBean("bundleContext", bundleContext);
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
 
@@ -102,170 +64,28 @@ public class ServicesListPageTest extends AbstractOsgiMockServiceTest {
     @Test
     public void verifyRenderedPage_ShouldBeServiceListPage() {
         startPage();
-
         tester.assertRenderedPage(ServiceListPage.class);
     }
 
     @Test
     public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("connector")).thenReturn("bla");
-        addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
 
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.ID_KEY, "test-service");
+        props.put("testprop", "42");
+        registerService(domainService, props, NullDomain.class, Domain.class, OpenEngSBService.class);
         startPage();
-        tester.dumpPage();
-        tester.assertContains("Connecting");
-        tester.assertContains("ONLINE");
-        tester.assertContains("OFFLINE");
-        tester.assertContains("Disconnected");
-        tester.assertComponent("lazy:content:connectingServicePanel:connectingServices", ListView.class);
-        tester.assertComponent("lazy:content:onlineServicePanel:onlineServices", ListView.class);
-        tester.assertComponent("lazy:content:offlineServicePanel:offlineServices", ListView.class);
-        tester.assertComponent("lazy:content:disconnectedServicePanel:disconnectedServices", ListView.class);
         Label nameLabel =
-            (Label) tester.getComponentFromLastRenderedPage("lazy:content:"
-                    + "connectingServicePanel:connectingServices:0:service.name");
-        assertThat(nameLabel.getDefaultModelObjectAsString(), is("testService"));
-    }
-
-    private void addServiceRef(ServiceReference serRef) {
-        managedServiceInstances.add(serRef);
-        try {
-            when(bundleContext.getAllServiceReferences("org.openengsb.core.api.Domain", null)).thenReturn(
-                managedServiceInstances.toArray(new ServiceReference[0]));
-        } catch (InvalidSyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void verifyListViews_ServiceShouldBeAfterStateChangeInOtherList() {
-        NullDomainImpl domainService = setUpServicesMap();
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("name"));
-        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("desc"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
-        startPage();
-
-        ListView<ServiceReference> connectingService =
-            (ListView<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("lazy:content:connectingServicePanel:connectingServices");
-        assertThat(connectingService.getModelObject().size(), is(1));
-
-        ListView<ServiceReference> onlineServices =
-            (ListView<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("lazy:content:onlineServicePanel:onlineServices");
-        assertThat(onlineServices.getModelObject().size(), is(0));
-
-        domainService.setAliveState(AliveState.ONLINE);
-
-        final WebRequestCycle cycle = tester.setupRequestAndResponse();
-        try {
-            cycle.request(new PageRequestTarget(tester.getLastRenderedPage()));
-        } finally {
-            cycle.getResponse().close();
-        }
-        ListView<ServiceReference> onlineServicesNew =
-            (ListView<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("lazy:content:onlineServicePanel:onlineServices");
-        assertThat(onlineServicesNew.getModelObject().size(), is(1));
-    }
-
-    @Test
-    public void testIfCorrectServiceDataIsInList_ShouldReturnTheNameOfTheServiceManagerAndDescrption() {
-        setUpServicesMap();
-
-        startPage();
-
+            (Label) tester
+                .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.name");
+        assertThat(nameLabel.getDefaultModelObjectAsString(), is("test-service"));
+        Component stateLabel =
+            tester
+                .getComponentFromLastRenderedPage("lazy:content:serviceListContainer:serviceListView:0:service.state");
+        assertThat(stateLabel.getDefaultModelObjectAsString(), is(AliveState.CONNECTING.name()));
         tester.debugComponentTrees();
-        Label name =
-            (Label) tester.getComponentFromLastRenderedPage("lazy:content:"
-                    + "connectingServicePanel:connectingServices:0:service.name");
-        Label description =
-            (Label) tester.getComponentFromLastRenderedPage("lazy:content:"
-                    + "connectingServicePanel:connectingServices:0:service.description");
-        assertThat(name.getDefaultModelObjectAsString(), is("testService"));
-        assertThat(description.getDefaultModelObjectAsString(), is("testDescription"));
-
-    }
-
-    @Test
-    public void testVisibiltyOfInfoMessages() {
-        serviceManagerListMock.add(serviceManagerMock);
-
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
-
-        startPage();
-        tester.assertVisible("lazy:content:connectingServicePanel:noConServices");
-        tester.assertVisible("lazy:content:connectingServicePanel:noConServices");
-        tester.assertVisible("lazy:content:onlineServicePanel:noOnServices");
-        tester.assertVisible("lazy:content:offlineServicePanel:noOffServices");
-        tester.assertVisible("lazy:content:disconnectedServicePanel:noDisServices");
-    }
-
-    @Test
-    public void verifyIfEditButtonAndDeleteButtonExist_ShouldReturnTrue() {
-        setUpServicesMap();
-
-        startPage();
-        tester
-            .assertComponent("lazy:content:connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
-        tester
-            .assertComponent("lazy:content:connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testDeleteLink_AllListsShouldBeEmptyAfterwards() {
-        setUpServicesMap();
-        startPage();
-        ListView<ServiceReference> connectingServices =
-            (ListView<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("lazy:content:connectingServicePanel:connectingServices");
-        assertThat(connectingServices.size(), is(1));
-
-        tester
-            .assertComponent("lazy:content:connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
-        tester
-            .assertComponent("lazy:content:connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);
-        tester.clickLink("lazy:content:connectingServicePanel:connectingServices:0:deleteService", true);
-        tester.debugComponentTrees();
-
-        ListView<ServiceReference> updateService =
-            (ListView<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("lazy:content:connectingServicePanel:connectingServices");
-        assertThat(updateService.size(), is(0));
-        tester.assertVisible("lazy:content:connectingServicePanel:noConServices");
-        tester.assertVisible("lazy:content:onlineServicePanel:noOnServices");
-        tester.assertVisible("lazy:content:offlineServicePanel:noOffServices");
-        tester.assertVisible("lazy:content:disconnectedServicePanel:noDisServices");
-    }
-
-    private NullDomainImpl setUpServicesMap() {
-        serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("connector")).thenReturn("bla");
-        addServiceRef(serRef);
-        NullDomainImpl domainService = new NullDomainImpl();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
-        domainService.setAliveState(AliveState.CONNECTING);
-        return domainService;
     }
 
     @Override

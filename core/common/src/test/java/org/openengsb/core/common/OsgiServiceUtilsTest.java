@@ -32,10 +32,8 @@ public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
 
     private OsgiUtilsService utils;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         utils = OpenEngSBCoreServices.getServiceUtilsService();
     }
 

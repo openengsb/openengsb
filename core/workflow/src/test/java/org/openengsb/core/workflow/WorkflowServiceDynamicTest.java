@@ -69,10 +69,8 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     private Map<String, Object> services = new HashMap<String, Object>();
     private Map<String, Class<?>> domains = new HashMap<String, Class<?>>();
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         ContextHolder.get().setCurrentContextId("42");
         domains.put("example", DummyExampleDomain.class);
         example = mock(DummyExampleDomain.class);

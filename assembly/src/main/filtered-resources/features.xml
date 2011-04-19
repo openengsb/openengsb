@@ -76,6 +76,7 @@
     <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
     <!-- OpenEngSB Commons Dependencies -->
+    <bundle>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
@@ -118,6 +119,47 @@
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
   </feature>
+
+  <feature name="openengsb-infrastructure-cxf" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.apache.ws.commons.axiom/axiom-api/${axiom.version}</bundle>
+    <bundle>mvn:org.apache.ws.commons.axiom/axiom-impl/${axiom.version}</bundle>
+    <bundle>mvn:org.apache.abdera/abdera-core/${abdera.version}</bundle>
+    <bundle>mvn:org.apache.abdera/abdera-extensions-main/${abdera.version}</bundle>
+    <bundle>mvn:org.apache.abdera/abdera-i18n/${abdera.version}</bundle>
+    <bundle>mvn:org.apache.abdera/abdera-parser/${abdera.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlsec/${xmlsec.version}</bundle>
+    <bundle>mvn:joda-time/joda-time/${joda.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.version}</bundle>
+    <bundle>mvn:org.apache.ws.security/wss4j/${wss4j.version}</bundle>
+    <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.saaj-impl/${saaj.impl.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.woodstox/stax2-api/${stax2.api.version}</bundle>
+    <bundle start-level='20'>mvn:org.codehaus.woodstox/woodstox-core-asl/${woodstox.version}</bundle>
+    <bundle>mvn:org.apache.neethi/neethi/${neethi.version}</bundle>
+    <bundle>mvn:org.apache.ws.xmlschema/xmlschema-core/${xmlschema.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.wsdl4j/${wsdl4j.version}</bundle>
+    <bundle>mvn:org.codehaus.jettison/jettison/${jettison.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/${xmlbeans.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/${rhino.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/${xmlresolver.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/${xerces.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/${bcel.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
+    <bundle>mvn:org.apache.cxf/cxf-bundle/${cxf.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-ports-ws" version="${project.version}" >
+    <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
+  </feature>
+
+  <feature name="openengsb-ports-rs" version="${project.version}" >
+    <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
+  </feature>
+
   <feature name="openengsb-ui-core" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>

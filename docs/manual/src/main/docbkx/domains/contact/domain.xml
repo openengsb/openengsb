@@ -38,4 +38,9 @@
       to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
   </section>
 
+  <section>
+    <title>Connectors</title>  
+    <xi:include href="gcontacts.xml" />
+  </section>
+
 </chapter>

@@ -18,9 +18,9 @@
 -->
 
 <archetype-descriptor xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
-  name="OpenEngSB Connector" partial="false">
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+                      name="OpenEngSB Connector" partial="false">
 
   <requiredProperties>
     <requiredProperty key="domainArtifactId">
@@ -30,15 +30,12 @@
       <defaultValue>openengsb-connector-connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>1.1.0-SNAPSHOT</defaultValue>
+      <defaultValue>1.2.0-SNAPSHOT</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>OpenEngSB :: Connector :: Connectorname</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="connectorName">
       <defaultValue>Connectorname</defaultValue>
     </requiredProperty>
-    <requiredProperty key="connectorNameLC">
+    <requiredProperty key="connectorName">
       <defaultValue>connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainInterface">
@@ -49,6 +46,15 @@
     </requiredProperty>
     <requiredProperty key="package">
       <defaultValue>org.openengsb.connector.connectorname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="scmConnection">
+      <defaultValue>scm:git:git://github.com/openengsb/openengsb-connector-connectorName.git</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="scmDeveloperConnection">
+      <defaultValue>scm:git:git@github.com:openengsb/openengsb-connector-connectorName.git</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="scmUrl">
+      <defaultValue>http://github.com/openengsb/openengsb-connector-connectorName</defaultValue>
     </requiredProperty>
   </requiredProperties>
 
@@ -63,6 +69,19 @@
       <directory>src/main/resources</directory>
       <includes>
         <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>src/main/filtered-resources</directory>
+      <includes>
+        <include>**/features.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory></directory>
+      <includes>
+        <include>osgi.bnd</include>
+        <include>pom.xml</include>
       </includes>
     </fileSet>
   </fileSets>

@@ -20,31 +20,49 @@ package org.openengsb.core.services.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.openengsb.core.api.OpenEngSBService;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 
 public class RequestHandlerImpl implements RequestHandler {
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
+        Object service = retrieveOpenEngSBService(call);
+        Object[] args = call.getArgs();
+        Method method = findMethod(service, call.getMethodName(), getArgTypes(args));
+        return invokeMethod(service, method, args);
+    }
+
+    private Object retrieveOpenEngSBService(MethodCall call) {
+        String serviceId = retrieveServiceId(call);
+        Filter filter = createFilterForServiceId(serviceId);
+        return OpenEngSBCoreServices.getServiceUtilsService().getService(filter);
+    }
+
+    private String retrieveServiceId(MethodCall call) {
         String serviceId = call.getMetaData().get("serviceId");
         if (serviceId == null) {
             throw new IllegalArgumentException("missing definition of serviceid in methodcall");
         }
-        OpenEngSBService service;
-        service = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OpenEngSBService.class, serviceId);
-
-        Object[] args = call.getArgs();
-        Method method = findMethod(service, call.getMethodName(), getArgTypes(args));
-
-        return invokeMethod(service, method, args);
+        return serviceId;
     }
 
-    private MethodReturn invokeMethod(OpenEngSBService service, Method method, Object[] args) {
+    private Filter createFilterForServiceId(String serviceId) {
+        try {
+            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.ID_KEY, serviceId));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private MethodReturn invokeMethod(Object service, Method method, Object[] args) {
         MethodReturn resultContainer = new MethodReturn();
         try {
             Object result = method.invoke(service, args);
@@ -64,7 +82,7 @@ public class RequestHandlerImpl implements RequestHandler {
         return resultContainer;
     }
 
-    private Method findMethod(OpenEngSBService service, String methodName, Class<?>[] argTypes) {
+    private Method findMethod(Object service, String methodName, Class<?>[] argTypes) {
         Method method;
         try {
             method = service.getClass().getMethod(methodName, argTypes);

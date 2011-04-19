@@ -18,19 +18,16 @@
 package org.openengsb.ui.common.validation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
 
 @SuppressWarnings("serial")
 public class DefaultPassingFormValidator implements FormValidator {
     @Override
-    public MultipleAttributeValidationResult validate(Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    public void validate(Map<String, String> attributes) {
+        // do nothing
     }
 
     @Override

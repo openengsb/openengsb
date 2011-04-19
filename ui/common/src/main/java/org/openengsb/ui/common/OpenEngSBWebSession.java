@@ -17,14 +17,14 @@
 
 package org.openengsb.ui.common;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,7 +39,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @SuppressWarnings("serial")
 public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
-    private Log log = LogFactory.getLog(AuthenticatedWebSession.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 
     @SpringBean(name = "authenticationManager")
     private AuthenticationManager authenticationManager;
@@ -78,7 +78,7 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();
         } catch (AuthenticationException e) {
-            log.warn(String.format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
+            LOGGER.warn("User '{}' failed to login. Reason: ", username, e);
             authenticated = false;
         }
         return authenticated;
