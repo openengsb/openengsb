@@ -164,6 +164,9 @@ public class TestClient extends BasePage {
                 if (!mnode.isLeaf()) {
                     return;
                 }
+                if (!mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                    return;
+                }
                 call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
                 target.addComponent(methodList);
@@ -366,8 +369,16 @@ public class TestClient extends BasePage {
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
         domainProviderServiceId.setDomainName(providerName);
-        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
-        providerNode.add(endPointReferenceNode);
+        if (domainProviderServiceId.getServiceId() == null) {
+            String endPointReference =
+                String.format("%s (%s)", domainProviderServiceId.getDomainName(),
+                    domainProviderServiceId.getServiceClass());
+            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(endPointReference, false);
+            providerNode.add(endPointReferenceNode);
+        } else {
+            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
+            providerNode.add(endPointReferenceNode);
+        }
 
         // add all corresponding services
         List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
