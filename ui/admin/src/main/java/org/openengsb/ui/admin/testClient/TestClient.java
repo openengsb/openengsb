@@ -74,6 +74,7 @@ import org.openengsb.ui.admin.model.Argument;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,6 +136,9 @@ public class TestClient extends BasePage {
 
         serviceManagementContainer.add(makeServiceList());
 
+        Form<Object> organize = createOrganizeForm();
+        add(organize);
+
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
@@ -148,7 +152,6 @@ public class TestClient extends BasePage {
                 ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
                 setResponsePage(new ConnectorEditorPage(connectorId));
             }
-
         };
         editButton.setEnabled(false);
         editButton.setOutputMarkupId(true);
@@ -220,6 +223,26 @@ public class TestClient extends BasePage {
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+    }
+
+    /**
+     * creates the form for organize section (globals, imports)
+     */
+    private Form<Object> createOrganizeForm() {
+        Form<Object> organize = new Form<Object>("organizeForm");
+        organize.setOutputMarkupId(true);
+
+        @SuppressWarnings("serial")
+        AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                setResponsePage(new OrganizeGlobalsPage());
+            }
+        };
+        globalsButton.setOutputMarkupId(true);
+        organize.add(globalsButton);
+
+        return organize;
     }
 
     @SuppressWarnings("serial")
