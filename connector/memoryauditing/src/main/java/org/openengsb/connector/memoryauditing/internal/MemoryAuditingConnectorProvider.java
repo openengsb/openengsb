@@ -15,17 +15,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.memoryauditing;
+package org.openengsb.connector.memoryauditing.internal;
 
-import org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl;
-import org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory;
-import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.AbstractConnectorProvider;
 
-public class MemoryAuditingServiceManager extends AbstractServiceManager<AuditingDomain, MemoryAuditingServiceImpl> {
+public class MemoryAuditingConnectorProvider extends AbstractConnectorProvider {
 
-    public MemoryAuditingServiceManager(MemoryAuditingServiceInstanceFactory factory) {
-        super(factory);
+    @Override
+    public ServiceDescriptor getDescriptor() {
+        Builder builder = ServiceDescriptor.builder(strings);
+        builder.id(id);
+        builder.name("service.name").description("service.description");
+        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
+            .description("service.attr.description").build());
+        return builder.build();
     }
 
 }

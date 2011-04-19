@@ -15,27 +15,49 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.ui.common.model;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceFactory;
-import org.osgi.framework.ServiceRegistration;
+import java.io.Serializable;
+import java.util.Map;
 
-public class SingletonServiceFactory implements ServiceFactory {
+@SuppressWarnings("serial")
+public class PropertyEntry implements Comparable<PropertyEntry>, Serializable {
 
-    private Object service;
+    private String key;
+    private Object value;
 
-    public SingletonServiceFactory(Object service) {
-        this.service = service;
+    public PropertyEntry(Map.Entry<String, Object> entry) {
+        key = entry.getKey();
+        value = entry.getValue();
+    }
+
+    public PropertyEntry() {
+    }
+
+    public PropertyEntry(String key, Object value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Object getValue() {
+        return this.value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     @Override
-    public Object getService(Bundle bundle, ServiceRegistration registration) {
-        return service;
-    }
-
-    @Override
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+    public int compareTo(PropertyEntry o) {
+        return key.compareTo(o.getKey());
     }
 
 }

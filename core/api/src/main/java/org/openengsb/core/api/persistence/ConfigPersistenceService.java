@@ -27,8 +27,9 @@ import org.openengsb.core.api.model.ConfigItem;
  * registry.
  */
 public interface ConfigPersistenceService {
+
     /**
-     * Small wrapper around {@link ConfigPersistenceBackendService#load(Properties)}
+     * Small wrapper around {@link ConfigPersistenceBackendService#load(Map)}
      */
     <ConfigType extends ConfigItem<?>> List<ConfigType> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException;

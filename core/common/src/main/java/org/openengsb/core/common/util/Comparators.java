@@ -15,22 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.deployer.connector;
+package org.openengsb.core.common.util;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.Comparator;
 
-public final class StorageFileFactory {
-    
-    private StorageFileFactory() {
-        
+import org.openengsb.core.api.DomainProvider;
+
+/**
+ * provides comparators for sorting some OpenEngSB internals that are not comparable.
+ */
+public final class Comparators {
+
+    /**
+     * returns a comparator that compares domain providers by providing their id-values {@link DomainProvider#getId()}.
+     */
+    public static Comparator<? super DomainProvider> forDomainProvider() {
+        return new DomainProviderComparator();
     }
 
-    public static DeployerStorage createFileStorage() throws IOException {
-        String karafDataDirectory = System.getProperty("karaf.data");
-        String storageFile = String.format("%s/openengsb/deployer/connector", karafDataDirectory);
-        DeployerStorage storage = new DeployerStorageFile(new File(storageFile));
-        return storage;
+    private static final class DomainProviderComparator implements Comparator<DomainProvider> {
+        @Override
+        public int compare(DomainProvider o1, DomainProvider o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
     }
 
+    private Comparators() {
+    }
 }

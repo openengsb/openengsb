@@ -17,61 +17,30 @@
 
 package org.openengsb.connector.example;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
-public class LogServiceInstanceFactory implements ServiceInstanceFactory<ExampleDomain, LogService> {
+public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<LogService> {
 
     private ExampleDomainEvents domainEventInterface;
 
     @Override
-    public ServiceDescriptor getDescriptor(Builder builder) {
-        builder.name("log.name").description("log.description");
-        builder.attribute(builder.newAttribute().id("prefix").name("log.prefix.name")
-            .description("log.outputMode.description").defaultValue("").build());
-        builder.attribute(builder.newAttribute().id("outputMode").name("log.outputMode.name")
-            .description("log.outputMode.description").defaultValue("log.outputMode.info")
-            .option("log.outputMode.debug", "DEBUG").option("log.outputMode.info", "INFO")
-            .option("log.outputMode.warn", "WARN").option("log.outputMode.error", "ERROR").required().build());
-        builder.attribute(builder.newAttribute().id("flush").name("log.flush.name")
-            .description("log.flush.description").defaultValue("false").asBoolean().build());
-        return builder.build();
+    public Domain createNewInstance(String id) {
+        return new LogService(id, domainEventInterface);
     }
 
     @Override
-    public void updateServiceInstance(LogService instance, Map<String, String> attributes) {
+    public void doApplyAttributes(LogService instance, Map<String, String> attributes) {
         if (attributes.containsKey("outputMode")) {
             instance.setOutputMode(attributes.get("outputMode"));
         }
         if (attributes.containsKey("prefix")) {
             instance.setPrefix(attributes.get("prefix"));
         }
-    }
-
-    @Override
-    public LogService createServiceInstance(String id, Map<String, String> attributes) {
-        LogService instance = new LogService(id, domainEventInterface);
-        updateServiceInstance(instance, attributes);
-        return instance;
-    }
-
-    @Override
-    public MultipleAttributeValidationResult updateValidation(LogService instance, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
-
-    @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 
     public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {

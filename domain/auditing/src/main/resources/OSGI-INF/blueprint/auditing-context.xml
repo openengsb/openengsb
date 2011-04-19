@@ -24,6 +24,7 @@
   <service interface="org.openengsb.core.api.DomainProvider">
     <bean class="org.openengsb.domain.auditing.AuditingDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
+      <property name="id" value="auditing" />
     </bean>
   </service>
 

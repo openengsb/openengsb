@@ -56,7 +56,7 @@ public class RequestHandlerImpl implements RequestHandler {
 
     private Filter createFilterForServiceId(String serviceId) {
         try {
-            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.SERVICE_ID, serviceId));
+            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.ID_KEY, serviceId));
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }

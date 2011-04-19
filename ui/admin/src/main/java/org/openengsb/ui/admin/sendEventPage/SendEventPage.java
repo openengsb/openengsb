@@ -45,8 +45,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
@@ -67,10 +67,10 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
     @SpringBean
-    private WorkflowService eventService;
+    private OsgiUtilsService serviceUtils;
 
     @SpringBean
-    private DomainService domainService;
+    private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
     @SpringBean
@@ -79,11 +79,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     @SpringBean
     private AuditingDomain auditing;
 
-    private final Map<String, String> values = new HashMap<String, String>();
-
     private RepeatingView fieldList;
 
     private final ValueConverter valueConverter = new ValueConverter();
+
+    private Map<String, String> realValues = new HashMap<String, String>();
 
     public SendEventPage() {
         initContent();
@@ -97,7 +97,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private void initContent() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
         classes.add(Event.class);
-        for (DomainProvider domain : domainService.domains()) {
+        for (DomainProvider domain : serviceUtils.listServices(DomainProvider.class)) {
             classes.addAll(domain.getEvents());
         }
         init(classes);
@@ -137,7 +137,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Event event = buildEvent(dropDownChoice.getModelObject(), values);
+                Event event = buildEvent(dropDownChoice.getModelObject(), realValues);
                 if (event != null) {
                     try {
                         eventService.processEvent(event);
@@ -179,10 +179,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     }
 
     private RepeatingView createEditorPanelForClass(Class<?> theClass) {
-        values.clear();
+        realValues.clear();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
+
+        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, realValues);
         return fieldList;
     }
 

@@ -19,13 +19,29 @@ package org.openengsb.core.services.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 
-public class ProxyConnector implements InvocationHandler {
+/**
+ * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
+ * port-implementation (like jms+json)
+ */
+public class ProxyConnector extends AbstractOpenEngSBService implements InvocationHandler {
+
+    /**
+     * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
+     * to the remote object
+     */
+    @SuppressWarnings("unchecked")
+    private static final List<Class<? extends Object>> SELF_HANDLED_CLASSES = Arrays.asList(Object.class,
+        OpenEngSBService.class);
 
     private String portId;
     private String destination;
@@ -33,8 +49,18 @@ public class ProxyConnector implements InvocationHandler {
 
     private CallRouter callRouter;
 
+    public ProxyConnector() {
+    }
+
+    public ProxyConnector(String instanceId) {
+        super(instanceId);
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
+            return method.invoke(this, args);
+        }
         MethodReturn callSync =
             callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata));
         switch (callSync.getType()) {

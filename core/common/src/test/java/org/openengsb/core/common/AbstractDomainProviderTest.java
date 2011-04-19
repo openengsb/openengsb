@@ -57,6 +57,7 @@ public class AbstractDomainProviderTest {
     @Before
     public void setup() {
         provider = new DummyProvider();
+        provider.setId(NullDomain.class.getSimpleName());
         bundleContext = BundleStringHelper.createBundleContextMockWithBundleStrings();
         provider.setBundleContext(bundleContext);
     }

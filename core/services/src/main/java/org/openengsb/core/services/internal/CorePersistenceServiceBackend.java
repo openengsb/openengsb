@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.persistence.internal;
+package org.openengsb.core.services.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,13 @@ public class CorePersistenceServiceBackend implements ConfigPersistenceBackendSe
 
     @Override
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
-        persistenceService.create(new InternalConfigurationItem(config));
+        List<InternalConfigurationItem> alreadyPresent =
+            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(config.getMetaData(), null)));
+        if (alreadyPresent.isEmpty()) {
+            persistenceService.create(new InternalConfigurationItem(config));
+        } else {
+            persistenceService.update(alreadyPresent.get(0), new InternalConfigurationItem(config));
+        }
     }
 
     @Override

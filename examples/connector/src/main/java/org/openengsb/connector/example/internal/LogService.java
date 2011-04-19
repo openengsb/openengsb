@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
+
     private String outputMode;
     private String prefix;
     private AliveState aliveState = AliveState.OFFLINE;
@@ -92,4 +93,5 @@ public class LogService extends AbstractOpenEngSBService implements ExampleDomai
     public String doSomethingWithLogEvent(LogEvent event) {
         return "Called: " + event.getMessage() + " " + event.getLevel();
     }
+
 }

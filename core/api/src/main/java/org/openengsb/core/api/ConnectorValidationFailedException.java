@@ -15,30 +15,37 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.validation;
+package org.openengsb.core.api;
 
-import java.util.Collections;
 import java.util.Map;
 
-public class MultipleAttributeValidationResultImpl implements MultipleAttributeValidationResult {
+@SuppressWarnings("serial")
+public class ConnectorValidationFailedException extends Exception {
 
-    private final boolean valid;
-    private final Map<String, String> attributeErrorMessages;
+    private Map<String, String> errorMessages;
 
-    public MultipleAttributeValidationResultImpl(boolean valid, Map<String, String> attributeErrorMessages) {
+    public ConnectorValidationFailedException() {
         super();
-        this.valid = valid;
-        this.attributeErrorMessages = attributeErrorMessages;
     }
 
-    @Override
-    public boolean isValid() {
-        return this.valid;
+    public ConnectorValidationFailedException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    public Map<String, String> getAttributeErrorMessages() {
-        return Collections.unmodifiableMap(this.attributeErrorMessages);
+    public ConnectorValidationFailedException(String message) {
+        super(message);
+    }
+
+    public ConnectorValidationFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    public ConnectorValidationFailedException(Map<String, String> errorMessages) {
+        this.errorMessages = errorMessages;
+    }
+
+    public Map<String, String> getErrorMessages() {
+        return this.errorMessages;
     }
 
 }

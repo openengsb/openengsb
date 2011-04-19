@@ -23,10 +23,17 @@ import java.io.Serializable;
 public class ServiceId implements Serializable {
     private String serviceClass;
     private String serviceId;
+    private String domainName;
 
     public ServiceId(String serviceClass, String serviceId) {
         this.serviceClass = serviceClass;
         this.serviceId = serviceId;
+    }
+
+    public ServiceId(String serviceClass, String serviceId, String domainName) {
+        this.serviceClass = serviceClass;
+        this.serviceId = serviceId;
+        this.domainName = domainName;
     }
 
     public ServiceId() {
@@ -48,6 +55,14 @@ public class ServiceId implements Serializable {
         this.serviceId = serviceId;
     }
 
+    public String getDomainName() {
+        return this.domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
     @Override
     public String toString() {
         return String.format("%s (%s)", serviceId, serviceClass);
@@ -57,8 +72,9 @@ public class ServiceId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (this.serviceClass == null ? 0 : this.serviceClass.hashCode());
-        result = prime * result + (this.serviceId == null ? 0 : this.serviceId.hashCode());
+        result = prime * result + ((this.domainName == null) ? 0 : this.domainName.hashCode());
+        result = prime * result + ((this.serviceClass == null) ? 0 : this.serviceClass.hashCode());
+        result = prime * result + ((this.serviceId == null) ? 0 : this.serviceId.hashCode());
         return result;
     }
 
@@ -70,11 +86,32 @@ public class ServiceId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ServiceId)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ServiceId other = (ServiceId) obj;
-        return other.serviceClass.equals(serviceClass) && other.serviceId.equals(serviceId);
+        if (this.domainName == null) {
+            if (other.domainName != null) {
+                return false;
+            }
+        } else if (!this.domainName.equals(other.domainName)) {
+            return false;
+        }
+        if (this.serviceClass == null) {
+            if (other.serviceClass != null) {
+                return false;
+            }
+        } else if (!this.serviceClass.equals(other.serviceClass)) {
+            return false;
+        }
+        if (this.serviceId == null) {
+            if (other.serviceId != null) {
+                return false;
+            }
+        } else if (!this.serviceId.equals(other.serviceId)) {
+            return false;
+        }
+        return true;
     }
 
 }

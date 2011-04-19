@@ -15,29 +15,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.ui.admin.serviceEditor;
 
-import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.remote.ProxyFactory;
-import org.osgi.framework.BundleContext;
+import org.apache.wicket.model.IModel;
+import org.openengsb.core.api.model.ConnectorDescription;
 
-public class ProxyFactoryImpl implements ProxyFactory {
+@SuppressWarnings("serial")
+class ConnectorAttributeModel implements IModel<String> {
 
-    private CallRouter callRouter;
-    private BundleContext bundleContext;
+    private IModel<ConnectorDescription> desc;
+    private String key;
+
+    public ConnectorAttributeModel(IModel<ConnectorDescription> desc, String key) {
+        this.desc = desc;
+        this.key = key;
+    }
 
     @Override
-    public ProxyServiceManager createProxyForDomain(DomainProvider provider) {
-        ProxyServiceManager proxyServiceManager = new ProxyServiceManager(provider, callRouter);
-        proxyServiceManager.setBundleContext(bundleContext);
-        return proxyServiceManager;
+    public void detach() {
+        // do nothing
     }
 
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    @Override
+    public String getObject() {
+        return desc.getObject().getAttributes().get(key);
     }
 
-    public void setCallRouter(CallRouter callRouter) {
-        this.callRouter = callRouter;
+    @Override
+    public void setObject(String object) {
+        desc.getObject().getAttributes().put(key, object);
     }
 }
