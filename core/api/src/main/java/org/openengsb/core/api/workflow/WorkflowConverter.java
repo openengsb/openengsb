@@ -15,17 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.api.workflow;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Raises;
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
-public interface NullDomain extends Domain {
+/**
+ * Converts a Workflow into a format that can be processed by the OpenENGSb Workflow service (e.g. Drools Flow). 
+ */
+public interface WorkflowConverter {
 
-    @Raises(NullEvent.class)
-    void nullMethod();
-
-    Object nullMethod(Object o);
-    
-    Object nullMethod(Object o, String b);
+    String convert(WorkflowRepresentation workflow);
 }

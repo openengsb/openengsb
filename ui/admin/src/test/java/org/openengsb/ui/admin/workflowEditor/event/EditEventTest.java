@@ -29,6 +29,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
@@ -61,6 +63,8 @@ public class EditEventTest {
         mock.putBean(mock(ContextCurrentService.class));
         mock.putBean("openengsbVersion", new OpenEngSBVersion());
         mock.putBean("workflowEditorService", mock(WorkflowEditorService.class));
+        mock.putBean(mock(WorkflowConverter.class));
+        mock.putBean(mock(RuleManager.class));
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new EditEvent(event, action));

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Austrian Association for Software Tool Integration (AASTI)
@@ -18,24 +18,24 @@
 
 -->
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-	xml:lang="en" lang="en">
-<body>
-<wicket:extend>
-	<form wicket:id="workflowSelectForm">
-	  <select wicket:id="workflowSelect"></select>
-	  <input type="submit" value="Select" id="formsubmit" />
-	</form>
-	<form wicket:id="workflowCreateForm">
-	  <input type="text" wicket:id="name" />
-	  <input type="submit" value="Create" id="formsubmit" />
-	</form>
-	<form wicket:id="export">
-	  <input type="submit" value="Export current Workflow" id="formsubmit" />
-	</form>
-	<h2 wicket:id="currentWorkflowName">[currentWorkflowName]</h2>
-	<div wicket:id="treeTable" class="my-tree"></div>
-</wicket:extend>
-</body>
-</html>
+<process xmlns="http://drools.org/drools-5.0/process" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+  type="RuleFlow" name="workflow" id="workflow" package-name="org.openengsb">
+  <nodes>
+    <start id="1" name="Start" />
+    <actionNode id="2" name="nullMethod">
+      <action type="expression" dialect="java"> location.nullMethod();
+      </action>
+    </actionNode>
+    <actionNode id="3" name="nullMethod">
+      <action type="expression" dialect="java"> location.nullMethod();
+      </action>
+    </actionNode>
+    <end id="4" name="End" />
+  </nodes>
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="2" to="3" />
+    <connection from="3" to="4" />
+  </connections>
+</process>

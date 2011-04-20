@@ -23,19 +23,13 @@
 	xml:lang="en" lang="en">
 <body>
 <wicket:extend>
-	<form wicket:id="workflowSelectForm">
-	  <select wicket:id="workflowSelect"></select>
-	  <input type="submit" value="Select" id="formsubmit" />
+	<form wicket:id="endSelectForm" id="endSelectForm">
+	<select wicket:id="endSelect"></select>
+  <input wicket:id="select" type="submit" value="Select" />
+    <input type="text" wicket:id="name" />
+    <input wicket:id="create" type="submit" value="Create" />
+    <input wicket:id="cancel" type="submit" value="Cancel" />
 	</form>
-	<form wicket:id="workflowCreateForm">
-	  <input type="text" wicket:id="name" />
-	  <input type="submit" value="Create" id="formsubmit" />
-	</form>
-	<form wicket:id="export">
-	  <input type="submit" value="Export current Workflow" id="formsubmit" />
-	</form>
-	<h2 wicket:id="currentWorkflowName">[currentWorkflowName]</h2>
-	<div wicket:id="treeTable" class="my-tree"></div>
 </wicket:extend>
 </body>
 </html>

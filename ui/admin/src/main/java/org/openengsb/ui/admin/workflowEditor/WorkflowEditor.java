@@ -38,12 +38,18 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.workflow.RuleBaseException;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.core.api.workflow.model.NodeRepresentation;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
@@ -61,6 +67,12 @@ public class WorkflowEditor extends BasePage {
 
     @SpringBean
     private WorkflowEditorService workflowEditorService;
+
+    @SpringBean
+    RuleManager ruleManager;
+
+    @SpringBean
+    WorkflowConverter workflowConverter;
 
     public WorkflowEditor() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
@@ -87,8 +99,26 @@ public class WorkflowEditor extends BasePage {
         createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
         add(createForm);
 
+        Form<Object> exportForm = new Form<Object>("export") {
+            @Override
+            protected void onSubmit() {
+                try {
+                    String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
+                    System.out.println(convert);
+                    addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
+                    ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
+                        .getCurrentWorkflow().getName()),
+                        convert);
+                } catch (RuleBaseException e) {
+                    error(e.getMessage());
+                }
+            }
+        };
+        add(exportForm);
+
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        WorkflowRepresentation currentWorkflow = workflowEditorService.getCurrentWorkflow();
+        final Model<WorkflowRepresentation> currentworkflow =
+            new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
         DefaultTreeModel model = new DefaultTreeModel(node);
         IColumn[] columns =
             new IColumn[]{
@@ -100,7 +130,8 @@ public class WorkflowEditor extends BasePage {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                         NodeRepresentation userObject = (NodeRepresentation) treeNode.getUserObject();
                         if (userObject instanceof ActionRepresentation) {
-                            return new ActionLinks("links", (ActionRepresentation) userObject, treeNode);
+                            return new ActionLinks("links", (ActionRepresentation) userObject, treeNode,
+                                currentworkflow);
                         }
                         if (userObject instanceof EventRepresentation) {
                             return new EventLinks("links", (EventRepresentation) userObject, treeNode);
@@ -112,25 +143,46 @@ public class WorkflowEditor extends BasePage {
                     public IRenderable newCell(TreeNode node, int level) {
                         return null;
                     }
-                }};
+                } };
 
         table = new TreeTable("treeTable", model, columns);
         String label = "";
-        if (currentWorkflow == null) {
+        if (currentworkflow.getObject() == null) {
             label = getString("workflow.create.first");
             node.setUserObject(new ActionRepresentation());
             table.setVisible(false);
             selectForm.setVisible(false);
+            exportForm.setVisible(false);
         } else {
-            label = currentWorkflow.getName();
-            node.setUserObject(currentWorkflow.getRoot());
-            ActionRepresentation root = currentWorkflow.getRoot();
+            label = currentworkflow.getObject().getName();
+            node.setUserObject(currentworkflow.getObject().getRoot());
+            ActionRepresentation root = currentworkflow.getObject().getRoot();
             addActionsToNode(root.getActions(), node);
             addEventsToNode(root.getEvents(), node);
         }
         add(new Label("currentWorkflowName", label));
         table.getTreeState().expandAll();
         add(table);
+    }
+
+    private void addGlobal(ActionRepresentation action) {
+        ruleManager.addGlobal(action.getDomain().getName(), action.getLocation());
+        
+        for (ActionRepresentation newAction : action.getActions()) {
+            addGlobal(newAction);
+        }
+        for (EventRepresentation event : action.getEvents()) {
+            addGlobalForEvents(event);
+        }
+    }
+
+    private void addGlobalForEvents(EventRepresentation event) {
+        for (EventRepresentation newEvent : event.getEvents()) {
+            addGlobalForEvents(newEvent);
+        }
+        for (ActionRepresentation action : event.getActions()) {
+            addGlobal(action);
+        }
     }
 
     private void addTreeNodeForEvent(DefaultMutableTreeNode node, EventRepresentation event) {

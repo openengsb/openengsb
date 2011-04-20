@@ -50,5 +50,6 @@
   <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
   <osgi:reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
+  <osgi:reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
 
 </beans>

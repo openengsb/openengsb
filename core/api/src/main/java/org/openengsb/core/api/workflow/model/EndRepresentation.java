@@ -15,17 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.api.workflow.model;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Raises;
+/**
+ * Represents a Leaf in the Workflow Tree. When the Workflow reaches an End node the branch of the Eorkflow ends.
+ */
+public class EndRepresentation {
 
-public interface NullDomain extends Domain {
+    private String name;
 
-    @Raises(NullEvent.class)
-    void nullMethod();
+    public EndRepresentation() {
+    }
 
-    Object nullMethod(Object o);
-    
-    Object nullMethod(Object o, String b);
+    public EndRepresentation(String name) {
+        super();
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

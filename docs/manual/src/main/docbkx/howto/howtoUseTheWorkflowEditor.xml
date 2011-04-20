@@ -38,6 +38,8 @@
             follow up Actions that will be called after the connector method was executed. You can
             also add Events to an Action. If the method you call on an Action has @Raises Annotations
             and thus raises Events you can add Handlers for that Event.</para>
+          <para>You can edit the code that is executed in the Action. When setting the Domain, Method
+            and Location the Action should execute you can create a template Method call.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -55,6 +57,12 @@
       another workflow or, if you already created various workflows, choose which one you want to edit.</para>
     <para>The workflows are currently only held in memory in a service that will support storage and retrieval
       upon restart at a later stage.</para>
+  </section>
+  <section>
+    <title>Exporting a Workflow</title>
+    <para>You can export the currently selected Workflow at any time, by pressing the Export button in the
+      WorkflowEditor. The Workflow will be exported to the RuleManager and should then be visible and
+      executable on the SendEvent Page.</para>
   </section>
 </chapter>
 

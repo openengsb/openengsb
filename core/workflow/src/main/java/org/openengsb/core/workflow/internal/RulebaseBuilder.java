@@ -63,7 +63,7 @@ public class RulebaseBuilder {
 
     /**
      * reloads the rulebase but keeps references intact
-     *
+     * 
      * @throws RuleBaseException if the rulebase contains errors
      */
     public void reloadRulebase() throws RuleBaseException {

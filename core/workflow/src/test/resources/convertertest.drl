@@ -15,8 +15,10 @@
 # limitations under the License.
 #
 
-workflow.create.first = Please create Workflow first
-create.action = AddAction
-create.event = AddEvent
-remove = Remove
-set.end = Set End
+package org.openengsb
+
+#list any import classes here.
+import org.openengsb.core.test.NullDomain
+
+#declare any global variables here
+global NullDomain location
