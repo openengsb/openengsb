@@ -491,4 +491,30 @@ container-1
   margin: 0;
 }
 
+table.OverviewPanel {
+  margin-bottom: 10px;
+  font-size: 1em;
+  width: 100%;
+  border-spacing: 0px;
+}
+	
+ 
+table.OverviewPanel tr { padding-top: 2px; padding-bottom: 2px; }
+table.OverviewPanel tr.odd { background-color: #a7c1b6; }
+table.OverviewPanel tr.even { background-color: #fff; }
+table.OverviewPanel tr td { padding-left: 8px; padding-right: 30px; }
+
+table.OverviewPanel tr th { font-weight: normal; padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 24px; background-color: #f3f3f3; border-bottom: 1px solid #000; border-top: 1px solid #000; text-align: left; white-space: nowrap; vertical-align: middle;}
+table.OverviewPanel tr th a { padding-right: 15px; background-position: right; background-repeat:no-repeat; }
+table.OverviewPanel tr th.wicket_orderDown a { color:black; background-image: url(../images/arrow_down.png); }
+table.OverviewPanel tr th.wicket_orderUp a {  color:black; background-image: url(../images/arrow_up.png); }
+table.OverviewPanel tr th.wicket_orderNone a { background-image: url(../images/arrow_off.png);}
+table.OverviewPanel tr th a { font-weight: normal; }
+
+table.OverviewPanel td.filter-td { font-size: 1em; background-color: #f3f3f3; border-bottom: 1px solid #000; }
+table.OverviewPanel td.filter-td input.go { width: 45%; }
+table.OverviewPanel td.filter-td input.clear { width: 45%; }
+table.OverviewPanel td.filter-td input { width: 100%; font-size: 0.8em; }
+table.OverviewPanel td.filter-td select { width: 100%; font-size: 0.8em; }
+
 
