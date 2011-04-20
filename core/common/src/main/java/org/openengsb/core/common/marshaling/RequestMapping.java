@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.ports.jms;
+package org.openengsb.core.common.marshaling;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,9 +52,15 @@ public class RequestMapping extends MethodCall {
     }
 
     public RequestMapping(MethodCall call) {
-        this.setArgs(call.getArgs());
-        this.setMetaData(call.getMetaData());
-        this.setMethodName(call.getMethodName());
+        setArgs(call.getArgs());
+        setMetaData(call.getMetaData());
+        setMethodName(call.getMethodName());
+        if (call instanceof RequestMapping) {
+            RequestMapping real = (RequestMapping) call;
+            callId = real.callId;
+            answer = real.answer;
+            classes = real.classes;
+        }
     }
 
     public final String getCallId() {
@@ -74,7 +83,7 @@ public class RequestMapping extends MethodCall {
      * Converts the Args read by Jackson into the correct classes that have to be used for calling the method.
      */
     public void resetArgs() {
-        if (getClasses().size() != this.getArgs().length) {
+        if (getClasses().size() != getArgs().length) {
             throw new IllegalStateException("Classes and Args have to be the same");
         }
         ObjectMapper mapper = new ObjectMapper();
@@ -82,7 +91,7 @@ public class RequestMapping extends MethodCall {
 
         List<Object> values = new ArrayList<Object>();
 
-        for (Object arg : this.getArgs()) {
+        for (Object arg : getArgs()) {
             Class<?> class1;
             try {
                 class1 = Class.forName(iterator.next());
@@ -91,6 +100,19 @@ public class RequestMapping extends MethodCall {
             }
             values.add(mapper.convertValue(arg, class1));
         }
-        this.setArgs(values.toArray());
+        setArgs(values.toArray());
+    }
+
+    public String convertToMessage() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        StringWriter stringWriter = new StringWriter();
+        mapper.writeValue(stringWriter, this);
+        return stringWriter.toString();
+    }
+
+    public static RequestMapping createFromMessage(String message) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        RequestMapping mapping = mapper.readValue(new StringReader(message), RequestMapping.class);
+        return mapping;
     }
 }
