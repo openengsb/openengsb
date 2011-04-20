@@ -54,6 +54,7 @@
 
   <modules>
     <module>jms</module>
+    <module>ws</module>
   </modules>
 
 </project>

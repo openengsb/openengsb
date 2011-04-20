@@ -141,10 +141,13 @@
   </feature>
 
   <feature name="openengsb-ports-ws" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
+    <bundle>mvn:org.openengsb.ports/openengsb-ports-ws/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-rs" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
   </feature>
 
