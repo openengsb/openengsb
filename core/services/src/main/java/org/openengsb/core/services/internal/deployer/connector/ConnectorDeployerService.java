@@ -57,7 +57,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     @Override
-    public void install(File artifact) throws IOException {
+    public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
 
         ConnectorFile configFile = new ConnectorFile(artifact);

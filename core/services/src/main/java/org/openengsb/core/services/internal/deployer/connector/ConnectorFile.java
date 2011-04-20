@@ -31,8 +31,8 @@ import java.util.Properties;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -52,21 +52,17 @@ public class ConnectorFile {
         this.connectorFile = connectorFile;
     }
 
-    public String getConnectorName() throws IOException {
-        return readProperty(Constants.CONNECTOR_KEY);
+    public Map<String, String> getAttributes() throws IOException {
+        return getFilteredEntries(ATTRIBUTE);
     }
 
-    public String getDomainName() throws IOException {
-        return readProperty(Constants.DOMAIN_KEY);
-    }
-
-    public String getServiceId() throws IOException {
-        return readProperty(Constants.ID_KEY);
-    }
-
-    private String readProperty(String propertyId) throws IOException {
-        updateProperties();
-        return propertiesMap.get(propertyId);
+    private Dictionary<String, Object> getServiceProperties() throws IOException {
+        Map<String, String> entries = getFilteredEntries(PROPERTY);
+        Dictionary<String, Object> result = new Hashtable<String, Object>();
+        for (Entry<String, String> entry : entries.entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 
     private synchronized void updateProperties() {
@@ -89,19 +85,6 @@ public class ConnectorFile {
         }
         this.propertiesMap = Maps.fromProperties(props);
         cacheTimestamp = connectorFile.lastModified();
-    }
-
-    public Map<String, String> getAttributes() throws IOException {
-        return getFilteredEntries(ATTRIBUTE);
-    }
-
-    private Dictionary<String, Object> getServiceProperties() throws IOException {
-        Map<String, String> entries = getFilteredEntries(PROPERTY);
-        Dictionary<String, Object> result = new Hashtable<String, Object>();
-        for (Entry<String, String> entry : entries.entrySet()) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
     }
 
     private Map<String, String> getFilteredEntries(final String key) throws IOException {
@@ -133,9 +116,8 @@ public class ConnectorFile {
     }
 
     public ConnectorConfiguration load() throws IOException {
-        ConnectorId connectorId =
-            new ConnectorId(getDomainName(), getConnectorName(), getServiceId());
-
+        String idString = FilenameUtils.removeExtension(connectorFile.getName());
+        ConnectorId connectorId = ConnectorId.fromFullId(idString);
         ConnectorDescription description = new ConnectorDescription(getAttributes(), getServiceProperties());
         return new ConnectorConfiguration(connectorId, description);
     }

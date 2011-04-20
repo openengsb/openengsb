@@ -74,11 +74,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private NullDomain createdService;
     private ConnectorManager serviceManager;
-    private String testConnectorData = ""
-            + org.openengsb.core.api.Constants.CONNECTOR_KEY + "=a-connector\n"
-            + org.openengsb.core.api.Constants.DOMAIN_KEY + "=mydomain\n"
-            + org.openengsb.core.api.Constants.ID_KEY + "=service-id\n"
-            + "attribute.a-key=a-value";
+    private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
+    private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
 
     @Before
@@ -86,33 +83,20 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService = new ConnectorDeployerService();
         authManagerMock = mock(AuthenticationManager.class);
         authMock = mock(Authentication.class);
-
-        ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
-        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
-        registrationManager.setBundleContext(bundleContext);
-        serviceManagerImpl.setRegistrationManager(registrationManager);
-        this.serviceManager = serviceManagerImpl;
-
-        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
-        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
-        backend.setBundleContext(bundleContext);
-        backend.setPersistenceManager(dummyPersistenceManager);
-        backend.init();
-        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
-        Dictionary<String, Object> props2 = new Hashtable<String, Object>();
-        props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
-        registerService(configPersistence, props2, ConfigPersistenceService.class);
-
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "a-connector");
+
+        createServiceManagerMock();
+        setupPersistence();
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setServiceManager(serviceManagerImpl);
+        connectorDeployerService.setServiceManager(this.serviceManager);
 
         factory = mock(ConnectorInstanceFactory.class);
         createdService = mock(NullDomain.class);
         when(factory.createNewInstance(anyString())).thenReturn(createdService);
+
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "aconnector");
         registerService(factory, props, ConnectorInstanceFactory.class);
 
         createDomainProviderMock(NullDomain.class, "mydomain");
@@ -122,17 +106,36 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
     }
 
+    private void setupPersistence() {
+        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
+        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        backend.setBundleContext(bundleContext);
+        backend.setPersistenceManager(dummyPersistenceManager);
+        backend.init();
+        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
+        Dictionary<String, Object> props2 = new Hashtable<String, Object>();
+        props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
+        registerService(configPersistence, props2, ConfigPersistenceService.class);
+    }
+
+    private ConnectorManagerImpl createServiceManagerMock() {
+        ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
+        ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
+        registrationManager.setBundleContext(bundleContext);
+        serviceManagerImpl.setRegistrationManager(registrationManager);
+        this.serviceManager = serviceManagerImpl;
+        return serviceManagerImpl;
+    }
+
     @Test
     public void testConnectorFiles_shouldBeHandledByDeployer() throws Exception {
-        File connectorFile = temporaryFolder.newFile("example.connector");
-
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         assertThat(connectorDeployerService.canHandle(connectorFile), is(true));
     }
 
     @Test
     public void testUnknownFiles_shouldNotBeHandledByDeplyoer() throws Exception {
         File otherFile = temporaryFolder.newFile("other.txt");
-
         assertThat(connectorDeployerService.canHandle(otherFile), is(false));
     }
 
@@ -147,7 +150,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     private File createSampleConnectorFile() throws IOException {
-        File connectorFile = temporaryFolder.newFile("example.connector");
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeStringToFile(connectorFile, testConnectorData);
         return connectorFile;
     }
@@ -168,7 +171,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testRootService_shouldHaveLowerRanking() throws Exception {
-        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/mydomain+aconnector+myroot.connector");
         FileUtils.touch(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData);
 
@@ -181,7 +184,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testNormalService_shouldHaveNoRankingAdded() throws Exception {
-        File connectorFile = new File(temporaryFolder.getRoot() + "/config/a_root.connector");
+        File connectorFile = new File(temporaryFolder.getRoot() + "/config/mydomain+aconnector+myroot.connector");
         FileUtils.touch(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData);
 
@@ -194,7 +197,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testOverridenRanking_shouldNotBeAltered() throws Exception {
-        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/a_root.connector");
+        File connectorFile = new File(temporaryFolder.getRoot() + "/etc/mydomain+aconnector+myroot.connector");
         FileUtils.touch(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\n"
                 + "property." + Constants.SERVICE_RANKING + "=24");
