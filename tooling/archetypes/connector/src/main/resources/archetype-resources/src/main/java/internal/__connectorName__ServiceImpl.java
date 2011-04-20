@@ -20,12 +20,15 @@ package ${package}.internal;
 
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.api.AliveState;
+import org.osgi.framework.ServiceRegistration;
 
+import org.openengsb.core.api.Domain;
 import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implements ${domainInterface} {
 
     private String attr;
+    private ServiceRegistration serviceRegistration;
 
     public ${connectorName}ServiceImpl() {
     }
@@ -33,12 +36,24 @@ public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implem
     void setAttr(String attr) {
         this.attr = attr;
     }
-    
+
+    public String getAttr() {
+        return attr;
+    }
+
     @Override
     public AliveState getAliveState() {
         // TODO Auto-generated method stub
         return AliveState.DISCONNECTED;
     }
-    
+
+    public ServiceRegistration getServiceRegistration() {
+        return serviceRegistration;
+    }
+
+    public void setServiceRegistration(ServiceRegistration serviceRegistration) {
+        this.serviceRegistration = serviceRegistration;
+    }
+
     // TODO implement domain methods here
 }
