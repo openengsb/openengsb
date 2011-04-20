@@ -41,13 +41,9 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
 
     public static final String META_KEY_ID = "id";
     private static final String CONTEXT_FILE_EXTENSION = "context";
-    private final File storageFolder;
+    private File storageFolder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextFilePersistenceService.class);
-
-    public ContextFilePersistenceService(File storageFolder) {
-        this.storageFolder = storageFolder;
-    }
 
     @Override
     public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
@@ -135,6 +131,10 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
     private String[] getContextExtensions() {
         String[] contextFileExtensions = { CONTEXT_FILE_EXTENSION };
         return contextFileExtensions;
+    }
+    
+    public void setStorageFolderPath(String storageFolderPath) {
+        this.storageFolder = new File(storageFolderPath);
     }
 
 }

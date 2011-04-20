@@ -50,7 +50,8 @@ public class ContextFilePersistenceServiceTest {
         temporaryFolder.newFile("context3.context");
         temporaryFolder.newFile("unknown.file");
 
-        persistenceService = new ContextFilePersistenceService(temporaryFolder.getRoot());
+        persistenceService = new ContextFilePersistenceService();
+        persistenceService.setStorageFolderPath(temporaryFolder.getRoot().getAbsolutePath());
     }
 
     @Test
