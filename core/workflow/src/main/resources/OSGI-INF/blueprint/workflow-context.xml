@@ -88,6 +88,9 @@
       <property name="instanceId" value="registrationService" />
     </bean>
   </service>
-
+  
+  <service interface="org.openengsb.core.api.workflow.WorkflowConverter">
+    <bean class="org.openengsb.core.workflow.editor.converter.DroolsConverter"/>
+  </service>
 
 </blueprint>

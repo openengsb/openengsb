@@ -33,7 +33,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.ui.admin.contextSetPage.ContextSetPage;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -90,7 +89,6 @@ public class HeaderTemplate extends Panel {
 
         addHeaderMenuItem("TestClient", TestClient.class, "testclient.title", "");
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", "");
-        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title", "");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
         addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");

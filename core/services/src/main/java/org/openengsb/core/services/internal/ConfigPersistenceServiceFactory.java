@@ -28,7 +28,6 @@ import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
@@ -81,9 +80,6 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
             throw new ConfigurationException(Constants.BACKEND_ID, String.format(
                 "backend service %s could not be found; please recheck documentation",
                 properties.get(Constants.BACKEND_ID)), e);
-        } catch (InvalidSyntaxException e) {
-            throw new ConfigurationException(Constants.BACKEND_ID, String.format("(%s=%s) is not welcomed",
-                Constants.BACKEND_ID, properties.get(Constants.BACKEND_ID)));
         }
     }
 

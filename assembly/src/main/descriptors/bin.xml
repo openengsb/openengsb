@@ -55,6 +55,8 @@
         <include>bin/karaf</include>
         <include>bin/start</include>
         <include>bin/stop</include>
+        <include>bin/shell</include>
+        <include>bin/client</include>
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>
@@ -68,6 +70,8 @@
         <include>bin/karaf.bat</include>
         <include>bin/start.bat</include>
         <include>bin/stop.bat</include>
+        <include>bin/shell.bat</include>
+        <include>bin/client.bat</include>
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>

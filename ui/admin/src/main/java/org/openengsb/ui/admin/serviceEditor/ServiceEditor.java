@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.serviceEditor;
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,11 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
@@ -36,52 +40,82 @@ import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
 
-    private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
-    protected Model<String> idModel = new Model<String>();
+    protected Model<ConnectorId> idModel;
     private TextField<String> idfield;
+    protected Dictionary<String, Object> properties;
 
-    public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
-        this(id, attributes, values, new DefaultPassingFormValidator());
-    }
-
-    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes,
-            Map<String, String> values) {
-        this(id, attributes, values, new DefaultPassingFormValidator());
-        idModel.setObject(serviceId);
-    }
-
-    public ServiceEditor(String id, List<AttributeDefinition> attributes, Map<String, String> values,
-            FormValidator validator) {
+    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+            Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
         super(id);
         this.attributes = attributes;
-        this.values = values;
         this.validator = validator;
-        createForm(attributes, values);
-    }
-
-    public ServiceEditor(String id, String serviceId, List<AttributeDefinition> attributes, Map<String, String> values,
-            FormValidator validator) {
-        this(id, attributes, values, validator);
-        idModel.setObject(serviceId);
+        idModel = new Model<ConnectorId>(serviceId);
+        createForm(attributes, attributeMap, properties);
         idfield.setEnabled(false);
     }
 
-    private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
+    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
+        this(id, serviceId, attributes, attributeMap, properties, new DefaultPassingFormValidator());
+    }
+
+    public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
+            Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
+        super(id);
+        this.attributes = attributes;
+        this.validator = validator;
+        idModel = new Model<ConnectorId>(ConnectorId.generate(domainType, connectorType));
+        createForm(attributes, attributeMap, properties);
+    }
+
+    public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
+            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
+        this(id, domainType, connectorType, attributes, attributeMap, properties, new DefaultPassingFormValidator());
+    }
+
+    private void createForm(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
+            Dictionary<String, Object> properties) {
+        this.properties = properties;
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
         add(form);
-        idfield = new TextField<String>("serviceId", idModel);
+        idfield = new TextField<String>("serviceId", new PropertyModel<String>(idModel.getObject(), "instanceId"));
         idfield.setRequired(true);
         form.add(idfield);
-        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values);
+
+        serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, attributeMap, properties, form);
         form.add(serviceEditorPanel);
 
         if (validator != null) {
             serviceEditorPanel.attachFormValidator(form, validator);
         }
+        serviceEditorPanel.setOutputMarkupId(true);
+
+        final IModel<String> newKeyModel = new Model<String>();
+        TextField<String> textField = new TextField<String>("newPropertyKey", newKeyModel);
+        form.add(textField);
+
+        form.add(new AjaxButton("addProperty", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                String newKey = newKeyModel.getObject();
+                if (newKey == null) {
+                    return;
+                }
+                Dictionary<String, Object> properties = ServiceEditor.this.properties;
+                if (properties.get(newKey) != null) {
+                    error("property with the name already exists");
+                    return;
+                }
+                properties.put(newKey, "new Value");
+                newKeyModel.setObject("");
+                serviceEditorPanel.reloadList(ServiceEditor.this.properties);
+                target.addComponent(serviceEditorPanel);
+            }
+        });
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
@@ -114,15 +148,7 @@ public abstract class ServiceEditor extends Panel {
         return attributes;
     }
 
-    public Map<String, String> getValues() {
-        return values;
-    }
-
     protected boolean isValidating() {
         return serviceEditorPanel.isValidating();
-    }
-
-    public String getAttributeViewId(String attribute) {
-        return serviceEditorPanel.getAttributeViewId(attribute);
     }
 }

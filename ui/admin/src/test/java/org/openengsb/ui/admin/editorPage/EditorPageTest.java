@@ -17,126 +17,311 @@
 
 package org.openengsb.ui.admin.editorPage;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.repeater.AbstractRepeater;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.ITestPageSource;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.openengsb.core.api.ServiceManager;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 
-public class EditorPageTest {
+public class EditorPageTest extends AbstractUITest {
 
     private AttributeDefinition attrib1;
-    private ServiceManager manager;
-    private WicketTester tester;
+    private ConnectorInstanceFactory factoryMock;
 
     @Before
-    public void setup() {
-        tester = new WicketTester();
-        manager = mock(ServiceManager.class);
+    public void setup() throws Exception {
         attrib1 =
             AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();
         ServiceDescriptor d =
-            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(NullDomain.class)
-                .implementationType(NullDomainImpl.class).id("a").name("sn").description("sd").attribute(attrib1)
+            ServiceDescriptor.builder(new PassThroughStringLocalizer()).implementationType(NullDomainImpl.class)
+                .id("a").name("sn").description("sd").attribute(attrib1)
                 .build();
-        when(manager.getDescriptor()).thenReturn(d);
+
+        ConnectorProvider provider = createConnectorProviderMock("testconnector", "testdomain");
+        when(provider.getDescriptor()).thenReturn(d);
+        createDomainProviderMock(NullDomain.class, "testdomain");
+        factoryMock = createFactoryMock("testconnector", "testdomain");
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, false));
     }
 
     @Test
     public void attributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
-        ConnectorEditorPage page = new ConnectorEditorPage(manager);
-        assertThat(page.getEditorPanel().getValues().get("a"), is("a_default"));
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        RepeatingView list =
+            (RepeatingView) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields");
+        @SuppressWarnings("unchecked")
+        TextField<String> component = (TextField<String>) list.get("a:row:field");
+        assertThat(component.getModelObject(), is("a_default"));
+        tester.debugComponentTrees();
     }
 
     @Test
-    public void testIfValuesOfAttributesAreShown() {
-
+    public void testIfValuesOfAttributesAreShown() throws Exception {
+        ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
-        when(manager.getAttributeValues("a")).thenReturn(attributes);
-
-        ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
-        tester.startPage(page);
-        tester.debugComponentTrees();
-
-        assertThat(page.getEditorPanel().getAttributes().size(), is(1));
-        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("a"));
+        serviceManager.create(connectorId, new ConnectorDescription(attributes));
+        PageParameters pageParams =
+            new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
+        tester.startPage(ConnectorEditorPage.class, pageParams);
+        FormComponentLabel nameLabel =
+            (FormComponentLabel) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:name");
+        assertThat(nameLabel.getDefaultModelObjectAsString(), is("a_name"));
+        @SuppressWarnings("unchecked")
+        TextField<String> value =
+            (TextField<String>) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:a:row:field");
+        assertThat(value.getValue(), is("testValue"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testIdFieldIsEditable() {
-        ConnectorEditorPage page = new ConnectorEditorPage(manager);
-        tester.startPage(page);
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         tester.debugComponentTrees();
+        @SuppressWarnings("unchecked")
         TextField<String> idField =
             (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:serviceId");
         assertThat(idField.isEnabled(), is(true));
     }
 
-    @SuppressWarnings({ "unchecked", "serial" })
+    @Test
+    public void testAddProperty() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        Label propertyLabel =
+            (Label) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:properties:0:key");
+        assertThat(propertyLabel.getDefaultModelObjectAsString(), is("testNew"));
+    }
+
+    @Test
+    public void testCreateService() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        tester.debugComponentTrees();
+        newFormTester.submit("submitButton");
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+        Map<String, String> ref = new HashMap<String, String>();
+        ref.put("a", "a_default");
+        verify(factoryMock).applyAttributes(any(Domain.class), eq(ref));
+        serviceUtils.getService(NullDomain.class, 100L);
+    }
+
+    @Test
+    public void testCreateServiceProperties_shouldRegisterWithProperties() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService("(testNew=foo)", 100L);
+    }
+
+    @Test
+    public void testCreateServicePropertiesLeaveFieldEmpty() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService(NullDomain.class, 100L);
+    }
+
+    @Test
+    public void testEditService() throws Exception {
+        ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("test", "val");
+        serviceManager.create(id, new ConnectorDescription(props));
+
+        try {
+            serviceUtils.getService("(test=val)", 100L);
+        } catch (OsgiServiceNotAvailableException e) {
+            fail("something is wrong, the servicemanager does not work properly");
+        }
+
+        tester.startPage(new ConnectorEditorPage(id));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "newKey");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:2:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:2:values:1:value:editor", "foo");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:3:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:3:values:1:value:editor", "42");
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        serviceUtils.getService("(newKey=foo)", 100L);
+        serviceUtils.getService("(test=42)", 100L);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
     public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
         Map<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("a", "validation.service.not");
-        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-            new MultipleAttributeValidationResultImpl(false, errorMessages));
-        WicketTester tester = new WicketTester();
-        tester.startPage(new ITestPageSource() {
-            @Override
-            public Page getTestPage() {
-                return new ConnectorEditorPage(manager);
-            }
-        });
+        errorMessages.put("a", "Service Validation Error");
+        when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester formTester = tester.newFormTester("editor:form");
-        formTester.setValue("fields:id:row:field", "someValue");
-        formTester.submit();
-        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
+        tester.assertErrorMessages(new String[]{ "a: Service Validation Error" });
         tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
-    @Ignore("OPENENGSB-277, what checks should be bypassed")
+    @SuppressWarnings("unchecked")
     public void uncheckValidationCheckbox_shouldBypassValidation() {
         Map<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("a", "validation.service.not");
-        when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-            new MultipleAttributeValidationResultImpl(false, errorMessages));
-        WicketTester tester = new WicketTester();
-        tester.startPage(new ITestPageSource() {
-            @Override
-            public Page getTestPage() {
-                return new ConnectorEditorPage(manager);
-            }
-        });
+        errorMessages.put("a", "Service Validation Error");
+        when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
         FormTester formTester = tester.newFormTester("editor:form");
-        formTester.setValue("fields:id:row:field", "someValue");
-        formTester.setValue("validate", false);
-        formTester.submit();
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+        tester.debugComponentTrees();
+        formTester.setValue("attributesPanel:validate", false);
+        AjaxButton submitButton =
+            (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+        tester.executeAjaxEvent(submitButton, "onclick");
+
         tester.assertErrorMessages(new String[]{});
-        tester.assertInfoMessages(new String[]{ "Service can be added" });
-        Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
-        Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
+        serviceUtils.getService(NullDomain.class, 100L);
     }
+
+    @Test
+    public void testMultiValueServiceProperties_shouldAddFields() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:newArrayEntry", "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:2:value:label", "onclick");
+        newFormTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+
+        serviceUtils.getService("(testNew=bar)", 100L);
+    }
+
+    @Test
+    public void testAddNewPropertyEntry_shouldResetKeyNameTextField() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester newFormTester = tester.newFormTester("editor:form");
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        newFormTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(button, "onclick");
+        assertThat(newFormTester.getTextComponentValue("newPropertyKey").isEmpty(), is(true));
+    }
+
+    @Test
+    public void testAddPropertyWithoutName_shouldLeaveListUnchanged() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        AjaxButton button = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+        AbstractRepeater properties =
+            (AbstractRepeater) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:properties");
+        tester.executeAjaxEvent(button, "onclick");
+        assertThat(properties.size(), is(0));
+    }
+
+    // @SuppressWarnings("unchecked")
+    // @Test
+    // public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+    // Map<String, String> errorMessages = new HashMap<String, String>();
+    // errorMessages.put("a", "Service Validation Error");
+    // when(factoryMock.getValidationErrors(anyMap())).thenReturn(errorMessages);
+    //
+    // tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+    // FormTester formTester = tester.newFormTester("editor:form");
+    // formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+    // AjaxButton submitButton =
+    // (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:submitButton");
+    // tester.executeAjaxEvent(submitButton, "onclick");
+    //
+    // tester.assertErrorMessages(new String[]{ "a: Service Validation Error" });
+    // tester.assertRenderedPage(ConnectorEditorPage.class);
+    // }
+
+    @Test
+    public void testAddPropertyWithSameName_shouldLeaveListUnchanged() throws Exception {
+        tester.startPage(new ConnectorEditorPage("testdomain", "testconnector"));
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("attributesPanel:fields:a:row:field", "someValue");
+
+        AjaxButton newPropertyButton = (AjaxButton) tester.getComponentFromLastRenderedPage("editor:form:addProperty");
+
+        formTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(newPropertyButton, "onclick");
+
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:1:value:label", "onclick");
+        formTester.setValue("attributesPanel:properties:0:values:1:value:editor", "foo");
+
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:newArrayEntry", "onclick");
+        tester.executeAjaxEvent("editor:form:attributesPanel:properties:0:values:2:value:label", "onclick");
+        formTester.setValue("attributesPanel:properties:0:values:2:value:editor", "bar");
+
+        formTester.setValue("newPropertyKey", "testNew");
+        tester.executeAjaxEvent(newPropertyButton, "onclick");
+
+        AbstractRepeater list =
+            (AbstractRepeater) tester
+                .getComponentFromLastRenderedPage("editor:form:attributesPanel:properties:0:values");
+        assertThat(list.size(), is(2));
+    }
+
 }

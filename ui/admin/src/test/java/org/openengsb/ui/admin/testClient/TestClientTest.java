@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -34,11 +33,11 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -55,49 +54,41 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
-import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.ProxyFactory;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.DefaultWiringService;
-import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-public class TestClientTest extends AbstractOsgiMockServiceTest {
+public class TestClientTest extends AbstractUITest {
 
     public interface AnotherTestInterface extends Domain {
 
@@ -120,28 +111,20 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         public String getInstanceId() {
             return instanceId;
         }
+
     }
 
     public enum UpdateEnum {
             ONE, TWO
     }
 
-    private WicketTester tester;
-
-    private ApplicationContextMock context;
     private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
-    private DomainService managedServicesMock;
 
     @Before
-    public void setup() throws Exception {
-        super.setUp();
-        tester = new WicketTester();
-        context = new ApplicationContextMock();
-        context.putBean(mock(ContextCurrentService.class));
+    public void setupTest() throws Exception {
         context.putBean(bundleContext);
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(mock(ProxyFactory.class));
     }
 
@@ -164,21 +147,20 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testServiceTreeIsCreated() throws Exception {
         setupAndStartTestClientPage();
-
         tester.assertComponent("methodCallForm:serviceList", LinkTree.class);
     }
 
     @Test
     public void testShowServiceInstancesInDropdown() throws Exception {
-        List<ServiceReference> expected = setupAndStartTestClientPage();
-
+        setupAndStartTestClientPage();
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
-        }
+        tester.assertComponent("methodCallForm:serviceList:i:5:nodeComponent:contentLink", AjaxLink.class);
+        Label serviceLabel =
+            (Label) tester
+                .getComponentFromLastRenderedPage("methodCallForm:serviceList:i:5:nodeComponent:contentLink:content");
+        assertThat(serviceLabel.getDefaultModelObjectAsString(), containsString("test-service"));
     }
 
     @Test
@@ -189,15 +171,25 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    public void testServiceManagerList() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertComponent("serviceManagementContainer:domains:1:services:0:create.new", Link.class);
+        ListView<?> component = (ListView<?>)
+            tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:services");
+        assertThat("should only display service-factories for the current domain", component.size(), is(0));
+    }
+
+    @Test
     public void testServiceListSelect() throws Exception {
         setupAndStartTestClientPage();
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
 
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
-
+        ServiceId reference =
+            new ServiceId(TestInterface.class.getName(),
+                new ConnectorId("testdomain", "testconnector", "test-service").toString());
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -205,7 +197,8 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
+        ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -227,7 +220,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         DropDownChoice<MethodId> methodList =
                 (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
 
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
@@ -254,7 +247,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
@@ -271,7 +264,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(2);
 
         Assert.assertEquals(1, argList.size());
@@ -291,7 +284,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
@@ -308,7 +301,26 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
+        setMethodInDropDown(0);
+        tester.debugComponentTrees();
+        for (int i = 0; i < argList.size(); i++) {
+            formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
+        }
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update("test", "test");
+    }
+
+    @Test
+    public void testPerformMethodCallOnDomain() throws Exception {
+        setupAndStartTestClientPage();
+        tester.debugComponentTrees();
+        RepeatingView argList =
+                (RepeatingView) tester
+                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+
+        setServiceInDropDown(1);
         setMethodInDropDown(0);
         tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
@@ -323,7 +335,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(1);
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
@@ -342,7 +354,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(3);
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
@@ -357,6 +369,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
+        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", true);
         tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink",
                 "onclick");
@@ -369,7 +382,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
 
@@ -380,7 +393,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     public void testFormResetAfterCall() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
 
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
@@ -403,7 +416,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     public void testFeedbackPanelContainsText() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
@@ -419,7 +432,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     public void testExceptionInFeedback() throws Exception {
         setupAndStartTestClientPage();
 
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "fail");
         formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
@@ -441,9 +454,9 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testSelectOtherService_shouldClearArgumentList() throws Exception {
         setupAndStartTestClientPage();
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
-        setServiceInDropDown(0);
+        setServiceInDropDown(2);
         RepeatingView argList =
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
@@ -461,21 +474,22 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.name");
+                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
         Label domainDescription =
                 (Label) tester
-                        .getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.description");
+                        .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
         Label domainClass =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:0:domain.class");
+                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
+        tester.debugComponentTrees();
         Label name =
                 (Label) tester
                         .getComponentFromLastRenderedPage(
-                                "serviceManagementContainer:domains:0:services:0:service.name");
+                                "serviceManagementContainer:domains:1:services:0:service.name");
         Label description =
                 (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
-                        + "0:services:0:service.description");
-        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testDomain"));
-        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testDomain"));
+                        + "1:services:0:service.description");
+        assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testdomain"));
+        assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testdomain"));
         assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(TestInterface.class.getName()));
         Assert.assertEquals("service.name", name.getDefaultModel().getObject());
         Assert.assertEquals("service.description", description.getDefaultModel().getObject());
@@ -498,39 +512,85 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    public void showDeleteLink() throws Exception {
+        List<ServiceReference> expected = setupAndStartTestClientPage();
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
+        tester.assertComponent("methodCallForm:deleteButton", AjaxButton.class);
+        AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
+        // should be disabled when nothing is selected
+        Assert.assertEquals(false, deleteButton.isEnabled());
+    }
+
+    @Test
     public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
         ServiceReference ref = Mockito.mock(ServiceReference.class);
         Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
         Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-        when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
-            new ServiceReference[]{ ref });
+        when(
+            bundleContext.getServiceReferences(Domain.class.getName(),
+                String.format("(%s=%s)", Constants.ID_KEY, "test"))).thenReturn(new ServiceReference[]{ ref });
 
-        List<ServiceManager> managerList = new ArrayList<ServiceManager>();
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
                 new PassThroughLocalizableString("ServiceDescription"));
 
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-
-        managerList.add(serviceManagerMock);
-        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
-
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
         tester.debugComponentTrees();
-        tester.clickLink("methodCallForm:serviceList:i:3:nodeComponent:contentLink", true);
+        tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
         Assert.assertEquals(true, editButton.isEnabled());
         tester.executeAjaxEvent(editButton, "onclick");
 
         ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
+    }
+
+    @Test
+    public void testFunctionDeleteButton() throws Exception {
+        setupAndStartTestClientPage();
+        ServiceReference ref = Mockito.mock(ServiceReference.class);
+        Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
+        Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
+        when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
+            new ServiceReference[]{ ref });
+        
+        ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
+        Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
+        Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
+        Mockito.when(serviceDescriptor.getDescription()).thenReturn(
+                new PassThroughLocalizableString("ServiceDescription"));
+
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        tester.debugComponentTrees();
+        tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
+        AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
+        Assert.assertEquals(true, deleteButton.isEnabled());
+        tester.executeAjaxEvent(deleteButton, "onclick");
+        
+        boolean works = false;
+        try {
+            tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
+        } catch (Exception e) {
+            works = true;
+        }
+        if (!works) {
+            assertFalse(true);
+        } else {
+            assertFalse(false);
+        }
     }
 
     @Test
@@ -586,7 +646,7 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(-1);
+        setServiceInDropDown(1);
         setMethodInDropDown(0);
         RepeatingView argList =
                 (RepeatingView) tester
@@ -600,113 +660,65 @@ public class TestClientTest extends AbstractOsgiMockServiceTest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(2);
+        setServiceInDropDown(-1);
         tester.debugComponentTrees();
         AjaxButton submitButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
         assertFalse(submitButton.isEnabled());
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString("No service found for domain"));
         assertThat(resultException, containsString(AnotherTestInterface.class.getName()));
-
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws Exception {
-        final List<ServiceReference> expected = setupTestClientPage();
+        setupTestClientPage();
+        final List<ServiceReference> expected = Arrays.asList();
         tester.startPage(TestClient.class);
         formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 
-    private List<ServiceReference> setupTestClientPage() throws Exception {
-        final List<ServiceReference> expected = new ArrayList<ServiceReference>();
-        ServiceReference serviceReferenceMock = mock(ServiceReference.class);
-        when(serviceReferenceMock.getProperty("id")).thenReturn("test");
-        expected.add(serviceReferenceMock);
-        managedServicesMock = mock(DomainService.class);
-        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
-            @Override
-            public List<ServiceReference> answer(InvocationOnMock invocation) {
-                return expected;
-            }
-        });
-        final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
-        List<DomainProvider> domainProviderMocks = createDomainProviderMocks();
-        expectedProviders.addAll(domainProviderMocks);
-        when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
-            @Override
-            public List<DomainProvider> answer(InvocationOnMock invocation) {
-                return expectedProviders;
-            }
-        });
+    private void setupTestClientPage() throws Exception {
+        createProviderMocks();
 
-        Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
-
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
-        List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();
-        serviceManagerList.add(serviceManagerMock);
-        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("value", "42");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("location.root", "domain/testdomain/default");
+        serviceManager.create(new ConnectorId("testdomain", "testconnector", "test-service"),
+            new ConnectorDescription(
+                attributes, properties));
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
         Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
                 new PassThroughLocalizableString("service.description"));
-        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
-
-        testService = mock(TestInterface.class);
-        registerServiceViaId(testService, "test", TestInterface.class);
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
-        when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
-        when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
-        context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
-        return expected;
     }
 
-    private List<DomainProvider> createDomainProviderMocks() {
-        List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
-        DomainProvider domainProviderMock = mock(DomainProvider.class);
-        LocalizableString testDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(testDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
-        when(domainProviderMock.getName()).thenReturn(testDomainLocalziedStringMock);
-        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalziedStringMock);
-        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+    private void createProviderMocks() {
+        createDomainProviderMock(TestInterface.class, "testdomain");
+        createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
+        createConnectorProviderMock("testconnector", "testdomain");
+        ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+            public Domain answer(InvocationOnMock invocation) throws Throwable {
+                TestInterface newMock = mock(TestInterface.class);
+                testService = newMock;
+                when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
+                return newMock;
             }
         });
-        expectedProviders.add(domainProviderMock);
-        DomainProvider anotherDomainProviderMock = mock(DomainProvider.class);
-        LocalizableString anotherTestDomainLocalziedStringMock = mock(LocalizableString.class);
-        when(anotherTestDomainLocalziedStringMock.getString(Mockito.<Locale> any())).thenReturn("anotherTestDomain");
-        when(anotherDomainProviderMock.getName()).thenReturn(anotherTestDomainLocalziedStringMock);
-        when(anotherDomainProviderMock.getDescription()).thenReturn(anotherTestDomainLocalziedStringMock);
-        when(anotherDomainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-            @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return AnotherTestInterface.class;
-            }
-        });
-        expectedProviders.add(anotherDomainProviderMock);
-
-        return expectedProviders;
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.DOMAIN_KEY, "testdomain");
+        props.put(Constants.CONNECTOR_KEY, "testconnector");
+        registerService(factory, props, ConnectorInstanceFactory.class);
     }
 
     private void setupIndexPage() {
-        DomainService domainServiceMock = mock(DomainService.class);
-        context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(bundleContext);
-        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        DefaultWiringService defaultWiringService = new DefaultWiringService();
-        defaultWiringService.setBundleContext(bundleContext);
-        registerService(defaultWiringService, new Hashtable<String, Object>(), WiringService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
 }

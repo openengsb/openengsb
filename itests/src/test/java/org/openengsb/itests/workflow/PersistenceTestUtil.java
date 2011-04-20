@@ -23,8 +23,6 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -36,10 +34,12 @@ import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class PersistenceTestUtil {
 
-    private static Log log = LogFactory.getLog(PersistenceTestUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);
 
     public static RuleManager getRuleManager() throws PersistenceException, IOException, RuleBaseException {
         PersistenceRuleManager manager = new PersistenceRuleManager();
@@ -50,12 +50,12 @@ public final class PersistenceTestUtil {
     }
 
     private static NeodatisPersistenceService createPersistence() throws PersistenceException, IOException {
-        log.debug("creating persistence");
+        LOGGER.debug("creating persistence");
         final File dataFile = new File("data");
         FileUtils.deleteQuietly(dataFile);
         File refData = new File("data.ref");
         if (!refData.exists()) {
-            log.debug("creating reference persistence");
+            LOGGER.debug("creating reference persistence");
             createReferencePersistence();
         }
         FileUtils.copyFile(refData, dataFile);

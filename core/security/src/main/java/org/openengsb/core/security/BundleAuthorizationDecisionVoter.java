@@ -20,15 +20,15 @@ package org.openengsb.core.security;
 import java.util.Collection;
 
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 
 public class BundleAuthorizationDecisionVoter implements AccessDecisionVoter {
 
-    private Log log = LogFactory.getLog(BundleAuthorizationDecisionVoter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BundleAuthorizationDecisionVoter.class);
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -46,7 +46,7 @@ public class BundleAuthorizationDecisionVoter implements AccessDecisionVoter {
             return ACCESS_ABSTAIN;
         }
         BundleAuthenticationToken token = (BundleAuthenticationToken) authentication;
-        log.info("granting bundle " + token.getPrincipal() + " access");
+        LOGGER.info("granting bundle {} access", token.getPrincipal());
         return ACCESS_GRANTED;
     }
 

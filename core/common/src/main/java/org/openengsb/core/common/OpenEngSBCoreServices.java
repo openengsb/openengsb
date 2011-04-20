@@ -23,7 +23,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * Static helper methods providing proxies which access the OSGi service registry for each request to retrieve the
@@ -57,13 +56,8 @@ public final class OpenEngSBCoreServices {
     public static ConfigPersistenceService getConfigPersistenceService(String type)
         throws OsgiServiceNotAvailableException {
         Filter configPersistenceFilter;
-        try {
-            configPersistenceFilter = serviceUtils.makeFilter(ConfigPersistenceService.class,
+        configPersistenceFilter = serviceUtils.makeFilter(ConfigPersistenceService.class,
                 String.format("(%s=%s)", Constants.CONFIGURATION_ID, type));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(String.format(
-                "It is not possible to create a filter: (%s=%s)", Constants.CONFIGURATION_ID, type));
-        }
         return serviceUtils.getOsgiServiceProxy(configPersistenceFilter, ConfigPersistenceService.class);
     }
 

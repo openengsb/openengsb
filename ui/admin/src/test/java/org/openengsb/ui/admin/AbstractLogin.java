@@ -21,59 +21,34 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.DomainService;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
-import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public abstract class AbstractLogin {
+public abstract class AbstractLogin extends AbstractUITest {
 
-    private WicketTester tester;
-    private ApplicationContextMock contextMock;
     private UserManagerImpl userManager;
 
     @Before
     public void setup() {
-        contextMock = new ApplicationContextMock();
         mockAuthentication();
-        mockIndex();
-
-        WebApplication app = new WicketApplication() {
+        tester = new WicketTester(new WicketApplication() {
             @Override
             protected void addInjector() {
-                addComponentInstantiationListener(new SpringComponentInjector(this, contextMock, true));
-            }
-        };
-        tester = new WicketTester(app);
-    }
-
-    private void mockIndex() {
-        DomainService managedServicesMock = mock(DomainService.class);
-        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
-            @Override
-            public List<ServiceReference> answer(InvocationOnMock invocation) {
-                return Collections.emptyList();
+                addComponentInstantiationListener(new SpringComponentInjector(this, context, true));
             }
         });
-        contextMock.putBean(managedServicesMock);
-        contextMock.putBean(mock(ContextCurrentService.class));
     }
 
     private void mockAuthentication() {
@@ -102,11 +77,6 @@ public abstract class AbstractLogin {
                 return admin;
             }
         });
-        contextMock.putBean("authenticationManager", authManager);
-        contextMock.putBean("openengsbVersion", new OpenEngSBVersion());
-    }
-
-    public WicketTester getTester() {
-        return tester;
+        context.putBean("authenticationManager", authManager);
     }
 }

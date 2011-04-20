@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -56,7 +54,6 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 public class UserService extends BasePage {
 
-    private static Log log = LogFactory.getLog(UserService.class);
     UserInput input = new UserInput();
     RequiredTextField<String> usernameField;
     PasswordTextField passwordField;

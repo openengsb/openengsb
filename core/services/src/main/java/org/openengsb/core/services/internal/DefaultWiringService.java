@@ -20,8 +20,6 @@ package org.openengsb.core.services.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -34,6 +32,8 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default Wiring Implementation which can be overwritten by another service implementation easily if required.
@@ -41,7 +41,7 @@ import org.osgi.framework.ServiceReference;
 public class DefaultWiringService implements WiringService {
 
     private static final long DEFAULT_TIMEOUT = 5000L;
-    private static final Log LOGGER = LogFactory.getLog(DefaultWiringService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWiringService.class);
 
     private BundleContext bundleContext;
 
@@ -75,12 +75,13 @@ public class DefaultWiringService implements WiringService {
         }
         List<T> result = new ArrayList<T>();
         if (allServiceReferences == null) {
-            LOGGER.info("no references found for filter: " + filterForLocation.toString());
+            LOGGER.info("no references found for filter: {}", filterForLocation);
             return result;
         }
-        LOGGER.debug(String.format("found %s references for %s", allServiceReferences.length, filterForLocation));
+        LOGGER.debug("found {} references for {}", allServiceReferences.length, filterForLocation);
         for (ServiceReference ref : allServiceReferences) {
-            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, ref.getProperty(Constants.SERVICE_ID));
+            Object serviceId = ref.getProperty(Constants.SERVICE_ID);
+            String filterString = String.format("(%s=%s)", Constants.SERVICE_ID, serviceId);
             try {
                 T osgiServiceProxy =
                     getServiceUtils().getOsgiServiceProxy(FrameworkUtil.createFilter(filterString), domainType);

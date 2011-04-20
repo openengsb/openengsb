@@ -20,42 +20,66 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
-<body>
-<wicket:extend>
+  <body>
+    <wicket:extend>
 
-  <h2><wicket:message key="serviceList" /></h2>
-  <div wicket:id="serviceManagementContainer">
-  <ul wicket:id="domains">
-    <li>
-    <h3><span wicket:id="domain.name">[domain.name]</span></h3>
-    <a href="TestClient.html#" wicket:id="proxy.create.new"><wicket:message key="proxy.create.new">[proxy.create.new]</wicket:message></a>
+      <h2>
+        <wicket:message key="serviceList" />
+      </h2>
+      <div wicket:id="serviceManagementContainer">
+        <ul wicket:id="domains">
+          <li>
+            <h3>
+              <span wicket:id="domain.name">[domain.name]</span>
+            </h3>
+            <a href="TestClient.html#" wicket:id="proxy.create.new">
+              <wicket:message key="proxy.create.new">[proxy.create.new]</wicket:message>
+            </a>
 
-    <p><span wicket:id="domain.class">[domain.class]</span></p>
+            <p>
+              <span wicket:id="domain.class">[domain.class]</span>
+            </p>
 
-    <p><span wicket:id="domain.description">[domain.description]</span></p>
+            <p>
+              <span wicket:id="domain.description">[domain.description]</span>
+            </p>
 
-    <ul wicket:id="services">
-      <li>
-      <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
-        wicket:id="service.description">[service.description]</span> <a href="TestClient.html#" wicket:id="create.new"><wicket:message
-        key="create.new">[create.new]</wicket:message></a></h3>
-      </li>
-    </ul>
+            <ul wicket:id="services">
+              <li>
+                <h3>
+                  <span wicket:id="service.name">[service.name]</span>
+                  <span class="smallFont light" wicket:id="service.description">[service.description]</span>
+                  <a href="TestClient.html#" wicket:id="create.new">
+                    <wicket:message key="create.new">[create.new]</wicket:message>
+                  </a>
+                </h3>
+              </li>
+            </ul>
 
-    </li>
-  </ul>
-  </div>
+          </li>
+        </ul>
+      </div>
 
-  <wicket:message key="serviceList" />
+      <form wicket:id="organizeForm">
+        <input type="submit" wicket:id="globalsButton" wicket:message="value:organize.globals" />
+        <input type="submit" wicket:id="importsButton" wicket:message="value:organize.imports" />
+      </form>
 
-  <form wicket:id="methodCallForm"><span wicket:id="serviceList"></span> <select wicket:id="methodList"></select>
-  <div wicket:id="argumentListContainer">
-  <div wicket:id="argumentList"></div>
-  </div>
-  <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" /> <input type="submit"
-    wicket:id="editButton" wicket:message="value:service.edit" /></form>
-  <div wicket:id="feedback">[feedback]</div>
+      <wicket:message key="serviceList" />
 
-</wicket:extend>
-</body>
+      <form wicket:id="methodCallForm">
+        <span wicket:id="serviceList"></span>
+        <select wicket:id="methodList"></select>
+        <div wicket:id="argumentListContainer">
+          <div wicket:id="argumentList"></div>
+        </div>
+        <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" />
+        <input type="submit" wicket:id="editButton" wicket:message="value:service.edit" />
+        <input type="submit" wicket:id="deleteButton" wicket:message="value:service.delete" />
+      </form>
+      <div wicket:id="feedback">[feedback]</div>
+
+    </wicket:extend>
+  </body>
 </html>
+

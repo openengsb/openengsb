@@ -47,6 +47,7 @@ public class RuleEditorPanel extends Panel {
     private DropDownChoice<RuleBaseElementType> typeChoice;
     private AjaxButton newButton;
     private AjaxButton cancelButton;
+    private AjaxButton deleteButton;
     private IndicatingAjaxButton saveButton;
     private boolean newRuleMode;
     private Form<Object> form;
@@ -101,6 +102,16 @@ public class RuleEditorPanel extends Panel {
         cancelButton.setEnabled(false);
         target.addComponent(cancelButton);
     }
+    
+    private void enableDeleteButton(AjaxRequestTarget target) {
+        deleteButton.setEnabled(true);
+        target.addComponent(deleteButton);
+    }
+    
+    private void disableDeleteButton(AjaxRequestTarget target) {
+        deleteButton.setEnabled(false);
+        target.addComponent(deleteButton);
+    }
 
     private void initButtons(Form<Object> form) {
         saveButton = new IndicatingAjaxButton("save") {
@@ -108,19 +119,26 @@ public class RuleEditorPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 target.addComponent(textArea);
                 if (newRuleMode) {
+                    boolean error = false;
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
                             newRuleTextField.getModelObject());
                     try {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
+                        error = true;
                         target.addComponent(feedbackPanel);
                         error(e.getLocalizedMessage());
                     }
                     resetAfterNew(target);
                     ruleChoice.setModelObject(ruleBaseElementId);
+                    if (!error) {
+                        error("");
+                        target.addComponent(feedbackPanel);
+                    }
                 } else {
                     updateRule(target);
                 }
+                enableDeleteButton(target);
             }
         };
         saveButton.setEnabled(false);
@@ -131,8 +149,10 @@ public class RuleEditorPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 if (newRuleMode) {
                     resetAfterNew(target);
+                    disableDeleteButton(target);
                 } else {
                     reloadTextArea(target);
+                    enableDeleteButton(target);
                 }
             }
         };
@@ -143,9 +163,20 @@ public class RuleEditorPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 enterNewRuleMode(target);
+                disableDeleteButton(target);
             }
         };
         form.add(newButton);
+        deleteButton = new AjaxButton("delete") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                deleteRule(target);
+                disableDeleteButton(target);
+            }
+        };
+        deleteButton.setEnabled(false);
+        deleteButton.setOutputMarkupId(true);
+        form.add(deleteButton);
     }
 
     private void initRuleChoice(Form<Object> form) {
@@ -172,7 +203,6 @@ public class RuleEditorPanel extends Panel {
                 if (!newRuleMode) {
                     reloadTextArea(target);
                     reloadRuleChoice(target);
-
                 }
             }
         });
@@ -198,9 +228,11 @@ public class RuleEditorPanel extends Panel {
         if (selection != null) {
             textArea.setModel(new Model<String>(ruleManagerProvider.getRuleManager().get(selection)));
             textArea.setEnabled(true);
+            enableDeleteButton(target);
         } else {
             textArea.setModel(new Model<String>());
             textArea.setEnabled(false);
+            disableDeleteButton(target);
         }
         disableButtons(target);
     }
@@ -208,14 +240,28 @@ public class RuleEditorPanel extends Panel {
     private void updateRule(AjaxRequestTarget target) {
         RuleBaseElementId selection = ruleChoice.getModelObject();
         String text = textArea.getModelObject();
+        boolean error = false;
         if (selection != null && text != null) {
             try {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
+                error = true;
+                target.addComponent(feedbackPanel);
                 error(e.getLocalizedMessage());
             }
         }
+        if (!error) {
+            error("");
+            target.addComponent(feedbackPanel);
+        }
         disableButtons(target);
+    }
+    
+    private void deleteRule(AjaxRequestTarget target) {
+        RuleBaseElementId selection = ruleChoice.getModelObject();
+        ruleManagerProvider.getRuleManager().delete(selection);
+        reloadTextArea(target);
+        reloadRuleChoice(target);
     }
 
     private void resetAfterNew(AjaxRequestTarget target) {
@@ -241,6 +287,7 @@ public class RuleEditorPanel extends Panel {
         newButton.setEnabled(false);
         saveButton.setEnabled(true);
         cancelButton.setEnabled(true);
+        deleteButton.setEnabled(false);
         target.addComponent(form);
         target.addComponent(newRuleTextField);
         target.addComponent(newRuleTextField);

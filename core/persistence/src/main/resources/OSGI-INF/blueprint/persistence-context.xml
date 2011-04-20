@@ -19,22 +19,12 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <bean id="persistenceManager" class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager" >
+  <bean id="persistenceManager" class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager">
     <property name="persistenceRootDir" value="openengsb/persistence" />
-  </bean>    
-    
-  <service interface="org.openengsb.core.api.persistence.PersistenceManager" ref="persistenceManager" />
+  </bean>
 
-  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
-    <service-properties>
-      <entry key="backend.id" value="persistenceService" />
-    </service-properties>
-    <bean class="org.openengsb.core.persistence.internal.CorePersistenceServiceBackend" init-method="init" >
-      <property name="bundleContext" ref="blueprintBundleContext" />
-      <property name="persistenceManager" ref="persistenceManager" />
-    </bean>
-  </service>
+  <service interface="org.openengsb.core.api.persistence.PersistenceManager" ref="persistenceManager" />
 
 </blueprint>

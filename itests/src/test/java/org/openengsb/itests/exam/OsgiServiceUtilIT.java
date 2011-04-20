@@ -26,8 +26,9 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.ServiceManager;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -42,25 +43,24 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
 
     @Test
     public void testOsgiServiceUtilMethods() throws Exception {
-        ServiceManager service = getServiceUtils().getService(ServiceManager.class);
-        assertThat(service, notNullValue());
-        service =
-            (ServiceManager) getServiceUtils().getService(getServiceUtils().makeFilter(ServiceManager.class,
-                "(connector=example)"));
-        assertThat(service, notNullValue());
+        DomainProvider provider = getServiceUtils().getService(DomainProvider.class);
+        assertThat(provider, notNullValue());
+        provider =
+            (DomainProvider) getServiceUtils().getService(getServiceUtils().makeFilter(DomainProvider.class,
+                String.format("(%s=example)", org.openengsb.core.api.Constants.DOMAIN_KEY)));
+        assertThat(provider, notNullValue());
 
-        ServiceManager service2 = (ServiceManager) getServiceUtils().getService("(connector=example)");
-        assertThat(service2.getInstanceId(), is(service.getInstanceId()));
+        assertThat(provider.getId(), is("example"));
     }
-
-
 
     @Test
     public void testOsgiServiceProxy() throws Exception {
-        ServiceManager proxy =
+        ConnectorProvider proxy =
             getServiceUtils().getOsgiServiceProxy(
-                getServiceUtils().makeFilter(ServiceManager.class, "(connector=example)"), ServiceManager.class);
-        assertThat(proxy.getInstanceId(), is("org.openengsb.connector.example.LogServiceManager"));
+                getServiceUtils().makeFilter(ConnectorProvider.class,
+                    String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
+                    ConnectorProvider.class);
+        assertThat(proxy.getId(), is("example"));
     }
 
     private static class DummyService extends AbstractOpenEngSBService implements ExampleDomain {

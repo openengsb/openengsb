@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -47,8 +45,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.DomainService;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
@@ -60,17 +58,19 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    private transient Log log = LogFactory.getLog(SendEventPage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
+
+    @SpringBean
+    private OsgiUtilsService serviceUtils;
 
     @SpringBean
     private WorkflowService eventService;
-
-    @SpringBean
-    private DomainService domainService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
     @SpringBean
@@ -79,11 +79,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     @SpringBean
     private AuditingDomain auditing;
 
-    private final Map<String, String> values = new HashMap<String, String>();
-
     private RepeatingView fieldList;
 
     private final ValueConverter valueConverter = new ValueConverter();
+
+    private Map<String, String> realValues = new HashMap<String, String>();
 
     public SendEventPage() {
         initContent();
@@ -97,7 +97,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private void initContent() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
         classes.add(Event.class);
-        for (DomainProvider domain : domainService.domains()) {
+        for (DomainProvider domain : serviceUtils.listServices(DomainProvider.class)) {
             classes.addAll(domain.getEvents());
         }
         init(classes);
@@ -137,7 +137,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Event event = buildEvent(dropDownChoice.getModelObject(), values);
+                Event event = buildEvent(dropDownChoice.getModelObject(), realValues);
                 if (event != null) {
                     try {
                         eventService.processEvent(event);
@@ -165,7 +165,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         try {
             audits = auditing.getAudits();
         } catch (Exception e) {
-            log.error("Audits cannot be loaded", e);
+            LOGGER.error("Audits cannot be loaded", e);
         }
         ListView<String> listView = new ListView<String>("audits", audits) {
             @Override
@@ -179,10 +179,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     }
 
     private RepeatingView createEditorPanelForClass(Class<?> theClass) {
-        values.clear();
+        realValues.clear();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
+
+        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, realValues);
         return fieldList;
     }
 
@@ -216,7 +217,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             }
             return obj;
         } catch (Exception e) {
-            log.error("building event istance failed", e);
+            LOGGER.error("building event instance failed", e);
             return null;
         }
     }

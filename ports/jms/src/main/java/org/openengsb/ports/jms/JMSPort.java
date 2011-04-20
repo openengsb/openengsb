@@ -18,8 +18,6 @@
 package org.openengsb.ports.jms;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -27,13 +25,13 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.common.marshaling.RequestMapping;
+import org.openengsb.core.common.marshaling.ReturnMapping;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -48,8 +46,6 @@ public class JMSPort implements OutgoingPort {
     private RequestHandler requestHandler;
 
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void send(String destination, MethodCall call) {
@@ -78,12 +74,7 @@ public class JMSPort implements OutgoingPort {
 
     private MethodReturn createMethodReturn(String receiveAndConvert) {
         try {
-            ReturnMapping returnValue = mapper.readValue(receiveAndConvert, ReturnMapping.class);
-            if (returnValue.getType() != ReturnType.Void) {
-                Class<?> classValue = Class.forName(returnValue.getClassName());
-                returnValue.setArg(mapper.convertValue(returnValue.getArg(), classValue));
-            }
-            return returnValue;
+            return ReturnMapping.createFromMessage(receiveAndConvert);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
@@ -96,14 +87,14 @@ public class JMSPort implements OutgoingPort {
     }
 
     private void sendMessage(String destination, MethodCall call) {
-        StringWriter result = new StringWriter();
+        String answer;
         try {
-            new ObjectMapper().writeValue(result, call);
+            answer = new RequestMapping(call).convertToMessage();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.convertAndSend(RECEIVE, result.toString());
+        createJMSTemplate.convertAndSend(RECEIVE, answer);
     }
 
     public void setRequestHandler(RequestHandler handler) {
@@ -115,20 +106,17 @@ public class JMSPort implements OutgoingPort {
             @Override
             public void onMessage(Message message) {
                 if (message instanceof TextMessage) {
-                    ObjectMapper mapper = new ObjectMapper();
                     TextMessage textMessage = (TextMessage) message;
                     try {
-                        RequestMapping readValue =
-                            mapper.readValue(new StringReader(textMessage.getText()), RequestMapping.class);
+                        RequestMapping readValue = RequestMapping.createFromMessage(textMessage.getText());
                         readValue.resetArgs();
                         ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
                         MethodReturn handleCall = requestHandler.handleCall(readValue);
-                        StringWriter stringWriter = new StringWriter();
-                        mapper.writeValue(stringWriter, handleCall);
-
+                        ReturnMapping returnMapping = new ReturnMapping(handleCall);
+                        returnMapping.setClassName(returnMapping.getArg().getClass().getName());
+                        String answer = returnMapping.convertToMessage();
                         if (readValue.isAnswer()) {
-                            new JmsTemplate(connectionFactory).convertAndSend(readValue.getCallId(),
-                                stringWriter.toString());
+                            new JmsTemplate(connectionFactory).convertAndSend(readValue.getCallId(), answer);
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);

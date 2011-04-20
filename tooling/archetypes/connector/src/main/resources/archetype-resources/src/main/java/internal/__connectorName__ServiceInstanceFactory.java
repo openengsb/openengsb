@@ -21,17 +21,26 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import ${package}.internal.${connectorName}ServiceImpl;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
 
+import ${package}.internal.${connectorName}ServiceImpl;
 import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> {
 
     public ${connectorName}ServiceInstanceFactory() {
+    }
+
+    @Override
+    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+        builder.name("${connectorName}.name").description("${connectorName}.description");
+        builder.attribute(builder.newAttribute().id("attr").name("${connectorName}.attr")
+                .description("${connectorName}.attr.description").defaultValue("${connectorName.atr.defaultValue}")
+                .required()
+                .build());
+        return builder.build();
     }
 
     @Override
@@ -48,13 +57,6 @@ public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFa
         return service;
     }
 
-    @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
-        builder.name("service.name").description("service.description");
-        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build());
-        return builder.build();
-    }
-    
     @Override
     public MultipleAttributeValidationResult updateValidation(${connectorName}ServiceImpl instance,
             Map<String, String> attributes) {

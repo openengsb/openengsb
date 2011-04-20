@@ -49,7 +49,6 @@ public class ServiceDescriptorTest {
         when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
         when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");
-        builder.serviceType(NullDomain.class);
         builder.implementationType(NullDomainImpl.class);
         builder.name("nameKey");
         builder.description("descKey");
@@ -70,27 +69,6 @@ public class ServiceDescriptorTest {
     public void buildWithouthId_shouldThrowISE() {
         expectMessage("id");
         builder.id(null);
-        builder.build();
-    }
-
-    @Test
-    public void buildWithoutServiceTyp_shouldThrowISE() {
-        expectMessage("service");
-        builder.serviceType(null);
-        builder.build();
-    }
-
-    @Test
-    public void buildWithoutImplType_shouldThrowISE() {
-        expectMessage("implementation");
-        builder.implementationType(null);
-        builder.build();
-    }
-
-    @Test
-    public void implementationTypeDoesNotImplementServiceType_shouldThrowISE() {
-        expectMessage("service");
-        builder.implementationType(DomainImpl.class);
         builder.build();
     }
 
@@ -129,6 +107,7 @@ public class ServiceDescriptorTest {
         public String getInstanceId() {
             return null;
         }
+
     }
 
     public class DomainImpl implements Domain {

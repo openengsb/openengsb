@@ -194,7 +194,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         String logLvl = System.getProperty(SYS_PROP_LOG) != null ? System.getProperty(SYS_PROP_LOG) : LOG_LEVEL;
         return combine(
             baseOptions,
-            Helper.loadKarafStandardFeatures("config", "ssh", "management", "wrapper", "obr"),
+            Helper.loadKarafStandardFeatures("config", "management"),
             Helper.setLogLevel(logLvl),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),

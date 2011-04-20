@@ -20,9 +20,9 @@ package org.openengsb.core.security.internal;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.security.BundleAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +30,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class SystemUserAuthenticationProvider implements AuthenticationProvider {
 
-    private Log log = LogFactory.getLog(SystemUserAuthenticationProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUserAuthenticationProvider.class);
 
     private static final Collection<GrantedAuthority> AUTHORITIES = Arrays
         .asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_ADMIN"), });
@@ -41,8 +41,8 @@ public class SystemUserAuthenticationProvider implements AuthenticationProvider 
     @Override
     public Authentication authenticate(Authentication authentication) {
         BundleAuthenticationToken token = (BundleAuthenticationToken) authentication;
-        log.info("authenticating bundle " + token.getPrincipal());
-        log.info("apikey: " + token.getCredentials());
+        LOGGER.info("authenticating bundle {}", token.getPrincipal());
+        LOGGER.info("apikey: {}", token.getCredentials());
         return new BundleAuthenticationToken(token, AUTHORITIES);
     }
 

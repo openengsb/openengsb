@@ -20,16 +20,16 @@ package org.openengsb.core.common.events;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
-    private Log log = LogFactory.getLog(ForwardHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForwardHandler.class);
     private WorkflowService workflowService;
 
     public ForwardHandler() {
@@ -40,7 +40,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
     public Object handleInvoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
         InvocationTargetException {
         checkMethod(method);
-        log.info("Forwarding event to workflow service");
+        LOGGER.info("Forwarding event to workflow service");
         try {
             workflowService.processEvent((Event) args[0]);
         } catch (WorkflowException e) {

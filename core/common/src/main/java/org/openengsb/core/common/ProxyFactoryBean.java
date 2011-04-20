@@ -22,13 +22,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.aopalliance.aop.Advice;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
 
 public class ProxyFactoryBean {
 
-    private Log log = LogFactory.getLog(ProxyFactoryBean.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyFactoryBean.class);
 
     private List<String> proxyInterfaces;
 
@@ -72,7 +72,7 @@ public class ProxyFactoryBean {
                 j++;
                 try {
                     loadedClass = loader.loadClass(proxyInterfaces.get(i));
-                    log.info("found class using Classloader: " + i + " - " + loader.getClass());
+                    LOGGER.info("found class using Classloader: {} - {}", i, loader.getClass());
                     break;
                 } catch (ClassNotFoundException e) {
                     // ignore throw new RuntimeException(e);

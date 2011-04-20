@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>${groupId}.docs</groupId>
+    <artifactId>${artifactId}-docs-parent</artifactId>
+    <version>${version}</version>
+  </parent>
+
+  <groupId>${groupId}.docs</groupId>
+  <artifactId>${artifactId}-docs-manual</artifactId>
+  <version>${version}</version>
+  <name>${name} :: Documentation :: Manual</name>
+  <packaging>pom</packaging>
+
+  <description>Manual for the ${name}</description>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/docbkx</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <id>resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <version>${docbkx.version}</version>
+        <executions>
+          <execution>
+            <id>html-single</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <xincludeSupported>true</xincludeSupported>
+              <chunkedOutput>false</chunkedOutput>
+              <htmlCustomization>${basedir}/src/main/docbkx/resources/xsl/html.xsl</htmlCustomization>
+              <preProcess>
+                <delete dir="${basedir}/target/docbkx/html"/>
+              </preProcess>
+              <postProcess>
+                <copy todir="${basedir}/target/docbkx/html">
+                  <fileset dir="${basedir}/src/main/docbkx/resources">
+                    <include name="**/*.css"/>
+                    <include name="**/*.png"/>
+                    <include name="**/*.gif"/>
+                    <include name="**/*.jpg"/>
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                  <fileset dir="${basedir}/src/main/docbkx/">
+                    <exclude name="resources/**"/>
+                    <include name="**/*.png"/>
+                    <include name="**/*.gif"/>
+                    <include name="**/*.jpg"/>
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/manual/html-single">
+                  <fileset dir="${basedir}/target/docbkx/html">
+                    <include name="**/*"/>
+                  </fileset>
+                </copy>
+              </postProcess>
+            </configuration>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>html-multi</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <xincludeSupported>true</xincludeSupported>
+              <chunkedOutput>true</chunkedOutput>
+              <htmlCustomization>${basedir}/src/main/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+              <preProcess>
+                <delete dir="${basedir}/target/docbkx/html"/>
+              </preProcess>
+              <postProcess>
+                <copy todir="${basedir}/target/docbkx/html">
+                  <fileset dir="${basedir}/src/main/docbkx/resources">
+                    <include name="**/*.css"/>
+                    <include name="**/*.png"/>
+                    <include name="**/*.gif"/>
+                    <include name="**/*.jpg"/>
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                  <fileset dir="${basedir}/src/main/docbkx/">
+                    <exclude name="resources/**"/>
+                    <include name="**/*.png"/>
+                    <include name="**/*.gif"/>
+                    <include name="**/*.jpg"/>
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/manual/html-multi">
+                  <fileset dir="${basedir}/target/docbkx/html">
+                    <include name="**/*"/>
+                  </fileset>
+                </copy>
+              </postProcess>
+            </configuration>
+            <phase>compile</phase>
+          </execution>
+          <!--<execution>-->
+            <!--<id>pdf-single</id>-->
+            <!--<goals>-->
+              <!--<goal>generate-pdf</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<xincludeSupported>true</xincludeSupported>-->
+              <!--<foCustomization>${basedir}/src/main/docbkx/resources/xsl/fopdf.xsl</foCustomization>-->
+              <!--<imgSrcPath>file:///${basedir}/src/main/docbkx/</imgSrcPath>-->
+              <!--<postProcess>-->
+                <!--<copy todir="${basedir}/target/manual/pdf">-->
+                  <!--<fileset dir="${basedir}/target/docbkx/pdf">-->
+                    <!--<include name="**/*.pdf"/>-->
+                  <!--</fileset>-->
+                <!--</copy>-->
+              <!--</postProcess>-->
+            <!--</configuration>-->
+            <!--<phase>compile</phase>-->
+          <!--</execution>-->
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>${docbkx.xml.version}</version>
+            <scope>runtime</scope>
+            <classifier>resources</classifier>
+            <type>zip</type>
+          </dependency>
+          <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>${jai.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jai_codec</artifactId>
+            <version>${jai.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <includes>*.xml</includes>
+          <htmlStylesheet>css/html.css</htmlStylesheet>
+          <xincludeSupported>true</xincludeSupported>
+          <sourceDirectory>${basedir}/target/classes</sourceDirectory>
+          <!-- use extensions -->
+          <useExtensions>1</useExtensions>
+          <highlightSource>1</highlightSource>
+          <highlightDefaultLanguage/>
+          <!-- callouts -->
+          <calloutsExtension>1</calloutsExtension>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven.plugin.assembly.version}</version>
+        <configuration>
+          <appendAssemblyId>true</appendAssemblyId>
+          <descriptors>
+            <descriptor>src/main/descriptors/html-multi.xml</descriptor>
+            <descriptor>src/main/descriptors/html-single.xml</descriptor>
+            <!--<descriptor>src/main/descriptors/pdf.xml</descriptor>-->
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${maven.plugin.build.helper.version}</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/${name}-docs-manual-${project.version}-html-multi.zip</file>
+                  <type>zip</type>
+                  <classifier>html-multi</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/${name}-docs-manual-${project.version}-html-single.zip</file>
+                  <type>zip</type>
+                  <classifier>html-single</classifier>
+                </artifact>
+                <!--<artifact>-->
+                  <!--<file>target/${name}-docs-manual-${project.version}-pdf.zip</file>-->
+                  <!--<type>zip</type>-->
+                  <!--<classifier>pdf</classifier>-->
+                <!--</artifact>-->
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+

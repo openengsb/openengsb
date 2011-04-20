@@ -17,25 +17,46 @@
 
 package org.openengsb.ui.common.editor;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.util.DictionaryAsMap;
+import org.osgi.framework.Constants;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
@@ -44,25 +65,169 @@ import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
-    private final Map<String, String> values;
-    private final List<AttributeDefinition> attributes;
-    private final Map<String, String> attributeViewIds = new HashMap<String, String>();
-    private Model<Boolean> validatingModel;
+    private final class EntryModel implements IModel<String> {
 
-    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
-        super(id);
-        this.attributes = attributes;
-        this.values = values;
-        initPanel(attributes, values);
+        private Entry<String, Object> entry;
+        private int index;
+
+        public EntryModel(Entry<String, Object> entry, int i) {
+            this.entry = entry;
+            this.index = i;
+            adjustArraySize();
+        }
+
+        private void adjustArraySize() {
+            if (isArray()) {
+                if (getArray().length <= index) {
+                    Object[] newArray = Arrays.copyOf(getArray(), index + 1);
+                    entry.setValue(newArray);
+                }
+            } else if (index > 0) {
+                entry.setValue(new Object[index + 1]);
+            }
+        }
+
+        @Override
+        public void detach() {
+            // do nothing
+        }
+
+        @Override
+        public String getObject() {
+            if (isArray()) {
+                return (String) getArray()[index];
+            } else if (index == 0) {
+                return (String) entry.getValue();
+            } else {
+                throw new IllegalStateException("value is not an array");
+            }
+        }
+
+        @Override
+        public void setObject(String object) {
+            if (!isArray() && index == 0) {
+                entry.setValue(object);
+            } else {
+                Object[] array = getArray();
+                array[index] = object;
+            }
+        }
+
+        private Object[] getArray() {
+            return (Object[]) entry.getValue();
+        }
+
+        private boolean isArray() {
+            return entry.getValue().getClass().isArray();
+        }
+
     }
 
-    private void initPanel(List<AttributeDefinition> attributes, Map<String, String> values) {
-        attributeViewIds.clear();
-        RepeatingView fields = AttributeEditorUtil.createFieldList("fields", attributes, values, attributeViewIds);
+    private final List<AttributeDefinition> attributes;
+    private Model<Boolean> validatingModel;
+    private WebMarkupContainer propertiesContainer;
+    private ListView<Map.Entry<String, Object>> propertiesList;
+    private final Form<?> parentForm;
+    private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
+        org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
+        Constants.SERVICE_ID, Constants.OBJECTCLASS);
+
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
+            Map<String, String> attributeMap, Dictionary<String, Object> properties, Form<?> parentForm) {
+        super(id);
+        this.attributes = attributes;
+        this.parentForm = parentForm;
+        initPanel(attributes, attributeMap, properties);
+    }
+
+    public void reloadList(Dictionary<String, Object> properties) {
+        Map<String, Object> wrapped = DictionaryAsMap.wrap(properties);
+        Set<Entry<String, Object>> entrySet = wrapped.entrySet();
+        Collection<Entry<String, Object>> filtered =
+            Collections2.filter(entrySet, new Predicate<Entry<String, Object>>() {
+                @Override
+                public boolean apply(Entry<String, Object> input) {
+                    return !LOCKED_PROPERTIES.contains(input.getKey());
+                }
+            });
+        List<Entry<String, Object>> entryList = new LinkedList<Map.Entry<String, Object>>(filtered);
+        Collections.sort(entryList, new Comparator<Map.Entry<String, Object>>() {
+            @Override
+            public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+
+        propertiesList.setList(entryList);
+    }
+
+    private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
+            Dictionary<String, Object> properties) {
+        RepeatingView fields =
+            AttributeEditorUtil.createFieldList("fields", attributes, attributeMap);
         add(fields);
         validatingModel = new Model<Boolean>(true);
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
+
+        propertiesList = new ListView<Map.Entry<String, Object>>("properties") {
+            @Override
+            protected void populateItem(final ListItem<Map.Entry<String, Object>> item) {
+                item.setOutputMarkupId(true);
+                final Entry<String, Object> modelObject = item.getModelObject();
+                IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
+                item.add(new Label("key", keyModel));
+
+                RepeatingView repeater = new RepeatingView("values");
+                item.add(repeater);
+                Object value = modelObject.getValue();
+                if (value.getClass().isArray()) {
+                    Object[] values = (Object[]) value;
+                    for (int i = 0; i < values.length; i++) {
+                        WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                        AjaxEditableLabel<String> l =
+                            new AjaxEditableLabel<String>("value", new EntryModel(modelObject, i));
+                        container.add(l);
+                        repeater.add(container);
+                    }
+                } else {
+                    WebMarkupContainer container = new WebMarkupContainer(repeater.newChildId());
+                    IModel<String> valueModel = new EntryModel(modelObject, 0);
+                    AjaxEditableLabel<String> l = new AjaxEditableLabel<String>("value", valueModel);
+                    container.add(l);
+                    repeater.add(container);
+                }
+
+                AjaxButton button = new AjaxButton("newArrayEntry", parentForm) {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        Object value = modelObject.getValue();
+                        if (value.getClass().isArray()) {
+                            Object[] array = (Object[]) value;
+                            Object[] newArray = Arrays.copyOf(array, array.length + 1);
+                            newArray[array.length] = "";
+                            modelObject.setValue(newArray);
+                        } else {
+                            Object[] newArray = new Object[2];
+                            newArray[0] = value;
+                            newArray[1] = "";
+                            modelObject.setValue(newArray);
+                        }
+                        target.addComponent(item);
+                        target.addComponent(ServiceEditorPanel.this);
+                    }
+                };
+                item.add(button);
+            }
+        };
+        propertiesList.setOutputMarkupId(true);
+        reloadList(properties);
+
+        propertiesContainer = new WebMarkupContainer("propertiesContainer");
+        propertiesContainer.add(propertiesList);
+        propertiesContainer.setOutputMarkupId(true);
+
+        add(propertiesList);
     }
 
     /**
@@ -79,14 +244,16 @@ public class ServiceEditorPanel extends Panel {
                 for (Map.Entry<String, FormComponent<?>> entry : loadFormComponents.entrySet()) {
                     toValidate.put(entry.getKey(), entry.getValue().getValue());
                 }
-                MultipleAttributeValidationResult validate = validator.validate(toValidate);
-                if (!validate.isValid()) {
-                    Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
+                try {
+                    validator.validate(toValidate);
+                } catch (ConnectorValidationFailedException e) {
+                    Map<String, String> attributeErrorMessages = e.getErrorMessages();
                     for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
                         FormComponent<?> fc = loadFormComponents.get(entry.getKey());
                         fc.error((IValidationError) new ValidationError().setMessage(entry.getValue()));
                     }
                 }
+
             }
 
             @Override
@@ -100,7 +267,7 @@ public class ServiceEditorPanel extends Panel {
                 if (validator != null) {
                     for (String attribute : validator.fieldsToValidate()) {
                         Component component =
-                            form.get("attributesPanel:fields:" + getAttributeViewId(attribute) + ":row:field");
+                            form.get("attributesPanel:fields:" + attribute + ":row:field");
                         if (component instanceof FormComponent<?>) {
                             formComponents.put(attribute, (FormComponent<?>) component);
                         }
@@ -121,14 +288,6 @@ public class ServiceEditorPanel extends Panel {
 
     public List<AttributeDefinition> getAttributes() {
         return attributes;
-    }
-
-    public Map<String, String> getValues() {
-        return values;
-    }
-
-    public String getAttributeViewId(String attribute) {
-        return attributeViewIds.get(attribute);
     }
 
     public boolean isValidating() {

@@ -20,31 +20,33 @@ package org.openengsb.ui.common.editor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxEditableLabel;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.fields.AbstractField;
-import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public class ServiceEditorPanelTest {
@@ -56,10 +58,12 @@ public class ServiceEditorPanelTest {
     private AttributeDefinition attribBoolean;
     private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc").build();
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
+    private Map<String, String> editorValues;
 
     @Before
     public void setup() {
         Locale.setDefault(Locale.ENGLISH);
+        tester = new WicketTester();
         attribOption = newAttribute("attribOption", "option", "").option("label_a", "1").option("label_b", "2").build();
         attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
     }
@@ -67,6 +71,7 @@ public class ServiceEditorPanelTest {
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
         startEditorPanel(attrib);
+        tester.debugComponentTrees();
         TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
         assertThat(tf.getValue(), is(defaultValues.get(attrib.getId())));
     }
@@ -81,15 +86,6 @@ public class ServiceEditorPanelTest {
     public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
         startEditorPanel(attribNoDesc);
         assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
-    }
-
-    @Test
-    @Ignore("empty string in model gets replaced with null, why is this happening")
-    public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
-        startEditorPanel(attrib, attribNoDesc);
-        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        formTester.submit();
-        assertThat(editor.getValues(), is(defaultValues));
     }
 
     @Test
@@ -116,27 +112,71 @@ public class ServiceEditorPanelTest {
         assertThat(cb, notNullValue());
     }
 
+    @Test
+    public void containsInitialPropertiesFields() throws Exception {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", "42");
+        props.put("foo", "bar");
+        startEditorPanel(props, attribOption);
+
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
+        assertThat(label1.getDefaultModelObjectAsString(), is("foo"));
+        Component comp = tester.getComponentFromLastRenderedPage("panel:properties:0:values:1:value");
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 = (AjaxEditableLabel<String>) comp;
+        assertThat((String) value1.getDefaultModelObject(), is("bar"));
+
+        Label label2 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:1:key");
+        assertThat(label2.getDefaultModelObjectAsString(), is("testpropx"));
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:1:values:1:value");
+        assertThat((String) value2.getDefaultModelObject(), is("42"));
+    }
+
+    @Test
+    public void containsInitialPropertiesFieldsWithArray() throws Exception {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("testpropx", new String[]{ "42", "foo" });
+        startEditorPanel(props, attribOption);
+
+        Label label1 = (Label) tester.getComponentFromLastRenderedPage("panel:properties:0:key");
+        assertThat(label1.getDefaultModelObjectAsString(), is("testpropx"));
+        tester.debugComponentTrees();
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value1 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:1:value");
+        assertThat((String) value1.getDefaultModelObject(), is("42"));
+
+        @SuppressWarnings("unchecked")
+        AjaxEditableLabel<String> value2 =
+            (AjaxEditableLabel<String>) tester.getComponentFromLastRenderedPage("panel:properties:0:values:2:value");
+        assertThat((String) value2.getDefaultModelObject(), is("foo"));
+    }
+
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
-    private void startEditorPanel(final AttributeDefinition... attributes) {
-        this.startEditorPanel(new DefaultPassingFormValidator(), attributes);
-    }
-
-    private void startEditorPanel(final FormValidator validator, final AttributeDefinition... attributes) {
-        final HashMap<String, String> values = new HashMap<String, String>();
+    private void startEditorPanel(final Dictionary<String, Object> properties,
+            final AttributeDefinition... attributes) {
+        editorValues = new HashMap<String, String>();
+        defaultValues = new HashMap<String, String>();
         for (AttributeDefinition a : attributes) {
-            values.put(a.getId(), a.getDefaultValue().getString(null));
+            editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
+            defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        defaultValues = new HashMap<String, String>(values);
-        tester = new WicketTester();
         editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values);
+                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties,
+                    mock(Form.class));
             }
         });
+    }
+
+    private void startEditorPanel(final AttributeDefinition... attributes) {
+        startEditorPanel(new Hashtable<String, Object>(), attributes);
     }
 
     @SuppressWarnings("unchecked")
@@ -149,7 +189,7 @@ public class ServiceEditorPanelTest {
     }
 
     public String buildFormComponentId(String attributeId) {
-        return "fields:" + editor.getAttributeViewId(attributeId) + ":row:field";
+        return "fields:" + attributeId + ":row:field";
     }
 
     private AbstractField<?> getEditorField(String attributeId) {

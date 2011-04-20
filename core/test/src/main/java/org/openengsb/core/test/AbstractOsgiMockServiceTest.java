@@ -19,6 +19,7 @@ package org.openengsb.core.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,42 +27,73 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.EnumerationUtils;
+import org.junit.After;
 import org.junit.Before;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.l10n.LocalizableString;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods to mock the core {@link org.openengsb.core.api.OsgiUtilsService} service responsible for working with
  * the OpenEngSB osgi registry.
+ *
+ * ServiceManagement-operations are performed via the {@link BundleContext}. All these calls are handled using two maps
+ * to mock a service-registry (serviceReferences, services)
  */
 public abstract class AbstractOsgiMockServiceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOsgiMockServiceTest.class);
 
     protected BundleContext bundleContext;
     protected Bundle bundle;
 
+    /**
+     * This map keeps track of service-references and their properties
+     */
     private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
         new HashMap<ServiceReference, Dictionary<String, Object>>();
+    /**
+     * This map keeps track of service-references and their corresponding service-object
+     */
     private Map<ServiceReference, Object> services = new HashMap<ServiceReference, Object>();
     private Long serviceId = Long.MAX_VALUE;
 
     @Before
-    public void setUp() throws Exception {
+    public void prepareServiceRegistry() throws Exception {
         bundleContext = mock(BundleContext.class);
         setBundleContext(bundleContext);
+        /*
+         * redirect calls to getAllServiceReferences to getServiceReferences, since we do not care for
+         * Classloader-restrictions in unit-tests
+         */
         when(bundleContext.getAllServiceReferences(anyString(), anyString())).thenAnswer(
             new Answer<ServiceReference[]>() {
                 @Override
@@ -71,6 +103,9 @@ public abstract class AbstractOsgiMockServiceTest {
                     return (ServiceReference[]) method.invoke(invocation.getMock(), invocation.getArguments());
                 }
             });
+        /*
+         * retrieve a service-instance from the serviceReferencesMap
+         */
         when(bundleContext.getServiceReferences(anyString(), anyString())).thenAnswer(new Answer<ServiceReference[]>() {
             @Override
             public ServiceReference[] answer(InvocationOnMock invocation) throws Throwable {
@@ -78,9 +113,10 @@ public abstract class AbstractOsgiMockServiceTest {
                 String filterString = (String) invocation.getArguments()[1];
                 if (clazz != null) {
                     if (filterString == null) {
-                        filterString = "";
+                        filterString = String.format("(%s=%s)", Constants.OBJECTCLASS, clazz);
+                    } else {
+                        filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
                     }
-                    filterString = String.format("(&(%s=%s)%s)", Constants.OBJECTCLASS, clazz, filterString);
                 }
                 Filter filter = FrameworkUtil.createFilter(filterString);
                 Collection<ServiceReference> result = new ArrayList<ServiceReference>();
@@ -89,9 +125,15 @@ public abstract class AbstractOsgiMockServiceTest {
                         result.add(entry.getKey());
                     }
                 }
+                if (result.isEmpty()) {
+                    return null;
+                }
                 return result.toArray(new ServiceReference[result.size()]);
             }
         });
+        /*
+         * retrieves a service-object from the services-map
+         */
         when(bundleContext.getService(any(ServiceReference.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -99,15 +141,73 @@ public abstract class AbstractOsgiMockServiceTest {
                 return services.get(ref);
             }
         });
+        /*
+         * register a new service. This step involves creating mock-objects for ServiceRegistration and
+         * ServiceReference.
+         */
+        when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
+            new Answer<ServiceRegistration>() {
+                @Override
+                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                    String[] clazzes = (String[]) invocation.getArguments()[0];
+                    final Object service = invocation.getArguments()[1];
+                    @SuppressWarnings("unchecked")
+                    Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
+                    final ServiceReference serviceReference = registerService(service, dict, clazzes);
+                    ServiceRegistration result = mock(ServiceRegistration.class);
+
+                    // unregistering removes the service from both maps
+                    doAnswer(new Answer<Void>() {
+                        @Override
+                        public Void answer(InvocationOnMock invocation) throws Throwable {
+                            services.remove(serviceReference);
+                            serviceReferences.remove(serviceReference);
+                            return null;
+                        }
+                    }).when(result).unregister();
+
+                    // when properties are replaced, place a copy of the new properties-dictionary in the
+                    // serviceReferences-map (that overwrites the old dictionary)
+                    doAnswer(new Answer<Void>() {
+                        @Override
+                        public Void answer(InvocationOnMock invocation) throws Throwable {
+                            @SuppressWarnings("unchecked")
+                            Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
+                            Dictionary<String, Object> newDict = new Hashtable<String, Object>();
+                            Enumeration<String> keys = arg.keys();
+                            while (keys.hasMoreElements()) {
+                                String next = keys.nextElement();
+                                newDict.put(next, arg.get(next));
+                            }
+                            serviceReferences.put(serviceReference, newDict);
+                            return null;
+                        }
+                    }).when(result).setProperties(any(Dictionary.class));
+
+                    when(result.getReference()).thenReturn(serviceReference);
+                    return result;
+                }
+            });
+
         bundle = mock(Bundle.class);
         when(bundle.getBundleContext()).thenReturn(bundleContext);
         when(bundleContext.getBundle()).thenReturn(bundle);
+        /*
+         * since we ignore ClassLoader-visibility issues in unit-tests, just load the class
+         */
         when(bundle.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
             @Override
             public Class<?> answer(InvocationOnMock invocation) throws Throwable {
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
+    }
+
+    @After
+    public void clearRegistry() throws Exception {
+        bundleContext = null;
+        serviceReferences = null;
+        services = null;
     }
 
     /**
@@ -131,6 +231,14 @@ public abstract class AbstractOsgiMockServiceTest {
         objectClasses.add(OpenEngSBService.class.getCanonicalName());
         props.put(Constants.OBJECTCLASS, objectClasses.toArray(new String[objectClasses.size()]));
         putService(service, props);
+    }
+
+    /**
+     * registers the service with the given properties under the given interfaces
+     */
+    protected ServiceReference registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
+        props.put(Constants.OBJECTCLASS, interfazes);
+        return putService(service, props);
     }
 
     /**
@@ -165,7 +273,7 @@ public abstract class AbstractOsgiMockServiceTest {
      */
     protected void registerService(Object service, String id, Class<?>... interfaces) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("id", id);
+        props.put(org.openengsb.core.api.Constants.ID_KEY, id);
         registerService(service, props, interfaces);
     }
 
@@ -173,13 +281,117 @@ public abstract class AbstractOsgiMockServiceTest {
         registerService(service, id, interfaces);
     }
 
-    private void putService(Object service, Dictionary<String, Object> props) {
+    private ServiceReference putService(Object service, Dictionary<String, Object> props) {
         ServiceReference serviceReference = mock(ServiceReference.class);
-        when(serviceReference.getProperty(Constants.SERVICE_ID)).thenReturn(--serviceId);
+        long serviceId = --this.serviceId;
+        LOGGER.info("registering service with ID: " + serviceId);
+        props.put(Constants.SERVICE_ID, serviceId);
         services.put(serviceReference, service);
         serviceReferences.put(serviceReference, props);
+        when(serviceReference.getProperty(anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return serviceReferences.get(invocation.getMock()).get(invocation.getArguments()[0]);
+            }
+        });
+        when(serviceReference.getBundle()).thenReturn(bundle);
+        when(serviceReference.getPropertyKeys()).thenAnswer(new Answer<String[]>() {
+            @Override
+            public String[] answer(InvocationOnMock invocation) throws Throwable {
+                Dictionary<String, Object> dictionary = serviceReferences.get(invocation.getMock());
+                List<?> list = EnumerationUtils.toList(dictionary.keys());
+                @SuppressWarnings("unchecked")
+                Collection<String> typedCollection = CollectionUtils.typedCollection(list, String.class);
+                return typedCollection.toArray(new String[0]);
+            }
+        });
+        return serviceReference;
     }
 
     protected abstract void setBundleContext(BundleContext bundleContext);
+
+    /**
+     * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
+     *
+     * Only {@link ConnectorInstanceFactory#createNewInstance(String)} is mocked to return a {@link Domain}-mock that
+     * contains the given String as id.
+     *
+     * Also the factory is registered as a service with the required properties
+     */
+    protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
+        ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
+            @Override
+            public Domain answer(InvocationOnMock invocation) throws Throwable {
+                Domain result = mock(Domain.class);
+                String id = (String) invocation.getArguments()[0];
+                when(result.getInstanceId()).thenReturn(id);
+                return result;
+            }
+        });
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, connector);
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, domains);
+        registerService(factory, props, ConnectorInstanceFactory.class);
+        return factory;
+    }
+
+    /**
+     * creates a DomainProvider with for the given interface and name. This creates a mock of {@link DomainProvider}
+     * where all String-methods return the name again.
+     *
+     * Also the service is registered with the mocked service-registry with the given name as domain-value
+     */
+    protected DomainProvider createDomainProviderMock(final Class<? extends Domain> interfaze, String name) {
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        LocalizableString testDomainLocalizedStringMock = mock(LocalizableString.class);
+        when(testDomainLocalizedStringMock.getString(Mockito.<Locale> any())).thenReturn(name);
+        when(domainProviderMock.getId()).thenReturn(name);
+        when(domainProviderMock.getName()).thenReturn(testDomainLocalizedStringMock);
+        when(domainProviderMock.getDescription()).thenReturn(testDomainLocalizedStringMock);
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
+                return interfaze;
+            }
+        });
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, name);
+        registerService(domainProviderMock, props, DomainProvider.class);
+        return domainProviderMock;
+    }
+
+    /**
+     * creates a {@link LocalizableString} that returns the given value for all {@link Locale}s
+     */
+    protected LocalizableString mockLocalizeableString(String value) {
+        LocalizableString mock2 = mock(LocalizableString.class);
+        when(mock2.getString(any(Locale.class))).thenReturn(value);
+        return mock2;
+    }
+
+    /**
+     * creates a ConnectorProvider with for the given connectorType and domains. This creates a mock of
+     * {@link ConnectorProvider} that returns a descriptor-mock when calling {@link ConnectorProvider#getDescriptor()}
+     * Also the service is registered with the mocked service-registry
+     */
+    protected ConnectorProvider createConnectorProviderMock(String connectorType, String... domains) {
+        ConnectorProvider connectorProvider = mock(ConnectorProvider.class);
+        when(connectorProvider.getId()).thenReturn(connectorType);
+
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, connectorType);
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, domains);
+        registerService(connectorProvider, props, ConnectorProvider.class);
+
+        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
+        when(descriptor.getId()).thenReturn(connectorType);
+        LocalizableString name = mockLocalizeableString("service.name");
+        when(descriptor.getName()).thenReturn(name);
+        LocalizableString desc = mockLocalizeableString("service.description");
+        when(descriptor.getDescription()).thenReturn(desc);
+        when(connectorProvider.getDescriptor()).thenReturn(descriptor);
+        return connectorProvider;
+    }
 
 }

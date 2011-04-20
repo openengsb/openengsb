@@ -26,8 +26,8 @@ import java.util.Set;
  */
 public class ConfigItem<ContentType> {
 
-    private Map<String, String> metaData;
-    private ContentType content;
+    protected Map<String, String> metaData;
+    protected ContentType content;
 
     public ConfigItem() {
     }

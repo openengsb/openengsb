@@ -63,6 +63,10 @@
     <module>domain/build</module>
     <module>domain/appointment</module>
     <module>domain/contact</module>
+    <module>connector/gcalendar</module>
+    <module>connector/gcontacts</module>
+    <module>connector/plaintextreport</module>
+    <module>connector/promreport</module>
     <module>connector/email</module>
     <module>connector/git</module>
     <module>connector/maven</module>

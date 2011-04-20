@@ -45,6 +45,7 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.common.marshaling.RequestMapping;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
