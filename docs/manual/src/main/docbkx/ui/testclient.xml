@@ -25,7 +25,8 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Testclient</title>
-  <para>The admin interface for the user to manage domains, connectors(services) and things that have things in common with this. Also you can test services here.</para>
+
+  <para>The admin interface for the user to manage domains, connectors(services) and things that have things in common with this. Also you can test services here. If you select a service you can delete it with the corresponding button.</para>
 
   <section>
     <title>Managing global variables</title>
