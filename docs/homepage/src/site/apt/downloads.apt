@@ -25,31 +25,46 @@ Downloads
   improvements the development version is yours. The development version
   is considered stable, you might encounter minor issues however.
 
-* Stable (${stable.version})
+  In addition we provide fully bundled servers and connectors and frameworks
+  separated for download. While the fully bundled server is the "easy to go"
+  solution the framework itself can be configured and optimized in detail.
 
-  The latest stable release of OpenEngSB is ${stable.version}.
+* OpenEngSB Bundles
 
-  * {{{${stable.binary.win}}OpenEngSB (stable) multiplatform}}
+  While the OpenEngSB Framework is the base of the OpenEngSB the OpenEngSB Bundle 
+  is a package of the framework, all connectors, examples and the documentation in 
+  one big bundle.  All bundles in all versions are available 
+  {{{https://github.com/openengsb/openengsb-bundle/downloads}for download here}}. 
+  For the latest bundle download openengsb-bundle-${stable.version}_X.zip. 
+  For the development version download openengsb-bundle-${dev.version}_X.zip.
+  All bundles are multiplatform ready and automatically start all connectors, domains 
+  and features at startup.
 
-  * Download OpenEngSB ${stable.version} source. ({{{${stable.source.zip}}zip}}, {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
+* OpenEngSB Framework Stable (${stable.version})
 
-* Development (${dev.version})
+  The latest stable release of OpenEngSB Framework is ${stable.version}.
 
-  The latest development release of OpenEngSB is ${dev.version}.
+  * {{{${stable.binary.win}}OpenEngSB Framework (stable) multiplatform}}
 
-  * {{{${dev.binary.win}}OpenEngSB (dev) multiplatform}}
+  * Download OpenEngSB Framework ${stable.version} source. ({{{${stable.source.zip}}zip}}, {{{${stable.source.tar}}tar.gz}}, {{{${stable.source}}browse tags}})
 
-  * Download OpenEngSB ${dev.version} source. ({{{${dev.source.zip}}zip}}, {{{${dev.source.tar}}tar.gz}}, {{{${dev.source}}browse tags}})
+* OpenEngSB Framework Development (${dev.version})
 
-* Nightly (${nightly.version})
+  The latest development release of OpenEngSB Framework is ${dev.version}.
 
-  The cutting-edge nightly build of OpenEngSB.
+  * {{{${dev.binary.win}}OpenEngSB Framework (dev) multiplatform}}
 
-  * {{{${nightly.binary.dir}}OpenEngSB (nightly) binary}}
+  * Download OpenEngSB Framework ${dev.version} source. ({{{${dev.source.zip}}zip}}, {{{${dev.source.tar}}tar.gz}}, {{{${dev.source}}browse tags}})
 
-  * {{{./source-repository.html}OpenEngSB (nightly) sources}}
+* OpenEngSB Framework Nightly (${nightly.version})
 
-* Archive
+  The cutting-edge nightly build of OpenEngSB Framework.
 
-  Older versions of the OpenEngSB are always available {{{${older}}for download here}}.
+  * {{{${nightly.binary.dir}}OpenEngSB Framework (nightly) binary}}
+
+  * {{{./source-repository.html}OpenEngSB Framework (nightly) sources}}
+
+* OpenEngSB Framework Archive
+
+  Older versions of the OpenEngSB Framework are always available {{{${older}}for download here}}.
 
