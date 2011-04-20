@@ -17,36 +17,124 @@
 
 package org.openengsb.core.services.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-// TODO: [OPENENGSB-1252] Implement context persistence backend; dont forget blueprint and cfg file
+import com.google.common.base.Preconditions;
+
 public class ContextFilePersistenceService implements ConfigPersistenceBackendService {
+
+    public static final String META_KEY_ID = "id";
+    private static final String CONTEXT_FILE_EXTENSION = "context";
+    private final File storageFolder;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextFilePersistenceService.class);
+
+    public ContextFilePersistenceService(File storageFolder) {
+        this.storageFolder = storageFolder;
+    }
 
     @Override
     public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
-        throw new UnsupportedOperationException("Method not implemented by now");
+        LOGGER.debug("Loading Configuration");
+        if (metadata == null || metadata.isEmpty()) {
+            return loadAll();
+        } else {
+            return loadFiltered(metadata);
+        }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
-        throw new UnsupportedOperationException("Method not implemented by now");
+        Preconditions.checkArgument(supports((Class<? extends ConfigItem<?>>) config.getClass()),
+            "Argument type not supported");
+        Preconditions.checkNotNull(config.getMetaData(), "Invalid metadata");
+
+        String contextFileName = getFileNameForMetaData(config.getMetaData());
+        File contextPersistenceFile = new File(this.storageFolder, contextFileName);
+        try {
+            FileUtils.touch(contextPersistenceFile);
+        } catch (IOException e) {
+            throw new PersistenceException(String.format("Could not persist context configuration file %s",
+                contextFileName), e);
+        }
+        LOGGER.info("Created context configuration file %s", contextFileName);
     }
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
-        throw new UnsupportedOperationException("Method not implemented by now");
+        String contextFileName = getFileNameForMetaData(metadata);
+        File contextPersistenceFile = new File(this.storageFolder, contextFileName);
+        Boolean fileSuccessFullyDeleted = FileUtils.deleteQuietly(contextPersistenceFile);
+        if (!fileSuccessFullyDeleted) {
+            throw new PersistenceException(String.format("Could not delete context configuration file %s",
+                contextFileName));
+        }
+        LOGGER.info("Deleted context configuration file %s", contextFileName);
     }
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        return false;
+        return ContextConfiguration.class.isAssignableFrom(configItemType);
+    }
+
+    private List<ConfigItem<?>> loadAll() {
+        Collection<File> contextFiles = FileUtils.listFiles(storageFolder, getContextExtensions(), false);
+        List<ConfigItem<?>> contexts = new ArrayList<ConfigItem<?>>();
+        for (File contextFile : contextFiles) {
+            contexts.add(loadContextConfigurationFromFile(contextFile));
+        }
+        return contexts;
+    }
+
+    private List<ConfigItem<?>> loadFiltered(Map<String, String> metaData) throws PersistenceException {
+        List<ConfigItem<?>> configurations = new ArrayList<ConfigItem<?>>();
+        File configurationFile = new File(storageFolder, getFileNameForMetaData(metaData));
+        if (configurationFile.exists()) {
+            configurations.add(loadContextConfigurationFromFile(configurationFile));
+        }
+        return configurations;
+    }
+
+    private String getFileNameForMetaData(Map<String, String> metaData) throws PersistenceException {
+        return String.format("%s.%s", getContextIdFromMetaData(metaData), CONTEXT_FILE_EXTENSION);
+    }
+
+    private String getContextIdFromMetaData(Map<String, String> metaData) throws PersistenceException {
+        if (!metaData.containsKey(META_KEY_ID)) {
+            throw new PersistenceException("Backend does not understand provided Metadata");
+        }
+        return metaData.get(META_KEY_ID);
+    }
+
+    private ConfigItem<?> loadContextConfigurationFromFile(File configurationFile) {
+        String contextId = FilenameUtils.removeExtension(configurationFile.getName());
+        Map<String, String> loadedMetaData = new HashMap<String, String>();
+        loadedMetaData.put(META_KEY_ID, contextId);
+        ContextConfiguration contextConfig = new ContextConfiguration(loadedMetaData, null);
+        return contextConfig;
+    }
+
+    private String[] getContextExtensions() {
+        String[] contextFileExtensions = { CONTEXT_FILE_EXTENSION };
+        return contextFileExtensions;
     }
 
 }
