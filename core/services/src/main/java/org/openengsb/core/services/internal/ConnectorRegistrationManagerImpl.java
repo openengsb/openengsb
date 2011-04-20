@@ -17,8 +17,10 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -35,9 +37,22 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationManager {
+
+    /*
+     * These attributes may not be removed from a service.
+     */
+    private static final List<String> PROTECTED_PROPERTIES = Arrays.asList(
+        org.osgi.framework.Constants.SERVICE_ID,
+        org.osgi.framework.Constants.SERVICE_PID,
+        org.osgi.framework.Constants.OBJECTCLASS,
+        Constants.ID_KEY,
+        Constants.DOMAIN_KEY,
+        Constants.CONNECTOR_KEY,
+        "location.root");
 
     private OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
     private BundleContext bundleContext;
@@ -148,6 +163,15 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
         ServiceRegistration registration = registrations.get(id);
+        ServiceReference reference = registration.getReference();
+        for (String key : PROTECTED_PROPERTIES) {
+            if (properties.get(key) == null) {
+                Object originalValue = reference.getProperty(key);
+                if (originalValue != null) {
+                    properties.put(key, originalValue);
+                }
+            }
+        }
         registration.setProperties(properties);
     }
 

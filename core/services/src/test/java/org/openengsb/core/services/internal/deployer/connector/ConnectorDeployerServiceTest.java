@@ -210,6 +210,34 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(ref, not(nullValue()));
     }
 
+    @Test
+    public void testUninstallService_shouldRemoveFromRegistry() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData);
+
+        connectorDeployerService.install(connectorFile);
+        connectorFile.delete();
+        connectorDeployerService.uninstall(connectorFile);
+
+        ServiceReference[] reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "");
+
+        assertThat(reference, nullValue());
+    }
+
+    @Test
+    public void testUpdateService_shouldKeepInternalProperties() throws Exception {
+        File connectorFile = createSampleConnectorFile();
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.another=foo");
+        connectorDeployerService.update(connectorFile);
+
+        ServiceReference[] serviceReferences =
+            bundleContext.getServiceReferences(NullDomain.class.getName(), "(another=foo)");
+        assertThat(serviceReferences, not(nullValue()));
+        ServiceReference reference = serviceReferences[0];
+        assertThat((String) reference.getProperty(org.openengsb.core.api.Constants.CONNECTOR_KEY), is("aconnector"));
+    }
+
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();

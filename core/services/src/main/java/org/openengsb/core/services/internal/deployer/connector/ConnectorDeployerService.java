@@ -20,10 +20,13 @@ package org.openengsb.core.services.internal.deployer.connector;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -89,16 +92,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     @Override
-    public void uninstall(File artifact) throws Exception {
+    public void uninstall(File artifact) throws PersistenceException {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-        try {
-            authenticate(AUTH_USER, AUTH_PASSWORD);
-            // TODO OPENENGSB-1317 implement delete
-            // serviceManager.delete(serviceId);
-        } catch (Exception e) {
-            LOGGER.error("Removing connector failed: ", e);
-            throw e;
-        }
+        authenticate(AUTH_USER, AUTH_PASSWORD);
+        String name = FilenameUtils.removeExtension(artifact.getName());
+        ConnectorId fullId = ConnectorId.fromFullId(name);
+        serviceManager.delete(fullId);
     }
 
     private boolean authenticate(String username, String password) {
