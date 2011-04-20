@@ -23,7 +23,7 @@
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
   <feature name="${artifactId}" version="${project.version}" >
     <feature version="${openengsb.version.range}">openengsb-core</feature>
-    <feature version="${openengsb.version.range}">openengsb-domain-${domainInterface}</feature>
+    <feature version="${openengsb.version.range}">openengsb-domain-${domain}</feature>
     <bundle>mvn:${groupId}/${artifactId}/${project.version}</bundle>
   </feature>
 </features>
