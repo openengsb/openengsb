@@ -38,10 +38,12 @@
     <interfaces>
       <value>org.openengsb.core.api.ConnectorManager</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
+    <ref component-id="connectorManager"/>
+  </service>
+
+  <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
       <property name="registrationManager" ref="registrationManager" />
     </bean>
-  </service>
 
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -80,6 +82,7 @@
   <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
       <property name="authenticationManager" ref="authenticationManager" />
+      <property name="serviceManager" ref="connectorManager" />
     </bean>
   </service>
 
