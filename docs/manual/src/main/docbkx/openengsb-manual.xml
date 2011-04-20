@@ -57,6 +57,7 @@
     </partintro>
     <xi:include href="howto/howtoCreateConnector.xml" />
     <xi:include href="howto/howtoInteractRemotely.xml" />
+    <xi:include href="howto/howtoIntegrateServices.xml" />
   </part>
 
   <part xml:id="user.manual">
