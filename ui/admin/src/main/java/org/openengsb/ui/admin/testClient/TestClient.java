@@ -196,7 +196,9 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (!mnode.isLeaf()) {
+                if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                    editButton.setEnabled(false);
+                    target.addComponent(editButton);
                     return;
                 }
                 call.setService((ServiceId) mnode.getUserObject());
@@ -406,8 +408,16 @@ public class TestClient extends BasePage {
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
         domainProviderServiceId.setDomainName(providerName);
-        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
-        providerNode.add(endPointReferenceNode);
+        if (domainProviderServiceId.getServiceId() == null) {
+            String endPointReference =
+                String.format("%s (%s)", domainProviderServiceId.getDomainName(),
+                    domainProviderServiceId.getServiceClass());
+            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(endPointReference, false);
+            providerNode.add(endPointReferenceNode);
+        } else {
+            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
+            providerNode.add(endPointReferenceNode);
+        }
 
         // add all corresponding services
         List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
