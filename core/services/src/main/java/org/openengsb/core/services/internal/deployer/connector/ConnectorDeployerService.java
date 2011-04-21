@@ -18,11 +18,13 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -108,7 +110,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         try {
             newDescription = applyChanges(persistenceContent, changes);
         } catch (MergeException e) {
-            FileUtils.moveFile(artifact, getBackupFileName(artifact));
+            File backupFile = getBackupFile(artifact);
+            FileUtils.moveFile(artifact, backupFile);
+            Properties properties = connectorFile.toProperties();
+            properties.store(new FileWriter(artifact),
+                "Connector update failed. The invalid connector-file has been saved to " + backupFile.getName());
             throw e;
         }
 
@@ -116,7 +122,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         serviceManager.update(connectorId, newDescription);
     }
 
-    private File getBackupFileName(File artifact) {
+    private File getBackupFile(File artifact) {
         int backupNumber = 0;
         String candidate = artifact.getAbsolutePath();
         File candFile = new File(candidate);

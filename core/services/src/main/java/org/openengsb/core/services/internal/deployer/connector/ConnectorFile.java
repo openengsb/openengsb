@@ -30,6 +30,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openengsb.core.api.model.ConnectorId;
 
 import com.google.common.base.Function;
@@ -140,6 +141,23 @@ public class ConnectorFile {
             });
         transformedMap.putAll(filterEntries);
         return ImmutableMap.copyOf(transformedMap);
+    }
+
+    public Properties toProperties() {
+        Properties result = new Properties();
+        for (Entry<String, String> entry : attributes.entrySet()) {
+            result.put(ATTRIBUTE + "." + entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, Object> entry : properties.entrySet()) {
+            String key = PROPERTY + "." + entry.getKey();
+            Object value = entry.getValue();
+            if (value.getClass().isArray()) {
+                result.put(key, StringUtils.join((Object[]) value));
+            } else {
+                result.put(key, value);
+            }
+        }
+        return result;
     }
 
     public static Boolean isRootService(File connectorFile) {
