@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,43 +34,86 @@ import org.apache.commons.io.IOUtils;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.common.util.DictionaryAsMap;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 
 public class ConnectorFile {
+
     private static final String PROPERTY = "property";
     private static final String ATTRIBUTE = "attribute";
-    private ImmutableMap<String, String> propertiesMap;
-    private long cacheTimestamp = 0;
-    private File connectorFile;
+    private static final String LIST_DELIMITER = ",";
+
+    private ConnectorConfiguration config;
+
+    public static class ChangeSet {
+        private MapDifference<String, String> changedAttributes;
+        private MapDifference<String, Object> changedProperties;
+
+        public ChangeSet(MapDifference<String, String> changedAttributes,
+                MapDifference<String, Object> changedProperties) {
+            super();
+            this.changedAttributes = changedAttributes;
+            this.changedProperties = changedProperties;
+        }
+
+        public MapDifference<String, String> getChangedAttributes() {
+            return changedAttributes;
+        }
+
+        public MapDifference<String, Object> getChangedProperties() {
+            return changedProperties;
+        }
+    }
 
     public ConnectorFile(File connectorFile) {
-        this.connectorFile = connectorFile;
+        config = parse(connectorFile);
     }
 
-    public Map<String, String> getAttributes() throws IOException {
-        return getFilteredEntries(ATTRIBUTE);
+    private ConnectorConfiguration parse(File file) {
+        String name = FilenameUtils.removeExtension(file.getName());
+        ConnectorId id = ConnectorId.fromFullId(name);
+        ImmutableMap<String, String> propertyMap = readProperties(file);
+        Map<String, String> serviceProperties = getFilteredEntries(propertyMap, PROPERTY);
+        Map<String, Object> transformedProperties =
+            Maps.transformValues(serviceProperties, new Function<String, Object>() {
+                @Override
+                public Object apply(String input) {
+                    if (input.contains(LIST_DELIMITER)) {
+                        return input.split(LIST_DELIMITER);
+                    }
+                    return input;
+                }
+            });
+        Map<String, String> attributes = getFilteredEntries(propertyMap, ATTRIBUTE);
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription(attributes, new Hashtable<String, Object>(transformedProperties));
+        return new ConnectorConfiguration(id, connectorDescription);
     }
 
-    private Dictionary<String, Object> getServiceProperties() throws IOException {
-        Map<String, String> entries = getFilteredEntries(PROPERTY);
-        Dictionary<String, Object> result = new Hashtable<String, Object>();
-        for (Entry<String, String> entry : entries.entrySet()) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
+    public ChangeSet update(File file) {
+        ConnectorConfiguration newConfig = parse(file);
+
+        ConnectorDescription oldDescription = config.getContent();
+        Map<String, String> oldAttributes = oldDescription.getAttributes();
+        MapDifference<String, String> changedAttributes =
+            Maps.difference(oldAttributes, newConfig.getContent().getAttributes());
+
+        Map<String, Object> oldProperties = DictionaryAsMap.wrap(oldDescription.getProperties());
+        MapDifference<String, Object> changedProperties =
+            Maps.difference(oldProperties, DictionaryAsMap.wrap(newConfig.getContent().getProperties()));
+        return new ChangeSet(changedAttributes, changedProperties);
     }
 
-    private synchronized void updateProperties() {
-        if (connectorFile.lastModified() == cacheTimestamp) {
-            return;
-        }
+    private ImmutableMap<String, String> readProperties(File file) {
         Properties props = new Properties();
         FileReader reader;
         try {
-            reader = new FileReader(connectorFile);
+            reader = new FileReader(file);
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -83,28 +124,26 @@ public class ConnectorFile {
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        this.propertiesMap = Maps.fromProperties(props);
-        cacheTimestamp = connectorFile.lastModified();
+        return Maps.fromProperties(props);
     }
 
-    private Map<String, String> getFilteredEntries(final String key) throws IOException {
-        updateProperties();
+    private Map<String, String> getFilteredEntries(Map<String, String> propertyMap, final String prefix) {
         @SuppressWarnings("unchecked")
         Map<String, String> transformedMap = MapUtils.transformedMap(new HashMap<String, String>(), new Transformer() {
             @Override
             public Object transform(Object input) {
-                return ((String) input).replaceFirst(key + ".", "");
+                return ((String) input).replaceFirst(prefix + ".", "");
             }
         }, null);
         Map<String, String> filterEntries =
-            Maps.filterEntries(propertiesMap, new Predicate<Map.Entry<String, String>>() {
+            Maps.filterEntries(propertyMap, new Predicate<Map.Entry<String, String>>() {
                 @Override
                 public boolean apply(Entry<String, String> input) {
-                    return input.getKey().startsWith(key + ".");
+                    return input.getKey().startsWith(prefix + ".");
                 }
             });
         transformedMap.putAll(filterEntries);
-        return Collections.unmodifiableMap(transformedMap);
+        return new HashMap<String, String>(transformedMap);
     }
 
     public static Boolean isRootService(File connectorFile) {
@@ -115,11 +154,8 @@ public class ConnectorFile {
         return directory.isDirectory() && directory.getName().equals("etc");
     }
 
-    public ConnectorConfiguration load() throws IOException {
-        String idString = FilenameUtils.removeExtension(connectorFile.getName());
-        ConnectorId connectorId = ConnectorId.fromFullId(idString);
-        ConnectorDescription description = new ConnectorDescription(getAttributes(), getServiceProperties());
-        return new ConnectorConfiguration(connectorId, description);
+    public ConnectorConfiguration getConfig() {
+        return config;
     }
 
 }

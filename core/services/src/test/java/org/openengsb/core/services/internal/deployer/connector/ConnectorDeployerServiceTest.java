@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -46,6 +48,8 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
@@ -89,7 +93,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         setupPersistence();
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setServiceManager(this.serviceManager);
+        connectorDeployerService.setServiceManager(serviceManager);
 
         factory = mock(ConnectorInstanceFactory.class);
         createdService = mock(NullDomain.class);
@@ -123,7 +127,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
-        this.serviceManager = serviceManagerImpl;
+        serviceManager = serviceManagerImpl;
         return serviceManagerImpl;
     }
 
@@ -200,7 +204,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = new File(temporaryFolder.getRoot() + "/etc/mydomain+aconnector+myroot.connector");
         FileUtils.touch(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\n"
-                + "property." + Constants.SERVICE_RANKING + "=24");
+            + "property." + Constants.SERVICE_RANKING + "=24");
 
         connectorDeployerService.install(connectorFile);
 
@@ -236,6 +240,43 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(serviceReferences, not(nullValue()));
         ServiceReference reference = serviceReferences[0];
         assertThat((String) reference.getProperty(org.openengsb.core.api.Constants.CONNECTOR_KEY), is("aconnector"));
+    }
+
+    @Test
+    public void testInstallService_shouldNotOverwriteExistingService() throws Exception {
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription(new HashMap<String, String>(), properties);
+        serviceManager.create(new ConnectorId("mydomain", "aconnector", "serviceid"), connectorDescription);
+
+        File connectorFile = createSampleConnectorFile();
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("Exception expected");
+        } catch (Exception e) {
+            // The service-manager will refuse to create the connector
+        }
+
+        ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat("old service is not there anymore", references, not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateService_shouldNotOverrideOtherwiseModifedProperties() throws Exception {
+        File connectorFile = createSampleConnectorFile();
+        connectorDeployerService.install(connectorFile);
+
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(id);
+        attributeValues.getProperties().put("foo", "bar");
+        serviceManager.update(id, attributeValues);
+
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.foo=notbar");
+        connectorDeployerService.update(connectorFile);
+        ServiceReference[] serviceReferences2 =
+            bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat(serviceReferences2, not(nullValue()));
     }
 
     @Override

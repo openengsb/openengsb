@@ -22,6 +22,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
@@ -31,10 +32,11 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.common.util.DictionaryUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -141,19 +143,16 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         instances.put(id, serviceInstance);
     }
 
-    private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(Dictionary<String, Object> properties,
-            ConnectorId id) {
-        properties.put(Constants.ID_KEY, id.getDomainType());
-        properties.put(Constants.CONNECTOR_KEY, id.getConnectorType());
-        properties.put(Constants.ID_KEY, id.toFullID());
-        if (properties.get("location.root") == null) {
-            properties.put("location.root", new String[]{ id.getInstanceId() });
+    private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(
+            final Dictionary<String, Object> properties, ConnectorId id) {
+        Dictionary<String, Object> result = DictionaryUtils.copy(properties);
+        for (Entry<String, Object> entry : DictionaryAsMap.wrap(properties).entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
         }
-        String currentContextLocation = "location." + ContextHolder.get().getCurrentContextId();
-        if (properties.get(currentContextLocation) == null) {
-            properties.put(currentContextLocation, new String[0]);
-        }
-        return properties;
+        result.put(Constants.ID_KEY, id.getDomainType());
+        result.put(Constants.CONNECTOR_KEY, id.getConnectorType());
+        result.put(Constants.ID_KEY, id.toFullID());
+        return result;
     }
 
     private void forceUpdateAttributes(ConnectorId id, Map<String, String> attributes) {
@@ -162,17 +161,18 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
+        Dictionary<String, Object> newProps = DictionaryUtils.copy(properties);
         ServiceRegistration registration = registrations.get(id);
         ServiceReference reference = registration.getReference();
         for (String key : PROTECTED_PROPERTIES) {
-            if (properties.get(key) == null) {
+            if (newProps.get(key) == null) {
                 Object originalValue = reference.getProperty(key);
                 if (originalValue != null) {
-                    properties.put(key, originalValue);
+                    newProps.put(key, originalValue);
                 }
             }
         }
-        registration.setProperties(properties);
+        registration.setProperties(newProps);
     }
 
     private void updateAttributes(ConnectorId id, Map<String, String> attributes)
@@ -192,8 +192,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             return ProxyServiceFactory.getInstance(domainProvider);
         }
         Filter connectorFilter =
-                serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                    String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
+            serviceUtils.makeFilter(ConnectorInstanceFactory.class,
+                String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;

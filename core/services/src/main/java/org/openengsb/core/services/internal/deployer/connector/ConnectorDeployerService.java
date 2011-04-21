@@ -18,16 +18,21 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +41,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.google.common.collect.MapDifference;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
@@ -47,11 +54,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
+    private Map<File, ConnectorFile> oldConfigs = new HashMap<File, ConnectorFile>();
 
     @Override
     public boolean canHandle(File artifact) {
         LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
-
         if (artifact.isFile() && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
             LOGGER.info("Found a .connector file to deploy.");
             return true;
@@ -62,9 +69,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
-
-        ConnectorFile configFile = new ConnectorFile(artifact);
-        ConnectorConfiguration newConfig = configFile.load();
+        getConnectorFile(artifact);
+        ConnectorFile configFile = getConnectorFile(artifact);
+        ConnectorConfiguration newConfig = configFile.getConfig();
         authenticate(AUTH_USER, AUTH_PASSWORD);
         if (newConfig.getContent().getProperties().get(Constants.SERVICE_RANKING) == null
                 && ConnectorFile.isRootService(artifact)) {
@@ -79,16 +86,52 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
     }
 
-    @Override
-    public void update(File artifact) throws IOException {
-        LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        ConnectorConfiguration newConfig = new ConnectorFile(artifact).load();
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        try {
-            serviceManager.update(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ConnectorValidationFailedException e) {
-            throw new RuntimeException(e);
+    private ConnectorFile getConnectorFile(File artifact) {
+        if (oldConfigs.containsKey(artifact)) {
+            return oldConfigs.get(artifact);
         }
+        ConnectorFile value = new ConnectorFile(artifact);
+        oldConfigs.put(artifact, value);
+        return value;
+    }
+
+    @Override
+    public void update(File artifact) throws Exception {
+        LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
+        ConnectorFile connectorFile = getConnectorFile(artifact);
+        ConnectorId connectorId = connectorFile.getConfig().getConnectorId();
+        ConnectorDescription persistenceContent =
+            serviceManager.getAttributeValues(connectorId);
+
+        ChangeSet changes = connectorFile.update(artifact);
+        applyChanges(persistenceContent, changes);
+
+        authenticate(AUTH_USER, AUTH_PASSWORD);
+        serviceManager.update(connectorId, persistenceContent);
+    }
+
+    private void applyChanges(ConnectorDescription persistenceContent, ChangeSet changes) throws MergeException {
+        MapDifference<String, String> changedAttributes = changes.getChangedAttributes();
+        Map<String, String> attributes = persistenceContent.getAttributes();
+
+        mergeMaps(attributes, changedAttributes);
+        mergeMaps(DictionaryAsMap.wrap(persistenceContent.getProperties()), changes.getChangedProperties());
+    }
+
+    private <K, V> Map<K, V> mergeMaps(Map<K, V> original, MapDifference<K, V> diff) throws MergeException {
+        for (Entry<K, V> entry : diff.entriesOnlyOnLeft().entrySet()) {
+            V originalValue = original.get(entry.getKey());
+            if (originalValue.equals(entry.getValue())) {
+                original.remove(entry.getKey());
+            }
+        }
+        for (Entry<K, V> entry : diff.entriesOnlyOnRight().entrySet()) {
+            if (original.containsKey(entry.getKey())) {
+                throw new MergeException("trying to overwrite a value that was not in config before");
+            }
+            original.put(entry.getKey(), entry.getValue());
+        }
+        return original;
     }
 
     @Override
@@ -104,7 +147,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         boolean authenticated = false;
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    username, password));
+                username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();
             LOGGER.info("Connector deployer succesfully authenticated: {}", authenticated);

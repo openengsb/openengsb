@@ -35,6 +35,7 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.common.util.DictionaryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +82,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         throws ConnectorValidationFailedException {
         validateId(id);
         checkForExistingServices(id);
+        addDefaultLocations(id, connectorDescription);
         registrationManager.updateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
@@ -88,6 +90,16 @@ public class ConnectorManagerImpl implements ConnectorManager {
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private void addDefaultLocations(ConnectorId id, ConnectorDescription connectorDescription) {
+        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        if (properties.get("location.root") != null) {
+            return;
+        }
+        Dictionary<String, Object> copy = DictionaryUtils.copy(properties);
+        copy.put("location.root", id.getInstanceId());
+        connectorDescription.setProperties(copy);
     }
 
     @Override
