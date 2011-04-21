@@ -113,3 +113,7 @@ velocity.log*
 *.swp
 *~
 
+#================
+#clover files
+#================
+.clover
