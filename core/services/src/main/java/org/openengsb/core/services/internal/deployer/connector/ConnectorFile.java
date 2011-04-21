@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -31,10 +30,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.api.model.ConnectorConfiguration;
-import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.common.util.DictionaryAsMap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -48,7 +44,9 @@ public class ConnectorFile {
     private static final String ATTRIBUTE = "attribute";
     private static final String LIST_DELIMITER = ",";
 
-    private ConnectorConfiguration config;
+    private ConnectorId connectorId;
+    private ImmutableMap<String, String> attributes;
+    private ImmutableMap<String, Object> properties;
 
     public static class ChangeSet {
         private MapDifference<String, String> changedAttributes;
@@ -71,14 +69,18 @@ public class ConnectorFile {
     }
 
     public ConnectorFile(File connectorFile) {
-        config = parse(connectorFile);
+        connectorId = ConnectorId.fromFullId(FilenameUtils.removeExtension(connectorFile.getName()));
+        ImmutableMap<String, String> propertyMap = readProperties(connectorFile);
+        attributes = getAttributesFromMap(propertyMap);
+        properties = getPropertiesFromMap(propertyMap);
     }
 
-    private ConnectorConfiguration parse(File file) {
-        String name = FilenameUtils.removeExtension(file.getName());
-        ConnectorId id = ConnectorId.fromFullId(name);
-        ImmutableMap<String, String> propertyMap = readProperties(file);
-        Map<String, String> serviceProperties = getFilteredEntries(propertyMap, PROPERTY);
+    private ImmutableMap<String, String> getAttributesFromMap(ImmutableMap<String, String> propertyMap) {
+        return getFilteredEntries(propertyMap, ATTRIBUTE);
+    }
+
+    private ImmutableMap<String, Object> getPropertiesFromMap(Map<String, String> propertyMap) {
+        ImmutableMap<String, String> serviceProperties = getFilteredEntries(propertyMap, PROPERTY);
         Map<String, Object> transformedProperties =
             Maps.transformValues(serviceProperties, new Function<String, Object>() {
                 @Override
@@ -89,23 +91,17 @@ public class ConnectorFile {
                     return input;
                 }
             });
-        Map<String, String> attributes = getFilteredEntries(propertyMap, ATTRIBUTE);
-        ConnectorDescription connectorDescription =
-            new ConnectorDescription(attributes, new Hashtable<String, Object>(transformedProperties));
-        return new ConnectorConfiguration(id, connectorDescription);
+        return ImmutableMap.copyOf(transformedProperties);
     }
 
     public ChangeSet update(File file) {
-        ConnectorConfiguration newConfig = parse(file);
+        ImmutableMap<String, String> newPropertyMap = readProperties(file);
 
-        ConnectorDescription oldDescription = config.getContent();
-        Map<String, String> oldAttributes = oldDescription.getAttributes();
         MapDifference<String, String> changedAttributes =
-            Maps.difference(oldAttributes, newConfig.getContent().getAttributes());
-
-        Map<String, Object> oldProperties = DictionaryAsMap.wrap(oldDescription.getProperties());
+            Maps.difference(attributes, getAttributesFromMap(newPropertyMap));
         MapDifference<String, Object> changedProperties =
-            Maps.difference(oldProperties, DictionaryAsMap.wrap(newConfig.getContent().getProperties()));
+            Maps.difference(properties, getPropertiesFromMap(newPropertyMap));
+
         return new ChangeSet(changedAttributes, changedProperties);
     }
 
@@ -127,7 +123,7 @@ public class ConnectorFile {
         return Maps.fromProperties(props);
     }
 
-    private Map<String, String> getFilteredEntries(Map<String, String> propertyMap, final String prefix) {
+    private ImmutableMap<String, String> getFilteredEntries(Map<String, String> propertyMap, final String prefix) {
         @SuppressWarnings("unchecked")
         Map<String, String> transformedMap = MapUtils.transformedMap(new HashMap<String, String>(), new Transformer() {
             @Override
@@ -143,7 +139,7 @@ public class ConnectorFile {
                 }
             });
         transformedMap.putAll(filterEntries);
-        return new HashMap<String, String>(transformedMap);
+        return ImmutableMap.copyOf(transformedMap);
     }
 
     public static Boolean isRootService(File connectorFile) {
@@ -154,8 +150,16 @@ public class ConnectorFile {
         return directory.isDirectory() && directory.getName().equals("etc");
     }
 
-    public ConnectorConfiguration getConfig() {
-        return config;
+    public ConnectorId getConnectorId() {
+        return connectorId;
+    }
+
+    public ImmutableMap<String, String> getAttributes() {
+        return attributes;
+    }
+
+    public ImmutableMap<String, Object> getProperties() {
+        return properties;
     }
 
 }

@@ -18,15 +18,16 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorValidationFailedException;
-import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -39,10 +40,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.MapDifference;
+import com.google.common.collect.MapDifference.ValueDifference;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
@@ -71,19 +72,17 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
         getConnectorFile(artifact);
         ConnectorFile configFile = getConnectorFile(artifact);
-        ConnectorConfiguration newConfig = configFile.getConfig();
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        if (newConfig.getContent().getProperties().get(Constants.SERVICE_RANKING) == null
-                && ConnectorFile.isRootService(artifact)) {
-            newConfig.getContent().getProperties().put(Constants.SERVICE_RANKING, "-1");
-        }
-        LOGGER.info("Loading instance {}", newConfig.getConnectorId());
 
-        try {
-            serviceManager.create(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ConnectorValidationFailedException e) {
-            throw new RuntimeException(e);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
+
+        if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
+            properties.put(Constants.SERVICE_RANKING, "-1");
         }
+        LOGGER.info("Loading instance {}", configFile.getConnectorId());
+
+        authenticate(AUTH_USER, AUTH_PASSWORD);
+        serviceManager.create(configFile.getConnectorId(),
+            new ConnectorDescription(configFile.getAttributes(), properties));
     }
 
     private ConnectorFile getConnectorFile(File artifact) {
@@ -99,39 +98,53 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     public void update(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
         ConnectorFile connectorFile = getConnectorFile(artifact);
-        ConnectorId connectorId = connectorFile.getConfig().getConnectorId();
-        ConnectorDescription persistenceContent =
-            serviceManager.getAttributeValues(connectorId);
+        ConnectorId connectorId = connectorFile.getConnectorId();
+        ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
 
         ChangeSet changes = connectorFile.update(artifact);
-        applyChanges(persistenceContent, changes);
+        ConnectorDescription newDescription = applyChanges(persistenceContent, changes);
 
         authenticate(AUTH_USER, AUTH_PASSWORD);
-        serviceManager.update(connectorId, persistenceContent);
+        serviceManager.update(connectorId, newDescription);
     }
 
-    private void applyChanges(ConnectorDescription persistenceContent, ChangeSet changes) throws MergeException {
+    private ConnectorDescription applyChanges(ConnectorDescription persistenceContent, ChangeSet changes)
+        throws MergeException {
         MapDifference<String, String> changedAttributes = changes.getChangedAttributes();
         Map<String, String> attributes = persistenceContent.getAttributes();
 
-        mergeMaps(attributes, changedAttributes);
-        mergeMaps(DictionaryAsMap.wrap(persistenceContent.getProperties()), changes.getChangedProperties());
+        Map<String, String> newAttributes = mergeMaps(attributes, changedAttributes);
+        Map<String, Object> newProperties =
+            mergeMaps(DictionaryAsMap.wrap(persistenceContent.getProperties()), changes.getChangedProperties());
+        return new ConnectorDescription(newAttributes, new Hashtable<String, Object>(newProperties));
     }
 
-    private <K, V> Map<K, V> mergeMaps(Map<K, V> original, MapDifference<K, V> diff) throws MergeException {
+    private <K, V> Map<K, V> mergeMaps(final Map<K, V> original, MapDifference<K, V> diff) throws MergeException {
+        Map<K, V> result = new HashMap<K, V>(original);
+        if (diff.areEqual()) {
+            return result;
+        }
         for (Entry<K, V> entry : diff.entriesOnlyOnLeft().entrySet()) {
             V originalValue = original.get(entry.getKey());
-            if (originalValue.equals(entry.getValue())) {
-                original.remove(entry.getKey());
+            if (ObjectUtils.equals(originalValue, entry.getValue())) {
+                result.remove(entry.getKey());
             }
         }
         for (Entry<K, V> entry : diff.entriesOnlyOnRight().entrySet()) {
             if (original.containsKey(entry.getKey())) {
                 throw new MergeException("trying to overwrite a value that was not in config before");
             }
-            original.put(entry.getKey(), entry.getValue());
+            result.put(entry.getKey(), entry.getValue());
         }
-        return original;
+        for (Entry<K, ValueDifference<V>> entry : diff.entriesDiffering().entrySet()) {
+            V originalValue = original.get(entry.getKey());
+
+            if (!ObjectUtils.equals(originalValue, entry.getValue().leftValue())) {
+                throw new MergeException("value has been modified via persistence earlier. New configuration rejected");
+            }
+            result.put(entry.getKey(), entry.getValue().rightValue());
+        }
+        return result;
     }
 
     @Override
@@ -143,19 +156,10 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         serviceManager.delete(fullId);
     }
 
-    private boolean authenticate(String username, String password) {
-        boolean authenticated = false;
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+    private void authenticate(String username, String password) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            authenticated = authentication.isAuthenticated();
-            LOGGER.info("Connector deployer succesfully authenticated: {}", authenticated);
-        } catch (AuthenticationException e) {
-            LOGGER.warn("User '{}' failed to login. Reason: ", username, e);
-            authenticated = false;
-        }
-        return authenticated;
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
