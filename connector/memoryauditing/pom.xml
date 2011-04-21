@@ -70,13 +70,13 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-persistence</artifactId>
-      <version>${openengsb.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-auditing</artifactId>
-      <version>${openengsb.version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

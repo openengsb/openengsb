@@ -78,7 +78,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-example</artifactId>
-      <version>${openengsb.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -89,3 +89,4 @@
       </dependency>
   </dependencies>
 </project>
+
