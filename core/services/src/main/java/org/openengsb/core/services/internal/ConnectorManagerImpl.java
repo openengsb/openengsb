@@ -45,8 +45,6 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorManagerImpl.class);
 
     private ConnectorRegistrationManager registrationManager;
-    private ConfigPersistenceService configPersistence = OpenEngSBCoreServices
-        .getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
 
     public void init() {
         /*
@@ -59,7 +57,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
                 List<ConnectorConfiguration> configs;
                 try {
                     Map<String, String> emptyMap = Collections.emptyMap();
-                    configs = configPersistence.load(emptyMap);
+                    configs = getConfigPersistence().load(emptyMap);
                 } catch (InvalidConfigurationException e) {
                     throw new IllegalStateException(e);
                 } catch (PersistenceException e) {
@@ -84,7 +82,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.updateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
-            configPersistence.persist(configuration);
+            getConfigPersistence().persist(configuration);
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
@@ -97,7 +95,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
-            configPersistence.persist(configuration);
+            getConfigPersistence().persist(configuration);
         } catch (PersistenceException e) {
             throw new IllegalArgumentException(e);
         }
@@ -112,7 +110,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     private void checkForExistingServices(ConnectorId id) {
         try {
-            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
+            List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
             if (!list.isEmpty()) {
                 throw new IllegalArgumentException("connector already exists");
             }
@@ -129,7 +127,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.updateRegistration(id, connectorDescpription);
         applyConfigChanges(old, connectorDescpription);
         try {
-            configPersistence.persist(new ConnectorConfiguration(id, connectorDescpription));
+            getConfigPersistence().persist(new ConnectorConfiguration(id, connectorDescpription));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -142,7 +140,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         registrationManager.forceUpdateRegistration(id, connectorDescription);
         applyConfigChanges(old, connectorDescription);
         try {
-            configPersistence.persist(new ConnectorConfiguration(id, connectorDescription));
+            getConfigPersistence().persist(new ConnectorConfiguration(id, connectorDescription));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -167,7 +165,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private ConnectorDescription getOldConfig(ConnectorId id) {
         List<ConnectorConfiguration> list;
         try {
-            list = configPersistence.load(id.toMetaData());
+            list = getConfigPersistence().load(id.toMetaData());
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -183,13 +181,13 @@ public class ConnectorManagerImpl implements ConnectorManager {
     @Override
     public void delete(ConnectorId id) throws PersistenceException {
         registrationManager.remove(id);
-        configPersistence.remove(id.toMetaData());
+        getConfigPersistence().remove(id.toMetaData());
     }
 
     @Override
     public ConnectorDescription getAttributeValues(ConnectorId id) {
         try {
-            List<ConnectorConfiguration> list = configPersistence.load(id.toMetaData());
+            List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
             if (list.isEmpty()) {
                 throw new IllegalArgumentException("no connector with metadata: " + id + " found");
             }
@@ -203,7 +201,12 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }
     }
 
+    private ConfigPersistenceService getConfigPersistence() {
+        return OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
+    }
+
     public void setRegistrationManager(ConnectorRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
     }
+
 }
