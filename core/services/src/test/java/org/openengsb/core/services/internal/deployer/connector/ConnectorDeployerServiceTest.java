@@ -255,7 +255,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription =
             new ConnectorDescription(new HashMap<String, String>(), properties);
-        serviceManager.create(new ConnectorId("mydomain", "aconnector", "serviceid"), connectorDescription);
+        serviceManager.create(testConnectorId, connectorDescription);
 
         File connectorFile = createSampleConnectorFile();
         try {
@@ -392,7 +392,48 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         } catch (AuthenticationException e) {
             assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
         }
+    }
 
+    @Test
+    public void updateFailure_shouldCreateBackupFile() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile,
+                Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            File backupFile = new File(temporaryFolder.getRoot(), TEST_FILE_NAME + "_001");
+            assertThat("no backup-file was created", backupFile.exists(), is(true));
+        }
+    }
+
+    @Test
+    public void installFailure_shouldLeaveFileAsIs() throws Exception {
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(new HashMap<String, String>(), properties);
+        serviceManager.create(testConnectorId, connectorDescription);
+
+        File connectorFile = createSampleConnectorFile();
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertThat(connectorFile.exists(), is(true));
+        }
+
+        ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat("old service is not there anymore", references, not(nullValue()));
     }
 
     @Override

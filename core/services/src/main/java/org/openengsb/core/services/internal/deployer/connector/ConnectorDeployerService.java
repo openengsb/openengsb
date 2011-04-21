@@ -24,8 +24,10 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -102,10 +104,29 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
 
         ChangeSet changes = connectorFile.update(artifact);
-        ConnectorDescription newDescription = applyChanges(persistenceContent, changes);
+        ConnectorDescription newDescription;
+        try {
+            newDescription = applyChanges(persistenceContent, changes);
+        } catch (MergeException e) {
+            FileUtils.moveFile(artifact, getBackupFileName(artifact));
+            throw e;
+        }
 
         authenticate(AUTH_USER, AUTH_PASSWORD);
         serviceManager.update(connectorId, newDescription);
+    }
+
+    private File getBackupFileName(File artifact) {
+        int backupNumber = 0;
+        String candidate = artifact.getAbsolutePath();
+        File candFile = new File(candidate);
+        while (candFile.exists()) {
+            backupNumber++;
+            String suffix = StringUtils.leftPad(Integer.toString(backupNumber), 3, "0");
+            candidate = artifact.getAbsolutePath() + "_" + suffix;
+            candFile = new File(candidate);
+        }
+        return candFile;
     }
 
     private ConnectorDescription applyChanges(ConnectorDescription persistenceContent, ChangeSet changes)
