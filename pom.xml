@@ -55,7 +55,7 @@
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current/>
+    <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
     <repos.source>http://github.com</repos.source>
   </properties>
@@ -69,7 +69,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.3.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -179,7 +179,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
+        <sitesubtype />
       </properties>
     </profile>
     <profile>
@@ -187,7 +187,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
+        <sitesubtype />
       </properties>
     </profile>
     <profile>
