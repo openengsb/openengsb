@@ -1,3 +1,162 @@
+openengsb-1.2.0.M5 2011-04-21
+--------------------------------------------
+
+This milestone release contains various improvements and bugfixes. In addition there where many complete 
+rewrites in the src and API base. The old core-common project had been split into core-api, core-common 
+and core-services. In addition all connectors and domains had been split from the OpenEngSB. A new 
+configuration backend had been added and the admin UI had been upgraded and enhanced at various places. 
+We're using CXF 2.4 and AMQ 5.5 now including their own features files. Finally the entire ServiceManager 
+architecture had been rewritten using only one central manager now. In addition we've invested much time 
+enhancing the documentation and including new howtos.
+
+### Highlights
+  * Documentation upgrade
+  * Central ConnectorManager replace multible service managers
+  * New config-persistence allows to store configurations at various places now
+  * Connectors and context can be created as files
+  * Admin UI can edit properties of services now
+  * CXF 2.4 and AMQ 5.5 had been included
+  * ports-ws allows "ports-integration" with the OpenEngSB via WS now
+
+### Details
+** Bug
+    * [OPENENGSB-1049] - Testclient does no longer allow to call via domains
+    * [OPENENGSB-1106] - AbstractOpenEngSBInvocationHandler cannot invoke method called "notify"
+    * [OPENENGSB-1122] - updateService in AbstractServiceManager allows inconsistent IDs
+    * [OPENENGSB-1130] - allow sending emails without attachment
+    * [OPENENGSB-1134] - Exception when starting ssh-server
+    * [OPENENGSB-1170] - archetype connector create invalid blueprint xml file
+    * [OPENENGSB-1185] - integration-tests should use different ports than the distribution
+    * [OPENENGSB-1195] - Connector archetype create ServiceManager with wrong constructor
+    * [OPENENGSB-1207] - itests print DEBUG-output
+    * [OPENENGSB-1210] - Git submodules for connectors does not work without commit rights
+    * [OPENENGSB-1214] - OpenEngSB Version object should be serializable
+    * [OPENENGSB-1215] - Correct build-order of modules
+    * [OPENENGSB-1218] - testclient throws for every service which is called a nullpointer exception
+    * [OPENENGSB-1221] - serialization problem when call service in testclient
+    * [OPENENGSB-1228] - feature to add globals via web UI
+    * [OPENENGSB-1229] - feature to add imports for DomainEndpointFactory
+    * [OPENENGSB-1230] - notification of rule persistence failure
+    * [OPENENGSB-1231] - WorkflowService has to extend OpenEngSBService
+    * [OPENENGSB-1234] - All Dependencies for integration tests have to be provided with main repo
+    * [OPENENGSB-1258] - ProxyConnector also allows Void as return value
+    * [OPENENGSB-1260] - Error in JSON sample in the Documentation
+    * [OPENENGSB-1287] - client-project archetype does not work as expected
+    * [OPENENGSB-1291] - example-connector does not use config-attribute prefix.
+    * [OPENENGSB-1321] - eliminate null values in testclient service list
+    * [OPENENGSB-1335] - TestClient adaptions had not been included into unit tests
+
+** Epic
+    * [OPENENGSB-572] - plugin-system for openengsb-based projects
+    * [OPENENGSB-590] - restructure documentation (again)
+    * [OPENENGSB-812] - Provide port for webservices via CXF
+    * [OPENENGSB-878] - Configure openengsb parts in configuration folder
+    * [OPENENGSB-1005] - OpenEngSB PIM suite functionality
+
+** Improvement
+    * [OPENENGSB-562] - Quickstart documentation is practically empty
+    * [OPENENGSB-903] - Use karaf.shell name property to openengsb
+    * [OPENENGSB-993] - extend ServiceManager to be able to manage locations
+    * [OPENENGSB-1070] - cancel workflow and all associated (open) tasks
+    * [OPENENGSB-1100] - extract jira-plugin to separate repository
+    * [OPENENGSB-1112] - match filters properly in AbstractOsgiServiceMockTest
+    * [OPENENGSB-1113] - split core-common into common and api
+    * [OPENENGSB-1129] - Step-by-step tutorial  to building CI environment with OpenEngSB
+    * [OPENENGSB-1148] - waitForFlowToFinish should indicate if the flow is finished.
+    * [OPENENGSB-1162] - Allow to configure all different smtp endpoints
+    * [OPENENGSB-1174] - merge taskbox and workflow in core-api into workflow package
+    * [OPENENGSB-1176] - Merge api.workflow.editor with api.workflow
+    * [OPENENGSB-1178] - Merge connectorsetupstore namespace into persistence
+    * [OPENENGSB-1182] - Make all classes in deployer internal
+    * [OPENENGSB-1186] - make jms-url configurable 
+    * [OPENENGSB-1192] - UI-Admin should not reference auditing connector but rather domain
+    * [OPENENGSB-1193] - tasboxService.update(Task task)
+    * [OPENENGSB-1199] - Use system.properties, config.properties and jre.properties directly
+    * [OPENENGSB-1202] - Workflow exceptions should be untagged
+    * [OPENENGSB-1203] - Taskbox exception should extend workflow exception
+    * [OPENENGSB-1204] - Move taskbox into internal in workflow project
+    * [OPENENGSB-1220] - Include submodule connectors/wrapped via pom file in openengsb
+    * [OPENENGSB-1233] - ability to remove rules from the rule base
+    * [OPENENGSB-1247] - Move openengsb-dependency management documentation to own client section
+    * [OPENENGSB-1254] - Allow to register multible Services with different IDs
+    * [OPENENGSB-1259] - Move CallRouter from core-api to core-services
+    * [OPENENGSB-1261] - Cleanup JRE file to contain only non-exported dependencies
+    * [OPENENGSB-1262] - Use smx jaxb bundles instead of own
+    * [OPENENGSB-1263] - Cleanup ports-jms feature
+    * [OPENENGSB-1267] - Client & Shell Script Missing in "Pink Panther"
+    * [OPENENGSB-1283] - deleting of connectors
+    * [OPENENGSB-1308] - Allow all services to be called in call-router
+    * [OPENENGSB-1313] - Move osgi property id to constants
+    * [OPENENGSB-1318] - Prevent non-required karaf default features from startup
+
+** Library Upgrade
+    * [OPENENGSB-1033] - Upgrade activemq to 5.5
+    * [OPENENGSB-1200] - Upgrade to openengsb-root-14
+    * [OPENENGSB-1315] - Upgrade jackson libs to 1.7.6
+    * [OPENENGSB-1316] - Upgrade commons-lang to 2.6
+
+** New Feature
+    * [OPENENGSB-728] - Create context via configuration files
+    * [OPENENGSB-910] - When creating connector via web-ui set location properties
+    * [OPENENGSB-1032] - User ActiveMQ Features for Broker creation instead of own
+    * [OPENENGSB-1101] - Export Workflow containing actions and events to WorkflowService
+    * [OPENENGSB-1141] - implement gcontacts connector for domain contact
+    * [OPENENGSB-1142] - implement gcalendar connector for domain appointment
+    * [OPENENGSB-1165] - Create separated Config-Persistence
+    * [OPENENGSB-1168] - Configure activemq webapp
+    * [OPENENGSB-1171] - Add static OpenEngSB class to core-common retrieving openengsb core services in a static way
+    * [OPENENGSB-1172] - create subproject for wrapping com.google.gdata
+    * [OPENENGSB-1173] - wrapping com.google.gdata-calendar
+    * [OPENENGSB-1198] - wrapping com.google.gdata-contacts
+    * [OPENENGSB-1216] - Add a general testing feature for OpenEngSBCoreServices
+    * [OPENENGSB-1246] - Use a centralized Constants class
+    * [OPENENGSB-1251] - Provide Connector-Specific ConfigPersistenceImplementation
+    * [OPENENGSB-1252] - provide context configpersistence implementation
+    * [OPENENGSB-1256] - add delete-method to config-persistence
+    * [OPENENGSB-1264] - Provide cxf-feature in openengsb
+
+** Task
+    * [OPENENGSB-280] - move connectors and domains out of main openengsb repo
+    * [OPENENGSB-655] - Document howto use client projects with the openengsb
+    * [OPENENGSB-656] - Create archetypes for client projects
+    * [OPENENGSB-658] - update archetypes for domains and connectors for distributed projects
+    * [OPENENGSB-698] - Create integration tests for taskbox panel functionality
+    * [OPENENGSB-916] - Use slf4j instead of commons-logging althrough
+    * [OPENENGSB-998] - use ranking of -1 for root-services
+    * [OPENENGSB-1083] - Create Connector Provider
+    * [OPENENGSB-1084] - Rename DomainEndpointFactory to Wiring
+    * [OPENENGSB-1087] - Back DomainEndpointFactory by a service
+    * [OPENENGSB-1097] - release openengsb-1.2.0.M5
+    * [OPENENGSB-1098] - Define release name using P P
+    * [OPENENGSB-1128] - remove DomainService from core-common
+    * [OPENENGSB-1133] - remove Feedback-panels from all custom panels
+    * [OPENENGSB-1175] - Remove OpenEngSB BundleContextAware interface
+    * [OPENENGSB-1177] - Rename workflow.editor.model classes with end Representation*
+    * [OPENENGSB-1179] - Move DomainService into root
+    * [OPENENGSB-1180] - Merge current proxy and communication namespace in api.remote
+    * [OPENENGSB-1181] - merge core-events into core-common
+    * [OPENENGSB-1183] - remove remainging references to openengsb-core-events
+    * [OPENENGSB-1191] - Remove no longer required spring dependencies from compiled pom.xml
+    * [OPENENGSB-1196] - rename subproject openengsb-wrapped-com.google.gdata in openengsb-wrapped-com.google.gdata-calendar
+    * [OPENENGSB-1197] - create subproject for wrapping com.google.gdata-contacts
+    * [OPENENGSB-1201] - Create CSS configuration for task overview. 
+    * [OPENENGSB-1209] - Rename poms/compiled to poms/bundles
+    * [OPENENGSB-1211] - Remove direct reference to memoryauditing connector
+    * [OPENENGSB-1213] - Reevaluate how to handle hard to test WiringService in unittests
+    * [OPENENGSB-1224] - Merge openengsb-core-deployer-connector into openengsb-core-services
+    * [OPENENGSB-1236] - create parent pom for domains
+    * [OPENENGSB-1237] - move default-connectors back in openengsb-repo
+    * [OPENENGSB-1238] - move non-essential domains to separate repos
+    * [OPENENGSB-1239] - move external features to own features-directory
+    * [OPENENGSB-1240] - remove connector-feature-urls from openengsb-feature-file
+    * [OPENENGSB-1257] - Remove core/services/src/main/java/org/openengsb/core/services/internal/InvocationHandlerFactory.java
+    * [OPENENGSB-1288] - remove context-editor-page from ui-admin
+    * [OPENENGSB-1317] - adapt ConnectorDeployer to new ServiceManager
+    * [OPENENGSB-1320] - in the administration ui documentation is the part for managing globals missing
+    * [OPENENGSB-1324] - update conenctor archetype to new servicemanager api
+    * [OPENENGSB-1325] - Remove submodules wrapped from openengsb
+    * [OPENENGSB-1337] - Add bundles to download page
+
 openengsb-1.2.0.M4 2011-03-23
 --------------------------------------------
 
@@ -82,7 +241,6 @@ This milestone release contains many improvements in the manual and on the hompa
   * Replace Domain-services by DomainEndpointFactory
 
 ### Details
-
 ** Bug
     * [OPENENGSB-971] - Download page linux and windows link both point to windows distributions
     * [OPENENGSB-972] - Integration tests no longer run with karaf-2.2.0
