@@ -55,7 +55,7 @@
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current />
+    <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
     <repos.source>http://github.com</repos.source>
   </properties>
@@ -179,7 +179,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -187,7 +187,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -198,22 +198,7 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  <profile><id>4f60afc0-73e8-4f34-93f5-d63c5c98afdf</id><build><plugins><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-release-plugin</artifactId>
-      <version>${maven.plugin.release.version}</version>
-      <configuration>
-        <autoVersionSubmodules>true</autoVersionSubmodules>
-        <mavenExecutorId>forked-path</mavenExecutorId>
-        <useReleaseProfile>false</useReleaseProfile>
-        <pushChanges>false</pushChanges>
-        <arguments>-Psonatype-oss-release -DpushChanges=false</arguments>
-        <preparationGoals>clean install</preparationGoals>
-        <checkModificationExcludes>
-          <checkModificationExclude>pom.xml</checkModificationExclude>
-        </checkModificationExcludes>
-      </configuration>
-    </plugin></plugins><resources /></build><modules /></profile></profiles>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
