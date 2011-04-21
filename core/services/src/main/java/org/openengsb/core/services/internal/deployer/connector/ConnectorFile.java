@@ -87,9 +87,17 @@ public class ConnectorFile {
                 @Override
                 public Object apply(String input) {
                     if (input.contains(LIST_DELIMITER)) {
-                        return input.split(LIST_DELIMITER);
+                        return splitBySeparatorAndTrimItems(input);
                     }
                     return input;
+                }
+
+                private Object splitBySeparatorAndTrimItems(String input) {
+                    String[] split = input.split(LIST_DELIMITER);
+                    for (int i = 0; i < split.length; i++) {
+                        split[i] = StringUtils.trim(split[i]);
+                    }
+                    return split;
                 }
             });
         return ImmutableMap.copyOf(transformedProperties);

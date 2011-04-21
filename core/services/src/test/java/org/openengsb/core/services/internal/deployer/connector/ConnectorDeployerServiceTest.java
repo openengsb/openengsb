@@ -162,6 +162,26 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         verify(createdService).nullMethod(42);
     }
 
+    @Test
+    public void testConnectorFileWithArrays_shouldBeInstalled() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo,bar");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+    }
+
+    @Test
+    public void testConnectorFileWithArraysAndTrailingSpace_shouldBeInstalled() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo , bar");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+    }
+
     private File createSampleConnectorFile() throws IOException {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeStringToFile(connectorFile, testConnectorData);
