@@ -273,15 +273,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     public void testUpdateService_shouldNotOverrideOtherwiseModifedProperties() throws Exception {
         File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
-
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
-
-        ConnectorDescription attributeValues = serviceManager.getAttributeValues(id);
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
         Dictionary<String, Object> propertyValues =
             DictionaryUtils.copy(attributeValues.getProperties());
         propertyValues.put("foo", "bar");
         ConnectorDescription newDesc = new ConnectorDescription(attributeValues.getAttributes(), propertyValues);
-        serviceManager.update(id, newDesc);
+        serviceManager.update(testConnectorId, newDesc);
 
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.foo=notbar");
         try {
@@ -299,11 +296,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
         ConnectorDescription desc =
-            serviceManager.getAttributeValues(id);
+            serviceManager.getAttributeValues(testConnectorId);
         desc.getProperties().put("foo", "42");
-        serviceManager.update(id, desc);
+        serviceManager.update(testConnectorId, desc);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
         connectorDeployerService.update(connectorFile);
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
@@ -315,13 +311,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
-        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+        ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
         ConnectorDescription newDesc = new ConnectorDescription(ImmutableMap.of("x", "z"), desc.getProperties());
-        serviceManager.update(id, newDesc);
+        serviceManager.update(testConnectorId, newDesc);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
         connectorDeployerService.update(connectorFile);
-        ConnectorDescription attributeValues = serviceManager.getAttributeValues(id);
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
         assertThat(attributeValues.getAttributes().get("x"), is("z"));
     }
 
@@ -363,12 +358,11 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
-        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+        ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         ConnectorDescription newDesc = new ConnectorDescription(desc.getAttributes(), properties);
 
-        serviceManager.update(id, newDesc);
+        serviceManager.update(testConnectorId, newDesc);
         FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=original-file-value"));
 
         connectorDeployerService.update(connectorFile);
