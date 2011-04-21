@@ -35,12 +35,10 @@
 
   <packaging>pom</packaging>
 
-  <properties>
-    <openengsb.version>${project.version}</openengsb.version>
-  </properties>
-
   <description>Parent of all connectors</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
