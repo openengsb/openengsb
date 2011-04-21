@@ -26,7 +26,7 @@
     <relativePath>../../poms/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.2.0.M5</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -36,7 +36,7 @@
 
   <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-memoryauditing</artifactId>
-  <version>1.2.0.M5</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: MemoryAuditing</name>
 

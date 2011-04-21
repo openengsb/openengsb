@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>1.2.0.M5</version>
+    <version>1.2.0-SNAPSHOT</version>
     <relativePath>../../poms/domain/</relativePath>
   </parent>
 
@@ -35,7 +35,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domain</groupId>
   <artifactId>openengsb-domain-example</artifactId>
-  <version>1.2.0.M5</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Example</name>
 
