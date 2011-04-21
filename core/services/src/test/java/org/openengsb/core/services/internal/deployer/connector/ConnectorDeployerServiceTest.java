@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -53,6 +54,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.DictionaryUtils;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
@@ -67,6 +69,9 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+
+import com.google.common.collect.ImmutableMap;
 
 public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -81,6 +86,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
     private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
+    private ConnectorId testConnectorId;
 
     @Before
     public void setUp() throws Exception {
@@ -108,6 +114,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         DefaultWiringService defaultWiringService = new DefaultWiringService();
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
+        testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
     }
 
     private void setupPersistence() {
@@ -204,7 +211,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = new File(temporaryFolder.getRoot() + "/etc/mydomain+aconnector+myroot.connector");
         FileUtils.touch(connectorFile);
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\n"
-            + "property." + Constants.SERVICE_RANKING + "=24");
+                + "property." + Constants.SERVICE_RANKING + "=24");
 
         connectorDeployerService.install(connectorFile);
 
@@ -268,15 +275,130 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.install(connectorFile);
 
         ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+
         ConnectorDescription attributeValues = serviceManager.getAttributeValues(id);
-        attributeValues.getProperties().put("foo", "bar");
-        serviceManager.update(id, attributeValues);
+        Dictionary<String, Object> propertyValues =
+            DictionaryUtils.copy(attributeValues.getProperties());
+        propertyValues.put("foo", "bar");
+        ConnectorDescription newDesc = new ConnectorDescription(attributeValues.getAttributes(), propertyValues);
+        serviceManager.update(id, newDesc);
 
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.foo=notbar");
-        connectorDeployerService.update(connectorFile);
+        try {
+            connectorDeployerService.update(connectorFile);
+        } catch (MergeException e) {
+            // expected
+        }
         ServiceReference[] serviceReferences2 =
             bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
         assertThat(serviceReferences2, not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateServiceViaPersistence_shouldNotOverwriteProperties() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc =
+            serviceManager.getAttributeValues(id);
+        desc.getProperties().put("foo", "42");
+        serviceManager.update(id, desc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateAttributeViaPersistence_shouldNotOverwrite() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+        ConnectorDescription newDesc = new ConnectorDescription(ImmutableMap.of("x", "z"), desc.getProperties());
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(id);
+        assertThat(attributeValues.getAttributes().get("x"), is("z"));
+    }
+
+    @Test
+    public void testRemovePropertyFromConfig_shouldRemoveProperty() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
+    }
+
+    @Test
+    public void testModifyAttributeInBothPlaces_shouldThrowException() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile,
+            Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            assertThat(serviceManager.getAttributeValues(id).getAttributes().get("x"), is("new-persistence-value"));
+        }
+    }
+
+    @Test
+    public void testRemovePropertyOnBothEnds_shouldStayRemovedWithoutError() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        ConnectorDescription newDesc = new ConnectorDescription(desc.getAttributes(), properties);
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=original-file-value"));
+
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+    }
+
+    @Test
+    public void testUpdateAttributeViaFileTwice_shouldUpdateTwice() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=42", "attribute.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
+    }
+
+    @Test
+    public void testFailingAuthentication_shouldFail() throws Exception {
+        AuthenticationException authenticationExceptionMock = mock(AuthenticationException.class);
+        when(authManagerMock.authenticate(any(Authentication.class))).thenThrow(authenticationExceptionMock);
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("authentication should have failed");
+        } catch (AuthenticationException e) {
+            assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        }
+
     }
 
     @Override
