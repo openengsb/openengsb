@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -434,6 +436,28 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
         assertThat("old service is not there anymore", references, not(nullValue()));
+    }
+
+    @Test
+    public void updateFailure_shouldReplaceWithOldConfigFile() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            List<String> lines = FileUtils.readLines(connectorFile);
+            assertThat(lines, hasItems("property.foo=bar", "attribute.x=original-file-value"));
+        }
     }
 
     @Override
