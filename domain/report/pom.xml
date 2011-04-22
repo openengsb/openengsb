@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>1.1.3.RELEASE</version>
+    <version>1.1.4-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domain</groupId>
   <artifactId>openengsb-domain-report</artifactId>
-  <version>1.1.3.RELEASE</version>
+  <version>1.1.4-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Report</name>
 
