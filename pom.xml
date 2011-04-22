@@ -15,8 +15,8 @@
     <openengsb.version.name.noun>Kenny</openengsb.version.name.noun>
     <!-- General Download Version Information -->
     <openengsb.version.stable>1.1.2.RELEASE</openengsb.version.stable>
-    <openengsb.version.dev>1.2.0.M4</openengsb.version.dev>
-    <openengsb.version.nightly>1.2.0-SNAPSHOT</openengsb.version.nightly>
+    <openengsb.version.dev>1.2.0.M5</openengsb.version.dev>
+    <openengsb.version.nightly>1.3.0-SNAPSHOT</openengsb.version.nightly>
     <!-- maven plugin versions -->
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
