@@ -158,7 +158,6 @@
 
   <feature name="openengsb-ui-admin" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-ports-jms</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
