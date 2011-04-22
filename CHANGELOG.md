@@ -1,3 +1,42 @@
+openengsb-1.1.3.RELEASE 2011-04-22
+-------------------------------------------------------
+
+This release contains various bug fixes, fixed of potential bugs, and improvements mostly to the documentation and the homepage.
+
+### Highlights
+  * Increase documentation density
+  * Stabilze (human)task-functionallity
+  * Various workflow improvements
+
+### Details
+** Bug
+    * [OPENENGSB-1049] - Testclient does no longer allow to call via domains
+    * [OPENENGSB-1122] - updateService in AbstractServiceManager allows inconsistent IDs
+    * [OPENENGSB-1134] - Exception when starting ssh-server
+    * [OPENENGSB-1138] - bundle-properties in core-common not localized properly
+    * [OPENENGSB-1146] - GitServiceImplTest.exportRepository_shouldReturnZipFileWithRepoEntries fails under Windows.
+    * [OPENENGSB-1170] - archetype connector create invalid blueprint xml file
+    * [OPENENGSB-1195] - Connector archetype create ServiceManager with wrong constructor
+    * [OPENENGSB-1207] - itests print DEBUG-output
+    * [OPENENGSB-1218] - testclient throws for every service which is called a nullpointer exception
+    * [OPENENGSB-1230] - notification of rule persistence failure
+    * [OPENENGSB-1231] - WorkflowService has to extend OpenEngSBService
+
+** Improvement
+    * [OPENENGSB-1070] - cancel workflow and all associated (open) tasks
+    * [OPENENGSB-1147] - use environment variable to enable debug-output
+    * [OPENENGSB-1148] - waitForFlowToFinish should indicate if the flow is finished.
+    * [OPENENGSB-1233] - ability to remove rules from the rule base
+    * [OPENENGSB-1265] - Move HowTo's to DocBook
+    * [OPENENGSB-1267] - Client & Shell Script Missing in "Pink Panther"
+    * [OPENENGSB-1318] - Prevent non-required karaf default features from startup
+
+** Task
+    * [OPENENGSB-1133] - remove Feedback-panels from all custom panels
+    * [OPENENGSB-1145] - Release openengsb-1.1.3.RELEASE
+    * [OPENENGSB-1151] - remove no longer required update-version-info.sh script
+    * [OPENENGSB-1336] - Upgrade openengsb dev version to openengsb-1.2.0.M5
+
 openengsb-1.1.2.RELEASE 2011-03-22
 -------------------------------------------------------
 
