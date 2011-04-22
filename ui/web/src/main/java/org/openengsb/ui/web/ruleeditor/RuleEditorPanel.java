@@ -101,12 +101,12 @@ public class RuleEditorPanel extends Panel {
         cancelButton.setEnabled(false);
         target.addComponent(cancelButton);
     }
-    
+
     private void enableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(true);
         target.addComponent(deleteButton);
     }
-    
+
     private void disableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(false);
         target.addComponent(deleteButton);
@@ -255,10 +255,14 @@ public class RuleEditorPanel extends Panel {
         }
         disableButtons(target);
     }
-    
+
     private void deleteRule(AjaxRequestTarget target) {
         RuleBaseElementId selection = ruleChoice.getModelObject();
-        ruleManagerProvider.getRuleManager().delete(selection);
+        try {
+            ruleManagerProvider.getRuleManager().delete(selection);
+        } catch (RuleBaseException e) {
+            throw new RuntimeException(e);
+        }
         reloadTextArea(target);
         reloadRuleChoice(target);
     }
