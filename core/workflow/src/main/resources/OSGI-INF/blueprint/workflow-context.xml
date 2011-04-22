@@ -45,7 +45,6 @@
     <property name="rulemanager" ref="ruleManager" />
     <property name="currentContextService" ref="contextService" />
     <property name="bundleContext" ref="blueprintBundleContext" />
-    <property name="taskbox" ref="taskbox" />
   </bean>
 
   <bean class="org.openengsb.core.workflow.taskbox.config.TaskboxConfigurator" init-method="init">
