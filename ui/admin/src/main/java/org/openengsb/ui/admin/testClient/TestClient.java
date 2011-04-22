@@ -185,39 +185,12 @@ public class TestClient extends BasePage {
                 } catch (PersistenceException e) {
                     error("Unable to delete Service due to: " + e.getLocalizedMessage());
                 }
-                
+
                 target.addComponent(feedbackPanel);
             }
         };
         deleteButton.setEnabled(false);
         deleteButton.setOutputMarkupId(true);
-
-        serviceList = new LinkTree("serviceList", createModel()) {
-            @Override
-            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
-                    editButton.setEnabled(false);
-                    target.addComponent(editButton);
-                    return;
-                }
-                call.setService((ServiceId) mnode.getUserObject());
-                populateMethodList();
-                target.addComponent(methodList);
-                argumentList.removeAll();
-                target.addComponent(argumentListContainer);
-                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
-
-                updateModifyButtons((ServiceId) mnode.getUserObject());
-                target.addComponent(editButton);
-                target.addComponent(deleteButton);
-                target.addComponent(submitButton);
-                target.addComponent(feedbackPanel);
-            }
-        };
-        serviceList.setOutputMarkupId(true);
-        form.add(serviceList);
-        serviceList.getTreeState().expandAll();
 
         methodList = new DropDownChoice<MethodId>("methodList");
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
@@ -254,9 +227,41 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+
+        serviceList = new LinkTree("serviceList", createModel()) {
+            @Override
+            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
+                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+                if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    submitButton.setEnabled(false);
+                    target.addComponent(editButton);
+                    target.addComponent(deleteButton);
+                    target.addComponent(submitButton);
+                    return;
+                }
+                call.setService((ServiceId) mnode.getUserObject());
+                populateMethodList();
+                target.addComponent(methodList);
+                argumentList.removeAll();
+                target.addComponent(argumentListContainer);
+                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
+
+                updateModifyButtons((ServiceId) mnode.getUserObject());
+                target.addComponent(editButton);
+                target.addComponent(deleteButton);
+                target.addComponent(submitButton);
+                target.addComponent(feedbackPanel);
+            }
+        };
+        serviceList.setOutputMarkupId(true);
+        form.add(serviceList);
+        serviceList.getTreeState().expandAll();
+
         submitButton.setOutputMarkupId(true);
-        // the message-attribute doesn't work for some reason
-//        submitButton.setModel(new ResourceModel("form.call"));
+        submitButton.setEnabled(false);
+
         form.add(submitButton);
         form.add(editButton);
         form.add(deleteButton);
@@ -280,7 +285,7 @@ public class TestClient extends BasePage {
         };
         globalsButton.setOutputMarkupId(true);
         organize.add(globalsButton);
-        
+
         @SuppressWarnings("serial")
         AjaxButton importsButton = new AjaxButton("importsButton", organize) {
             @Override
