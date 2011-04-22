@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import org.apache.cxf.Bus;
-import org.apache.cxf.aegis.databinding.AegisDatabinding;
 import org.apache.cxf.bus.spring.SpringBusFactory;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.endpoint.ServerLifeCycleListener;
@@ -97,7 +96,6 @@ public class WSPort implements OutgoingPort {
         JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
         jaxWsProxyFactoryBean.setBus(bus);
         jaxWsProxyFactoryBean.setServiceClass(PortReceiver.class);
-        jaxWsProxyFactoryBean.setDataBinding(new AegisDatabinding());
         jaxWsProxyFactoryBean.setAddress(destination);
         jaxWsProxyFactoryBean.setWsdlURL(destination + "?wsdl");
         PortReceiver service = jaxWsProxyFactoryBean.create(PortReceiver.class);
@@ -146,7 +144,6 @@ public class WSPort implements OutgoingPort {
         factory.setBus(cxfBus);
         factory.setServiceClass(PortReceiver.class);
         factory.setAddress("/receiver/");
-        factory.getServiceFactory().setDataBinding(new AegisDatabinding());
         factory.setServiceBean(new DefaultPortReceiver(requestHandler));
     }
 

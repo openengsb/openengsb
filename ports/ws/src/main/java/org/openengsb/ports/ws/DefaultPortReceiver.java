@@ -19,12 +19,15 @@ package org.openengsb.ports.ws;
 
 import java.io.IOException;
 
+import javax.jws.WebService;
+
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.marshaling.RequestMapping;
 import org.openengsb.core.common.marshaling.ReturnMapping;
 
+@WebService(endpointInterface = "org.openengsb.ports.ws.PortReceiver")
 public class DefaultPortReceiver implements PortReceiver {
 
     private RequestHandler requestHandler;
