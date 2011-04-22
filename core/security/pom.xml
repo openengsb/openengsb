@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.openengsb.core</groupId>
     <artifactId>openengsb-core-parent</artifactId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.1.3.RELEASE</version>
   </parent>
 
   <properties>
@@ -31,7 +31,7 @@
 
   <groupId>org.openengsb.core</groupId>
   <artifactId>openengsb-core-security</artifactId>
-  <version>1.1.3-SNAPSHOT</version>
+  <version>1.1.3.RELEASE</version>
   <name>OpenEngSB :: Core :: Security</name>
 
   <packaging>bundle</packaging>
