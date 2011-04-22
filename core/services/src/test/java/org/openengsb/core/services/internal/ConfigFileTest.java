@@ -48,7 +48,7 @@ public class ConfigFileTest {
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42", "property.test=xxx"));
-        ChangeSet update = fileObject.update(connectorFile);
+        ChangeSet update = fileObject.getChanges(connectorFile);
         update.getChangedProperties().entriesOnlyOnRight().containsKey("test");
     }
 
@@ -57,7 +57,7 @@ public class ConfigFileTest {
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar"));
         ConnectorFile fileObject = new ConnectorFile(connectorFile);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar,42"));
-        ChangeSet update = fileObject.update(connectorFile);
+        ChangeSet update = fileObject.getChanges(connectorFile);
         update.getChangedProperties().entriesOnlyOnRight().containsKey("test");
     }
 

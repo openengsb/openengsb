@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -46,8 +47,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.google.common.base.Function;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
+import com.google.common.collect.MapMaker;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
@@ -59,7 +62,20 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
-    private Map<File, ConnectorFile> oldConfigs = new HashMap<File, ConnectorFile>();
+    private Map<File, ConnectorFile> oldConfigs = new MapMaker().makeComputingMap(new Function<File, ConnectorFile>() {
+        @Override
+        public ConnectorFile apply(File input) {
+            return new ConnectorFile(input);
+        }
+    });
+
+    private Map<File, Semaphore> updateSemaphores = new MapMaker()
+        .makeComputingMap(new Function<File, Semaphore>() {
+            @Override
+            public Semaphore apply(File input) {
+                return new Semaphore(1);
+            };
+        });
 
     @Override
     public boolean canHandle(File artifact) {
@@ -74,8 +90,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        getConnectorFile(artifact);
-        ConnectorFile configFile = getConnectorFile(artifact);
+        ConnectorFile configFile = oldConfigs.get(artifact);
 
         Dictionary<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
@@ -89,26 +104,28 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             new ConnectorDescription(configFile.getAttributes(), properties));
     }
 
-    private ConnectorFile getConnectorFile(File artifact) {
-        if (oldConfigs.containsKey(artifact)) {
-            return oldConfigs.get(artifact);
-        }
-        ConnectorFile value = new ConnectorFile(artifact);
-        oldConfigs.put(artifact, value);
-        return value;
-    }
-
     @Override
     public void update(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        ConnectorFile connectorFile = getConnectorFile(artifact);
+        Semaphore semaphore = updateSemaphores.get(artifact);
+        semaphore.acquire();
+        try {
+            doUpdate(artifact);
+        } finally {
+            semaphore.release();
+        }
+    }
+
+    private void doUpdate(File artifact) throws Exception {
+        ConnectorFile connectorFile = oldConfigs.get(artifact);
         ConnectorId connectorId = connectorFile.getConnectorId();
         ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
+        ChangeSet changes = connectorFile.getChanges(artifact);
 
-        ChangeSet changes = connectorFile.update(artifact);
         ConnectorDescription newDescription;
         try {
             newDescription = applyChanges(persistenceContent, changes);
+            connectorFile.update(artifact);
         } catch (MergeException e) {
             File backupFile = getBackupFile(artifact);
             FileUtils.moveFile(artifact, backupFile);

@@ -18,7 +18,9 @@
 package org.openengsb.core.api.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -63,7 +65,7 @@ public class ConnectorDescription implements Serializable {
     }
 
     public Map<String, String> getAttributes() {
-        return this.attributes;
+        return attributes;
     }
 
     public void setAttributes(Map<String, String> attributes) {
@@ -71,11 +73,34 @@ public class ConnectorDescription implements Serializable {
     }
 
     public Dictionary<String, Object> getProperties() {
-        return this.properties;
+        return properties;
     }
 
     public void setProperties(Dictionary<String, Object> properties) {
         this.properties = properties;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("Attributes: ");
+        result.append(attributes);
+        result.append(" - ");
+        result.append("Properties: { ");
+        Enumeration<String> keys = properties.keys();
+        while (keys.hasMoreElements()) {
+            String nextKey = keys.nextElement();
+            result.append(nextKey);
+            result.append(" = ");
+            Object element = properties.get(nextKey);
+            if (element.getClass().isArray()) {
+                result.append(Arrays.asList((Object[]) element));
+            } else {
+                result.append(element);
+            }
+            result.append(", ");
+        }
+        result.append("}");
+        return result.toString();
+    }
 }

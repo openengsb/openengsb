@@ -71,9 +71,7 @@ public class ConnectorFile {
 
     public ConnectorFile(File connectorFile) {
         connectorId = ConnectorId.fromFullId(FilenameUtils.removeExtension(connectorFile.getName()));
-        ImmutableMap<String, String> propertyMap = readProperties(connectorFile);
-        attributes = getAttributesFromMap(propertyMap);
-        properties = getPropertiesFromMap(propertyMap);
+        update(connectorFile);
     }
 
     private ImmutableMap<String, String> getAttributesFromMap(ImmutableMap<String, String> propertyMap) {
@@ -103,7 +101,7 @@ public class ConnectorFile {
         return ImmutableMap.copyOf(transformedProperties);
     }
 
-    public ChangeSet update(File file) {
+    public ChangeSet getChanges(File file) {
         ImmutableMap<String, String> newPropertyMap = readProperties(file);
 
         MapDifference<String, String> changedAttributes =
@@ -112,6 +110,12 @@ public class ConnectorFile {
             Maps.difference(properties, getPropertiesFromMap(newPropertyMap));
 
         return new ChangeSet(changedAttributes, changedProperties);
+    }
+
+    public void update(File file) {
+        ImmutableMap<String, String> newPropertyMap = readProperties(file);
+        attributes = getAttributesFromMap(newPropertyMap);
+        properties = getPropertiesFromMap(newPropertyMap);
     }
 
     private ImmutableMap<String, String> readProperties(File file) {
