@@ -737,5 +737,30 @@
         <artifactId>wsdl4j</artifactId>
         <license>Apache License, Version 2.0</license>
     </artifact>
+    <artifact>
+        <groupId>asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <license>http://asm.ow2.org/license.html</license>
+    </artifact>
+    <artifact>
+        <groupId>asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <license>http://asm.ow2.org/license.html</license>
+    </artifact>
+    <artifact>
+        <groupId>net.sf.josql</groupId>
+        <artifactId>gentlyweb-utils</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>net.sf.josql</groupId>
+        <artifactId>josql</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
+    <artifact>
+        <groupId>org.codehaus.jettison</groupId>
+        <artifactId>jettison</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
 </license-lookup>
 

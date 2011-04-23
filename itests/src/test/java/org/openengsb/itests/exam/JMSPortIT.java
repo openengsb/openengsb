@@ -51,6 +51,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);

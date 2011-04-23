@@ -14,9 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This project includes:
+  activation under Commons Development and Distribution License, Version 1.0
   ActiveIO :: Core under The Apache Software License, Version 2.0
+  ActiveMQ :: Apache Karaf under The Apache Software License, Version 2.0
+  ActiveMQ :: Console under The Apache Software License, Version 2.0
   ActiveMQ :: Core under The Apache Software License, Version 2.0
+  ActiveMQ :: KahaDB under The Apache Software License, Version 2.0
+  ActiveMQ :: Optional under The Apache Software License, Version 2.0
+  ActiveMQ :: Pool under The Apache Software License, Version 2.0
+  ActiveMQ Protocol Buffers Implementation and Compiler under The Apache Software License, Version 2.0
+  Annotation 1.0 under The Apache Software License, Version 2.0
   Antlr 3 Runtime under Apache License, Version 2.0
+  AntLR Parser Generator under BSD License
   AOP alliance under Public Domain
   Apache Aries Blueprint Bundle under The Apache Software License, Version 2.0
   Apache Aries JMX Blueprint Bundle under The Apache Software License, Version 2.0
@@ -29,6 +38,7 @@ This project includes:
   Apache Aries Proxy Implementation under The Apache Software License, Version 2.0
   Apache Aries Unit Test Support under The Apache Software License, Version 2.0
   Apache Aries Util under The Apache Software License, Version 2.0
+  Apache CXF Bundle Jar under The Apache Software License, Version 2.0
   Apache Felix Bundle Repository under The Apache Software License, Version 2.0
   Apache Felix Configuration Admin Service under The Apache Software License, Version 2.0
   Apache Felix EventAdmin under The Apache Software License, Version 2.0
@@ -84,34 +94,34 @@ This project includes:
   Apache Karaf :: Web Console :: Console under The Apache Software License, Version 2.0
   Apache Karaf :: Web Console :: Features Plugin under The Apache Software License, Version 2.0
   Apache Karaf :: Web Console :: Gogo Plugin under The Apache Software License, Version 2.0
+  Apache Log4j under The Apache Software License, Version 2.0
   Apache MINA Core under Apache 2.0 License
   Apache Mina SSHD :: Core under Apache 2.0 License
+  Apache Neethi under The Apache Software License, Version 2.0
+  Apache Santuario under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: asm under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: junit under The Apache Software License, Version 2.0
-  Apache ServiceMix :: Bundles :: mail under The Apache Software License, Version 2.0
-  Apache WebServices Common Utilities under The Apache Software License, Version 2.0
-  Apache XML-RPC Client Library under The Apache Software License, Version 2.0
-  Apache XML-RPC Common Library under The Apache Software License, Version 2.0
+  Apache Velocity under The Apache Software License, Version 2.0
+  Apache XBean :: Spring under The Apache Software License, Version 2.0
+  ASM Commons under http://asm.ow2.org/license.html
+  ASM Core under Apache License, Version 2.0
+  ASM Tree under http://asm.ow2.org/license.html
   AspectJ runtime under Eclipse Public License - v 1.0
   AspectJ weaver under Eclipse Public License - v 1.0
-  Atlassian JIRA Soap Model under BSD
   avalon-framework under Apache License, Version 2.0
   axis under Apache License, Version 2.0
-  axis-jaxrpc under Apache License, Version 2.0
-  axis-saaj under Apache License, Version 2.0
-  axis-wsdl4j under Apache License, Version 2.0
-  Backport of JSR 166 under Public Domain
   biz.aQute:bndlib under MIT
-  Camel :: Core under The Apache Software License, Version 2.0
   cglib under Apache License, Version 2.0
   Codec under Apache License, Version 2.0
   com.springsource.org.codehaus.janino under BSD license
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
-  Commons Compress under The Apache Software License, Version 2.0
+  Commons Daemon under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Commons Logging under The Apache Software License, Version 2.0
+  Commons Net under The Apache Software License, Version 2.0
+  Commons Pool under The Apache Software License, Version 2.0
   CSS Parser under GNU Lesser General Public License
   Data Mapper for Jackson under The Apache Software License, Version 2.0
   Discovery under The Apache Software License, Version 2.0
@@ -120,7 +130,6 @@ This project includes:
   Drools :: Compiler under The Apache Software License, Version 2.0
   Drools :: Core under The Apache Software License, Version 2.0
   Eclipse ECJ under Eclipse Public License v1.0
-  geronimo-j2ee-management_1.0_spec under Apache License, Version 2.0
   Guava (Google Common Libraries) under The Apache Software License, Version 2.0
   Hamcrest All under BSD style
   HtmlUnit under Apache License, Version 2.0
@@ -128,9 +137,19 @@ This project includes:
   HttpClient under Apache License
   HttpCore under Apache License
   HttpMime under Apache License
+  J2EE Management 1.1 under The Apache Software License, Version 2.0
   Jackson under The Apache Software License, Version 2.0
   jansi under The Apache Software License, Version 2.0
+  JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
+  Java Authentication SPI for Containers under The Apache Software License, Version 2.0
+  Java Rest Annotations under The Apache Software License, Version 2.0
+  JavaMail 1.4 under The Apache Software License, Version 2.0
+  JavaMail API under Common Development and Distribution License (CDDL) v1.0
+  JAXB RI under CDDL 1.0 or GPL2 w/ CPE
+  JAXB XJC under CDDL 1.0 or GPL2 w/ CPE
   JCL 1.1.1 implemented over SLF4J under MIT License
+  Jettison under Apache License, Version 2.0
+  Jetty :: Aggregate :: All Server under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Continuation under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: IO Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
@@ -138,42 +157,41 @@ This project includes:
   Jetty :: Server Core under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Servlet Handling under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Webapp Application Support under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Websocket under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: XML utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
-  JGit - Core under Eclipse Distribution License (New BSD License)
   JLine under The BSD License
   JMS 1.1 under The Apache Software License, Version 2.0
   Joda time under Apache 2
-  JSch under BSD
+  jsr311-api under CDDL License
+  JTA under The Apache Software License, Version 2.0
+  JTA 1.1 under The Apache Software License, Version 2.0
   JUnit under Common Public License Version 1.0
   kXML 2 under The BSD License
-  Log4j under The Apache Software License, Version 2.0
   Logback Classic Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Logback Core Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Logging under The Apache Software License, Version 2.0
   logkit under Apache License, Version 2.0
   Mockito under The MIT License
   mvel under Apache License, Version 2.0
+  MXP1: Xml Pull Parser 3rd Edition (XPP3) under Indiana University Extreme! Lab Software License, vesion 1.1.1 or Public Domain or Apache Software License, version 1.1
   Neko HTML under The Apache Software License, Version 2.0
   NeoDatis Object Database under GNU Lesser General Public License
+  net.sf.josql:gentlyweb-utils under Apache License, Version 2.0
+  net.sf.josql:josql under Apache License, Version 2.0
   OpenEngSB :: Assembly under Apache 2
   OpenEngSB :: Branding :: Parent under Apache 2
   OpenEngSB :: Branding :: Shell under Apache 2
-  OpenEngSB :: Connector :: Email under Apache 2
   OpenEngSB :: Connector :: Example under Apache 2
-  OpenEngSB :: Connector :: Git under Apache 2
-  OpenEngSB :: Connector :: Jira under Apache 2
-  OpenEngSB :: Connector :: Maven under Apache 2
   OpenEngSB :: Connector :: MemoryAuditing under Apache 2
   OpenEngSB :: Connector :: Parent under Apache 2
-  OpenEngSB :: Connector :: Plain Text Report under Apache 2
-  OpenEngSB :: Connector :: Trac under Apache 2
+  OpenEngSB :: Connector :: Provided under Apache 2
+  OpenEngSB :: Core :: API under Apache 2
   OpenEngSB :: Core :: Common under Apache 2
-  OpenEngSB :: Core :: Deployer :: Connector under Apache 2
-  OpenEngSB :: Core :: Deployer :: Parent under Apache 2
-  OpenEngSB :: Core :: Events under Apache 2
   OpenEngSB :: Core :: Parent under Apache 2
   OpenEngSB :: Core :: Persistence Layer under Apache 2
   OpenEngSB :: Core :: Security under Apache 2
+  OpenEngSB :: Core :: Services under Apache 2
   OpenEngSB :: Core :: Test under Apache 2
   OpenEngSB :: Core :: Workflow Engine under Apache 2
   OpenEngSB :: Documentation :: Examples under Apache 2
@@ -181,25 +199,22 @@ This project includes:
   OpenEngSB :: Documentation :: Manual under Apache 2
   OpenEngSB :: Documentation :: Parent under Apache 2
   OpenEngSB :: Documentation :: Skin under Apache 2
-  OpenEngSB :: Domain :: Appointment under Apache 2
-  OpenEngSB :: Domain :: Build under Apache 2
-  OpenEngSB :: Domain :: Contact under Apache 2
-  OpenEngSB :: Domain :: Deploy under Apache 2
+  OpenEngSB :: Domain :: Auditing under Apache 2
   OpenEngSB :: Domain :: Example under Apache 2
-  OpenEngSB :: Domain :: Issue under Apache 2
-  OpenEngSB :: Domain :: Notification under Apache 2
   OpenEngSB :: Domain :: Parent under Apache 2
-  OpenEngSB :: Domain :: Report under Apache 2
-  OpenEngSB :: Domain :: Scm under Apache 2
-  OpenEngSB :: Domain :: Test under Apache 2
-  OpenEngSB :: Domains :: Auditing :: Implementation under Apache 2
+  OpenEngSB :: Domain :: Provided under Apache 2
+  OpenEngSB :: Infrastructure :: JMS under Apache 2
+  OpenEngSB :: Infrastructure :: Parent under Apache 2
   OpenEngSB :: Integration Tests under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: HTML Unit Testing Framework under Apache 2
   OpenEngSB :: Parent under Apache 2
-  OpenEngSB :: Plugin Configuration :: Compiled under Apache 2
+  OpenEngSB :: Plugin Configuration :: Bundle under Apache 2
   OpenEngSB :: Plugin Configuration :: Parent under Apache 2
   OpenEngSB :: Ports :: JMS under Apache 2
   OpenEngSB :: Ports :: Parent under Apache 2
+  OpenEngSB :: Ports :: Webservices under Apache 2
+  OpenEngSB :: Tooling :: Archetypes :: Client Project :: Parent under Apache 2
+  OpenEngSB :: Tooling :: Archetypes :: Client Project :: Root under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Connector under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Domain under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Parent under Apache 2
@@ -214,6 +229,8 @@ This project includes:
   OpenID4Java Server under Apache 2
   OpenID4Java Server JdbcServerAssociationStore under Apache 2
   OpenID4Java Server SampleServer under Apache 2
+  OpenSAML-J under Apache 2
+  OpenWS under Apache 2
   OPS4J Base - IO under ALv2
   OPS4J Base - Lang under ALv2
   OPS4J Base - Monitors under ALv2
@@ -241,15 +258,18 @@ This project includes:
   OPS4J Pax Url - wrap: under ALv2
   org.osgi.compendium under Apache License, Version 2.0
   org.osgi.core under Apache License, Version 2.0
+  oro under Apache License, Version 2.0
   osgi under Apache License, Version 2.0
   OSGi OBR Service API under The Apache Software License, Version 2.0
   OSGi R4 Core Bundle under The Apache Software License, Version 2.0
+  Rhino under Mozilla Public License
   scala-compiler under BSD-like
   scala-library under BSD-like
   scalate-core under The Apache Software License, Version 2.0
   scalate-util under The Apache Software License, Version 2.0
   scalate-wikitext under The Apache Software License, Version 2.0
   Servlet 2.5 under The Apache Software License, Version 2.0
+  Servlet 3.0 under The Apache Software License, Version 2.0
   servlet-api under Commons Development and Distribution License, Version 1.0
   Simple API for CSS under The W3C Software License
   SLF4J API Module under MIT License
@@ -272,6 +292,7 @@ This project includes:
   spring-jms under Apache License, Version 2.0
   spring-tx under Apache License, Version 2.0
   spring-web under Apache License, Version 2.0
+  Stax2 API under The BSD License
   Velocity under Apache License, Version 2.0
   Wicket under The Apache Software License, Version 2.0
   Wicket Auth Roles under The Apache Software License, Version 2.0
@@ -285,11 +306,19 @@ This project includes:
   WikiText :: Confluence :: Core under Eclipse Public License v1.0
   WikiText :: Core under Eclipse Public License v1.0
   WikiText :: Textile :: Core under Eclipse Public License v1.0
-  WSDL4J under Apache License, Version 2.0
+  Woodstox under The Apache Software License, Version 2.0
+  WSDL4J under CPL
+  WSS4J under The Apache Software License, Version 2.0
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
   Xerces2 Java Parser under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
+  XML Commons Resolver Component under The Apache Software License, Version 2.0
   XML Pull Parsing API under Public Domain
   xml-apis under The Apache Software License, Version 2.0
+  XmlBeans under The Apache Software License, Version 2.0
+  XmlSchema Core under The Apache Software License, Version 2.0
+  XMLTooling-J under Apache 2
+  XMLUnit for Java under BSD License
+  XStream Core under BSD style
 
