@@ -97,6 +97,21 @@
         </p>
       </answer>
     </faq>
+    <faq id="support">
+      <question>How long will my OpenEngSB-version be supported?</questoin>
+        <answer>
+          <p>Short answer is: 3 months active support followed by 3 months passive support, starting from the day the
+          major version was released.
+          "Active support" means that all bugs are evaluated if they affect development and/or the stable version
+          and bufixes are backported accordingly. Also minor new features are included in future minor releases.
+          "Passive support" means that bugs are only fixed when explicitly reported for this version. Also future
+          minor releases will not contain any new features.</p>
+          <p>Example:
+          1.1.0.RELEASE was released 2011-03-08. 1.1.2.RELEASE was released 2011-03-22. Active support for 1.1.x will end 2011-06-08.
+          After that bugs will be fixed on demand until 2011-09-08.</p>
+          Due to limited resources, the community cannot offer further support for older versions.
+        </answer>
+    </faq>
   </part>
   <part id="Development">
     <title>Development</title>
