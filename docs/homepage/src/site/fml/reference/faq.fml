@@ -98,7 +98,7 @@
       </answer>
     </faq>
     <faq id="support">
-      <question>How long will my OpenEngSB-version be supported?</questoin>
+      <question>How long will my OpenEngSB-version be supported?</question>
         <answer>
           <p>Short answer is: 3 months active support followed by 3 months passive support, starting from the day the
           major version was released.
