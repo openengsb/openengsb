@@ -1,4 +1,4 @@
-package org.openengsb.core.services.internal.deployer.connector;
+package org.openengsb.core.common.util;
 
 public class MergeException extends Exception {
 
