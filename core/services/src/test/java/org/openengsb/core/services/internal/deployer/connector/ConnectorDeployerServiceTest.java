@@ -63,6 +63,7 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.DictionaryUtils;
+import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.CorePersistenceServiceBackend;

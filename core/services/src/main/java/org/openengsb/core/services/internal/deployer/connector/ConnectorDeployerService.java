@@ -20,16 +20,13 @@ package org.openengsb.core.services.internal.deployer.connector;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
@@ -37,7 +34,9 @@ import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
@@ -49,7 +48,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapDifference;
-import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.MapMaker;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
@@ -163,38 +161,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         MapDifference<String, String> changedAttributes = changes.getChangedAttributes();
         Map<String, String> attributes = persistenceContent.getAttributes();
 
-        Map<String, String> newAttributes = mergeMaps(attributes, changedAttributes);
+        Map<String, String> newAttributes = ConfigUtils.updateMap(attributes, changedAttributes);
         Map<String, Object> newProperties =
-            mergeMaps(DictionaryAsMap.wrap(persistenceContent.getProperties()), changes.getChangedProperties());
+            ConfigUtils.updateMap(DictionaryAsMap.wrap(persistenceContent.getProperties()),
+                changes.getChangedProperties());
         return new ConnectorDescription(newAttributes, new Hashtable<String, Object>(newProperties));
-    }
-
-    private <K, V> Map<K, V> mergeMaps(final Map<K, V> original, MapDifference<K, V> diff) throws MergeException {
-        Map<K, V> result = new HashMap<K, V>(original);
-        if (diff.areEqual()) {
-            return result;
-        }
-        for (Entry<K, V> entry : diff.entriesOnlyOnLeft().entrySet()) {
-            V originalValue = original.get(entry.getKey());
-            if (ObjectUtils.equals(originalValue, entry.getValue())) {
-                result.remove(entry.getKey());
-            }
-        }
-        for (Entry<K, V> entry : diff.entriesOnlyOnRight().entrySet()) {
-            if (original.containsKey(entry.getKey())) {
-                throw new MergeException("trying to overwrite a value that was not in config before");
-            }
-            result.put(entry.getKey(), entry.getValue());
-        }
-        for (Entry<K, ValueDifference<V>> entry : diff.entriesDiffering().entrySet()) {
-            V originalValue = original.get(entry.getKey());
-
-            if (!ObjectUtils.equals(originalValue, entry.getValue().leftValue())) {
-                throw new MergeException("value has been modified via persistence earlier. New configuration rejected");
-            }
-            result.put(entry.getKey(), entry.getValue().rightValue());
-        }
-        return result;
     }
 
     @Override
