@@ -21,19 +21,28 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -42,13 +51,19 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.internal.matchers.LessThan;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.DictionaryUtils;
+import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
@@ -63,6 +78,9 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+
+import com.google.common.collect.ImmutableMap;
 
 public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
@@ -77,6 +95,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
     private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
+    private ConnectorId testConnectorId;
 
     @Before
     public void setUp() throws Exception {
@@ -89,7 +108,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         setupPersistence();
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
-        connectorDeployerService.setServiceManager(this.serviceManager);
+        connectorDeployerService.setServiceManager(serviceManager);
 
         factory = mock(ConnectorInstanceFactory.class);
         createdService = mock(NullDomain.class);
@@ -104,6 +123,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         DefaultWiringService defaultWiringService = new DefaultWiringService();
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
+        testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
     }
 
     private void setupPersistence() {
@@ -123,7 +143,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         serviceManagerImpl.setRegistrationManager(registrationManager);
-        this.serviceManager = serviceManagerImpl;
+        serviceManager = serviceManagerImpl;
         return serviceManagerImpl;
     }
 
@@ -147,6 +167,26 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         NullDomain domainEndpoints = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(NullDomain.class, "*");
         domainEndpoints.nullMethod(42);
         verify(createdService).nullMethod(42);
+    }
+
+    @Test
+    public void testConnectorFileWithArrays_shouldBeInstalled() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo,bar");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+    }
+
+    @Test
+    public void testConnectorFileWithArraysAndTrailingSpace_shouldBeInstalled() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo , bar");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
     }
 
     private File createSampleConnectorFile() throws IOException {
@@ -236,6 +276,288 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         assertThat(serviceReferences, not(nullValue()));
         ServiceReference reference = serviceReferences[0];
         assertThat((String) reference.getProperty(org.openengsb.core.api.Constants.CONNECTOR_KEY), is("aconnector"));
+    }
+
+    @Test
+    public void testInstallService_shouldNotOverwriteExistingService() throws Exception {
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription =
+            new ConnectorDescription(new HashMap<String, String>(), properties);
+        serviceManager.create(testConnectorId, connectorDescription);
+
+        File connectorFile = createSampleConnectorFile();
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("Exception expected");
+        } catch (Exception e) {
+            // The service-manager will refuse to create the connector
+        }
+
+        ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat("old service is not there anymore", references, not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateService_shouldNotOverrideOtherwiseModifedProperties() throws Exception {
+        File connectorFile = createSampleConnectorFile();
+        connectorDeployerService.install(connectorFile);
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
+        Dictionary<String, Object> propertyValues =
+            DictionaryUtils.copy(attributeValues.getProperties());
+        propertyValues.put("foo", "bar");
+        ConnectorDescription newDesc = new ConnectorDescription(attributeValues.getAttributes(), propertyValues);
+        serviceManager.update(testConnectorId, newDesc);
+
+        FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.foo=notbar");
+        try {
+            connectorDeployerService.update(connectorFile);
+        } catch (MergeException e) {
+            // expected
+        }
+        ServiceReference[] serviceReferences2 =
+            bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat(serviceReferences2, not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateServiceViaPersistence_shouldNotOverwriteProperties() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorDescription desc =
+            serviceManager.getAttributeValues(testConnectorId);
+        desc.getProperties().put("foo", "42");
+        serviceManager.update(testConnectorId, desc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateAttributeViaPersistence_shouldNotOverwrite() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
+        ConnectorDescription newDesc = new ConnectorDescription(ImmutableMap.of("x", "z"), desc.getProperties());
+        serviceManager.update(testConnectorId, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
+        assertThat(attributeValues.getAttributes().get("x"), is("z"));
+    }
+
+    @Test
+    public void testRemovePropertyFromConfig_shouldRemoveProperty() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=y", "property.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(x=y)"), not(nullValue()));
+    }
+
+    @Test
+    public void testModifyAttributeInBothPlaces_shouldThrowException() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile,
+            Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            assertThat(serviceManager.getAttributeValues(id).getAttributes().get("x"), is("new-persistence-value"));
+        }
+    }
+
+    @Test
+    public void testRemovePropertyOnBothEnds_shouldStayRemovedWithoutError() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        ConnectorDescription newDesc = new ConnectorDescription(desc.getAttributes(), properties);
+
+        serviceManager.update(testConnectorId, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("attribute.x=original-file-value"));
+
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+    }
+
+    @Test
+    public void testUpdateAttributeViaFileTwice_shouldUpdateTwice() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=42", "attribute.x=y"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
+    }
+
+    @Test
+    public void testFailingAuthentication_shouldFail() throws Exception {
+        AuthenticationException authenticationExceptionMock = mock(AuthenticationException.class);
+        when(authManagerMock.authenticate(any(Authentication.class))).thenThrow(authenticationExceptionMock);
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("authentication should have failed");
+        } catch (AuthenticationException e) {
+            assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        }
+    }
+
+    @Test
+    public void updateFailure_shouldCreateBackupFile() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile,
+                Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            File backupFile = new File(temporaryFolder.getRoot(), TEST_FILE_NAME + "_001");
+            assertThat("no backup-file was created", backupFile.exists(), is(true));
+        }
+    }
+
+    @Test
+    public void installFailure_shouldLeaveFileAsIs() throws Exception {
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("foo", "bar");
+        ConnectorDescription connectorDescription = new ConnectorDescription(new HashMap<String, String>(), properties);
+        serviceManager.create(testConnectorId, connectorDescription);
+
+        File connectorFile = createSampleConnectorFile();
+        try {
+            connectorDeployerService.install(connectorFile);
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertThat(connectorFile.exists(), is(true));
+        }
+
+        ServiceReference[] references = bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)");
+        assertThat("old service is not there anymore", references, not(nullValue()));
+    }
+
+    @Test
+    public void updateFailure_shouldReplaceWithOldConfigFile() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDescription desc = serviceManager.getAttributeValues(id);
+
+        Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
+        ConnectorDescription newDesc = new ConnectorDescription(attributes, desc.getProperties());
+
+        serviceManager.update(id, newDesc);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+        try {
+            connectorDeployerService.update(connectorFile);
+            fail("update should have failed, because of a merge-conflict");
+        } catch (MergeException e) {
+            List<String> lines = FileUtils.readLines(connectorFile);
+            assertThat(lines, hasItems("property.foo=bar", "attribute.x=original-file-value"));
+        }
+    }
+
+    @Test
+    public void updateTwice_shouldUpdateCachedVersion() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar2", "attribute.x=original-file-value"));
+        connectorDeployerService.update(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar3", "attribute.x=original-file-value"));
+        connectorDeployerService.update(connectorFile);
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar3)"), not(nullValue()));
+    }
+
+    @Test
+    public void testUpdateWhenPreviousUpdateIsNotFinished_shouldWait() throws Exception {
+        ConnectorManager spy2 = spy(serviceManager);
+        connectorDeployerService.setServiceManager(spy2);
+
+        // responsible for making update-calls slow in a way so we can control, when it is actually done.
+        final Semaphore slowingSemaphore = new Semaphore(0);
+        doAnswer(new Answer<Object>() { // delay the first invocation
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    slowingSemaphore.acquire();
+                    return invocation.callRealMethod();
+                }
+            }).doAnswer(new Answer<Object>() { // just forward all subsequent invocations
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return invocation.callRealMethod();
+                }
+            })
+            .when(spy2).update(any(ConnectorId.class), any(ConnectorDescription.class));
+        final File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
+        connectorDeployerService.install(connectorFile);
+
+        final AtomicReference<Exception> thrown = new AtomicReference<Exception>();
+        Runnable updateTask = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    connectorDeployerService.update(connectorFile);
+                } catch (Exception e) {
+                    thrown.set(e);
+                }
+            }
+        };
+
+        Thread t1 = new Thread(updateTask);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar2", "property.foo2=bar"));
+        t1.start();
+
+        Thread t2 = new Thread(updateTask);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar3", "attribute.x=original-file-value"));
+        t2.start();
+
+        Thread.sleep(500); // give t2 some time to try stuff. If it is not done, the worst that could happen is that the
+                           // test does not fail even if it should.
+        while (slowingSemaphore.availablePermits() > 0) {
+            // busy-wait for the semaphore to be acquired
+            Thread.yield();
+        }
+
+        slowingSemaphore.release();
+        t1.join();
+        t2.join();
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar3)"), not(nullValue()));
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo2=bar)"), nullValue());
+        if (thrown.get() != null) {
+            throw thrown.get();
+        }
     }
 
     @Override
