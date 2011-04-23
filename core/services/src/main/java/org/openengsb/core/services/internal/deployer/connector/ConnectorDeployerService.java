@@ -38,12 +38,12 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -54,8 +54,6 @@ import com.google.common.collect.MapMaker;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
-    private static final String AUTH_PASSWORD = "password";
-    private static final String AUTH_USER = "admin";
     private static final String CONNECTOR_EXTENSION = ".connector";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
@@ -99,9 +97,13 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         }
         LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        serviceManager.create(configFile.getConnectorId(),
-            new ConnectorDescription(configFile.getAttributes(), properties));
+        login();
+        try {
+            serviceManager.create(configFile.getConnectorId(),
+                new ConnectorDescription(configFile.getAttributes(), properties));
+        } finally {
+            logout();
+        }
     }
 
     @Override
@@ -135,8 +137,12 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             throw e;
         }
 
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        serviceManager.update(connectorId, newDescription);
+        login();
+        try {
+            serviceManager.update(connectorId, newDescription);
+        } finally {
+            logout();
+        }
     }
 
     private File getBackupFile(File artifact) {
@@ -194,16 +200,24 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void uninstall(File artifact) throws PersistenceException {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        String name = FilenameUtils.removeExtension(artifact.getName());
-        ConnectorId fullId = ConnectorId.fromFullId(name);
-        serviceManager.delete(fullId);
+        login();
+        try {
+            String name = FilenameUtils.removeExtension(artifact.getName());
+            ConnectorId fullId = ConnectorId.fromFullId(name);
+            serviceManager.delete(fullId);
+        } finally {
+            logout();
+        }
     }
 
-    private void authenticate(String username, String password) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                username, password));
+    private void login() {
+        Authentication authentication =
+            authenticationManager.authenticate(new BundleAuthenticationToken("core-services", ""));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void logout() {
+        SecurityContextHolder.clearContext();
     }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
