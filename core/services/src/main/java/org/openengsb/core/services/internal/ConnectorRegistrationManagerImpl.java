@@ -149,7 +149,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         for (Entry<String, Object> entry : DictionaryAsMap.wrap(properties).entrySet()) {
             result.put(entry.getKey(), entry.getValue());
         }
-        result.put(Constants.ID_KEY, id.getDomainType());
+        result.put(Constants.DOMAIN_KEY, id.getDomainType());
         result.put(Constants.CONNECTOR_KEY, id.getConnectorType());
         result.put(Constants.ID_KEY, id.toFullID());
         return result;
