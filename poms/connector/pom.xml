@@ -101,28 +101,9 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-api</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-common</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-        <optional>true</optional>
-      </dependency>
-
-      <dependency>
-        <groupId>org.openengsb.core</groupId>
-        <artifactId>openengsb-core-test</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>
+

@@ -205,122 +205,78 @@
       <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>openengsb-connector-example</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-api</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-common</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-services</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-persistence</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-security</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-test</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-workflow</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-auditing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-build</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-deploy</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-example</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-issue</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-notification</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-report</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-scm</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.domain</groupId>
-        <artifactId>openengsb-domain-contact</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
         <type>xml</type>
         <classifier>features</classifier>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
         <type>xml</type>
         <classifier>features-itests</classifier>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>openengsb-ui-common</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>openengsb-ui-admin</artifactId>
-        <version>${project.version}</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
