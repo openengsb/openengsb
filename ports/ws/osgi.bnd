@@ -19,3 +19,4 @@ Import-Package: sun.reflect, *
 
 # This import is required since the WS package relies heavily on reflection and loading of calling classes at runtime
 DynamicImport-Package: *
+

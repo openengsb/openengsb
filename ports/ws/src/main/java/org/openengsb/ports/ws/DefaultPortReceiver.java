@@ -41,7 +41,9 @@ public class DefaultPortReceiver implements PortReceiver {
 
     @Override
     public String receive(String message) {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(DefaultPortReceiver.class.getClassLoader());
             RequestMapping readValue = RequestMapping.createFromMessage(message);
             readValue.resetArgs();
             ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
@@ -50,7 +52,8 @@ public class DefaultPortReceiver implements PortReceiver {
             return answer;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
-
 }
