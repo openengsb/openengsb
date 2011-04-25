@@ -72,8 +72,8 @@
     </systemUsage>
 
     <transportConnectors>
-      <transportConnector name="openwire" uri="tcp://localhost:${openwire}" />
-      <transportConnector name="stomp" uri="stomp://localhost:${stomp}" />
+      <transportConnector name="openwire" uri="tcp://0.0.0.0:${openwire}" />
+      <transportConnector name="stomp" uri="stomp://0.0.0.0:${stomp}" />
     </transportConnectors>
   </broker>
 
