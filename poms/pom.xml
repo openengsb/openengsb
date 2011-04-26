@@ -432,6 +432,11 @@
         <version>${jackson.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-xc</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.codehaus.janino</groupId>
         <artifactId>com.springsource.org.codehaus.janino</artifactId>
         <version>${janino.version}</version>
