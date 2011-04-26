@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.MethodCall;
 
 public class RequestMapping extends MethodCall {
@@ -86,7 +89,7 @@ public class RequestMapping extends MethodCall {
         if (getClasses().size() != getArgs().length) {
             throw new IllegalStateException("Classes and Args have to be the same");
         }
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         Iterator<String> iterator = getClasses().iterator();
 
         List<Object> values = new ArrayList<Object>();
@@ -104,15 +107,26 @@ public class RequestMapping extends MethodCall {
     }
 
     public String convertToMessage() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         StringWriter stringWriter = new StringWriter();
         mapper.writeValue(stringWriter, this);
         return stringWriter.toString();
     }
 
     public static RequestMapping createFromMessage(String message) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         RequestMapping mapping = mapper.readValue(new StringReader(message), RequestMapping.class);
         return mapping;
+    }
+
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
+        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
+        AnnotationIntrospector introspector =
+            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
+        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
+        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
+        return mapper;
     }
 }

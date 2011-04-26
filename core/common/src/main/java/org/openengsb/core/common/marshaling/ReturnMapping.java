@@ -20,7 +20,10 @@ package org.openengsb.core.common.marshaling;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.openengsb.core.api.remote.MethodReturn;
 
 public class ReturnMapping extends MethodReturn {
@@ -49,20 +52,31 @@ public class ReturnMapping extends MethodReturn {
     }
 
     public String convertToMessage() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         StringWriter stringWriter = new StringWriter();
         mapper.writeValue(stringWriter, this);
         return stringWriter.toString();
     }
 
     public static ReturnMapping createFromMessage(String message) throws IOException, ClassNotFoundException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         ReturnMapping returnValue = mapper.readValue(message, ReturnMapping.class);
         if (returnValue.getType() != ReturnType.Void) {
             Class<?> classValue = Class.forName(returnValue.getClassName());
             returnValue.setArg(mapper.convertValue(returnValue.getArg(), classValue));
         }
         return returnValue;
+    }
+
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
+        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
+        AnnotationIntrospector introspector =
+            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
+        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
+        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
+        return mapper;
     }
 
 }
