@@ -17,28 +17,45 @@
 
 package org.openengsb.core.services.internal;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.RemoteCommunicationException;
+import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
-/**
- * The {@link CallRouter} is registered as OSGi Service and should be used to send a {@link MethodCall} via a specific
- * OutgoingPort (via it's portId) to a specific destination.
- */
-public interface CallRouter {
+public class CallRouter {
 
-    /**
-     * Executes a {@link MethodCall} via a defined port at a given destination.
-     */
-    void call(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
-        RemoteCommunicationException;
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
-    /**
-     * This method does the same as {@link #call(String, String, MethodCall)} but blocks till a result is available
-     * returned as {@link MethodReturn}. If no result is available within an error is returned.
-     */
-    MethodReturn callSync(String portId, String destination, MethodCall call) throws OsgiServiceNotAvailableException,
-        RemoteCommunicationException;
+    public void call(String portId, final String destination, final MethodCall call) {
+        final OutgoingPort port;
+        port = getPort(portId);
+        Runnable callHandler = new Runnable() {
+            @Override
+            public void run() {
+                port.send(destination, call);
+            }
+        };
+        executor.execute(callHandler);
+    }
+
+    public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
+        OutgoingPort port;
+        port = getPort(portId);
+        return port.sendSync(destination, call);
+    }
+
+    private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {
+        final OutgoingPort port =
+            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
+        return port;
+    }
+
+    public void stop() {
+        executor.shutdownNow();
+    }
 
 }
