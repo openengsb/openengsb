@@ -142,6 +142,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
+        registrationManager.setServiceUtils(OpenEngSBCoreServices.getServiceUtilsService());
         serviceManagerImpl.setRegistrationManager(registrationManager);
         serviceManager = serviceManagerImpl;
         return serviceManagerImpl;

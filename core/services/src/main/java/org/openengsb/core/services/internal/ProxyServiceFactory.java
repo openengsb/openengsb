@@ -25,11 +25,15 @@ import java.util.Map;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.remote.CallRouter;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class ProxyServiceFactory implements ConnectorInstanceFactory {
 
     private DomainProvider domainProvider;
     private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
+    private CallRouter callRouter = new DefaultCallRouter();
 
     private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
 
@@ -61,13 +65,30 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     @Override
     public Domain createNewInstance(String id) {
         ProxyConnector handler = new ProxyConnector(id);
-        handler.setCallRouter(new CallRouter());
+        updateInstanceCallRouter();
+        handler.setCallRouter(callRouter);
         Domain newProxyInstance =
             (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ domainProvider.getDomainInterface(), },
                 handler);
         handlers.put(newProxyInstance, handler);
         return newProxyInstance;
+    }
+
+    private void updateInstanceCallRouter() {
+        CallRouter registeredRouter = retrieveCallRouterFromRegsitryIfExisting();
+        if (registeredRouter != null) {
+            callRouter = registeredRouter;
+        }
+    }
+
+    private CallRouter retrieveCallRouterFromRegsitryIfExisting() {
+        try {
+            return OpenEngSBCoreServices.getServiceUtilsService().getService(CallRouter.class, 5);
+        } catch (OsgiServiceNotAvailableException e) {
+            // does not have to be available
+        }
+        return null;
     }
 
     @Override
