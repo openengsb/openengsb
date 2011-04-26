@@ -21,14 +21,14 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>openengsb-bundle-settings</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0.RC1</version>
     <relativePath>../bundle</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-parent</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0.RC1</version>
 
   <name>OpenEngSB :: Connector :: Parent</name>
 
