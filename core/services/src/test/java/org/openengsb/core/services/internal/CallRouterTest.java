@@ -55,7 +55,7 @@ import org.osgi.framework.BundleContext;
 
 public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
-    private CallRouterImpl callrouter;
+    private CallRouter callrouter;
     private RequestHandlerImpl requestHandler;
     private TestService serviceMock;
     private OutgoingPort outgoingPortMock;
@@ -65,7 +65,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     public void setUp() throws Exception {
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
-        callrouter = new CallRouterImpl();
+        callrouter = new CallRouter();
         requestHandler = new RequestHandlerImpl();
     }
 

@@ -25,11 +25,9 @@ import java.util.Map;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class ProxyServiceFactory implements ConnectorInstanceFactory {
 
-    private CallRouter router = OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(CallRouter.class);
     private DomainProvider domainProvider;
     private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
 
@@ -60,14 +58,10 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
         updateHandlerAttributes(handler, attributes);
     }
 
-    public void setRouter(CallRouter router) {
-        this.router = router;
-    }
-
     @Override
     public Domain createNewInstance(String id) {
         ProxyConnector handler = new ProxyConnector(id);
-        handler.setCallRouter(router);
+        handler.setCallRouter(new CallRouter());
         Domain newProxyInstance =
             (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ domainProvider.getDomainInterface(), },
