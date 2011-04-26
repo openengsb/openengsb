@@ -35,15 +35,42 @@ public class MethodCall {
     private String methodName;
     private Object[] args;
     private Map<String, String> metaData;
-
-    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
-        this.methodName = methodName;
-        this.args = args;
-        this.metaData = metaData;
-    }
+    private String callId;
+    private boolean answer;
+    private List<String> classes;
 
     public MethodCall() {
         metaData = new HashMap<String, String>();
+    }
+
+    public MethodCall(String methodName, Object[] args, Map<String, String> metaData, String callId, boolean answer,
+            List<String> classes) {
+        this.methodName = methodName;
+        this.args = args;
+        this.metaData = metaData;
+        this.callId = callId;
+        this.answer = answer;
+        this.classes = classes;
+    }
+
+    public String getCallId() {
+        return callId;
+    }
+
+    public void setCallId(String callId) {
+        this.callId = callId;
+    }
+
+    public boolean isAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(boolean answer) {
+        this.answer = answer;
+    }
+
+    public void setClasses(List<String> classes) {
+        this.classes = classes;
     }
 
     public String getMethodName() {
@@ -73,7 +100,15 @@ public class MethodCall {
         this.metaData = metaData;
     }
 
+
     public List<String> getClasses() {
+        if (classes == null) {
+            return getRealClassImplementation();
+        }
+        return classes;
+    }
+
+    public List<String> getRealClassImplementation() {
         List<String> argsClasses = new ArrayList<String>();
         if (getArgs() != null) {
             for (Object object : getArgs()) {

@@ -28,27 +28,12 @@ import org.openengsb.core.api.remote.MethodReturn;
 
 public class ReturnMapping extends MethodReturn {
 
-    private String className;
-
     public ReturnMapping() {
         super();
     }
 
     public ReturnMapping(MethodReturn superType) {
-        super(superType.getType(), superType.getArg(), superType.getMetaData());
-        if (superType instanceof ReturnMapping) {
-            ReturnMapping real = (ReturnMapping) superType;
-            className = real.className;
-        }
-    }
-
-    @Override
-    public final String getClassName() {
-        return className;
-    }
-
-    public final void setClassName(String className) {
-        this.className = className;
+        super(superType.getType(), superType.getArg(), superType.getMetaData(), superType.getCallId());
     }
 
     public String convertToMessage() throws IOException {

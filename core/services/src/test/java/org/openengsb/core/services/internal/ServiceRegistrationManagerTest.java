@@ -68,7 +68,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registerMockedFactory();
         callrouter = mock(CallRouter.class);
         when(callrouter.callSync(anyString(), anyString(), any(MethodCall.class))).thenReturn(
-            new MethodReturn(ReturnType.Void, null, null));
+            new MethodReturn(ReturnType.Void, null, null, "213"));
         registerService(callrouter, new Hashtable<String, Object>(), CallRouter.class);
         ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
