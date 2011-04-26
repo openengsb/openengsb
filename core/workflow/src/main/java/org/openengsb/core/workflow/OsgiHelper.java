@@ -19,6 +19,7 @@ package org.openengsb.core.workflow;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.context.ContextCurrentService;
@@ -44,7 +45,8 @@ public final class OsgiHelper {
         } catch (OsgiServiceNotAvailableException e1) {
             throw new PortNotAvailableException("Port with id " + portId + " not available", e1);
         }
-        MethodCall call = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
+        MethodCall call =
+            new MethodCall("processRemoteEvent", new Object[]{ e }, metaData, UUID.randomUUID().toString(), true, null);
         port.send(destination, call);
     }
 

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.CallRouter;
@@ -63,7 +64,8 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
             return method.invoke(this, args);
         }
         MethodReturn callSync =
-            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata));
+            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata, UUID.randomUUID()
+                .toString(), true, null));
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();

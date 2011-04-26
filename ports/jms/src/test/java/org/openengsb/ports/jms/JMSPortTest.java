@@ -18,7 +18,6 @@
 package org.openengsb.ports.jms;
 
 import static junit.framework.Assert.assertNotNull;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -27,6 +26,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.jms.ConnectionFactory;
@@ -89,8 +89,8 @@ public class JMSPortTest {
         handler = Mockito.mock(RequestHandler.class);
         metaData = new HashMap<String, String>();
         metaData.put("test", "test");
-        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData);
-        methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData);
+        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData, "123", true, null);
+        methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123");
     }
 
     @Test
@@ -131,9 +131,10 @@ public class JMSPortTest {
 
     private void assertMethodReturn(MethodReturn sendSync) {
         MatcherAssert.assertThat(sendSync.getType(), Matchers.equalTo(ReturnType.Object));
-        Assert.assertTrue(sendSync.getArg() instanceof TestClass);
-        TestClass test = (TestClass) sendSync.getArg();
-        MatcherAssert.assertThat(test.getTest(), Matchers.equalTo("test"));
+        Assert.assertTrue(sendSync.getArg() instanceof HashMap);
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, String> test = (LinkedHashMap<String, String>) sendSync.getArg();
+        MatcherAssert.assertThat(test.get("test"), Matchers.equalTo("test"));
         MatcherAssert.assertThat(sendSync.getMetaData().size(), Matchers.equalTo(1));
         MatcherAssert.assertThat(sendSync.getMetaData().get("test"), Matchers.equalTo("test"));
     }
@@ -160,7 +161,7 @@ public class JMSPortTest {
 
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
         Mockito.when(handler.handleCall(captor.capture())).thenReturn(
-            new MethodReturn(ReturnType.Object, new TestClass("test"), metaData));
+            new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123"));
         new JmsTemplate(cf).convertAndSend("receive", sendTextWithReturn);
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
         JsonNode readTree = new ObjectMapper().readTree(receiveAndConvert);

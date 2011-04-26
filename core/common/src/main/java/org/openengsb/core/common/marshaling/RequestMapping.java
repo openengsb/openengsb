@@ -32,54 +32,12 @@ import org.openengsb.core.api.remote.MethodCall;
 
 public class RequestMapping extends MethodCall {
 
-    private String callId;
-
-    private boolean answer;
-
-    private List<String> classes;
-
-    @Override
-    public final List<String> getClasses() {
-        if (classes == null) {
-            return super.getClasses();
-        } else {
-            return classes;
-        }
-    }
-
-    public final void setClasses(List<String> classes) {
-        this.classes = classes;
-    }
-
     public RequestMapping() {
     }
 
     public RequestMapping(MethodCall call) {
-        setArgs(call.getArgs());
-        setMetaData(call.getMetaData());
-        setMethodName(call.getMethodName());
-        if (call instanceof RequestMapping) {
-            RequestMapping real = (RequestMapping) call;
-            callId = real.callId;
-            answer = real.answer;
-            classes = real.classes;
-        }
-    }
-
-    public final String getCallId() {
-        return callId;
-    }
-
-    public final void setCallId(String callId) {
-        this.callId = callId;
-    }
-
-    public final boolean isAnswer() {
-        return answer;
-    }
-
-    public final void setAnswer(boolean answer) {
-        this.answer = answer;
+        super(call.getMethodName(), call.getArgs(), call.getMetaData(), call.getCallId(), call.isAnswer(), call
+            .getClasses());
     }
 
     /**

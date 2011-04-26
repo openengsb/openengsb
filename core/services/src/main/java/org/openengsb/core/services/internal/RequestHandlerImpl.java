@@ -39,7 +39,15 @@ public class RequestHandlerImpl implements RequestHandler {
         Object service = retrieveOpenEngSBService(call);
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
-        return invokeMethod(service, method, args);
+        MethodReturn returnTemplate = createReturnTemplate(call);
+        return invokeMethod(service, method, args, returnTemplate);
+    }
+
+    private MethodReturn createReturnTemplate(MethodCall call) {
+        MethodReturn returnTemplate = new MethodReturn();
+        returnTemplate.setCallId(call.getCallId());
+        returnTemplate.setMetaData(call.getMetaData());
+        return returnTemplate;
     }
 
     private Object retrieveOpenEngSBService(MethodCall call) {
@@ -64,24 +72,23 @@ public class RequestHandlerImpl implements RequestHandler {
         }
     }
 
-    private MethodReturn invokeMethod(Object service, Method method, Object[] args) {
-        MethodReturn resultContainer = new MethodReturn();
+    private MethodReturn invokeMethod(Object service, Method method, Object[] args, MethodReturn returnTemplate) {
         try {
             Object result = method.invoke(service, args);
             if (method.getReturnType().getName().equals("void")) {
-                resultContainer.setType(ReturnType.Void);
+                returnTemplate.setType(ReturnType.Void);
             } else {
-                resultContainer.setType(ReturnType.Object);
-                resultContainer.setArg(result);
+                returnTemplate.setType(ReturnType.Object);
+                returnTemplate.setArg(result);
             }
         } catch (InvocationTargetException e) {
-            resultContainer.setType(ReturnType.Exception);
-            resultContainer.setArg(e.getCause());
+            returnTemplate.setType(ReturnType.Exception);
+            returnTemplate.setArg(e.getCause());
         } catch (IllegalAccessException e) {
-            resultContainer.setType(ReturnType.Exception);
-            resultContainer.setArg(e);
+            returnTemplate.setType(ReturnType.Exception);
+            returnTemplate.setArg(e);
         }
-        return resultContainer;
+        return returnTemplate;
     }
 
     private Method findMethod(Object service, String methodName, Class<?>[] argTypes) {
