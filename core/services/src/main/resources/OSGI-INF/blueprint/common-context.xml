@@ -50,6 +50,7 @@
 
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="serviceUtils" ref="serviceUtils" />
   </bean>
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
