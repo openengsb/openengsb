@@ -19,6 +19,8 @@ package org.openengsb.core.services.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.remote.MethodCall;
@@ -36,7 +38,7 @@ public class RequestHandlerImpl implements RequestHandler {
     public MethodReturn handleCall(MethodCall call) {
         Object service = retrieveOpenEngSBService(call);
         Object[] args = call.getArgs();
-        Method method = findMethod(service, call.getMethodName(), getArgTypes(args));
+        Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
         return invokeMethod(service, method, args);
     }
 
@@ -92,12 +94,16 @@ public class RequestHandlerImpl implements RequestHandler {
         return method;
     }
 
-    private Class<?>[] getArgTypes(Object[] args) {
-        Class<?>[] result = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
-            result[i] = args[i].getClass();
+    private Class<?>[] getArgTypes(MethodCall args) {
+        List<Class<?>> clazzes = new ArrayList<Class<?>>();
+        for (String clazz : args.getClasses()) {
+            try {
+                clazzes.add(Thread.currentThread().getContextClassLoader().loadClass(clazz));
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("The classes defined could not be found", e);
+            }
         }
-        return result;
+        return clazzes.toArray(new Class<?>[0]);
     }
 
 }
