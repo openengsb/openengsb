@@ -74,6 +74,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("serviceUtils", serviceUtilsService);
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
+        registrationManager.setServiceUtils(serviceUtils);
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 

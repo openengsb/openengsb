@@ -21,15 +21,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
+import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
-public class CallRouter {
+public class DefaultCallRouter implements CallRouter {
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
+    @Override
     public void call(String portId, final String destination, final MethodCall call) {
         final OutgoingPort port;
         port = getPort(portId);
@@ -42,6 +44,7 @@ public class CallRouter {
         executor.execute(callHandler);
     }
 
+    @Override
     public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
         OutgoingPort port;
         port = getPort(portId);
@@ -54,6 +57,7 @@ public class CallRouter {
         return port;
     }
 
+    @Override
     public void stop() {
         executor.shutdownNow();
     }

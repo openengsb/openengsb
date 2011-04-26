@@ -52,7 +52,7 @@ public class DefaultPortReceiver implements PortReceiver {
             return answer;
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
