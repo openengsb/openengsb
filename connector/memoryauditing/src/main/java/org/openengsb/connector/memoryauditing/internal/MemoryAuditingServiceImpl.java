@@ -51,9 +51,4 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implemen
         return Collections.unmodifiableList(messages);
     }
 
-    @Override
-    public String getInstanceId() {
-        return "auditing";
-    }
-
 }
