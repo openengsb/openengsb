@@ -1,3 +1,40 @@
+openengsb-1.2.0.RC1 2011-04-26
+--------------------------------------------
+
+Stabilized openengsb-1.2.0.M5 version prepared for first final release of openengsb-1.2.0.RELEASE
+
+### Highlights
+  * Remoting fully functional again
+  * Remote connections allowed to amq
+  * Show version name in console
+  * Allow to overwrite call router
+
+### Details
+** Bug
+    * [OPENENGSB-1333] - ConnectorDeployer should not overwrite changes made outside of the files
+    * [OPENENGSB-1344] - ConfigPersistence is retrieved too early if retrieved as instance variable
+    * [OPENENGSB-1346] - ports-ws does not provide a method in the WS
+    * [OPENENGSB-1347] - OpenEngSB does not start ports-ws if ports-jms is started during ui-admin
+    * [OPENENGSB-1360] - Delete and call buttons on testclient page do not get deactivated during execution
+    * [OPENENGSB-1392] - Remote connection to AMQ returns connection refused
+    * [OPENENGSB-1393] - Classpath loading exception with cxf ws json service
+    * [OPENENGSB-1400] - Variables in pom.xml files are not replaced during build/release
+    * [OPENENGSB-1404] - Referencing serviceUtils in bundle exporting it have to be done via blueprint
+    * [OPENENGSB-1406] - CallRouter could not be retrieved
+
+** Improvement
+    * [OPENENGSB-1390] - Documentation howto.remote talks about Rules although processes are meant
+
+** Library Upgrade
+    * [OPENENGSB-1355] - upgrade to openengsb-root-15
+
+** New Feature
+    * [OPENENGSB-1403] - Show openengsb name in karaf console branding
+
+** Task
+    * [OPENENGSB-960] - Document support strategy on hp
+    * [OPENENGSB-1349] - release openengsb-1.2.0.RC1
+
 openengsb-1.2.0.M5 2011-04-21
 --------------------------------------------
 
