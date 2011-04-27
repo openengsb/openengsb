@@ -20,6 +20,7 @@ package org.openengsb.core.services.internal.deployer.connector;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -98,7 +99,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         login();
         try {
             serviceManager.create(configFile.getConnectorId(),
-                new ConnectorDescription(configFile.getAttributes(), properties));
+                new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
         } finally {
             logout();
         }
