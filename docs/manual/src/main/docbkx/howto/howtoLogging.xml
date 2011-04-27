@@ -34,7 +34,7 @@
 
   <section>
     <title>Time to Complete</title>
-    <para>If you are already familiar with setting up services in OpenEngSB about 15 minutes. (see <link xlink:href="./howto_setup.html">HowTo: Setup</link></para>
+    <para>If you are already familiar with setting up services in OpenEngSB about 15 minutes. (see <link xlink:href="#howto.setup">HowTo: Setup</link></para>
   </section>
 
   <section>
@@ -131,7 +131,7 @@
   <section>
     <title>Next Steps</title>
 
-    <para>Now that you've finished the most easy OpenEngSB use case go on with a more complex one: <link xlink:href="./howto_contexteditor.html">Events</link></para>
+    <para>Now that you've finished the most easy OpenEngSB use case go on with a more complex one: <link xlink:href="#howto.contexteditor">Events</link></para>
 
   </section>
 
