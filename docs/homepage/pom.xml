@@ -285,10 +285,6 @@
                <value>true</value>
              </property>
              <property>
-               <name>wrap</name>
-               <value>120</value>
-             </property>
-             <property>
                <name>write-back</name>
                <value>true</value>
              </property>
