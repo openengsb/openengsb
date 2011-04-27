@@ -65,7 +65,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="login" fileref="graphics/setup_login.png" format="png" align="center" />
+        <imagedata id="login" fileref="graphics/setup_login.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>login</caption>
     </mediaobject>
@@ -74,7 +74,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="mainpage" fileref="graphics/setup_mainpage.png" format="png" align="center" />
+        <imagedata id="mainpage" fileref="graphics/setup_mainpage.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>main page</caption>
     </mediaobject>
@@ -89,30 +89,30 @@
 <![CDATA[karaf@root> list
 START LEVEL 100 , List Threshold: 50
    ID   State         Blueprint      Level  Name
-[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2.0)
+[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2
 ...
 [ 116] [Active     ] [            ] [   60] Jackson JSON processor (1.5.3)
 [ 117] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Common (1.2.0.SNAPSHOT)
 [ 118] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Events (1.2.0.SNAPSHOT)
-[ 119] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Persistence Layer (1.2.0.SNAPSHOT)
-[ 120] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Security (1.2.0.SNAPSHOT)
-[ 121] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Workflow Engine (1.2.0.SNAPSHOT)
-[ 122] [Active     ] [Created     ] [   60] OpenEngSB :: Domains :: Auditing :: Implementation (1.2.0.SNAPSHOT)
-[ 123] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: MemoryAuditing (1.2.0.SNAPSHOT)
-[ 124] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Example (1.2.0.SNAPSHOT)
-[ 125] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Example (1.2.0.SNAPSHOT)
-[ 126] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Ports :: JMS (1.2.0.SNAPSHOT)
-[ 127] [Active     ] [Created     ] [   60] OpenEngSB :: User Interface :: Common (1.2.0.SNAPSHOT)
-[ 128] [Active     ] [            ] [   60] OpenEngSB :: User Interface :: Administration (1.2.0.SNAPSHOT)
-[ 129] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Deployer :: Connector (1.2.0.SNAPSHOT)]]>
+[ 119] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Persistence Layer (1.2.0
+[ 120] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Security (1.2.0.SNAPSHOT
+[ 121] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Workflow Engine (1.2.0.S
+[ 122] [Active     ] [Created     ] [   60] OpenEngSB :: Domains :: Auditing :: Implement
+[ 123] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: MemoryAuditing (1.2
+[ 124] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Example (1.2.0.SNAPSHO
+[ 125] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Example (1.2.0.SNAP
+[ 126] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Ports :: JMS (1.2.0.SNAP
+[ 127] [Active     ] [Created     ] [   60] OpenEngSB :: User Interface :: Common (1.2.0.
+[ 128] [Active     ] [            ] [   60] OpenEngSB :: User Interface :: Administration
+[ 129] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Deployer :: Connector (1]]>
     </programlisting>
 
     <para>To find out about all installable features simple type <command>features:install openengsb-connector-TAB</command> while TAB indicates that you hit your tab key. This should present something like:</para>
 
     <programlisting>
 <![CDATA[karaf@root> features:install openengsb-connector-
-openengsb-connector-git               openengsb-connector-jira              openengsb-connector-maven
-openengsb-connector-plaintextreport   openengsb-connector-trac              openengsb-connector-email]]>
+openengsb-connector-git               openengsb-connector-jira              openengsb-con
+openengsb-connector-plaintextreport   openengsb-connector-trac              openengsb-con]]>
     </programlisting>
 
     <para>For the next example we require the openengsb-connector-email feature. Type <command>features:install openengsb-connector-email</command> and validate the result by entering "list" again:</para>
@@ -123,24 +123,24 @@ karaf@root> features:install openengsb-connector-email
 karaf@root> list
 START LEVEL 100 , List Threshold: 50
    ID   State         Blueprint      Level  Name
-[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2.0)
+[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2
 ...
 [ 117] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Common (1.2.0.SNAPSHOT)
 [ 118] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Events (1.2.0.SNAPSHOT)
-[ 119] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Persistence Layer (1.2.0.SNAPSHOT)
-[ 120] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Security (1.2.0.SNAPSHOT)
-[ 121] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Workflow Engine (1.2.0.SNAPSHOT)
-[ 122] [Active     ] [Created     ] [   60] OpenEngSB :: Domains :: Auditing :: Implementation (1.2.0.SNAPSHO
-[ 123] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: MemoryAuditing (1.2.0.SNAPSHOT)
-[ 124] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Example (1.2.0.SNAPSHOT)
-[ 125] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Example (1.2.0.SNAPSHOT)
-[ 126] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Ports :: JMS (1.2.0.SNAPSHOT)
-[ 127] [Active     ] [Created     ] [   60] OpenEngSB :: User Interface :: Common (1.2.0.SNAPSHOT)
-[ 128] [Active     ] [            ] [   60] OpenEngSB :: User Interface :: Administration (1.2.0.SNAPSHOT)
-[ 129] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Deployer :: Connector (1.2.0.SNAPSHOT)
-[ 130] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Notification (1.2.0.SNAPSHOT)
-[ 131] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Email (1.2.0.SNAPSHOT)
-[ 132] [Active     ] [            ] [   60] Apache ServiceMix :: Bundles :: mail (1.4.1.3)]]>
+[ 119] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Persistence Layer (1.2.0
+[ 120] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Security (1.2.0.SNAPSHOT
+[ 121] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Workflow Engine (1.2.0.S
+[ 122] [Active     ] [Created     ] [   60] OpenEngSB :: Domains :: Auditing :: Implement
+[ 123] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: MemoryAuditing (1.2
+[ 124] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Example (1.2.0.SNAPSHO
+[ 125] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Example (1.2.0.SNAP
+[ 126] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Ports :: JMS (1.2.0.SNAP
+[ 127] [Active     ] [Created     ] [   60] OpenEngSB :: User Interface :: Common (1.2.0.
+[ 128] [Active     ] [            ] [   60] OpenEngSB :: User Interface :: Administration
+[ 129] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Deployer :: Connector (1
+[ 130] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Notification (1.2.0.SN
+[ 131] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Email (1.2.0.SNAPSH
+[ 132] [Active     ] [            ] [   60] Apache ServiceMix :: Bundles :: mail (1.4.1.3]]>
     </programlisting>
 
   </section>
