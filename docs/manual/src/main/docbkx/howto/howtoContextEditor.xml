@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.contexteditor" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Events with the OpenEngSB (Using the logging service)</title>
+
+
+  <section>
+    <title>Goal</title>
+      <para>This tutorial shows how the event system in the OpenEngSB can be used. Therefore a log and a domain connector are created and configured. The context system in the OpenEngSB is used to define which connectors should be used and a simple event is used starting a rule.</para>
+  </section>
+
+  <section>
+    <title>Time to Complete</title>
+    <para>If you are already familiar with using services in OpenEngSB about 30 minutes. (see <link xlink:href="./howto_logging.html">HowTo: First steps</link></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>This HowTo assumes you are already familiar with using and configuring services in OpenEngSB.</para>
+  </section>
+
+  <section>
+    <title>Create required connectors</title>
+
+    <para>Now one logging service and one email service should be created. Create one notification service as described in the <link xlink:href="./howto_logging.html">previous example</link>. Please name it "notification" instead of test1 or test2. Now create a logging service:</para>
+  
+    <mediaobject>
+      <imageobject>
+        <imagedata id="loggingservice" fileref="graphics/context_loggingService.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>logging service</caption>
+    </mediaobject>
+
+  </section>
+
+  <section>
+    <title>Configure</title>
+
+    <para>Go to the "Context" page and configure the domains to use the connectors created:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="contextoverview" fileref="graphics/context_contextOverview.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>context overview</caption>
+    </mediaobject>
+
+  </section>
+
+  <section>
+    <title>Creating a rule</title>
+
+    <para>On the "Send Event Page" you can create and edit Rules. Therefore they have to be edited directly with a text editor. The initial system is empty and does not include any rules. To create a rule choose "new". Enter "hello1" into the rulename input field. Make also sure that "Rule" is selected in the type dropdown box.</para>
+
+    <para>As soon as you edit the content of the rule you can save your changes by clicking "save" or revert the changes by clicking "cancel". The name of the rule will automatically be prefixed with "org.openengsb". Please insert the following content into the text box and save the changes:</para>
+  
+    <programlisting>
+<![CDATA[#
+# My notification rule
+#
+# Sends "Hello World" notification to test recipient.
+#
+
+when
+	Event(name == "42")
+then
+	example.doSomething("Hello World");
+	Notification n = new Notification();
+	n.setSubject("testsubject");
+	n.setMessage("testMessage");
+	n.setRecipient("testRecipient");
+	notification.notify(n);]]>
+    </programlisting>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="event" fileref="graphics/context_event.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>event</caption>
+    </mediaobject>
+
+    <para>Basically this rule reacts on all events (when clause). "log" is a helper class using the default log connector of the log domain to write information to a log file. Notification uses the default notification connector to inform a person. More details about this topic can be found in the user documentation at rules, domains and connectors.</para>
+  
+    <para>To run a test the n.setRecipient property should be changed to a (e.g.) your email address.</para>
+
+  </section>
+
+  <section>
+    <title>Throw Event</title>
+
+    <para>Now we can throw an event and see if the rules work correctly. Stay on the "Send Event Page" enter for the contextId field "foo" and press send:</para>
+
+    <para>foo represents the name of the project. For a detailed description about projects and the context see the user documentation. You've should received a email via the rule to the email address configured previously). In addition using the "log:display" command in the OpenEngSB console should present (anywhere in the long log) a logging entry similar to the following (you have to search for the output of the LogService. The other fields can change):</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="output" fileref="graphics/context_loggingOutput.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>output</caption>
+    </mediaobject>
+
+  </section>
+
+  <section>
+    <title>Next Steps</title>
+
+    <para>Congratulation. You've gained basic knowledge about the OpenEngSB and its functionality. Nevertheless, you've just touched the surface. As a next step it is recommended continue with further tutorials user manual and start exploring the world of the OpenEngSB.</para>
+
+  </section>
+
+</chapter>
+
