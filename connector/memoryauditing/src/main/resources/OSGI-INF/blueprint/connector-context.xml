@@ -29,7 +29,8 @@
       <value>org.openengsb.domain.auditing.AuditingDomain</value>
     </interfaces>
     <service-properties>
-      <entry key="id" value="auditing-root" />
+      <entry key="id" value="auditing+memoryauditing+auditing-root" />
+      <entry key="domain" value="auditing" />
       <entry key="connector" value="memoryauditing" />
       <entry key="location.root">
         <array>
