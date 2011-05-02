@@ -30,7 +30,7 @@ public class MessageVerifier {
         checkForReplayedMessage(request);
     }
 
-    private void checkForReplayedMessage(SecureRequest request) {
+    private void checkForReplayedMessage(SecureRequest request) throws MessageVerificationFailedException {
         AuthenticationInfo authenticationInfo = request.retrieveAuthenticationInfo();
         synchronized (lastMessageTimestamp) {
             if (lastMessageTimestamp.get(authenticationInfo) >= request.getTimestamp()) {
@@ -42,14 +42,14 @@ public class MessageVerifier {
         }
     }
 
-    private void verifyCheckSum(SecureRequest request) {
+    private void verifyCheckSum(SecureRequest request) throws MessageVerificationFailedException {
         if (!ArrayUtils.isEquals(request.calcChecksum(), request.getVerification())) {
             throw new MessageVerificationFailedException(
                 "checksum verification failed. The message might have been altered.");
         }
     }
 
-    private void checkOverallAgeOfRequest(SecureRequest request) {
+    private void checkOverallAgeOfRequest(SecureRequest request) throws MessageVerificationFailedException {
         long current = System.currentTimeMillis();
         if (request.getTimestamp() + timeout < current) {
             throw new MessageVerificationFailedException("Message timestamp is too old.");

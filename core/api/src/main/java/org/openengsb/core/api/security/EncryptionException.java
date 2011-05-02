@@ -18,7 +18,7 @@
 package org.openengsb.core.api.security;
 
 @SuppressWarnings("serial")
-public class EncryptionException extends Exception {
+public class EncryptionException extends OpenEngSBSecurityException {
 
     public EncryptionException() {
     }

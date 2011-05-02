@@ -27,6 +27,7 @@ import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.MarshalException;
 import org.openengsb.core.api.security.MessageCryptoUtil;
+import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -47,7 +48,8 @@ public abstract class SecureRequestHandler<EncodingType> {
 
     public abstract EncodingType marshalResponse(SecureResponse response) throws MarshalException;
 
-    public EncodingType handleRequest(EncodingType containerMessage) throws DecryptionException, EncryptionException {
+    public EncodingType handleRequest(EncodingType containerMessage) throws DecryptionException, EncryptionException,
+        MessageVerificationFailedException {
         EncryptedMessage<EncodingType> container = unmarshalContainer(containerMessage);
 
         EncodingType encryptedKey = container.getEncryptedKey();

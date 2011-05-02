@@ -18,7 +18,7 @@
 package org.openengsb.core.api.security;
 
 @SuppressWarnings("serial")
-public class MessageVerificationFailedException extends RuntimeException {
+public class MessageVerificationFailedException extends OpenEngSBSecurityException {
 
     public MessageVerificationFailedException() {
         super();
