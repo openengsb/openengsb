@@ -25,6 +25,9 @@ public class EncryptedMessage<EncodingType> implements Serializable {
     private EncodingType encryptedContent;
     private EncodingType encryptedKey;
 
+    public EncryptedMessage() {
+    }
+
     public EncryptedMessage(EncodingType encryptedContent, EncodingType encryptedKey) {
         this.encryptedContent = encryptedContent;
         this.encryptedKey = encryptedKey;

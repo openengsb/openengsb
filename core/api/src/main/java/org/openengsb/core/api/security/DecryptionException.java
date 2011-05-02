@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.api.security;
 
 @SuppressWarnings("serial")
-public class MarshallingException extends RuntimeException {
+public class DecryptionException extends Exception {
 
-    public MarshallingException() {
-        super();
+    public DecryptionException() {
     }
 
-    public MarshallingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MarshallingException(String message) {
+    public DecryptionException(String message) {
         super(message);
     }
 
-    public MarshallingException(Throwable cause) {
+    public DecryptionException(Throwable cause) {
         super(cause);
+    }
+
+    public DecryptionException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

@@ -23,10 +23,11 @@ import javax.crypto.SecretKey;
 
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.DecryptionException;
+import org.openengsb.core.api.security.EncryptionException;
+import org.openengsb.core.api.security.MarshalException;
 import org.openengsb.core.api.security.MessageCryptoUtil;
-import org.openengsb.core.api.security.model.DecryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
-import org.openengsb.core.api.security.model.EncryptionException;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,11 +39,11 @@ public abstract class SecureRequestHandler<EncodingType> {
     private PrivateKey privateKey;
     private AuthenticationManager authManager;
 
-    public abstract SecureRequest unmarshalRequest(EncodingType decrypt);
+    public abstract SecureRequest unmarshalRequest(EncodingType decrypt) throws MarshalException;
 
-    public abstract EncryptedMessage<EncodingType> unmarshalContainer(EncodingType container);
+    public abstract EncryptedMessage<EncodingType> unmarshalContainer(EncodingType container) throws MarshalException;
 
-    public abstract EncodingType marshalResponse(SecureResponse response);
+    public abstract EncodingType marshalResponse(SecureResponse response) throws MarshalException;
 
     public EncodingType handleRequest(EncodingType containerMessage) {
         EncryptedMessage<EncodingType> container = unmarshalContainer(containerMessage);

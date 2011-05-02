@@ -17,31 +17,32 @@
 
 package org.openengsb.core.api.security.model;
 
+import java.util.Map;
+
 import org.openengsb.core.api.remote.MethodCall;
-import org.springframework.security.core.Authentication;
 
 public class SecureRequest extends AbstractSecureMessage<MethodCall> {
 
     private static final long serialVersionUID = -2350090113804167120L;
 
-    private Authentication authentiation;
+    private Map<String, byte[]> authentiationData;
 
-    public Authentication getAuthentiation() {
-        return this.authentiation;
-    }
-
-    public void setAuthentiation(Authentication authentiation) {
-        this.authentiation = authentiation;
-    }
-
-    public static SecureRequest create(MethodCall original, Authentication auth) {
+    public static SecureRequest create(MethodCall original, Map<String, byte[]> auth) {
         SecureRequest secureRequest = new SecureRequest();
         secureRequest.setMessage(original);
         long time = System.currentTimeMillis();
         secureRequest.setTimestamp(time);
-        secureRequest.setAuthentiation(auth);
+        secureRequest.setAuthentiationData(auth);
         secureRequest.setVerification();
         return secureRequest;
+    }
+
+    public void setAuthentiationData(Map<String, byte[]> authentiationData) {
+        this.authentiationData = authentiationData;
+    }
+
+    public Map<String, byte[]> getAuthentiationData() {
+        return authentiationData;
     }
 
     protected SecureRequest() {

@@ -59,9 +59,10 @@ public class SecureBinaryPortTest extends GenericSecurePortTest<byte[]> {
         return SerializationUtils.serialize((Serializable) o);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected Object decode(byte[] encoded) {
-        return SerializationUtils.deserialize(encoded);
+    protected <T> T decode(byte[] encoded, Class<T> objectClass) {
+        return (T) SerializationUtils.deserialize(encoded);
     }
 
 }

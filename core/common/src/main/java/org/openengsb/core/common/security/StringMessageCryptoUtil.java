@@ -24,10 +24,18 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
-import org.openengsb.core.api.security.model.DecryptionException;
-import org.openengsb.core.api.security.model.EncryptionException;
+import org.openengsb.core.api.security.DecryptionException;
+import org.openengsb.core.api.security.EncryptionException;
 
 public class StringMessageCryptoUtil extends AbstractMessageCryptUtil<String> {
+
+    public StringMessageCryptoUtil() {
+    }
+
+    public StringMessageCryptoUtil(AlgorithmConfig config) {
+        super(config);
+    }
+
     @Override
     public String decrypt(String encContent, SecretKey sessionKey) throws DecryptionException {
         byte[] content = Base64.decodeBase64(encContent);

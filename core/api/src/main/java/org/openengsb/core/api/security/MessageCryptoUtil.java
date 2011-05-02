@@ -22,8 +22,6 @@ import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
-import org.openengsb.core.api.security.model.DecryptionException;
-import org.openengsb.core.api.security.model.EncryptionException;
 
 public interface MessageCryptoUtil<EncodingType> {
 

@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security.model;
+package org.openengsb.core.api.security;
 
 @SuppressWarnings("serial")
-public class EncryptionException extends Exception {
+public class MarshalException extends RuntimeException {
 
-    public EncryptionException() {
+    public MarshalException() {
+        super();
     }
 
-    public EncryptionException(String message) {
+    public MarshalException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MarshalException(String message) {
         super(message);
     }
 
-    public EncryptionException(Throwable cause) {
+    public MarshalException(Throwable cause) {
         super(cause);
-    }
-
-    public EncryptionException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }

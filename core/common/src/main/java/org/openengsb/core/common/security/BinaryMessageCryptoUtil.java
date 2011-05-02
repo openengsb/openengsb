@@ -22,8 +22,8 @@ import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
-import org.openengsb.core.api.security.model.DecryptionException;
-import org.openengsb.core.api.security.model.EncryptionException;
+import org.openengsb.core.api.security.DecryptionException;
+import org.openengsb.core.api.security.EncryptionException;
 
 public class BinaryMessageCryptoUtil extends AbstractMessageCryptUtil<byte[]> {
 

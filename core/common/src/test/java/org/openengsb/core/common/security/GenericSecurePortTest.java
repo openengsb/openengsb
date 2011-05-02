@@ -92,13 +92,13 @@ public abstract class GenericSecurePortTest<EncodingType> {
         setupRequestHandler();
     }
 
-    protected abstract MessageCryptoUtil<EncodingType> getMessageCryptoUtil();
+    protected abstract MessageCryptoUtil<EncodingType> getMessageCryptoUtil() throws Exception;
 
-    protected abstract SecureRequestHandler<EncodingType> getSecureRequestHandler();
+    protected abstract SecureRequestHandler<EncodingType> getSecureRequestHandler() throws Exception;
 
-    protected abstract EncodingType encode(Object o);
+    protected abstract EncodingType encode(Object o) throws Exception;
 
-    protected abstract Object decode(EncodingType encoded);
+    protected abstract <T> T decode(EncodingType encoded, Class<T> objectClass) throws Exception;
 
     @Test
     public void testDefaultImpls() throws Exception {
@@ -116,7 +116,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         EncodingType encodedResponse = secureRequestHandler.handleRequest(encode(encryptedMessage));
         EncodingType decryptedResponse = cryptoUtil.decrypt(encodedResponse, sessionKey);
 
-        SecureResponse secureResponse = (SecureResponse) decode(decryptedResponse);
+        SecureResponse secureResponse = decode(decryptedResponse, SecureResponse.class);
         secureResponse.verify();
         MethodResult mr = secureResponse.getMessage();
         assertThat((Long) mr.getArg(), is(new Long(43)));
@@ -171,7 +171,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         secureRequestHandler.handleRequest(encode(encryptedMessage));
     }
 
-    private void setupRequestHandler() {
+    private void setupRequestHandler() throws Exception {
         secureRequestHandler = getSecureRequestHandler();
         secureRequestHandler.setCryptUtil(cryptoUtil);
         secureRequestHandler.setPrivateKey(serverPrivateKey);

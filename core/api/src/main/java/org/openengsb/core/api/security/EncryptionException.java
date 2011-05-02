@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security.model;
+package org.openengsb.core.api.security;
 
 @SuppressWarnings("serial")
-public class DecryptionException extends Exception {
+public class EncryptionException extends Exception {
 
-    public DecryptionException() {
+    public EncryptionException() {
     }
 
-    public DecryptionException(String message) {
+    public EncryptionException(String message) {
         super(message);
     }
 
-    public DecryptionException(Throwable cause) {
+    public EncryptionException(Throwable cause) {
         super(cause);
     }
 
-    public DecryptionException(String message, Throwable cause) {
+    public EncryptionException(String message, Throwable cause) {
         super(message, cause);
     }
 
