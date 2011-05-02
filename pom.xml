@@ -279,13 +279,6 @@
         <version>1.3.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
-      <dependency>
-        <groupId>org.openengsb.wrapped</groupId>
-        <artifactId>net.sourceforge.htmlunit-all</artifactId>
-        <version>${htmlunit.wrapped.version}</version>
-        <scope>test</scope>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 
