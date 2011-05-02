@@ -232,15 +232,15 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
-                    editButton.setEnabled(false);
-                    deleteButton.setEnabled(false);
-                    submitButton.setEnabled(false);
-                    target.addComponent(editButton);
-                    target.addComponent(deleteButton);
-                    target.addComponent(submitButton);
-                    return;
-                }
+                // if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                // editButton.setEnabled(false);
+                // deleteButton.setEnabled(false);
+                // submitButton.setEnabled(false);
+                // target.addComponent(editButton);
+                // target.addComponent(deleteButton);
+                // target.addComponent(submitButton);
+                // return;
+                // }
                 call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
                 target.addComponent(methodList);
@@ -412,17 +412,10 @@ public class TestClient extends BasePage {
         ServiceId domainProviderServiceId = new ServiceId();
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
-        domainProviderServiceId.setDomainName(providerName);
-        if (domainProviderServiceId.getServiceId() == null) {
-            String endPointReference =
-                String.format("%s (%s)", domainProviderServiceId.getDomainName(),
-                    domainProviderServiceId.getServiceClass());
-            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(endPointReference, false);
-            providerNode.add(endPointReferenceNode);
-        } else {
-            DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
-            providerNode.add(endPointReferenceNode);
-        }
+        domainProviderServiceId.setDomainName(provider.getId());
+
+        DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
+        providerNode.add(endPointReferenceNode);
 
         // add all corresponding services
         List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
@@ -455,8 +448,6 @@ public class TestClient extends BasePage {
         }
         try {
             m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
-        } catch (SecurityException e) {
-            throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }

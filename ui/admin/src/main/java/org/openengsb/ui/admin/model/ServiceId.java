@@ -40,7 +40,7 @@ public class ServiceId implements Serializable {
     }
 
     public String getServiceClass() {
-        return this.serviceClass;
+        return serviceClass;
     }
 
     public void setServiceClass(String serviceClass) {
@@ -48,7 +48,7 @@ public class ServiceId implements Serializable {
     }
 
     public String getServiceId() {
-        return this.serviceId;
+        return serviceId;
     }
 
     public void setServiceId(String serviceId) {
@@ -56,7 +56,7 @@ public class ServiceId implements Serializable {
     }
 
     public String getDomainName() {
-        return this.domainName;
+        return domainName;
     }
 
     public void setDomainName(String domainName) {
@@ -65,6 +65,9 @@ public class ServiceId implements Serializable {
 
     @Override
     public String toString() {
+        if (serviceId == null) {
+            return String.format("Default-Domain-Service for %s", serviceClass);
+        }
         return String.format("%s (%s)", serviceId, serviceClass);
     }
 
@@ -72,9 +75,9 @@ public class ServiceId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.domainName == null) ? 0 : this.domainName.hashCode());
-        result = prime * result + ((this.serviceClass == null) ? 0 : this.serviceClass.hashCode());
-        result = prime * result + ((this.serviceId == null) ? 0 : this.serviceId.hashCode());
+        result = prime * result + ((domainName == null) ? 0 : domainName.hashCode());
+        result = prime * result + ((serviceClass == null) ? 0 : serviceClass.hashCode());
+        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
         return result;
     }
 
@@ -90,25 +93,25 @@ public class ServiceId implements Serializable {
             return false;
         }
         ServiceId other = (ServiceId) obj;
-        if (this.domainName == null) {
+        if (domainName == null) {
             if (other.domainName != null) {
                 return false;
             }
-        } else if (!this.domainName.equals(other.domainName)) {
+        } else if (!domainName.equals(other.domainName)) {
             return false;
         }
-        if (this.serviceClass == null) {
+        if (serviceClass == null) {
             if (other.serviceClass != null) {
                 return false;
             }
-        } else if (!this.serviceClass.equals(other.serviceClass)) {
+        } else if (!serviceClass.equals(other.serviceClass)) {
             return false;
         }
-        if (this.serviceId == null) {
+        if (serviceId == null) {
             if (other.serviceId != null) {
                 return false;
             }
-        } else if (!this.serviceId.equals(other.serviceId)) {
+        } else if (!serviceId.equals(other.serviceId)) {
             return false;
         }
         return true;
