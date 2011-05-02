@@ -24,28 +24,28 @@ public class SecureRequest extends AbstractSecureMessage<MethodCall> {
 
     private static final long serialVersionUID = -2350090113804167120L;
 
-    private BeanDescription authentiationData;
+    private BeanDescription authenticationData;
 
     public static SecureRequest create(MethodCall original, BeanDescription auth) {
         SecureRequest secureRequest = new SecureRequest();
         secureRequest.setMessage(original);
         long time = System.currentTimeMillis();
         secureRequest.setTimestamp(time);
-        secureRequest.setAuthentiationData(auth);
+        secureRequest.setAuthenticationData(auth);
         secureRequest.setVerification();
         return secureRequest;
     }
 
-    public void setAuthentiationData(BeanDescription authentiationData) {
-        this.authentiationData = authentiationData;
+    public void setAuthenticationData(BeanDescription authentiationData) {
+        this.authenticationData = authentiationData;
     }
 
-    public BeanDescription getAuthentiationData() {
-        return authentiationData;
+    public BeanDescription getAuthenticationData() {
+        return authenticationData;
     }
 
     public AuthenticationInfo retrieveAuthenticationInfo() {
-        return authentiationData.toObject(AuthenticationInfo.class);
+        return authenticationData.toObject(AuthenticationInfo.class);
     }
 
     protected SecureRequest() {

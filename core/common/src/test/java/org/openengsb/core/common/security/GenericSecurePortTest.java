@@ -90,7 +90,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
         KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
         serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
-
         setupRequestHandler();
     }
 
@@ -119,7 +118,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
         EncodingType decryptedResponse = cryptoUtil.decrypt(encodedResponse, sessionKey);
 
         SecureResponse secureResponse = decode(decryptedResponse, SecureResponse.class);
-        secureResponse.verify();
         MethodResult mr = secureResponse.getMessage();
         assertThat((Long) mr.getArg(), is(new Long(43)));
     }
@@ -173,11 +171,29 @@ public abstract class GenericSecurePortTest<EncodingType> {
         secureRequestHandler.handleRequest(encode(encryptedMessage));
     }
 
+    @Test
+    public void testReplayMessage_shouldBeRejected() throws Exception {
+        SecureRequest secureRequest = prepareSecureRequest();
+
+        SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
+
+        EncodingType serializedRequest = encode(secureRequest);
+        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
+
+        EncryptedMessage<EncodingType> encryptedMessage =
+            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
+
+        EncodingType encodedEncryptedMessage = encode(encryptedMessage);
+        secureRequestHandler.handleRequest(encodedEncryptedMessage);
+        secureRequestHandler.handleRequest(encodedEncryptedMessage);
+    }
+
     private void setupRequestHandler() throws Exception {
         secureRequestHandler = getSecureRequestHandler();
         secureRequestHandler.setCryptUtil(cryptoUtil);
         secureRequestHandler.setPrivateKey(serverPrivateKey);
-
+        secureRequestHandler.setMessageVerifier(new MessageVerifier());
         authManager = mock(AuthenticationManager.class);
         secureRequestHandler.setAuthManager(authManager);
 

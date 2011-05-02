@@ -31,6 +31,7 @@ import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 
 public abstract class SecureRequestHandler<EncodingType> {
 
@@ -38,6 +39,7 @@ public abstract class SecureRequestHandler<EncodingType> {
     private MessageCryptoUtil<EncodingType> messageCryptoUtil;
     private PrivateKey privateKey;
     private AuthenticationManager authManager;
+    private MessageVerifier messageVerifier;
 
     public abstract SecureRequest unmarshalRequest(EncodingType decrypt) throws MarshalException;
 
@@ -45,29 +47,24 @@ public abstract class SecureRequestHandler<EncodingType> {
 
     public abstract EncodingType marshalResponse(SecureResponse response) throws MarshalException;
 
-    public EncodingType handleRequest(EncodingType containerMessage) {
+    public EncodingType handleRequest(EncodingType containerMessage) throws DecryptionException, EncryptionException {
         EncryptedMessage<EncodingType> container = unmarshalContainer(containerMessage);
 
         EncodingType encryptedKey = container.getEncryptedKey();
         SecretKey sessionKey;
-        try {
-            sessionKey = messageCryptoUtil.decryptKey(encryptedKey, privateKey);
-        } catch (DecryptionException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
+        sessionKey = messageCryptoUtil.decryptKey(encryptedKey, privateKey);
 
         EncodingType encryptedContent = container.getEncryptedContent();
         EncodingType decrypt;
-        try {
-            decrypt = messageCryptoUtil.decrypt(encryptedContent, sessionKey);
-        } catch (DecryptionException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
+        decrypt = messageCryptoUtil.decrypt(encryptedContent, sessionKey);
 
         SecureRequest secureRequest = unmarshalRequest(decrypt);
-        secureRequest.verify();
+
+        messageVerifier.verify(secureRequest);
+
+        Authentication springAuthentication =
+            secureRequest.retrieveAuthenticationInfo().toSpringSecurityAuthentication();
+        authManager.authenticate(springAuthentication);
 
         authManager.authenticate(secureRequest.retrieveAuthenticationInfo().toSpringSecurityAuthentication());
         MethodResult methodReturn = realHandler.handleCall(secureRequest.getMessage());
@@ -75,12 +72,7 @@ public abstract class SecureRequestHandler<EncodingType> {
         SecureResponse secureResponse = SecureResponse.create(methodReturn);
         EncodingType response = marshalResponse(secureResponse);
 
-        try {
-            return messageCryptoUtil.encrypt(response, sessionKey);
-        } catch (EncryptionException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
+        return messageCryptoUtil.encrypt(response, sessionKey);
     }
 
     public void setAuthManager(AuthenticationManager authManager) {
@@ -97,6 +89,10 @@ public abstract class SecureRequestHandler<EncodingType> {
 
     public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public void setMessageVerifier(MessageVerifier messageVerifier) {
+        this.messageVerifier = messageVerifier;
     }
 
 }

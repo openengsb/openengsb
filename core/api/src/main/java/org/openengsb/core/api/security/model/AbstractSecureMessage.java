@@ -20,8 +20,6 @@ package org.openengsb.core.api.security.model;
 import java.io.Serializable;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.openengsb.core.api.security.MessageVerificationFailedException;
 
 public abstract class AbstractSecureMessage<MessageType> implements Serializable {
 
@@ -55,21 +53,21 @@ public abstract class AbstractSecureMessage<MessageType> implements Serializable
         this.verification = verification;
     }
 
-    protected byte[] calcChecksum(String original, long time) {
-        String concat = original + time;
+    public byte[] calcChecksum() {
+        String concat = this.getMessage().toString() + this.timestamp;
         byte[] checksum = DigestUtils.sha(concat);
         return checksum;
     }
 
     protected void setVerification() {
-        this.verification = calcChecksum(this.getMessage().toString(), this.timestamp);
+        this.verification = calcChecksum();
     }
 
-    public void verify() {
-        byte[] refChecksum = calcChecksum(this.getMessage().toString(), this.getTimestamp());
-        if (!ArrayUtils.isEquals(this.verification, refChecksum)) {
-            throw new MessageVerificationFailedException("wrong checksum");
-        }
-    }
+    // public void verify() {
+    // byte[] refChecksum = calcChecksum(this.getMessage().toString(), this.getTimestamp());
+    // if (!ArrayUtils.isEquals(this.verification, refChecksum)) {
+    // throw new MessageVerificationFailedException("wrong checksum");
+    // }
+    // }
 
 }
