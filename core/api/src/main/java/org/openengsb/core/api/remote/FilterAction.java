@@ -1,7 +1,11 @@
 package org.openengsb.core.api.remote;
 
-public interface FilterAction<InputType, ResultType> {
+public interface FilterAction<InputType, OutputType> {
 
-    ResultType apply(InputType input) throws FilterException;
+    OutputType apply(InputType input) throws FilterException;
+
+    Class<InputType> getSupportedInputType();
+
+    Class<OutputType> getSupportedOutputType();
 
 }
