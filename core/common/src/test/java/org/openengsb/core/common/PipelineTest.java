@@ -21,7 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -35,24 +34,23 @@ import org.openengsb.core.api.remote.GenericPort;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.TransformingAction;
 import org.openengsb.core.api.remote.UniformPort;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Function;
-
 public class PipelineTest {
 
-    private final class XmlDecoder implements Function<String, Document> {
+    private final class XmlDecoder implements TransformingAction<String, Document> {
         @Override
         public Document apply(String input) {
             return parseDocument(input);
         }
     }
 
-    private final class XmlEncoder implements Function<Document, String> {
+    private final class XmlEncoder implements TransformingAction<Document, String> {
         @Override
         public String apply(Document input) {
             try {
@@ -63,7 +61,7 @@ public class PipelineTest {
         }
     }
 
-    private final class XmlUnmarshaller implements Function<Document, MethodCall> {
+    private final class XmlUnmarshaller implements TransformingAction<Document, MethodCall> {
         private final Unmarshaller unmarshaller;
 
         private XmlUnmarshaller(Unmarshaller unmarshaller) {
@@ -97,7 +95,7 @@ public class PipelineTest {
         }
     }
 
-    private final class XmlMarshaller implements Function<MethodReturn, Document> {
+    private final class XmlMarshaller implements TransformingAction<MethodReturn, Document> {
         private final Marshaller marshaller;
 
         private XmlMarshaller(Marshaller marshaller) {
@@ -117,7 +115,7 @@ public class PipelineTest {
         }
     }
 
-    private final class JsonMarshaller implements Function<MethodReturn, String> {
+    private final class JsonMarshaller implements TransformingAction<MethodReturn, String> {
         private ObjectMapper mapper = new ObjectMapper();
 
         @Override
@@ -130,7 +128,7 @@ public class PipelineTest {
         }
     }
 
-    private final class JsonUnmarshaller implements Function<String, MethodCall> {
+    private final class JsonUnmarshaller implements TransformingAction<String, MethodCall> {
         private ObjectMapper mapper = new ObjectMapper();
 
         @Override
@@ -143,7 +141,7 @@ public class PipelineTest {
         }
     }
 
-    private final class RequestHandlerFunction implements Function<MethodCall, MethodReturn> {
+    private final class RequestHandlerFunction implements TransformingAction<MethodCall, MethodReturn> {
         @Override
         public MethodReturn apply(MethodCall input) {
             return new MethodReturn(ReturnType.Object, input.getArgs()[0], new HashMap<String, String>(), input
@@ -160,7 +158,7 @@ public class PipelineTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
-        methodCall.setArgs(new Object[]{ "foo" });
+        methodCall.setArgs(new Object[] { "foo" });
         methodCall.setCallId("bar");
         String input = objectMapper.writeValueAsString(methodCall);
         String result = jsonMarshallingPort.handle(input);
@@ -183,7 +181,7 @@ public class PipelineTest {
         xmlMarshallingPort.setRequestHandler(new RequestHandlerFunction());
 
         MethodCall call = new MethodCall();
-        call.setArgs(new Object[]{ "foo" });
+        call.setArgs(new Object[] { "foo" });
         call.setClasses(Arrays.asList(String.class.getName()));
         call.setCallId("bar");
 
@@ -215,8 +213,7 @@ public class PipelineTest {
         }
     }
 
-    private static String docToXml(Node input) throws TransformerConfigurationException,
-        TransformerFactoryConfigurationError, TransformerException {
+    private static String docToXml(Node input) throws TransformerFactoryConfigurationError, TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
