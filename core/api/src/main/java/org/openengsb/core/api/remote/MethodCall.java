@@ -100,11 +100,7 @@ public class MethodCall {
         this.metaData = metaData;
     }
 
-
     public List<String> getClasses() {
-        if (classes == null) {
-            return getRealClassImplementation();
-        }
         return classes;
     }
 
