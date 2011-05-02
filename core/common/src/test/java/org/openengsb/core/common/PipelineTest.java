@@ -34,7 +34,7 @@ import org.openengsb.core.api.remote.GenericPort;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
-import org.openengsb.core.api.remote.TransformingAction;
+import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.UniformPort;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -43,14 +43,14 @@ import org.xml.sax.SAXException;
 
 public class PipelineTest {
 
-    private final class XmlDecoder implements TransformingAction<String, Document> {
+    private final class XmlDecoder implements FilterAction<String, Document> {
         @Override
         public Document apply(String input) {
             return parseDocument(input);
         }
     }
 
-    private final class XmlEncoder implements TransformingAction<Document, String> {
+    private final class XmlEncoder implements FilterAction<Document, String> {
         @Override
         public String apply(Document input) {
             try {
@@ -61,7 +61,7 @@ public class PipelineTest {
         }
     }
 
-    private final class XmlUnmarshaller implements TransformingAction<Document, MethodCall> {
+    private final class XmlUnmarshaller implements FilterAction<Document, MethodCall> {
         private final Unmarshaller unmarshaller;
 
         private XmlUnmarshaller(Unmarshaller unmarshaller) {
@@ -95,7 +95,7 @@ public class PipelineTest {
         }
     }
 
-    private final class XmlMarshaller implements TransformingAction<MethodReturn, Document> {
+    private final class XmlMarshaller implements FilterAction<MethodReturn, Document> {
         private final Marshaller marshaller;
 
         private XmlMarshaller(Marshaller marshaller) {
@@ -115,7 +115,7 @@ public class PipelineTest {
         }
     }
 
-    private final class JsonMarshaller implements TransformingAction<MethodReturn, String> {
+    private final class JsonMarshaller implements FilterAction<MethodReturn, String> {
         private ObjectMapper mapper = new ObjectMapper();
 
         @Override
@@ -128,7 +128,7 @@ public class PipelineTest {
         }
     }
 
-    private final class JsonUnmarshaller implements TransformingAction<String, MethodCall> {
+    private final class JsonUnmarshaller implements FilterAction<String, MethodCall> {
         private ObjectMapper mapper = new ObjectMapper();
 
         @Override
@@ -141,7 +141,7 @@ public class PipelineTest {
         }
     }
 
-    private final class RequestHandlerFunction implements TransformingAction<MethodCall, MethodReturn> {
+    private final class RequestHandlerFunction implements FilterAction<MethodCall, MethodReturn> {
         @Override
         public MethodReturn apply(MethodCall input) {
             return new MethodReturn(ReturnType.Object, input.getArgs()[0], new HashMap<String, String>(), input
