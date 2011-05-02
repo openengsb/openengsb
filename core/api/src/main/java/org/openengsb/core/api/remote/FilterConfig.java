@@ -7,6 +7,9 @@ public class FilterConfig<InputType, ResultType> {
 
     private List<FilterAction<?, ?>> filterChain = new LinkedList<FilterAction<?, ?>>();
 
+    public FilterConfig() {
+    }
+
     public FilterConfig(List<FilterAction<?, ?>> filterChain) {
         this.filterChain = filterChain;
     }
@@ -19,4 +22,9 @@ public class FilterConfig<InputType, ResultType> {
         }
         return (ResultType) currentResult;
     }
+
+    public void setFilterChain(List<FilterAction<?, ?>> filterChain) {
+        this.filterChain = filterChain;
+    }
+
 }
