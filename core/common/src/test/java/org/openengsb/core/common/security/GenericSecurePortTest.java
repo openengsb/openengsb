@@ -34,6 +34,7 @@ import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
@@ -42,9 +43,10 @@ import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 public abstract class GenericSecurePortTest<EncodingType> {
 
@@ -123,18 +125,18 @@ public abstract class GenericSecurePortTest<EncodingType> {
     }
 
     private SecureRequest prepareSecureRequest() {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, token);
+        UsernamePasswordAuthenticationInfo token = new UsernamePasswordAuthenticationInfo("test", "password");
+        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
+        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
         return secureRequest;
     }
 
     @Test
     public void testInvalidAuthentication() throws Exception {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("test", "password");
-        when(authManager.authenticate(token)).thenThrow(new BadCredentialsException("bad"));
-        MethodCall request = new MethodCall("doSomething", new Object[] { "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, token);
+        UsernamePasswordAuthenticationInfo token = new UsernamePasswordAuthenticationInfo("test", "password");
+        when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
+        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
+        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
 
         SecretKey sessionKey = keyGenUtil.generateKey();
         EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
@@ -157,7 +159,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     public void testManipulateMessage() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
 
-        secureRequest.getMessage().setArgs(new Object[] { "43" }); // manipulate message
+        secureRequest.getMessage().setArgs(new Object[]{ "43" }); // manipulate message
 
         SecretKey sessionKey = keyGenUtil.generateKey();
         EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);

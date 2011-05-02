@@ -17,17 +17,16 @@
 
 package org.openengsb.core.api.security.model;
 
-import java.util.Map;
-
+import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
 
 public class SecureRequest extends AbstractSecureMessage<MethodCall> {
 
     private static final long serialVersionUID = -2350090113804167120L;
 
-    private Map<String, byte[]> authentiationData;
+    private BeanDescription authentiationData;
 
-    public static SecureRequest create(MethodCall original, Map<String, byte[]> auth) {
+    public static SecureRequest create(MethodCall original, BeanDescription auth) {
         SecureRequest secureRequest = new SecureRequest();
         secureRequest.setMessage(original);
         long time = System.currentTimeMillis();
@@ -37,12 +36,16 @@ public class SecureRequest extends AbstractSecureMessage<MethodCall> {
         return secureRequest;
     }
 
-    public void setAuthentiationData(Map<String, byte[]> authentiationData) {
+    public void setAuthentiationData(BeanDescription authentiationData) {
         this.authentiationData = authentiationData;
     }
 
-    public Map<String, byte[]> getAuthentiationData() {
+    public BeanDescription getAuthentiationData() {
         return authentiationData;
+    }
+
+    public AuthenticationInfo retrieveAuthenticationInfo() {
+        return authentiationData.toObject(AuthenticationInfo.class);
     }
 
     protected SecureRequest() {

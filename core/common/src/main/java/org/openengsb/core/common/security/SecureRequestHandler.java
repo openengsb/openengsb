@@ -68,8 +68,10 @@ public abstract class SecureRequestHandler<EncodingType> {
 
         SecureRequest secureRequest = unmarshalRequest(decrypt);
         secureRequest.verify();
-        authManager.authenticate(secureRequest.getAuthentiation());
+
+        authManager.authenticate(secureRequest.retrieveAuthenticationInfo().toSpringSecurityAuthentication());
         MethodResult methodReturn = realHandler.handleCall(secureRequest.getMessage());
+
         SecureResponse secureResponse = SecureResponse.create(methodReturn);
         EncodingType response = marshalResponse(secureResponse);
 
