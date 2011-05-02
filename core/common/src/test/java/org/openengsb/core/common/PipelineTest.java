@@ -30,12 +30,12 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
-import org.openengsb.core.api.remote.GenericPort;
+import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterConfig;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
-import org.openengsb.core.api.remote.FilterAction;
-import org.openengsb.core.api.remote.UniformPort;
+import org.openengsb.core.common.UniformPort.Builder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -151,17 +151,17 @@ public class PipelineTest {
 
     @Test
     public void testArchWithJson() throws Exception {
-        UniformPort<String> jsonMarshallingPort = new UniformPort<String>();
-        jsonMarshallingPort.setRequestHandler(new RequestHandlerFunction());
-        jsonMarshallingPort.setRequestUnmarshaller(new JsonUnmarshaller());
-        jsonMarshallingPort.setResponseMarshaller(new JsonMarshaller());
+        Builder<String> builder = UniformPort.builder();
+        builder.requestHandler(new RequestHandlerFunction()).requestUnmarshaller(new JsonUnmarshaller())
+            .responseMarshaller(new JsonMarshaller());
+        FilterConfig<String, String> jsonMarshallingPort = builder.build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
         methodCall.setArgs(new Object[] { "foo" });
         methodCall.setCallId("bar");
         String input = objectMapper.writeValueAsString(methodCall);
-        String result = jsonMarshallingPort.handle(input);
+        String result = jsonMarshallingPort.execute(input);
         MethodReturn returnValue = objectMapper.readValue(result, MethodReturn.class);
         assertThat((String) returnValue.getArg(), is("foo"));
         assertThat(returnValue.getCallId(), is("bar"));
@@ -172,13 +172,12 @@ public class PipelineTest {
         JAXBContext jaxbContext = JAXBContext.newInstance(MethodCall.class, MethodReturn.class);
         final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         final Marshaller marshaller = jaxbContext.createMarshaller();
+        GenericPort.Builder<String, Document> builder = GenericPort.builder();
+        builder.decoder(new XmlDecoder()).requestUnmarshaller(new XmlUnmarshaller(unmarshaller))
+            .requestHandler(new RequestHandlerFunction());
+        builder.responseMarshaller(new XmlMarshaller(marshaller)).encoder(new XmlEncoder());
 
-        GenericPort<String, Document> xmlMarshallingPort = new GenericPort<String, Document>();
-        xmlMarshallingPort.setDecoder(new XmlDecoder());
-        xmlMarshallingPort.setEncoder(new XmlEncoder());
-        xmlMarshallingPort.setRequestUnmarshaller(new XmlUnmarshaller(unmarshaller));
-        xmlMarshallingPort.setResponseMarshaller(new XmlMarshaller(marshaller));
-        xmlMarshallingPort.setRequestHandler(new RequestHandlerFunction());
+        GenericPort<String, Document> xmlMarshallingPort = builder.build();
 
         MethodCall call = new MethodCall();
         call.setArgs(new Object[] { "foo" });
@@ -189,7 +188,7 @@ public class PipelineTest {
         marshaller.marshal(new JAXBElement<MethodCall>(new QName(MethodCall.class.getSimpleName()), MethodCall.class,
                 call), domResult);
         String input = docToXml(domResult.getNode());
-        String result = xmlMarshallingPort.handle(input);
+        String result = xmlMarshallingPort.execute(input);
 
         Document parseDocument = parseDocument(result);
         MethodReturn value = unmarshaller.unmarshal(parseDocument, MethodReturn.class).getValue();
