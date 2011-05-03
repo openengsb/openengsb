@@ -91,45 +91,25 @@ public class WiringPage extends BasePage {
         init();
     }
     
-    @SuppressWarnings("serial")
     private void init() {
         Form<Void> domainChooseForm = new Form<Void>("domainChooseForm");
         initDomainChooseForm(domainChooseForm);
         add(domainChooseForm);
         
-        globals = new LinkTree("globals", createGlobalTreeModel(null)) {
-            @Override
-            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (mnode.isRoot()) {
-                    return;
-                }
-                globalName = (String) mnode.getUserObject();
-                target.addComponent(txtGlobalName);
-                maybeMakeWiringPossible(target);
-            }
-        };
+        globals = new WiringSubjectTree("globals");
         globals.getTreeState().expandAll();
         add(globals);
         
-        endpoints = new LinkTree("endpoints", createEndpointsModel(null)) {
-            @Override
-            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (mnode.isRoot()) {
-                    return;
-                }
-                instanceId = (String) mnode.getUserObject();
-                target.addComponent(txtInstanceId);
-                maybeMakeWiringPossible(target);
-            }
-        };
+        endpoints = new WiringSubjectTree("endpoints");
         endpoints.getTreeState().expandAll();
         add(endpoints);
         
         Form<Object> wiringForm = new Form<Object>("wiringForm");
         initWiringForm(wiringForm);
         add(wiringForm);
+        
+        ((WiringSubjectTree)globals).setSubject(txtGlobalName);
+        ((WiringSubjectTree)endpoints).setSubject(txtInstanceId);
         
         feedbackPanel = new FeedbackPanel("feedbackPanel");
         feedbackPanel.setOutputMarkupId(true);
@@ -335,6 +315,39 @@ public class WiringPage extends BasePage {
 
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
+    }
+    
+    @SuppressWarnings("serial")
+    private class WiringSubjectTree extends LinkTree {
+        private TextField<String> subject;
+        
+        public WiringSubjectTree(String id) {
+            super(id);
+        }
+        
+        @Override
+        protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
+            DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+            if (mnode.isRoot()) {
+                return;
+            }
+            subject.setDefaultModelObject(mnode.getUserObject());
+            target.addComponent(subject);
+            maybeMakeWiringPossible(target);
+        }
+
+        @Override
+        public boolean isVisible() {
+            if (this.getModelObject() == null) {
+                return false;
+            }
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModelObject().getRoot();
+            return root != null && !root.isLeaf();
+        }
+
+        public void setSubject(TextField<String> subject) {
+            this.subject = subject;
+        }
     }
 
 }

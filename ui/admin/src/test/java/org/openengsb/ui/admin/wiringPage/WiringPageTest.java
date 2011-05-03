@@ -89,8 +89,8 @@ public class WiringPageTest extends AbstractUITest {
         tester.assertRenderedPage(WiringPage.class);
         tester.assertComponent("domainChooseForm", Form.class);
         tester.assertComponent("domainChooseForm:domains", DropDownChoice.class);
-        tester.assertComponent("globals", LinkTree.class);
-        tester.assertComponent("endpoints", LinkTree.class);
+        tester.assertInvisible("globals");
+        tester.assertInvisible("endpoints");
         tester.assertComponent("wiringForm", Form.class);
         tester.assertComponent("wiringForm:globalName", TextField.class);
         tester.assertComponent("wiringForm:wireButton", AjaxSubmitLink.class);
@@ -133,13 +133,6 @@ public class WiringPageTest extends AbstractUITest {
         selectFirstGlobal();
         TextField<?> epLabel = (TextField<?>) tester.getComponentFromLastRenderedPage("wiringForm:globalName");
         assertThat(epLabel.getDefaultModelObject().toString(), is(globTest));
-    }
-    
-    @Test
-    public void selectGlobalsRootNode_shouldNotUpdateLabel() {
-        tester.clickLink("globals:i:0:nodeComponent:contentLink");
-        TextField<?> epLabel = (TextField<?>) tester.getComponentFromLastRenderedPage("wiringForm:globalName");
-        assertThat(epLabel.getDefaultModelObject().toString(), is(""));
     }
     
     @Test
@@ -234,11 +227,11 @@ public class WiringPageTest extends AbstractUITest {
     }
 
     private void selectFirstGlobal() {
-        tester.clickLink("globals:i:3:nodeComponent:contentLink");
+        tester.clickLink("globals:i:1:nodeComponent:contentLink");
     }
     
     private void selectFirstEndpoint() {
-        tester.clickLink("endpoints:i:3:nodeComponent:contentLink");
+        tester.clickLink("endpoints:i:1:nodeComponent:contentLink");
     }
     
     private void createConnectors() throws Exception {
