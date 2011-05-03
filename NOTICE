@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This project includes:
-  activation under Commons Development and Distribution License, Version 1.0
+  Activation 1.1 under The Apache Software License, Version 2.0
   ActiveIO :: Core under The Apache Software License, Version 2.0
   ActiveMQ :: Apache Karaf under The Apache Software License, Version 2.0
   ActiveMQ :: Console under The Apache Software License, Version 2.0
@@ -49,6 +49,7 @@ This project includes:
   Apache Felix Metatype Service under The Apache Software License, Version 2.0
   Apache Felix Shell Service under The Apache Software License, Version 2.0
   Apache Felix Web Management Console under The Apache Software License, Version 2.0
+  Apache Geronimo JAX-WS 2.2 API under The Apache Software License, Version 2.0
   Apache JAMES Mime4j under Apache License, Version 2.0
   Apache Karaf :: Admin :: Command under The Apache Software License, Version 2.0
   Apache Karaf :: Admin :: Core under The Apache Software License, Version 2.0
@@ -143,8 +144,10 @@ This project includes:
   JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
   Java Authentication SPI for Containers under The Apache Software License, Version 2.0
   Java Rest Annotations under The Apache Software License, Version 2.0
+  JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
   JavaMail 1.4 under The Apache Software License, Version 2.0
   JavaMail API under Common Development and Distribution License (CDDL) v1.0
+  JAXB API bundle for GlassFish V3 under CDDL 1.0 or GPL2 w/ CPE
   JAXB RI under CDDL 1.0 or GPL2 w/ CPE
   JAXB XJC under CDDL 1.0 or GPL2 w/ CPE
   JCL 1.1.1 implemented over SLF4J under MIT License
@@ -263,6 +266,7 @@ This project includes:
   OSGi OBR Service API under The Apache Software License, Version 2.0
   OSGi R4 Core Bundle under The Apache Software License, Version 2.0
   Rhino under Mozilla Public License
+  saaj-impl under Commons Development and Distribution License, Version 1.0
   scala-compiler under BSD-like
   scala-library under BSD-like
   scalate-core under The Apache Software License, Version 2.0
@@ -275,6 +279,7 @@ This project includes:
   SLF4J API Module under MIT License
   SLF4J LOG4J-12 Binding under MIT License
   SLF4J Simple Binding under MIT License
+  SOAP with Attachments API Package under COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
   Spring OSGi Annotations under Apache License, Version 2.0
   Spring OSGi Core under Apache License, Version 2.0
   Spring OSGi Extender under Apache License, Version 2.0
@@ -293,7 +298,9 @@ This project includes:
   spring-tx under Apache License, Version 2.0
   spring-web under Apache License, Version 2.0
   Stax2 API under The BSD License
+  Streaming API for XML (STAX API 1.0) under The Apache Software License, Version 2.0
   Velocity under Apache License, Version 2.0
+  Web Services Metadata 2.0 under The Apache Software License, Version 2.0
   Wicket under The Apache Software License, Version 2.0
   Wicket Auth Roles under The Apache Software License, Version 2.0
   Wicket Date/Time under The Apache Software License, Version 2.0
@@ -314,6 +321,7 @@ This project includes:
   Xerces2 Java Parser under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
   XML Commons Resolver Component under The Apache Software License, Version 2.0
+  Xml Compatibility extensions for Jackson under The Apache Software License, Version 2.0 or GNU Lesser General Public License (LGPL), Version 2.1
   XML Pull Parsing API under Public Domain
   xml-apis under The Apache Software License, Version 2.0
   XmlBeans under The Apache Software License, Version 2.0
