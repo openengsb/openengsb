@@ -20,9 +20,19 @@ package org.openengsb.ports.jms;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
+/**
+ * Internal factory to create jmsTemplates and message listeners.
+ */
 public interface JMSTemplateFactory {
 
-    JmsTemplate createJMSTemplate(String host);
+    /**
+     * Creates a JMS Template taking the queue/topic and host settings from the destination param
+     */
+    JmsTemplate createJMSTemplate(DestinationUrl destination);
 
+    /**
+     * Creates a simple message listener container without any furhter configurations. Those have to be done by the
+     * client.
+     */
     SimpleMessageListenerContainer createMessageListenerContainer();
 }

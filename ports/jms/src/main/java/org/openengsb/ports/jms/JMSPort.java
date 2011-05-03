@@ -83,7 +83,8 @@ public class JMSPort implements OutgoingPort {
     }
 
     private JmsTemplate createJMSTemplate(String destination) {
-        return factory.createJMSTemplate(destination);
+        DestinationUrl destinationUrl = DestinationUrl.createDestinationUrl(destination);
+        return factory.createJMSTemplate(destinationUrl);
     }
 
     private void sendMessage(String destination, MethodCall call) {
@@ -93,8 +94,8 @@ public class JMSPort implements OutgoingPort {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.convertAndSend(RECEIVE, answer);
+        JmsTemplate template = createJMSTemplate(destination);
+        template.convertAndSend(answer);
     }
 
     public void setRequestHandler(RequestHandler handler) {
