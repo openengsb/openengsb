@@ -6,8 +6,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -22,12 +24,14 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
-import org.openengsb.core.common.filter.JsonMethodCallMarshalFilter;
+import org.openengsb.core.common.filter.JsonMethodCallMarshalFilterFactory;
 import org.openengsb.core.common.filter.XmlEncoderFilter;
-import org.openengsb.core.common.filter.XmlMethodCallMarshalFilter;
+import org.openengsb.core.common.filter.XmlEncoderFilterFactory;
+import org.openengsb.core.common.filter.XmlMethodCallMarshalFilterFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -53,9 +57,16 @@ public class PipelineTest {
 
     @Test
     public void testArchWithJson() throws Exception {
+        FilterChainFactory<String, String> filterChainFactory =
+            new FilterChainFactory<String, String>(String.class, String.class);
 
-        FilterAction<String, String> filterChain =
-            FilterChainFactory.build(String.class, String.class, new JsonMethodCallMarshalFilter(), requestHandlerMock);
+        List<FilterChainElementFactory<? extends Object, ?>> asList =
+            new ArrayList<FilterChainElementFactory<? extends Object, ?>>();
+        asList.add(new JsonMethodCallMarshalFilterFactory());
+        filterChainFactory.setFilters(asList);
+        filterChainFactory.setLast(requestHandlerMock);
+
+        FilterAction<String, String> filterChain = filterChainFactory.create();
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
@@ -70,9 +81,15 @@ public class PipelineTest {
 
     @Test
     public void testArchWithXml() throws Exception {
-        FilterAction<String, String> filterChain =
-            FilterChainFactory.build(String.class, String.class, new XmlEncoderFilter(),
-                new XmlMethodCallMarshalFilter(), requestHandlerMock);
+        FilterChainFactory<String, String> filterChainFactory =
+            new FilterChainFactory<String, String>(String.class, String.class);
+        @SuppressWarnings("unchecked")
+        List<FilterChainElementFactory<? extends Object, ?>> asList = Arrays.asList(new XmlEncoderFilterFactory(),
+            new XmlMethodCallMarshalFilterFactory());
+        filterChainFactory.setFilters(asList);
+        filterChainFactory.setLast(requestHandlerMock);
+
+        FilterAction<String, String> filterChain = filterChainFactory.create();
 
         MethodCall call = new MethodCall();
         call.setArgs(new Object[] { "foo" });

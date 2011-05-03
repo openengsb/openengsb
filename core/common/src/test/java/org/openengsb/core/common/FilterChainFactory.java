@@ -1,44 +1,66 @@
 package org.openengsb.core.common;
 
-import org.openengsb.core.api.remote.AbstractFilterAction;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
-import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
 
-import com.google.common.base.Preconditions;
+public class FilterChainFactory<InputType, OutputType> {
 
-public final class FilterChainFactory {
+    private List<FilterChainElementFactory<?, ?>> filters;
+    private FilterAction<?, ?> last;
 
-    private static final class FilterChain<InputType, OutputType> extends AbstractFilterAction<InputType, OutputType> {
-        private FilterChainElement<InputType, OutputType> first;
+    private Class<InputType> inputType;
+    private Class<OutputType> outputType;
 
-        private FilterChain(Class<InputType> inputType, Class<OutputType> outputType,
-                FilterChainElement<InputType, OutputType> first) {
-            super(inputType, outputType);
-            this.first = first;
+    @SuppressWarnings("unchecked")
+    public FilterAction<InputType, OutputType> create() {
+        Iterator<FilterChainElementFactory<?, ?>> iterator = filters.iterator();
+        if (!iterator.hasNext()) {
+            throw new IllegalStateException("Need at least one filter");
         }
-
-        @Override
-        public OutputType apply(InputType input) throws FilterException {
-            return first.apply(input);
+        FilterChainElementFactory<?, ?> firstFactory = iterator.next();
+        FilterChainElement<?, ?> firstInstance = firstFactory.newInstance();
+        if (!firstInstance.getSupportedInputType().isAssignableFrom(inputType)
+                || !firstInstance.getSupportedOutputType().isAssignableFrom(outputType)) {
+            throw new IllegalStateException("incompatible Filtertype");
         }
+        FilterChainElement<?, ?> current = firstInstance;
+        while (iterator.hasNext()) {
+            FilterChainElement<?, ?> next = iterator.next().newInstance();
+            current.setNext(next);
+            current = next;
+        }
+        if (last != null) {
+            current.setNext(last);
+        }
+        return (FilterAction<InputType, OutputType>) firstInstance;
     }
 
-    public static <InputType, OutputType> FilterAction<InputType, OutputType> build(Class<InputType> inputType,
-            Class<OutputType> outputType, FilterAction<?, ?>... filters) {
-        Preconditions.checkNotNull(filters);
-        Preconditions.checkArgument(filters.length > 0);
-        @SuppressWarnings("unchecked")
-        FilterChainElement<InputType, OutputType> first = (FilterChainElement<InputType, OutputType>) filters[0];
-        Preconditions.checkArgument(first.getSupportedInputType().isAssignableFrom(inputType));
-        Preconditions.checkArgument(first.getSupportedOutputType().isAssignableFrom(outputType));
-        for (int i = 1; i < filters.length; i++) {
-            FilterChainElement<?, ?> previous = (FilterChainElement<?, ?>) filters[i - 1];
-            previous.setNext(filters[i]);
-        }
-        return new FilterChain<InputType, OutputType>(inputType, outputType, first);
+    public void setFilters(List<FilterChainElementFactory<?, ?>> filters) {
+        this.filters = filters;
     }
 
-    private FilterChainFactory() {
+    public void setLast(FilterAction<?, ?> last) {
+        this.last = last;
     }
+
+    public void setInputType(Class<InputType> inputType) {
+        this.inputType = inputType;
+    }
+
+    public void setOutputType(Class<OutputType> outputType) {
+        this.outputType = outputType;
+    }
+
+    public FilterChainFactory() {
+    }
+
+    public FilterChainFactory(Class<InputType> inputType, Class<OutputType> outputType) {
+        this.inputType = inputType;
+        this.outputType = outputType;
+    }
+
 }
