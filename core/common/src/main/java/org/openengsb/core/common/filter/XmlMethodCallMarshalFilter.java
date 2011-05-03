@@ -79,10 +79,12 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void setNext(FilterAction<?, ?> next) {
-        this.next = (FilterAction<MethodCall, MethodReturn>) next;
+        checkNextInputAndOutputTypes(next, MethodCall.class, MethodReturn.class);
+        @SuppressWarnings("unchecked")
+        FilterAction<MethodCall, MethodReturn> castedNext = (FilterAction<MethodCall, MethodReturn>) next;
+        this.next = castedNext;
 
     }
 

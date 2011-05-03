@@ -46,6 +46,7 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
     @SuppressWarnings("unchecked")
     @Override
     public void setNext(FilterAction<?, ?> next) {
+        checkNextInputAndOutputTypes(next, Document.class, Document.class);
         Preconditions.checkArgument(next.getSupportedInputType().isAssignableFrom(Document.class));
         Preconditions.checkArgument(next.getSupportedOutputType().isAssignableFrom(Document.class));
         this.next = (FilterAction<Document, Document>) next;

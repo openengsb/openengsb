@@ -8,4 +8,15 @@ public abstract class AbstractFilterChainElement<InputType, OutputType> extends
         super(inputType, outputType);
     }
 
+    protected final void checkNextInputAndOutputTypes(FilterAction<?, ?> next,
+            Class<?> inputType, Class<?> outputType) throws FilterConfigurationException {
+        if (!next.getSupportedInputType().isAssignableFrom(inputType)) {
+            throw new FilterConfigurationException(String.format("inputTypes are not compatible (%s - %s)",
+                next.getSupportedInputType(), inputType));
+        }
+        if (!next.getSupportedOutputType().isAssignableFrom(outputType)) {
+            throw new FilterConfigurationException(String.format("outputTypes are not compatible (%s - %s)",
+                next.getSupportedOutputType(), outputType));
+        }
+    }
 }
