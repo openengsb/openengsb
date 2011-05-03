@@ -15,13 +15,8 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     private FilterAction<MethodCall, MethodReturn> next;
 
-    public JsonMethodCallMarshalFilter() {
+    JsonMethodCallMarshalFilter() {
         super(String.class, String.class);
-    }
-
-    public JsonMethodCallMarshalFilter(FilterAction<MethodCall, MethodReturn> next) {
-        this();
-        this.next = next;
     }
 
     @Override

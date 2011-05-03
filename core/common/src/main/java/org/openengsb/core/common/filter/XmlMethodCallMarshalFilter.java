@@ -24,7 +24,7 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     private Marshaller marshaller;
     private Unmarshaller unmarshaller;
 
-    public XmlMethodCallMarshalFilter() {
+    XmlMethodCallMarshalFilter() {
         super(Document.class, Document.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCall.class, MethodReturn.class);
@@ -33,11 +33,6 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    public XmlMethodCallMarshalFilter(FilterAction<MethodCall, MethodReturn> next) {
-        this();
-        this.next = next;
     }
 
     @Override

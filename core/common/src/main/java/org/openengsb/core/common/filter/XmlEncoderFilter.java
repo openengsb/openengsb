@@ -28,13 +28,8 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
 
     private FilterAction<Document, Document> next;
 
-    public XmlEncoderFilter() {
+    XmlEncoderFilter() {
         super(String.class, String.class);
-    }
-
-    public XmlEncoderFilter(FilterAction<Document, Document> next) {
-        this();
-        this.next = next;
     }
 
     @Override
