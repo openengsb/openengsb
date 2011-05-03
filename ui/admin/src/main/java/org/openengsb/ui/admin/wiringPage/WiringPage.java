@@ -60,7 +60,7 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation("ROLE_USER")
+@AuthorizeInstantiation("ROLE_ADMIN")
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
     

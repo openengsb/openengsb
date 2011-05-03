@@ -94,7 +94,7 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
         addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
         addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", "");
-        addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "");
+        addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
 
     private void initializeMenu() {
