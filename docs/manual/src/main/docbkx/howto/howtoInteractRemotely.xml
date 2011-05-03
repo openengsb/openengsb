@@ -73,7 +73,7 @@
         <para>After saving the proxy you should be able to test it via the TestClient page. Following is an example of
           a call:</para>
         <code>{"classes":["java.lang.String", "java.lang.Integer","org.openengsb.core.ports.jms.JMSPortTest$TestClass"], 
-          "methodName":"method","args":["123",5,{"test":"test"}], "metaData":{"test":"test"}
+          "methodName":"method","args":["123",5,{"test":"test"}], "metaData":{"test":"test"}}
         </code>
         <mediaobject>
           <imageobject>
