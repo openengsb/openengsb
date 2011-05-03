@@ -35,8 +35,8 @@
     <openengsb.version.name.adjective>Qualified</openengsb.version.name.adjective>
     <openengsb.version.name.noun>Q</openengsb.version.name.noun>
     <!-- General Download Version Information -->
-    <openengsb.version.stable>1.1.2.RELEASE</openengsb.version.stable>
-    <openengsb.version.dev>1.2.0.M5</openengsb.version.dev>
+    <openengsb.version.stable>1.1.3.RELEASE</openengsb.version.stable>
+    <openengsb.version.dev>1.3.0.M1</openengsb.version.dev>
     <openengsb.version.nightly>1.3.0-SNAPSHOT</openengsb.version.nightly>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>1.2.0.M5</openengsb.version.min>
