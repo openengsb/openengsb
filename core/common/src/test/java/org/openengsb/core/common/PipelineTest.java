@@ -25,6 +25,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
@@ -112,5 +113,28 @@ public class PipelineTest {
         value.setArg(value2);
         assertThat((String) value.getArg(), is("foo"));
         assertThat(value.getCallId(), is("bar"));
+    }
+
+    @Test(expected = FilterConfigurationException.class)
+    public void testCreateFilterWithIncompatibleFirst_shouldThrowFilterConfigurationException() throws Exception {
+        FilterChainFactory<String, String> filterChainFactory =
+            new FilterChainFactory<String, String>(String.class, String.class);
+        @SuppressWarnings("unchecked")
+        List<FilterChainElementFactory<? extends Object, ?>> asList =
+            Arrays.asList(new XmlMethodCallMarshalFilterFactory(), new XmlEncoderFilterFactory());
+        filterChainFactory.setFilters(asList);
+        filterChainFactory.create();
+    }
+
+    @Test(expected = FilterConfigurationException.class)
+    public void testCreateFilterWithIncompatibleElements_shouldThrowFilterConfigurationException() throws Exception {
+        FilterChainFactory<String, String> filterChainFactory =
+            new FilterChainFactory<String, String>(String.class, String.class);
+        @SuppressWarnings("unchecked")
+        List<FilterChainElementFactory<? extends Object, ?>> asList =
+            Arrays.asList(new XmlEncoderFilterFactory(), new XmlMethodCallMarshalFilterFactory(),
+                new XmlEncoderFilterFactory());
+        filterChainFactory.setFilters(asList);
+        filterChainFactory.create();
     }
 }

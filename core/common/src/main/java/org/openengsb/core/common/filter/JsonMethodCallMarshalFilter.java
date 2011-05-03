@@ -5,11 +5,10 @@ import java.io.IOException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.AbstractFilterChainElement;
 import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
-
-import com.google.common.base.Preconditions;
 
 public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<String, String> {
 
@@ -32,12 +31,12 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void setNext(FilterAction<?, ?> next) {
-        Preconditions.checkArgument(next.getSupportedInputType().isAssignableFrom(MethodCall.class));
-        Preconditions.checkArgument(next.getSupportedOutputType().isAssignableFrom(MethodReturn.class));
-        this.next = (FilterAction<MethodCall, MethodReturn>) next;
+    public void setNext(FilterAction<?, ?> next) throws FilterConfigurationException {
+        checkNextInputAndOutputTypes(next, MethodCall.class, MethodReturn.class);
+        @SuppressWarnings("unchecked")
+        FilterAction<MethodCall, MethodReturn> castedNext = (FilterAction<MethodCall, MethodReturn>) next;
+        this.next = castedNext;
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
 
 public class FilterChainFactory<InputType, OutputType> {
 
@@ -16,7 +17,7 @@ public class FilterChainFactory<InputType, OutputType> {
     private Class<OutputType> outputType;
 
     @SuppressWarnings("unchecked")
-    public FilterAction<InputType, OutputType> create() {
+    public FilterAction<InputType, OutputType> create() throws FilterConfigurationException {
         Iterator<FilterChainElementFactory<?, ?>> iterator = filters.iterator();
         if (!iterator.hasNext()) {
             throw new IllegalStateException("Need at least one filter");
@@ -25,7 +26,7 @@ public class FilterChainFactory<InputType, OutputType> {
         FilterChainElement<?, ?> firstInstance = firstFactory.newInstance();
         if (!firstInstance.getSupportedInputType().isAssignableFrom(inputType)
                 || !firstInstance.getSupportedOutputType().isAssignableFrom(outputType)) {
-            throw new IllegalStateException("incompatible Filtertype");
+            throw new FilterConfigurationException("incompatible Filtertype");
         }
         FilterChainElement<?, ?> current = firstInstance;
         while (iterator.hasNext()) {
