@@ -25,7 +25,7 @@ public final class FilterChainFactory {
     }
 
     public static <InputType, OutputType> FilterAction<InputType, OutputType> build(Class<InputType> inputType,
-            Class<OutputType> outputType, FilterChainElement<?, ?>... filters) {
+            Class<OutputType> outputType, FilterAction<?, ?>... filters) {
         Preconditions.checkNotNull(filters);
         Preconditions.checkArgument(filters.length > 0);
         @SuppressWarnings("unchecked")
@@ -33,7 +33,8 @@ public final class FilterChainFactory {
         Preconditions.checkArgument(first.getSupportedInputType().isAssignableFrom(inputType));
         Preconditions.checkArgument(first.getSupportedOutputType().isAssignableFrom(outputType));
         for (int i = 1; i < filters.length; i++) {
-            filters[i - 1].setNext(filters[i]);
+            FilterChainElement<?, ?> previous = (FilterChainElement<?, ?>) filters[i - 1];
+            previous.setNext(filters[i]);
         }
         return new FilterChain<InputType, OutputType>(inputType, outputType, first);
     }

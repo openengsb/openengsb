@@ -25,9 +25,7 @@ import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
-import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.filter.JsonMethodCallMarshalFilter;
-import org.openengsb.core.common.filter.RequestHandlerFilter;
 import org.openengsb.core.common.filter.XmlEncoderFilter;
 import org.openengsb.core.common.filter.XmlMethodCallMarshalFilter;
 import org.w3c.dom.Document;
@@ -35,12 +33,13 @@ import org.w3c.dom.Node;
 
 public class PipelineTest {
 
-    private RequestHandler requestHandlerMock;
+    private FilterAction<MethodCall, MethodReturn> requestHandlerMock;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        requestHandlerMock = mock(RequestHandler.class);
-        when(requestHandlerMock.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodReturn>() {
+        requestHandlerMock = mock(FilterAction.class);
+        when(requestHandlerMock.apply(any(MethodCall.class))).thenAnswer(new Answer<MethodReturn>() {
             @Override
             public MethodReturn answer(InvocationOnMock invocation) throws Throwable {
                 MethodCall input = (MethodCall) invocation.getArguments()[0];
@@ -48,13 +47,15 @@ public class PipelineTest {
                         .getCallId());
             }
         });
+        when(requestHandlerMock.getSupportedInputType()).thenReturn(MethodCall.class);
+        when(requestHandlerMock.getSupportedOutputType()).thenReturn(MethodReturn.class);
     }
 
     @Test
     public void testArchWithJson() throws Exception {
+
         FilterAction<String, String> filterChain =
-            FilterChainFactory.build(String.class, String.class, new JsonMethodCallMarshalFilter(),
-                new RequestHandlerFilter(requestHandlerMock));
+            FilterChainFactory.build(String.class, String.class, new JsonMethodCallMarshalFilter(), requestHandlerMock);
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
@@ -71,7 +72,7 @@ public class PipelineTest {
     public void testArchWithXml() throws Exception {
         FilterAction<String, String> filterChain =
             FilterChainFactory.build(String.class, String.class, new XmlEncoderFilter(),
-                new XmlMethodCallMarshalFilter(), new RequestHandlerFilter(requestHandlerMock));
+                new XmlMethodCallMarshalFilter(), requestHandlerMock);
 
         MethodCall call = new MethodCall();
         call.setArgs(new Object[] { "foo" });

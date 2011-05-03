@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.remote.AbstractFilterAction;
+import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
@@ -32,7 +34,11 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
-public class RequestHandlerImpl implements RequestHandler {
+public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodReturn> implements RequestHandler {
+
+    public RequestHandlerImpl() {
+        super(MethodCall.class, MethodReturn.class);
+    }
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
@@ -47,6 +53,11 @@ public class RequestHandlerImpl implements RequestHandler {
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
+    }
+
+    @Override
+    public MethodReturn apply(MethodCall input) throws FilterException {
+        return handleCall(input);
     }
 
     private MethodReturn createReturnTemplate(MethodCall call) {
