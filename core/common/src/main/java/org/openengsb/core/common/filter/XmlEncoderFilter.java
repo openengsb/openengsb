@@ -33,9 +33,9 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
     }
 
     @Override
-    public String apply(String input) throws FilterException {
+    public String filter(String input) throws FilterException {
         Document doc = parseDocument(input);
-        Document result = next.apply(doc);
+        Document result = next.filter(doc);
         try {
             return writeDocument(result);
         } catch (TransformerException e) {

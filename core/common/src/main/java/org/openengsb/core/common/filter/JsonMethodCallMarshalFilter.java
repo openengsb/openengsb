@@ -19,12 +19,12 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     }
 
     @Override
-    public String apply(String input) throws FilterException {
+    public String filter(String input) throws FilterException {
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall call;
         try {
             call = objectMapper.readValue(input, MethodCall.class);
-            MethodReturn returnValue = next.apply(call);
+            MethodReturn returnValue = next.filter(call);
             return objectMapper.writeValueAsString(returnValue);
         } catch (IOException e) {
             throw new FilterException(e);

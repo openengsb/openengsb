@@ -44,7 +44,7 @@ public class PipelineTest {
     @Before
     public void setUp() {
         requestHandlerMock = mock(FilterAction.class);
-        when(requestHandlerMock.apply(any(MethodCall.class))).thenAnswer(new Answer<MethodReturn>() {
+        when(requestHandlerMock.filter(any(MethodCall.class))).thenAnswer(new Answer<MethodReturn>() {
             @Override
             public MethodReturn answer(InvocationOnMock invocation) throws Throwable {
                 MethodCall input = (MethodCall) invocation.getArguments()[0];
@@ -74,7 +74,7 @@ public class PipelineTest {
         methodCall.setArgs(new Object[] { "foo" });
         methodCall.setCallId("bar");
         String input = objectMapper.writeValueAsString(methodCall);
-        String result = filterChain.apply(input);
+        String result = filterChain.filter(input);
         MethodReturn returnValue = objectMapper.readValue(result, MethodReturn.class);
         assertThat((String) returnValue.getArg(), is("foo"));
         assertThat(returnValue.getCallId(), is("bar"));
@@ -105,7 +105,7 @@ public class PipelineTest {
         marshaller.marshal(new JAXBElement<MethodCall>(new QName(MethodCall.class.getSimpleName()), MethodCall.class,
             call), domResult);
         String input = XmlEncoderFilter.writeDocument(domResult.getNode());
-        String result = filterChain.apply(input);
+        String result = filterChain.filter(input);
 
         Document parseDocument = XmlEncoderFilter.parseDocument(result);
         MethodReturn value = unmarshaller.unmarshal(parseDocument, MethodReturn.class).getValue();
