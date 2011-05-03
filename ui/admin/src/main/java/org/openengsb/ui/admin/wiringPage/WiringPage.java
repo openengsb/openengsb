@@ -47,6 +47,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -57,6 +58,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,18 +100,22 @@ public class WiringPage extends BasePage {
         
         globals = new WiringSubjectTree("globals");
         globals.getTreeState().expandAll();
+        globals.setOutputMarkupId(true);
+        globals.setOutputMarkupPlaceholderTag(true);
         add(globals);
         
         endpoints = new WiringSubjectTree("endpoints");
         endpoints.getTreeState().expandAll();
+        endpoints.setOutputMarkupId(true);
+        endpoints.setOutputMarkupPlaceholderTag(true);
         add(endpoints);
         
         Form<Object> wiringForm = new Form<Object>("wiringForm");
         initWiringForm(wiringForm);
         add(wiringForm);
         
-        ((WiringSubjectTree)globals).setSubject(txtGlobalName);
-        ((WiringSubjectTree)endpoints).setSubject(txtInstanceId);
+        ((WiringSubjectTree) globals).setSubject(txtGlobalName);
+        ((WiringSubjectTree) endpoints).setSubject(txtInstanceId);
         
         feedbackPanel = new FeedbackPanel("feedbackPanel");
         feedbackPanel.setOutputMarkupId(true);
@@ -161,7 +167,6 @@ public class WiringPage extends BasePage {
         
         txtGlobalName = new TextField<String>("globalName");
         txtGlobalName.setOutputMarkupId(true);
-        txtGlobalName.setEnabled(false);
         form.add(txtGlobalName);
         txtInstanceId = new TextField<String>("instanceId");
         txtInstanceId.setOutputMarkupId(true);
@@ -172,16 +177,33 @@ public class WiringPage extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.debug("Start wiring");
-                if (globalName == null || globalName.isEmpty()) {
+                if (globalName == null || globalName.trim().isEmpty()) {
                     error(new StringResourceModel("globalNotSet", this, null).getString());
+                    target.addComponent(feedbackPanel);
                     return;
                 }
                 if (instanceId == null || instanceId.isEmpty()) {
                     error(new StringResourceModel("instanceIdNotSet", this, null).getString());
+                    target.addComponent(feedbackPanel);
                     return;
                 }
+                
                 try {
                     ConnectorId connectorId = ConnectorId.fromFullId(instanceId);
+                    String domainTypeOfGlobal = getDomainTypeOfGlobal(globalName);
+                    String domainTypeOfService = getDomainTypeOfServiceName(connectorId.getDomainType());
+                    if (domainTypeOfGlobal != null) {
+                        if (alreadySetForOtherDomain(domainTypeOfGlobal, domainTypeOfService)) {
+                            info(new StringResourceModel("globalAlreadySet", this, null).getString());
+                            target.addComponent(feedbackPanel);
+                            LOGGER.info("cannot wire {} to {}, because {} has type {}", 
+                                new Object[] {globalName, instanceId, globalName, domainTypeOfGlobal});
+                            return;
+                        }
+                    } else {
+                        ruleManager.addGlobal(domainTypeOfService, globalName);
+                        LOGGER.info("created global {} of type {}", globalName, domainTypeOfService);
+                    }
                     ConnectorDescription description = serviceManager.getAttributeValues(connectorId);
                     String context = getContext();
                     if (setLocation(globalName, context, description.getProperties())) {
@@ -204,9 +226,25 @@ public class WiringPage extends BasePage {
                 }
             }
         };
-        wireButton.setOutputMarkupId(true);
-        wireButton.setEnabled(false);
         form.add(wireButton);
+    }
+
+    private String getDomainTypeOfServiceName(String domainName) {
+        Filter filter = 
+            serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
+        DomainProvider dp = (DomainProvider) serviceUtils.getService(filter);
+        if (dp == null || dp.getDomainInterface() == null) {
+            return null;
+        }
+        return dp.getDomainInterface().getCanonicalName();
+    }
+
+    private String getDomainTypeOfGlobal(String glob) {
+        return ruleManager.getGlobalType(glob);
+    }
+
+    private boolean alreadySetForOtherDomain(String domainTypeOfGlobal, String domainTypeOfService) {
+        return domainTypeOfGlobal != null && !domainTypeOfGlobal.equals(domainTypeOfService);
     }
 
     private String getContext() {
@@ -280,23 +318,10 @@ public class WiringPage extends BasePage {
             }
         };
     }
-    
-    private void maybeMakeWiringPossible(AjaxRequestTarget target) {
-        if (globalName == null || globalName.isEmpty()) {
-            return;
-        }
-        if (instanceId == null || instanceId.isEmpty()) {
-            return;
-        }
-        wireButton.setEnabled(true);
-        target.addComponent(wireButton);
-    }
 
     private void resetWiringForm(AjaxRequestTarget target) {
         globalName = "";
         instanceId = "";
-        wireButton.setEnabled(false);
-        target.addComponent(wireButton);
         target.addComponent(txtGlobalName);
         target.addComponent(txtInstanceId);
     }
@@ -323,6 +348,7 @@ public class WiringPage extends BasePage {
         
         public WiringSubjectTree(String id) {
             super(id);
+             
         }
         
         @Override
@@ -333,7 +359,6 @@ public class WiringPage extends BasePage {
             }
             subject.setDefaultModelObject(mnode.getUserObject());
             target.addComponent(subject);
-            maybeMakeWiringPossible(target);
         }
 
         @Override
