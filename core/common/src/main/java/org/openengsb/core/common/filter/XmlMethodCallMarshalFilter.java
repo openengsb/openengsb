@@ -36,14 +36,14 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     }
 
     @Override
-    public Document apply(Document input) throws FilterException {
+    public Document filter(Document input) throws FilterException {
         MethodCall call;
         try {
             call = parseMethodCall(input);
         } catch (JAXBException e) {
             throw new FilterException(e);
         }
-        MethodReturn result = next.apply(call);
+        MethodReturn result = next.filter(call);
         return serializeResult(result);
     }
 
