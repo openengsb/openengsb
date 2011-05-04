@@ -21,24 +21,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.markup.html.tree.LabelTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -46,13 +55,13 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -83,6 +92,7 @@ public class WiringPage extends BasePage {
     private LinkTree endpoints;
     private TextField<String> txtGlobalName;
     private TextField<String> txtInstanceId;
+    private CheckedTree contextList;
     private AjaxSubmitLink wireButton;
     private FeedbackPanel feedbackPanel;
     
@@ -173,10 +183,14 @@ public class WiringPage extends BasePage {
         txtInstanceId.setEnabled(false);
         form.add(txtInstanceId);
         
+        contextList = new CheckedTree("contextList", createContextModel());
+        contextList.getTreeState().expandAll();
+        form.add(contextList);
+        
         wireButton = new AjaxSubmitLink("wireButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                LOGGER.debug("Start wiring");
+                LOGGER.debug("Start wiring {} with {}", globalName, instanceId);
                 if (globalName == null || globalName.trim().isEmpty()) {
                     error(new StringResourceModel("globalNotSet", this, null).getString());
                     target.addComponent(feedbackPanel);
@@ -187,16 +201,22 @@ public class WiringPage extends BasePage {
                     target.addComponent(feedbackPanel);
                     return;
                 }
-                
+                if (contextList.getAllChecked().isEmpty()) {
+                    error(new StringResourceModel("contextNotSet", this, null).getString());
+                    target.addComponent(feedbackPanel);
+                    return;
+                }
+                ConnectorId connectorId = null;
+                ConnectorDescription description = null;
                 try {
-                    ConnectorId connectorId = ConnectorId.fromFullId(instanceId);
+                    connectorId = ConnectorId.fromFullId(instanceId);
                     String domainTypeOfGlobal = getDomainTypeOfGlobal(globalName);
                     String domainTypeOfService = getDomainTypeOfServiceName(connectorId.getDomainType());
                     if (domainTypeOfGlobal != null) {
                         if (alreadySetForOtherDomain(domainTypeOfGlobal, domainTypeOfService)) {
                             info(new StringResourceModel("globalAlreadySet", this, null).getString());
                             target.addComponent(feedbackPanel);
-                            LOGGER.info("cannot wire {} to {}, because {} has type {}", 
+                            LOGGER.info("cannot wire {} with {}, because {} has type {}", 
                                 new Object[] {globalName, instanceId, globalName, domainTypeOfGlobal});
                             return;
                         }
@@ -204,29 +224,48 @@ public class WiringPage extends BasePage {
                         ruleManager.addGlobal(domainTypeOfService, globalName);
                         LOGGER.info("created global {} of type {}", globalName, domainTypeOfService);
                     }
-                    ConnectorDescription description = serviceManager.getAttributeValues(connectorId);
-                    String context = getContext();
+                    description = serviceManager.getAttributeValues(connectorId);
+                } catch (Exception e) {
+                    errorWithException(new StringResourceModel("wiringInitError", this, null).getString(), e);
+                    resetWiringForm(target);
+                    return;
+                }
+                boolean updated = false;
+                ValueMap vmap = new ValueMap();
+                vmap.put("globalName", globalName);
+                for (String context : contextList.getAllChecked()) {
+                    vmap.put("context", context);
+                    Model<ValueMap> vmapModel = new Model<ValueMap>(vmap);
                     if (setLocation(globalName, context, description.getProperties())) {
-                        serviceManager.forceUpdate(connectorId, description);
-                        info(new StringResourceModel("wiringSuccess", this, null).getString());
+                        updated = true;
+                        info(new StringResourceModel("wiringSuccess", this, vmapModel).getString());
                         LOGGER.info("{} got wired with {} in context {}", 
                             new Object[] { globalName, instanceId, context });
                     } else {
-                        info(new StringResourceModel("doubleWiring", this, null).getString());
+                        info(new StringResourceModel("doubleWiring", this, vmapModel).getString());
                         LOGGER.info("{} already wired with {} in context {}", 
                             new Object[] { globalName, instanceId, context });
                     }
-                } catch (Exception e) {
-                    String message = new StringResourceModel("wiringError", this, null).getString();
-                    error(message + "\n" + e.getLocalizedMessage());
-                    LOGGER.error("Error during wiring", e);
-                } finally {
-                    target.addComponent(feedbackPanel);
+                }
+                if (updated) {
+                    try {
+                        serviceManager.forceUpdate(connectorId, description);
+                    } catch (Exception e) {
+                        errorWithException(new StringResourceModel("wiringError", this, null).getString(), e);
+                    } finally {
+                        resetWiringForm(target);
+                    }
+                } else {
                     resetWiringForm(target);
                 }
             }
         };
         form.add(wireButton);
+    }
+
+    private void errorWithException(String message, Exception e) {
+        error(message + "\n" + e.getLocalizedMessage());
+        LOGGER.error("Error during wiring", e);
     }
 
     private String getDomainTypeOfServiceName(String domainName) {
@@ -245,14 +284,6 @@ public class WiringPage extends BasePage {
 
     private boolean alreadySetForOtherDomain(String domainTypeOfGlobal, String domainTypeOfService) {
         return domainTypeOfGlobal != null && !domainTypeOfGlobal.equals(domainTypeOfService);
-    }
-
-    private String getContext() {
-        String context = ContextHolder.get().getCurrentContextId();
-        if (context == null) { //should never be normally at deployment
-            context = "root";
-        }
-        return context;
     }
 
     /**
@@ -318,12 +349,21 @@ public class WiringPage extends BasePage {
             }
         };
     }
+    
+    private TreeModel createContextModel() {
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Contexts");
+        for (String c : getAvailableContexts()) {
+            rootNode.add(new DefaultMutableTreeNode(c)); 
+        }
+        return new DefaultTreeModel(rootNode);
+    }
 
     private void resetWiringForm(AjaxRequestTarget target) {
         globalName = "";
         instanceId = "";
         target.addComponent(txtGlobalName);
         target.addComponent(txtInstanceId);
+        target.addComponent(feedbackPanel);
     }
 
     public String getGlobalName() {
@@ -375,4 +415,49 @@ public class WiringPage extends BasePage {
         }
     }
 
+    @SuppressWarnings("serial")
+    public static class CheckedTree extends LabelTree {
+        private Map<String, IModel<Boolean>> checks = new HashMap<String, IModel<Boolean>>();
+        
+        public CheckedTree(String id, TreeModel model) {
+            super(id, model);
+        }
+
+        @Override
+        protected Component newNodeComponent(String id, IModel<Object> model) {
+            DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) model.getObject();
+            if (mnode.isRoot()) {
+                return super.newNodeComponent(id, model);
+            }
+            String name = (String) mnode.getUserObject();
+            Model<String> labelModel = new Model<String>();
+            labelModel.setObject(name);
+            Model<Boolean> checkModel = new Model<Boolean>();
+            checkModel.setObject(Boolean.FALSE);
+            checks.put(name, checkModel);
+            return new CheckedPanel(id, checkModel, labelModel);
+        }
+
+        @Override
+        protected Component newJunctionLink(MarkupContainer parent, final String id, final Object node) {
+            return new WebMarkupContainer(id) {
+                @Override
+                protected void onComponentTag(ComponentTag tag) {
+                    super.onComponentTag(tag);
+                    tag.setName("span");
+                    tag.put("class", "junction-corner");
+                }
+            };
+        }
+
+        public Set<String> getAllChecked() {
+            Set<String> checked = new HashSet<String>();
+            for (Entry<String, IModel<Boolean>> e : checks.entrySet()) {
+                if (Boolean.TRUE.equals(e.getValue().getObject())) {
+                    checked.add(e.getKey());
+                }
+            }
+            return checked;
+        }
+    }
 }
