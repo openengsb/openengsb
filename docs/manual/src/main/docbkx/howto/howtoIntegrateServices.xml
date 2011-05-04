@@ -98,7 +98,7 @@
       <caption>tutorial project package</caption>
     </mediaobject>
 
-    <para>You may download and extract the openengsb-tutorial (<link xlink:href="http://www.openengsb.org/howto/openengsb-tutorial.zip">download</link>) project that works out of the box or set up your own sample project via maven archetypes. Put the project files in a memorable location (i.e. "/home/user/Desktop/openengsb-tutorial" or "C:\users\user\desktop\openengsb-tutorial") and that's about it for now.</para>
+    <para>You may download and extract the openengsb-tutorial (<link xlink:href="${repos.example}-citutorial.zip">download</link>) project that works out of the box or set up your own sample project via maven archetypes. Put the project files in a memorable location (i.e. "/home/user/Desktop/openengsb-tutorial" or "C:\users\user\desktop\openengsb-tutorial") and that's about it for now.</para>
   </section>
 
   <section>
