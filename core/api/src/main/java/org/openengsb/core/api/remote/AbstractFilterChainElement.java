@@ -8,7 +8,7 @@ public abstract class AbstractFilterChainElement<InputType, OutputType> extends
         super(inputType, outputType);
     }
 
-    protected final void checkNextInputAndOutputTypes(FilterAction<?, ?> next,
+    protected static final void checkNextInputAndOutputTypes(FilterAction<?, ?> next,
             Class<?> inputType, Class<?> outputType) throws FilterConfigurationException {
         if (!next.getSupportedInputType().isAssignableFrom(inputType)) {
             throw new FilterConfigurationException(String.format("inputTypes are not compatible (%s - %s)",
