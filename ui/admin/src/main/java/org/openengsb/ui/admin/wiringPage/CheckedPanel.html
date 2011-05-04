@@ -21,30 +21,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
 <body>
-<wicket:extend>
-
-    <form wicket:id="domainChooseForm">
-      <div>
-        <select wicket:id="domains" />
-      </div>
-    </form>
-    <br />
-    <div wicket:id="globals"></div>
-    <div wicket:id="endpoints"></div>
-    <br />
-    <form wicket:id="wiringForm">
-      <div>
-        <label for="globalName"><wicket:message key="globalName.description" /></label><br />
-        <input wicket:id="globalName" id="globalName" type="text" size="50" /><br />
-        <label for="instanceId"><wicket:message key="instanceId.description" /></label><br />
-        <input wicket:id="instanceId" id="instanceId" type="text" size="50" /><br />
-        <br />
-        <div wicket:id="contextList"></div><br />
-        <input wicket:id="wireButton" type="submit" wicket:message="value:wire" />
-      </div>
-    </form>
-    <span wicket:id="feedbackPanel">[feedback]</span>
-
-</wicket:extend>
+<wicket:panel>
+  <input type="checkbox" wicket:id="check" />
+  <label wicket:id="label"></label>
+</wicket:panel>
 </body>
 </html>

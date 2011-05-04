@@ -27,9 +27,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -54,13 +56,14 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.core.common.util.DictionaryUtils;
 import org.openengsb.ui.admin.AbstractUITest;
+import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
 
 public class WiringPageTest extends AbstractUITest {
 
@@ -86,6 +89,16 @@ public class WiringPageTest extends AbstractUITest {
         when(ruleManager.getGlobalType(globTest)).thenReturn(globals.get(globTest));
         when(ruleManager.getGlobalType(anotherGlob)).thenReturn(globals.get(anotherGlob));
         context.putBean(ruleManager);
+        List<String> contextList = new ArrayList<String>();
+        contextList.add("bar");
+        contextList.add("one");
+        contextList.add("two");
+        contextList.add("twotimes1");
+        contextList.add("twotimes2");
+        contextList.add("foo");
+        ContextCurrentService contextService = 
+            (ContextCurrentService) context.getBean((mock(ContextCurrentService.class)).getClass().getName());
+        when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
         tester.getApplication()
             .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
@@ -104,6 +117,7 @@ public class WiringPageTest extends AbstractUITest {
         tester.assertComponent("wiringForm:wireButton", AjaxSubmitLink.class);
         tester.assertComponent("wiringForm:instanceId", TextField.class);
         tester.assertComponent("feedbackPanel", FeedbackPanel.class);
+        tester.assertComponent("wiringForm:contextList", CheckedTree.class);
     }
     
     @Test
@@ -114,6 +128,14 @@ public class WiringPageTest extends AbstractUITest {
         assertThat(domains.getChoices().size(), is(2));
         assertThat(domains.getChoices().get(0), IsAssignableFrom.isAssignableFrom(AnotherTestDomainInterface.class));
         assertThat(domains.getChoices().get(1), IsAssignableFrom.isAssignableFrom(TestDomainInterface.class));
+    }
+    
+    @Test
+    public void contextList_shouldBeLoaded() {
+        CheckedTree globals = (CheckedTree) tester.getComponentFromLastRenderedPage("wiringForm:contextList");
+        TreeModel tree = globals.getModelObject();
+        assertThat(tree.getChildCount(tree.getRoot()), is(6));
+        assertThat(tree.getChild(tree.getRoot(), 0).toString(), is("bar"));
     }
     
     @Test
@@ -154,20 +176,20 @@ public class WiringPageTest extends AbstractUITest {
     public void wire_NewLocationProperty_shouldUpdateServiceProperties() {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
+        selectContext(1); //bar
         setGlobal(globTest);
-        ContextHolder.get().setCurrentContextId("bar");
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
         assertThat(DictionaryAsMap.wrap(description.getProperties()), hasEntry("location.bar", (Object) globTest));
     }
-    
+
     @Test
     public void wire_UpdateExistingLocation_shouldUpdateServiceProperties() {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
-        ContextHolder.get().setCurrentContextId("one");
+        selectContext(2); //one
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
@@ -183,7 +205,7 @@ public class WiringPageTest extends AbstractUITest {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
-        ContextHolder.get().setCurrentContextId("two");
+        selectContext(3); //two
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
@@ -198,12 +220,13 @@ public class WiringPageTest extends AbstractUITest {
     public void wire_theSameGlobalTwoTimes_shouldNotUpdateServiceProperties() {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
-        setGlobal(globTest);;
-        ContextHolder.get().setCurrentContextId("twotimes1");
+        setGlobal(globTest);
+        selectContext(4); //twotimes1
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
-        assertThat(description.getProperties().get("location.twotimes1"), is(startproperties.get("location.twotimes1")));
+        assertThat(description.getProperties().get("location.twotimes1"), 
+            is(startproperties.get("location.twotimes1")));
     }
     
     @Test
@@ -211,11 +234,12 @@ public class WiringPageTest extends AbstractUITest {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
         setGlobal(globTest);
-        ContextHolder.get().setCurrentContextId("twotimes2");
+        selectContext(5); //twotimes2
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
-        assertThat(description.getProperties().get("location.twotimes2"), is(startproperties.get("location.twotimes2")));
+        assertThat(description.getProperties().get("location.twotimes2"), 
+            is(startproperties.get("location.twotimes2")));
     }
     
     @Test
@@ -223,7 +247,7 @@ public class WiringPageTest extends AbstractUITest {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
         setGlobal("newGlob");
-        ContextHolder.get().setCurrentContextId("bar");
+        selectContext(1); //bar
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         verify(ruleManager).addGlobal(TestDomainInterface.class.getCanonicalName(), "newGlob");
@@ -236,7 +260,7 @@ public class WiringPageTest extends AbstractUITest {
         selectDomain(1); //TestDomainInterface
         selectFirstEndpoint();
         setGlobal(anotherGlob);
-        ContextHolder.get().setCurrentContextId("one");
+        selectContext(2); //one
         tester.clickLink("wiringForm:wireButton");
         tester.assertNoErrorMessage();
         ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
@@ -250,6 +274,20 @@ public class WiringPageTest extends AbstractUITest {
         tester.executeAjaxEvent("domainChooseForm:domains", "onchange");
     }
     
+    @Test
+    public void wire_MultipleContexts_shouldUpdateServiceProperties() {
+        selectDomain(1); //TestDomainInterface
+        selectFirstEndpoint();
+        setGlobal(globTest);
+        selectContext(1); //bar
+        selectContext(6); //foo
+        tester.clickLink("wiringForm:wireButton");
+        tester.assertNoErrorMessage();
+        ConnectorDescription description = serviceManager.getAttributeValues(testdomainConnectorId);
+        assertThat(DictionaryAsMap.wrap(description.getProperties()), hasEntry("location.bar", (Object) globTest));
+        assertThat(DictionaryAsMap.wrap(description.getProperties()), hasEntry("location.foo", (Object) globTest));
+    }
+    
     private void setGlobal(String global) {
         tester.setParameterForNextRequest("wiringForm:globalName", global);
     }
@@ -260,6 +298,10 @@ public class WiringPageTest extends AbstractUITest {
     
     private void selectFirstEndpoint() {
         tester.clickLink("endpoints:i:1:nodeComponent:contentLink");
+    }
+    
+    private void selectContext(int i) {
+        tester.setParameterForNextRequest("wiringForm:contextList:i:" + i + ":nodeComponent:check", true);
     }
     
     private void createConnectors() throws Exception {
