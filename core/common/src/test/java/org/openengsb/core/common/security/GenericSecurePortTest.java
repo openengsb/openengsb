@@ -19,6 +19,7 @@ package org.openengsb.core.common.security;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -28,27 +29,34 @@ import static org.mockito.Mockito.when;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.model.BeanDescription;
+import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
-import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
 public abstract class GenericSecurePortTest<EncodingType> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecurePortTest.class);
 
     private static final String PUBLIC_KEY_64 = ""
             + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS"
@@ -69,57 +77,48 @@ public abstract class GenericSecurePortTest<EncodingType> {
             + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
             + "Ky/vHQD1rMM=";
 
-    private SecureRequestHandler<EncodingType> secureRequestHandler;
+    protected FilterAction secureRequestHandler;
+    protected FilterAction requestHandler;
+    protected KeyGeneratorUtils keyGenUtil;
+    protected BinaryMessageCryptoUtil cryptoUtil;
+    protected PublicKey serverPublicKey;
+    protected PrivateKey serverPrivateKey;
+    protected AuthenticationManager authManager;
 
-    private KeyGeneratorUtils keyGenUtil;
-
-    private MessageCryptoUtil<EncodingType> cryptoUtil;
-
-    private PublicKey serverPublicKey;
-
-    private PrivateKey serverPrivateKey;
-
-    private AuthenticationManager authManager;
-
-    private RequestHandler realHandler;
-
+    @SuppressWarnings("unchecked")
     @Before
-    public void setUp() throws Exception {
-        cryptoUtil = getMessageCryptoUtil();
+    public void setupInfrastructure() throws Exception {
+        cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
         keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
         KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
         serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
-        setupRequestHandler();
+        requestHandler = mock(FilterAction.class);
+        authManager = mock(AuthenticationManager.class);
+        when(requestHandler.filter(any(MethodCall.class), any(Map.class))).thenAnswer(new Answer<MethodResult>() {
+            @Override
+            public MethodResult answer(InvocationOnMock invocation) throws Throwable {
+                MethodCall call = (MethodCall) invocation.getArguments()[0];
+                return new MethodResult(call.getArgs()[0]);
+            }
+        });
+        secureRequestHandler = getSecureRequestHandlerFilterChain();
     }
 
-    protected abstract MessageCryptoUtil<EncodingType> getMessageCryptoUtil() throws Exception;
+    protected abstract FilterAction getSecureRequestHandlerFilterChain() throws Exception;
 
-    protected abstract SecureRequestHandler<EncodingType> getSecureRequestHandler() throws Exception;
+    protected abstract EncodingType encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey)
+        throws Exception;
 
-    protected abstract EncodingType encode(Object o) throws Exception;
-
-    protected abstract <T> T decode(EncodingType encoded, Class<T> objectClass) throws Exception;
+    protected abstract SecureResponse decryptAndDecode(EncodingType message, SecretKey sessionKey) throws Exception;
 
     @Test
     public void testDefaultImpls() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
+        SecureResponse response = processRequest(secureRequest);
 
-        SecretKey sessionKey = keyGenUtil.generateKey();
-        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
-
-        EncodingType serializedRequest = encode(secureRequest);
-        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
-
-        EncryptedMessage<EncodingType> encryptedMessage =
-            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
-
-        EncodingType encodedResponse = secureRequestHandler.handleRequest(encode(encryptedMessage));
-        EncodingType decryptedResponse = cryptoUtil.decrypt(encodedResponse, sessionKey);
-
-        SecureResponse secureResponse = decode(decryptedResponse, SecureResponse.class);
-        MethodResult mr = secureResponse.getMessage();
-        assertThat((Long) mr.getArg(), is(new Long(43)));
+        MethodResult mr = response.getMessage();
+        assertThat((String) mr.getArg(), is("42"));
     }
 
     private SecureRequest prepareSecureRequest() {
@@ -136,39 +135,27 @@ public abstract class GenericSecurePortTest<EncodingType> {
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
 
-        SecretKey sessionKey = keyGenUtil.generateKey();
-        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
-
-        EncodingType serializedRequest = encode(secureRequest);
-        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
-
-        EncryptedMessage<EncodingType> encryptedMessage =
-            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
         try {
-            secureRequestHandler.handleRequest(encode(encryptedMessage));
-        } catch (Exception e) {
-            assertThat(e, is(BadCredentialsException.class));
+            processRequest(secureRequest);
+            fail("Expected exception");
+        } catch (BadCredentialsException e) {
+            // expected, because thrown earlier
         }
-
-        verify(realHandler, never()).handleCall(any(MethodCall.class));
+        verify(requestHandler, never()).filter(any(MethodCall.class), any(Map.class));
     }
 
-    @Test(expected = MessageVerificationFailedException.class)
+    @Test
     public void testManipulateMessage() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
 
         secureRequest.getMessage().setArgs(new Object[]{ "43" }); // manipulate message
 
-        SecretKey sessionKey = keyGenUtil.generateKey();
-        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
-
-        EncodingType serializedRequest = encode(secureRequest);
-        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
-
-        EncryptedMessage<EncodingType> encryptedMessage =
-            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
-
-        secureRequestHandler.handleRequest(encode(encryptedMessage));
+        try {
+            processRequest(secureRequest);
+            fail("Exception expected");
+        } catch (FilterException e) {
+            assertThat(e.getCause(), is(MessageVerificationFailedException.class));
+        }
     }
 
     @Test
@@ -176,30 +163,26 @@ public abstract class GenericSecurePortTest<EncodingType> {
         SecureRequest secureRequest = prepareSecureRequest();
 
         SecretKey sessionKey = keyGenUtil.generateKey();
-        EncodingType encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
-
-        EncodingType serializedRequest = encode(secureRequest);
-        EncodingType encryptedRequest = cryptoUtil.encrypt(serializedRequest, sessionKey);
-
-        EncryptedMessage<EncodingType> encryptedMessage =
-            new EncryptedMessage<EncodingType>(encryptedRequest, encryptedKey);
-
-        EncodingType encodedEncryptedMessage = encode(encryptedMessage);
-        secureRequestHandler.handleRequest(encodedEncryptedMessage);
-        secureRequestHandler.handleRequest(encodedEncryptedMessage);
+        EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
+        secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
+        secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
     }
 
-    private void setupRequestHandler() throws Exception {
-        secureRequestHandler = getSecureRequestHandler();
-        secureRequestHandler.setCryptUtil(cryptoUtil);
-        secureRequestHandler.setPrivateKey(serverPrivateKey);
-        secureRequestHandler.setMessageVerifier(new MessageVerifier());
-        authManager = mock(AuthenticationManager.class);
-        secureRequestHandler.setAuthManager(authManager);
+    private SecureResponse processRequest(SecureRequest secureRequest) throws Exception {
+        SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
+        logRequest(encryptedRequest);
+        EncodingType encodedResponse =
+            (EncodingType) secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
+        logRequest(encodedResponse);
+        return decryptAndDecode(encodedResponse, sessionKey);
+    }
 
-        realHandler = mock(RequestHandler.class);
-        MethodResult ref = new MethodResult(new Long(43L));
-        when(realHandler.handleCall(any(MethodCall.class))).thenReturn(ref);
-        secureRequestHandler.setRealHandler(realHandler);
+    private static void logRequest(Object o) {
+        if (o.getClass().isArray()) {
+            LOGGER.info(ArrayUtils.toString(o));
+        } else {
+            LOGGER.info(o.toString());
+        }
     }
 }

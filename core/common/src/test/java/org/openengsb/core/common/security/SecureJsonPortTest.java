@@ -17,65 +17,78 @@
 
 package org.openengsb.core.common.security;
 
-import java.io.IOException;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+
+import javax.crypto.SecretKey;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.security.MarshalException;
+import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.security.MessageCryptoUtil;
-import org.openengsb.core.api.security.model.EncryptedMessage;
+import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller;
+import org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter;
+import org.openengsb.core.common.security.filter.MessageAuthenticatorFactory;
+import org.openengsb.core.common.security.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.common.security.filter.MessageVerifierFilter;
+import org.openengsb.core.common.security.filter.WrapperFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SecureJsonPortTest extends GenericSecurePortTest<String> {
+public class SecureJsonPortTest extends GenericSecurePortTest<byte[]> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureJsonPortTest.class);
 
     private ObjectMapper mapper = new ObjectMapper();
+    private MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
 
     @Override
-    protected MessageCryptoUtil<String> getMessageCryptoUtil() {
-        return new StringMessageCryptoUtil(AlgorithmConfig.getDefault());
+    protected SecureResponse decryptAndDecode(byte[] message, SecretKey sessionKey) throws Exception {
+        LOGGER.info("decrypting: " + new String(message));
+        byte[] decrypt = cryptoUtil.decrypt(message, sessionKey);
+        LOGGER.info("decoding: " + new String(decrypt));
+        return mapper.readValue(decrypt, SecureResponse.class);
     }
 
     @Override
-    protected SecureRequestHandler<String> getSecureRequestHandler() {
-        return new SecureRequestHandler<String>() {
-            @Override
-            public SecureRequest unmarshalRequest(String decrypt) {
-                try {
-                    return mapper.readValue(decrypt, SecureRequest.class);
-                } catch (IOException e) {
-                    throw new MarshalException(e);
-                }
-            }
+    protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
+        byte[] content = mapper.writeValueAsBytes(secureRequest);
+        LOGGER.info("encrypting: " + new String(content));
+        byte[] encryptedContent = cryptoUtil.encrypt(content, sessionKey);
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public EncryptedMessage<String> unmarshalContainer(String container) {
-                try {
-                    return mapper.readValue(container, EncryptedMessage.class);
-                } catch (IOException e) {
-                    throw new MarshalException(e);
-                }
-            }
-
-            @Override
-            public String marshalResponse(SecureResponse response) {
-                try {
-                    return mapper.writeValueAsString(response);
-                } catch (IOException e) {
-                    throw new MarshalException(e);
-                }
-            }
-        };
+        EncryptedBinaryMessage message = new EncryptedBinaryMessage();
+        message.setEncryptedContent(encryptedContent);
+        byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
+        message.setEncryptedKey(encryptedKey);
+        return mapper.writeValueAsBytes(message);
     }
 
     @Override
-    protected String encode(Object o) throws Exception {
-        return mapper.writeValueAsString(o);
-    }
+    protected FilterAction getSecureRequestHandlerFilterChain() {
+        FilterChainFactory<byte[], byte[]> factory = new FilterChainFactory<byte[], byte[]>(byte[].class, byte[].class);
+        ArrayList<Object> filters = new ArrayList<Object>();
+        filters.add(EncryptedJsonMessageMarshaller.class);
 
-    @Override
-    protected <T> T decode(String encoded, Class<T> objectClass) throws Exception {
-        return mapper.readValue(encoded, objectClass);
-    }
+        FilterChainElementFactory decrypterFactory = new MessageCryptoFilterFactory(serverPrivateKey);
+        filters.add(decrypterFactory);
 
+        filters.add(JsonSecureRequestMarshallerFilter.class);
+        filters.add(MessageVerifierFilter.class);
+
+        MessageAuthenticatorFactory messageAuthenticatorFactory = new MessageAuthenticatorFactory();
+        messageAuthenticatorFactory.setAuthenticationManager(authManager);
+        filters.add(messageAuthenticatorFactory);
+        filters.add(WrapperFilter.class);
+
+        FilterAction handler = mock(FilterAction.class);
+        filters.add(handler);
+
+        factory.setFilters(filters);
+        return factory.create();
+    }
 }

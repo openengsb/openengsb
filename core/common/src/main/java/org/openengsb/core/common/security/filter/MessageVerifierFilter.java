@@ -1,20 +1,27 @@
-package org.openengsb.core.common.security;
+package org.openengsb.core.common.security.filter;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
+import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.common.remote.AbstractFilterChainElement;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
-public class MessageVerifier {
+public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+
+    private FilterAction next;
 
     private long timeout = 10 * 60 * 1000; // 10 minutes
-
     private ConcurrentMap<AuthenticationInfo, Long> lastMessageTimestamp = new MapMaker()
         .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)
         .makeComputingMap(new Function<AuthenticationInfo, Long>() {
@@ -24,7 +31,27 @@ public class MessageVerifier {
             };
         });
 
-    public void verify(SecureRequest request) throws MessageVerificationFailedException {
+    public MessageVerifierFilter() {
+        super(SecureRequest.class, SecureResponse.class);
+    }
+
+    @Override
+    protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
+        try {
+            verify(input);
+        } catch (MessageVerificationFailedException e) {
+            throw new FilterException(e);
+        }
+        return (SecureResponse) next.filter(input, metaData);
+    }
+
+    @Override
+    public void setNext(FilterAction next) throws FilterConfigurationException {
+        checkNextInputAndOutputTypes(next, SecureRequest.class, SecureResponse.class);
+        this.next = next;
+    }
+
+    private void verify(SecureRequest request) throws MessageVerificationFailedException {
         checkOverallAgeOfRequest(request);
         verifyCheckSum(request);
         checkForReplayedMessage(request);
