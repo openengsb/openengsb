@@ -17,13 +17,24 @@
 
 package org.openengsb.core.common.security;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import javax.crypto.SecretKey;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterChainElement;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.security.MessageCryptoUtil;
+import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.common.remote.AbstractFilterChainElement;
+import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.security.filter.MessageCryptoFilterFactory;
 
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
@@ -32,7 +43,11 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
     @Override
     protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
         byte[] serialized = SerializationUtils.serialize(secureRequest);
-        return cryptoUtil.encrypt(serialized, sessionKey);
+        byte[] content = cryptoUtil.encrypt(serialized, sessionKey);
+        EncryptedBinaryMessage message = new EncryptedBinaryMessage();
+        message.setEncryptedContent(content);
+        message.setEncryptedKey(cryptoUtil.encryptKey(sessionKey, serverPublicKey));
+        return SerializationUtils.serialize(message);
     }
 
     @Override
@@ -43,8 +58,57 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
     @Override
     protected FilterAction getSecureRequestHandlerFilterChain() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        FilterChainElementFactory unpackerFactory = new FilterChainElementFactory() {
+            @Override
+            public FilterChainElement newInstance() throws FilterConfigurationException {
+                return new AbstractFilterChainElement<byte[], byte[]>(byte[].class, byte[].class) {
+                    private FilterAction next;
 
+                    @Override
+                    protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
+                        EncryptedBinaryMessage deserialize =
+                            (EncryptedBinaryMessage) SerializationUtils.deserialize(input);
+                        byte[] result = (byte[]) next.filter(deserialize, metaData);
+                        return result;
+                    }
+
+                    @Override
+                    public void setNext(FilterAction next) throws FilterConfigurationException {
+                        this.next = next;
+                    }
+                };
+            }
+        };
+        FilterChainElementFactory decrypterFactory =
+            new MessageCryptoFilterFactory(serverPrivateKey);
+        FilterChainElementFactory parserFactory = new FilterChainElementFactory() {
+            @Override
+            public FilterChainElement newInstance() throws FilterConfigurationException {
+                return new AbstractFilterChainElement<byte[], byte[]>(byte[].class, byte[].class) {
+                    private FilterAction next;
+
+                    @Override
+                    protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
+                        SecureRequest deserialize =
+                            (SecureRequest) SerializationUtils.deserialize(input);
+                        SecureResponse result = (SecureResponse) next.filter(deserialize, metaData);
+                        return SerializationUtils.serialize(result);
+                    }
+
+                    @Override
+                    public void setNext(FilterAction next) throws FilterConfigurationException {
+                        this.next = next;
+                    }
+                };
+            }
+        };
+
+        FilterChainFactory<byte[], byte[]> factory = new FilterChainFactory<byte[], byte[]>(byte[].class, byte[].class);
+        @SuppressWarnings("unchecked")
+        List<Object> asList =
+            Arrays.asList(unpackerFactory, decrypterFactory, parserFactory,
+                defaultSecureMethodCallFilterFactory.create());
+        factory.setFilters(asList);
+        return factory.create();
+    }
 }
