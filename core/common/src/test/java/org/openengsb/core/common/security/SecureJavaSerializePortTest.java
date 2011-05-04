@@ -19,25 +19,26 @@ package org.openengsb.core.common.security;
 
 import javax.crypto.SecretKey;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.commons.lang.SerializationUtils;
 import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
 
     @Override
     protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        byte[] serialized = SerializationUtils.serialize(secureRequest);
+        return cryptoUtil.encrypt(serialized, sessionKey);
     }
 
     @Override
     protected SecureResponse decryptAndDecode(byte[] message, SecretKey sessionKey) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        byte[] content = cryptoUtil.decrypt(message, sessionKey);
+        return (SecureResponse) SerializationUtils.deserialize(content);
     }
 
     @Override

@@ -48,6 +48,7 @@ import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
+import org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -84,6 +85,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     protected PublicKey serverPublicKey;
     protected PrivateKey serverPrivateKey;
     protected AuthenticationManager authManager;
+    protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -102,6 +104,10 @@ public abstract class GenericSecurePortTest<EncodingType> {
                 return new MethodResult(call.getArgs()[0]);
             }
         });
+        defaultSecureMethodCallFilterFactory = new DefaultSecureMethodCallFilterFactory();
+        defaultSecureMethodCallFilterFactory.setAuthenticationManager(authManager);
+        defaultSecureMethodCallFilterFactory.setHandler(requestHandler);
+
         secureRequestHandler = getSecureRequestHandlerFilterChain();
     }
 
