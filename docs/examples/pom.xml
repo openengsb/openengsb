@@ -58,6 +58,7 @@
         <configuration>
           <appendAssemblyId>true</appendAssemblyId>
           <descriptors>
+            <descriptor>src/main/descriptors/citutorial.xml</descriptor>
             <descriptor>src/main/descriptors/csharp.xml</descriptor>
             <descriptor>src/main/descriptors/perl.xml</descriptor>
             <descriptor>src/main/descriptors/python.xml</descriptor>
