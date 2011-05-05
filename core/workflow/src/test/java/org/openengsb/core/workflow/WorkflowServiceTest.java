@@ -385,4 +385,10 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(finished, is(false));
     }
 
+    @Test
+    public void testAddElementToDifferentPackage_shouldNotAddOpenEngSBFlows() throws Exception {
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "org.test", "testrule"), "when\nthen\n");
+        // Drools throws Exceptions when a flow does not belong to the package
+    }
+
 }
