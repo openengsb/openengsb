@@ -1,5 +1,8 @@
 package org.openengsb.core.api.remote;
 
+/**
+ * Indicates that an Exception has occured during Filter execution. So this Exception is used to wrap it.
+ */
 public class FilterException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

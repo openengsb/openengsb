@@ -1,9 +1,8 @@
-package org.openengsb.core.common.filter;
+package org.openengsb.core.common.remote;
 
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.remote.AbstractFilterChainElement;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -14,7 +13,7 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     private FilterAction<MethodCall, MethodReturn> next;
 
-    JsonMethodCallMarshalFilter() {
+    public JsonMethodCallMarshalFilter() {
         super(String.class, String.class);
     }
 

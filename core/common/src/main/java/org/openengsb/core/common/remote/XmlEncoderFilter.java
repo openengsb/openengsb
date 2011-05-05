@@ -1,4 +1,4 @@
-package org.openengsb.core.common.filter;
+package org.openengsb.core.common.remote;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -14,7 +14,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.openengsb.core.api.remote.AbstractFilterChainElement;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 import org.w3c.dom.Document;
@@ -28,7 +27,7 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
 
     private FilterAction<Document, Document> next;
 
-    XmlEncoderFilter() {
+    public XmlEncoderFilter() {
         super(String.class, String.class);
     }
 

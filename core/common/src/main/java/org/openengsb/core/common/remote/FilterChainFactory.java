@@ -1,4 +1,4 @@
-package org.openengsb.core.common;
+package org.openengsb.core.common.remote;
 
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +8,9 @@ import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 
+/**
+ * This class makes it possible to configure a FilterChain as a bean (e.g. via blueprint).
+ */
 public class FilterChainFactory<InputType, OutputType> {
 
     private List<FilterChainElementFactory<?, ?>> filters;
@@ -16,6 +19,11 @@ public class FilterChainFactory<InputType, OutputType> {
     private Class<InputType> inputType;
     private Class<OutputType> outputType;
 
+    /**
+     * The filters-list must be set. If the last-element is not set, the last element of the filters-list will be used.
+     *
+     * @throws FilterConfigurationException if the filters in the filter-list are not compatible with each other
+     */
     @SuppressWarnings("unchecked")
     public FilterAction<InputType, OutputType> create() throws FilterConfigurationException {
         Iterator<FilterChainElementFactory<?, ?>> iterator = filters.iterator();
