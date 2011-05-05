@@ -1,4 +1,4 @@
-package org.openengsb.core.common.filter;
+package org.openengsb.core.common.remote;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMResult;
 
-import org.openengsb.core.api.remote.AbstractFilterChainElement;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
@@ -24,7 +23,7 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     private Marshaller marshaller;
     private Unmarshaller unmarshaller;
 
-    XmlMethodCallMarshalFilter() {
+    public XmlMethodCallMarshalFilter() {
         super(Document.class, Document.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCall.class, MethodReturn.class);

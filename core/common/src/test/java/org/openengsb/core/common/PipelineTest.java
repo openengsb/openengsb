@@ -29,10 +29,11 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
-import org.openengsb.core.common.filter.JsonMethodCallMarshalFilterFactory;
-import org.openengsb.core.common.filter.XmlEncoderFilter;
-import org.openengsb.core.common.filter.XmlEncoderFilterFactory;
-import org.openengsb.core.common.filter.XmlMethodCallMarshalFilterFactory;
+import org.openengsb.core.common.remote.DefaultFilterChainElementFactory;
+import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
+import org.openengsb.core.common.remote.XmlEncoderFilter;
+import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -63,7 +64,9 @@ public class PipelineTest {
 
         List<FilterChainElementFactory<? extends Object, ?>> asList =
             new ArrayList<FilterChainElementFactory<? extends Object, ?>>();
-        asList.add(new JsonMethodCallMarshalFilterFactory());
+        asList.add(new DefaultFilterChainElementFactory<String, String>(
+            JsonMethodCallMarshalFilter.class));
+        // asList.add(new JsonMethodCallMarshalFilterFactory());
         filterChainFactory.setFilters(asList);
         filterChainFactory.setLast(requestHandlerMock);
 
@@ -71,7 +74,7 @@ public class PipelineTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
-        methodCall.setArgs(new Object[] { "foo" });
+        methodCall.setArgs(new Object[]{ "foo" });
         methodCall.setCallId("bar");
         String input = objectMapper.writeValueAsString(methodCall);
         String result = filterChain.filter(input);
@@ -84,16 +87,20 @@ public class PipelineTest {
     public void testArchWithXml() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
+        FilterChainElementFactory<String, String> encoderFactory =
+            new DefaultFilterChainElementFactory<String, String>(XmlEncoderFilter.class);
+        FilterChainElementFactory<Document, Document> marshalFactory =
+            new DefaultFilterChainElementFactory<Document, Document>(XmlMethodCallMarshalFilter.class);
+
         @SuppressWarnings("unchecked")
-        List<FilterChainElementFactory<? extends Object, ?>> asList = Arrays.asList(new XmlEncoderFilterFactory(),
-            new XmlMethodCallMarshalFilterFactory());
+        List<FilterChainElementFactory<? extends Object, ?>> asList = Arrays.asList(encoderFactory, marshalFactory);
         filterChainFactory.setFilters(asList);
         filterChainFactory.setLast(requestHandlerMock);
 
         FilterAction<String, String> filterChain = filterChainFactory.create();
 
         MethodCall call = new MethodCall();
-        call.setArgs(new Object[] { "foo" });
+        call.setArgs(new Object[]{ "foo" });
         call.setClasses(Arrays.asList(String.class.getName()));
         call.setCallId("bar");
 
@@ -119,9 +126,14 @@ public class PipelineTest {
     public void testCreateFilterWithIncompatibleFirst_shouldThrowFilterConfigurationException() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
+
+        FilterChainElementFactory<String, String> encoderFactory =
+            new DefaultFilterChainElementFactory<String, String>(XmlEncoderFilter.class);
+        FilterChainElementFactory<Document, Document> marshalFactory =
+            new DefaultFilterChainElementFactory<Document, Document>(XmlMethodCallMarshalFilter.class);
+
         @SuppressWarnings("unchecked")
-        List<FilterChainElementFactory<? extends Object, ?>> asList =
-            Arrays.asList(new XmlMethodCallMarshalFilterFactory(), new XmlEncoderFilterFactory());
+        List<FilterChainElementFactory<? extends Object, ?>> asList = Arrays.asList(marshalFactory, encoderFactory);
         filterChainFactory.setFilters(asList);
         filterChainFactory.create();
     }
@@ -130,10 +142,16 @@ public class PipelineTest {
     public void testCreateFilterWithIncompatibleElements_shouldThrowFilterConfigurationException() throws Exception {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
+
+        FilterChainElementFactory<String, String> encoderFactory =
+            new DefaultFilterChainElementFactory<String, String>(XmlEncoderFilter.class);
+        FilterChainElementFactory<Document, Document> marshalFactory =
+            new DefaultFilterChainElementFactory<Document, Document>(XmlMethodCallMarshalFilter.class);
+
         @SuppressWarnings("unchecked")
         List<FilterChainElementFactory<? extends Object, ?>> asList =
-            Arrays.asList(new XmlEncoderFilterFactory(), new XmlMethodCallMarshalFilterFactory(),
-                new XmlEncoderFilterFactory());
+            Arrays.asList(encoderFactory, marshalFactory, encoderFactory);
+
         filterChainFactory.setFilters(asList);
         filterChainFactory.create();
     }

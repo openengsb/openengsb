@@ -1,5 +1,8 @@
 package org.openengsb.core.api.remote;
 
+/**
+ * indicates that a FilterChain Configuration is invalid (often because of incompatible types).
+ */
 public class FilterConfigurationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
