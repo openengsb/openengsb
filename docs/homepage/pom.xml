@@ -288,6 +288,10 @@
                <name>write-back</name>
                <value>true</value>
              </property>
+             <property>
+               <name>wrap</name>
+               <value>68</value>
+             </property>
           </jtidyConfiguration>
         </configuration>
       </plugin>
