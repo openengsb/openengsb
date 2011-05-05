@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -40,6 +39,10 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 public class RulebaseBuilder {
 
@@ -102,14 +105,20 @@ public class RulebaseBuilder {
         log.info(String.format("Reloading the rulebase took %dms", System.currentTimeMillis() - start));
     }
 
-    private Collection<String> queryFlows(String packageName) {
+    private Collection<String> queryFlows(final String packageName) {
         Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Process);
-        Collection<String> result = new LinkedList<String>();
-        for (RuleBaseElementId id : list) {
-            String code = manager.get(id);
-            result.add(code);
-        }
-        return result;
+        Collection<RuleBaseElementId> filtered = Collections2.filter(list, new Predicate<RuleBaseElementId>() {
+            @Override
+            public boolean apply(RuleBaseElementId input) {
+                return input.getPackageName().equals(packageName);
+            }
+        });
+        return Collections2.transform(filtered, new Function<RuleBaseElementId, String>() {
+            @Override
+            public String apply(RuleBaseElementId input) {
+                return manager.get(input);
+            }
+        });
     }
 
     public void reloadPackage(String packageName) throws RuleBaseException {
