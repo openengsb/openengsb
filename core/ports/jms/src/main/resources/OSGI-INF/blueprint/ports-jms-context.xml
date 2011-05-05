@@ -38,7 +38,7 @@
     <service-properties>
       <entry key="id" value="jms-json" />
     </service-properties>
-    <ref component-id="portBean"/>
+    <ref component-id="portBean" />
   </service>
   
   <bean id="portBean" class="org.openengsb.core.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
@@ -50,5 +50,7 @@
     </bean>
   
   <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
+  <reference id="authenticationManager"
+    interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>
