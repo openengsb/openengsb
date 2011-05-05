@@ -20,6 +20,8 @@ package org.openengsb.ports.jms;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -47,6 +49,8 @@ import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.marshaling.RequestMapping;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSPortTest {
 
@@ -76,6 +80,10 @@ public class JMSPortTest {
 
     @Before
     public void setup() {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
 
