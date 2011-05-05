@@ -176,6 +176,14 @@
 
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
+      <artifactId>com.google.guava-all</artifactId>
+      <version>1.0.0.r08.w1</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.openengsb.wrapped</groupId>
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
       <scope>test</scope>
     </dependency>
