@@ -88,7 +88,7 @@ public class JMSPortTest {
         handler = Mockito.mock(RequestHandler.class);
         metaData = new HashMap<String, String>();
         metaData.put("test", "test");
-        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData, "123", true, null);
+        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData, "123", true);
         methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123");
     }
 

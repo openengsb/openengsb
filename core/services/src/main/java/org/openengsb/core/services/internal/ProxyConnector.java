@@ -31,6 +31,9 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
+
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
  * port-implementation (like jms+json)
@@ -63,9 +66,12 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
             return method.invoke(this, args);
         }
+        List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
+        List<String> paramTypeNames = Lists.transform(paramList, Functions.toStringFunction());
+
         MethodReturn callSync =
             callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata, UUID.randomUUID()
-                .toString(), true, null));
+                .toString(), true, paramTypeNames));
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();
