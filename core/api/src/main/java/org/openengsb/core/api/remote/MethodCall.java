@@ -53,6 +53,11 @@ public class MethodCall {
         this.classes = classes;
     }
 
+    public MethodCall(String methodName, Object[] args, Map<String, String> metaData, String callId, boolean answer) {
+        this(methodName, args, metaData, callId, answer, null);
+        classes = getRealClassImplementation();
+    }
+
     public String getCallId() {
         return callId;
     }
