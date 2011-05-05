@@ -32,8 +32,12 @@ import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.marshaling.RequestMapping;
 import org.openengsb.core.common.marshaling.ReturnMapping;
+import org.openengsb.core.security.BundleAuthenticationToken;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSPort implements OutgoingPort {
 
@@ -44,6 +48,7 @@ public class JMSPort implements OutgoingPort {
     private ConnectionFactory connectionFactory;
 
     private RequestHandler requestHandler;
+    private AuthenticationManager authenticationManager;
 
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
@@ -108,6 +113,7 @@ public class JMSPort implements OutgoingPort {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
+                        ensureAuthentication();
                         RequestMapping readValue = RequestMapping.createFromMessage(textMessage.getText());
                         readValue.resetArgs();
                         ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
@@ -127,6 +133,20 @@ public class JMSPort implements OutgoingPort {
             }
         });
         simpleMessageListenerContainer.start();
+    }
+
+    /**
+     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be removed as
+     * it grants universal access.
+     */
+    protected void ensureAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return;
+        }
+        BundleAuthenticationToken token = new BundleAuthenticationToken("openengsb-ports-jms", "");
+        authentication = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
@@ -149,5 +169,9 @@ public class JMSPort implements OutgoingPort {
 
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 }
