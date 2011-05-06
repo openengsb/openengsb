@@ -17,6 +17,7 @@
 package org.openengsb.core.ports.jms;
 
 import static junit.framework.Assert.assertNotNull;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
