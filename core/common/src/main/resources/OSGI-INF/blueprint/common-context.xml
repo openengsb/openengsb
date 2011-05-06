@@ -42,7 +42,9 @@
   </service>
   
   <service interface="org.openengsb.core.common.communication.RequestHandler">
-    <bean class="org.openengsb.core.common.internal.RequestHandlerImpl"/>
+    <bean class="org.openengsb.core.common.internal.RequestHandlerImpl">
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
   </service>
   
   <service interface="org.openengsb.core.common.proxy.ProxyFactory">
