@@ -13,6 +13,7 @@ Starting with this release the openengsb release name is now always displayed in
     * [OPENENGSB-1513] - package name is not considered when reloading rulebase
     * [OPENENGSB-1521] - bundleContext on RequestHandlerImpl bean is not set
     * [OPENENGSB-1522] - AuthenticationCredentialsNotFoundException thrown on jms call handle
+    * [OPENENGSB-1527] - NullPointerException thrown on JmsPort.ensureAuthentication
 
 ** Library Upgrade
     * [OPENENGSB-1355] - upgrade to openengsb-root-15
