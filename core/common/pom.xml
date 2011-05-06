@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.openengsb.core</groupId>
     <artifactId>openengsb-core-parent</artifactId>
-    <version>1.1.4.RELEASE</version>
+    <version>1.1.5-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.core</groupId>
   <artifactId>openengsb-core-common</artifactId>
-  <version>1.1.4.RELEASE</version>
+  <version>1.1.5-SNAPSHOT</version>
 
   <name>OpenEngSB :: Core :: Common </name>
 

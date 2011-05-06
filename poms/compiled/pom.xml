@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>1.1.4.RELEASE</version>
+    <version>1.1.5-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.build</groupId>
   <artifactId>compiled-bundle-settings</artifactId>
-  <version>1.1.4.RELEASE</version>
+  <version>1.1.5-SNAPSHOT</version>
 
   <name>OpenEngSB :: Plugin Configuration :: Compiled</name>
 
