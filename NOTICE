@@ -155,6 +155,7 @@ This project includes:
   OpenEngSB :: Domain :: Test under Apache 2
   OpenEngSB :: Domains :: Auditing :: Implementation under Apache 2
   OpenEngSB :: Integration Tests under Apache 2
+  OpenEngSB :: OSGi Wrapped Bundles :: Guava under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: HTML Unit Testing Framework under Apache 2
   OpenEngSB :: Parent under Apache 2
   OpenEngSB :: Plugin Configuration :: Compiled under Apache 2
