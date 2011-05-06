@@ -40,17 +40,17 @@
     </service-properties>
     <ref component-id="portBean" />
   </service>
-  
-  <bean id="portBean" class="org.openengsb.core.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
-      <property name="factory">
-        <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl" />
-      </property>
-      <property name="connectionFactory" ref="jmsFactory" />
-      <property name="requestHandler" ref="requestHandler" />
-    </bean>
-  
+
+  <bean id="portBean" class="org.openengsb.core.ports.jms.JMSPort" init-method="start" destroy-method="stop">
+    <property name="factory">
+      <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl" />
+    </property>
+    <property name="connectionFactory" ref="jmsFactory" />
+    <property name="requestHandler" ref="requestHandler" />
+    <property name="authenticationManager" ref="authenticationManager" />
+  </bean>
+
   <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
-  <reference id="authenticationManager"
-    interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>
