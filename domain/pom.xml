@@ -21,13 +21,13 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.1.4.RELEASE</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domain</groupId>
   <artifactId>openengsb-domain-parent</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.1.4.RELEASE</version>
 
 
   <name>OpenEngSB :: Domain :: Parent</name>

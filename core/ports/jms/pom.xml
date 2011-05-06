@@ -22,7 +22,7 @@
     <relativePath>..</relativePath>
     <groupId>org.openengsb.core.ports</groupId>
     <artifactId>openengsb-core-ports-parent</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.1.4.RELEASE</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.core.ports</groupId>
   <artifactId>openengsb-core-ports-jms</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.1.4.RELEASE</version>
 
   <name>OpenEngSB :: Core :: Ports :: JMS</name>
 
