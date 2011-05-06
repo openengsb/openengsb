@@ -1,3 +1,29 @@
+openengsb-1.1.4.RELEASE 2011-05-06
+-------------------------------------------------------
+
+Starting with this release the openengsb release name is now always displayed in the console. In addition we've fixed various bugs in the JMS communication and upgraded to the latest Karaf version. Please keep in mind that this will be the latest actively backported release of the 1.1.x branch (see http://openengsb.org/milestone/reference/faq.html#support for a detailed explaination).
+
+### Highlihgts
+  * Various JMS Bugfixes
+  * Latest Karaf bugfix version
+  * Include release name in Karaf console
+
+### Details
+** Bug
+    * [OPENENGSB-1513] - package name is not considered when reloading rulebase
+    * [OPENENGSB-1521] - bundleContext on RequestHandlerImpl bean is not set
+    * [OPENENGSB-1522] - AuthenticationCredentialsNotFoundException thrown on jms call handle
+
+** Library Upgrade
+    * [OPENENGSB-1355] - upgrade to openengsb-root-15
+    * [OPENENGSB-1474] - Upgrade to karaf-2.1.5
+
+** New Feature
+    * [OPENENGSB-1403] - Show openengsb name in karaf console branding
+
+** Task
+    * [OPENENGSB-1356] - release openengsb-1.1.4.RELEASE
+
 openengsb-1.1.3.RELEASE 2011-04-22
 -------------------------------------------------------
 
