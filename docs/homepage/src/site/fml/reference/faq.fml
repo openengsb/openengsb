@@ -109,6 +109,8 @@
           <p>Example:
           1.1.0.RELEASE was released 2011-03-08. 1.1.2.RELEASE was released 2011-03-22. Active support for 1.1.x will end 2011-06-08.
           After that bugs will be fixed on demand until 2011-09-08.</p>
+          <p>Exactly the same model is used for all other projects located at github.com/openengsb/, including
+          connectors, domains and other subprojects.</p>
           Due to limited resources, the community cannot offer further support for older versions.
         </answer>
     </faq>
