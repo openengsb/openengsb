@@ -1,0 +1,153 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.openengsb.core.edb;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.openengsb.core.edb.exceptions.EDBException;
+
+
+/**
+ * An ObjectDiff compares two EDBObjects of the same UID and stores their differences. Note that "objects" may be null
+ * in case they didn't exist, whereas commits must never be null!
+ */
+public class ObjectDiff {
+    private Commit commitA;
+    private Commit commitB;
+    private EDBObject stateA;
+    private EDBObject stateB;
+    private Map<String, Entry> diff;
+    private int differences;
+
+    public ObjectDiff(Commit ca, Commit cb, EDBObject oa, EDBObject ob) throws EDBException {
+        diff = new HashMap<String, Entry>();
+        differences = 0;
+        if (cb.getTimestamp() < ca.getTimestamp()) {
+            this.commitA = cb;
+            this.commitB = ca;
+            this.stateA = ob;
+            this.stateB = oa;
+        } else {
+            this.commitA = ca;
+            this.commitB = cb;
+            this.stateA = oa;
+            this.stateB = ob;
+        }
+        updateDiff();
+    }
+
+    private void updateDiff() throws EDBException {
+        if (stateA == null || stateB == null) {
+            throw new EDBException("Incomplete Diff object, cannot compare null states!");
+        }
+
+        diff.clear();
+        // Now create a mapping
+        List<String> keyList = new ArrayList<String>();
+        if (stateA != null) {
+            for (Map.Entry<String, Object> e : stateA.entrySet()) {
+                String key = e.getKey();
+                if (key.equals("_id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
+                    continue;
+                }
+                keyList.add(key);
+
+                Object first = e.getValue(); // Only from the compiler's point of view perhaps...
+                Object last = (stateB != null) ? stateB.get(key) : null;
+
+                if (last != null && first.equals(last)) {
+                    continue;
+                }
+                diff.put(key, new Entry(first, last));
+                ++differences;
+            }
+        }
+        keyList.add("_id");
+        keyList.add("@prevTimestamp");
+        keyList.add("@timestamp");
+
+        // Now we have all keys from stateA, now add the missing keys from stateB
+        if (stateB != null) {
+            for (Map.Entry<String, Object> e : stateB.entrySet()) {
+                String key = e.getKey();
+                if (keyList.contains(key)) {
+                    continue;
+                }
+                diff.put(key, new Entry(null, e.getValue()));
+                ++differences;
+            }
+        }
+    }
+
+    /**
+     * Get a map of all the fields which are different in the two provided states.
+     * 
+     * @return A Map from the field name to ObjectDiff.Entry
+     */
+    public Map<String, Entry> getDiffMap() {
+        return diff;
+    }
+
+    /**
+     * Get the number of fields which are not the same in both states.
+     * 
+     * @return The number of changes.
+     */
+    public final int getDifferenceCount() {
+        return differences;
+    }
+
+    /**
+     * Get the EDBObject at its initial state of the comparison.
+     * 
+     * @return The full object at its initial state.
+     */
+    public EDBObject getStartState() {
+        return stateA;
+    }
+
+    /**
+     * Get the EDBObject at its final state of the comparison.
+     * 
+     * @return The full object at its final state.
+     */
+    public EDBObject getEndState() {
+        return stateB;
+    }
+
+    /**
+     * Get the full commit object for the initial state.
+     * 
+     * @return The initial commit.
+     */
+    public Commit getStartCommit() {
+        return commitA;
+    }
+
+    /**
+     * Get the full commit object for the final state.
+     * 
+     * @return The final commit.
+     */
+    public Commit getEndCommit() {
+        return commitB;
+    }
+}

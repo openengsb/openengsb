@@ -60,6 +60,7 @@
     <module>workflow</module>
     <module>persistence</module>
     <module>security</module>
+    <module>edb</module>
   </modules>
 
 </project>
