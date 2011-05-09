@@ -28,6 +28,7 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.remote.FilterStorage;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.XmlEncoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
@@ -46,6 +47,7 @@ public class PipelineTest {
             @Override
             public MethodReturn answer(InvocationOnMock invocation) throws Throwable {
                 MethodCall input = (MethodCall) invocation.getArguments()[0];
+                FilterStorage.getStorage().put("callId", input.getCallId());
                 return new MethodReturn(ReturnType.Object, input.getArgs()[0], new HashMap<String, String>(), input
                         .getCallId());
             }
@@ -107,6 +109,25 @@ public class PipelineTest {
         value.setArg(value2);
         assertThat((String) value.getArg(), is("foo"));
         assertThat(value.getCallId(), is("bar"));
+    }
+
+    @Test
+    public void testFilterStorage() throws Exception {
+        FilterChainFactory<String, String> filterChainFactory =
+            new FilterChainFactory<String, String>(String.class, String.class);
+
+        List<Object> filters = Arrays.asList(new Object[]{ JsonMethodCallMarshalFilter.class, requestHandlerMock, });
+        filterChainFactory.setFilters(filters);
+
+        FilterAction filterChain = filterChainFactory.create();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        MethodCall methodCall = new MethodCall();
+        methodCall.setArgs(new Object[]{ "foo" });
+        methodCall.setCallId("bar");
+        String input = objectMapper.writeValueAsString(methodCall);
+        filterChain.filter(input);
+        assertThat((String) FilterStorage.getStorage().get("callId"), is("bar"));
     }
 
     @Test(expected = FilterConfigurationException.class)
