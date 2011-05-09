@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information regarding copyright
@@ -15,24 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.ports.jms;
+using System;
 
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.listener.SimpleMessageListenerContainer;
+namespace Connector
+{
+	/// <summary>
+	/// Represents the Alive State of the OpenEngSB. This object is used as response object in case of the
+	/// getAliveState method of each domain.
+	/// </summary>
+	public enum AliveState
+	{
+		/**
+		 * domain is connecting
+		 */
+		CONNECTING,
 
-/**
- * Internal factory to create jmsTemplates and message listeners.
- */
-public interface JMSTemplateFactory {
+		/**
+		 * domain is online, means it is connected and working
+		 */
+		ONLINE,
 
-    /**
-     * Creates a JMS Template taking the queue/topic and host settings from the destination param
-     */
-    JmsTemplate createJMSTemplate(DestinationUrl destination);
+		/**
+		 * domain is offline, means an error occurred and it has to be updated
+		 */
+		OFFLINE,
 
-    /**
-     * Creates a simple message listener container without any furhter configurations. Those have to be done by the
-     * client.
-     */
-    SimpleMessageListenerContainer createMessageListenerContainer();
+		/**
+		 * domain is disconnected means, from the view point of a domain everything is ok, but there is no connection the
+		 * the service( e.g. no internet connection,),
+		 */
+		DISCONNECTED
+
+	}
 }

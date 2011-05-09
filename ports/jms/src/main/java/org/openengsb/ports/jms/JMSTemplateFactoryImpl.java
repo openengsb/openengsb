@@ -29,14 +29,31 @@ import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 public class JMSTemplateFactoryImpl implements JMSTemplateFactory {
 
-    private final Map<String, ConnectionFactory> connections = new HashMap<String, ConnectionFactory>();
+    /** This one can be overwritten whenever required */
+    private static final Long DEFAULT_TIMEOUT = 3000L;
+
+    /** Shares single connection factories to avoid the extended afford of creating one */
+    private Map<String, ConnectionFactory> connections = new HashMap<String, ConnectionFactory>();
 
     @Override
-    public synchronized JmsTemplate createJMSTemplate(String host) {
+    public JmsTemplate createJMSTemplate(DestinationUrl destination) {
+        ConnectionFactory connectionFactory = retrieveJmsConnectionFactory(destination.getHost());
+        JmsTemplate template = retrieveJmsTemplate(destination.getJmsDestination(), connectionFactory);
+        return template;
+    }
+
+    private synchronized ConnectionFactory retrieveJmsConnectionFactory(String host) {
         if (!connections.containsKey(host)) {
             connections.put(host, new SingleConnectionFactory(new ActiveMQConnectionFactory(host)));
         }
-        return new JmsTemplate(connections.get(host));
+        return connections.get(host);
+    }
+
+    private JmsTemplate retrieveJmsTemplate(String jmsDestination, ConnectionFactory connectionFactory) {
+        JmsTemplate template = new JmsTemplate(connectionFactory);
+        template.setDefaultDestinationName(jmsDestination);
+        template.setReceiveTimeout(DEFAULT_TIMEOUT);
+        return template;
     }
 
     @Override
