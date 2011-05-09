@@ -18,6 +18,7 @@
 package org.openengsb.ports.jms;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -25,19 +26,15 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.marshaling.RequestMapping;
 import org.openengsb.core.common.marshaling.ReturnMapping;
-import org.openengsb.core.security.BundleAuthenticationToken;
+import org.openengsb.core.common.remote.FilterStorage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSPort implements OutgoingPort {
 
@@ -47,10 +44,9 @@ public class JMSPort implements OutgoingPort {
 
     private ConnectionFactory connectionFactory;
 
-    private RequestHandler requestHandler;
-    private AuthenticationManager authenticationManager;
-
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
+
+    private FilterAction filterChain;
 
     @Override
     public void send(String destination, MethodCall call) {
@@ -103,10 +99,6 @@ public class JMSPort implements OutgoingPort {
         template.convertAndSend(answer);
     }
 
-    public void setRequestHandler(RequestHandler handler) {
-        requestHandler = handler;
-    }
-
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
@@ -114,19 +106,12 @@ public class JMSPort implements OutgoingPort {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
-                        ensureAuthentication();
-                        RequestMapping readValue = RequestMapping.createFromMessage(textMessage.getText());
-                        readValue.resetArgs();
-                        ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
-                        MethodReturn handleCall = requestHandler.handleCall(readValue);
-                        ReturnMapping returnMapping = new ReturnMapping(handleCall);
-                        returnMapping.setClassName(returnMapping.getArg().getClass().getName());
-                        String answer = returnMapping.convertToMessage();
-                        if (readValue.isAnswer()) {
-                            new JmsTemplate(connectionFactory).convertAndSend(readValue.getCallId(), answer);
+                        String result = (String) filterChain.filter(textMessage.getText());
+                        Map<String, Object> filterStorage = FilterStorage.getStorage();
+                        String callId = (String) filterStorage.get("callId");
+                        if (filterStorage.containsKey("answer")) {
+                            new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                         }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
                     }
@@ -134,20 +119,6 @@ public class JMSPort implements OutgoingPort {
             }
         });
         simpleMessageListenerContainer.start();
-    }
-
-    /**
-     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be 
-     * removed as it grants universal access.
-     */
-    protected void ensureAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return;
-        }
-        BundleAuthenticationToken token = new BundleAuthenticationToken("openengsb-ports-jms", "");
-        authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
@@ -172,7 +143,8 @@ public class JMSPort implements OutgoingPort {
         this.connectionFactory = connectionFactory;
     }
 
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+
+    public void setFilterChain(FilterAction filterChain) {
+        this.filterChain = filterChain;
     }
 }

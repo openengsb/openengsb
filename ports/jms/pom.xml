@@ -94,6 +94,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-services</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
       <scope>provided</scope>

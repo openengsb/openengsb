@@ -30,6 +30,7 @@ import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.AbstractFilterAction;
+import org.openengsb.core.common.remote.FilterStorage;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -57,6 +58,10 @@ public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodR
 
     @Override
     public MethodReturn doFilter(MethodCall input) throws FilterException {
+        FilterStorage.getStorage().put("callId", input.getCallId());
+        if (input.isAnswer()) {
+            FilterStorage.getStorage().put("answer", true);
+        }
         return handleCall(input);
     }
 

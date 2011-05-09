@@ -20,14 +20,12 @@ import org.w3c.dom.Node;
 public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Document, Document> {
 
     private FilterAction next;
-    private Marshaller marshaller;
     private Unmarshaller unmarshaller;
 
     public XmlMethodCallMarshalFilter() {
         super(Document.class, Document.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCall.class, MethodReturn.class);
-            marshaller = context.createMarshaller();
             unmarshaller = context.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
@@ -49,10 +47,14 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     private Document serializeResult(MethodReturn result) {
         DOMResult domResult = new DOMResult();
         try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(MethodReturn.class, Class.forName(result.getClassName()));
+            Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.marshal(new JAXBElement<MethodReturn>(new QName(MethodReturn.class.getSimpleName()),
                 MethodReturn.class, result), domResult);
         } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new FilterException(e);
+        } catch (ClassNotFoundException e) {
+            throw new FilterException(e);
         }
         return (Document) domResult.getNode();
     }
@@ -69,8 +71,8 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
                 throw new RuntimeException(e);
             }
         }
-        JAXBContext jaxbContext2 = JAXBContext.newInstance(clazzes);
-        Unmarshaller unmarshaller = jaxbContext2.createUnmarshaller();
+        JAXBContext jaxbContext = JAXBContext.newInstance(clazzes);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         Object[] args = result.getArgs();
         for (int i = 0; i < args.length; i++) {
             args[i] = unmarshaller.unmarshal((Node) args[i], clazzes[i]).getValue();
