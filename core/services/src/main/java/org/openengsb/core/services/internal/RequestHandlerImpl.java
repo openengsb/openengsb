@@ -56,7 +56,7 @@ public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodR
     }
 
     @Override
-    public MethodReturn filter(MethodCall input) throws FilterException {
+    public MethodReturn doFilter(MethodCall input) throws FilterException {
         return handleCall(input);
     }
 

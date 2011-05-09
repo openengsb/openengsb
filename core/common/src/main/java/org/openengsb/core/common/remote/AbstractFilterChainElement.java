@@ -11,13 +11,13 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
  */
 public abstract class AbstractFilterChainElement<InputType, OutputType> extends
         AbstractFilterAction<InputType, OutputType>
-        implements FilterChainElement<InputType, OutputType> {
+        implements FilterChainElement {
 
     protected AbstractFilterChainElement(Class<InputType> inputType, Class<OutputType> outputType) {
         super(inputType, outputType);
     }
 
-    protected static final void checkNextInputAndOutputTypes(FilterAction<?, ?> next,
+    protected static final void checkNextInputAndOutputTypes(FilterAction next,
             Class<?> inputType, Class<?> outputType) throws FilterConfigurationException {
         if (!next.getSupportedInputType().isAssignableFrom(inputType)) {
             throw new FilterConfigurationException(String.format("inputTypes are not compatible (%s - %s)",

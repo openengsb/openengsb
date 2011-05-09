@@ -36,9 +36,21 @@ import org.w3c.dom.Node;
 
 public class PipelineTest {
 
-    private FilterAction<MethodCall, MethodReturn> requestHandlerMock;
+    private final class ClassAnswer implements Answer<Class<?>> {
+        private Class<?> answer;
 
-    @SuppressWarnings("unchecked")
+        public ClassAnswer(Class<?> answer) {
+            this.answer = answer;
+        }
+
+        @Override
+        public Class<?> answer(InvocationOnMock invocation) throws Throwable {
+            return answer;
+        }
+    }
+
+    private FilterAction requestHandlerMock;
+
     @Before
     public void setUp() {
         requestHandlerMock = mock(FilterAction.class);
@@ -50,8 +62,8 @@ public class PipelineTest {
                         .getCallId());
             }
         });
-        when(requestHandlerMock.getSupportedInputType()).thenReturn(MethodCall.class);
-        when(requestHandlerMock.getSupportedOutputType()).thenReturn(MethodReturn.class);
+        when(requestHandlerMock.getSupportedInputType()).thenAnswer(new ClassAnswer(MethodCall.class));
+        when(requestHandlerMock.getSupportedOutputType()).thenAnswer(new ClassAnswer(MethodReturn.class));
     }
 
     @Test
@@ -62,14 +74,14 @@ public class PipelineTest {
         List<Object> filters = Arrays.asList(new Object[] { JsonMethodCallMarshalFilter.class, requestHandlerMock, });
         filterChainFactory.setFilters(filters);
 
-        FilterAction<String, String> filterChain = filterChainFactory.create();
+        FilterAction filterChain = filterChainFactory.create();
 
         ObjectMapper objectMapper = new ObjectMapper();
         MethodCall methodCall = new MethodCall();
         methodCall.setArgs(new Object[]{ "foo" });
         methodCall.setCallId("bar");
         String input = objectMapper.writeValueAsString(methodCall);
-        String result = filterChain.filter(input);
+        String result = (String) filterChain.filter(input);
         MethodReturn returnValue = objectMapper.readValue(result, MethodReturn.class);
         assertThat((String) returnValue.getArg(), is("foo"));
         assertThat(returnValue.getCallId(), is("bar"));
@@ -84,7 +96,7 @@ public class PipelineTest {
                 .asList(new Object[] { XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class, requestHandlerMock, });
         filterChainFactory.setFilters(filters);
 
-        FilterAction<String, String> filterChain = filterChainFactory.create();
+        FilterAction filterChain = filterChainFactory.create();
 
         MethodCall call = new MethodCall();
         call.setArgs(new Object[]{ "foo" });
@@ -99,7 +111,7 @@ public class PipelineTest {
         marshaller.marshal(new JAXBElement<MethodCall>(new QName(MethodCall.class.getSimpleName()), MethodCall.class,
             call), domResult);
         String input = XmlEncoderFilter.writeDocument(domResult.getNode());
-        String result = filterChain.filter(input);
+        String result = (String) filterChain.filter(input);
 
         Document parseDocument = XmlEncoderFilter.parseDocument(result);
         MethodReturn value = unmarshaller.unmarshal(parseDocument, MethodReturn.class).getValue();

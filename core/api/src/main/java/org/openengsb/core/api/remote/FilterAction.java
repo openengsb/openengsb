@@ -5,7 +5,7 @@ package org.openengsb.core.api.remote;
  * filterchain configuration.
  *
  */
-public interface FilterAction<InputType, OutputType> {
+public interface FilterAction {
 
     /**
      * Transforms the input-value received from the previous filter to an output value that is then returned.
@@ -13,18 +13,18 @@ public interface FilterAction<InputType, OutputType> {
      * @throws FilterException if some Exception occurs. All Exception should be wrapped in a {@link FilterException} so
      *         that they can be treated at the end of the chain.
      */
-    OutputType filter(InputType input) throws FilterException;
+    Object filter(Object input) throws FilterException;
 
     /**
      * This is required to check the compatibility of filters at runtime (since the type-parameters are not available at
      * runtime)
      */
-    Class<InputType> getSupportedInputType();
+    Class<?> getSupportedInputType();
 
     /**
      * This is required to check the compatibility of filters at runtime (since the type-parameters are not available at
      * runtime)
      */
-    Class<OutputType> getSupportedOutputType();
+    Class<?> getSupportedOutputType();
 
 }

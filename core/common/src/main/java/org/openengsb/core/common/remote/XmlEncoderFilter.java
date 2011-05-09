@@ -25,16 +25,16 @@ import com.google.common.base.Preconditions;
 
 public class XmlEncoderFilter extends AbstractFilterChainElement<String, String> {
 
-    private FilterAction<Document, Document> next;
+    private FilterAction next;
 
     public XmlEncoderFilter() {
         super(String.class, String.class);
     }
 
     @Override
-    public String filter(String input) throws FilterException {
+    public String doFilter(String input) throws FilterException {
         Document doc = parseDocument(input);
-        Document result = next.filter(doc);
+        Document result = (Document) next.filter(doc);
         try {
             return writeDocument(result);
         } catch (TransformerException e) {
@@ -42,13 +42,12 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void setNext(FilterAction<?, ?> next) {
+    public void setNext(FilterAction next) {
         checkNextInputAndOutputTypes(next, Document.class, Document.class);
         Preconditions.checkArgument(next.getSupportedInputType().isAssignableFrom(Document.class));
         Preconditions.checkArgument(next.getSupportedOutputType().isAssignableFrom(Document.class));
-        this.next = (FilterAction<Document, Document>) next;
+        this.next = next;
     }
 
     public static Document parseDocument(String input) {

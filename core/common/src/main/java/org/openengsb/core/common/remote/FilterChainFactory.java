@@ -24,8 +24,7 @@ public class FilterChainFactory<InputType, OutputType> {
      *
      * @throws FilterConfigurationException if the filters in the filter-list are not compatible with each other
      */
-    @SuppressWarnings("unchecked")
-    public FilterAction<InputType, OutputType> create() throws FilterConfigurationException {
+    public FilterAction create() throws FilterConfigurationException {
         Preconditions.checkState(filters != null, "list of filters must be set");
         Preconditions.checkState(inputType != null, "inputType must be set");
         Preconditions.checkState(outputType != null, "outputType must be set");
@@ -35,29 +34,29 @@ public class FilterChainFactory<InputType, OutputType> {
 
         Iterator<Object> iterator = filters.iterator();
 
-        FilterChainElement<?, ?> firstInstance = getInstanceFromListElement(iterator.next());
+        FilterChainElement firstInstance = getInstanceFromListElement(iterator.next());
         if (!firstInstance.getSupportedInputType().isAssignableFrom(inputType)
                 || !firstInstance.getSupportedOutputType().isAssignableFrom(outputType)) {
             throw new FilterConfigurationException("incompatible Filtertype");
         }
-        FilterChainElement<?, ?> current = firstInstance;
+        FilterChainElement current = firstInstance;
         while (iterator.hasNext()) {
             Object next = iterator.next();
-            FilterChainElement<?, ?> nextFilterElement = getInstanceFromListElement(next);
+            FilterChainElement nextFilterElement = getInstanceFromListElement(next);
             if (nextFilterElement == null) {
-                current.setNext((FilterAction<?, ?>) next);
+                current.setNext((FilterAction) next);
                 break;
             }
             current.setNext(nextFilterElement);
             current = nextFilterElement;
         }
-        return (FilterAction<InputType, OutputType>) firstInstance;
+        return firstInstance;
     }
 
-    private FilterChainElement<?, ?> getInstanceFromListElement(Object next) throws FilterConfigurationException {
+    private FilterChainElement getInstanceFromListElement(Object next) throws FilterConfigurationException {
         if (next instanceof Class) {
             try {
-                return (FilterChainElement<?, ?>) ((Class<?>) next).newInstance();
+                return (FilterChainElement) ((Class<?>) next).newInstance();
             } catch (InstantiationException e) {
                 throw new FilterConfigurationException("Exception when instantiating FilterAction", e);
             } catch (IllegalAccessException e) {
@@ -65,7 +64,7 @@ public class FilterChainFactory<InputType, OutputType> {
             }
         }
         if (next instanceof FilterChainElementFactory) {
-            return ((FilterChainElementFactory<?, ?>) next).newInstance();
+            return ((FilterChainElementFactory) next).newInstance();
         }
         return null;
     }
