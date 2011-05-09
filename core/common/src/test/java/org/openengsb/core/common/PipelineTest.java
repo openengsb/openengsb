@@ -31,23 +31,11 @@ import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.XmlEncoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
+import org.openengsb.core.test.ValueAnswer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class PipelineTest {
-
-    private final class ClassAnswer implements Answer<Class<?>> {
-        private Class<?> answer;
-
-        public ClassAnswer(Class<?> answer) {
-            this.answer = answer;
-        }
-
-        @Override
-        public Class<?> answer(InvocationOnMock invocation) throws Throwable {
-            return answer;
-        }
-    }
 
     private FilterAction requestHandlerMock;
 
@@ -62,8 +50,8 @@ public class PipelineTest {
                         .getCallId());
             }
         });
-        when(requestHandlerMock.getSupportedInputType()).thenAnswer(new ClassAnswer(MethodCall.class));
-        when(requestHandlerMock.getSupportedOutputType()).thenAnswer(new ClassAnswer(MethodReturn.class));
+        when(requestHandlerMock.getSupportedInputType()).thenAnswer(new ValueAnswer<Class<?>>(MethodCall.class));
+        when(requestHandlerMock.getSupportedOutputType()).thenAnswer(new ValueAnswer<Class<?>>(MethodReturn.class));
     }
 
     @Test
@@ -71,7 +59,7 @@ public class PipelineTest {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
 
-        List<Object> filters = Arrays.asList(new Object[] { JsonMethodCallMarshalFilter.class, requestHandlerMock, });
+        List<Object> filters = Arrays.asList(new Object[]{ JsonMethodCallMarshalFilter.class, requestHandlerMock, });
         filterChainFactory.setFilters(filters);
 
         FilterAction filterChain = filterChainFactory.create();
@@ -93,7 +81,7 @@ public class PipelineTest {
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =
             Arrays
-                .asList(new Object[] { XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class, requestHandlerMock, });
+                .asList(new Object[]{ XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class, requestHandlerMock, });
         filterChainFactory.setFilters(filters);
 
         FilterAction filterChain = filterChainFactory.create();
@@ -128,7 +116,7 @@ public class PipelineTest {
 
         List<Object> filters =
             Arrays
-                .asList(new Object[] { XmlMethodCallMarshalFilter.class, XmlEncoderFilter.class });
+                .asList(new Object[]{ XmlMethodCallMarshalFilter.class, XmlEncoderFilter.class });
         filterChainFactory.setFilters(filters);
         filterChainFactory.create();
     }
@@ -138,7 +126,7 @@ public class PipelineTest {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =
-            Arrays.asList(new Object[] { XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class,
+            Arrays.asList(new Object[]{ XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class,
                 XmlEncoderFilter.class });
         filterChainFactory.setFilters(filters);
         filterChainFactory.create();
