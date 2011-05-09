@@ -120,6 +120,11 @@
     <literallayout>
       <command>git clone</command> git://github.com/openengsb/openengsb.git
     </literallayout>
+    <para>
+      Connector, domains and additional various features are included into the OpenEngSB as submodules. To include them into
+      the build and development cycle execute <command>./etc/scripts/submodulePush.sh</command> if you're a commiter and
+      <command>./etc/scripts/submodulePull.sh</command> otherwise.
+    </para>
     <para>Now start the OpenEngSB by executing</para>
     <literallayout>
       <command>mvn clean install openengsb:provision</command>
