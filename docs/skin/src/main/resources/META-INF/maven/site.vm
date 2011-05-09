@@ -530,7 +530,7 @@
     </div>
 </div>
     <div id="footer">
-      <div class="xright">&#169;#copyright()#publishDate( "bottom" $decoration.publishDate $decoration.version ) - <a href="http://maven.apache.org/privacy-policy.html">Privacy Policy</a></div>
+      <div class="xright">&#169;#copyright()#publishDate( "bottom" $decoration.publishDate $decoration.version ) - <a href="http://maven.apache.org/privacy-policy.html">Privacy Policy</a> <script type="text/javascript" src="http://www.ohloh.net/p/494725/widgets/project_thin_badge.js"></script></div>
       <div class="clear">
         <hr/>
       </div>
