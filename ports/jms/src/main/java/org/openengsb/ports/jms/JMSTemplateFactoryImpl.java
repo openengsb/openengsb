@@ -32,7 +32,7 @@ public class JMSTemplateFactoryImpl implements JMSTemplateFactory {
     /** This one can be overwritten whenever required */
     private static final Long DEFAULT_TIMEOUT = 3000L;
 
-    /** Shares single connection factories to avoid the extended afford of creating one */
+    /** Shares single connection factories to avoid the extended effort of creating one */
     private Map<String, ConnectionFactory> connections = new HashMap<String, ConnectionFactory>();
 
     @Override

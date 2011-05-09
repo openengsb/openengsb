@@ -31,7 +31,7 @@ public interface JMSTemplateFactory {
     JmsTemplate createJMSTemplate(DestinationUrl destination);
 
     /**
-     * Creates a simple message listener container without any furhter configurations. Those have to be done by the
+     * Creates a simple message listener container without any further configurations. Those have to be done by the
      * client.
      */
     SimpleMessageListenerContainer createMessageListenerContainer();
