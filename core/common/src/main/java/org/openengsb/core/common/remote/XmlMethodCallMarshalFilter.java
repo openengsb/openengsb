@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 
 public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Document, Document> {
 
-    private FilterAction<MethodCall, MethodReturn> next;
+    private FilterAction next;
     private Marshaller marshaller;
     private Unmarshaller unmarshaller;
 
@@ -35,14 +35,14 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     }
 
     @Override
-    public Document filter(Document input) throws FilterException {
+    public Document doFilter(Document input) throws FilterException {
         MethodCall call;
         try {
             call = parseMethodCall(input);
         } catch (JAXBException e) {
             throw new FilterException(e);
         }
-        MethodReturn result = next.filter(call);
+        MethodReturn result = (MethodReturn) next.filter(call);
         return serializeResult(result);
     }
 
@@ -79,11 +79,9 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     }
 
     @Override
-    public void setNext(FilterAction<?, ?> next) {
+    public void setNext(FilterAction next) {
         checkNextInputAndOutputTypes(next, MethodCall.class, MethodReturn.class);
-        @SuppressWarnings("unchecked")
-        FilterAction<MethodCall, MethodReturn> castedNext = (FilterAction<MethodCall, MethodReturn>) next;
-        this.next = castedNext;
+        this.next = next;
 
     }
 

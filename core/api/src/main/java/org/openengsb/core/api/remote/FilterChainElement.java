@@ -10,7 +10,7 @@ package org.openengsb.core.api.remote;
  * {@link FilterChainElement}s should never be instantiated directly. A {@link FilterChainElementFactory} should be used
  * for that purpose.
  */
-public interface FilterChainElement<InputType, OutputType> extends FilterAction<InputType, OutputType> {
+public interface FilterChainElement extends FilterAction {
 
     /**
      * used to integrate the filter in the chain. The implementation of this method should first check if the given
@@ -18,6 +18,6 @@ public interface FilterChainElement<InputType, OutputType> extends FilterAction<
      *
      * @throws FilterConfigurationException if the {@link FilterAction}s are not compatible
      */
-    void setNext(FilterAction<?, ?> next) throws FilterConfigurationException;
+    void setNext(FilterAction next) throws FilterConfigurationException;
 
 }
