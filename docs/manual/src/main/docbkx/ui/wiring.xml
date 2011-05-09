@@ -28,7 +28,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Wiring</title>
 
-  <para>The interface for administrators to do wiring, which is a key concept of the OpenEngSb.
+  <para>The interface for administrators to do wiring, which is a key concept of the OpenEngSB.
     Wiring is a process, where global variables get connected with connectors (domain endpoints) 
     in a certain context. As there are several steps to do that, this page gives you a fast  
     and easy managing possibility. For further reading, please visit  
@@ -37,38 +37,85 @@
 
   <section>
     <title>Wire a global variable with a service</title>
-    <para>The first thing you must do, is to select a domain in the drop-down-field. Doing that, 
-      all domain endpoints and all globals of this type will be loaded. If nothing appears, then there 
-      will be probably no suitable item available. 
-    </para>
-    <para>
-      Second, you must chose a global. There are two possibilities to do that. Either you select one 
-      from the list or you write autonomous a name of a global in the corresponding text field.
-      If the global doesn't exist, there will be a new one created with the type of the selected domain.
-      If a global already exists and have another type as selected, then there will be an error message
-      after submitting.  
-    </para>
-    <para>
-      Third, you must select a domain endpoint from the corresponding list. The list will be loaded
-      after you have selected a domain.
-    </para>
-    <para>
-      Fourth, you must select the contexts, where the wiring shall happen. 
-      You can select all but at least one. 
-    </para>
-    <para>
-      After submitting the form, a success message for each context should appear.
-      If an error occurs, an error message will be shown.
-    </para>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Select a domain in the drop-down-field. Doing that, all domain endpoints and all 
+        globals of this type will be loaded. If nothing appears, then there will be probably no 
+        suitable item available. 
+        </para>
+        <mediaobject>
+          <alt>Selecting a domain in the drop-down-field lets globals and endpoints appear</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_domains.png" format="png" width="400" align="center"/>
+          </imageobject>
+          <caption>
+            <para>Selecting a domain in the drop-down-field lets globals and endpoints appear</para>
+          </caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You must choose a global. There are two possibilities to do that. Either you select one 
+          from the list or you write autonomous a name of a global in the corresponding text field.
+          If the global doesn't exist, there will be a new one created with the type of the selected domain.
+          If a global already exists and have another type as selected, then there will be an error message
+          after submitting.  
+        </para>
+        <mediaobject>
+          <alt>Input field for the global variable</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_global.png" format="png" width="50" align="center"/>
+          </imageobject>
+          <caption><para>Input field for the global variable</para></caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You must select a domain endpoint from the corresponding list. The list will be loaded
+          after you have selected a domain.
+        </para>
+        <mediaobject>
+          <alt>Input field for the service Id, which can be edited by selecting an endpoint from the list.</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_serviceId.png" format="png" width="50" align="center"/>
+          </imageobject>
+          <caption>
+            <para>Input field for the service Id, which can be edited by selecting an endpoint from the list</para>
+          </caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>You must select the contexts, where the wiring shall happen. You can select all but at least one 
+          have to be selected. 
+        </para>
+        <mediaobject>
+          <alt>List of all available contexts, which can be selected.</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_contexts.png" format="png" width="100" align="center"/>
+          </imageobject>
+          <caption><para>List of all available contexts</para></caption>
+        </mediaobject>
+      </listitem>
+      <listitem>
+        <para>After submitting the form, a success message for each context should appear. If an error occurs, 
+          an error message will be shown.
+        </para>
+        <mediaobject>
+          <alt>Screenshot of the wiring results</alt>
+          <imageobject>
+            <imagedata fileref="graphics/wiring_submit.png" format="png" width="350" align="center"/>
+          </imageobject>
+          <caption><para>Screenshot of the wiring results</para></caption>
+        </mediaobject>  
+      </listitem>
+    </orderedlist>
   </section>
   
   <section>
     <title>What wiring does in the background</title>
     <para>The properties of the service will be updated. First, it will try to get the property with the key 
       'location.' + context from these properties, because there are all locations stored. If there is no such 
-      attribute, a new property will be added. After that it will insert a new location, which is the 
+      property, a new one will be added. After that, it will insert a new location in that property, which is the 
       name of the given global. As there can be more locations, the new one will be appended excepted such 
-      location already exists. Then nothing will be done.
+      location already exists. Then nothing will be changed, but an info message will appear.
     </para>
   </section>
 
