@@ -26,15 +26,25 @@ import org.apache.wicket.model.IModel;
 @SuppressWarnings("serial")
 public class CheckedPanel extends Panel {
 
-    public CheckedPanel(String id, IModel<Boolean> checkModel, IModel<String> model) {
-        super(id, model);
-        CheckBox cb = new CheckBox("check", checkModel);
-        cb.setLabel(model);
-        SimpleFormComponentLabel lbl = new SimpleFormComponentLabel("label", cb);
-        lbl.add(new SimpleAttributeModifier("for", cb.getMarkupId()));
-        cb.setOutputMarkupId(true);
-        add(cb);
-        add(lbl);
+    private CheckBox checkBox;
+    
+    public CheckedPanel(String id, IModel<Boolean> checkModel, IModel<String> labelModel) {
+        super(id);
+        initCheckBox(checkModel, labelModel);
+        initSimpleLabel();
+    }
+
+    private void initCheckBox(IModel<Boolean> checkModel, IModel<String> labelModel) {
+        checkBox = new CheckBox("check", checkModel);
+        checkBox.setLabel(labelModel);
+        checkBox.setOutputMarkupId(true);
+        add(checkBox);
+    }
+    
+    private void initSimpleLabel() {
+        SimpleFormComponentLabel simpleLabel = new SimpleFormComponentLabel("label", checkBox);
+        simpleLabel.add(new SimpleAttributeModifier("for", checkBox.getMarkupId()));
+        add(simpleLabel);
     }
 
 }
