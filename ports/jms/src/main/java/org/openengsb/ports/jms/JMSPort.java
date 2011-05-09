@@ -18,6 +18,7 @@
 package org.openengsb.ports.jms;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -25,13 +26,13 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.marshaling.RequestMapping;
 import org.openengsb.core.common.marshaling.ReturnMapping;
+import org.openengsb.core.common.remote.FilterStorage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -43,9 +44,9 @@ public class JMSPort implements OutgoingPort {
 
     private ConnectionFactory connectionFactory;
 
-    private RequestHandler requestHandler;
-
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
+
+    private FilterAction filterChain;
 
     @Override
     public void send(String destination, MethodCall call) {
@@ -97,10 +98,6 @@ public class JMSPort implements OutgoingPort {
         createJMSTemplate.convertAndSend(RECEIVE, answer);
     }
 
-    public void setRequestHandler(RequestHandler handler) {
-        requestHandler = handler;
-    }
-
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
@@ -108,18 +105,12 @@ public class JMSPort implements OutgoingPort {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
-                        RequestMapping readValue = RequestMapping.createFromMessage(textMessage.getText());
-                        readValue.resetArgs();
-                        ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
-                        MethodReturn handleCall = requestHandler.handleCall(readValue);
-                        ReturnMapping returnMapping = new ReturnMapping(handleCall);
-                        returnMapping.setClassName(returnMapping.getArg().getClass().getName());
-                        String answer = returnMapping.convertToMessage();
-                        if (readValue.isAnswer()) {
-                            new JmsTemplate(connectionFactory).convertAndSend(readValue.getCallId(), answer);
+                        String result = (String) filterChain.filter(textMessage.getText());
+                        Map<String, Object> filterStorage = FilterStorage.getStorage();
+                        String callId = (String) filterStorage.get("callId");
+                        if (filterStorage.containsKey("answer")) {
+                            new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                         }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
                     }
@@ -149,5 +140,9 @@ public class JMSPort implements OutgoingPort {
 
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    public void setFilterChain(FilterAction filterChain) {
+        this.filterChain = filterChain;
     }
 }
