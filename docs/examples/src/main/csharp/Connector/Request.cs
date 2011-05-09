@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information regarding copyright
@@ -15,24 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.ports.jms;
+using System;
+using System.Collections.Generic;
 
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.listener.SimpleMessageListenerContainer;
-
-/**
- * Internal factory to create jmsTemplates and message listeners.
- */
-public interface JMSTemplateFactory {
-
-    /**
-     * Creates a JMS Template taking the queue/topic and host settings from the destination param
-     */
-    JmsTemplate createJMSTemplate(DestinationUrl destination);
-
-    /**
-     * Creates a simple message listener container without any further configurations. Those have to be done by the
-     * client.
-     */
-    SimpleMessageListenerContainer createMessageListenerContainer();
+namespace Connector
+{
+	/// <summary>
+	/// Defines the request object send from the OpenEngSB to the Consumer
+	/// </summary>
+	public class Request
+	{
+		public string methodName{ get; set; }
+		public object[] args{ get; set; }
+		public IDictionary<string, string> metaData { get; set; }
+		public string callId { get; set; }
+		public bool answer { get; set; }
+		public IList<string> classes { get; set; }
+		
+		public Request()
+		{
+			
+		}
+	}
 }

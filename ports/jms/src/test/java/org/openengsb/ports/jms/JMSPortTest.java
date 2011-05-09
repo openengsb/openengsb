@@ -87,7 +87,7 @@ public class JMSPortTest {
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
 
-        Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
+        Mockito.when(jmsTemplateFactory.createJMSTemplate(Mockito.any(DestinationUrl.class))).thenReturn(jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
         port = new JMSPort();
@@ -100,11 +100,16 @@ public class JMSPortTest {
         methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void callingSendWithInvalidEndpoint_shouldThrowIllegalArgumentException() throws Exception {
+        port.send("host", call);
+    }
+
     @Test
     public void callSend_shouldSendMessageViaJMS() throws URISyntaxException, IOException {
-        port.send("host", call);
+        port.send("host?endpoint", call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), captor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode readTree = new ObjectMapper().readTree(captor.getValue());
         assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
@@ -119,8 +124,8 @@ public class JMSPortTest {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(returnText);
-        MethodReturn sendSync = port.sendSync("host", call);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), sendIdCaptor.capture());
+        MethodReturn sendSync = port.sendSync("host?endpoint", call);
+        Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
         RequestMapping mapping = new ObjectMapper().readValue(sendIdCaptor.getValue(), RequestMapping.class);
         mapping.resetArgs();
         assertThat(mapping.getClasses(), equalTo(call.getClasses()));
@@ -153,7 +158,7 @@ public class JMSPortTest {
         port = new JMSPort();
         port.setFactory(new JMSTemplateFactory() {
             @Override
-            public JmsTemplate createJMSTemplate(String host) {
+            public JmsTemplate createJMSTemplate(DestinationUrl destinationUrl) {
                 return jmsTemplate;
             }
 
