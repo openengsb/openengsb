@@ -19,6 +19,21 @@ public class FilterChainFactory<InputType, OutputType> {
     private Class<InputType> inputType;
     private Class<OutputType> outputType;
 
+    private final class FilterChain extends AbstractFilterAction<InputType, OutputType> {
+        private FilterAction firstElement;
+
+        protected FilterChain(FilterAction lastElement) {
+            super(inputType, outputType);
+            this.firstElement = lastElement;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected OutputType doFilter(InputType input) {
+            return (OutputType) firstElement.filter(input);
+        };
+    }
+
     /**
      * The filters-list must be set. If the last-element is not set, the last element of the filters-list will be used.
      *
@@ -50,7 +65,7 @@ public class FilterChainFactory<InputType, OutputType> {
             current.setNext(nextFilterElement);
             current = nextFilterElement;
         }
-        return firstInstance;
+        return new FilterChain(firstInstance);
     }
 
     private FilterChainElement getInstanceFromListElement(Object next) throws FilterConfigurationException {
