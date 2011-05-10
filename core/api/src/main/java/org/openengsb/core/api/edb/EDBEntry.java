@@ -18,17 +18,17 @@
 package org.openengsb.core.api.edb;
 
 /**
- * The Entry object is a pair of values, essentially the "from" and "to" values for a change. A value that does not
- * exist is null.
+ * The Entry object is a pair of values. It is used by the diff functionality to
+ * see the differences. 
  */
 public interface EDBEntry {
     /**
-     * Get the initial value of this field.
+     * Get the value of the object before the change.
      */
-    Object getFrom();
+    Object getBefore();
 
     /**
-     * Get the final value of this field.
+     * Get the value of the object after the change.
      */
-    Object getTo();
+    Object getAfter();
 }

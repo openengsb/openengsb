@@ -19,30 +19,22 @@ package org.openengsb.core.edb.internal;
 
 import org.openengsb.core.api.edb.EDBEntry;
 
-/**
- * The Entry object is a pair of values, essentially the "from" and "to" values for a change. A value that does not
- * exist is null.
- */
 public class Entry implements EDBEntry {
-    private Object from;
-    private Object to;
+    private Object before;
+    private Object after;
 
-    public Entry(Object from, Object to) {
-        this.from = from;
-        this.to = to;
+    public Entry(Object before, Object after) {
+        this.before = before;
+        this.after = after;
     }
 
-    /**
-     * Get the initial value of this field.
-     */
-    public final Object getFrom() {
-        return from;
+    @Override
+    public final Object getBefore() {
+        return before;
     }
 
-    /**
-     * Get the final value of this field.
-     */
-    public final Object getTo() {
-        return to;
+    @Override
+    public final Object getAfter() {
+        return after;
     }
 }
