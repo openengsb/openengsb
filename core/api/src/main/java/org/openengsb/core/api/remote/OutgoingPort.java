@@ -37,12 +37,12 @@ public interface OutgoingPort {
      * This method is typically called by the CallRouter. Since this method is called in an own thread it is not
      * required to implement such logic in the service.
      */
-    void send(String destination, MethodCall call) throws RemoteCommunicationException;
+    void send(String destination, MethodCallRequest call) throws RemoteCommunicationException;
 
     /**
      * This method is to be called synced which means that the service itself should block till an answer is available
      * and return the answer the moment it becomes available.
      */
-    MethodReturn sendSync(String destination, MethodCall call) throws RemoteCommunicationException;
+    MethodResultMessage sendSync(String destination, MethodCallRequest call) throws RemoteCommunicationException;
 
 }

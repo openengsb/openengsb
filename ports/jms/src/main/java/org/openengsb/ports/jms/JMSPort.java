@@ -26,12 +26,12 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
-import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.marshaling.RequestMapping;
-import org.openengsb.core.common.marshaling.ReturnMapping;
 import org.openengsb.core.common.remote.FilterStorage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -49,20 +49,16 @@ public class JMSPort implements OutgoingPort {
     private FilterAction filterChain;
 
     @Override
-    public void send(String destination, MethodCall call) {
+    public void send(String destination, MethodCallRequest call) {
         sendMessage(destination, call);
     }
 
     @Override
-    public MethodReturn sendSync(String destination, MethodCall call) {
-        String currentTimeMillis = String.valueOf(System.currentTimeMillis());
-        RequestMapping mapping = new RequestMapping(call);
-        mapping.setAnswer(true);
-        mapping.setCallId(currentTimeMillis);
-        sendMessage(destination, mapping);
+    public MethodResultMessage sendSync(String destination, MethodCallRequest call) {
+        sendMessage(destination, call);
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
         createJMSTemplate.setReceiveTimeout(3000);
-        Object receiveAndConvert = createJMSTemplate.receiveAndConvert(currentTimeMillis);
+        Object receiveAndConvert = createJMSTemplate.receiveAndConvert(call.getCallId());
         if (receiveAndConvert == null) {
             throw new RuntimeException("JMS Receive Timeout reached");
         }
@@ -73,9 +69,15 @@ public class JMSPort implements OutgoingPort {
         }
     }
 
-    private MethodReturn createMethodReturn(String receiveAndConvert) {
+    private MethodResultMessage createMethodReturn(String receiveAndConvert) {
         try {
-            return ReturnMapping.createFromMessage(receiveAndConvert);
+            ObjectMapper mapper = new ObjectMapper();
+            MethodResultMessage resultMessage = mapper.readValue(receiveAndConvert, MethodResultMessage.class);
+            MethodResult result = resultMessage.getResult();
+            Class<?> resultClass = Class.forName(result.getClassName());
+            Object arg = mapper.convertValue(result.getArg(), resultClass);
+            result.setArg(arg);
+            return resultMessage;
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
@@ -88,10 +90,10 @@ public class JMSPort implements OutgoingPort {
         return factory.createJMSTemplate(destinationUrl);
     }
 
-    private void sendMessage(String destination, MethodCall call) {
+    private void sendMessage(String destination, MethodCallRequest call) {
         String answer;
         try {
-            answer = new RequestMapping(call).convertToMessage();
+            answer = new ObjectMapper().writeValueAsString(call);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +108,8 @@ public class JMSPort implements OutgoingPort {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
-                        String result = (String) filterChain.filter(textMessage.getText());
+                        String text = textMessage.getText();
+                        String result = (String) filterChain.filter(text);
                         Map<String, Object> filterStorage = FilterStorage.getStorage();
                         String callId = (String) filterStorage.get("callId");
                         if (filterStorage.containsKey("answer")) {

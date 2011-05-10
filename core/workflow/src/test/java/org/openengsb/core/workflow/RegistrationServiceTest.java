@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.workflow.EventRegistrationService;
@@ -74,13 +74,13 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                        requestHandler.handleCall((MethodCall) invocation.getArguments()[1]);
+                        requestHandler.handleCall(((MethodCallRequest) invocation.getArguments()[1]).getMethodCall());
                     };
                 };
                 executorService.execute(runnable);
                 return null;
             }
-        }).when(outgoingPort).send(any(String.class), any(MethodCall.class));
+        }).when(outgoingPort).send(any(String.class), any(MethodCallRequest.class));
     }
 
     private RequestHandler getRequestHandler() {
@@ -109,7 +109,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
         service.processEvent(new TestEvent());
-        verify(outgoingPort).send(eq("test://localhost"), any(MethodCall.class));
+        verify(outgoingPort).send(eq("test://localhost"), any(MethodCallRequest.class));
     }
 
     @Test

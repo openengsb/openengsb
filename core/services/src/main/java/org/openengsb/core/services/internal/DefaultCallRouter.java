@@ -22,8 +22,8 @@ import java.util.concurrent.Executors;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.CallRouter;
-import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
@@ -32,7 +32,7 @@ public class DefaultCallRouter implements CallRouter {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Override
-    public void call(String portId, final String destination, final MethodCall call) {
+    public void call(String portId, final String destination, final MethodCallRequest call) {
         final OutgoingPort port;
         port = getPort(portId);
         Runnable callHandler = new Runnable() {
@@ -45,7 +45,7 @@ public class DefaultCallRouter implements CallRouter {
     }
 
     @Override
-    public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
+    public MethodResultMessage callSync(String portId, final String destination, final MethodCallRequest call) {
         OutgoingPort port;
         port = getPort(portId);
         return port.sendSync(destination, call);
