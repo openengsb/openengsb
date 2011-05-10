@@ -68,53 +68,47 @@ public class JPACommit implements EDBCommit {
         deletions = new ArrayList<String>();
     }
 
+    @Override
     public void setCommitted(boolean c) {
         committed = c;
     }
 
+    @Override
     public boolean getCommitted() {
         return committed;
     }
 
-    /**
-     * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.
-     */
+    @Override
     public List<String> getUIDs() {
         return uids;
     }
 
-    /**
-     * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
-     */
+    @Override
     public final List<EDBObject> getObjects() {
         return objects;
     }
 
-    /**
-     * For both, a created, or a queried commit: Retrieve a list of deleted UIDs.
-     */
+    @Override
     public final List<String> getDeletions() {
         return deletions;
     }
 
-    /** Get the committer's name. */
+    @Override
     public final String getCommitter() {
         return committer;
     }
 
-    /** Get the commit's timestamp. */
+    @Override
     public final Long getTimestamp() {
         return timestamp;
     }
 
-    /** Get the commit's role. */
+    @Override
     public final String getRole() {
         return role;
     }
 
-    /**
-     * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
-     */
+    @Override
     public void add(EDBObject obj) throws EDBException {
         if (obj.getTimestamp().longValue() != timestamp) {
             throw new EDBException("Object's timestamp doesn't match commit's timestamp!");
@@ -124,9 +118,7 @@ public class JPACommit implements EDBCommit {
         }
     }
 
-    /**
-     * Delete an object that already exists.
-     */
+    @Override
     public void delete(String uid) throws EDBException {
         if (deletions.contains(uid)) {
             return;
@@ -134,9 +126,7 @@ public class JPACommit implements EDBCommit {
         deletions.add(uid);
     }
 
-    /**
-     * Commit the change to the database. This essentially calls the database's commit() function.
-     */
+    @Override
     public void commit() throws EDBException {
         if (committed) {
             throw new EDBException("this commit class is already committed");

@@ -228,7 +228,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @SuppressWarnings("unchecked")
-    public JPAHead loadHead(long timestamp) throws EDBException {
+    private JPAHead loadHead(long timestamp) throws EDBException {
         Query query = em.createQuery("select h from JPAHead h where h.timestamp = :time");
         query.setParameter("time", timestamp);
         List<JPAHead> list = query.getResultList();

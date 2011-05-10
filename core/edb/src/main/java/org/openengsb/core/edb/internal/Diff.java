@@ -28,11 +28,6 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
 
-/**
- * A Diff object stores hierarchically the differences between two states. It provides access to the commit objects
- * representing the first and last commits which are compared, and contains a Map of UIDs to ObjectDiff objects for each
- * object which undergoes any change in the range of the two commits.
- */
 public class Diff implements EDBDiff {
     private JPACommit commitA;
     private JPACommit commitB;
@@ -86,54 +81,37 @@ public class Diff implements EDBDiff {
         return null;
     }
 
-    /**
-     * Get the Mapping from UIDs to ObjectDiff objects. The map only contains objects which actually change between the
-     * two commits, whic are compared by this Diff object.
-     */
+    @Override
     public Map<String, EDBObjectDiff> getObjectDiffs() {
         return diff;
     }
 
-    /**
-     * Get the amount of objects which are not the same in the beginning and the end. This essencially just returns
-     * getObjectDiffs().size()
-     */
+    @Override
     public final int getDifferenceCount() {
         return diff.size();
     }
 
-    /**
-     * Get the ObjectDiff for a specific UID. Note that this function returns null in two cases: Either when no object
-     * with this UID exists, or when it does, but is the very same at the time of both commits.
-     */
+    @Override
     public ObjectDiff getDiff(String key) {
         return (ObjectDiff) diff.get(key);
     }
 
-    /**
-     * Get all objects at the state of the first commit.
-     */
+    @Override
     public List<EDBObject> getStartState() {
         return stateA;
     }
 
-    /**
-     * Get all objects at the state of the last commit.
-     */
+    @Override
     public List<EDBObject> getEndState() {
         return stateB;
     }
 
-    /**
-     * Get the commit from which we start comparing.
-     */
+    @Override
     public JPACommit getStartCommit() {
         return commitA;
     }
 
-    /**
-     * Get the commit at which the comparison ends.
-     */
+    @Override
     public JPACommit getEndCommit() {
         return commitB;
     }

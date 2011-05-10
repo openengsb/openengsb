@@ -27,10 +27,6 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
 
-/**
- * An ObjectDiff compares two EDBObjects of the same UID and stores their differences. Note that "objects" may be null
- * in case they didn't exist, whereas commits must never be null!
- */
 public class ObjectDiff implements EDBObjectDiff {
     private JPACommit commitA;
     private JPACommit commitB;
@@ -99,44 +95,32 @@ public class ObjectDiff implements EDBObjectDiff {
         }
     }
 
-    /**
-     * Get a map of all the fields which are different in the two provided states.
-     */
+    @Override
     public Map<String, EDBEntry> getDiffMap() {
         return diff;
     }
 
-    /**
-     * Get the number of fields which are not the same in both states.
-     */
+    @Override
     public final int getDifferenceCount() {
         return differences;
     }
 
-    /**
-     * Get the EDBObject at its initial state of the comparison.
-     */
+    @Override
     public EDBObject getStartState() {
         return stateA;
     }
 
-    /**
-     * Get the EDBObject at its final state of the comparison.
-     */
+    @Override
     public EDBObject getEndState() {
         return stateB;
     }
 
-    /**
-     * Get the full commit object for the initial state.
-     */
+    @Override
     public JPACommit getStartCommit() {
         return commitA;
     }
 
-    /**
-     * Get the full commit object for the final state.
-     */
+    @Override
     public JPACommit getEndCommit() {
         return commitB;
     }

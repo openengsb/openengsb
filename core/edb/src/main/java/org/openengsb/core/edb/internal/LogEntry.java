@@ -20,9 +20,6 @@ package org.openengsb.core.edb.internal;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 
-/**
- * A LogEntry pairs an object with its commit.
- */
 public class LogEntry implements EDBLogEntry {
     private JPACommit commit;
     private EDBObject object;
@@ -32,16 +29,12 @@ public class LogEntry implements EDBLogEntry {
         this.object = obj;
     }
 
-    /**
-     * Get the entry's Commit.
-     */
+    @Override
     public JPACommit getCommit() {
         return commit;
     }
 
-    /**
-     * Get the entry's Object.
-     */
+    @Override
     public EDBObject getObject() {
         return object;
     }
