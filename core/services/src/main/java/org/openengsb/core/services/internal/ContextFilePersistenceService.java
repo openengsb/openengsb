@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ContextConfiguration;
+import org.openengsb.core.api.model.ContextId;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -39,7 +39,6 @@ import com.google.common.base.Preconditions;
 
 public class ContextFilePersistenceService implements ConfigPersistenceBackendService {
 
-    public static final String META_KEY_ID = "id";
     private static final String CONTEXT_FILE_EXTENSION = "context";
     private File storageFolder;
 
@@ -110,21 +109,14 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
     }
 
     private String getFileNameForMetaData(Map<String, String> metaData) throws PersistenceException {
-        return String.format("%s.%s", getContextIdFromMetaData(metaData), CONTEXT_FILE_EXTENSION);
-    }
-
-    private String getContextIdFromMetaData(Map<String, String> metaData) throws PersistenceException {
-        if (!metaData.containsKey(META_KEY_ID)) {
-            throw new PersistenceException("Backend does not understand provided Metadata");
-        }
-        return metaData.get(META_KEY_ID);
+        ContextId contextId = ContextId.fromMetaData(metaData);
+        return String.format("%s.%s", contextId.getId(), CONTEXT_FILE_EXTENSION);
     }
 
     private ConfigItem<?> loadContextConfigurationFromFile(File configurationFile) {
-        String contextId = FilenameUtils.removeExtension(configurationFile.getName());
-        Map<String, String> loadedMetaData = new HashMap<String, String>();
-        loadedMetaData.put(META_KEY_ID, contextId);
-        ContextConfiguration contextConfig = new ContextConfiguration(loadedMetaData, null);
+        String contextFileName = FilenameUtils.removeExtension(configurationFile.getName());
+        ContextId contextId = new ContextId(contextFileName);
+        ContextConfiguration contextConfig = new ContextConfiguration(contextId.toMetaData(), null);
         return contextConfig;
     }
 
