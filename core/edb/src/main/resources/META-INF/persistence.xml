@@ -27,17 +27,11 @@
     <class>org.openengsb.core.edb.internal.KeyValuePair</class>
     <properties>
       <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
-      
-      <!-- this code block is now in the JPADatabaseType class.
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:JPATest"/> 
+      <!-- <property name="openjpa.ConnectionURL" value="jdbc:h2:JPATest"/>  -->
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
-      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/> 
-      -->
-      
-      <!-- property name="openjpa.ConnectionUserName" value="sa"/>
-      <property name="openjpa.ConnectionPassword" value=""/> -->
+      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
     </properties>
   </persistence-unit>
 </persistence>

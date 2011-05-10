@@ -33,7 +33,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBDatabaseType;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
@@ -45,33 +44,27 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     @Resource
     EntityTransaction utx;
 
-    private String dbname;
+    private String databaseName;
     private JPAHead head;
-    private EDBDatabaseType type;
 
     public JPADatabase() {
-        dbname = null;
+        databaseName = null;
         head = null;
     }
 
     public JPADatabase(String databaseName) {
-        dbname = databaseName;
+        this.databaseName = databaseName;
         head = null;
     }
 
-    @Override
     public void open() throws EDBException {
-        if (dbname == null) {
+        if (databaseName == null) {
             throw new EDBException(
                 "There is no database name defined. Unable to connect to unknown database");
         }
-        if (type == null) {
-            throw new EDBException("The database type have to be set for a jpa connection");
-        }
-        Properties props = null;
+        Properties props = new Properties();
         try {
-            props = type.getPropertiesForDatabaseType();
-            String connectionUrl = type.getConnectionPrefix() + dbname;
+            String connectionUrl = databaseName;
             props.setProperty("openjpa.ConnectionURL", connectionUrl);
         } catch (NotImplementedException ex) {
             throw new EDBException("this type of jpa connection isn't implemented", ex);
@@ -87,7 +80,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
     }
 
-    @Override
     public void close() {
         em.close();
         utx = null;
@@ -95,10 +87,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         emf = null;
     }
 
-    @Override
-    public void setDatabase(String databaseName, EDBDatabaseType databaseType) {
-        dbname = databaseName;
-        type = databaseType;
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 
     @Override
@@ -111,7 +101,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         if (obj.getCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-        
+
         obj.finalize();
         // First prepare a second head... if this fails, we don't need to continue
         JPAHead nextHead;

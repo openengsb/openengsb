@@ -7,14 +7,14 @@ import java.util.Map;
  * Defines the connection to the enterprise database.
  */
 public interface EnterpriseDatabaseService {
-    /** Open the database with the name chosen by the previous setDatabase() call. */
-    void open() throws EDBException;
-
-    /** Close the database and synchronize all changes to the HD. */
-    void close();
-
-    /** Choose the database which is to be opened with the next open() call. */
-    void setDatabase(String databaseName, EDBDatabaseType databaseType);
+//    /** Open the database with the name chosen by the previous setDatabase() call. */
+//    void open() throws EDBException;
+//
+//    /** Close the database and synchronize all changes to the HD. */
+//    void close();
+//
+//    /** Choose the database which is to be opened with the next open() call. */
+//    void setDatabase(String databaseName, EDBDatabaseType databaseType);
 
     /**
      * Create a commit which is ready to be filled with updates. Note that the provided timestamp must be valid. If

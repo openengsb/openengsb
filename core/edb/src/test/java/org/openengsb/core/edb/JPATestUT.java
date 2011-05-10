@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBDatabaseType;
 import org.openengsb.core.api.edb.EDBEntry;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
@@ -64,8 +63,7 @@ public class JPATestUT {
 
     private JPADatabase openDatabase() {
         if (db == null) {
-            db = new JPADatabase();
-            db.setDatabase("JPATest", EDBDatabaseType.H2);
+            db = new JPADatabase("jdbc:h2:JPATest");
             try {
                 db.open();
             } catch (Exception ex) {
