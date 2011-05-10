@@ -28,40 +28,41 @@ import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
 
 public class ObjectDiff implements EDBObjectDiff {
-    private JPACommit commitA;
-    private JPACommit commitB;
-    private EDBObject stateA;
-    private EDBObject stateB;
+    private JPACommit startCommit;
+    private JPACommit endCommit;
+    private EDBObject startState;
+    private EDBObject endState;
     private Map<String, EDBEntry> diff;
     private Integer differences;
 
-    public ObjectDiff(JPACommit ca, JPACommit cb, EDBObject oa, EDBObject ob) throws EDBException {
+    public ObjectDiff(JPACommit startCommit, JPACommit endCommit,
+            EDBObject startState, EDBObject endState) throws EDBException {
         diff = new HashMap<String, EDBEntry>();
         differences = 0;
-        if (cb.getTimestamp() < ca.getTimestamp()) {
-            this.commitA = cb;
-            this.commitB = ca;
-            this.stateA = ob;
-            this.stateB = oa;
+        if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
+            this.startCommit = endCommit;
+            this.endCommit = startCommit;
+            this.startState = endState;
+            this.endState = startState;
         } else {
-            this.commitA = ca;
-            this.commitB = cb;
-            this.stateA = oa;
-            this.stateB = ob;
+            this.startCommit = startCommit;
+            this.endCommit = endCommit;
+            this.startState = startState;
+            this.endState = endState;
         }
         updateDiff();
     }
 
     private void updateDiff() throws EDBException {
-        if (stateA == null || stateB == null) {
+        if (startState == null || endState == null) {
             throw new EDBException("Incomplete Diff object, cannot compare null states!");
         }
 
         diff.clear();
         // Now create a mapping
         List<String> keyList = new ArrayList<String>();
-        if (stateA != null) {
-            for (Map.Entry<String, Object> e : stateA.entrySet()) {
+        if (startState != null) {
+            for (Map.Entry<String, Object> e : startState.entrySet()) {
                 String key = e.getKey();
                 if (key.equals("_id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
                     continue;
@@ -69,7 +70,7 @@ public class ObjectDiff implements EDBObjectDiff {
                 keyList.add(key);
 
                 Object first = e.getValue();
-                Object last = (stateB != null) ? stateB.get(key) : null;
+                Object last = (endState != null) ? endState.get(key) : null;
 
                 if (last != null && first.equals(last)) {
                     continue;
@@ -83,8 +84,8 @@ public class ObjectDiff implements EDBObjectDiff {
         keyList.add("@timestamp");
 
         // Now we have all keys from stateA, now add the missing keys from stateB
-        if (stateB != null) {
-            for (Map.Entry<String, Object> e : stateB.entrySet()) {
+        if (endState != null) {
+            for (Map.Entry<String, Object> e : endState.entrySet()) {
                 String key = e.getKey();
                 if (keyList.contains(key)) {
                     continue;
@@ -107,21 +108,21 @@ public class ObjectDiff implements EDBObjectDiff {
 
     @Override
     public EDBObject getStartState() {
-        return stateA;
+        return startState;
     }
 
     @Override
     public EDBObject getEndState() {
-        return stateB;
+        return endState;
     }
 
     @Override
     public JPACommit getStartCommit() {
-        return commitA;
+        return startCommit;
     }
 
     @Override
     public JPACommit getEndCommit() {
-        return commitB;
+        return endCommit;
     }
 }
