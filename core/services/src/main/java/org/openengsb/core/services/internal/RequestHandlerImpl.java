@@ -23,47 +23,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.remote.AbstractFilterAction;
-import org.openengsb.core.common.remote.FilterStorage;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
-public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodReturn> implements RequestHandler {
-
-    public RequestHandlerImpl() {
-        super(MethodCall.class, MethodReturn.class);
-    }
+public class RequestHandlerImpl implements RequestHandler {
 
     @Override
-    public MethodReturn handleCall(MethodCall call) {
+    public MethodResult handleCall(MethodCall call) {
         Object service = retrieveOpenEngSBService(call);
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
-        MethodReturn returnTemplate = createReturnTemplate(call);
-        return invokeMethod(service, method, args, returnTemplate);
-    }
-
-    @Override
-    public MethodReturn doFilter(MethodCall input) throws FilterException {
-        FilterStorage.getStorage().put("callId", input.getCallId());
-        if (input.isAnswer()) {
-            FilterStorage.getStorage().put("answer", true);
-        }
-        return handleCall(input);
-    }
-
-    private MethodReturn createReturnTemplate(MethodCall call) {
-        MethodReturn returnTemplate = new MethodReturn();
-        returnTemplate.setCallId(call.getCallId());
-        returnTemplate.setMetaData(call.getMetaData());
-        return returnTemplate;
+        MethodResult methodResult = invokeMethod(service, method, args);
+        methodResult.setMetaData(call.getMetaData());
+        return methodResult;
     }
 
     private Object retrieveOpenEngSBService(MethodCall call) {
@@ -88,7 +66,8 @@ public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodR
         }
     }
 
-    private MethodReturn invokeMethod(Object service, Method method, Object[] args, MethodReturn returnTemplate) {
+    private MethodResult invokeMethod(Object service, Method method, Object[] args) {
+        MethodResult returnTemplate = new MethodResult();
         try {
             Object result = method.invoke(service, args);
             if (method.getReturnType().getName().equals("void")) {
@@ -96,13 +75,16 @@ public class RequestHandlerImpl extends AbstractFilterAction<MethodCall, MethodR
             } else {
                 returnTemplate.setType(ReturnType.Object);
                 returnTemplate.setArg(result);
+                returnTemplate.setClassName(result.getClass().getName());
             }
         } catch (InvocationTargetException e) {
             returnTemplate.setType(ReturnType.Exception);
             returnTemplate.setArg(e.getCause());
+            returnTemplate.setClassName(e.getClass().getName());
         } catch (IllegalAccessException e) {
             returnTemplate.setType(ReturnType.Exception);
             returnTemplate.setArg(e);
+            returnTemplate.setClassName(e.getClass().getName());
         }
         return returnTemplate;
     }

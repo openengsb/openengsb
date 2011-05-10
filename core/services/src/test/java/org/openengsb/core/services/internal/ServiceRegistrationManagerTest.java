@@ -46,9 +46,9 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.CallRouter;
-import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -67,8 +67,9 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registerMockedDomainProvider();
         registerMockedFactory();
         callrouter = mock(CallRouter.class);
-        when(callrouter.callSync(anyString(), anyString(), any(MethodCall.class))).thenReturn(
-            new MethodReturn(ReturnType.Void, null, null, "213"));
+        MethodResult result = MethodResult.newVoidResult();
+        when(callrouter.callSync(anyString(), anyString(), any(MethodCallRequest.class))).thenReturn(
+            new MethodResultMessage(result, "213"));
         registerService(callrouter, new Hashtable<String, Object>(), CallRouter.class);
         ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
@@ -172,7 +173,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
-        verify(callrouter).callSync(eq("jms+json"), eq("localhost"), any(MethodCall.class));
+        verify(callrouter).callSync(eq("jms+json"), eq("localhost"), any(MethodCallRequest.class));
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 

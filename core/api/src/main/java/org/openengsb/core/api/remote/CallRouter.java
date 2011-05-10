@@ -23,9 +23,9 @@ package org.openengsb.core.api.remote;
  */
 public interface CallRouter {
 
-    void call(String portId, final String destination, final MethodCall call);
+    void call(String portId, final String destination, final MethodCallRequest call);
 
-    MethodReturn callSync(String portId, final String destination, final MethodCall call);
+    MethodResultMessage callSync(String portId, final String destination, final MethodCallRequest call);
 
     void stop();
 

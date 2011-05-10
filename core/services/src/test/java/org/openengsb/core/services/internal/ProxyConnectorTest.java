@@ -25,15 +25,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
+import org.openengsb.core.api.remote.MethodResultMessage;
 
 public class ProxyConnectorTest {
 
@@ -49,8 +50,9 @@ public class ProxyConnectorTest {
         proxy.setDestination(test);
 
         proxy.addMetadata("key", "value");
-        ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
-        MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>(), "123");
+        ArgumentCaptor<MethodCallRequest> captor = ArgumentCaptor.forClass(MethodCallRequest.class);
+        MethodResult result2 = new MethodResult(id);
+        MethodResultMessage methodReturn = new MethodResultMessage(result2, "123");
         when(router.callSync(Mockito.eq(id), Mockito.eq(test), captor.capture())).thenReturn(methodReturn);
 
         Object[] args = new Object[]{ id, test };
@@ -58,7 +60,7 @@ public class ProxyConnectorTest {
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);
         String result = newProxyInstance.test(id, test);
 
-        MethodCall value = captor.getValue();
+        MethodCall value = captor.getValue().getMethodCall();
         assertThat(value.getMethodName(), equalTo(test));
         assertThat(value.getArgs(), equalTo(args));
         assertThat(value.getMetaData().size(), equalTo(1));
@@ -73,9 +75,11 @@ public class ProxyConnectorTest {
         ProxyConnector proxy = new ProxyConnector();
         proxy.setCallRouter(router);
         String message = "Message";
-        MethodReturn methodReturn =
-            new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>(), "123");
-        when(router.callSync(any(String.class), any(String.class), any(MethodCall.class))).thenReturn(methodReturn);
+        MethodResult result = new MethodResult(message, ReturnType.Exception);
+
+        MethodResultMessage methodReturn = new MethodResultMessage(result, "123");
+        when(router.callSync(any(String.class), any(String.class), any(MethodCallRequest.class))).thenReturn(
+            methodReturn);
         Interface newProxyInstance =
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);
         try {

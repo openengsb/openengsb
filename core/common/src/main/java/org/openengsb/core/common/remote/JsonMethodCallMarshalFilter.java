@@ -13,7 +13,8 @@ import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 
 public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<String, String> {
 
@@ -26,11 +27,11 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     @Override
     public String doFilter(String input) throws FilterException {
         ObjectMapper objectMapper = createObjectMapper();
-        MethodCall call;
+        MethodCallRequest call;
         try {
-            call = objectMapper.readValue(input, MethodCall.class);
+            call = objectMapper.readValue(input, MethodCallRequest.class);
             resetArgs(call);
-            MethodReturn returnValue = (MethodReturn) next.filter(call);
+            MethodResultMessage returnValue = (MethodResultMessage) next.filter(call);
             return objectMapper.writeValueAsString(returnValue);
         } catch (IOException e) {
             throw new FilterException(e);
@@ -39,14 +40,15 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, MethodCall.class, MethodReturn.class);
+        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
         this.next = next;
     }
 
     /**
      * Converts the Args read by Jackson into the correct classes that have to be used for calling the method.
      */
-    private static void resetArgs(MethodCall call) {
+    private static void resetArgs(MethodCallRequest request) {
+        MethodCall call = request.getMethodCall();
         if (call.getClasses().size() != call.getArgs().length) {
             throw new IllegalStateException("Classes and Args have to be the same");
         }

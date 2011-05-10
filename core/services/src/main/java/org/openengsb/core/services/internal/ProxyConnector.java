@@ -23,12 +23,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 
 import com.google.common.base.Functions;
@@ -69,9 +69,9 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
         List<String> paramTypeNames = Lists.transform(paramList, Functions.toStringFunction());
 
-        MethodReturn callSync =
-            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata, UUID.randomUUID()
-                .toString(), true, paramTypeNames));
+        MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
+        MethodResult callSync =
+            callRouter.callSync(portId, destination, new MethodCallRequest(methodCall, true)).getResult();
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();
