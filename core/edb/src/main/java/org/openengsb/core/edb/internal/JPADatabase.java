@@ -29,7 +29,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -46,6 +45,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     private String databaseName;
     private JPAHead head;
+    private JPACriteriaFunctions criteria;
 
     public JPADatabase() {
         databaseName = null;
@@ -72,11 +72,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         emf = Persistence.createEntityManagerFactory("openjpa", props);
         em = emf.createEntityManager();
         utx = em.getTransaction();
-        Query q = em.createQuery("SELECT max(h.timestamp) FROM JPAHead h");
-        Number max = (Number) q.getSingleResult();
+        criteria = new JPACriteriaFunctions(em);
+
+        Number max = criteria.getMostActualJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
             head = loadHead(max.longValue());
-            // System.out.println("HEAD WITH " + _head.count());
         }
     }
 
@@ -137,6 +137,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 em.persist(j);
             }
             utx.commit();
+
             head = nextHead;
         } catch (Exception ex) {
             try {
@@ -148,46 +149,25 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public EDBObject getObject(String uid) throws EDBException {
-        Query query = em.createQuery("select max(o.timestamp) from JPAObject o where o.uid = :uid");
-        query.setParameter("uid", uid);
-        Number number = (Number) query.getSingleResult();
+        Number number = criteria.getMostActualJPAObjectNumber(uid);
         if (number.longValue() <= 0) {
             return null;
         }
-        query = em.createQuery("select o from JPAObject o where o.uid = :uid AND o.timestamp = :time");
-        query.setParameter("uid", uid);
-        query.setParameter("time", number.longValue());
-        List<JPAObject> obj = query.getResultList();
-        if (obj.size() < 1) {
-            throw new EDBException("Failed to query existing object");
-        } else if (obj.size() > 1) {
-            throw new EDBException("Received more than 1 object which should not be possible!");
-        }
-        return obj.get(0).getObject();
+        JPAObject temp = criteria.getJPAObject(uid, number.longValue());
+        return temp.getObject();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<EDBObject> getHistory(String uid) throws EDBException {
-        Query query = em.createQuery("select o from JPAObject o where o.uid = :uid");
-        query.setParameter("uid", uid);
-        List<JPAObject> jpa = query.getResultList();
+        List<JPAObject> jpa = criteria.getJPAObjectHistory(uid);
         return generateEDBObjectList(jpa);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<EDBObject> getHistory(String uid, long from, long to) throws EDBException {
-        Query query =
-            em.createQuery("select o from JPAObject o where o.uid = :uid AND o.timestamp"
-                    + " BETWEEN :from AND :to order by o.timestamp");
-        query.setParameter("uid", uid);
-        query.setParameter("from", from);
-        query.setParameter("to", to);
-        List<JPAObject> jpa = query.getResultList();
+        List<JPAObject> jpa = criteria.getJPAObjectHistory(uid, from, to);
         return generateEDBObjectList(jpa);
     }
 
@@ -199,18 +179,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return edb;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<EDBLogEntry> getLog(String uid, long from, long to) throws EDBException {
         List<EDBObject> hist = getHistory(uid, from, to);
-        Query query =
-            em.createQuery("select c from JPACommit c where c.timestamp in "
-                    + "(select o.timestamp from JPAObject o where o.uid = :uid and "
-                    + "o.timestamp between :from and :to) order by c.timestamp");
-        query.setParameter("uid", uid);
-        query.setParameter("from", from);
-        query.setParameter("to", to);
-        List<JPACommit> commits = query.getResultList();
+        List<JPACommit> commits = criteria.getJPACommit(uid, from, to);
         if (hist.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
                     + Integer.toString(hist.size()) + " history entries");
@@ -222,16 +194,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return log;
     }
 
-    @SuppressWarnings("unchecked")
     private JPAHead loadHead(long timestamp) throws EDBException {
-        Query query = em.createQuery("select h from JPAHead h where h.timestamp = :time");
-        query.setParameter("time", timestamp);
-        List<JPAHead> list = query.getResultList();
-        if (list == null || list.size() != 1 || list.get(0) == null) {
-            throw new EDBException("Head not found for timestamp " + Long.toString(timestamp));
-        }
-        JPAHead head = list.get(0);
-        return head;
+        return criteria.getJPAHead(timestamp);
     }
 
     @Override
@@ -294,19 +258,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return getCommits(q);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException {
-        JPAQueryCommitBuilder builder = new JPAQueryCommitBuilder("select c from JPACommit c", query);
-        Query jquery = em.createQuery(builder.getSQLCommand());
-        for (Map.Entry<String, Object> p : builder.getParams().entrySet()) {
-            jquery.setParameter(p.getKey(), p.getValue());
-        }
-        List<EDBCommit> commits = jquery.getResultList();
-        if (commits == null) {
-            commits = new ArrayList<EDBCommit>();
-        }
-        return commits;
+        List<JPACommit> commits = criteria.getCommits(query);
+        return new ArrayList<EDBCommit>(commits);
     }
 
     @Override
@@ -316,37 +271,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return getLastCommit(q);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public JPACommit getLastCommit(Map<String, Object> query) throws EDBException {
-        JPAQueryCommitBuilder builder = new JPAQueryCommitBuilder("select max(c.timestamp) from JPACommit c", query);
-        Query jquery = em.createQuery(builder.getSQLCommand());
-        for (Map.Entry<String, Object> p : builder.getParams().entrySet()) {
-            jquery.setParameter(p.getKey(), p.getValue());
+        JPACommit result = criteria.getLastCommit(query);
+        if (result == null) {
+            throw new EDBException("Found no commit for this query parameters!");
         }
-        List<Number> time = jquery.getResultList();
-        if (time.size() == 0 || time.get(0).longValue() == 0) {
-            return null;
-        }
-        jquery =
-            em.createQuery("select c from JPACommit c " + builder.getWhereClause() + " and c.timestamp = :maxtime");
-        for (Map.Entry<String, Object> p : builder.getParams().entrySet()) {
-            jquery.setParameter(p.getKey(), p.getValue());
-        }
-        jquery.setParameter("maxtime", time.get(0).longValue());
-        List<JPACommit> commits = jquery.getResultList();
-        if (commits.size() != 1) {
-            throw new EDBException("Found no commit for an existing timestamp!");
-        }
-        return commits.get(0);
+        return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public JPACommit getCommit(long from) throws EDBException {
-        Query query = em.createQuery("select c from JPACommit c where c.timestamp = :time");
-        query.setParameter("time", from);
-        List<JPACommit> commits = query.getResultList();
+        List<JPACommit> commits = criteria.getJPACommit(from);
         if (commits == null || commits.size() != 1) {
             return null;
         }
@@ -363,18 +299,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return new Diff(getCommit(min), getCommit(max), headA, headB);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> getResurrectedUIDs() throws EDBException {
-        Query query = em.createQuery("select o from JPAObject o where o.isDeleted = true");
-        List<JPAObject> objects = query.getResultList();
-
+        List<JPAObject> objects = criteria.getDeletedJPAObjects();
         List<String> result = new ArrayList<String>();
         for (JPAObject o : objects) {
-            query = em.createQuery("select o from JPAObject o where o.uid = :uid and o.timestamp > :timestamp");
-            query.setParameter("uid", o.getUID());
-            query.setParameter("timestamp", o.getTimestamp());
-            if (query.getResultList().size() != 0) {
+            List<JPAObject> temp = criteria.getJPAObjectVersionsYoungerThanTimestamp(o.getUID(), o.getTimestamp());
+            if (temp.size() != 0) {
                 result.add(o.getUID());
             }
         }
