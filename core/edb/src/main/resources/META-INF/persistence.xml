@@ -21,12 +21,10 @@
 <persistence  xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
   <persistence-unit name="openjpa">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>org.openengsb.core.edb.Commit</class>
-    <class>org.openengsb.core.edb.EDBObject</class>
-    <class>org.openengsb.core.edb.jpa2.JPACommit</class>
-    <class>org.openengsb.core.edb.jpa2.JPA2Head</class>
-    <class>org.openengsb.core.edb.jpa2.JPAObject</class>
-    <class>org.openengsb.core.edb.jpa2.KeyValuePair</class>
+    <class>org.openengsb.core.edb.internal.JPACommit</class>
+    <class>org.openengsb.core.edb.internal.JPAHead</class>
+    <class>org.openengsb.core.edb.internal.JPAObject</class>
+    <class>org.openengsb.core.edb.internal.KeyValuePair</class>
     <properties>
       <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
       
