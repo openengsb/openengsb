@@ -18,31 +18,21 @@
 
 -->
 
-<chapter xml:id="domains.issue.domain" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<section xml:id="domains.issue.github" version="1.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
-  <title>Issue Domain</title>
-  <para>The issue domain is the tool domain for all issue tracking tools, like Jira, Trac, Github or Mantis.</para> 
-  <section>
-    <title>Description</title>
-    <para>The issue Domain provides the possibility to create, update, delete and comment issues.</para>
-  </section>
+  <title>Github Connector</title>
+  
+  <para>The Github Connector is an issue connector for the 
+  <link xlink:href="http://github.com/">Github issue system</link>.</para>
 
   <section>
-    <title>Functional Interface</title>
-    <para><link xlink:href="${github}/domain/issue/src/main/java/org/openengsb/domain/issue/IssueDomain.java">Link</link>
-      to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
+    <title>External Tool Configuration</title>
+    <para>The issue tracking system has to be active on github
+    </para>
   </section>
 
-  <section>
-    <title>Connectors</title>  
-    <xi:include href="trac.xml" />
-    <xi:include href="jira.xml" />
-    <xi:include href="github.xml" />
-  </section>
-
-</chapter>
+</section>
