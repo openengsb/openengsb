@@ -534,8 +534,8 @@ public class JPATestUT {
             for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
                 String key = de.getKey();
                 EDBEntry entry = de.getValue();
-                System.out.println("      Entry: '" + key + "' from: '" + entry.getFrom() + "' to: '" + entry.getTo()
-                        + "'");
+                System.out.println("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '" 
+                    + entry.getAfter() + "'");
             }
         }
     }
