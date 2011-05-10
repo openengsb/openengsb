@@ -30,7 +30,7 @@ public interface EDBDiff {
 
     /**
      * Get the Mapping from UIDs to ObjectDiff objects. The map only contains objects which actually change between the
-     * two commits, whic are compared by this Diff object.
+     * two commits, which are compared by this Diff object.
      */
     Map<String, EDBObjectDiff> getObjectDiffs();
 

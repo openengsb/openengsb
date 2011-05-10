@@ -29,36 +29,37 @@ import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
 
 public class Diff implements EDBDiff {
-    private JPACommit commitA;
-    private JPACommit commitB;
-    private List<EDBObject> stateA;
-    private List<EDBObject> stateB;
+    private JPACommit startCommit;
+    private JPACommit endCommit;
+    private List<EDBObject> startState;
+    private List<EDBObject> endState;
     private HashMap<String, EDBObjectDiff> diff;
 
-    public Diff(JPACommit ca, JPACommit cb, List<EDBObject> oa, List<EDBObject> ob) throws EDBException {
+    public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState, 
+            List<EDBObject> endState) throws EDBException {
         diff = new HashMap<String, EDBObjectDiff>();
-        if (cb.getTimestamp() < ca.getTimestamp()) {
-            this.commitA = cb;
-            this.commitB = ca;
-            this.stateA = ob;
-            this.stateB = oa;
+        if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
+            this.startCommit = endCommit;
+            this.endCommit = startCommit;
+            this.startState = endState;
+            this.endState = startState;
         } else {
-            this.commitA = ca;
-            this.commitB = cb;
-            this.stateA = oa;
-            this.stateB = ob;
+            this.startCommit = startCommit;
+            this.endCommit = endCommit;
+            this.startState = startState;
+            this.endState = endState;
         }
 
         // First create a shallow copy - .clone() is not in the interface itself :(
         List<EDBObject> tempList = new ArrayList<EDBObject>();
-        for (EDBObject o : stateB) {
+        for (EDBObject o : this.endState) {
             tempList.add(o);
         }
 
-        for (EDBObject a : stateA) {
+        for (EDBObject a : this.startState) {
             String uid = a.getString("@uid");
             EDBObject b = removeIfExist(uid, tempList);
-            ObjectDiff odiff = new ObjectDiff(commitA, commitB, a, b);
+            ObjectDiff odiff = new ObjectDiff(this.startCommit, this.endCommit, a, b);
             if (odiff.getDifferenceCount() > 0) {
                 diff.put(uid, odiff);
             }
@@ -98,21 +99,21 @@ public class Diff implements EDBDiff {
 
     @Override
     public List<EDBObject> getStartState() {
-        return stateA;
+        return startState;
     }
 
     @Override
     public List<EDBObject> getEndState() {
-        return stateB;
+        return endState;
     }
 
     @Override
     public JPACommit getStartCommit() {
-        return commitA;
+        return startCommit;
     }
 
     @Override
     public JPACommit getEndCommit() {
-        return commitB;
+        return endCommit;
     }
 }
