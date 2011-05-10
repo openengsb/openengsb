@@ -100,10 +100,6 @@ public class WiringPage extends BasePage {
     private String instanceId = "";
     
     public WiringPage() {
-        init();
-    }
-    
-    private void init() {
         initializeDomainChooseForm();
         initializeGlobalNameField();
         initializeInstanceIdField();
