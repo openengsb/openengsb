@@ -29,7 +29,7 @@ public class JPAQueryBuilder {
 
     private StringBuilder builder;
     private List<Object> param;
-    private int paramId;
+    private Integer paramId;
 
     public JPAQueryBuilder(Map<String, Object> query) throws EDBException {
         paramId = 0;

@@ -34,8 +34,6 @@ public class LogEntry implements EDBLogEntry {
 
     /**
      * Get the entry's Commit.
-     * 
-     * @return The commit.
      */
     public JPACommit getCommit() {
         return commit;
@@ -43,8 +41,6 @@ public class LogEntry implements EDBLogEntry {
 
     /**
      * Get the entry's Object.
-     * 
-     * @return The object.
      */
     public EDBObject getObject() {
         return object;

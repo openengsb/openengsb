@@ -24,15 +24,11 @@ public interface EDBLogEntry {
 
     /**
      * Get the entry's Commit.
-     * 
-     * @return The commit.
      */
     EDBCommit getCommit();
 
     /**
      * Get the entry's Object.
-     * 
-     * @return The object.
      */
     EDBObject getObject();
 }

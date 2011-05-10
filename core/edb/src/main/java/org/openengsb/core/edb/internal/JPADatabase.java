@@ -402,9 +402,4 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         query.put(key, value);
         return getStateOfLastCommitMatching(query);
     }
-
-//    @Override
-//    public UserTransaction getUserTransaction() throws EDBException {
-//        throw new NotImplementedException();
-//    }
 }

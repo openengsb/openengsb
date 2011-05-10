@@ -24,15 +24,11 @@ package org.openengsb.core.api.edb;
 public interface EDBEntry {
     /**
      * Get the initial value of this field.
-     * 
-     * @return The initial value, or null if it did not exist before.
      */
     Object getFrom();
 
     /**
      * Get the final value of this field.
-     * 
-     * @return The final value, or null if was removed.
      */
     Object getTo();
 }

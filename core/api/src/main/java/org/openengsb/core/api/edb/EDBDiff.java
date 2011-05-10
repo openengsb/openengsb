@@ -31,53 +31,38 @@ public interface EDBDiff {
     /**
      * Get the Mapping from UIDs to ObjectDiff objects. The map only contains objects which actually change between the
      * two commits, whic are compared by this Diff object.
-     * 
-     * @return a Map<String, ObjectDiff> mapping.
      */
     Map<String, EDBObjectDiff> getObjectDiffs();
 
     /**
      * Get the amount of objects which are not the same in the beginning and the end. This essencially just returns
      * getObjectDiffs().size()
-     * 
-     * @return The number of changed objects.
      */
     int getDifferenceCount();
 
     /**
      * Get the ObjectDiff for a specific UID. Note that this function returns null in two cases: Either when no object
      * with this UID exists, or when it does, but is the very same at the time of both commits.
-     * 
-     * @param key The desired object's UID.
-     * @return ObjectDiff for object with the provided UID, null if it does not exist or is not changed!
      */
     EDBObjectDiff getDiff(String key);
 
     /**
      * Get all objects at the state of the first commit.
-     * 
-     * @return A list of EDBObjects representing the full state at the time of the first commit.
      */
     List<EDBObject> getStartState();
 
     /**
      * Get all objects at the state of the last commit.
-     * 
-     * @return A list of EDBObjects representing the full state at the time of the last commit.
      */
     List<EDBObject> getEndState();
 
     /**
      * Get the commit from which we start comparing.
-     * 
-     * @return The start-commit object.
      */
     EDBCommit getStartCommit();
 
     /**
      * Get the commit at which the comparison ends.
-     * 
-     * @return The end-commit object.
      */
     EDBCommit getEndCommit();
 }

@@ -39,16 +39,15 @@ public class JPACommit implements EDBCommit {
     @Basic
     protected String committer;
     @Basic
-    protected long timestamp;
+    protected Long timestamp;
     @Basic
     protected String role;
 
     protected List<EDBObject> objects; // For built commit objects
 
-    // @Lob
     @ElementCollection
     protected List<String> deletions;
-    // @Lob
+
     @ElementCollection
     protected List<String> uids; // For queried commit objects
 
@@ -58,7 +57,7 @@ public class JPACommit implements EDBCommit {
     public JPACommit() {
     }
 
-    public JPACommit(String committer, String role, long timestamp, JPADatabase db) {
+    public JPACommit(String committer, String role, Long timestamp, JPADatabase db) {
         this.db = db;
         this.timestamp = timestamp;
         this.committer = committer;
@@ -69,7 +68,7 @@ public class JPACommit implements EDBCommit {
         deletions = new ArrayList<String>();
     }
 
-    public void setCommitted(boolean c) { // getCommit() sets this to avoid db.getCommit(x).commit()
+    public void setCommitted(boolean c) {
         committed = c;
     }
 
@@ -79,8 +78,6 @@ public class JPACommit implements EDBCommit {
 
     /**
      * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.
-     * 
-     * @return A list of UIDs.
      */
     public List<String> getUIDs() {
         return uids;
@@ -88,8 +85,6 @@ public class JPACommit implements EDBCommit {
 
     /**
      * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
-     * 
-     * @return A list of EDBObjects.
      */
     public final List<EDBObject> getObjects() {
         return objects;
@@ -119,8 +114,6 @@ public class JPACommit implements EDBCommit {
 
     /**
      * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
-     * 
-     * @param obj An object suitable for committing in this commit.
      */
     public void add(EDBObject obj) throws EDBException {
         if (obj.getTimestamp() != timestamp) {
@@ -133,8 +126,6 @@ public class JPACommit implements EDBCommit {
 
     /**
      * Delete an object that already exists.
-     * 
-     * @param uid The object's UID.
      */
     public void delete(String uid) throws EDBException {
         if (deletions.contains(uid)) {

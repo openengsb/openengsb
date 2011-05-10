@@ -37,7 +37,7 @@ public class ObjectDiff implements EDBObjectDiff {
     private EDBObject stateA;
     private EDBObject stateB;
     private Map<String, EDBEntry> diff;
-    private int differences;
+    private Integer differences;
 
     public ObjectDiff(JPACommit ca, JPACommit cb, EDBObject oa, EDBObject ob) throws EDBException {
         diff = new HashMap<String, EDBEntry>();
@@ -72,7 +72,7 @@ public class ObjectDiff implements EDBObjectDiff {
                 }
                 keyList.add(key);
 
-                Object first = e.getValue(); // Only from the compiler's point of view perhaps...
+                Object first = e.getValue();
                 Object last = (stateB != null) ? stateB.get(key) : null;
 
                 if (last != null && first.equals(last)) {
@@ -101,8 +101,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get a map of all the fields which are different in the two provided states.
-     * 
-     * @return A Map from the field name to ObjectDiff.Entry
      */
     public Map<String, EDBEntry> getDiffMap() {
         return diff;
@@ -110,8 +108,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get the number of fields which are not the same in both states.
-     * 
-     * @return The number of changes.
      */
     public final int getDifferenceCount() {
         return differences;
@@ -119,8 +115,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get the EDBObject at its initial state of the comparison.
-     * 
-     * @return The full object at its initial state.
      */
     public EDBObject getStartState() {
         return stateA;
@@ -128,8 +122,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get the EDBObject at its final state of the comparison.
-     * 
-     * @return The full object at its final state.
      */
     public EDBObject getEndState() {
         return stateB;
@@ -137,8 +129,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get the full commit object for the initial state.
-     * 
-     * @return The initial commit.
      */
     public JPACommit getStartCommit() {
         return commitA;
@@ -146,8 +136,6 @@ public class ObjectDiff implements EDBObjectDiff {
 
     /**
      * Get the full commit object for the final state.
-     * 
-     * @return The final commit.
      */
     public JPACommit getEndCommit() {
         return commitB;

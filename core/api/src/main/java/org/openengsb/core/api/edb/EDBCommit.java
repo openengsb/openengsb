@@ -35,16 +35,12 @@ public interface EDBCommit {
 
     /**
      * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.
-     * 
-     * @return A list of UIDs.
      */
     List<String> getUIDs();
 
     /**
      * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
-     * 
-     * @return A list of EDBObjects.
-     */
+    */
     List<EDBObject> getObjects();
 
     /**
@@ -63,15 +59,11 @@ public interface EDBCommit {
 
     /**
      * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
-     * 
-     * @param obj An object suitable for committing in this commit.
      */
     void add(EDBObject obj) throws EDBException;
 
     /**
      * Delete an object that already exists.
-     * 
-     * @param uid The object's UID.
      */
     void delete(String uid) throws EDBException;
 

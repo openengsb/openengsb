@@ -34,8 +34,6 @@ public class Entry implements EDBEntry {
 
     /**
      * Get the initial value of this field.
-     * 
-     * @return The initial value, or null if it did not exist before.
      */
     public final Object getFrom() {
         return from;
@@ -43,8 +41,6 @@ public class Entry implements EDBEntry {
 
     /**
      * Get the final value of this field.
-     * 
-     * @return The final value, or null if was removed.
      */
     public final Object getTo() {
         return to;

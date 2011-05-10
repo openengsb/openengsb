@@ -38,9 +38,9 @@ public class JPAObject {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "jpaobject_id")
-    private long id;
-    private long timestamp;
-    private boolean isDeleted;
+    private Long id;
+    private Long timestamp;
+    private Boolean isDeleted;
     private String uid;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -77,22 +77,22 @@ public class JPAObject {
         return new EDBObject(uid, timestamp, data);
     }
 
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return isDeleted;
     }
 
     /**
      * returns the internal Id the JPAObject has.
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public final long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public final String getUID() {
+    public String getUID() {
         return uid;
     }
 

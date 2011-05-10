@@ -18,6 +18,10 @@
 package org.openengsb.core.api.edb;
 
 @SuppressWarnings("serial")
+/**
+ * This exception is thrown if an error occeured while processing commands at
+ * the edb service. Mainly their reason are IOExceptions and JPAExceptions.
+ */
 public class EDBException extends Exception {
     public EDBException() {
         super();

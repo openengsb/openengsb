@@ -20,7 +20,6 @@ package org.openengsb.core.edb.internal;
 import javax.persistence.Entity;
 
 @Entity
-// @Embeddable
 public class KeyValuePair {
     private String key;
     private String value;
@@ -46,9 +45,4 @@ public class KeyValuePair {
     public String getValue() {
         return value;
     }
-
-    // Checking if this helps JPA... somehow...
-//    public boolean equals(KeyValuePair k) {
-//        return key.equals(k.key) && value.equals(k.value);
-//    }
 }

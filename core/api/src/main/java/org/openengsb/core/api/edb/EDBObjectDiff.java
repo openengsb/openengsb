@@ -26,43 +26,31 @@ import java.util.Map;
 public interface EDBObjectDiff {
     /**
      * Get a map of all the fields which are different in the two provided states.
-     * 
-     * @return A Map from the field name to ObjectDiff.Entry
      */
     Map<String, EDBEntry> getDiffMap();
 
     /**
      * Get the number of fields which are not the same in both states.
-     * 
-     * @return The number of changes.
      */
     int getDifferenceCount();
 
     /**
      * Get the EDBObject at its initial state of the comparison.
-     * 
-     * @return The full object at its initial state.
      */
     EDBObject getStartState();
 
     /**
      * Get the EDBObject at its final state of the comparison.
-     * 
-     * @return The full object at its final state.
      */
     EDBObject getEndState();
 
     /**
      * Get the full commit object for the initial state.
-     * 
-     * @return The initial commit.
      */
     EDBCommit getStartCommit();
 
     /**
      * Get the full commit object for the final state.
-     * 
-     * @return The final commit.
      */
     EDBCommit getEndCommit();
 }

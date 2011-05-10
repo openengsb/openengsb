@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, Object> {
-    private long timestamp;
+    private Long timestamp;
     private String uid;
 
     // necessary for jpa automatic enhancing
@@ -35,42 +35,33 @@ public class EDBObject extends HashMap<String, Object> {
 
     /**
      * Create an EDBObject with a specified UID and timestamp.
-     * 
-     * @param uid The object's UID.
-     * @param timestamp The timestamp, which must be equal to the Commit object it will be added to.
      */
-    public EDBObject(String uid, long timestamp) {
+    public EDBObject(String uid, Long timestamp) {
         super();
         this.timestamp = timestamp;
         this.uid = uid;
 
         put("@uid", uid);
-        put("@timestamp", new Long(timestamp));
+        put("@timestamp", timestamp);
     }
 
     /**
      * Convenience constructor to create an EDBObject using a Map of data. The UID and timestamp are stored after
      * loading the data Map, so any already existing values with the special key representing the UID or the Timestamp
      * will be overwritten by the provided parameters.
-     * 
-     * @param uid The object's UID.
-     * @param timestamp The timestamp, which must be equal to the Commit object it will be added to.
-     * @param data The data this object has to contain.
      */
-    public EDBObject(String uid, long timestamp, Map<String, Object> data) {
+    public EDBObject(String uid, Long timestamp, Map<String, Object> data) {
         super(data);
         this.timestamp = timestamp;
         this.uid = uid;
 
         put("@uid", uid);
-        put("@timestamp", new Long(timestamp));
+        put("@timestamp", timestamp);
     }
 
     /**
      * Usually used by a Database query function to create an EDBObject out of raw database-data. This will extract the
      * metadata from the raw data Map.
-     * 
-     * @param rawData The raw data, which has to contain all the required metadata as well!
      */
     public EDBObject(Map<String, Object> rawData) {
         super(rawData);
@@ -80,37 +71,25 @@ public class EDBObject extends HashMap<String, Object> {
 
     /**
      * Retrieve the timestamp for this object.
-     * 
-     * @return The timestamp.
      */
-    public final long getTimestamp() {
-        return timestamp;
-        // return (Long)get("@timestamp");
-    }
-
-    public final long getTimestampDEBUG() {
+    public final Long getTimestamp() {
         return timestamp;
     }
 
     /**
      * This function updates the timestamp for this object. It is useful if you want to add the object to a Commit which
      * already uses a different timestamp for some reason.
-     * 
-     * @param timestamp The new timestamp.
      */
-    public void updateTimestamp(long timestamp) {
+    public void updateTimestamp(Long timestamp) {
         this.timestamp = timestamp;
-        put("@timestamp", new Long(timestamp));
+        put("@timestamp", timestamp);
     }
 
     /**
      * Retrieve the UID for this object.
-     * 
-     * @return The object's UID.
      */
     public final String getUID() {
         return uid;
-        // return (String)get("@uid");
     }
 
     /** Change the UID */
@@ -121,9 +100,6 @@ public class EDBObject extends HashMap<String, Object> {
 
     /**
      * Convenience function to retrieve a value as String.
-     * 
-     * @param key The key to query for.
-     * @return The String representation of the value.
      */
     public final String getString(String key) {
         return (String) get(key);
@@ -131,9 +107,6 @@ public class EDBObject extends HashMap<String, Object> {
 
     /**
      * Convenience function to retrieve a value as long.
-     * 
-     * @param key The key to query for.
-     * @return The value as Long.
      */
     public final long getLong(String key) {
         return (Long) get(key);
@@ -141,8 +114,6 @@ public class EDBObject extends HashMap<String, Object> {
 
     /**
      * Test if this object is a "deletion" entry in a history.
-     * 
-     * @return True if this object represents the deletion of this object, false otherwise.
      */
     public final boolean isDeleted() {
         Object id = get("@isDeleted");

@@ -31,18 +31,18 @@ public class JPAHead {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<JPAObject> head;
-    private long timestamp;
+    private Long timestamp;
     private List<EDBObject> loaded;
 
     public JPAHead() {
     }
 
-    public JPAHead(long timestamp) {
+    public JPAHead(Long timestamp) {
         this.timestamp = timestamp;
         head = new ArrayList<JPAObject>();
     }
 
-    public JPAHead(JPAHead cp, long timestamp) {
+    public JPAHead(JPAHead cp, Long timestamp) {
         this.timestamp = timestamp;
         List<JPAObject> list = cp.getJPAObjects();
 
@@ -99,7 +99,7 @@ public class JPAHead {
         this.replace(uid, new JPAObject(obj));
     }
 
-    public long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 }
