@@ -34,8 +34,6 @@ import org.openengsb.core.api.edb.EDBObject;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit implements EDBCommit {
     private List<JPAObject> jpaObjects;
-
-    protected JPADatabase db;
     @Basic
     protected String committer;
     @Basic
@@ -57,13 +55,12 @@ public class JPACommit implements EDBCommit {
     public JPACommit() {
     }
 
-    public JPACommit(String committer, String role, Long timestamp, JPADatabase db) {
-        this.db = db;
+    public JPACommit(String committer, String role, Long timestamp) {
         this.timestamp = timestamp;
         this.committer = committer;
         this.role = role;
 
-        uids = null;
+        uids = new ArrayList<String>();
         objects = new ArrayList<EDBObject>();
         deletions = new ArrayList<String>();
     }
@@ -127,15 +124,6 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public void commit() throws EDBException {
-        if (committed) {
-            throw new EDBException("this commit class is already committed");
-        }
-        // Let's keep the implementation of transactions inside the Database
-        db.commit(this);
-    }
-
-    @Override
     public void finalize() throws EDBException {
         if (getCommitted()) {
             throw new EDBException("Commit already finalized, probably already committed.");
@@ -145,14 +133,6 @@ public class JPACommit implements EDBCommit {
         for (EDBObject o : getObjects()) {
             jpaObjects.add(new JPAObject(o));
         }
-    }
-
-    @Override
-    public void loadCommit() throws EDBException {
-        for (JPAObject o : jpaObjects) {
-            getObjects().add(o.getObject());
-        }
-        jpaObjects.clear();
     }
 
     private void fillUIDs() {

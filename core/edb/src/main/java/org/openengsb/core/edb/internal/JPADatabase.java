@@ -103,11 +103,15 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public JPACommit createCommit(String committer, String role, long timestamp) {
-        return new JPACommit(committer, role, timestamp, this);
+        return new JPACommit(committer, role, timestamp);
     }
 
     @Override
     public void commit(EDBCommit obj) throws EDBException {
+        if (obj.getCommitted()) {
+            throw new EDBException("EDBCommit was already commitet!");
+        }
+        
         obj.finalize();
         // First prepare a second head... if this fails, we don't need to continue
         JPAHead nextHead;
@@ -128,6 +132,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         utx.begin();
         try {
             long timestamp = obj.getTimestamp();
+            obj.setCommitted(true);
             em.persist(obj);
             em.persist(nextHead);
 

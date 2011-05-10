@@ -150,7 +150,8 @@ public class JPATestUT {
             EDBObject obj = new EDBObject("Tester", runTime);
             obj.put("Test", "Hooray");
             ci.add(obj);
-            ci.commit();
+
+            db.commit(ci);
 
             obj = null;
 
@@ -170,16 +171,6 @@ public class JPATestUT {
         }
     }
 
-    /*
-     * @Test public void testManual() { Database db = openDatabase(); try { JPA2Database jdb = (JPA2Database)db;
-     * System.out.println("***********************************************************************"); //EDBObject o =
-     * jdb.queryTest(
-     * "select o from JPAObject o where exists (select v from o.values v where v.key, v.value = 'Test', 'Hooray')");
-     * EDBObject o = jdb.queryTest(); //"select o from JPAObject o where 'Test', 'Hooray' member of o.values");
-     * System.out.println("***********************************************************************"); } catch
-     * (EDBException ex) { fail("Error: " + ex.toString()); } db.close(); }
-     */
-
     @Test
     public void testGetCommits() {
         JPADatabase db = openDatabase();
@@ -188,7 +179,8 @@ public class JPATestUT {
             EDBObject obj = new EDBObject("TestObject", runTime);
             obj.put("Bla", "Blabla");
             ci.add(obj);
-            ci.commit();
+
+            db.commit(ci);
 
             List<EDBCommit> commits = db.getCommits("role", "Testrole");
             System.out.println("Found " + Integer.toString(commits.size()) + " commits of role Role");
@@ -239,7 +231,9 @@ public class JPATestUT {
             ci.add(randomTestObject("/deletion/1", runTime));
             delCreated = runTime;
             ci.add(v1);
-            ci.commit();
+
+            db.commit(ci);
+
             runTimeStep();
 
             // Now we change stuff:
@@ -251,7 +245,7 @@ public class JPATestUT {
             ci.delete("/deletion/1");
             delDeleted = runTime;
             ci.add(v2);
-            ci.commit();
+            db.commit(ci);
 
             // Now the intermediate commit:
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); // do this here to waste some
@@ -260,7 +254,7 @@ public class JPATestUT {
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/3", runTime));
             ci.add(randomTestObject("/useless/4", runTime));
-            ci.commit();
+            db.commit(ci);
 
             // Now we change something else:
             data3.put("Cat", "Dog");
@@ -269,7 +263,7 @@ public class JPATestUT {
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v3);
             ci.add(randomTestObject("/useless/5", runTime));
-            ci.commit();
+            db.commit(ci);
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
         }
@@ -326,7 +320,7 @@ public class JPATestUT {
             ci.add(randomTestObject("/useless/test/1", runTime));
             ci.add(randomTestObject("/deletion/test/1", runTime));
             ci.add(v1);
-            ci.commit();
+            db.commit(ci);
             runTimeStep();
 
             // Now we change stuff:
@@ -337,7 +331,7 @@ public class JPATestUT {
             ci.add(randomTestObject("/useless/test/2", runTime));
             ci.delete("/deletion/test/1");
             ci.add(v2);
-            ci.commit();
+            db.commit(ci);
 
             // Now the intermediate commit:
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); // do this here to waste some
@@ -346,7 +340,7 @@ public class JPATestUT {
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/test/3", runTime));
             ci.add(randomTestObject("/useless/test/4", runTime));
-            ci.commit();
+            db.commit(ci);
 
             // Now we change something else:
             data3.put("Cheese", "Milk");
@@ -355,7 +349,7 @@ public class JPATestUT {
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v3);
             ci.add(randomTestObject("/useless/test/5", runTime));
-            ci.commit();
+            db.commit(ci);
 
             List<EDBObject> history = db.getHistory("/history/test/object");
             System.out.println("Objects for /history/test/object: " + Integer.toString(history.size()));
@@ -398,7 +392,7 @@ public class JPATestUT {
             EDBObject v1 = new EDBObject("/test/query1", runTime, data1);
             JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v1);
-            ci.commit();
+            db.commit(ci);
             runTimeStep();
 
             HashMap<String, Object> data2 = new HashMap<String, Object>();
@@ -407,7 +401,7 @@ public class JPATestUT {
             v1 = new EDBObject("/test/query2", runTime, data2);
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v1);
-            ci.commit();
+            db.commit(ci);
             runTimeStep();
 
             List<EDBObject> list = db.query("A", "B");
@@ -462,7 +456,7 @@ public class JPATestUT {
             EDBObject v1 = new EDBObject("/diff/object", runTime, data1);
             JPACommit ci = db.createCommit("Blub", "Testing", runTime);
             ci.add(v1);
-            ci.commit();
+            db.commit(ci);
             timeA = runTime;
 
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone(); // do this here to waste some
@@ -474,7 +468,7 @@ public class JPATestUT {
             EDBObject v2 = new EDBObject("/diff/object", runTime, data2);
             ci = db.createCommit("Blub", "Testing", runTime);
             ci.add(v2);
-            ci.commit();
+            db.commit(ci);
             timeB = runTime;
 
             runTimeStep();
@@ -487,7 +481,7 @@ public class JPATestUT {
             EDBObject v3 = new EDBObject("/diff/object", runTime, data3);
             ci = db.createCommit("Blub", "Testing", runTime);
             ci.add(v3);
-            ci.commit();
+            db.commit(ci);
             timeC = runTime;
         } catch (EDBException ex) {
             fail("Failed to prepare commits for comparison!");
@@ -534,8 +528,8 @@ public class JPATestUT {
             for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
                 String key = de.getKey();
                 EDBEntry entry = de.getValue();
-                System.out.println("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '" 
-                    + entry.getAfter() + "'");
+                System.out.println("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '"
+                        + entry.getAfter() + "'");
             }
         }
     }
@@ -549,7 +543,7 @@ public class JPATestUT {
         EDBObject v1 = new EDBObject("/ress/object", runTime, data1);
         JPACommit ci = db.createCommit("Blub", "Testing", runTime);
         ci.add(v1);
-        ci.commit();
+        db.commit(ci);
 
         runTimeStep();
 
@@ -557,7 +551,7 @@ public class JPATestUT {
         ci = db.createCommit("Blub", "Testing", runTime);
         ci.add(v1);
         ci.delete("/ress/object");
-        ci.commit();
+        db.commit(ci);
 
         runTimeStep();
 
@@ -565,10 +559,23 @@ public class JPATestUT {
         ci = db.createCommit("Blub", "Testing", runTime);
         ci.delete("/ress/object2");
         ci.add(v1);
-        ci.commit();
+        db.commit(ci);
 
         List<String> uids = db.getResurrectedUIDs();
         assertTrue(uids.contains("/ress/object"));
         assertFalse(uids.contains("/ress/object2"));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testMultipleCommitOfTheSameCommitClass() throws Exception {
+        JPADatabase db = openDatabase();
+
+        HashMap<String, Object> data1 = new HashMap<String, Object>();
+        data1.put("KeyA", "Value A 1");
+        EDBObject v1 = new EDBObject("/fail/object", runTime, data1);
+        JPACommit ci = db.createCommit("Blub", "Testing", runTime);
+        ci.add(v1);
+        db.commit(ci);
+        db.commit(ci);
     }
 }

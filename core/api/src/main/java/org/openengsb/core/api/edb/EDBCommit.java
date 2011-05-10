@@ -67,14 +67,6 @@ public interface EDBCommit {
      */
     void delete(String uid) throws EDBException;
 
-    /**
-     * Commit the change to the database. This essentially calls the database's commit() function.
-     */
-    void commit() throws EDBException;
-
     /** Used by the database to "finalize" the commit */
     void finalize() throws EDBException;
-
-    /** Used by the database - mainly by JPA - to finalize the loading of the commit */
-    void loadCommit() throws EDBException;
 }
