@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-Dynamic-ImportPackage: *
+Meta-Persistence: META-INF/persistence.xml

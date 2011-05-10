@@ -61,18 +61,10 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-		<configuration>
-		  <source>1.6</source>
-		  <target>1.6</target>
-		</configuration>
-      </plugin>
-      <plugin>
       	<groupId>org.codehaus.mojo</groupId>
       	<artifactId>openjpa-maven-plugin</artifactId>
       	<version>1.2</version>
       	<configuration>
-      	    <includes>**/entities/*.class</includes>
       		<includes>**/JPACommit.class</includes>
       		<includes>**/JPAHead.class</includes>
             <includes>**/JPAObject.class</includes>
@@ -89,22 +81,8 @@
       			</goals>
       		</execution>
       	</executions>
-      </plugin> 
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
-	<resources>
-		<resource>
-			<directory>src/main/resources</directory>
-		</resource>
-	</resources>
   </build>
 
   <dependencies>
