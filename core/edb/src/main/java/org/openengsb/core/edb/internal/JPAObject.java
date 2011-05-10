@@ -31,7 +31,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.openengsb.core.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBObject;
 
 @Entity
 public class JPAObject {

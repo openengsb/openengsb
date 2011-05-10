@@ -15,30 +15,32 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb;
+package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.edb.exceptions.EDBException;
-
+import org.openengsb.core.api.edb.EDBEntry;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBObjectDiff;
 
 /**
  * An ObjectDiff compares two EDBObjects of the same UID and stores their differences. Note that "objects" may be null
  * in case they didn't exist, whereas commits must never be null!
  */
-public class ObjectDiff {
-    private Commit commitA;
-    private Commit commitB;
+public class ObjectDiff implements EDBObjectDiff {
+    private JPACommit commitA;
+    private JPACommit commitB;
     private EDBObject stateA;
     private EDBObject stateB;
-    private Map<String, Entry> diff;
+    private Map<String, EDBEntry> diff;
     private int differences;
 
-    public ObjectDiff(Commit ca, Commit cb, EDBObject oa, EDBObject ob) throws EDBException {
-        diff = new HashMap<String, Entry>();
+    public ObjectDiff(JPACommit ca, JPACommit cb, EDBObject oa, EDBObject ob) throws EDBException {
+        diff = new HashMap<String, EDBEntry>();
         differences = 0;
         if (cb.getTimestamp() < ca.getTimestamp()) {
             this.commitA = cb;
@@ -102,7 +104,7 @@ public class ObjectDiff {
      * 
      * @return A Map from the field name to ObjectDiff.Entry
      */
-    public Map<String, Entry> getDiffMap() {
+    public Map<String, EDBEntry> getDiffMap() {
         return diff;
     }
 
@@ -138,7 +140,7 @@ public class ObjectDiff {
      * 
      * @return The initial commit.
      */
-    public Commit getStartCommit() {
+    public JPACommit getStartCommit() {
         return commitA;
     }
 
@@ -147,7 +149,7 @@ public class ObjectDiff {
      * 
      * @return The final commit.
      */
-    public Commit getEndCommit() {
+    public JPACommit getEndCommit() {
         return commitB;
     }
 }

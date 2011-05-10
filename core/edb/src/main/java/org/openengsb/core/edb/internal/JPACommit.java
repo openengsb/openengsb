@@ -20,23 +20,138 @@ package org.openengsb.core.edb.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Basic;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
-import org.openengsb.core.edb.Commit;
-import org.openengsb.core.edb.Database;
-import org.openengsb.core.edb.EDBObject;
-import org.openengsb.core.edb.exceptions.EDBException;
+import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBObject;
 
 @Entity
-public class JPACommit extends Commit {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class JPACommit implements EDBCommit {
     private List<JPAObject> jpaObjects;
 
+    protected JPADatabase db;
+    @Basic
+    protected String committer;
+    @Basic
+    protected long timestamp;
+    @Basic
+    protected String role;
+
+    protected List<EDBObject> objects; // For built commit objects
+
+    // @Lob
+    @ElementCollection
+    protected List<String> deletions;
+    // @Lob
+    @ElementCollection
+    protected List<String> uids; // For queried commit objects
+
+    // / The object has been committed, you must not commit it twice.
+    protected boolean committed = false;
+
     public JPACommit() {
-        super();
     }
 
-    public JPACommit(String committer, String role, long timestamp, Database db) {
-        super(committer, role, timestamp, db);
+    public JPACommit(String committer, String role, long timestamp, JPADatabase db) {
+        this.db = db;
+        this.timestamp = timestamp;
+        this.committer = committer;
+        this.role = role;
+
+        uids = null;
+        objects = new ArrayList<EDBObject>();
+        deletions = new ArrayList<String>();
+    }
+
+    public void setCommitted(boolean c) { // getCommit() sets this to avoid db.getCommit(x).commit()
+        committed = c;
+    }
+
+    public boolean getCommitted() {
+        return committed;
+    }
+
+    /**
+     * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.
+     * 
+     * @return A list of UIDs.
+     */
+    public List<String> getUIDs() {
+        return uids;
+    }
+
+    /**
+     * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
+     * 
+     * @return A list of EDBObjects.
+     */
+    public final List<EDBObject> getObjects() {
+        return objects;
+    }
+
+    /**
+     * For both, a created, or a queried commit: Retrieve a list of deleted UIDs.
+     */
+    public final List<String> getDeletions() {
+        return deletions;
+    }
+
+    /** Get the committer's name. */
+    public final String getCommitter() {
+        return committer;
+    }
+
+    /** Get the commit's timestamp. */
+    public final long getTimestamp() {
+        return timestamp;
+    }
+
+    /** Get the commit's role. */
+    public final String getRole() {
+        return role;
+    }
+
+    /**
+     * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
+     * 
+     * @param obj An object suitable for committing in this commit.
+     */
+    public void add(EDBObject obj) throws EDBException {
+        if (obj.getTimestamp() != timestamp) {
+            throw new EDBException("Object's timestamp doesn't match commit's timestamp!");
+        }
+        if (!objects.contains(obj)) {
+            objects.add(obj);
+        }
+    }
+
+    /**
+     * Delete an object that already exists.
+     * 
+     * @param uid The object's UID.
+     */
+    public void delete(String uid) throws EDBException {
+        if (deletions.contains(uid)) {
+            return;
+        }
+        deletions.add(uid);
+    }
+
+    /**
+     * Commit the change to the database. This essentially calls the database's commit() function.
+     */
+    public void commit() throws EDBException {
+        if (committed) {
+            throw new EDBException("this commit class is already committed");
+        }
+        // Let's keep the implementation of transactions inside the Database
+        db.commit(this);
     }
 
     @Override
@@ -57,5 +172,16 @@ public class JPACommit extends Commit {
             getObjects().add(o.getObject());
         }
         jpaObjects.clear();
+    }
+
+    public void fillUIDs() {
+        if (uids == null) {
+            uids = new ArrayList<String>();
+        } else {
+            uids.clear();
+        }
+        for (EDBObject o : objects) {
+            uids.add(o.getUID());
+        }
     }
 }

@@ -15,19 +15,38 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.exceptions;
+package org.openengsb.core.edb.internal;
 
-@SuppressWarnings("serial")
-public class AlreadyCommittedException extends EDBException {
-    public AlreadyCommittedException() {
-        super("Object already committed.");
+import org.openengsb.core.api.edb.EDBEntry;
+
+/**
+ * The Entry object is a pair of values, essentially the "from" and "to" values for a change. A value that does not
+ * exist is null.
+ */
+public class Entry implements EDBEntry {
+    private Object from;
+    private Object to;
+
+    public Entry(Object from, Object to) {
+        this.from = from;
+        this.to = to;
     }
 
-    public AlreadyCommittedException(String s) {
-        super(s);
+    /**
+     * Get the initial value of this field.
+     * 
+     * @return The initial value, or null if it did not exist before.
+     */
+    public final Object getFrom() {
+        return from;
     }
 
-    public AlreadyCommittedException(String s, Throwable t) {
-        super(s, t);
+    /**
+     * Get the final value of this field.
+     * 
+     * @return The final value, or null if was removed.
+     */
+    public final Object getTo() {
+        return to;
     }
 }

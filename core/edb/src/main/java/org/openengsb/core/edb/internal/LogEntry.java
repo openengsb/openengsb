@@ -15,38 +15,38 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb;
+package org.openengsb.core.edb.internal;
 
-import org.openengsb.core.edb.internal.JPADatabase;
+import org.openengsb.core.api.edb.EDBLogEntry;
+import org.openengsb.core.api.edb.EDBObject;
 
 /**
- * The Database Factory will be used to create a Database object connected to the desired database.
+ * A LogEntry pairs an object with its commit.
  */
-public class DatabaseFactory {
-    public static final String DEFAULT_HOST = "localhost";
+public class LogEntry implements EDBLogEntry {
+    private JPACommit commit;
+    private EDBObject object;
 
-    protected DatabaseFactory() {
+    public LogEntry(JPACommit c, EDBObject obj) {
+        this.commit = c;
+        this.object = obj;
     }
 
     /**
-     * Currently creates the default database using createDefaultDatabase
+     * Get the entry's Commit.
      * 
-     * @return A Database object connected to the default database.
+     * @return The commit.
      */
-    public static Database create() {
-        return createDefaultDatabase();
+    public JPACommit getCommit() {
+        return commit;
     }
 
     /**
-     * Currently creates the default database connecting to a local server with mongo.
+     * Get the entry's Object.
      * 
-     * @return A Database object connected to the default database.
+     * @return The object.
      */
-    public static Database createDefaultDatabase() {
-        return new JPADatabase();
-    }
-
-    public static Database createJPA() {
-        return new JPADatabase();
+    public EDBObject getObject() {
+        return object;
     }
 }

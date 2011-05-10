@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb;
+package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,22 +23,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.edb.exceptions.EDBException;
+import org.openengsb.core.api.edb.EDBDiff;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBObjectDiff;
 
 /**
  * A Diff object stores hierarchically the differences between two states. It provides access to the commit objects
  * representing the first and last commits which are compared, and contains a Map of UIDs to ObjectDiff objects for each
  * object which undergoes any change in the range of the two commits.
  */
-public class Diff {
-    private Commit commitA;
-    private Commit commitB;
+public class Diff implements EDBDiff {
+    private JPACommit commitA;
+    private JPACommit commitB;
     private List<EDBObject> stateA;
     private List<EDBObject> stateB;
-    private HashMap<String, ObjectDiff> diff;
+    private HashMap<String, EDBObjectDiff> diff;
 
-    public Diff(Commit ca, Commit cb, List<EDBObject> oa, List<EDBObject> ob) throws EDBException {
-        diff = new HashMap<String, ObjectDiff>();
+    public Diff(JPACommit ca, JPACommit cb, List<EDBObject> oa, List<EDBObject> ob) throws EDBException {
+        diff = new HashMap<String, EDBObjectDiff>();
         if (cb.getTimestamp() < ca.getTimestamp()) {
             this.commitA = cb;
             this.commitB = ca;
@@ -89,7 +92,7 @@ public class Diff {
      * 
      * @return a Map<String, ObjectDiff> mapping.
      */
-    public Map<String, ObjectDiff> getObjectDiffs() {
+    public Map<String, EDBObjectDiff> getObjectDiffs() {
         return diff;
     }
 
@@ -137,7 +140,7 @@ public class Diff {
      * 
      * @return The start-commit object.
      */
-    public Commit getStartCommit() {
+    public JPACommit getStartCommit() {
         return commitA;
     }
 
@@ -146,7 +149,7 @@ public class Diff {
      * 
      * @return The end-commit object.
      */
-    public Commit getEndCommit() {
+    public JPACommit getEndCommit() {
         return commitB;
     }
 }

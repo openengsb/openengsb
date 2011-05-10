@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.openengsb.core.edb.exceptions.EDBException;
+import org.openengsb.core.api.edb.EDBException;
 
 public class JPAQueryBuilder {
 

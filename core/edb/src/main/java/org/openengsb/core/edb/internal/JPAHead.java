@@ -24,7 +24,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import org.openengsb.core.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBObject;
 
 @Entity
 public class JPAHead {
@@ -67,7 +67,7 @@ public class JPAHead {
         return loaded;
     }
 
-    protected List<JPAObject> getJPAObjects() {
+    public List<JPAObject> getJPAObjects() {
         return head;
     }
 

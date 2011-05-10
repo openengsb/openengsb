@@ -30,18 +30,15 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.NotSupportedException;
-import javax.transaction.UserTransaction;
 
-import org.openengsb.core.edb.Commit;
-import org.openengsb.core.edb.Diff;
-import org.openengsb.core.edb.EDBObject;
-import org.openengsb.core.edb.LogEntry;
-import org.openengsb.core.edb.exceptions.EDBException;
-import org.openengsb.core.edb.exceptions.NoDatabaseSelectedException;
-import org.openengsb.core.edb.exceptions.NotImplementedException;
+import org.apache.commons.lang.NotImplementedException;
+import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBDatabaseType;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBLogEntry;
+import org.openengsb.core.api.edb.EDBObject;
 
-public class JPADatabase implements org.openengsb.core.edb.Database {
+public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
     @PersistenceContext
     EntityManagerFactory emf;
     EntityManager em;
@@ -50,7 +47,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     private String dbname;
     private JPAHead head;
-    private JPADatabaseType type;
+    private EDBDatabaseType type;
 
     public JPADatabase() {
         dbname = null;
@@ -65,7 +62,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
     @Override
     public void open() throws EDBException {
         if (dbname == null) {
-            throw new NoDatabaseSelectedException(
+            throw new EDBException(
                 "There is no database name defined. Unable to connect to unknown database");
         }
         if (type == null) {
@@ -76,13 +73,13 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
             props = type.getPropertiesForDatabaseType();
             String connectionUrl = type.getConnectionPrefix() + dbname;
             props.setProperty("openjpa.ConnectionURL", connectionUrl);
-        } catch (NotSupportedException ex) {
-            throw new NotImplementedException("this type of jpa connection isn't implemented", ex);
+        } catch (NotImplementedException ex) {
+            throw new EDBException("this type of jpa connection isn't implemented", ex);
         }
         emf = Persistence.createEntityManagerFactory("openjpa", props);
         em = emf.createEntityManager();
         utx = em.getTransaction();
-        Query q = em.createQuery("SELECT max(h.timestamp) FROM JPA2Head h");
+        Query q = em.createQuery("SELECT max(h.timestamp) FROM JPAHead h");
         Number max = (Number) q.getSingleResult();
         if (max != null && max.longValue() > 0) {
             head = loadHead(max.longValue());
@@ -99,24 +96,20 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
     }
 
     @Override
-    public void setDatabase(String databaseName) {
+    public void setDatabase(String databaseName, EDBDatabaseType databaseType) {
         dbname = databaseName;
-    }
-
-    @Override
-    public void setDatabaseType(JPADatabaseType databaseType) {
         type = databaseType;
     }
 
     @Override
-    public Commit createCommit(String committer, String role, long timestamp) {
+    public JPACommit createCommit(String committer, String role, long timestamp) {
         return new JPACommit(committer, role, timestamp, this);
     }
 
     @Override
-    public void commit(Commit obj) throws EDBException {
+    public void commit(EDBCommit obj) throws EDBException {
         obj.finalize();
-        // First prepare a second head... if this fails, we don't need to continue hehe
+        // First prepare a second head... if this fails, we don't need to continue
         JPAHead nextHead;
         if (head != null) {
             nextHead = new JPAHead(head, obj.getTimestamp());
@@ -145,7 +138,6 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
             for (String id : obj.getDeletions()) {
                 EDBObject o = new EDBObject(id, timestamp);
                 o.put("@isDeleted", new Boolean(true));
-                // em.persist(o);
                 JPAObject j = new JPAObject(o);
                 em.persist(j);
             }
@@ -155,9 +147,9 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
             try {
                 utx.rollback();
             } catch (Exception e) {
-                throw new EDBException("Failed to rollback transaction to DB " + e.toString());
+                throw new EDBException("Failed to rollback transaction to DB", e);
             }
-            throw new EDBException("Failed to commit transaction to DB " + ex.toString());
+            throw new EDBException("Failed to commit transaction to DB", ex);
         }
     }
 
@@ -214,7 +206,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<LogEntry> getLog(String uid, long from, long to) throws EDBException {
+    public List<EDBLogEntry> getLog(String uid, long from, long to) throws EDBException {
         List<EDBObject> hist = getHistory(uid, from, to);
         Query query =
             em.createQuery("select c from JPACommit c where c.timestamp in "
@@ -223,12 +215,12 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
         query.setParameter("uid", uid);
         query.setParameter("from", from);
         query.setParameter("to", to);
-        List<Commit> commits = query.getResultList();
+        List<JPACommit> commits = query.getResultList();
         if (hist.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
                     + Integer.toString(hist.size()) + " history entries");
         }
-        List<LogEntry> log = new ArrayList<LogEntry>();
+        List<EDBLogEntry> log = new ArrayList<EDBLogEntry>();
         for (int i = 0; i < hist.size(); ++i) {
             log.add(new LogEntry(commits.get(i), hist.get(i)));
         }
@@ -237,7 +229,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     @SuppressWarnings("unchecked")
     public JPAHead loadHead(long timestamp) throws EDBException {
-        Query query = em.createQuery("select h from JPA2Head h where h.timestamp = :time");
+        Query query = em.createQuery("select h from JPAHead h where h.timestamp = :time");
         query.setParameter("time", timestamp);
         List<JPAHead> list = query.getResultList();
         if (list == null || list.size() != 1 || list.get(0) == null) {
@@ -296,32 +288,12 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
             // out.add(jpa.getObject());
             // return out;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new EDBException("fail", ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public EDBObject queryExt(String k, String v) throws EDBException {
-        try {
-            Query query = em.createQuery("select o from JPAObject o where exists "
-                            + "(select v from o.values v where "
-                            + "(v.key = :key and v.value LIKE :value))");
-            query.setParameter("key", k);
-            query.setParameter("value", v);
-            List<JPAObject> list = query.getResultList();
-            if (list.size() == 0 || list.get(0) == null) {
-                return null;
-            }
-            return list.get(0).getObject();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new EDBException("fail");
+            throw new EDBException("failed to query for objects with the given map", ex);
         }
     }
 
     @Override
-    public List<Commit> getCommits(String key, Object value) throws EDBException {
+    public List<EDBCommit> getCommits(String key, Object value) throws EDBException {
         Map<String, Object> q = new HashMap<String, Object>();
         q.put(key, value);
         return getCommits(q);
@@ -329,21 +301,21 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Commit> getCommits(Map<String, Object> query) throws EDBException {
+    public List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException {
         JPAQueryCommitBuilder builder = new JPAQueryCommitBuilder("select c from JPACommit c", query);
         Query jquery = em.createQuery(builder.getSQLCommand());
         for (Map.Entry<String, Object> p : builder.getParams().entrySet()) {
             jquery.setParameter(p.getKey(), p.getValue());
         }
-        List<Commit> commits = jquery.getResultList();
+        List<EDBCommit> commits = jquery.getResultList();
         if (commits == null) {
-            commits = new ArrayList<Commit>();
+            commits = new ArrayList<EDBCommit>();
         }
         return commits;
     }
 
     @Override
-    public Commit getLastCommit(String key, Object value) throws EDBException {
+    public JPACommit getLastCommit(String key, Object value) throws EDBException {
         Map<String, Object> q = new HashMap<String, Object>();
         q.put(key, value);
         return getLastCommit(q);
@@ -351,7 +323,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Commit getLastCommit(Map<String, Object> query) throws EDBException {
+    public JPACommit getLastCommit(Map<String, Object> query) throws EDBException {
         JPAQueryCommitBuilder builder = new JPAQueryCommitBuilder("select max(c.timestamp) from JPACommit c", query);
         Query jquery = em.createQuery(builder.getSQLCommand());
         for (Map.Entry<String, Object> p : builder.getParams().entrySet()) {
@@ -367,7 +339,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
             jquery.setParameter(p.getKey(), p.getValue());
         }
         jquery.setParameter("maxtime", time.get(0).longValue());
-        List<Commit> commits = jquery.getResultList();
+        List<JPACommit> commits = jquery.getResultList();
         if (commits.size() != 1) {
             throw new EDBException("Found no commit for an existing timestamp!");
         }
@@ -376,10 +348,10 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Commit getCommit(long from) throws EDBException {
+    public JPACommit getCommit(long from) throws EDBException {
         Query query = em.createQuery("select c from JPACommit c where c.timestamp = :time");
         query.setParameter("time", from);
-        List<Commit> commits = query.getResultList();
+        List<JPACommit> commits = query.getResultList();
         if (commits == null || commits.size() != 1) {
             return null;
         }
@@ -417,7 +389,7 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
     @Override
     public List<EDBObject> getStateOfLastCommitMatching(
             Map<String, Object> query) throws EDBException {
-        Commit ci = getLastCommit(query);
+        JPACommit ci = getLastCommit(query);
         if (ci == null) {
             return null;
         }
@@ -431,8 +403,8 @@ public class JPADatabase implements org.openengsb.core.edb.Database {
         return getStateOfLastCommitMatching(query);
     }
 
-    @Override
-    public UserTransaction getUserTransaction() throws EDBException {
-        throw new NotImplementedException();
-    }
+//    @Override
+//    public UserTransaction getUserTransaction() throws EDBException {
+//        throw new NotImplementedException();
+//    }
 }

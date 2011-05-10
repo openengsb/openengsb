@@ -32,15 +32,23 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openengsb.core.edb.exceptions.EDBException;
-import org.openengsb.core.edb.internal.JPADatabaseType;
+import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBDatabaseType;
+import org.openengsb.core.api.edb.EDBEntry;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBLogEntry;
+import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBObjectDiff;
+import org.openengsb.core.edb.internal.Diff;
+import org.openengsb.core.edb.internal.JPACommit;
+import org.openengsb.core.edb.internal.JPADatabase;
 
 public class JPATestUT {
     // is currently overwritten by a fixed number in initDB
     private static long randSeed = System.currentTimeMillis();
     private static Random rand;
     private long runTime;
-    private static Database db;
+    private static JPADatabase db;
 
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
@@ -54,11 +62,10 @@ public class JPATestUT {
         "Modeller", "Designer", "Programmer", "Annoying Person", "Bossy Bastard"
     };
 
-    private Database openDatabase() {
+    private JPADatabase openDatabase() {
         if (db == null) {
-            db = DatabaseFactory.createJPA();
-            db.setDatabase("JPATest");
-            db.setDatabaseType(JPADatabaseType.H2);
+            db = new JPADatabase();
+            db.setDatabase("JPATest", EDBDatabaseType.H2);
             try {
                 db.open();
             } catch (Exception ex) {
@@ -131,15 +138,15 @@ public class JPATestUT {
 
     @Test
     public void testOpenJPADatabase() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         assertTrue(db != null);
     }
 
     @Test
     public void testCommit() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         try {
-            Commit ci = db.createCommit("TestCommit", "Role", runTime);
+            JPACommit ci = db.createCommit("TestCommit", "Role", runTime);
             EDBObject obj = new EDBObject("Tester", runTime);
             obj.put("Test", "Hooray");
             ci.add(obj);
@@ -175,15 +182,15 @@ public class JPATestUT {
 
     @Test
     public void testGetCommits() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         try {
-            Commit ci = db.createCommit("TestCommit2", "Testrole", runTime);
+            JPACommit ci = db.createCommit("TestCommit2", "Testrole", runTime);
             EDBObject obj = new EDBObject("TestObject", runTime);
             obj.put("Bla", "Blabla");
             ci.add(obj);
             ci.commit();
 
-            List<Commit> commits = db.getCommits("role", "Testrole");
+            List<EDBCommit> commits = db.getCommits("role", "Testrole");
             System.out.println("Found " + Integer.toString(commits.size()) + " commits of role Role");
             assertTrue("1 commit", commits.size() == 1);
             commits = db.getCommits("role", "DoesNotExist");
@@ -202,7 +209,7 @@ public class JPATestUT {
 
     @Test
     public void testGetInexistantObjectByUID() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         EDBObject obj;
         try {
             obj = db.getObject("/this/object/does/not/exist");
@@ -215,7 +222,7 @@ public class JPATestUT {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetHistory() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         List<EDBObject> history;
         long delCreated = 0;
         long delDeleted = 0;
@@ -227,7 +234,7 @@ public class JPATestUT {
             data1.put("Door", "Bell");
             data1.put("Cat", "Spongebob");
             EDBObject v1 = new EDBObject("/history/object", runTime, data1);
-            Commit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/1", runTime));
             ci.add(randomTestObject("/deletion/1", runTime));
             delCreated = runTime;
@@ -305,8 +312,8 @@ public class JPATestUT {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetLog() {
-        Database db = openDatabase();
-        List<LogEntry> log;
+        JPADatabase db = openDatabase();
+        List<EDBLogEntry> log;
         long from = -1;
         long to = -1;
         try {
@@ -315,7 +322,7 @@ public class JPATestUT {
             data1.put("Bla", "Blub");
             data1.put("Cheese", "Butter");
             EDBObject v1 = new EDBObject("/history/test/object", runTime, data1);
-            Commit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/test/1", runTime));
             ci.add(randomTestObject("/deletion/test/1", runTime));
             ci.add(v1);
@@ -371,7 +378,7 @@ public class JPATestUT {
         try {
             log = db.getLog("/history/test/object", from, to);
             System.out.println("Found " + Integer.toString(log.size()) + " log entries...");
-            for (LogEntry l : log) {
+            for (EDBLogEntry l : log) {
                 System.out.println("Commit " + l.getCommit().getTimestamp());
             }
         } catch (Exception ex) {
@@ -382,14 +389,14 @@ public class JPATestUT {
     @SuppressWarnings("serial")
     @Test
     public void testQueries() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("A", "B");
             data1.put("Cow", "Milk");
             data1.put("Dog", "Food");
             EDBObject v1 = new EDBObject("/test/query1", runTime, data1);
-            Commit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v1);
             ci.commit();
             runTimeStep();
@@ -443,7 +450,7 @@ public class JPATestUT {
     @SuppressWarnings("unchecked")
     @Test
     public void testDiff() {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
         long timeA = 0;
         long timeB = 0;
         long timeC = 0;
@@ -453,7 +460,7 @@ public class JPATestUT {
             data1.put("KeyB", "Value B 1");
             data1.put("KeyC", "Value C 1");
             EDBObject v1 = new EDBObject("/diff/object", runTime, data1);
-            Commit ci = db.createCommit("Blub", "Testing", runTime);
+            JPACommit ci = db.createCommit("Blub", "Testing", runTime);
             ci.add(v1);
             ci.commit();
             timeA = runTime;
@@ -517,16 +524,16 @@ public class JPATestUT {
     }
 
     private void printDiffObject(Diff difference) {
-        Map<String, ObjectDiff> diff = difference.getObjectDiffs();
-        for (Map.Entry<String, ObjectDiff> e : diff.entrySet()) {
+        Map<String, EDBObjectDiff> diff = difference.getObjectDiffs();
+        for (Map.Entry<String, EDBObjectDiff> e : diff.entrySet()) {
             String uid = e.getKey();
             System.out.println("    Found a difference for object: " + uid);
 
-            ObjectDiff odiff = e.getValue();
-            Map<String, Entry> diffMap = odiff.getDiffMap();
-            for (Map.Entry<String, Entry> de : diffMap.entrySet()) {
+            EDBObjectDiff odiff = e.getValue();
+            Map<String, EDBEntry> diffMap = odiff.getDiffMap();
+            for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
                 String key = de.getKey();
-                Entry entry = de.getValue();
+                EDBEntry entry = de.getValue();
                 System.out.println("      Entry: '" + key + "' from: '" + entry.getFrom() + "' to: '" + entry.getTo()
                         + "'");
             }
@@ -535,12 +542,12 @@ public class JPATestUT {
 
     @Test
     public void testGetResurrectedUIDs() throws Exception {
-        Database db = openDatabase();
+        JPADatabase db = openDatabase();
 
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
         EDBObject v1 = new EDBObject("/ress/object", runTime, data1);
-        Commit ci = db.createCommit("Blub", "Testing", runTime);
+        JPACommit ci = db.createCommit("Blub", "Testing", runTime);
         ci.add(v1);
         ci.commit();
 
