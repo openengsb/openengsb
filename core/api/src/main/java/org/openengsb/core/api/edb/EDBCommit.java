@@ -52,7 +52,7 @@ public interface EDBCommit {
     String getCommitter();
 
     /** Get the commit's timestamp. */
-    long getTimestamp();
+    Long getTimestamp();
 
     /** Get the commit's role. */
     String getRole();
@@ -77,6 +77,4 @@ public interface EDBCommit {
 
     /** Used by the database - mainly by JPA - to finalize the loading of the commit */
     void loadCommit() throws EDBException;
-
-    void fillUIDs();
 }

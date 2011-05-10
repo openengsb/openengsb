@@ -47,7 +47,7 @@ public class JPATestUT {
     // is currently overwritten by a fixed number in initDB
     private static long randSeed = System.currentTimeMillis();
     private static Random rand;
-    private long runTime;
+    private Long runTime;
     private static JPADatabase db;
 
     private static final String[] RANDOMKEYS = new String[]{
@@ -77,7 +77,7 @@ public class JPATestUT {
     }
 
     private void runTimeStep() {
-        long old = runTime;
+        Long old = runTime;
         while (old == runTime) {
             runTime = System.currentTimeMillis();
         }

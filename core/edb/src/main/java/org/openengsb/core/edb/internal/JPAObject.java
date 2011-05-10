@@ -51,7 +51,7 @@ public class JPAObject {
     }
 
     public JPAObject(EDBObject o) {
-        timestamp = o.getTimestamp();
+        timestamp = o.getTimestamp().longValue();
         uid = o.getUID();
         isDeleted = o.isDeleted();
 

@@ -103,7 +103,7 @@ public class JPACommit implements EDBCommit {
     }
 
     /** Get the commit's timestamp. */
-    public final long getTimestamp() {
+    public final Long getTimestamp() {
         return timestamp;
     }
 
@@ -116,7 +116,7 @@ public class JPACommit implements EDBCommit {
      * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
      */
     public void add(EDBObject obj) throws EDBException {
-        if (obj.getTimestamp() != timestamp) {
+        if (obj.getTimestamp().longValue() != timestamp) {
             throw new EDBException("Object's timestamp doesn't match commit's timestamp!");
         }
         if (!objects.contains(obj)) {
@@ -165,7 +165,7 @@ public class JPACommit implements EDBCommit {
         jpaObjects.clear();
     }
 
-    public void fillUIDs() {
+    private void fillUIDs() {
         if (uids == null) {
             uids = new ArrayList<String>();
         } else {
