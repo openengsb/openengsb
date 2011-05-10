@@ -34,17 +34,21 @@ import javax.persistence.OneToMany;
 import org.openengsb.core.api.edb.EDBObject;
 
 @Entity
+/**
+ * this defines a jpa object in the database. The correlation to the EDBObject is that
+ * the JPAObject can be converted to an EDBObject.
+ */
 public class JPAObject {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "jpaobject_id")
     private Long id;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<KeyValuePair> values;
+    
     private Long timestamp;
     private Boolean isDeleted;
     private String uid;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<KeyValuePair> values;
 
     public JPAObject() {
         isDeleted = false;
