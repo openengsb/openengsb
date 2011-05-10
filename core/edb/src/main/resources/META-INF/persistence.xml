@@ -27,7 +27,7 @@
     <class>org.openengsb.core.edb.internal.KeyValuePair</class>
     <properties>
       <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
-      <!-- <property name="openjpa.ConnectionURL" value="jdbc:h2:JPATest"/>  -->
+      <property name="openjpa.ConnectionURL" value="jdbc:h2:EDB"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
