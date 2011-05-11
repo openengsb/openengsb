@@ -32,6 +32,7 @@ public class MethodCallRequest {
     private MethodCall methodCall;
     private String callId;
     private boolean answer;
+    private String destination;
 
     public MethodCallRequest() {
     }
@@ -76,6 +77,14 @@ public class MethodCallRequest {
 
     public void setAnswer(boolean answer) {
         this.answer = answer;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
 }

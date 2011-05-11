@@ -32,7 +32,7 @@ import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
-import org.openengsb.core.common.remote.XmlEncoderFilter;
+import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -80,7 +80,7 @@ public class PipelineTest {
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =
             Arrays
-                .asList(new Object[]{ XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class, requestMapperFilter, });
+                .asList(new Object[]{ XmlDecoderFilter.class, XmlMethodCallMarshalFilter.class, requestMapperFilter, });
         filterChainFactory.setFilters(filters);
 
         FilterAction filterChain = filterChainFactory.create();
@@ -95,10 +95,10 @@ public class PipelineTest {
         DOMResult domResult = new DOMResult();
         marshaller.marshal(new JAXBElement<MethodCallRequest>(new QName(MethodCallRequest.class.getSimpleName()),
             MethodCallRequest.class, request), domResult);
-        String input = XmlEncoderFilter.writeDocument(domResult.getNode());
+        String input = XmlDecoderFilter.writeDocument(domResult.getNode());
         String result = (String) filterChain.filter(input, new HashMap<String, Object>());
 
-        Document parseDocument = XmlEncoderFilter.parseDocument(result);
+        Document parseDocument = XmlDecoderFilter.parseDocument(result);
         MethodResultMessage value = unmarshaller.unmarshal(parseDocument, MethodResultMessage.class).getValue();
         String value2 = unmarshaller.unmarshal((Node) value.getResult().getArg(), String.class).getValue();
         value.getResult().setArg(value2);
@@ -132,7 +132,7 @@ public class PipelineTest {
 
         List<Object> filters =
             Arrays
-                .asList(new Object[]{ XmlMethodCallMarshalFilter.class, XmlEncoderFilter.class });
+                .asList(new Object[]{ XmlMethodCallMarshalFilter.class, XmlDecoderFilter.class });
         filterChainFactory.setFilters(filters);
         filterChainFactory.create();
     }
@@ -142,8 +142,8 @@ public class PipelineTest {
         FilterChainFactory<String, String> filterChainFactory =
             new FilterChainFactory<String, String>(String.class, String.class);
         List<Object> filters =
-            Arrays.asList(new Object[]{ XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class,
-                XmlEncoderFilter.class });
+            Arrays.asList(new Object[]{ XmlDecoderFilter.class, XmlMethodCallMarshalFilter.class,
+                XmlDecoderFilter.class });
         filterChainFactory.setFilters(filters);
         filterChainFactory.create();
     }

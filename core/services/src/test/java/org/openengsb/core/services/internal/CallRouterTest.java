@@ -125,20 +125,20 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
         callrouter.call("jms+json-out", testURI, new MethodCallRequest());
         Thread.sleep(300);
         callrouter.stop();
-        verify(outgoingPortMock, times(1)).send(eq(testURI), any(MethodCallRequest.class));
+        verify(outgoingPortMock, times(1)).send(any(MethodCallRequest.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
         callrouter.callSync("jms+json-out", testURI, methodCallRequest);
-        verify(outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCallRequest.class));
+        verify(outgoingPortMock, times(1)).sendSync(any(MethodCallRequest.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         MethodResultMessage value = new MethodResultMessage();
-        when(outgoingPortMock.sendSync("jms://localhost", methodCallRequest)).thenReturn(value);
+        when(outgoingPortMock.sendSync(methodCallRequest)).thenReturn(value);
         MethodResultMessage result = callrouter.callSync("jms+json-out", "jms://localhost", methodCallRequest);
         assertThat(result, is(value));
     }

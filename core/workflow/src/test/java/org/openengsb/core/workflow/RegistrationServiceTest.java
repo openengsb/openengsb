@@ -20,7 +20,6 @@ package org.openengsb.core.workflow;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
@@ -74,13 +73,13 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                        requestHandler.handleCall(((MethodCallRequest) invocation.getArguments()[1]).getMethodCall());
+                        requestHandler.handleCall(((MethodCallRequest) invocation.getArguments()[0]).getMethodCall());
                     };
                 };
                 executorService.execute(runnable);
                 return null;
             }
-        }).when(outgoingPort).send(any(String.class), any(MethodCallRequest.class));
+        }).when(outgoingPort).send(any(MethodCallRequest.class));
     }
 
     private RequestHandler getRequestHandler() {
@@ -109,7 +108,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
         service.processEvent(new TestEvent());
-        verify(outgoingPort).send(eq("test://localhost"), any(MethodCallRequest.class));
+        verify(outgoingPort).send(any(MethodCallRequest.class));
     }
 
     @Test

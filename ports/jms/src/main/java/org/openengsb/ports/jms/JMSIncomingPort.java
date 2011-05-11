@@ -17,7 +17,6 @@
 
 package org.openengsb.ports.jms;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import javax.jms.ConnectionFactory;
@@ -26,16 +25,11 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
-import org.openengsb.core.api.remote.MethodCallRequest;
-import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.remote.MethodResultMessage;
-import org.openengsb.core.api.remote.OutgoingPort;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
-public class JMSPort implements OutgoingPort {
+public class JMSIncomingPort {
 
     private static final String RECEIVE = "receive";
 
@@ -46,59 +40,6 @@ public class JMSPort implements OutgoingPort {
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
     private FilterAction filterChain;
-
-    @Override
-    public void send(String destination, MethodCallRequest call) {
-        sendMessage(destination, call);
-    }
-
-    @Override
-    public MethodResultMessage sendSync(String destination, MethodCallRequest call) {
-        sendMessage(destination, call);
-        JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.setReceiveTimeout(3000);
-        Object receiveAndConvert = createJMSTemplate.receiveAndConvert(call.getCallId());
-        if (receiveAndConvert == null) {
-            throw new RuntimeException("JMS Receive Timeout reached");
-        }
-        if (receiveAndConvert instanceof String) {
-            return createMethodReturn((String) receiveAndConvert);
-        } else {
-            throw new IllegalStateException("Message has to be of Type TextMessage and parseable into a String");
-        }
-    }
-
-    private MethodResultMessage createMethodReturn(String receiveAndConvert) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            MethodResultMessage resultMessage = mapper.readValue(receiveAndConvert, MethodResultMessage.class);
-            MethodResult result = resultMessage.getResult();
-            Class<?> resultClass = Class.forName(result.getClassName());
-            Object arg = mapper.convertValue(result.getArg(), resultClass);
-            result.setArg(arg);
-            return resultMessage;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JmsTemplate createJMSTemplate(String destination) {
-        DestinationUrl destinationUrl = DestinationUrl.createDestinationUrl(destination);
-        return factory.createJMSTemplate(destinationUrl);
-    }
-
-    private void sendMessage(String destination, MethodCallRequest call) {
-        String answer;
-        try {
-            answer = new ObjectMapper().writeValueAsString(call);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        JmsTemplate template = createJMSTemplate(destination);
-        template.convertAndSend(answer);
-    }
 
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
@@ -144,7 +85,6 @@ public class JMSPort implements OutgoingPort {
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
-
 
     public void setFilterChain(FilterAction filterChain) {
         this.filterChain = filterChain;

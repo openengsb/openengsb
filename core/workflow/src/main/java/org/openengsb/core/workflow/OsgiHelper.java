@@ -47,7 +47,8 @@ public final class OsgiHelper {
         }
         MethodCall methodCall = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
         MethodCallRequest request = new MethodCallRequest(methodCall);
-        port.send(destination, request);
+        request.setDestination(destination);
+        port.send(request);
     }
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)

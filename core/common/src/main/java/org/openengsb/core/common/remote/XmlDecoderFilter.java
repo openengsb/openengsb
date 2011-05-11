@@ -24,24 +24,23 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
-public class XmlEncoderFilter extends AbstractFilterChainElement<Document, Document> {
+public class XmlDecoderFilter extends AbstractFilterChainElement<String, String> {
 
     private FilterAction next;
 
-    public XmlEncoderFilter() {
-        super(Document.class, Document.class);
+    public XmlDecoderFilter() {
+        super(String.class, String.class);
     }
 
     @Override
-    public Document doFilter(Document input, Map<String, Object> metadata) throws FilterException {
-        String docString;
+    public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
+        Document doc = parseDocument(input);
+        Document result = (Document) next.filter(doc, metadata);
         try {
-            docString = writeDocument(input);
+            return writeDocument(result);
         } catch (TransformerException e) {
             throw new FilterException(e);
         }
-        String result = (String) next.filter(docString, metadata);
-        return parseDocument(result);
     }
 
     @Override
