@@ -1,5 +1,7 @@
 package org.openengsb.core.common.remote;
 
+import java.util.Map;
+
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 
@@ -21,12 +23,12 @@ public abstract class AbstractFilterAction<InputType, OutputType> implements Fil
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object filter(Object input) throws FilterException {
+    public Object filter(Object input, Map<String, Object> metaData) throws FilterException {
         Preconditions.checkArgument(inputType.isAssignableFrom(input.getClass()));
-        return doFilter((InputType) input);
+        return doFilter((InputType) input, metaData);
     }
 
-    protected abstract OutputType doFilter(InputType input);
+    protected abstract OutputType doFilter(InputType input, Map<String, Object> metaData);
 
     @Override
     public Class<InputType> getSupportedInputType() {

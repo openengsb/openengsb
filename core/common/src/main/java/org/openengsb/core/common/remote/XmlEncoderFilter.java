@@ -3,6 +3,7 @@ package org.openengsb.core.common.remote;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,9 +33,9 @@ public class XmlEncoderFilter extends AbstractFilterChainElement<String, String>
     }
 
     @Override
-    public String doFilter(String input) throws FilterException {
+    public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
         Document doc = parseDocument(input);
-        Document result = (Document) next.filter(doc);
+        Document result = (Document) next.filter(doc, metadata);
         try {
             return writeDocument(result);
         } catch (TransformerException e) {

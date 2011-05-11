@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -29,7 +30,6 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.remote.FilterStorage;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.remote.XmlEncoderFilter;
@@ -68,7 +68,7 @@ public class PipelineTest {
         MethodCall methodCall = new MethodCall("test", new Object[]{ "foo" });
         MethodCallRequest request = new MethodCallRequest(methodCall, "bar");
         String input = objectMapper.writeValueAsString(request);
-        String result = (String) filterChain.filter(input);
+        String result = (String) filterChain.filter(input, new HashMap<String, Object>());
         MethodResultMessage returnValue = objectMapper.readValue(result, MethodResultMessage.class);
         assertThat((String) returnValue.getResult().getArg(), is("foo"));
         assertThat(returnValue.getCallId(), is("bar"));
@@ -96,7 +96,7 @@ public class PipelineTest {
         marshaller.marshal(new JAXBElement<MethodCallRequest>(new QName(MethodCallRequest.class.getSimpleName()),
             MethodCallRequest.class, request), domResult);
         String input = XmlEncoderFilter.writeDocument(domResult.getNode());
-        String result = (String) filterChain.filter(input);
+        String result = (String) filterChain.filter(input, new HashMap<String, Object>());
 
         Document parseDocument = XmlEncoderFilter.parseDocument(result);
         MethodResultMessage value = unmarshaller.unmarshal(parseDocument, MethodResultMessage.class).getValue();
@@ -120,8 +120,9 @@ public class PipelineTest {
         MethodCall methodCall = new MethodCall("test", new Object[]{ "foo" });
         MethodCallRequest request = new MethodCallRequest(methodCall, "bar");
         String input = objectMapper.writeValueAsString(request);
-        filterChain.filter(input);
-        assertThat((String) FilterStorage.getStorage().get("callId"), is("bar"));
+        HashMap<String, Object> metaData = new HashMap<String, Object>();
+        filterChain.filter(input, metaData);
+        assertThat((String) metaData.get("callId"), is("bar"));
     }
 
     @Test(expected = FilterConfigurationException.class)

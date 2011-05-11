@@ -18,7 +18,7 @@
 package org.openengsb.ports.jms;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.HashMap;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -32,7 +32,6 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.common.remote.FilterStorage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -108,10 +107,10 @@ public class JMSPort implements OutgoingPort {
                     TextMessage textMessage = (TextMessage) message;
                     try {
                         String text = textMessage.getText();
-                        String result = (String) filterChain.filter(text);
-                        Map<String, Object> filterStorage = FilterStorage.getStorage();
-                        String callId = (String) filterStorage.get("callId");
-                        if (filterStorage.containsKey("answer")) {
+                        HashMap<String, Object> metadata = new HashMap<String, Object>();
+                        String result = (String) filterChain.filter(text, metadata);
+                        String callId = (String) metadata.get("callId");
+                        if (metadata.containsKey("answer")) {
                             new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                         }
                     } catch (JMSException e) {

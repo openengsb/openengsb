@@ -21,10 +21,9 @@ public class RequestMapperFilter extends AbstractFilterAction<MethodCallRequest,
     }
 
     @Override
-    protected MethodResultMessage doFilter(MethodCallRequest input) {
-        Map<String, Object> storage = FilterStorage.getStorage();
-        storage.put("callId", input.getCallId());
-        storage.put("answer", input.isAnswer());
+    protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) {
+        metadata.put("callId", input.getCallId());
+        metadata.put("answer", input.isAnswer());
         MethodResult result = requestHandler.handleCall(input.getMethodCall());
         return new MethodResultMessage(result, input.getCallId());
     }

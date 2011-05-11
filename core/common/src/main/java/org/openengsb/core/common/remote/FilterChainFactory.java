@@ -2,6 +2,7 @@ package org.openengsb.core.common.remote;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
@@ -29,8 +30,8 @@ public class FilterChainFactory<InputType, OutputType> {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected OutputType doFilter(InputType input) {
-            return (OutputType) firstElement.filter(input);
+        protected OutputType doFilter(InputType input, Map<String, Object> metadata) {
+            return (OutputType) firstElement.filter(input, metadata);
         };
     }
 

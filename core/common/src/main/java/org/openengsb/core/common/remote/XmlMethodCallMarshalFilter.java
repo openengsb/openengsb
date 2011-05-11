@@ -1,6 +1,7 @@
 package org.openengsb.core.common.remote;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -34,14 +35,14 @@ public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Docum
     }
 
     @Override
-    public Document doFilter(Document input) throws FilterException {
+    public Document doFilter(Document input, Map<String, Object> metadata) throws FilterException {
         MethodCallRequest call;
         try {
             call = parseMethodCall(input);
         } catch (JAXBException e) {
             throw new FilterException(e);
         }
-        MethodResultMessage result = (MethodResultMessage) next.filter(call);
+        MethodResultMessage result = (MethodResultMessage) next.filter(call, metadata);
         return serializeResult(result);
     }
 

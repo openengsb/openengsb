@@ -1,5 +1,7 @@
 package org.openengsb.core.api.remote;
 
+import java.util.Map;
+
 /**
  * Represents an Action in a filter-chain. Implementing this interface ensures that the class can be used in a
  * filterchain configuration.
@@ -13,7 +15,7 @@ public interface FilterAction {
      * @throws FilterException if some Exception occurs. All Exception should be wrapped in a {@link FilterException} so
      *         that they can be treated at the end of the chain.
      */
-    Object filter(Object input) throws FilterException;
+    Object filter(Object input, Map<String, Object> metaData) throws FilterException;
 
     /**
      * This is required to check the compatibility of filters at runtime (since the type-parameters are not available at
