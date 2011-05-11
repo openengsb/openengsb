@@ -38,7 +38,7 @@ public class DefaultCallRouter implements CallRouter {
         Runnable callHandler = new Runnable() {
             @Override
             public void run() {
-                port.send(destination, call);
+                port.send(call);
             }
         };
         executor.execute(callHandler);
@@ -48,7 +48,7 @@ public class DefaultCallRouter implements CallRouter {
     public MethodResultMessage callSync(String portId, final String destination, final MethodCallRequest call) {
         OutgoingPort port;
         port = getPort(portId);
-        return port.sendSync(destination, call);
+        return port.sendSync(call);
     }
 
     private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {

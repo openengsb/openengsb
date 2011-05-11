@@ -71,7 +71,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
 
         MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
         MethodResult callSync =
-            callRouter.callSync(portId, destination, new MethodCallRequest(methodCall, true)).getResult();
+            callRouter.callSync(portId, destination, new MethodCallRequest(methodCall)).getResult();
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();

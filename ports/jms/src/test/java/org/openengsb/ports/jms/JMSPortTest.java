@@ -23,9 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -39,7 +37,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
@@ -51,7 +48,7 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
-import org.openengsb.core.common.remote.XmlEncoderFilter;
+import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
@@ -118,7 +115,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     private MethodResultMessage methodReturn;
     private JmsTemplate jmsTemplate;
     private JMSTemplateFactory jmsTemplateFactory;
-    private JMSPort port;
+    private JMSIncomingPort incomingPort;
     private RequestHandler handler;
 
     private Map<String, String> metaData;
@@ -133,9 +130,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
-        port = new JMSPort();
-        port.setFactory(jmsTemplateFactory);
-        port.setConnectionFactory(Mockito.mock(ConnectionFactory.class));
+        incomingPort = new JMSIncomingPort();
+        incomingPort.setFactory(jmsTemplateFactory);
+        incomingPort.setConnectionFactory(Mockito.mock(ConnectionFactory.class));
         handler = new RequestHandlerImpl();
 
         TestInterface mock2 = mock(TestInterface.class);
@@ -146,47 +143,24 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         metaData.put("serviceId", "test");
         MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
         call = new MethodCallRequest(methodCall, "123");
+        call.setDestination("host");
         MethodResult result = new MethodResult(new TestClass("test"));
         result.setMetaData(metaData);
         methodReturn = new MethodResultMessage(result, "123");
+
+        JMSOutgoingPort jmsOutgoingPort = new JMSOutgoingPort();
+        jmsOutgoingPort.setFactory(jmsTemplateFactory);
+
     }
 
-    @Test
-    public void callSend_shouldSendMessageViaJMS() throws URISyntaxException, IOException {
-        port.send("host", call);
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), captor.capture());
-        Mockito.verifyNoMoreInteractions(jmsTemplate);
-        JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
-        JsonNode readTree = requestMessage.get("methodCall");
 
-        assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
-                + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.TestClass\"]"));
-        assertThat(readTree.get("methodName").toString(), Matchers.equalTo("\"method\""));
-        assertThat(readTree.get("args").toString(), Matchers.equalTo("[\"123\",5,{\"test\":\"test\"}]"));
-        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"serviceId\":\"test\"}"));
-    }
-
-    @Test
-    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
-        ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);
-        port.sendSync("host", call);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), sendIdCaptor.capture());
-
-        String destination =
-            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
-                .getValueAsText();
-        assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
-    }
 
     @Test(timeout = 5000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost");
         final JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        port = new JMSPort();
-        port.setFactory(new JMSTemplateFactory() {
+        incomingPort = new JMSIncomingPort();
+        incomingPort.setFactory(new JMSTemplateFactory() {
             @Override
             public JmsTemplate createJMSTemplate(String host) {
                 return jmsTemplate;
@@ -197,11 +171,11 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                 return new SimpleMessageListenerContainer();
             }
         });
-        port.setConnectionFactory(cf);
+        incomingPort.setConnectionFactory(cf);
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(JsonMethodCallMarshalFilter.class, new RequestMapperFilter(handler)));
-        port.setFilterChain(factory.create());
-        port.start();
+        incomingPort.setFilterChain(factory.create());
+        incomingPort.start();
 
         new JmsTemplate(cf).convertAndSend("receive", METHOD_CALL_REQUEST);
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
@@ -218,8 +192,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() throws InterruptedException, IOException {
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost1");
         final JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        port = new JMSPort();
-        port.setFactory(new JMSTemplateFactory() {
+        incomingPort = new JMSIncomingPort();
+        incomingPort.setFactory(new JMSTemplateFactory() {
             @Override
             public JmsTemplate createJMSTemplate(String host) {
                 return jmsTemplate;
@@ -230,12 +204,12 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                 return new SimpleMessageListenerContainer();
             }
         });
-        port.setConnectionFactory(cf);
+        incomingPort.setConnectionFactory(cf);
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(XmlEncoderFilter.class, XmlMethodCallMarshalFilter.class,
+        factory.setFilters(Arrays.asList(XmlDecoderFilter.class, XmlMethodCallMarshalFilter.class,
             new RequestMapperFilter(handler)));
-        port.setFilterChain(factory.create());
-        port.start();
+        incomingPort.setFilterChain(factory.create());
+        incomingPort.start();
         Thread.sleep(1000);
         new JmsTemplate(cf).convertAndSend("receive", xmlText);
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("123");
@@ -247,8 +221,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void stop_ShouldNotReactToIncomingCalls() {
-        port.start();
-        port.stop();
+        incomingPort.start();
+        incomingPort.stop();
         Mockito.verify(simpleMessageListenerContainer).stop();
     }
 
