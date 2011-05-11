@@ -90,6 +90,7 @@
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
+    <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
