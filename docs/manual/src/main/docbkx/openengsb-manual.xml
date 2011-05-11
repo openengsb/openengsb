@@ -97,6 +97,7 @@
        <para>The target audience of this part are users and in special admins of the system.</para>
      </partintro>
      <xi:include href="ui/testclient.xml"/>
+     <xi:include href="ui/wiring.xml"/>
   </part>
 
   <part xml:id="domain.manual">
