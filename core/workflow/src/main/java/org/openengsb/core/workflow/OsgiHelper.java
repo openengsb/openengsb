@@ -46,7 +46,7 @@ public final class OsgiHelper {
             throw new PortNotAvailableException("Port with id " + portId + " not available", e1);
         }
         MethodCall call =
-            new MethodCall("processRemoteEvent", new Object[]{ e }, metaData, UUID.randomUUID().toString(), true, null);
+            new MethodCall("processRemoteEvent", new Object[]{ e }, metaData, UUID.randomUUID().toString(), true);
         port.send(destination, call);
     }
 
