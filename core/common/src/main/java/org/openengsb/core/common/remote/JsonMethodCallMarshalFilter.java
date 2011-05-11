@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,13 +26,13 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     }
 
     @Override
-    public String doFilter(String input) throws FilterException {
+    public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
         ObjectMapper objectMapper = createObjectMapper();
         MethodCallRequest call;
         try {
             call = objectMapper.readValue(input, MethodCallRequest.class);
             resetArgs(call);
-            MethodResultMessage returnValue = (MethodResultMessage) next.filter(call);
+            MethodResultMessage returnValue = (MethodResultMessage) next.filter(call, metadata);
             return objectMapper.writeValueAsString(returnValue);
         } catch (IOException e) {
             throw new FilterException(e);
