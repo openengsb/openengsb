@@ -21,11 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class WorkflowRepresentation implements Serializable {
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();
-    
+
     private List<EndRepresentation> endNodes = new ArrayList<EndRepresentation>();
 
     public final String getName() {
@@ -43,7 +46,7 @@ public class WorkflowRepresentation implements Serializable {
     public final void setRoot(ActionRepresentation root) {
         this.root = root;
     }
-    
+
     public void addEndNode(EndRepresentation end) {
         this.endNodes.add(end);
     }
@@ -51,4 +54,5 @@ public class WorkflowRepresentation implements Serializable {
     public List<EndRepresentation> getEndNodes() {
         return this.endNodes;
     }
+
 }

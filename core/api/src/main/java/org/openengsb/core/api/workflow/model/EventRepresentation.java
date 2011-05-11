@@ -21,9 +21,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 @SuppressWarnings("serial")
 public class EventRepresentation implements NodeRepresentation, Serializable {
+    @XmlElementWrapper(name = "actions")
+    @XmlElement(name = "event")
     private final List<ActionRepresentation> actions = new ArrayList<ActionRepresentation>();
+    @XmlElementWrapper(name = "events")
+    @XmlElement(name = "event")
     private final List<EventRepresentation> events = new ArrayList<EventRepresentation>();
 
     private Class<? extends org.openengsb.core.api.Event> event;

@@ -20,14 +20,23 @@ package org.openengsb.core.services.internal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
 public class WorkflowEditorServiceImplTest {
 
+    private WorkflowEditorServiceImpl service;
+
+    @Before
+    public void setUp() throws InvalidConfigurationException, PersistenceException {
+        service = new WorkflowEditorServiceImpl();
+    }
+
     @Test
     public void createWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
         String name = "name";
         service.createWorkflow(name);
         WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
@@ -36,7 +45,6 @@ public class WorkflowEditorServiceImplTest {
 
     @Test
     public void loadWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
@@ -48,7 +56,6 @@ public class WorkflowEditorServiceImplTest {
 
     @Test
     public void getWorkflowName_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
@@ -59,6 +66,6 @@ public class WorkflowEditorServiceImplTest {
 
     @Test
     public void callCurrentWorkflow_shouldReturnNullWhenNoWorkflowSelected() {
-        assertThat(null, equalTo(new WorkflowEditorServiceImpl().getCurrentWorkflow()));
+        assertThat(null, equalTo(service.getCurrentWorkflow()));
     }
 }

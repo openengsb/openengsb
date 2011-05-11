@@ -95,5 +95,16 @@
   <service interface="org.openengsb.core.api.workflow.WorkflowConverter">
     <bean class="org.openengsb.core.workflow.editor.converter.DroolsConverter"/>
   </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="workflow-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.internal.persistence.WorkflowFilePersistenceBackendService">
+      <argument>
+        <bean class="org.openengsb.core.workflow.internal.persistence.WorkflowRepresentationConverter"></bean>
+      </argument>
+    </bean>
+  </service>
 
 </blueprint>

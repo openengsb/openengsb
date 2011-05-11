@@ -75,6 +75,7 @@ public class WorkflowEditor extends BasePage {
     WorkflowConverter workflowConverter;
 
     public WorkflowEditor() {
+        workflowEditorService.loadWorkflowsFromDatabase();
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
             @Override
             protected void onSubmit() {
@@ -116,6 +117,14 @@ public class WorkflowEditor extends BasePage {
         };
         add(exportForm);
 
+        Form<Object> saveForm = new Form<Object>("saveForm") {
+            @Override
+            protected void onSubmit() {
+                workflowEditorService.saveCurrentWorkflow();
+            }
+        };
+        add(saveForm);
+
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         final Model<WorkflowRepresentation> currentworkflow =
             new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
@@ -147,12 +156,15 @@ public class WorkflowEditor extends BasePage {
 
         table = new TreeTable("treeTable", model, columns);
         String label = "";
+        if (workflowEditorService.getWorkflowNames().size() == 0) {
+            selectForm.setVisible(false);
+        }
         if (currentworkflow.getObject() == null) {
             label = getString("workflow.create.first");
             node.setUserObject(new ActionRepresentation());
             table.setVisible(false);
-            selectForm.setVisible(false);
             exportForm.setVisible(false);
+            saveForm.setVisible(false);
         } else {
             label = currentworkflow.getObject().getName();
             node.setUserObject(currentworkflow.getObject().getRoot());
@@ -167,7 +179,7 @@ public class WorkflowEditor extends BasePage {
 
     private void addGlobal(ActionRepresentation action) {
         ruleManager.addGlobal(action.getDomain().getName(), action.getLocation());
-        
+
         for (ActionRepresentation newAction : action.getActions()) {
             addGlobal(newAction);
         }
