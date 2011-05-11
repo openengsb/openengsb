@@ -41,6 +41,7 @@ import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 
 @SuppressWarnings("serial")
@@ -93,6 +94,7 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
         addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
         addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", "");
+        addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
 
     private void initializeMenu() {

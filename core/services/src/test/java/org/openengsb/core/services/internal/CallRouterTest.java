@@ -44,6 +44,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
@@ -55,7 +56,7 @@ import org.osgi.framework.BundleContext;
 
 public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
-    private CallRouterImpl callrouter;
+    private CallRouter callrouter;
     private RequestHandlerImpl requestHandler;
     private TestService serviceMock;
     private OutgoingPort outgoingPortMock;
@@ -65,7 +66,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     public void setUp() throws Exception {
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
-        callrouter = new CallRouterImpl();
+        callrouter = new DefaultCallRouter();
         requestHandler = new RequestHandlerImpl();
     }
 
@@ -78,7 +79,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
         HashMap<String, String> metaData = getMetadata("foo");
-        final MethodCall call = new MethodCall("test", new Object[0], metaData);
+        final MethodCall call = new MethodCall("test", new Object[0], metaData, "1", true, null);
         requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, times(1)).test();
@@ -92,7 +93,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
+        final MethodCall call = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
         requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, never()).test();
@@ -102,7 +103,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Test
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final MethodCall call = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
+        final MethodCall call = new MethodCall("getAnswer", new Object[0], getMetadata("foo"), "1", true, null);
         MethodReturn result = requestHandler.handleCall(call);
 
         verify(serviceMock).getAnswer();
@@ -111,7 +112,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void recieveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[0], getMetadata("foo"));
+        final MethodCall call = new MethodCall("test", new Object[0], getMetadata("foo"), "1", true, null);
         MethodReturn result = requestHandler.handleCall(call);
 
         verify(serviceMock).test();
@@ -130,7 +131,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
         callrouter.callSync("jms+json-out", testURI, methodCall);
         verify(outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
@@ -138,7 +139,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
         MethodReturn value = new MethodReturn();
         when(outgoingPortMock.sendSync("jms://localhost", methodCall)).thenReturn(value);
         MethodReturn result = callrouter.callSync("jms+json-out", "jms://localhost", methodCall);
@@ -162,8 +163,8 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     public void testHandleCallsParallel() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         final Object sync = addWaitingAnswerToServiceMock();
-        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"));
-        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
+        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"), "1", true, null);
+        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"), "1", true, null);
 
         ExecutorService threadPool = Executors.newCachedThreadPool();
         Future<MethodReturn> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));

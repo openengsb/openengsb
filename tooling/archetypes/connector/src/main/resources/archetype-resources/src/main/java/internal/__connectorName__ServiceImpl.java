@@ -21,6 +21,7 @@ package ${package}.internal;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.api.AliveState;
 
+import org.openengsb.core.api.Domain;
 import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implements ${domainInterface} {
@@ -33,12 +34,16 @@ public class ${connectorName}ServiceImpl extends AbstractOpenEngSBService implem
     void setAttr(String attr) {
         this.attr = attr;
     }
-    
+
+    public String getAttr() {
+        return attr;
+    }
+
     @Override
     public AliveState getAliveState() {
         // TODO Auto-generated method stub
         return AliveState.DISCONNECTED;
     }
-    
+
     // TODO implement domain methods here
 }

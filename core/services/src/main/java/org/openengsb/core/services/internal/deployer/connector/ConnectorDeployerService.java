@@ -18,37 +18,65 @@
 package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileWriter;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Semaphore;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorValidationFailedException;
-import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorDescription;
+import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.util.ConfigUtils;
+import org.openengsb.core.common.util.DictionaryAsMap;
+import org.openengsb.core.common.util.MergeException;
+import org.openengsb.core.security.BundleAuthenticationToken;
+import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.MapMaker;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
-    private static final String AUTH_PASSWORD = "password";
-    private static final String AUTH_USER = "admin";
     private static final String CONNECTOR_EXTENSION = ".connector";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
 
     private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
+    private Map<File, ConnectorFile> oldConfigs = new MapMaker().makeComputingMap(new Function<File, ConnectorFile>() {
+        @Override
+        public ConnectorFile apply(File input) {
+            return new ConnectorFile(input);
+        }
+    });
+
+    private Map<File, Semaphore> updateSemaphores = new MapMaker()
+        .makeComputingMap(new Function<File, Semaphore>() {
+            @Override
+            public Semaphore apply(File input) {
+                return new Semaphore(1);
+            };
+        });
 
     @Override
     public boolean canHandle(File artifact) {
         LOGGER.debug("ConnectorDeployer.canHandle(\"{}\")", artifact.getAbsolutePath());
-
         if (artifact.isFile() && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
             LOGGER.info("Found a .connector file to deploy.");
             return true;
@@ -57,63 +85,111 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     @Override
-    public void install(File artifact) throws IOException {
+    public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
+        ConnectorFile configFile = oldConfigs.get(artifact);
 
-        ConnectorFile configFile = new ConnectorFile(artifact);
-        ConnectorConfiguration newConfig = configFile.load();
-        authenticate(AUTH_USER, AUTH_PASSWORD);
-        if (newConfig.getContent().getProperties().get(Constants.SERVICE_RANKING) == null
-                && ConnectorFile.isRootService(artifact)) {
-            newConfig.getContent().getProperties().put(Constants.SERVICE_RANKING, "-1");
+        Dictionary<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
+
+        if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
+            properties.put(Constants.SERVICE_RANKING, "-1");
         }
-        LOGGER.info("Loading instance {}", newConfig.getConnectorId());
+        LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
+        login();
         try {
-            serviceManager.create(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ConnectorValidationFailedException e) {
-            throw new RuntimeException(e);
+            serviceManager.create(configFile.getConnectorId(),
+                new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
+        } finally {
+            logout();
         }
     }
 
     @Override
-    public void update(File artifact) throws IOException {
+    public void update(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.update(\"{}\")", artifact.getAbsolutePath());
-        ConnectorConfiguration newConfig = new ConnectorFile(artifact).load();
-        authenticate(AUTH_USER, AUTH_PASSWORD);
+        Semaphore semaphore = updateSemaphores.get(artifact);
+        semaphore.acquire();
         try {
-            serviceManager.update(newConfig.getConnectorId(), newConfig.getContent());
-        } catch (ConnectorValidationFailedException e) {
-            throw new RuntimeException(e);
+            doUpdate(artifact);
+        } finally {
+            semaphore.release();
         }
     }
 
-    @Override
-    public void uninstall(File artifact) throws Exception {
-        LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
+    private void doUpdate(File artifact) throws Exception {
+        ConnectorFile connectorFile = oldConfigs.get(artifact);
+        ConnectorId connectorId = connectorFile.getConnectorId();
+        ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
+        ChangeSet changes = connectorFile.getChanges(artifact);
+
+        ConnectorDescription newDescription;
         try {
-            authenticate(AUTH_USER, AUTH_PASSWORD);
-            // TODO OPENENGSB-1317 implement delete
-            // serviceManager.delete(serviceId);
-        } catch (Exception e) {
-            LOGGER.error("Removing connector failed: ", e);
+            newDescription = applyChanges(persistenceContent, changes);
+            connectorFile.update(artifact);
+        } catch (MergeException e) {
+            File backupFile = getBackupFile(artifact);
+            FileUtils.moveFile(artifact, backupFile);
+            Properties properties = connectorFile.toProperties();
+            properties.store(new FileWriter(artifact),
+                "Connector update failed. The invalid connector-file has been saved to " + backupFile.getName());
             throw e;
         }
+
+        login();
+        try {
+            serviceManager.update(connectorId, newDescription);
+        } finally {
+            logout();
+        }
     }
 
-    private boolean authenticate(String username, String password) {
-        boolean authenticated = false;
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    username, password));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            authenticated = authentication.isAuthenticated();
-            LOGGER.info("Connector deployer succesfully authenticated: {}", authenticated);
-        } catch (AuthenticationException e) {
-            LOGGER.warn("User '{}' failed to login. Reason: ", username, e);
-            authenticated = false;
+    private File getBackupFile(File artifact) {
+        int backupNumber = 0;
+        String candidate = artifact.getAbsolutePath();
+        File candFile = new File(candidate);
+        while (candFile.exists()) {
+            backupNumber++;
+            String suffix = StringUtils.leftPad(Integer.toString(backupNumber), 3, "0");
+            candidate = artifact.getAbsolutePath() + "_" + suffix;
+            candFile = new File(candidate);
         }
-        return authenticated;
+        return candFile;
+    }
+
+    private ConnectorDescription applyChanges(ConnectorDescription persistenceContent, ChangeSet changes)
+        throws MergeException {
+        MapDifference<String, String> changedAttributes = changes.getChangedAttributes();
+        Map<String, String> attributes = persistenceContent.getAttributes();
+
+        Map<String, String> newAttributes = ConfigUtils.updateMap(attributes, changedAttributes);
+        Map<String, Object> newProperties =
+            ConfigUtils.updateMap(DictionaryAsMap.wrap(persistenceContent.getProperties()),
+                changes.getChangedProperties());
+        return new ConnectorDescription(newAttributes, new Hashtable<String, Object>(newProperties));
+    }
+
+    @Override
+    public void uninstall(File artifact) throws PersistenceException {
+        LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
+        login();
+        try {
+            String name = FilenameUtils.removeExtension(artifact.getName());
+            ConnectorId fullId = ConnectorId.fromFullId(name);
+            serviceManager.delete(fullId);
+        } finally {
+            logout();
+        }
+    }
+
+    private void login() {
+        Authentication authentication =
+            authenticationManager.authenticate(new BundleAuthenticationToken("core-services", ""));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void logout() {
+        SecurityContextHolder.clearContext();
     }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {

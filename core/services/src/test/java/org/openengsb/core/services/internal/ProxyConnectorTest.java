@@ -30,6 +30,7 @@ import java.util.HashMap;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
@@ -49,7 +50,7 @@ public class ProxyConnectorTest {
 
         proxy.addMetadata("key", "value");
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
-        MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>());
+        MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>(), "123");
         when(router.callSync(Mockito.eq(id), Mockito.eq(test), captor.capture())).thenReturn(methodReturn);
 
         Object[] args = new Object[]{ id, test };
@@ -72,7 +73,8 @@ public class ProxyConnectorTest {
         ProxyConnector proxy = new ProxyConnector();
         proxy.setCallRouter(router);
         String message = "Message";
-        MethodReturn methodReturn = new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>());
+        MethodReturn methodReturn =
+            new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>(), "123");
         when(router.callSync(any(String.class), any(String.class), any(MethodCall.class))).thenReturn(methodReturn);
         Interface newProxyInstance =
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{ Interface.class }, proxy);

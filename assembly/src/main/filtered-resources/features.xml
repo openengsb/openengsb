@@ -82,6 +82,7 @@
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
     <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
     <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
@@ -153,10 +154,13 @@
   </feature>
 
   <feature name="openengsb-ports-ws" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
+    <bundle>mvn:org.openengsb.ports/openengsb-ports-ws/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-rs" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
   </feature>
 
@@ -167,7 +171,6 @@
 
   <feature name="openengsb-ui-admin" version="${project.version}" >
     <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-ports-jms</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>

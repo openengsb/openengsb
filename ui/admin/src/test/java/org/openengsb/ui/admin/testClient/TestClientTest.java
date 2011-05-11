@@ -51,7 +51,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -320,7 +319,7 @@ public class TestClientTest extends AbstractUITest {
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        setServiceInDropDown(1);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
@@ -442,16 +441,6 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
-    public void testSubmitButtonIslocalized() throws Exception {
-        setupAndStartTestClientPage();
-
-        Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
-        String buttonValue =
-                tester.getApplication().getResourceSettings().getLocalizer().getString("form.call", button);
-        Assert.assertEquals(buttonValue, button.getValue());
-    }
-
-    @Test
     public void testSelectOtherService_shouldClearArgumentList() throws Exception {
         setupAndStartTestClientPage();
         setServiceInDropDown(2);
@@ -512,6 +501,22 @@ public class TestClientTest extends AbstractUITest {
     }
 
     @Test
+    public void showDeleteLink() throws Exception {
+        List<ServiceReference> expected = setupAndStartTestClientPage();
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
+        tester.assertComponent("methodCallForm:deleteButton", AjaxButton.class);
+        AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
+        // should be disabled when nothing is selected
+        Assert.assertEquals(false, deleteButton.isEnabled());
+    }
+
+    @Test
     public void testTargetLocationOfEditButton() throws Exception {
         setupAndStartTestClientPage();
         ServiceReference ref = Mockito.mock(ServiceReference.class);
@@ -538,6 +543,43 @@ public class TestClientTest extends AbstractUITest {
 
         ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
+    }
+
+    @Test
+    public void testFunctionDeleteButton() throws Exception {
+        setupAndStartTestClientPage();
+        ServiceReference ref = Mockito.mock(ServiceReference.class);
+        Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
+        Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
+        when(bundleContext.getServiceReferences(Domain.class.getName(), String.format("(id=%s)", "test"))).thenReturn(
+            new ServiceReference[]{ ref });
+
+        ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
+        Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
+        Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
+        Mockito.when(serviceDescriptor.getDescription()).thenReturn(
+                new PassThroughLocalizableString("ServiceDescription"));
+
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        tester.debugComponentTrees();
+        tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
+        AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
+        Assert.assertEquals(true, deleteButton.isEnabled());
+        tester.executeAjaxEvent(deleteButton, "onclick");
+
+        boolean works = false;
+        try {
+            tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
+        } catch (Exception e) {
+            works = true;
+        }
+        if (!works) {
+            assertFalse(true);
+        } else {
+            assertFalse(false);
+        }
     }
 
     @Test
@@ -593,27 +635,13 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         tester.assertRenderedPage(TestClient.class);
 
-        setServiceInDropDown(1);
+        setServiceInDropDown(2);
         setMethodInDropDown(0);
         RepeatingView argList =
                 (RepeatingView) tester
                         .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(2, argList.size());
 
-    }
-
-    @Test
-    public void testErrorMessageAppearIfServiceDoesNotExists() throws Exception {
-        setupAndStartTestClientPage();
-        tester.assertRenderedPage(TestClient.class);
-
-        setServiceInDropDown(-1);
-        tester.debugComponentTrees();
-        AjaxButton submitButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
-        assertFalse(submitButton.isEnabled());
-        String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
-        assertThat(resultException, containsString("No service found for domain"));
-        assertThat(resultException, containsString(AnotherTestInterface.class.getName()));
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() throws Exception {

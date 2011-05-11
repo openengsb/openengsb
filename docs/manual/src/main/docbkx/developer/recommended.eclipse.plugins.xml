@@ -39,10 +39,33 @@
   </section>
 
   <section>
-    <title>Spring IDE</title>
-    <para><link xlink:href="http://marketplace.eclipse.org/content/spring-ide">Spring IDE</link> 
-    adds support for the Spring Framework to the Eclipse platform. Especially editing the XML configuration
-    files becomes a lot easier, as this plug-in provides code completion and other useful features.</para>
+    <title>Rinzo XML Editor</title>
+    <para><link xlink:href="http://marketplace.eclipse.org/content/rinzo-xml-editor">Rinzo XML Editor</link> 
+    adds support for full XML editing including Java File completion and renaming to the Eclipse platform. 
+    Since SpringIDE is no longer an option (because of blueprint) Rinzo XML is a good alternative for
+    SpringIDE in the context of the OpenEngSB.</para>
+  </section>
+
+  <section>
+    <title>Eclemma code coverage</title>
+    <para>At the OpenEngSB project we're trying to keep test density as high as possible. To check the coverage
+    of code written locally we recommend <link xlink:href="http://marketplace.eclipse.org/content/eclemma-java-code-coverage">Eclemma</link> 
+    as a free and OpenSource Eclipse plugin.</para>
+  </section>
+
+  <section>
+    <title>Eclipse M2 Plugin</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/maven-integration-eclipse">M2 Eclipse Plugin</link> 
+    adds Maven support directly to your platform. Though, please still use openengsb:eclipse instead of this plugin
+    if you're generating the .project, .classpath and .settings files. We recommend you this plugin since it helps a
+    great deal with editing pom files, but for NO other use.</para>
+  </section>
+
+  <section>
+    <title>Egit Eclipse Plugin</title>
+    <para><link xlink:href="http://marketplace.eclipse.org/content/egit-git-team-provider">Egit Eclipse Plugin</link> 
+    adds Git support to your Eclipse IDE. Though, we do not reccomend commiting/pulling via the IDE, but rather via
+    the CMD and use the IDE as a visual indicator for changed files</para>
   </section>
 
   <section>
@@ -51,8 +74,7 @@
     integrates checkstyle into Eclipse. Conformance with checkstyle criteria has to be checked before each push to 
     the repository, so integrating the check into the IDE helps developers to already conform to the checkstyle 
     criteria during development. You have to configure the plug-in to use our checkstyle configuration file, which
-    can be found
-    <link xlink:href="${checkstyleconfig}">here</link>
+    can be found <link xlink:href="${checkstyleconfig}">here</link>
     </para>
   </section>
 

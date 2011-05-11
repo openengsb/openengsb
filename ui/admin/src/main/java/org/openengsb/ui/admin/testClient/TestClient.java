@@ -53,9 +53,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -65,6 +65,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -74,6 +75,8 @@ import org.openengsb.ui.admin.model.Argument;
 import org.openengsb.ui.admin.model.MethodCall;
 import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
+import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
+import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +92,9 @@ public class TestClient extends BasePage {
     @SpringBean
     private OsgiUtilsService serviceUtils;
 
+    @SpringBean
+    private ConnectorManager serviceManager;
+
     private DropDownChoice<MethodId> methodList;
 
     private final MethodCall call = new MethodCall();
@@ -102,6 +108,7 @@ public class TestClient extends BasePage {
     private FeedbackPanel feedbackPanel;
 
     private AjaxButton editButton;
+    private AjaxButton deleteButton;
 
     private AjaxButton submitButton;
 
@@ -126,7 +133,6 @@ public class TestClient extends BasePage {
         initContent();
     }
 
-    @SuppressWarnings("serial")
     private void initContent() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
@@ -135,10 +141,22 @@ public class TestClient extends BasePage {
 
         serviceManagementContainer.add(makeServiceList());
 
+        Form<Object> organize = createOrganizeForm();
+        add(organize);
+
+        Form<MethodCall> form = createMethodCallForm();
+        add(form);
+
+        feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
+    }
+
+    @SuppressWarnings("serial")
+    private Form<MethodCall> createMethodCallForm() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
-        add(form);
 
         editButton = new AjaxButton("editButton", form) {
             @Override
@@ -148,34 +166,31 @@ public class TestClient extends BasePage {
                 ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
                 setResponsePage(new ConnectorEditorPage(connectorId));
             }
-
         };
         editButton.setEnabled(false);
         editButton.setOutputMarkupId(true);
 
-        serviceList = new LinkTree("serviceList", createModel()) {
+        deleteButton = new AjaxButton("deleteButton", form) {
             @Override
-            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if (!mnode.isLeaf()) {
-                    return;
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                LOGGER.info("delete button pressed");
+                String serviceId = call.getService().getServiceId();
+                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
+                try {
+                    serviceManager.delete(connectorId);
+                    info("service " + serviceId + " successfully deleted");
+                    serviceList.setModelObject(createModel());
+                    serviceList.getTreeState().expandAll();
+                    target.addComponent(serviceList);
+                } catch (PersistenceException e) {
+                    error("Unable to delete Service due to: " + e.getLocalizedMessage());
                 }
-                call.setService((ServiceId) mnode.getUserObject());
-                populateMethodList();
-                target.addComponent(methodList);
-                argumentList.removeAll();
-                target.addComponent(argumentListContainer);
-                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
 
-                updateEditButton((ServiceId) mnode.getUserObject());
-                target.addComponent(editButton);
-                target.addComponent(submitButton);
                 target.addComponent(feedbackPanel);
             }
         };
-        serviceList.setOutputMarkupId(true);
-        form.add(serviceList);
-        serviceList.getTreeState().expandAll();
+        deleteButton.setEnabled(false);
+        deleteButton.setOutputMarkupId(true);
 
         methodList = new DropDownChoice<MethodId>("methodList");
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
@@ -212,14 +227,76 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+
+        serviceList = new LinkTree("serviceList", createModel()) {
+            @Override
+            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
+                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+                // if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
+                // editButton.setEnabled(false);
+                // deleteButton.setEnabled(false);
+                // submitButton.setEnabled(false);
+                // target.addComponent(editButton);
+                // target.addComponent(deleteButton);
+                // target.addComponent(submitButton);
+                // return;
+                // }
+                call.setService((ServiceId) mnode.getUserObject());
+                populateMethodList();
+                target.addComponent(methodList);
+                argumentList.removeAll();
+                target.addComponent(argumentListContainer);
+                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
+
+                updateModifyButtons((ServiceId) mnode.getUserObject());
+                target.addComponent(editButton);
+                target.addComponent(deleteButton);
+                target.addComponent(submitButton);
+                target.addComponent(feedbackPanel);
+            }
+        };
+        serviceList.setOutputMarkupId(true);
+        form.add(serviceList);
+        serviceList.getTreeState().expandAll();
+
         submitButton.setOutputMarkupId(true);
-        // the message-attribute doesn't work for some reason
-        submitButton.setModel(new ResourceModel("form.call"));
+        submitButton.setEnabled(false);
+
         form.add(submitButton);
         form.add(editButton);
-        feedbackPanel = new FeedbackPanel("feedback");
-        feedbackPanel.setOutputMarkupId(true);
-        add(feedbackPanel);
+        form.add(deleteButton);
+
+        return form;
+    }
+
+    /**
+     * creates the form for organize section (globals, imports)
+     */
+    private Form<Object> createOrganizeForm() {
+        Form<Object> organize = new Form<Object>("organizeForm");
+        organize.setOutputMarkupId(true);
+
+        @SuppressWarnings("serial")
+        AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                setResponsePage(new OrganizeGlobalsPage());
+            }
+        };
+        globalsButton.setOutputMarkupId(true);
+        organize.add(globalsButton);
+
+        @SuppressWarnings("serial")
+        AjaxButton importsButton = new AjaxButton("importsButton", organize) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                setResponsePage(new OrganizeImportsPage());
+            }
+        };
+        importsButton.setOutputMarkupId(true);
+        organize.add(importsButton);
+
+        return organize;
     }
 
     @SuppressWarnings("serial")
@@ -304,9 +381,11 @@ public class TestClient extends BasePage {
         return null;
     }
 
-    private void updateEditButton(ServiceId serviceId) {
+    private void updateModifyButtons(ServiceId serviceId) {
         editButton.setEnabled(false);
         editButton.setEnabled(serviceId.getServiceId() != null);
+        deleteButton.setEnabled(false);
+        deleteButton.setEnabled(serviceId.getServiceId() != null);
     }
 
     private TreeModel createModel() {
@@ -333,7 +412,8 @@ public class TestClient extends BasePage {
         ServiceId domainProviderServiceId = new ServiceId();
         Class<? extends Domain> domainInterface = provider.getDomainInterface();
         domainProviderServiceId.setServiceClass(domainInterface.getName());
-        domainProviderServiceId.setDomainName(providerName);
+        domainProviderServiceId.setDomainName(provider.getId());
+
         DefaultMutableTreeNode endPointReferenceNode = new DefaultMutableTreeNode(domainProviderServiceId, false);
         providerNode.add(endPointReferenceNode);
 
@@ -368,8 +448,6 @@ public class TestClient extends BasePage {
         }
         try {
             m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
-        } catch (SecurityException e) {
-            throw new IllegalStateException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }

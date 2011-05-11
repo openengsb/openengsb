@@ -17,10 +17,16 @@
 
 package org.openengsb.core.api.workflow.model;
 
-public class WorkflowRepresentation {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class WorkflowRepresentation implements Serializable {
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();
+    
+    private List<EndRepresentation> endNodes = new ArrayList<EndRepresentation>();
 
     public final String getName() {
         return name;
@@ -36,5 +42,13 @@ public class WorkflowRepresentation {
 
     public final void setRoot(ActionRepresentation root) {
         this.root = root;
+    }
+    
+    public void addEndNode(EndRepresentation end) {
+        this.endNodes.add(end);
+    }
+
+    public List<EndRepresentation> getEndNodes() {
+        return this.endNodes;
     }
 }

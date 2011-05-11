@@ -36,10 +36,16 @@
       <defaultValue>Connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="connectorName">
+      <defaultValue>Connectorname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="connectorNameL">
       <defaultValue>connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainInterface">
       <defaultValue>DomainInterfaceName</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="domain">
+      <defaultValue>domain</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainPackage">
       <defaultValue>org.openengsb.domain.domainname</defaultValue>

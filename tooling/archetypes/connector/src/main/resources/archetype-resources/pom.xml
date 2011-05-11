@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-${domainPackage}</artifactId>
+      <artifactId>openengsb-domain-${domain}</artifactId>
       <version>${openengsb.version}</version>
       <scope>provided</scope>
     </dependency>

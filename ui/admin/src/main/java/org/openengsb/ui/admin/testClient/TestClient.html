@@ -60,6 +60,11 @@
         </ul>
       </div>
 
+      <form wicket:id="organizeForm">
+        <input type="submit" wicket:id="globalsButton" wicket:message="value:organize.globals" />
+        <input type="submit" wicket:id="importsButton" wicket:message="value:organize.imports" />
+      </form>
+
       <wicket:message key="serviceList" />
 
       <form wicket:id="methodCallForm">
@@ -70,9 +75,11 @@
         </div>
         <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" />
         <input type="submit" wicket:id="editButton" wicket:message="value:service.edit" />
+        <input type="submit" wicket:id="deleteButton" wicket:message="value:service.delete" />
       </form>
       <div wicket:id="feedback">[feedback]</div>
 
     </wicket:extend>
   </body>
 </html>
+

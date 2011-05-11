@@ -79,6 +79,12 @@ public class MethodUtilTest {
         public Object nullMethod(Object o) {
             return o;
         }
+
+        @Override
+        public Object nullMethod(Object o, String b) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     public interface TestInterface2 extends Domain {
@@ -108,6 +114,12 @@ public class MethodUtilTest {
         @Override
         public Object nullMethod(Object o) {
             return o;
+        }
+
+        @Override
+        public Object nullMethod(Object o, String b) {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

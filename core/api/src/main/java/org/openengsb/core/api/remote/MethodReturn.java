@@ -34,11 +34,14 @@ public class MethodReturn {
     private ReturnType type;
     private Object arg;
     private Map<String, String> metaData;
+    private String callId;
+    private String className;
 
-    public MethodReturn(ReturnType type, Object arg, Map<String, String> metaData) {
+    public MethodReturn(ReturnType type, Object arg, Map<String, String> metaData, String callId) {
         this.type = type;
-        this.arg = arg;
         this.metaData = metaData;
+        this.callId = callId;
+        setArg(arg);
     }
 
     public MethodReturn() {
@@ -58,6 +61,15 @@ public class MethodReturn {
 
     public void setArg(Object arg) {
         this.arg = arg;
+        if (arg != null) {
+            if (arg instanceof List<?>) {
+                className = List.class.getName();
+            } else {
+                className = arg.getClass().getName();
+            }
+        } else {
+            className = "";
+        }
     }
 
     public Map<String, String> getMetaData() {
@@ -66,6 +78,22 @@ public class MethodReturn {
 
     public void setMetaData(Map<String, String> metaData) {
         this.metaData = metaData;
+    }
+
+    public String getCallId() {
+        return callId;
+    }
+
+    public void setCallId(String callId) {
+        this.callId = callId;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     @Override
@@ -115,15 +143,4 @@ public class MethodReturn {
         return String.format("%s: %s", type, arg);
     }
 
-    public String getClassName() {
-        if (arg != null) {
-            if (arg instanceof List<?>) {
-                return List.class.getName();
-            } else {
-                return arg.getClass().getName();
-            }
-        } else {
-            return "";
-        }
-    }
 }

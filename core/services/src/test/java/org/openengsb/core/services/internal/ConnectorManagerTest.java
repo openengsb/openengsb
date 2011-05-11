@@ -68,6 +68,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerConfigPersistence();
         serviceRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
+        serviceRegistrationManagerImpl.setServiceUtils(serviceUtils);
         createServiceManager();
     }
 

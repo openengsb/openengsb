@@ -17,16 +17,18 @@
 
 package org.openengsb.ports.jms;
 
-import static junit.framework.Assert.assertNotNull;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.jms.ConnectionFactory;
@@ -34,7 +36,6 @@ import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,8 +46,11 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.common.marshaling.RequestMapping;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSPortTest {
 
@@ -76,10 +80,14 @@ public class JMSPortTest {
 
     @Before
     public void setup() {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
 
-        Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
+        Mockito.when(jmsTemplateFactory.createJMSTemplate(Mockito.any(DestinationUrl.class))).thenReturn(jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
         port = new JMSPort();
@@ -88,22 +96,27 @@ public class JMSPortTest {
         handler = Mockito.mock(RequestHandler.class);
         metaData = new HashMap<String, String>();
         metaData.put("test", "test");
-        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData);
-        methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData);
+        call = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test") }, metaData, "123", true, null);
+        methodReturn = new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void callingSendWithInvalidEndpoint_shouldThrowIllegalArgumentException() throws Exception {
+        port.send("host", call);
     }
 
     @Test
     public void callSend_shouldSendMessageViaJMS() throws URISyntaxException, IOException {
-        port.send("host", call);
+        port.send("host?endpoint", call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), captor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode readTree = new ObjectMapper().readTree(captor.getValue());
-        MatcherAssert.assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
+        assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
                 + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.JMSPortTest$TestClass\"]"));
-        MatcherAssert.assertThat(readTree.get("methodName").toString(), Matchers.equalTo("\"method\""));
-        MatcherAssert.assertThat(readTree.get("args").toString(), Matchers.equalTo("[\"123\",5,{\"test\":\"test\"}]"));
-        MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("methodName").toString(), Matchers.equalTo("\"method\""));
+        assertThat(readTree.get("args").toString(), Matchers.equalTo("[\"123\",5,{\"test\":\"test\"}]"));
+        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
     }
 
     @Test
@@ -111,8 +124,8 @@ public class JMSPortTest {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(returnText);
-        MethodReturn sendSync = port.sendSync("host", call);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), sendIdCaptor.capture());
+        MethodReturn sendSync = port.sendSync("host?endpoint", call);
+        Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
         RequestMapping mapping = new ObjectMapper().readValue(sendIdCaptor.getValue(), RequestMapping.class);
         mapping.resetArgs();
         assertThat(mapping.getClasses(), equalTo(call.getClasses()));
@@ -124,27 +137,28 @@ public class JMSPortTest {
         String destination =
             new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
                 .getValueAsText();
-        MatcherAssert.assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
+        assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
         assertMethodReturn(sendSync);
     }
 
     private void assertMethodReturn(MethodReturn sendSync) {
-        MatcherAssert.assertThat(sendSync.getType(), Matchers.equalTo(ReturnType.Object));
-        Assert.assertTrue(sendSync.getArg() instanceof TestClass);
-        TestClass test = (TestClass) sendSync.getArg();
-        MatcherAssert.assertThat(test.getTest(), Matchers.equalTo("test"));
-        MatcherAssert.assertThat(sendSync.getMetaData().size(), Matchers.equalTo(1));
-        MatcherAssert.assertThat(sendSync.getMetaData().get("test"), Matchers.equalTo("test"));
+        assertThat(sendSync.getType(), Matchers.equalTo(ReturnType.Object));
+        Assert.assertTrue(sendSync.getArg() instanceof HashMap);
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, String> test = (LinkedHashMap<String, String>) sendSync.getArg();
+        assertThat(test.get("test"), Matchers.equalTo("test"));
+        assertThat(sendSync.getMetaData().size(), Matchers.equalTo(1));
+        assertThat(sendSync.getMetaData().get("test"), Matchers.equalTo("test"));
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost");
         final JmsTemplate jmsTemplate = new JmsTemplate(cf);
         port = new JMSPort();
         port.setFactory(new JMSTemplateFactory() {
             @Override
-            public JmsTemplate createJMSTemplate(String host) {
+            public JmsTemplate createJMSTemplate(DestinationUrl destinationUrl) {
                 return jmsTemplate;
             }
 
@@ -159,19 +173,19 @@ public class JMSPortTest {
 
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
         Mockito.when(handler.handleCall(captor.capture())).thenReturn(
-            new MethodReturn(ReturnType.Object, new TestClass("test"), metaData));
+            new MethodReturn(ReturnType.Object, new TestClass("test"), metaData, "123"));
         new JmsTemplate(cf).convertAndSend("receive", sendTextWithReturn);
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
         JsonNode readTree = new ObjectMapper().readTree(receiveAndConvert);
-        MatcherAssert.assertThat(readTree.get("className").toString(),
+        assertThat(readTree.get("className").toString(),
             Matchers.equalTo("\"org.openengsb.ports.jms.JMSPortTest$TestClass\""));
-        MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
-        MatcherAssert.assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
-        MatcherAssert.assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
+        assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
         MethodCall call = captor.getValue();
-        MatcherAssert.assertThat(call.getMethodName(), Matchers.equalTo("method"));
-        MatcherAssert.assertThat(call.getArgs(), Matchers.equalTo(new Object[]{ "123", 5, new TestClass("test") }));
-        MatcherAssert.assertThat(call.getMetaData(), Matchers.equalTo(metaData));
+        assertThat(call.getMethodName(), Matchers.equalTo("method"));
+        assertThat(call.getArgs(), Matchers.equalTo(new Object[]{ "123", 5, new TestClass("test") }));
+        assertThat(call.getMetaData(), Matchers.equalTo(metaData));
     }
 
     @Test
@@ -191,11 +205,11 @@ public class JMSPortTest {
         StringWriter writer = new StringWriter();
         new ObjectMapper().writeValue(writer, methodReturn);
         JsonNode readTree = new ObjectMapper().readTree(writer.toString());
-        MatcherAssert.assertThat(readTree.get("className").toString(),
+        assertThat(readTree.get("className").toString(),
             Matchers.equalTo("\"org.openengsb.ports.jms.JMSPortTest$TestClass\""));
-        MatcherAssert.assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
-        MatcherAssert.assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
-        MatcherAssert.assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
+        assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
 
     }
 

@@ -45,6 +45,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodReturn;
 import org.openengsb.core.api.remote.MethodReturn.ReturnType;
@@ -67,10 +68,11 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registerMockedFactory();
         callrouter = mock(CallRouter.class);
         when(callrouter.callSync(anyString(), anyString(), any(MethodCall.class))).thenReturn(
-            new MethodReturn(ReturnType.Void, null, null));
+            new MethodReturn(ReturnType.Void, null, null, "213"));
         registerService(callrouter, new Hashtable<String, Object>(), CallRouter.class);
         ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
+        serviceManagerImpl.setServiceUtils(serviceUtils);
         registrationManager = serviceManagerImpl;
     }
 

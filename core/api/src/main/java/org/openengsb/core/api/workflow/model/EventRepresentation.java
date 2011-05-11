@@ -24,6 +24,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class EventRepresentation implements NodeRepresentation, Serializable {
     private final List<ActionRepresentation> actions = new ArrayList<ActionRepresentation>();
+    private final List<EventRepresentation> events = new ArrayList<EventRepresentation>();
 
     private Class<? extends org.openengsb.core.api.Event> event;
 
@@ -47,6 +48,14 @@ public class EventRepresentation implements NodeRepresentation, Serializable {
 
     public final void setEvent(Class<? extends org.openengsb.core.api.Event> event) {
         this.event = event;
+    }
+
+    public final void addEvent(EventRepresentation event) {
+        this.events.add(event);
+    }
+
+    public List<EventRepresentation> getEvents() {
+        return events;
     }
 
 }

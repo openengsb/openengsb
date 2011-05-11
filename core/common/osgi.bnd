@@ -16,9 +16,9 @@
 #
 
 Bundle-Activator: org.openengsb.core.common.Activator
-Import-Package: org.springframework.osgi.service.importer,\
-org.aopalliance.aop,\
-org.aopalliance.intercept,\
-org.springframework.aop,\
-org.springframework.aop.framework,\
-*
+
+Import-Package: sun.reflect, *
+
+# This import is required since the WS package relies heavily on reflection and loading of calling classes at runtime
+DynamicImport-Package: *
+
