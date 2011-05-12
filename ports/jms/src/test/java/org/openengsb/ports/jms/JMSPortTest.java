@@ -17,27 +17,31 @@
 
 package org.openengsb.ports.jms;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
@@ -57,18 +61,12 @@ import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
 public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
-    private static final String METHOD_RESULT_MESSAGE = ""
-            + "{"
-            + "  \"result\":{"
-            + "    \"type\":\"Object\","
-            + "    \"className\":\"org.openengsb.ports.jms.TestClass\","
-            + "    \"metaData\":{\"test\":\"test\"},"
-            + "    \"arg\":{\"test\":\"test\"}"
-            + "  },"
-            + "  \"callId\":\"12345\""
-            + "}";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String METHOD_CALL = ""
             + "{"
@@ -85,7 +83,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             + "  \"methodCall\":" + METHOD_CALL
             + "}";
 
-    private final String xmlText = ""
+    private static final String XML_METHOD_CALL_REQUEST = ""
             + "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
             + "<MethodCallRequest>"
             + "  <callId>123</callId>"
@@ -113,135 +111,116 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     private MethodCallRequest call;
     private MethodResultMessage methodReturn;
-    private JmsTemplate jmsTemplate;
     private JMSTemplateFactory jmsTemplateFactory;
     private JMSIncomingPort incomingPort;
     private RequestHandler handler;
 
-    private Map<String, String> metaData;
+    private SimpleMessageListenerContainer simpleMessageListenerConainer;
 
-    private SimpleMessageListenerContainer simpleMessageListenerContainer;
+    private JmsTemplate jmsTemplate;
 
     @Before
     public void setup() {
-        jmsTemplate = Mockito.mock(JmsTemplate.class);
-        jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
+        String num = UUID.randomUUID().toString();
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
+        jmsTemplate = new JmsTemplate(connectionFactory);
+        jmsTemplateFactory = new JMSTemplateFactory() {
+            @Override
+            public SimpleMessageListenerContainer createMessageListenerContainer() {
+                return simpleMessageListenerConainer;
+            }
 
-        Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
-        simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
-        Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
+            @Override
+            public JmsTemplate createJMSTemplate(String host) {
+                return jmsTemplate;
+            }
+        };
+        simpleMessageListenerConainer = new SimpleMessageListenerContainer();
+
         incomingPort = new JMSIncomingPort();
         incomingPort.setFactory(jmsTemplateFactory);
-        incomingPort.setConnectionFactory(Mockito.mock(ConnectionFactory.class));
+        incomingPort.setConnectionFactory(connectionFactory);
         handler = new RequestHandlerImpl();
 
         TestInterface mock2 = mock(TestInterface.class);
         registerServiceViaId(mock2, "test", TestInterface.class);
-        when(mock2.method(Mockito.anyString(), Mockito.anyInt(), Mockito.any(TestClass.class))).thenReturn(
-            new TestClass("test"));
-        metaData = new HashMap<String, String>();
-        metaData.put("serviceId", "test");
+        when(mock2.method(anyString(), anyInt(), any(TestClass.class))).thenReturn(new TestClass("test"));
+
+        Map<String, String> metaData = Maps.newHashMap(ImmutableMap.of("serviceId", "test"));
         MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
         call = new MethodCallRequest(methodCall, "123");
         call.setDestination("host");
+
         MethodResult result = new MethodResult(new TestClass("test"));
         result.setMetaData(metaData);
         methodReturn = new MethodResultMessage(result, "123");
-
-        JMSOutgoingPort jmsOutgoingPort = new JMSOutgoingPort();
-        jmsOutgoingPort.setFactory(jmsTemplateFactory);
-
     }
-
-
 
     @Test(timeout = 5000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost");
-        final JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        incomingPort = new JMSIncomingPort();
-        incomingPort.setFactory(new JMSTemplateFactory() {
-            @Override
-            public JmsTemplate createJMSTemplate(String host) {
-                return jmsTemplate;
-            }
-
-            @Override
-            public SimpleMessageListenerContainer createMessageListenerContainer() {
-                return new SimpleMessageListenerContainer();
-            }
-        });
-        incomingPort.setConnectionFactory(cf);
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(JsonMethodCallMarshalFilter.class, new RequestMapperFilter(handler)));
+        factory.setFilters(Arrays.asList(
+            JsonMethodCallMarshalFilter.class,
+            new RequestMapperFilter(handler)));
         incomingPort.setFilterChain(factory.create());
         incomingPort.start();
 
-        new JmsTemplate(cf).convertAndSend("receive", METHOD_CALL_REQUEST);
-        String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
-        JsonNode resultMessage = new ObjectMapper().readTree(receiveAndConvert);
+        jmsTemplate.convertAndSend("receive", METHOD_CALL_REQUEST);
+        String resultString = (String) jmsTemplate.receiveAndConvert("12345");
+        JsonNode resultMessage = OBJECT_MAPPER.readTree(resultString);
         JsonNode readTree = resultMessage.get("result");
-        assertThat(readTree.get("className").toString(),
-            Matchers.equalTo("\"org.openengsb.ports.jms.TestClass\""));
-        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"serviceId\":\"test\"}"));
-        assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
-        assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("className").toString(), equalTo("\"org.openengsb.ports.jms.TestClass\""));
+        assertThat(readTree.get("metaData").toString(), equalTo("{\"serviceId\":\"test\"}"));
+        assertThat(readTree.get("type").toString(), equalTo("\"Object\""));
+        assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
     }
 
     @Test(timeout = 5000)
     public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() throws InterruptedException, IOException {
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost1");
-        final JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        incomingPort = new JMSIncomingPort();
-        incomingPort.setFactory(new JMSTemplateFactory() {
-            @Override
-            public JmsTemplate createJMSTemplate(String host) {
-                return jmsTemplate;
-            }
-
-            @Override
-            public SimpleMessageListenerContainer createMessageListenerContainer() {
-                return new SimpleMessageListenerContainer();
-            }
-        });
-        incomingPort.setConnectionFactory(cf);
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(XmlDecoderFilter.class, XmlMethodCallMarshalFilter.class,
+        factory.setFilters(Arrays.asList(
+            XmlDecoderFilter.class,
+            XmlMethodCallMarshalFilter.class,
             new RequestMapperFilter(handler)));
         incomingPort.setFilterChain(factory.create());
         incomingPort.start();
-        Thread.sleep(1000);
-        new JmsTemplate(cf).convertAndSend("receive", xmlText);
-        String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("123");
 
-        assertThat(receiveAndConvert, containsString("<callId>123</callId>"));
-        assertThat(receiveAndConvert, containsString("<type>Object</type>"));
-        assertThat(receiveAndConvert, containsString("<test>test</test>"));
+        jmsTemplate.convertAndSend("receive", XML_METHOD_CALL_REQUEST);
+        String resultString = (String) jmsTemplate.receiveAndConvert("123");
+
+        assertThat(resultString, containsString("<callId>123</callId>"));
+        assertThat(resultString, containsString("<type>Object</type>"));
+        assertThat(resultString, containsString("<test>test</test>"));
     }
 
     @Test
     public void stop_ShouldNotReactToIncomingCalls() {
+        SimpleMessageListenerContainer orig = simpleMessageListenerConainer;
+        SimpleMessageListenerContainer containerSpy = spy(orig);
+        simpleMessageListenerConainer = containerSpy;
+
+        ConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost2");
+        incomingPort.setConnectionFactory(cf);
         incomingPort.start();
         incomingPort.stop();
-        Mockito.verify(simpleMessageListenerContainer).stop();
+        verify(containerSpy).stop();
     }
 
     @Test
     public void requestMapping_shouldDeserialiseRequest() throws IOException {
-        new ObjectMapper().readValue(METHOD_CALL_REQUEST, MethodCallRequest.class);
+        OBJECT_MAPPER.readValue(METHOD_CALL_REQUEST, MethodCallRequest.class);
     }
 
     @Test
     public void methodReturn_DeserialiseResponse() throws IOException {
         StringWriter writer = new StringWriter();
-        new ObjectMapper().writeValue(writer, methodReturn);
-        JsonNode resultMessage = new ObjectMapper().readTree(writer.toString());
+        OBJECT_MAPPER.writeValue(writer, methodReturn);
+        JsonNode resultMessage = OBJECT_MAPPER.readTree(writer.toString());
         JsonNode readTree = resultMessage.get("result");
-        assertThat(readTree.get("className").toString(),
-            Matchers.equalTo("\"org.openengsb.ports.jms.TestClass\""));
-        assertThat(readTree.get("metaData").toString(), Matchers.equalTo("{\"serviceId\":\"test\"}"));
-        assertThat(readTree.get("type").toString(), Matchers.equalTo("\"Object\""));
-        assertThat(readTree.get("arg").toString(), Matchers.equalTo("{\"test\":\"test\"}"));
+        assertThat(readTree.get("className").toString(), equalTo("\"org.openengsb.ports.jms.TestClass\""));
+        assertThat(readTree.get("metaData").toString(), equalTo("{\"serviceId\":\"test\"}"));
+        assertThat(readTree.get("type").toString(), equalTo("\"Object\""));
+        assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
 
     }
 
