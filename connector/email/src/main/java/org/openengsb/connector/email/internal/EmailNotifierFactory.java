@@ -32,6 +32,10 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
 
     private final Class<? extends MailAbstraction> mailAbstraction;
 
+    public EmailNotifierFactory(MailAbstraction mailAbstraction) {
+        this(mailAbstraction.getClass());
+    }
+
     public EmailNotifierFactory(Class<? extends MailAbstraction> mailAbstraction) {
         this.mailAbstraction = mailAbstraction;
     }
