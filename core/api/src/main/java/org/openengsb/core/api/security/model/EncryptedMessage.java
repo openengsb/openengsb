@@ -20,32 +20,32 @@ package org.openengsb.core.api.security.model;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class EncryptedMessage<EncodingType> implements Serializable {
+public class EncryptedMessage implements Serializable {
 
-    private EncodingType encryptedContent;
-    private EncodingType encryptedKey;
+    private byte[] encryptedContent;
+    private byte[] encryptedKey;
 
     public EncryptedMessage() {
     }
 
-    public EncryptedMessage(EncodingType encryptedContent, EncodingType encryptedKey) {
+    public EncryptedMessage(byte[] encryptedContent, byte[] encryptedKey) {
         this.encryptedContent = encryptedContent;
         this.encryptedKey = encryptedKey;
     }
 
-    public EncodingType getEncryptedContent() {
-        return this.encryptedContent;
+    public byte[] getEncryptedContent() {
+        return encryptedContent;
     }
 
-    public void setEncryptedContent(EncodingType encryptedContent) {
+    public void setEncryptedContent(byte[] encryptedContent) {
         this.encryptedContent = encryptedContent;
     }
 
-    public EncodingType getEncryptedKey() {
-        return this.encryptedKey;
+    public byte[] getEncryptedKey() {
+        return encryptedKey;
     }
 
-    public void setEncryptedKey(EncodingType encryptedKey) {
+    public void setEncryptedKey(byte[] encryptedKey) {
         this.encryptedKey = encryptedKey;
     }
 

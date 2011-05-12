@@ -23,13 +23,15 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.lang.SerializationException;
 import org.apache.commons.lang.SerializationUtils;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.MessageCryptoUtil;
-import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
+import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
@@ -44,7 +46,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
     protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
         byte[] serialized = SerializationUtils.serialize(secureRequest);
         byte[] content = cryptoUtil.encrypt(serialized, sessionKey);
-        EncryptedBinaryMessage message = new EncryptedBinaryMessage();
+        EncryptedMessage message = new EncryptedMessage();
         message.setEncryptedContent(content);
         message.setEncryptedKey(cryptoUtil.encryptKey(sessionKey, serverPublicKey));
         return SerializationUtils.serialize(message);
@@ -57,6 +59,13 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
     }
 
     @Override
+    protected byte[] manipulateMessage(byte[] encryptedRequest) {
+        int pos = 187;
+        encryptedRequest[pos]++;
+        return encryptedRequest;
+    }
+
+    @Override
     protected FilterAction getSecureRequestHandlerFilterChain() throws Exception {
         FilterChainElementFactory unpackerFactory = new FilterChainElementFactory() {
             @Override
@@ -66,8 +75,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
-                        EncryptedBinaryMessage deserialize =
-                            (EncryptedBinaryMessage) SerializationUtils.deserialize(input);
+                        EncryptedMessage deserialize = (EncryptedMessage) SerializationUtils.deserialize(input);
                         byte[] result = (byte[]) next.filter(deserialize, metaData);
                         return result;
                     }
@@ -89,8 +97,12 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
                     @Override
                     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
-                        SecureRequest deserialize =
-                            (SecureRequest) SerializationUtils.deserialize(input);
+                        SecureRequest deserialize;
+                        try {
+                            deserialize = (SecureRequest) SerializationUtils.deserialize(input);
+                        } catch (SerializationException e) {
+                            throw new FilterException(e);
+                        }
                         SecureResponse result = (SecureResponse) next.filter(deserialize, metaData);
                         return SerializationUtils.serialize(result);
                     }

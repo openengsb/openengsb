@@ -35,6 +35,7 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -43,8 +44,9 @@ import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
-import org.openengsb.core.api.security.MessageVerificationFailedException;
+import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
@@ -56,6 +58,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
 public abstract class GenericSecurePortTest<EncodingType> {
+
+    private static final String METHOD_ARG = StringUtils.repeat(""
+            + "It's about time you people started eating some reality sandwiches and get your ducks in a row.\n"
+            + "Perhaps we can then think about parking our cars in the same garage.\n"
+            + "And remember, we don't want to wind ourselves round the axle on this.\n", 1);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecurePortTest.class);
 
@@ -127,10 +134,14 @@ public abstract class GenericSecurePortTest<EncodingType> {
         assertThat((String) mr.getArg(), is("42"));
     }
 
-    private SecureRequest prepareSecureRequest() {
-        UsernamePasswordAuthenticationInfo token = new UsernamePasswordAuthenticationInfo("test", "password");
-        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
+    protected SecureRequest prepareSecureRequest() {
+        return prepareSecureRequest(new UsernamePasswordAuthenticationInfo("test", "password"));
+    }
+
+    private SecureRequest prepareSecureRequest(AuthenticationInfo token) {
+        MethodCall methodCall = new MethodCall("doSomething", new Object[]{ METHOD_ARG, });
+        MethodCallRequest request = new MethodCallRequest(methodCall, "c42");
+        SecureRequest secureRequest = SecureRequest.create(methodCall, BeanDescription.fromObject(token));
         return secureRequest;
     }
 
@@ -156,13 +167,22 @@ public abstract class GenericSecurePortTest<EncodingType> {
 
         secureRequest.getMessage().setArgs(new Object[]{ "43" }); // manipulate message
 
+        SecretKey sessionKey = keyGenUtil.generateKey();
+        EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
+
+        logRequest(encryptedRequest);
+        EncodingType manipulatedRequest = manipulateMessage(encryptedRequest);
+
         try {
-            processRequest(secureRequest);
+            secureRequestHandler.filter(manipulatedRequest, new HashMap<String, Object>());
             fail("Exception expected");
         } catch (FilterException e) {
-            assertThat(e.getCause(), is(MessageVerificationFailedException.class));
+//            verify(requestHandler, never()).handleCall(any(MethodCall.class));
         }
+
     }
+
+    protected abstract EncodingType manipulateMessage(EncodingType encryptedRequest);
 
     @Test
     public void testReplayMessage_shouldBeRejected() throws Exception {

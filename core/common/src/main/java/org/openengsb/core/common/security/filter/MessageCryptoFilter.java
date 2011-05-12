@@ -11,12 +11,12 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.MessageCryptoUtil;
-import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
+import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.security.AlgorithmConfig;
 import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
 
-public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedBinaryMessage, byte[]> {
+public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMessage, byte[]> {
 
     private FilterAction next;
 
@@ -24,11 +24,11 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedBin
     private PrivateKey privateKey;
 
     public MessageCryptoFilter() {
-        super(EncryptedBinaryMessage.class, byte[].class);
+        super(EncryptedMessage.class, byte[].class);
     }
 
     @Override
-    protected byte[] doFilter(EncryptedBinaryMessage input, Map<String, Object> metaData) {
+    protected byte[] doFilter(EncryptedMessage input, Map<String, Object> metaData) {
         byte[] encryptedKey = input.getEncryptedKey();
         byte[] decryptedMessage;
         SecretKey sessionKey;

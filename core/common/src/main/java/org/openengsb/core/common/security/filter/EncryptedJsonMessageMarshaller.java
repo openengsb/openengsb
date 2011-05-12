@@ -7,7 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
+import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 
 public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<byte[], byte[]> {
@@ -21,9 +21,9 @@ public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<b
     @Override
     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
         ObjectMapper objectMapper = new ObjectMapper();
-        EncryptedBinaryMessage message;
+        EncryptedMessage message;
         try {
-            message = objectMapper.readValue(input, EncryptedBinaryMessage.class);
+            message = objectMapper.readValue(input, EncryptedMessage.class);
         } catch (IOException e) {
             throw new FilterException(e);
         }
@@ -32,7 +32,7 @@ public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<b
 
     @Override
     public void setNext(FilterAction next) throws FilterConfigurationException {
-        checkNextInputAndOutputTypes(next, EncryptedBinaryMessage.class, byte[].class);
+        checkNextInputAndOutputTypes(next, EncryptedMessage.class, byte[].class);
         this.next = next;
     }
 

@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.security.MessageCryptoUtil;
-import org.openengsb.core.api.security.model.EncryptedBinaryMessage;
+import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChainFactory;
@@ -61,11 +61,18 @@ public class SecureJsonPortTest extends GenericSecurePortTest<byte[]> {
         LOGGER.info("encrypting: " + new String(content));
         byte[] encryptedContent = cryptoUtil.encrypt(content, sessionKey);
 
-        EncryptedBinaryMessage message = new EncryptedBinaryMessage();
-        message.setEncryptedContent(encryptedContent);
+        EncryptedMessage encryptedMessage = new EncryptedMessage();
+        encryptedMessage.setEncryptedContent(encryptedContent);
         byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
-        message.setEncryptedKey(encryptedKey);
-        return mapper.writeValueAsBytes(message);
+        encryptedMessage.setEncryptedKey(encryptedKey);
+        return mapper.writeValueAsBytes(encryptedMessage);
+    }
+
+    @Override
+    protected byte[] manipulateMessage(byte[] encryptedRequest) {
+        int pos = encryptedRequest.length - (encryptedRequest.length / 8);
+        encryptedRequest[pos] -= 1;
+        return encryptedRequest;
     }
 
     @Override
