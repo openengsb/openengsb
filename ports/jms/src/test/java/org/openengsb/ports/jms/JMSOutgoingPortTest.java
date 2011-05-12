@@ -23,16 +23,13 @@ import org.mockito.Mockito;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
-import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
@@ -51,52 +48,9 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
             + "  \"callId\":\"12345\""
             + "}";
 
-    private static final String METHOD_CALL = ""
-            + "{"
-            + "  \"classes\":[\"java.lang.String\",\"java.lang.Integer\",\"org.openengsb.ports.jms.TestClass\"],"
-            + "  \"methodName\":\"method\","
-            + "  \"args\":[\"123\",5,{\"test\":\"test\"}],"
-            + "  \"metaData\":{\"serviceId\":\"test\"}"
-            + "}";
-
-    private static final String METHOD_CALL_REQUEST = ""
-            + "{"
-            + "  \"callId\":\"12345\","
-            + "  \"answer\":true,"
-            + "  \"methodCall\":" + METHOD_CALL
-            + "}";
-
-    private final String xmlText = ""
-            + "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-            + "<MethodCallRequest>"
-            + "  <callId>123</callId>"
-            + "  <answer>true</answer>"
-            + "  <methodCall>"
-            + "    <args xmlns:xs=\"http://www.w3.org/2001/XMLSchema\""
-            + "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">123</args>"
-            + "    <args xmlns:xs=\"http://www.w3.org/2001/XMLSchema\""
-            + "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:int\">5</args>"
-            + "    <args xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"testClass\">"
-            + "      <test>test</test>"
-            + "    </args>"
-            + "    <classes>java.lang.String</classes>"
-            + "    <classes>java.lang.Integer</classes>"
-            + "    <classes>org.openengsb.ports.jms.TestClass</classes>"
-            + "    <metaData>"
-            + "      <entry>"
-            + "        <key>serviceId</key>"
-            + "        <value>test</value>"
-            + "      </entry>"
-            + "    </metaData>"
-            + "    <methodName>method</methodName>"
-            + "  </methodCall>"
-            + "</MethodCallRequest>";
-
     private MethodCallRequest call;
-    private MethodResultMessage methodReturn;
     private JmsTemplate jmsTemplate;
     private JMSTemplateFactory jmsTemplateFactory;
-    private RequestHandler handler;
 
     private Map<String, String> metaData;
 
@@ -112,7 +66,6 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
             jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
-        handler = new RequestHandlerImpl();
 
         TestInterface mock2 = mock(TestInterface.class);
         registerServiceViaId(mock2, "test", TestInterface.class);
@@ -122,10 +75,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         metaData.put("serviceId", "test");
         MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
         call = new MethodCallRequest(methodCall, "123");
-        call.setDestination("host");
-        MethodResult result = new MethodResult(new TestClass("test"));
-        result.setMetaData(metaData);
-        methodReturn = new MethodResultMessage(result, "123");
+        call.setDestination("host?endpoint");
 
         JMSOutgoingPort jmsOutgoingPort = new JMSOutgoingPort();
         jmsOutgoingPort.setFactory(jmsTemplateFactory);

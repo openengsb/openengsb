@@ -42,7 +42,7 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
         if (ObjectUtils.notEqual(metaData.get("answer"), true)) {
             return null;
         }
-        JmsTemplate createJMSTemplate = createJMSTemplate(destination);
+        JmsTemplate createJMSTemplate = createJMSTemplate(DestinationUrl.createDestinationUrl(destination));
         createJMSTemplate.setReceiveTimeout(3000);
         Object receiveAndConvert = createJMSTemplate.receiveAndConvert(callId);
         if (receiveAndConvert == null) {
@@ -51,12 +51,12 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
         return (String) receiveAndConvert;
     }
 
-    private JmsTemplate createJMSTemplate(String destination) {
+    private JmsTemplate createJMSTemplate(DestinationUrl destination) {
         return factory.createJMSTemplate(destination);
     }
 
     private void sendMessage(String destination, String message) {
-        JmsTemplate createJMSTemplate = createJMSTemplate(destination);
+        JmsTemplate createJMSTemplate = createJMSTemplate(DestinationUrl.createDestinationUrl(destination));
         createJMSTemplate.convertAndSend(RECEIVE, message);
     }
 
