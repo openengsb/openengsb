@@ -10,16 +10,16 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 
-public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<byte[], byte[]> {
+public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<String, String> {
 
     private FilterAction next;
 
     public EncryptedJsonMessageMarshaller() {
-        super(byte[].class, byte[].class);
+        super(String.class, String.class);
     }
 
     @Override
-    protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
+    protected String doFilter(String input, Map<String, Object> metaData) {
         ObjectMapper objectMapper = new ObjectMapper();
         EncryptedMessage message;
         try {
@@ -27,7 +27,8 @@ public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<b
         } catch (IOException e) {
             throw new FilterException(e);
         }
-        return (byte[]) next.filter(message, metaData);
+        byte[] result = (byte[]) next.filter(message, metaData);
+        return new String(result);
     }
 
     @Override

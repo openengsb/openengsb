@@ -55,8 +55,9 @@ public class FilterChainFactory<InputType, OutputType> {
         FilterChainElement firstInstance = getInstanceFromListElement(iterator.next());
         if (!firstInstance.getSupportedInputType().isAssignableFrom(inputType)
                 || !firstInstance.getSupportedOutputType().isAssignableFrom(outputType)) {
-            throw new FilterConfigurationException(String.format("incompatible Filtertype (%s->%s) - (%s->%s)",
-                inputType, outputType, firstInstance.getSupportedInputType(), firstInstance.getSupportedOutputType()));
+            throw new FilterConfigurationException(String.format("incompatible Filtertype (%s) (%s->%s) - (%s->%s)",
+                firstInstance.getClass(), inputType, outputType, firstInstance.getSupportedInputType(),
+                firstInstance.getSupportedOutputType()));
         }
         FilterChainElement current = firstInstance;
         while (iterator.hasNext()) {

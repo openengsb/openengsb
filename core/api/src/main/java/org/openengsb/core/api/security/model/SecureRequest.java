@@ -18,15 +18,15 @@
 package org.openengsb.core.api.security.model;
 
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
 
-public class SecureRequest extends AbstractSecureMessage<MethodCall> {
+public class SecureRequest extends AbstractSecureMessage<MethodCallRequest> {
 
     private static final long serialVersionUID = -2350090113804167120L;
 
     private BeanDescription authenticationData;
 
-    public static SecureRequest create(MethodCall original, BeanDescription auth) {
+    public static SecureRequest create(MethodCallRequest original, BeanDescription auth) {
         SecureRequest secureRequest = new SecureRequest();
         secureRequest.setMessage(original);
         long time = System.currentTimeMillis();

@@ -141,7 +141,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     private SecureRequest prepareSecureRequest(AuthenticationInfo token) {
         MethodCall methodCall = new MethodCall("doSomething", new Object[]{ METHOD_ARG, });
         MethodCallRequest request = new MethodCallRequest(methodCall, "c42");
-        SecureRequest secureRequest = SecureRequest.create(methodCall, BeanDescription.fromObject(token));
+        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
         return secureRequest;
     }
 
@@ -150,7 +150,8 @@ public abstract class GenericSecurePortTest<EncodingType> {
         UsernamePasswordAuthenticationInfo token = new UsernamePasswordAuthenticationInfo("test", "password");
         when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
+        SecureRequest secureRequest =
+            SecureRequest.create(new MethodCallRequest(request), BeanDescription.fromObject(token));
 
         try {
             processRequest(secureRequest);
@@ -165,7 +166,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     public void testManipulateMessage() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
 
-        secureRequest.getMessage().setArgs(new Object[]{ "43" }); // manipulate message
+        secureRequest.getMessage().getMethodCall().setArgs(new Object[]{ "43" }); // manipulate message
 
         SecretKey sessionKey = keyGenUtil.generateKey();
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
@@ -177,7 +178,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
             secureRequestHandler.filter(manipulatedRequest, new HashMap<String, Object>());
             fail("Exception expected");
         } catch (FilterException e) {
-//            verify(requestHandler, never()).handleCall(any(MethodCall.class));
+            // verify(requestHandler, never()).handleCall(any(MethodCall.class));
         }
 
     }
