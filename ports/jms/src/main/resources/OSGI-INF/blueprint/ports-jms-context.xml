@@ -26,18 +26,64 @@
     <service-properties>
       <entry key="id" value="jms-json" />
     </service-properties>
-    <ref component-id="portBean" />
+    <ref component-id="outgoingPortBean" />
   </service>
 
-  <bean id="portBean" class="org.openengsb.ports.jms.JMSPort"
-    init-method="start" destroy-method="stop">
+  <bean id="outgoingPortBean" class="org.openengsb.core.common.OutgoingPortImpl">
+    <property name="filterChain">
+      <bean factory-ref="outgoingFilterChainFactory" factory-method="create" />
+    </property>
+  </bean>
+
+  <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
+    <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
+    <property name="filters">
+      <list>
+        <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
+        <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
+          <property name="factory">
+            <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="incomingPortBean" class="org.openengsb.ports.jms.JMSIncomingPort" init-method="start" destroy-method="stop">
     <property name="factory">
       <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
     </property>
     <property name="connectionFactory" ref="openengsbBrokerConnectionFactory" />
-    <property name="requestHandler" ref="requestHandler" />
-    <property name="authenticationManager" ref="authenticationManager"></property>
+    <property name="filterChain">
+      <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
+    </property>
   </bean>
+
+  <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+    <property name="inputType" value="java.lang.String" />
+    <property name="outputType" value="java.lang.String" />
+    <property name="filters">
+      <list>
+        <value>org.openengsb.core.common.remote.JsonMethodCallMarshalFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!--
+
+    <property name="inputType" value="java.lang.String" />
+    <property name="outputType" value="java.lang.String" />
+
+    <property name="factory">
+    <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
+    </property>
+
+    <property name="requestHandler" ref="requestHandler" /> -->
+
 
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
