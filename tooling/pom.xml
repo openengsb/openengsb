@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-parent</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.5.RELEASE</version>
   </parent>
 
   <modules>
@@ -34,7 +34,7 @@
   <groupId>org.openengsb.tooling</groupId>
   <artifactId>openengsb-tooling-parent</artifactId>
   <name>OpenEngSB :: Tooling :: Parent</name>
-  <version>1.1.5-SNAPSHOT</version>
+  <version>1.1.5.RELEASE</version>
   <packaging>pom</packaging>
 
   <description>Parent project of Domain and Connector archetypes and checkstyle project</description>
