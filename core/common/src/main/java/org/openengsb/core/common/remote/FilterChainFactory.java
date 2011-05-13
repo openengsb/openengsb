@@ -2,7 +2,6 @@ package org.openengsb.core.common.remote;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
@@ -20,27 +19,12 @@ public class FilterChainFactory<InputType, OutputType> {
     private Class<InputType> inputType;
     private Class<OutputType> outputType;
 
-    private final class FilterChain extends AbstractFilterAction<InputType, OutputType> {
-        private FilterAction firstElement;
-
-        protected FilterChain(FilterAction lastElement) {
-            super(inputType, outputType);
-            this.firstElement = lastElement;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected OutputType doFilter(InputType input, Map<String, Object> metadata) {
-            return (OutputType) firstElement.filter(input, metadata);
-        };
-    }
-
     /**
      * The filters-list must be set. If the last-element is not set, the last element of the filters-list will be used.
      *
      * @throws FilterConfigurationException if the filters in the filter-list are not compatible with each other
      */
-    public FilterAction create() throws FilterConfigurationException {
+    public FilterChain<InputType, OutputType> create() throws FilterConfigurationException {
         Preconditions.checkState(filters != null, "list of filters must be set");
         Preconditions.checkState(inputType != null, "inputType must be set");
         Preconditions.checkState(outputType != null, "outputType must be set");
@@ -67,7 +51,7 @@ public class FilterChainFactory<InputType, OutputType> {
             current.setNext(nextFilterElement);
             current = nextFilterElement;
         }
-        return new FilterChain(firstInstance);
+        return new FilterChain<InputType, OutputType>(inputType, outputType, firstInstance);
     }
 
     private FilterChainElement getInstanceFromListElement(Object next) throws FilterConfigurationException {
