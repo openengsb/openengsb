@@ -17,6 +17,20 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResultMessage;
 
+/**
+ * This filter takes a JSON-serialized {@link MethodCallRequest} and deserializes it. The {@link MethodCallRequest}
+ * object is then passed on to the next filter. The returned {@link MethodResultMessage} is than seralized to JSON
+ * again.
+ *
+ * <code>
+ * <pre>
+ *      [MethodCallRequest as JSON-string]   > Filter > [MethodCallRequest]     > ...
+ *                                                                                 |
+ *                                                                                 v
+ *      [MethodResultMessage as JSON-string] < Filter < [MethodResultMessage]   < ...
+ * </pre>
+ * </code>
+ */
 public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<String, String> {
 
     private FilterAction next;

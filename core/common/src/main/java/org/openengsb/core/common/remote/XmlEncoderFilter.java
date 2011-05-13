@@ -24,6 +24,22 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * This filter takes a {@link String} representing an XML-document and parses it into a {@link Document} The document is
+ * passed to the next filter. The resulting document is then printed to a string again and returned. This filter can be
+ * used regardless of what Object the XML-document may represent.
+ *
+ * This filter is intended for outgoing ports.
+ *
+ * <code>
+ * <pre>
+ *      [org.w3c.dom.Document] > Filter > [XML as String]   > ...
+ *                                                             |
+ *                                                             v
+ *      [org.w3c.dom.Document] < Filter < [XML as String]   < ...
+ * </pre>
+ * </code>
+ */
 public class XmlEncoderFilter extends AbstractFilterChainElement<Document, Document> {
 
     private FilterAction next;

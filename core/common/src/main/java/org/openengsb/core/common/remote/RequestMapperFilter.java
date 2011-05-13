@@ -7,6 +7,22 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 
+/**
+ * This filter takes a {@link MethodCallRequest} and handles it using a {@link RequestHandler}. The result is then
+ * wrapped to a {@link MethodResultMessage} and returned.
+ *
+ * <code>
+ * <pre>
+ *      [MethodCallRequest]   > Filter > [MethodCall]
+ *                                             |
+ *                                             v
+ *                                       RequestHandler
+ *                                             |
+ *                                             v
+ *      [MethodResultMessage] < Filter < [MethodResult]
+ * </pre>
+ * </code>
+ */
 public class RequestMapperFilter extends AbstractFilterAction<MethodCallRequest, MethodResultMessage> {
 
     private RequestHandler requestHandler;
