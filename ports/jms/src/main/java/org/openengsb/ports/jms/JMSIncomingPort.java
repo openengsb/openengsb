@@ -25,7 +25,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.common.remote.FilterChain;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
@@ -39,7 +39,7 @@ public class JMSIncomingPort {
 
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
-    private FilterAction filterChain;
+    private FilterChain<String, String> filterChain;
 
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
@@ -86,7 +86,7 @@ public class JMSIncomingPort {
         this.connectionFactory = connectionFactory;
     }
 
-    public void setFilterChain(FilterAction filterChain) {
+    public void setFilterChain(FilterChain<String, String> filterChain) {
         this.filterChain = filterChain;
     }
 }
