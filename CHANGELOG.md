@@ -1,3 +1,23 @@
+openengsb-1.1.5.RELEASE 2011-05-13
+-------------------------------------------------------
+
+Only very minor fix in the openengsb-connector-email (regression) fixed. Upgrade to openengsb-root-16 included.
+
+### Highlihgts
+  * Fixed regression openengsb-connector-email
+  * Upgraded openengsb-root to version 16
+
+### Details
+** Bug
+    * [OPENENGSB-1547] - email connector fails to load
+
+** Library Upgrade
+    * [OPENENGSB-1555] - Upgrade to openengsb-root-16
+
+** New Feature
+    * [OPENENGSB-1528] - release openengsb-1.1.5.RELEASE
+
+
 openengsb-1.1.4.RELEASE 2011-05-06
 -------------------------------------------------------
 
