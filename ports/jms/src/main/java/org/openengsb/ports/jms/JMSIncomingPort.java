@@ -39,7 +39,7 @@ public class JMSIncomingPort {
 
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
-    private FilterChain<String, String> filterChain;
+    private FilterChain filterChain;
 
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
@@ -86,7 +86,7 @@ public class JMSIncomingPort {
         this.connectionFactory = connectionFactory;
     }
 
-    public void setFilterChain(FilterChain<String, String> filterChain) {
+    public void setFilterChain(FilterChain filterChain) {
         this.filterChain = filterChain;
     }
 }

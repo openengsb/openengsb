@@ -43,4 +43,8 @@ public class RequestMapperFilter extends AbstractFilterAction<MethodCallRequest,
         MethodResult result = requestHandler.handleCall(input.getMethodCall());
         return new MethodResultMessage(result, input.getCallId());
     }
+
+    public void setRequestHandler(RequestHandler requestHandler) {
+        this.requestHandler = requestHandler;
+    }
 }
