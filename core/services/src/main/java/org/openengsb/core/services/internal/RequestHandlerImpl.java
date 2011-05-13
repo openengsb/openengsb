@@ -21,8 +21,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
@@ -36,6 +38,11 @@ public class RequestHandlerImpl implements RequestHandler {
 
     @Override
     public MethodResult handleCall(MethodCall call) {
+        Map<String, String> metaData = call.getMetaData();
+        String contextId = metaData.get("contextId");
+        if (contextId != null) {
+            ContextHolder.get().setCurrentContextId(contextId);
+        }
         Object service = retrieveOpenEngSBService(call);
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
