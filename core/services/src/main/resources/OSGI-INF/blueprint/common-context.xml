@@ -63,7 +63,7 @@
     </bean>
   </service>
   
-  <service interface="org.openengsb.core.api.OutgoingPortUtilService">
+  <service interface="org.openengsb.core.api.remote.OutgoingPortUtilService">
     <bean class="org.openengsb.core.services.internal.DefaultOutgoingPortUtilService" />
   </service>
 
