@@ -26,8 +26,12 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.openengsb.core.common.remote.FilterChain;
+import org.openengsb.core.security.BundleAuthenticationToken;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSIncomingPort {
 
@@ -41,6 +45,8 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
+    private AuthenticationManager authenticationManager;
+
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
@@ -48,6 +54,7 @@ public class JMSIncomingPort {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
+                        ensureAuthentication();
                         String text = textMessage.getText();
                         HashMap<String, Object> metadata = new HashMap<String, Object>();
                         String result = (String) filterChain.filter(text, metadata);
@@ -62,6 +69,20 @@ public class JMSIncomingPort {
             }
         });
         simpleMessageListenerContainer.start();
+    }
+
+    /**
+     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be removed
+     * as it grants universal access.
+     */
+    protected void ensureAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return;
+        }
+        BundleAuthenticationToken token = new BundleAuthenticationToken("openengsb-ports-jms", "");
+        authentication = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
@@ -88,5 +109,9 @@ public class JMSIncomingPort {
 
     public void setFilterChain(FilterChain filterChain) {
         this.filterChain = filterChain;
+    }
+
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 }
