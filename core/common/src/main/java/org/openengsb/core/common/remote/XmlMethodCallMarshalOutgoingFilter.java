@@ -20,13 +20,28 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class XmlOutgoingMethodCallMarshalFilter extends
+/**
+ * This filter takes a {@link MethodCallRequest} and serializes it into a {@link Document}. The document is then passed
+ * to the next filter. The resulting document is then deseralized and returned.
+ *
+ * This filter is intended for outgoing ports.
+ *
+ * <code>
+ * <pre>
+ *      [MethodCallRequest] > Filter > [org.w3c.dom.Document]     > ...
+ *                                                                   |
+ *                                                                   v
+ *      [MethodResultMessage] < Filter < [org.w3c.dom.Document]   < ...
+ * </pre>
+ * </code>
+ */
+public class XmlMethodCallMarshalOutgoingFilter extends
         AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
 
     private FilterAction next;
     private Unmarshaller unmarshaller;
 
-    public XmlOutgoingMethodCallMarshalFilter() {
+    public XmlMethodCallMarshalOutgoingFilter() {
         super(MethodCallRequest.class, MethodResultMessage.class);
         try {
             JAXBContext context = JAXBContext.newInstance(MethodCallRequest.class, MethodResultMessage.class);

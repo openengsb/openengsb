@@ -19,6 +19,22 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+/**
+ * This filter takes a {@link Document} representing a {@link MethodCallRequest} and deserializes it. The
+ * MethodCallRequest is then passed to the next filter. The resulting {@link MethodResultMessage} is then seralized to
+ * XML again and returned.
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [org.w3c.dom.Document] > Filter > [MethodCallRequest]     > ...
+ *                                                                   |
+ *                                                                   v
+ *      [org.w3c.dom.Document] < Filter < [MethodResultMessage]   < ...
+ * </pre>
+ * </code>
+ */
 public class XmlMethodCallMarshalFilter extends AbstractFilterChainElement<Document, Document> {
 
     private FilterAction next;

@@ -4,6 +4,10 @@ import java.util.Map;
 
 import org.openengsb.core.api.remote.FilterAction;
 
+/**
+ * represents a chain of filters. This class basically represents just a FilterAction and can be used as final action of
+ * another FilterChain.
+ */
 public class FilterChain<InputType, OutputType> extends AbstractFilterAction<InputType, OutputType> {
     private FilterAction firstElement;
 
