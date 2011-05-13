@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -33,6 +34,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -142,65 +149,44 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
         }
     }
 
-    // @Test(timeout = 10000)
-    // public void testHandleCallsParallel() throws Exception {
-    // when(serviceMock.getAnswer()).thenReturn(42);
-    // final Object sync = addWaitingAnswerToServiceMock();
-    // MethodCallRequest blockingCall =
-    // new MethodCallRequest("getOtherAnswer", new Object[0], getMetadata("foo"), "1", true);
-    // MethodCallRequest normalCall = new MethodCallRequest("getAnswer", new Object[0], getMetadata("foo"), "1", true);
-    //
-    // ExecutorService threadPool = Executors.newCachedThreadPool();
-    // Future<MethodResultMessage> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
-    // Future<MethodResultMessage> normalFuture = threadPool.submit(new MethodCallable(normalCall));
-    //
-    // MethodResultMessage normalResult = normalFuture.get();
-    //
-    // verify(serviceMock).getAnswer();
-    // /* getAnswer-call is finished */
-    // assertThat((Integer) normalResult.getArg(), is(42));
-    // try {
-    // blockingFuture.get(200, TimeUnit.MILLISECONDS);
-    // fail("blocking method returned premature");
-    // } catch (TimeoutException e) {
-    // // ignore, this is expceted
-    // }
-    //
-    // synchronized (sync) {
-    // sync.notifyAll();
-    // }
-    // MethodResultMessage blockingResult = blockingFuture.get();
-    // assertThat((Long) blockingResult.getArg(), is(42L));
-    // }
-
-    private Object addWaitingAnswerToServiceMock() {
-        final Object sync = new Object();
-        BlockingAnswer<Long> answer = new BlockingAnswer<Long>(sync) {
+    @Test(timeout = 10000)
+    public void testHandleCallsParallel() throws Exception {
+        when(serviceMock.getAnswer()).thenReturn(42);
+        final Semaphore sync = new Semaphore(0);
+        Answer<Long> answer = new Answer<Long>() {
             @Override
-            public Long realAnswer(InvocationOnMock invocationOnMock) {
+            public Long answer(InvocationOnMock invocationOnMock) {
+                try {
+                    sync.acquire();
+                } catch (InterruptedException e) {
+                    fail(e.toString());
+                }
                 return 42L;
             }
         };
         when(serviceMock.getOtherAnswer()).thenAnswer(answer);
-        return sync;
-    }
+        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"));
+        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
 
-    private abstract class BlockingAnswer<T> implements Answer<T> {
-        private final Object sync;
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        Future<MethodResult> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
+        Future<MethodResult> normalFuture = threadPool.submit(new MethodCallable(normalCall));
 
-        public BlockingAnswer(Object sync) {
-            this.sync = sync;
+        MethodResult normalResult = normalFuture.get();
+
+        verify(serviceMock).getAnswer();
+        /* getAnswer-call is finished */
+        assertThat((Integer) normalResult.getArg(), is(42));
+        try {
+            blockingFuture.get(200, TimeUnit.MILLISECONDS);
+            fail("blocking method returned premature");
+        } catch (TimeoutException e) {
+            // ignore, this is expceted
         }
 
-        @Override
-        public T answer(InvocationOnMock invocation) throws Throwable {
-            synchronized (sync) {
-                sync.wait();
-            }
-            return realAnswer(invocation);
-        }
-
-        public abstract T realAnswer(InvocationOnMock invocationOnMock);
+        sync.release();
+        MethodResult blockingResult = blockingFuture.get();
+        assertThat((Long) blockingResult.getArg(), is(42L));
     }
 
     public interface TestService extends OpenEngSBService {
