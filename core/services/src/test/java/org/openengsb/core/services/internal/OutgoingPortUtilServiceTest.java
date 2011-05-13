@@ -59,7 +59,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 
-public class CallRouterTest extends AbstractOsgiMockServiceTest {
+public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 
     private OutgoingPortUtilService callrouter;
     private RequestHandlerImpl requestHandler;
