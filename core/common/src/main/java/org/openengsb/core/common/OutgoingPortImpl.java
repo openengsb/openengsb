@@ -2,15 +2,15 @@ package org.openengsb.core.common;
 
 import java.util.HashMap;
 
-import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RemoteCommunicationException;
+import org.openengsb.core.common.remote.FilterChain;
 
 public class OutgoingPortImpl implements OutgoingPort {
 
-    private FilterAction filterChain;
+    private FilterChain<?, ?> filterChain;
 
     @Override
     public void send(MethodCallRequest call) throws RemoteCommunicationException {
@@ -32,7 +32,7 @@ public class OutgoingPortImpl implements OutgoingPort {
         return (MethodResultMessage) filterChain.filter(call, metaData);
     }
 
-    public void setFilterChain(FilterAction filterChain) {
+    public void setFilterChain(FilterChain<?, ?> filterChain) {
         this.filterChain = filterChain;
     }
 
