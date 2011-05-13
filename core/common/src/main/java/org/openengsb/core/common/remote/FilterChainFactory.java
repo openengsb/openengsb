@@ -7,6 +7,7 @@ import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.FilterException;
 
 import com.google.common.base.Preconditions;
 
@@ -24,7 +25,7 @@ public class FilterChainFactory<InputType, OutputType> {
      *
      * @throws FilterConfigurationException if the filters in the filter-list are not compatible with each other
      */
-    public FilterChain<InputType, OutputType> create() throws FilterConfigurationException {
+    public FilterChain create() throws FilterConfigurationException {
         Preconditions.checkState(filters != null, "list of filters must be set");
         Preconditions.checkState(inputType != null, "inputType must be set");
         Preconditions.checkState(outputType != null, "outputType must be set");
@@ -51,23 +52,35 @@ public class FilterChainFactory<InputType, OutputType> {
             current.setNext(nextFilterElement);
             current = nextFilterElement;
         }
-        return new FilterChain<InputType, OutputType>(inputType, outputType, firstInstance);
+        return new FilterChain(firstInstance);
     }
 
     private FilterChainElement getInstanceFromListElement(Object next) throws FilterConfigurationException {
-        if (next instanceof Class) {
+        if (next instanceof String) {
             try {
-                return (FilterChainElement) ((Class<?>) next).newInstance();
-            } catch (InstantiationException e) {
-                throw new FilterConfigurationException("Exception when instantiating FilterAction", e);
-            } catch (IllegalAccessException e) {
-                throw new FilterConfigurationException("Exception when instantiating FilterAction", e);
+                Class<?> class1 = Class.forName((String) next);
+                return createFromClass(class1);
+            } catch (ClassNotFoundException e) {
+                throw new FilterException(e);
             }
+        }
+        if (next instanceof Class) {
+            return createFromClass(next);
         }
         if (next instanceof FilterChainElementFactory) {
             return ((FilterChainElementFactory) next).newInstance();
         }
         return null;
+    }
+
+    private FilterChainElement createFromClass(Object next) {
+        try {
+            return (FilterChainElement) ((Class<?>) next).newInstance();
+        } catch (InstantiationException e) {
+            throw new FilterConfigurationException("Exception when instantiating FilterAction", e);
+        } catch (IllegalAccessException e) {
+            throw new FilterConfigurationException("Exception when instantiating FilterAction", e);
+        }
     }
 
     public void setFilters(List<Object> filters) {
@@ -100,7 +113,9 @@ public class FilterChainFactory<InputType, OutputType> {
     private void validateElement(Object object) {
 
         Class<? extends Object> objClass = object.getClass();
-        // Allow instances of Factories and filters
+        if (objClass.equals(String.class)) {
+            return;
+        }
         if (object instanceof FilterChainElementFactory) {
             return;
         }

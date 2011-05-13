@@ -10,7 +10,7 @@ import org.openengsb.core.common.remote.FilterChain;
 
 public class OutgoingPortImpl implements OutgoingPort {
 
-    private FilterChain<?, ?> filterChain;
+    private FilterChain filterChain;
 
     @Override
     public void send(MethodCallRequest call) throws RemoteCommunicationException {
@@ -32,7 +32,7 @@ public class OutgoingPortImpl implements OutgoingPort {
         return (MethodResultMessage) filterChain.filter(call, metaData);
     }
 
-    public void setFilterChain(FilterChain<?, ?> filterChain) {
+    public void setFilterChain(FilterChain filterChain) {
         this.filterChain = filterChain;
     }
 
