@@ -18,15 +18,17 @@
 package org.openengsb.core.api.remote;
 
 /**
- * Implementation of the CallRouter. Basically it should not be required to overwrite this interface, but if one is
- * deployed in the OSGi registry this one is used instead of the default one.
+ * Provides utility-methods for calling services on a remote OpenEngSB.
+ *
+ * The portId used in these methods represents the required value of the id-property for the {@link OutgoingPort}
+ * -service
+ *
  */
-public interface CallRouter {
+public interface OutgoingPortUtilService {
 
-    void call(String portId, final String destination, final MethodCallRequest call);
+    void sendMethodCall(String portId, String destination, MethodCall call) throws RemoteCommunicationException;
 
-    MethodResultMessage callSync(String portId, final String destination, final MethodCallRequest call);
-
-    void stop();
+    MethodResult sendMethodCallWithResult(String portId, String destination, MethodCall call)
+        throws RemoteCommunicationException;
 
 }

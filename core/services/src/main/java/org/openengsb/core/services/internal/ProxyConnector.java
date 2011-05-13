@@ -25,10 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 
 import com.google.common.base.Functions;
@@ -52,7 +51,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
     private String destination;
     private final Map<String, String> metadata = new HashMap<String, String>();
 
-    private CallRouter callRouter;
+    private OutgoingPortUtilService portUtil;
 
     public ProxyConnector() {
     }
@@ -70,15 +69,14 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         List<String> paramTypeNames = Lists.transform(paramList, Functions.toStringFunction());
 
         MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
-        MethodResult callSync =
-            callRouter.callSync(portId, destination, new MethodCallRequest(methodCall)).getResult();
-        switch (callSync.getType()) {
+        MethodResult callResult = portUtil.sendMethodCallWithResult(portId, destination, methodCall);
+        switch (callResult.getType()) {
             case Object:
-                return callSync.getArg();
+                return callResult.getArg();
             case Void:
                 return null;
             case Exception:
-                throw new RuntimeException(callSync.getArg().toString());
+                throw new RuntimeException(callResult.getArg().toString());
             default:
                 throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
@@ -96,8 +94,8 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         metadata.put(key, value);
     }
 
-    public final void setCallRouter(CallRouter callRouter) {
-        this.callRouter = callRouter;
+    public final void setOutgoingPortUtilService(OutgoingPortUtilService portUtil) {
+        this.portUtil = portUtil;
     }
 
     public final String getPortId() {
@@ -108,7 +106,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         return destination;
     }
 
-    public final CallRouter getCallRouter() {
-        return callRouter;
+    public final OutgoingPortUtilService getCallRouter() {
+        return portUtil;
     }
 }

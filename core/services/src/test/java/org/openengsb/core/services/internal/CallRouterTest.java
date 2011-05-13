@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,13 +40,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -53,35 +54,27 @@ import org.osgi.framework.BundleContext;
 
 public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
-    private CallRouter callrouter;
+    private OutgoingPortUtilService callrouter;
     private RequestHandlerImpl requestHandler;
     private TestService serviceMock;
     private OutgoingPort outgoingPortMock;
     private final String testURI = "jms://localhost";
-    private MethodCallRequest methodCallRequest;
+    private MethodCall methodCall;
 
     @Before
     public void setUp() throws Exception {
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
-        callrouter = new DefaultCallRouter();
+        callrouter = new DefaultOutgoingPortUtilService();
         requestHandler = new RequestHandlerImpl();
 
         Map<String, String> metaData = getMetadata("foo");
-        MethodCall call = new MethodCall("test", new Object[0], metaData);
-        methodCallRequest = new MethodCallRequest(call, "1");
-    }
-
-    @Test
-    public void testReceiveAnything() throws Exception {
-        callrouter.stop();
-        Thread.sleep(300);
+        methodCall = new MethodCall("test", new Object[0], metaData);
     }
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        requestHandler.handleCall(methodCallRequest.getMethodCall());
-        callrouter.stop();
+        requestHandler.handleCall(methodCall);
         verify(serviceMock).test();
     }
 
@@ -95,7 +88,6 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     public void testReceiveMethodCallWithArgument() throws Exception {
         MethodCall call2 = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
         requestHandler.handleCall(call2);
-        callrouter.stop();
         verify(serviceMock, never()).test();
         verify(serviceMock, times(1)).test(eq(42));
     }
@@ -112,7 +104,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void recieveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
-        MethodResult result = requestHandler.handleCall(methodCallRequest.getMethodCall());
+        MethodResult result = requestHandler.handleCall(methodCall);
 
         verify(serviceMock).test();
         assertThat(result.getType(), equalTo(ReturnType.Void));
@@ -121,26 +113,20 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-
-        callrouter.call("jms+json-out", testURI, new MethodCallRequest());
+        callrouter.sendMethodCall("jms+json-out", testURI, new MethodCall());
         Thread.sleep(300);
-        callrouter.stop();
         verify(outgoingPortMock, times(1)).send(any(MethodCallRequest.class));
-    }
-
-    @Test
-    public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        callrouter.callSync("jms+json-out", testURI, methodCallRequest);
-        verify(outgoingPortMock, times(1)).sendSync(any(MethodCallRequest.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        MethodResultMessage value = new MethodResultMessage();
-        when(outgoingPortMock.sendSync(methodCallRequest)).thenReturn(value);
-        MethodResultMessage result = callrouter.callSync("jms+json-out", "jms://localhost", methodCallRequest);
-        assertThat(result, is(value));
+        MethodResult expectedResult = new MethodResult();
+        MethodResultMessage value = mock(MethodResultMessage.class);
+        when(value.getResult()).thenReturn(expectedResult);
+        when(outgoingPortMock.sendSync(any(MethodCallRequest.class))).thenReturn(value);
+        MethodResult result = callrouter.sendMethodCallWithResult("jms+json-out", "jms://localhost", methodCall);
+        assertThat(result, is(expectedResult));
     }
 
     private class MethodCallable implements Callable<MethodResult> {
