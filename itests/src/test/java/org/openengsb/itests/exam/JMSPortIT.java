@@ -27,7 +27,6 @@ import java.io.InputStream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -51,7 +50,6 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
@@ -60,11 +58,10 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         addWorkflow("simpleFlow");
-        System.out.println("Starting Integration Test");
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:6549");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         String request = ""
                 + "{"
