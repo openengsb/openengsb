@@ -205,12 +205,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "activemq-blueprint", "openengsb-connector-memoryauditing",
-                "openengsb-ui-admin"),
+                "openengsb-ports-jms", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }
-
 }
