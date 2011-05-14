@@ -219,8 +219,8 @@
         Optionally append /DESCRIPTION (e.g. OPENENGSB-586/mvn-eclipse-download-fix). 
         <literallayout><command>git checkout</command> <option>-b</option> <replaceable>OPENENGSB-ISSUE origin/BRANCH</replaceable></literallayout>
         <replaceable>BRANCH</replaceable> is the point where you like to start your work. If you like to contribute to the head this will be typically
-        integration, but could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches 
-        and we'll really appreciate if you work according to it.</para>
+        integration, but could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches
+        and we'll really appreciate if you work according to it. Please notice that each commit should include [OPENENGSB-ISSUEID] at the beginning of its message.</para>
       <para>Now hack, commit and push as you like. If you think you're finished invoke <command>mvn openengsb:prePush</command> (or
         use <filename>etc/scripts/pre-push.sh</filename>) to validate your code, tests, licenses and so on. If 
         everything works without errors create a Github pull request on Github, between the master or integration
