@@ -137,8 +137,8 @@ public class JMSPort implements OutgoingPort {
     }
 
     /**
-     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be removed as
-     * it grants universal access.
+     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be 
+     * removed as it grants universal access.
      */
     protected void ensureAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
