@@ -56,6 +56,24 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.info</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
   <dependencies>
     <!-- Drools Dependencies -->
     <dependency>
@@ -94,7 +112,7 @@
       <artifactId>guava</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
