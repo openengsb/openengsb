@@ -36,11 +36,17 @@ public class RequestHandlerImpl implements RequestHandler {
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
-        Object service = retrieveOpenEngSBService(call);
-        Object[] args = call.getArgs();
-        Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
-        MethodReturn returnTemplate = createReturnTemplate(call);
-        return invokeMethod(service, method, args, returnTemplate);
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(RequestHandlerImpl.class.getClassLoader());
+        try {
+            Object service = retrieveOpenEngSBService(call);
+            Object[] args = call.getArgs();
+            Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
+            MethodReturn returnTemplate = createReturnTemplate(call);
+            return invokeMethod(service, method, args, returnTemplate);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
     }
 
     private MethodReturn createReturnTemplate(MethodCall call) {
