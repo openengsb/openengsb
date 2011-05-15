@@ -151,7 +151,7 @@ public class JMSPortTest {
         assertThat(sendSync.getMetaData().get("test"), Matchers.equalTo("test"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost");
         final JmsTemplate jmsTemplate = new JmsTemplate(cf);
