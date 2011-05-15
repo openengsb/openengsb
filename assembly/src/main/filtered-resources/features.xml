@@ -28,6 +28,18 @@
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
     </config>
+    <config name="org.openengsb.persistence.config-rule">
+      backend.id=persistenceService
+      configuration.id=RULE
+    </config>
+    <config name="org.openengsb.persistence.config-flow">
+      backend.id=persistenceService
+      configuration.id=FLOW
+    </config>
+    <config name="org.openengsb.persistence.config-connector">
+      backend.id=persistenceService
+      configuration.id=CONNECTOR
+    </config>
     <feature version="[3,4)">spring</feature>
     <feature version="[3,4)">spring-web</feature>
     <feature version="[1.2,2)">spring-dm</feature>
