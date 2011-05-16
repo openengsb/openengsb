@@ -88,7 +88,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             waitForBundle(bundle, SetupType.BLUEPRINT);
         }
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
-        authenticateAsAdmin();
     }
 
     public static List<String> getImportantBundleSymbolicNames() {

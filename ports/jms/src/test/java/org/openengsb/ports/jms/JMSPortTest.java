@@ -56,7 +56,9 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
@@ -76,14 +78,11 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -251,9 +250,34 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
     }
 
-    
     @Test(timeout = 5000)
     public void sendEncryptedMethodCall_shouldSendEncryptedResult() throws Exception {
+        FilterChain secureChain = createSecureFilterChain();
+        incomingPort.setFilterChain(secureChain);
+        incomingPort.start();
+
+        KeyGeneratorUtils keyGeneratorUtils = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
+        SecretKey sessionKey = keyGeneratorUtils.generateKey();
+
+        MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
+
+        byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, publicKey);
+        byte[] encryptedContent = cryptoUtil.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
+
+        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
+        String encryptedString = new ObjectMapper().writeValueAsString(encryptedMessage);
+
+        jmsTemplate.convertAndSend("receive", encryptedString);
+        String resultString = (String) jmsTemplate.receiveAndConvert("12345");
+        byte[] result = cryptoUtil.decrypt(Base64.decodeBase64(resultString), sessionKey);
+        SecureResponse result2 = OBJECT_MAPPER.readValue(result, SecureResponse.class);
+        MethodResult methodResult = result2.getMessage().getResult();
+        Object realResultArg =
+            OBJECT_MAPPER.convertValue(methodResult.getArg(), Class.forName(methodResult.getClassName()));
+        assertThat(realResultArg, equalTo((Object) new TestClass("test")));
+    }
+
+    private FilterChain createSecureFilterChain() {
         DefaultSecureMethodCallFilterFactory secureFilterChainFactory = new DefaultSecureMethodCallFilterFactory();
         AuthenticationManager authenticationManager = mock(AuthenticationManager.class);
         when(authenticationManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
@@ -278,29 +302,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             secureFilterChainFactory.create()));
-        incomingPort.setFilterChain(factory.create());
-        incomingPort.start();
 
-        KeyGeneratorUtils keyGeneratorUtils = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        SecretKey sessionKey = keyGeneratorUtils.generateKey();
-
-        MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-
-        byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, publicKey);
-        byte[] encryptedContent = cryptoUtil.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
-
-        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
-        String encryptedString = new ObjectMapper().writeValueAsString(encryptedMessage);
-
-        jmsTemplate.convertAndSend("receive", encryptedString);
-        String resultString = (String) jmsTemplate.receiveAndConvert("12345");
-        System.out.println(resultString);
-        // JsonNode resultMessage = OBJECT_MAPPER.readTree(resultString);
-        // JsonNode readTree = resultMessage.get("result");
-        // assertThat(readTree.get("className").toString(), equalTo("\"org.openengsb.ports.jms.TestClass\""));
-        // assertThat(readTree.get("metaData").toString(), equalTo("{\"serviceId\":\"test\"}"));
-        // assertThat(readTree.get("type").toString(), equalTo("\"Object\""));
-        // assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
+        FilterChain secureChain = factory.create();
+        return secureChain;
     }
 
     @Test(timeout = 5000)

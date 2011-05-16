@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -46,6 +45,7 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -86,7 +86,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
             + "Ky/vHQD1rMM=";
 
     protected FilterAction secureRequestHandler;
-    protected FilterAction requestHandler;
+    protected RequestHandler requestHandler;
     protected KeyGeneratorUtils keyGenUtil;
     protected BinaryMessageCryptoUtil cryptoUtil;
     protected PublicKey serverPublicKey;
@@ -102,9 +102,9 @@ public abstract class GenericSecurePortTest<EncodingType> {
         KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
         serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
-        requestHandler = mock(FilterAction.class);
+        requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
-        when(requestHandler.filter(any(MethodCall.class), any(Map.class))).thenAnswer(new Answer<MethodResult>() {
+        when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
                 MethodCall call = (MethodCall) invocation.getArguments()[0];
@@ -130,7 +130,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         SecureRequest secureRequest = prepareSecureRequest();
         SecureResponse response = processRequest(secureRequest);
 
-        MethodResult mr = response.getMessage();
+        MethodResult mr = response.getMessage().getResult();
         assertThat((String) mr.getArg(), is("42"));
     }
 
@@ -159,7 +159,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         } catch (BadCredentialsException e) {
             // expected, because thrown earlier
         }
-        verify(requestHandler, never()).filter(any(MethodCall.class), any(Map.class));
+        verify(requestHandler, never()).handleCall(any(MethodCall.class));
     }
 
     @Test
@@ -178,7 +178,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
             secureRequestHandler.filter(manipulatedRequest, new HashMap<String, Object>());
             fail("Exception expected");
         } catch (FilterException e) {
-            // verify(requestHandler, never()).handleCall(any(MethodCall.class));
+            verify(requestHandler, never()).handleCall(any(MethodCall.class));
         }
 
     }

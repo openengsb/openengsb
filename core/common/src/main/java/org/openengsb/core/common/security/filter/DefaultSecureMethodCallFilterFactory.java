@@ -5,15 +5,17 @@ import java.util.List;
 
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 
 public class DefaultSecureMethodCallFilterFactory {
 
     private AuthenticationManager authenticationManager;
-    private FilterAction handler;
+    private RequestHandler handler;
 
     public DefaultSecureMethodCallFilterFactory() {
     }
@@ -30,7 +32,7 @@ public class DefaultSecureMethodCallFilterFactory {
         filterFactories.add(messageAuthenticatorFactory);
 
         filterFactories.add(WrapperFilter.class);
-        filterFactories.add(handler);
+        filterFactories.add(new RequestMapperFilter(handler));
         factory.setFilters(filterFactories);
         return factory.create();
     }
@@ -39,7 +41,7 @@ public class DefaultSecureMethodCallFilterFactory {
         this.authenticationManager = authenticationManager;
     }
 
-    public void setHandler(FilterAction handler) {
+    public void setHandler(RequestHandler handler) {
         this.handler = handler;
     }
 

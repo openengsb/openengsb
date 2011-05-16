@@ -58,7 +58,6 @@
     <property name="filterChain">
       <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
     </property>
-    <property name="authenticationManager" ref="authenticationManager"></property>
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -73,18 +72,6 @@
       </list>
     </property>
   </bean>
-
-  <!--
-
-    <property name="inputType" value="java.lang.String" />
-    <property name="outputType" value="java.lang.String" />
-
-    <property name="factory">
-    <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
-    </property>
-
-    <property name="requestHandler" ref="requestHandler" /> -->
-
 
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />

@@ -17,16 +17,16 @@
 
 package org.openengsb.core.api.security.model;
 
-import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 
-public class SecureResponse extends AbstractSecureMessage<MethodResult> {
+public class SecureResponse extends AbstractSecureMessage<MethodResultMessage> {
 
     private static final long serialVersionUID = 4052853600342752517L;
 
     protected SecureResponse() {
     }
 
-    public static SecureResponse create(MethodResult original) {
+    public static SecureResponse create(MethodResultMessage original) {
         SecureResponse secureResponse = new SecureResponse();
         secureResponse.setMessage(original);
         long time = System.currentTimeMillis();
