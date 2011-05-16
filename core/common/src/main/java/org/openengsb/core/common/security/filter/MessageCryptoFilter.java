@@ -1,6 +1,5 @@
 package org.openengsb.core.common.security.filter;
 
-import java.security.PrivateKey;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -15,16 +14,18 @@ import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.security.AlgorithmConfig;
 import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
+import org.openengsb.core.common.security.PrivateKeySource;
 
 public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMessage, byte[]> {
 
     private FilterAction next;
 
     private MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-    private PrivateKey privateKey;
+    private PrivateKeySource privateKeySource;
 
-    public MessageCryptoFilter() {
+    public MessageCryptoFilter(PrivateKeySource privateKey) {
         super(EncryptedMessage.class, byte[].class);
+        this.privateKeySource = privateKey;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
         byte[] decryptedMessage;
         SecretKey sessionKey;
         try {
-            sessionKey = cryptoUtil.decryptKey(encryptedKey, privateKey);
+            sessionKey = cryptoUtil.decryptKey(encryptedKey, privateKeySource.getPrivateKey());
             decryptedMessage = cryptoUtil.decrypt(input.getEncryptedContent(), sessionKey);
         } catch (DecryptionException e) {
             throw new FilterException(e);
@@ -52,7 +53,4 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
         this.next = next;
     }
 
-    public void setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
 }

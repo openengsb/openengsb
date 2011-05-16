@@ -88,7 +88,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
             }
         };
         FilterChainElementFactory decrypterFactory =
-            new MessageCryptoFilterFactory(serverPrivateKey);
+            new MessageCryptoFilterFactory(new SingletonPrivateKeySource(serverPrivateKey));
         FilterChainElementFactory parserFactory = new FilterChainElementFactory() {
             @Override
             public FilterChainElement newInstance() throws FilterConfigurationException {
@@ -116,7 +116,6 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
         };
 
         FilterChainFactory<byte[], byte[]> factory = new FilterChainFactory<byte[], byte[]>(byte[].class, byte[].class);
-        @SuppressWarnings("unchecked")
         List<Object> asList =
             Arrays.asList(unpackerFactory, decrypterFactory, parserFactory,
                 defaultSecureMethodCallFilterFactory.create());

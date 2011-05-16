@@ -1,24 +1,28 @@
 package org.openengsb.core.common.security.filter;
 
-import java.security.PrivateKey;
-
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.common.security.PrivateKeySource;
 
 public class MessageCryptoFilterFactory implements FilterChainElementFactory {
 
-    private PrivateKey privateKey;
+    private PrivateKeySource privateKeySource;
 
-    public MessageCryptoFilterFactory(PrivateKey privateKey) {
-        this.privateKey = privateKey;
+    public MessageCryptoFilterFactory() {
+    }
+
+    public MessageCryptoFilterFactory(PrivateKeySource privateKeySource) {
+        this.privateKeySource = privateKeySource;
     }
 
     @Override
     public FilterChainElement newInstance() throws FilterConfigurationException {
-        MessageCryptoFilter result = new MessageCryptoFilter();
-        result.setPrivateKey(privateKey);
-        return result;
+        return new MessageCryptoFilter(privateKeySource);
+    }
+
+    public void setPrivateKeySource(PrivateKeySource privateKeySource) {
+        this.privateKeySource = privateKeySource;
     }
 
 }
