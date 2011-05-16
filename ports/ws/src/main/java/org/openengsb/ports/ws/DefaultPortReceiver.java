@@ -17,43 +17,27 @@
 
 package org.openengsb.ports.ws;
 
-import java.io.IOException;
+import java.util.HashMap;
 
 import javax.jws.WebService;
 
-import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.common.marshaling.RequestMapping;
-import org.openengsb.core.common.marshaling.ReturnMapping;
+import org.openengsb.core.common.remote.FilterChain;
 
 @WebService(endpointInterface = "org.openengsb.ports.ws.PortReceiver")
 public class DefaultPortReceiver implements PortReceiver {
-
-    private RequestHandler requestHandler;
+    private FilterChain filterChain;
 
     public DefaultPortReceiver() {
     }
 
-    public DefaultPortReceiver(RequestHandler requestHandler) {
-        this.requestHandler = requestHandler;
+    public DefaultPortReceiver(FilterChain filterChain) {
+        this.filterChain = filterChain;
     }
 
     @Override
     public String receive(String message) {
-        ClassLoader old = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(DefaultPortReceiver.class.getClassLoader());
-            RequestMapping readValue = RequestMapping.createFromMessage(message);
-            readValue.resetArgs();
-            ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
-            MethodReturn handleCall = requestHandler.handleCall(readValue);
-            String answer = new ReturnMapping(handleCall).convertToMessage();
-            return answer;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(old);
-        }
+        HashMap<String, Object> metadata = new HashMap<String, Object>();
+        String result = (String) filterChain.filter(message, metadata);
+        return result;
     }
 }
