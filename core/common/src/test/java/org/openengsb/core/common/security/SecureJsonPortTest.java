@@ -76,7 +76,7 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
         List<Object> asList =
             Arrays.asList(
                 EncryptedJsonMessageMarshaller.class,
-                new MessageCryptoFilterFactory(new SingletonPrivateKeySource(serverPrivateKey)),
+                new MessageCryptoFilterFactory(privateKeySource),
                 JsonSecureRequestMarshallerFilter.class,
                 defaultSecureMethodCallFilterFactory.create());
         factory.setFilters(asList);

@@ -26,7 +26,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.security.PrivateKey;
+import java.io.File;
+import java.net.URL;
 import java.security.PublicKey;
 import java.util.HashMap;
 
@@ -71,26 +72,13 @@ public abstract class GenericSecurePortTest<EncodingType> {
             + "9qd8A7MdaVub61Npc6wSuLJNK1qnrSufWkiZxuo7IsyFnZl9bqkr1D/x4UqKEBmGZIh4s4WIMymw"
             + "TGu2HmAKuKO7JypfQpHemZpLmXTsNse1xFhTfshxWJq4+WqBdeoYZ8p1iwIDAQAB";
 
-    private static final String PRIVATE_KEY_64 = ""
-            + "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMTBB51QUSVgE05bvU1guAoQZKoo"
-            + "RsZD3GGUKNL2p3wDsx1pW5vrU2lzrBK4sk0rWqetK59aSJnG6jsizIWdmX1uqSvUP/HhSooQGYZk"
-            + "iHizhYgzKbBMa7YeYAq4o7snKl9Ckd6ZmkuZdOw2x7XEWFN+yHFYmrj5aoF16hhnynWLAgMBAAEC"
-            + "gYEAmyZX+c4e3uke8DhZU04EcjMxHhi6jpdujifF9W147ssAEB5HlfEAinQjaXPpbf7U8soUTwlj"
-            + "nJeFlvI+8tIu+J7wuP9m9R/EC02kbYjQUOdmrIXr11GmDNSeKCuklLaQTCKl+eRmVCKk373tmtHE"
-            + "/HLAkWsTvdufrkFQi9iaTlECQQDpnHnha5DrcQuUarhwWta+ZDLL56XawfcJZpPfKK2Jgxoqbvg9"
-            + "k3i6IRS/kh0g0K98CRK5UvxAiQtDKkDy5z3ZAkEA15xIN5OgfMbE12p83cD4fAU2SpvyzsPk9tTf"
-            + "Zb6jnKDAm+hxq1arRyaxL04ppTM/xRRS8DKJLrsAi0HhFzkcAwJAbiuQQyHSX2aZmm3V+46rdXCV"
-            + "kBn32rncwf8xP23UoWRFo7tfsNJqfgT53vqOaBpil/FDdkjPk7PNrugvZx5syQJBAJjAEbG+Fu8P"
-            + "axkqSjhYpDJJBwOopEa0JhxxB6vveb5XbN2HujAnAMUxtknLWFm/iyg2k+O0Cdhfh60hCTUIsr0C"
-            + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
-            + "Ky/vHQD1rMM=";
+    protected PrivateKeySource privateKeySource;
 
     protected FilterAction secureRequestHandler;
     protected RequestHandler requestHandler;
     protected KeyGeneratorUtils keyGenUtil;
     protected BinaryMessageCryptoUtil cryptoUtil;
     protected PublicKey serverPublicKey;
-    protected PrivateKey serverPrivateKey;
     protected AuthenticationManager authManager;
     protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
 
@@ -101,7 +89,8 @@ public abstract class GenericSecurePortTest<EncodingType> {
         keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
         KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
-        serverPrivateKey = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
+        URL systemResource = ClassLoader.getSystemResource("private.key.data");
+        privateKeySource = new FileKeySource(new File(systemResource.toURI()), "RSA");
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
@@ -113,7 +102,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         });
         defaultSecureMethodCallFilterFactory = new DefaultSecureMethodCallFilterFactory();
         defaultSecureMethodCallFilterFactory.setAuthenticationManager(authManager);
-        defaultSecureMethodCallFilterFactory.setHandler(requestHandler);
+        defaultSecureMethodCallFilterFactory.setRequestHandler(requestHandler);
 
         secureRequestHandler = getSecureRequestHandlerFilterChain();
     }

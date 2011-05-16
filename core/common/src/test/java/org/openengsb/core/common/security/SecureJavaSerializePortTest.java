@@ -87,8 +87,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
                 };
             }
         };
-        FilterChainElementFactory decrypterFactory =
-            new MessageCryptoFilterFactory(new SingletonPrivateKeySource(serverPrivateKey));
+        FilterChainElementFactory decrypterFactory = new MessageCryptoFilterFactory(privateKeySource);
         FilterChainElementFactory parserFactory = new FilterChainElementFactory() {
             @Override
             public FilterChainElement newInstance() throws FilterConfigurationException {

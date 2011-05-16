@@ -15,7 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 public class DefaultSecureMethodCallFilterFactory {
 
     private AuthenticationManager authenticationManager;
-    private RequestHandler handler;
+    private RequestHandler requestHandler;
 
     public DefaultSecureMethodCallFilterFactory() {
     }
@@ -32,7 +32,9 @@ public class DefaultSecureMethodCallFilterFactory {
         filterFactories.add(messageAuthenticatorFactory);
 
         filterFactories.add(WrapperFilter.class);
-        filterFactories.add(new RequestMapperFilter(handler));
+
+        filterFactories.add(new RequestMapperFilter(requestHandler));
+
         factory.setFilters(filterFactories);
         return factory.create();
     }
@@ -41,8 +43,8 @@ public class DefaultSecureMethodCallFilterFactory {
         this.authenticationManager = authenticationManager;
     }
 
-    public void setHandler(RequestHandler handler) {
-        this.handler = handler;
+    public void setRequestHandler(RequestHandler requestHandler) {
+        this.requestHandler = requestHandler;
     }
 
 }

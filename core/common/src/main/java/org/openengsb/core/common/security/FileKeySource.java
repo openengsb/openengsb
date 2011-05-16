@@ -25,6 +25,7 @@ public class FileKeySource implements PrivateKeySource {
     public FileKeySource(File keyFile, String algorithm) {
         this.privateKeyFile = keyFile;
         setAlgorithm(algorithm);
+        update();
     }
 
     public void setKeyFilename(String keyFile) {
@@ -32,7 +33,7 @@ public class FileKeySource implements PrivateKeySource {
         if (file.isAbsolute()) {
             this.privateKeyFile = file;
         } else {
-            this.privateKeyFile = new File(System.getProperty("karaf.data"), keyFile);
+            this.privateKeyFile = new File(System.getProperty("karaf.base"), keyFile);
         }
     }
 
@@ -45,9 +46,11 @@ public class FileKeySource implements PrivateKeySource {
     }
 
     private void update() {
-        if (this.privateKeyFile.lastModified() == this.keyFileModificationTime) {
+        long lastModified = this.privateKeyFile.lastModified();
+        if (lastModified == this.keyFileModificationTime) {
             return;
         }
+        this.keyFileModificationTime = lastModified;
         byte[] keyData;
         try {
             keyData = FileUtils.readFileToByteArray(privateKeyFile);

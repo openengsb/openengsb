@@ -68,7 +68,7 @@ import org.openengsb.core.common.security.AlgorithmConfig;
 import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
 import org.openengsb.core.common.security.KeyGeneratorUtils;
 import org.openengsb.core.common.security.KeySerializationUtil;
-import org.openengsb.core.common.security.SingletonPrivateKeySource;
+import org.openengsb.core.common.security.PrivateKeySource;
 import org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter;
@@ -295,9 +295,12 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             }
         });
         secureFilterChainFactory.setAuthenticationManager(authenticationManager);
-        secureFilterChainFactory.setHandler(handler);
-        MessageCryptoFilterFactory cipherFactory =
-            new MessageCryptoFilterFactory(new SingletonPrivateKeySource(privateKey));
+
+        secureFilterChainFactory.setRequestHandler(handler);
+        PrivateKeySource keySource = mock(PrivateKeySource.class);
+        when(keySource.getPrivateKey()).thenReturn(privateKey);
+        MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource);
+
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             EncryptedJsonMessageMarshaller.class,
