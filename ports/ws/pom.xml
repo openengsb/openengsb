@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.ports</groupId>
     <artifactId>openengsb-ports-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0.RC2</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ports</groupId>
   <artifactId>openengsb-ports-ws</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0.RC2</version>
 
   <name>OpenEngSB :: Ports :: Webservices</name>
 

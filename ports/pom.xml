@@ -24,13 +24,13 @@
     <relativePath>../poms/bundle/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>openengsb-bundle-settings</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0.RC2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ports</groupId>
   <artifactId>openengsb-ports-parent</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0.RC2</version>
 
   <name>OpenEngSB :: Ports :: Parent</name>
 
