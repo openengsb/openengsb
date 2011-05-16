@@ -53,7 +53,6 @@ public class JMSPortIT extends AbstractExamTestHelper {
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-        System.out.println("ServiceID:" + serviceWithId);
         assertNotNull(serviceWithId);
     }
 
@@ -63,10 +62,8 @@ public class JMSPortIT extends AbstractExamTestHelper {
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
-        String request = ""
+        String methodCall = ""
                 + "{"
-                + "    \"callId\": \"12345\","
-                + "    \"answer\": true,"
                 + "    \"classes\": ["
                 + "        \"java.lang.String\","
                 + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
@@ -81,6 +78,13 @@ public class JMSPortIT extends AbstractExamTestHelper {
                 + "        {"
                 + "        }"
                 + "    ]"
+                + "}";
+
+        String request = ""
+                + "{"
+                + "  \"callId\":\"12345\","
+                + "  \"answer\":true,"
+                + "  \"methodCall\":" + methodCall
                 + "}";
         template.convertAndSend("receive", request);
         String result = (String) template.receiveAndConvert("12345");
