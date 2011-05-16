@@ -110,7 +110,7 @@ public class RequestHandlerImpl implements RequestHandler {
         List<Class<?>> clazzes = new ArrayList<Class<?>>();
         for (String clazz : args.getClasses()) {
             try {
-                clazzes.add(Thread.currentThread().getContextClassLoader().loadClass(clazz));
+                clazzes.add(this.getClass().getClassLoader().loadClass(clazz));
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("The classes defined could not be found", e);
             }
