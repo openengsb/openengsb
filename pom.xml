@@ -69,7 +69,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.2.0.RC2</version>
+  <version>1.2.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -220,78 +220,78 @@
       <dependency>
         <groupId>org.openengsb.connector</groupId>
         <artifactId>openengsb-connector-example</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-api</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-common</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-services</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-persistence</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-security</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-test</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.core</groupId>
         <artifactId>openengsb-core-workflow</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-auditing</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-example</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <type>xml</type>
         <classifier>features</classifier>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <type>xml</type>
         <classifier>features-itests</classifier>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>openengsb-ui-common</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>openengsb-ui-admin</artifactId>
-        <version>1.2.0.RC2</version>
+        <version>1.2.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>
