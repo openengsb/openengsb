@@ -1,41 +1,77 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
 
-    Licensed to the Austrian Association for Software Tool Integration (AASTI)
-    under one or more contributor license agreements. See the NOTICE file
-    distributed with this work for additional information regarding copyright
-    ownership. The AASTI licenses this file to you under the Apache License,
-    Version 2.0 (the "License"); you may not use this file except in compliance
-    with the License. You may obtain a copy of the License at
+  Licensed to the Austrian Association for Software Tool Integration (AASTI)
+  under one or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information regarding copyright
+  ownership. The AASTI licenses this file to you under the Apache License,
+  Version 2.0 (the "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-           xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-           xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+  xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
       <entry key="id" value="ws-json" />
     </service-properties>
-    <ref component-id="portBean"/>
+    <ref component-id="outgoingPortBean" />
   </service>
 
-  <bean id="portBean" class="org.openengsb.ports.ws.WSPort" init-method="start"  destroy-method="stop">
-    <property name="requestHandler" ref="requestHandler" />
-    <property name="bundleContext" ref="blueprintBundleContext"></property>
+  <bean id="incomingPortBean" class="org.openengsb.ports.ws.WSIncomingPort" init-method="start">
+    <property name="filterChain">
+      <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
+    </property>
+    <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="httpService" ref="httpService" />
   </bean>
 
+  <bean id="outgoingPortBean" class="org.openengsb.core.common.OutgoingPortImpl">
+    <property name="filterChain">
+      <bean factory-ref="outgoingFilterChainFactory" factory-method="create" />
+    </property>
+  </bean>
+
+
+  <bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+    <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
+    <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
+    <property name="filters">
+      <list>
+        <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
+        <bean class="org.openengsb.ports.ws.WSOutgoingPort">
+          <property name="bundleContext" ref="blueprintBundleContext" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+    <property name="inputType" value="java.lang.String" />
+    <property name="outputType" value="java.lang.String" />
+    <property name="filters">
+      <list>
+        <value>org.openengsb.core.common.remote.JsonMethodCallMarshalFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
+  <reference id="authenticationManager"
+    interface="org.springframework.security.authentication.AuthenticationManager" />
   <reference id="httpService" interface="org.osgi.service.http.HttpService" />
 
 </blueprint>
