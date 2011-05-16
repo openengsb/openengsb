@@ -80,3 +80,6 @@
 	path = features/connector/gcontacts
 	url = git://github.com/openengsb/openengsb-connector-gcontacts
 
+[submodule "features/connector/github"]
+	path = features/connector/github
+	url = git://github.com/openengsb/openengsb-connector-github.git
