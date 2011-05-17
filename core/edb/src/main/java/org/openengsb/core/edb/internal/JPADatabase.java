@@ -19,9 +19,12 @@ package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -30,7 +33,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
@@ -63,12 +65,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 "There is no database name defined. Unable to connect to unknown database");
         }
         Properties props = new Properties();
-        try {
-            String connectionUrl = databaseName;
-            props.setProperty("openjpa.ConnectionURL", connectionUrl);
-        } catch (NotImplementedException ex) {
-            throw new EDBException("this type of jpa connection isn't implemented", ex);
-        }
+        String connectionUrl = databaseName;
+        props.setProperty("openjpa.ConnectionURL", connectionUrl);
         emf = Persistence.createEntityManagerFactory("openjpa", props);
         em = emf.createEntityManager();
         utx = em.getTransaction();
@@ -153,7 +151,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public EDBObject getObject(String uid) throws EDBException {
         Number number = criteria.getMostActualJPAObjectNumber(uid);
         if (number.longValue() <= 0) {
-            return null;
+            throw new EDBException("the given uid was never commited to the database");
         }
         JPAObject temp = criteria.getJPAObject(uid, number.longValue());
         return temp.getObject();
@@ -209,7 +207,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         if (head != null) {
             return head.get();
         }
-        // actually loadhead should have covered this already
         throw new EDBException("Failed to get head for timestamp " + Long.toString(timestamp));
     }
 
@@ -223,29 +220,35 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
         try {
-            JPAQueryBuilderNew builder = new JPAQueryBuilderNew(em, queryMap);
-            return generateEDBObjectList(builder.getResults());
+            Set<JPAObject> result = new HashSet<JPAObject>();
 
-            // only temporary commented. JPAQueryBuilderNew is only a temporary solution
-            // until a bug in JPA is eliminated.
+            for (Entry<String, Object> entry : queryMap.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
 
-            // JPAQueryBuilder builder = new JPAQueryBuilder(queryMap);
-            //
-            // String queryString = "select o from JPAObject o where " + builder.getQuery();
-            // List<Object> params = builder.getParams();
-            //
-            // Query query = em.createQuery(queryString);
-            // System.out.println(queryString);
-            // for (int i = 0; i < params.size(); ++i) {
-            // query.setParameter("param" + i, params.get(i));
-            // }
-            // List<JPAObject> list = query.getResultList();
-            // if (list == null)
-            // return null;
-            // List<EDBObject> out = new ArrayList<EDBObject>();
-            // for (JPAObject jpa : list)
-            // out.add(jpa.getObject());
-            // return out;
+                List<JPAObject> temp = criteria.query(key, value);
+                if (temp.size() == 0) {
+                    return new ArrayList<EDBObject>();
+                }
+                if (result.size() == 0) {
+                    result.addAll(temp);
+                } else {
+                    result.retainAll(temp);
+                }
+
+                // if the result size at this position ever get 0 we know that there is at least
+                // one object that has at least one key/value pair that has at least one of the
+                // others not.
+                if (result.size() == 0) {
+                    return new ArrayList<EDBObject>();
+                }
+
+            }
+            List<EDBObject> res = new ArrayList<EDBObject>();
+            for (JPAObject obj : result) {
+                res.add(obj.getObject());
+            }
+            return res;
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -274,9 +277,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     @Override
     public JPACommit getLastCommit(Map<String, Object> query) throws EDBException {
         JPACommit result = criteria.getLastCommit(query);
-        if (result == null) {
-            throw new EDBException("Found no commit for this query parameters!");
-        }
         return result;
     }
 
@@ -284,7 +284,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public JPACommit getCommit(long from) throws EDBException {
         List<JPACommit> commits = criteria.getJPACommit(from);
         if (commits == null || commits.size() != 1) {
-            return null;
+            throw new EDBException("there is no commit for this timestamp");
         }
         return commits.get(0);
     }
@@ -316,9 +316,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public List<EDBObject> getStateOfLastCommitMatching(
             Map<String, Object> query) throws EDBException {
         JPACommit ci = getLastCommit(query);
-        if (ci == null) {
-            return null;
-        }
         return getHead(ci.getTimestamp());
     }
 

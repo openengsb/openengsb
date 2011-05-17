@@ -99,5 +99,9 @@ public class JPAObject {
     public String getUID() {
         return uid;
     }
+    
+    public List<KeyValuePair> getPairs() {
+        return values;
+    }
 
 }

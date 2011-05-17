@@ -27,6 +27,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -278,5 +280,33 @@ public class JPACriteriaFunctions {
         }
 
         return temp;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<JPAObject> query(String key, Object value) throws EDBException {
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> f = query.from(JPAObject.class);
+
+        CriteriaQuery<JPAObject> select = query.select(f);
+        
+        Subquery subquery = query.subquery(KeyValuePair.class);
+        Root fromKeyValuePair = subquery.from(KeyValuePair.class);
+        subquery.select(fromKeyValuePair);
+        
+        Join j = f.join("values");
+        Path<Object> path = j.get("id");
+        
+        Predicate predicate1 = criteriaBuilder.equal(fromKeyValuePair.get("key"), key);
+        Predicate predicate2 = criteriaBuilder.equal(fromKeyValuePair.get("value"), value);
+        Predicate predicate3 = criteriaBuilder.in(fromKeyValuePair.get("id")).value(path);
+        subquery.where(criteriaBuilder.and(predicate1, predicate2, predicate3));
+        
+        select.where(criteriaBuilder.exists(subquery));
+
+        select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
+
+        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        return typedQuery.getResultList();
     }
 }

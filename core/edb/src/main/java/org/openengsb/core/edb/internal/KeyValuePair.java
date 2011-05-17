@@ -18,9 +18,16 @@
 package org.openengsb.core.edb.internal;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class KeyValuePair {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    
     private String key;
     private String value;
 
@@ -44,5 +51,9 @@ public class KeyValuePair {
 
     public String getValue() {
         return value;
+    }
+    
+    public Long getId() {
+        return id;
     }
 }
