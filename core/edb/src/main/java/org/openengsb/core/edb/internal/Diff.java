@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBDiff;
+import org.openengsb.core.api.edb.EDBEntry;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
@@ -38,7 +39,7 @@ public class Diff implements EDBDiff {
     /**
      * Constructor
      */
-    public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState, 
+    public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState,
             List<EDBObject> endState) throws EDBException {
         diff = new HashMap<String, EDBObjectDiff>();
         if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
@@ -117,5 +118,26 @@ public class Diff implements EDBDiff {
     @Override
     public JPACommit getEndCommit() {
         return endCommit;
+    }
+
+    @Override
+    public String printDifferences() {
+        StringBuilder builder = new StringBuilder();
+        Map<String, EDBObjectDiff> diff = this.getObjectDiffs();
+        for (Map.Entry<String, EDBObjectDiff> e : diff.entrySet()) {
+            String uid = e.getKey();
+
+            builder.append("    Found a difference for object: " + uid);
+
+            EDBObjectDiff odiff = e.getValue();
+            Map<String, EDBEntry> diffMap = odiff.getDiffMap();
+            for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
+                String key = de.getKey();
+                EDBEntry entry = de.getValue();
+                builder.append("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '"
+                        + entry.getAfter() + "'");
+            }
+        }
+        return builder.toString();
     }
 }

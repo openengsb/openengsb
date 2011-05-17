@@ -65,4 +65,9 @@ public interface EDBDiff {
      * Get the commit at which the comparison ends.
      */
     EDBCommit getEndCommit();
+    
+    /**
+     * Prints the differences in a well formed form
+     */
+    String printDifferences();
 }
