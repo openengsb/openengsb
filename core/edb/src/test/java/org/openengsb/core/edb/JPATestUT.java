@@ -200,13 +200,16 @@ public class JPATestUT {
     @Test
     public void testGetInexistantObjectByUID() {
         JPADatabase db = openDatabase();
-        EDBObject obj;
+        boolean works = false;
         try {
-            obj = db.getObject("/this/object/does/not/exist");
-            assertEquals(obj, null);
+            db.getObject("/this/object/does/not/exist");
+        } catch (EDBException ex) {
+            // we should come here
+            works = true;
         } catch (Exception ex) {
             fail("Unexpected error while fetching object: " + ex.toString());
         }
+        assertTrue(works);
     }
 
     @SuppressWarnings("unchecked")
