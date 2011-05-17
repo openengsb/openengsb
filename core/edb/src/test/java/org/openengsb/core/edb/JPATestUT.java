@@ -33,11 +33,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBEntry;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBObjectDiff;
 import org.openengsb.core.edb.internal.Diff;
 import org.openengsb.core.edb.internal.JPACommit;
 import org.openengsb.core.edb.internal.JPADatabase;
@@ -135,13 +133,14 @@ public class JPATestUT {
     }
 
     @Test
-    public void testOpenJPADatabase() {
+    public void testOpenDatabase_shouldWork() {
         JPADatabase db = openDatabase();
+
         assertTrue(db != null);
     }
 
     @Test
-    public void testCommit() {
+    public void testCommit_shouldWork() {
         JPADatabase db = openDatabase();
         try {
             JPACommit ci = db.createCommit("TestCommit", "Role", runTime);
@@ -152,25 +151,18 @@ public class JPATestUT {
             db.commit(ci);
 
             obj = null;
-
             obj = db.getObject("Tester");
-            assertTrue("Test object must exist!", obj != null);
             String hooray = (String) obj.get("Test");
+
+            assertTrue("Test object must exist!", obj != null);
             assertTrue("Test-string must exist in the queried object", hooray != null);
-            System.out.println("Test should be Hooray: Hooray == " + hooray);
         } catch (EDBException ex) {
-            ex.printStackTrace();
-            Throwable e = ex;
-            while (e.getCause() != null) {
-                System.out.println(e.getCause().getMessage());
-                e = e.getCause();
-            }
             fail("Error: " + ex.toString());
         }
     }
 
     @Test
-    public void testGetCommits() {
+    public void testGetCommits_shouldWork() {
         JPADatabase db = openDatabase();
         try {
             JPACommit ci = db.createCommit("TestCommit2", "Testrole", runTime);
@@ -179,48 +171,26 @@ public class JPATestUT {
             ci.add(obj);
 
             db.commit(ci);
+            List<EDBCommit> commits1 = db.getCommits("role", "Testrole");
+            List<EDBCommit> commits2 = db.getCommits("role", "DoesNotExist");
 
-            List<EDBCommit> commits = db.getCommits("role", "Testrole");
-            System.out.println("Found " + Integer.toString(commits.size()) + " commits of role Role");
-            assertTrue("1 commit", commits.size() == 1);
-            commits = db.getCommits("role", "DoesNotExist");
-            System.out.println("Found " + Integer.toString(commits.size()) + " commits of role DoesNotExist");
-            assertTrue("1 commit", commits.size() == 0);
-            ci = db.getLastCommit("role", "Testrole");
-            assertTrue("One commit must exist", ci != null);
-            System.out.println("*** Listing that one commit...");
-            for (String s : ci.getUIDs()) {
-                System.out.println("Object: " + s);
-            }
+            assertTrue("Found more than one commit for role=Testrole", commits1.size() == 1);
+            assertTrue("Found at least one commit for role=DoesNotExist", commits2.size() == 0);
         } catch (EDBException ex) {
             fail("Faild to fetch commit list...");
         }
     }
 
-    @Test
-    public void testGetInexistantObjectByUID() {
+    @Test(expected = EDBException.class)
+    public void testGetInexistantObject_shouldThrowException() throws Exception {
         JPADatabase db = openDatabase();
-        boolean works = false;
-        try {
-            db.getObject("/this/object/does/not/exist");
-        } catch (EDBException ex) {
-            // we should come here
-            works = true;
-        } catch (Exception ex) {
-            fail("Unexpected error while fetching object: " + ex.toString());
-        }
-        assertTrue(works);
+        db.getObject("/this/object/does/not/exist");
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetHistory() {
+    public void testGetHistoryAndCheckForElements_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
-        List<EDBObject> history;
-        long delCreated = 0;
-        long delDeleted = 0;
-        // First we create 4 commits, 3 of which will contain the test-object
-        // every commit will get a useless additional object with it...
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("Lock", "Key");
@@ -229,8 +199,6 @@ public class JPATestUT {
             EDBObject v1 = new EDBObject("/history/object", runTime, data1);
             JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/1", runTime));
-            ci.add(randomTestObject("/deletion/1", runTime));
-            delCreated = runTime;
             ci.add(v1);
 
             db.commit(ci);
@@ -243,14 +211,11 @@ public class JPATestUT {
             EDBObject v2 = new EDBObject("/history/object", runTime, data2);
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/2", runTime));
-            ci.delete("/deletion/1");
-            delDeleted = runTime;
             ci.add(v2);
             db.commit(ci);
 
-            // Now the intermediate commit:
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); // do this here to waste some
-                                                                                     // milliseconds
+            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); 
+            
             runTimeStep();
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/3", runTime));
@@ -269,44 +234,49 @@ public class JPATestUT {
             fail("Error: " + ex.toString());
         }
 
-        try {
-            history = db.getHistory("/history/object");
-            EDBObject[] obj = new EDBObject[3];
-            obj[0] = history.get(0);
-            for (int i = 1; i < 3; ++i) {
-                obj[i] = history.get(i);
-                System.out.println("History List: " + Long.toString(obj[i].getTimestamp())
-                        + " > " + Long.toString(obj[i - 1].getTimestamp()) + "?");
-                assertTrue("History list must be ordered", obj[i].getTimestamp() > obj[i - 1].getTimestamp());
-            }
-            for (EDBObject o : history) {
-                System.out.println(o.toString());
-            }
-            assertTrue(obj[0].getString("Lock").equals("Key"));
-            assertTrue(obj[1].getString("Lock").equals("Smith"));
-            assertTrue(obj[2].getString("Lock").equals("Smith"));
-            assertTrue(obj[0].getString("Cat").equals("Spongebob"));
-            assertTrue(obj[1].getString("Cat").equals("Spongebob"));
-            assertTrue(obj[2].getString("Cat").equals("Dog"));
+        List<EDBObject> history = db.getHistory("/history/object");
 
-            history = db.getHistory("/deletion/1");
-            System.out.println("Found " + Integer.toString(history.size()) + " entries for /deletion/1");
-            System.out.println("Should be 2 with timestamps: " + Long.toString(delCreated) + " and "
-                    + Long.toString(delDeleted));
-            for (EDBObject o : history) {
-                System.out.println("Timestamp: " + Long.toString(o.getTimestamp()));
+        boolean ordered = true;
+        for (int i = 1; i < 3; i++) {
+            if (history.get(i - 1).getTimestamp() > history.get(i).getTimestamp()) {
+                ordered = false;
             }
-            assertEquals("2 entries for the delted object: creation and deletion", history.size(), 2);
-            assertFalse("First object is not a deletion!", history.get(0).isDeleted());
-            assertTrue("Second entry is a deletion!", history.get(1).isDeleted());
-        } catch (EDBException ex) {
-            fail("History test failed: " + ex.toString());
         }
+        
+        assertTrue("the history should be ordered by timestamp", ordered);
+        assertTrue(history.get(0).getString("Lock").equals("Key"));
+        assertTrue(history.get(0).getString("Cat").equals("Spongebob"));
+        
+        assertTrue(history.get(1).getString("Lock").equals("Smith"));
+        assertTrue(history.get(1).getString("Cat").equals("Spongebob"));
+        
+        assertTrue(history.get(2).getString("Lock").equals("Smith"));
+        assertTrue(history.get(2).getString("Cat").equals("Dog"));
+    }
+    
+    @Test
+    public void testHistoryOfDeletion_shouldWork() throws Exception {
+        JPADatabase db = openDatabase();
+        
+        JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+        ci.add(randomTestObject("/deletion/1", runTime));
+        db.commit(ci);
+        
+        runTimeStep();
+        ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+        ci.delete("/deletion/1");
+        db.commit(ci);
+        
+        List<EDBObject> history = db.getHistory("/deletion/1");
+        
+        assertEquals("history should contain exactly 2 values.", history.size(), 2);
+        assertFalse("First object is not a deletion!", history.get(0).isDeleted());
+        assertTrue("Second entry is a deletion!", history.get(1).isDeleted());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetLog() {
+    public void testGetLog_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
         List<EDBLogEntry> log;
         long from = -1;
@@ -317,6 +287,7 @@ public class JPATestUT {
             data1.put("Bla", "Blub");
             data1.put("Cheese", "Butter");
             EDBObject v1 = new EDBObject("/history/test/object", runTime, data1);
+            from = runTime;
             JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/test/1", runTime));
             ci.add(randomTestObject("/deletion/test/1", runTime));
@@ -334,9 +305,7 @@ public class JPATestUT {
             ci.add(v2);
             db.commit(ci);
 
-            // Now the intermediate commit:
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); // do this here to waste some
-                                                                                     // milliseconds
+            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
             runTimeStep();
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/test/3", runTime));
@@ -350,40 +319,21 @@ public class JPATestUT {
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(v3);
             ci.add(randomTestObject("/useless/test/5", runTime));
+            to = runTime;
             db.commit(ci);
-
-            List<EDBObject> history = db.getHistory("/history/test/object");
-            System.out.println("Objects for /history/test/object: " + Integer.toString(history.size()));
-            assertTrue("History needs to be available!", history != null);
-            assertTrue("History needs to be non-empty!", history.size() > 1);
-            assertTrue("History must contain valid objects", history.get(0) != null);
-            System.out.println("Checkpoint");
-            System.out.println("Timestamp: " + history.get(0).getTimestamp());
-            from = history.get(0).getLong("@timestamp");
-            System.out.println("Checkpoint");
-            to = history.get(history.size() - 1).getLong("@timestamp");
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("getHistory failed, didn't even get to try getLog: " + ex.toString());
         }
-        System.out.println("Trying to fetch Log from " + Long.toString(from) + " to " + Long.toString(to));
-        assertTrue("'from' timestamp makes sense", from != -1);
-        assertTrue("'to' timestamp makes sense", to != -1);
 
-        try {
-            log = db.getLog("/history/test/object", from, to);
-            System.out.println("Found " + Integer.toString(log.size()) + " log entries...");
-            for (EDBLogEntry l : log) {
-                System.out.println("Commit " + l.getCommit().getTimestamp());
-            }
-        } catch (Exception ex) {
-            fail("Failed to get log entries " + ex.toString());
-        }
+        log = db.getLog("/history/test/object", from, to);
+        assertTrue("some data of the object isn't available", log.size() == 3);
+
     }
 
     @SuppressWarnings("serial")
     @Test
-    public void testQueries() {
+    public void testQueryWithSomeAspects_shouldWork() {
         JPADatabase db = openDatabase();
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
@@ -405,29 +355,32 @@ public class JPATestUT {
             db.commit(ci);
             runTimeStep();
 
-            List<EDBObject> list = db.query("A", "B");
-            assertTrue("There's one object with A:B", list.size() == 1);
-            list = db.query(new HashMap<String, Object>() {
+            List<EDBObject> list1 = db.query("A", "B");
+            List<EDBObject> list2 = db.query(new HashMap<String, Object>() {
                 {
                     put("A", "B");
                     put("Dog", "Food");
                 }
             });
-            assertTrue("There's one object with A:B,Dog:Food", list.size() == 1);
-            list = db.query(new HashMap<String, Object>() {
+
+            List<EDBObject> list3 = db.query(new HashMap<String, Object>() {
                 {
                     put("Cow", "Milk");
                 }
             });
-            assertTrue("There must be two objects with Cow:Milk", list.size() == 2);
-            list = db.query(new HashMap<String, Object>() {
+
+            List<EDBObject> list4 = db.query(new HashMap<String, Object>() {
                 {
                     put("A", "B");
                     put("Cow", "Milk");
                     put("House", "Garden");
                 }
             });
-            assertTrue("There's must not be an object in HEAD with A:B,Cow:Milk", list.size() == 0);
+
+            assertTrue("There should be exactly one object with A:B", list1.size() == 1);
+            assertTrue("There should be exactly one object with A:B,Dog:Food", list2.size() == 1);
+            assertTrue("There must be two objects with Cow:Milk", list3.size() == 2);
+            assertTrue("There must not be an object with A:B,Cow:Milk", list4.size() == 0);
 
             // removed because of the by jpa not supported regex command
             // list = db.query(new HashMap<String, Object>() {
@@ -444,7 +397,7 @@ public class JPATestUT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testDiff() {
+    public void testDiff_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
         long timeA = 0;
         long timeB = 0;
@@ -460,8 +413,7 @@ public class JPATestUT {
             db.commit(ci);
             timeA = runTime;
 
-            HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone(); // do this here to waste some
-                                                                                     // milliseconds
+            HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
             runTimeStep();
 
             data2.put("KeyD", "Value D 1");
@@ -473,9 +425,7 @@ public class JPATestUT {
             timeB = runTime;
 
             runTimeStep();
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); // do this here to waste some
-                                                                                     // milliseconds
-            runTimeStep();
+            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
 
             data3.remove("KeyB");
             data3.put("KeyC", "Value C 3");
@@ -485,58 +435,22 @@ public class JPATestUT {
             db.commit(ci);
             timeC = runTime;
         } catch (EDBException ex) {
-            fail("Failed to prepare commits for comparison!");
+            fail("Failed to prepare commits for comparison!" + ex.getLocalizedMessage());
         }
 
         runTimeStep();
-        try {
-            System.out.println("Diff Test: Times: "
-                    + Long.toString(timeA) + ", "
-                    + Long.toString(timeB) + ", "
-                    + Long.toString(timeC));
 
-            Diff diffAb = db.getDiff(timeA, timeB);
-            Diff diffBc = db.getDiff(timeB, timeC);
-            Diff diffAc = db.getDiff(timeA, timeC);
+        Diff diffAb = db.getDiff(timeA, timeB);
+        Diff diffBc = db.getDiff(timeB, timeC);
+        Diff diffAc = db.getDiff(timeA, timeC);
 
-            System.out.println("Difference count A..B: " + Integer.toString(diffAb.getDifferenceCount()));
-            System.out.println("Difference count B..C: " + Integer.toString(diffBc.getDifferenceCount()));
-            System.out.println("Difference count A..C: " + Integer.toString(diffAc.getDifferenceCount()));
-
-            System.out.println("  A..B:");
-            printDiffObject(diffAb);
-            System.out.println("  B..C:");
-            printDiffObject(diffBc);
-            System.out.println("  A..C:");
-            printDiffObject(diffAc);
-
-            assertTrue("One change from A to B", diffAb.getDifferenceCount() == 1);
-            assertTrue("One change from B to C", diffBc.getDifferenceCount() == 1);
-            assertTrue("One change from A to C", diffAc.getDifferenceCount() == 1);
-        } catch (EDBException ex) {
-            fail("Failed to fetch the diff between the newly created objects!");
-        }
-    }
-
-    private void printDiffObject(Diff difference) {
-        Map<String, EDBObjectDiff> diff = difference.getObjectDiffs();
-        for (Map.Entry<String, EDBObjectDiff> e : diff.entrySet()) {
-            String uid = e.getKey();
-            System.out.println("    Found a difference for object: " + uid);
-
-            EDBObjectDiff odiff = e.getValue();
-            Map<String, EDBEntry> diffMap = odiff.getDiffMap();
-            for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
-                String key = de.getKey();
-                EDBEntry entry = de.getValue();
-                System.out.println("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '"
-                        + entry.getAfter() + "'");
-            }
-        }
+        assertTrue("There should be exactly one change from A to B", diffAb.getDifferenceCount() == 1);
+        assertTrue("There should be exactly one change from B to C", diffBc.getDifferenceCount() == 1);
+        assertTrue("There should be exactly one change from A to C", diffAc.getDifferenceCount() == 1);
     }
 
     @Test
-    public void testGetResurrectedUIDs() throws Exception {
+    public void testGetResurrectedUIDs_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
 
         HashMap<String, Object> data1 = new HashMap<String, Object>();
@@ -563,12 +477,13 @@ public class JPATestUT {
         db.commit(ci);
 
         List<String> uids = db.getResurrectedUIDs();
+
         assertTrue(uids.contains("/ress/object"));
         assertFalse(uids.contains("/ress/object2"));
     }
 
     @Test(expected = EDBException.class)
-    public void testMultipleCommitOfTheSameCommitClass() throws Exception {
+    public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
         JPADatabase db = openDatabase();
 
         HashMap<String, Object> data1 = new HashMap<String, Object>();
