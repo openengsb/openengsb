@@ -96,6 +96,10 @@
     <bean class="org.openengsb.core.workflow.editor.converter.DroolsConverter"/>
   </service>
   
+  <service interface="org.openengsb.core.api.workflow.WorkflowValidator">
+    <bean class="org.openengsb.core.workflow.editor.validator.WorkflowValidatorImplementation"/>
+  </service>
+
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
     <service-properties>
       <entry key="backend.id" value="workflow-persistence" />

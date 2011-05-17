@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -45,6 +46,8 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowValidationResult;
+import org.openengsb.core.api.workflow.WorkflowValidator;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.core.api.workflow.model.NodeRepresentation;
@@ -74,7 +77,14 @@ public class WorkflowEditor extends BasePage {
     @SpringBean
     WorkflowConverter workflowConverter;
 
+    @SpringBean
+    List<WorkflowValidator> validators;
+
     public WorkflowEditor() {
+        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
+
         workflowEditorService.loadWorkflowsFromDatabase();
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
             @Override
@@ -104,12 +114,23 @@ public class WorkflowEditor extends BasePage {
             @Override
             protected void onSubmit() {
                 try {
-                    String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
-                    System.out.println(convert);
-                    addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
-                    ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
-                        .getCurrentWorkflow().getName()),
-                        convert);
+                    boolean valid = true;
+                    for (WorkflowValidator validator : validators) {
+                        WorkflowValidationResult result =
+                            validator.validate(workflowEditorService.getCurrentWorkflow());
+                        valid = result.isValid() && valid;
+                        for (String error : result.getErrors()) {
+                            error(error);
+                        }
+                    }
+                    if (valid) {
+                        String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
+                        System.out.println(convert);
+                        addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
+                        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
+                            .getCurrentWorkflow().getName()),
+                            convert);
+                    }
                 } catch (RuleBaseException e) {
                     error(e.getMessage());
                 }

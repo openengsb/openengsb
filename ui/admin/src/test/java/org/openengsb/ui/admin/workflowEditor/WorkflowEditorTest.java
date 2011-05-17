@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,6 +51,8 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowValidationResult;
+import org.openengsb.core.api.workflow.WorkflowValidator;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EndRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
@@ -69,9 +72,11 @@ public class WorkflowEditorTest extends AbstractUITest {
     private RuleManager ruleManager;
     private WorkflowConverter workflowConverter;
     private ConfigPersistenceService workflowPersistence;
+    private List<WorkflowValidator> validators;
 
     @Before
     public void setup() throws InvalidConfigurationException, PersistenceException {
+        validators = new ArrayList<WorkflowValidator>();
         tester = new WicketTester();
         workflowPersistence = mock(ConfigPersistenceService.class);
         when(workflowPersistence.load(null)).thenReturn(new ArrayList<ConfigItem<?>>());
@@ -81,6 +86,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         createWorkflowEditorService();
         ruleManager = mock(RuleManager.class);
         context.putBean(ruleManager);
+        context.putBean("validators", validators);
         workflowConverter = mock(WorkflowConverter.class);
         context.putBean(workflowConverter);
         tester.getApplication().addComponentInstantiationListener(
@@ -220,6 +226,10 @@ public class WorkflowEditorTest extends AbstractUITest {
 
     @Test
     public void exportWorkflow_ShouldCallRuleManagerAddWithConverterReturnAndAddGlobal() throws RuleBaseException {
+        WorkflowValidator validator = mock(WorkflowValidator.class);
+        when(validator.validate(Mockito.any(WorkflowRepresentation.class))).thenReturn(
+            new WorkflowValidationResultImplementation(true, new String[0]));
+        validators.add(validator);
         service.createWorkflow("workflow");
         ActionRepresentation root = service.getCurrentWorkflow().getRoot();
         root.setDomain(NullDomain.class);
@@ -227,15 +237,19 @@ public class WorkflowEditorTest extends AbstractUITest {
         tester.startPage(WorkflowEditor.class);
         String converted = "converted";
         Mockito.when(workflowConverter.convert(service.getCurrentWorkflow())).thenReturn(converted);
-        FormTester export = tester.newFormTester("export");
-
-        export.submit();
+        exportWorkflow();
         ArgumentCaptor<RuleBaseElementId> captor = ArgumentCaptor.forClass(RuleBaseElementId.class);
         Mockito.verify(ruleManager).add(captor.capture(), Mockito.eq(converted));
         RuleBaseElementId value = captor.getValue();
         assertThat(value.getType(), equalTo(RuleBaseElementType.Process));
         assertThat(value.getName(), equalTo("workflow"));
         assertThat(value.getPackageName(), equalTo(RuleBaseElementId.DEFAULT_RULE_PACKAGE));
+        verify(validator).validate(service.getCurrentWorkflow());
+    }
+
+    public void exportWorkflow() {
+        FormTester export = tester.newFormTester("export");
+        export.submit();
     }
 
     @Test
@@ -262,13 +276,47 @@ public class WorkflowEditorTest extends AbstractUITest {
         service.loadWorkflowsFromDatabase();
         tester.startPage(WorkflowEditor.class);
         tester.assertVisible("workflowSelectForm");
-        FormTester formTester = tester.newFormTester("workflowSelectForm");
         selectWorkflowAndIfLoadedCorrectly("Name", 0);
+    }
+
+    @Test
+    public void testExport_ShouldExportWhenValidationWorks() {
+        WorkflowValidator validator = mock(WorkflowValidator.class);
+        final String[] errors = new String[]{ "Error1", "Error2" };
+        when(validator.validate(Mockito.any(WorkflowRepresentation.class))).thenReturn(
+            new WorkflowValidationResultImplementation(false, errors));
+        validators.add(validator);
+        service.createWorkflow("TestWorkflow");
+        tester.startPage(WorkflowEditor.class);
+        exportWorkflow();
+        verify(ruleManager, never()).add(Mockito.any(RuleBaseElementId.class), Mockito.anyString());
+        verify(workflowConverter, never()).convert(service.getCurrentWorkflow());
+        tester.assertErrorMessages(errors);
     }
 
     private void createWorkflow() {
         FormTester createForm = tester.newFormTester("workflowCreateForm");
         createForm.setValue("name", "Name");
         createForm.submit();
+    }
+
+    private static final class WorkflowValidationResultImplementation implements WorkflowValidationResult {
+        private final String[] errors;
+        private final boolean result;
+
+        private WorkflowValidationResultImplementation(boolean result, String[] errors) {
+            this.result = result;
+            this.errors = errors;
+        }
+
+        @Override
+        public boolean isValid() {
+            return result;
+        }
+
+        @Override
+        public List<String> getErrors() {
+            return Arrays.asList(errors);
+        }
     }
 }
