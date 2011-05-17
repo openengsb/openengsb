@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Licensed to the Austrian Association for Software Tool Integration (AASTI)
 # under one or more contributor license agreements. See the NOTICE file
@@ -15,6 +16,12 @@
 # limitations under the License.
 #
 
-backend.id=persistenceService
-configuration.id=RULE
+# Configure environment
+export JAVA_MIN_MEM=${java.min.mem}
+export JAVA_MAX_MEM=${java.max.mem}
+export JAVA_PERM_MEM=${java.min.perm}
+export JAVA_MAX_PERM_MEM=${java.max.perm}
+
+# Startup Karaf
+$(dirname $0)/karaf
 
