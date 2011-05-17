@@ -46,8 +46,11 @@ public class JPACriteriaFunctions {
         this.em = em;
     }
 
+    /**
+     * Returns the most actual JPAHead Number.
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getMostActualJPAHeadNumber() throws EDBException {
+    public Number getNewestJPAHeadNumber() throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAHead.class);
@@ -62,6 +65,9 @@ public class JPACriteriaFunctions {
         }
     }
 
+    /**
+     * Loads the JPAHead with the given timestamp.
+     */
     public JPAHead getJPAHead(long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAHead> query = criteriaBuilder.createQuery(JPAHead.class);
@@ -82,8 +88,11 @@ public class JPACriteriaFunctions {
         return resultList.get(0);
     }
 
+    /**
+     * Returns the most actual JPAObject timestamp.
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getMostActualJPAObjectNumber(String uid) throws EDBException {
+    public Number getNewestJPAObjectTimestamp(String uid) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAObject.class);
@@ -102,6 +111,9 @@ public class JPACriteriaFunctions {
         }
     }
 
+    /**
+     * Returns the history (all objects) of a given object.
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String uid) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -117,6 +129,9 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
+    /**
+     * Returns the history (between from and to) of a given object.
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String uid, long from, long to) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -135,6 +150,9 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
+    /**
+     * Returns a JPAObject with the given timestamp
+     */
     public JPAObject getJPAObject(String uid, long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
@@ -158,6 +176,9 @@ public class JPACriteriaFunctions {
         return resultList.get(0);
     }
 
+    /**
+     * Returns all commits which are involved with the given uid which are between from and to
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPACommit> getJPACommit(String uid, long from, long to) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -180,6 +201,9 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
+    /**
+     * Returns a list with all ever deleted JPAObjects
+     */
     public List<JPAObject> getDeletedJPAObjects() throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
@@ -193,6 +217,9 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
+    /**
+     * Returns all JPAObjects with the given id which are younger than the given timestamp
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String uid, long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -210,19 +237,25 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
-    public List<JPACommit> getJPACommit(long from) throws EDBException {
+    /**
+     * Loads a JPACommit with the given timestamp
+     */
+    public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
 
         CriteriaQuery<JPACommit> select = query.select(f);
 
-        select.where(criteriaBuilder.equal(f.get("timestamp"), from));
+        select.where(criteriaBuilder.equal(f.get("timestamp"), timestamp));
 
         TypedQuery<JPACommit> typedQuery = em.createQuery(select);
         return typedQuery.getResultList();
     }
 
+    /**
+     * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.
+     */
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
@@ -238,6 +271,9 @@ public class JPACriteriaFunctions {
         return typedQuery.getResultList();
     }
 
+    /**
+     * like getCommits, but it returns only the newest commit
+     */
     public JPACommit getLastCommit(Map<String, Object> param) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
@@ -259,6 +295,9 @@ public class JPACriteriaFunctions {
         }
     }
 
+    /**
+     * Analyzes the map and filters the values which are used for query
+     */
     @SuppressWarnings("rawtypes")
     private Predicate[] analyzeParamMap(CriteriaBuilder criteriaBuilder, Root from, Map<String, Object> param) {
         List<Predicate> predicates = new ArrayList<Predicate>();
@@ -282,6 +321,9 @@ public class JPACriteriaFunctions {
         return temp;
     }
 
+    /**
+     * Returns a list of JPAObjects which have all a JPAEntry with the given key and value.
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> query(String key, Object value) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -289,19 +331,19 @@ public class JPACriteriaFunctions {
         Root<JPAObject> f = query.from(JPAObject.class);
 
         CriteriaQuery<JPAObject> select = query.select(f);
-        
-        Subquery subquery = query.subquery(KeyValuePair.class);
-        Root fromKeyValuePair = subquery.from(KeyValuePair.class);
+
+        Subquery subquery = query.subquery(JPAEntry.class);
+        Root fromKeyValuePair = subquery.from(JPAEntry.class);
         subquery.select(fromKeyValuePair);
-        
+
         Join j = f.join("values");
         Path<Object> path = j.get("id");
-        
+
         Predicate predicate1 = criteriaBuilder.equal(fromKeyValuePair.get("key"), key);
         Predicate predicate2 = criteriaBuilder.equal(fromKeyValuePair.get("value"), value);
         Predicate predicate3 = criteriaBuilder.in(fromKeyValuePair.get("id")).value(path);
         subquery.where(criteriaBuilder.and(predicate1, predicate2, predicate3));
-        
+
         select.where(criteriaBuilder.exists(subquery));
 
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));

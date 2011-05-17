@@ -35,6 +35,9 @@ public class Diff implements EDBDiff {
     private List<EDBObject> endState;
     private HashMap<String, EDBObjectDiff> diff;
 
+    /**
+     * Constructor
+     */
     public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState, 
             List<EDBObject> endState) throws EDBException {
         diff = new HashMap<String, EDBObjectDiff>();
@@ -50,14 +53,13 @@ public class Diff implements EDBDiff {
             this.endState = endState;
         }
 
-        // First create a shallow copy - .clone() is not in the interface itself :(
         List<EDBObject> tempList = new ArrayList<EDBObject>();
         for (EDBObject o : this.endState) {
             tempList.add(o);
         }
 
         for (EDBObject a : this.startState) {
-            String uid = a.getString("@uid");
+            String uid = a.getUID();
             EDBObject b = removeIfExist(uid, tempList);
             ObjectDiff odiff = new ObjectDiff(this.startCommit, this.endCommit, a, b);
             if (odiff.getDifferenceCount() > 0) {
@@ -74,7 +76,7 @@ public class Diff implements EDBDiff {
         Iterator<EDBObject> iterator = tempList.iterator();
         while (iterator.hasNext()) {
             EDBObject obj = iterator.next();
-            if (obj.getString("@uid").equals(uid)) {
+            if (obj.getUID().equals(uid)) {
                 iterator.remove();
                 return obj;
             }

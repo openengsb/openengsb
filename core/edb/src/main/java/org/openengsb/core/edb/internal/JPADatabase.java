@@ -72,7 +72,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         utx = em.getTransaction();
         criteria = new JPACriteriaFunctions(em);
 
-        Number max = criteria.getMostActualJPAHeadNumber();
+        Number max = criteria.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
             head = loadHead(max.longValue());
         }
@@ -149,7 +149,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public EDBObject getObject(String uid) throws EDBException {
-        Number number = criteria.getMostActualJPAObjectNumber(uid);
+        Number number = criteria.getNewestJPAObjectTimestamp(uid);
         if (number.longValue() <= 0) {
             throw new EDBException("the given uid was never commited to the database");
         }

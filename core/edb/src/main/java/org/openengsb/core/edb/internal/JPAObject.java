@@ -44,7 +44,7 @@ public class JPAObject {
     @Column(name = "jpaobject_id")
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<KeyValuePair> values;
+    private List<JPAEntry> values;
     
     private Long timestamp;
     private Boolean isDeleted;
@@ -63,15 +63,15 @@ public class JPAObject {
     }
 
     private void loadValues(EDBObject o) {
-        values = new ArrayList<KeyValuePair>();
+        values = new ArrayList<JPAEntry>();
         for (Map.Entry<String, Object> entry : o.entrySet()) {
-            values.add(new KeyValuePair(entry.getKey(), entry.getValue()));
+            values.add(new JPAEntry(entry.getKey(), entry.getValue()));
         }
     }
 
     public EDBObject getObject() {
         Map<String, Object> data = new HashMap<String, Object>();
-        for (KeyValuePair kvp : values) {
+        for (JPAEntry kvp : values) {
             data.put(kvp.getKey(), kvp.getValue());
         }
         String s = (String) data.get("@isDeleted");
@@ -100,7 +100,7 @@ public class JPAObject {
         return uid;
     }
     
-    public List<KeyValuePair> getPairs() {
+    public List<JPAEntry> getPairs() {
         return values;
     }
 

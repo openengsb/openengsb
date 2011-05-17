@@ -59,12 +59,12 @@ public class ObjectDiff implements EDBObjectDiff {
         }
 
         diff.clear();
-        // Now create a mapping
+        
         List<String> keyList = new ArrayList<String>();
         if (startState != null) {
             for (Map.Entry<String, Object> e : startState.entrySet()) {
                 String key = e.getKey();
-                if (key.equals("_id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
+                if (key.equals("id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
                     continue;
                 }
                 keyList.add(key);
@@ -79,7 +79,7 @@ public class ObjectDiff implements EDBObjectDiff {
                 ++differences;
             }
         }
-        keyList.add("_id");
+        keyList.add("id");
         keyList.add("@prevTimestamp");
         keyList.add("@timestamp");
 

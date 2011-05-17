@@ -28,10 +28,9 @@ public class EDBObject extends HashMap<String, Object> {
     private Long timestamp;
     private String uid;
 
-    // necessary for jpa automatic enhancing
-    protected EDBObject() {
-
-    }
+    private static final String UID_CONST = "@uid";
+    private static final String TIMESTAMP_CONST = "@timestamp";
+    private static final String DELETED_CONST = "@isDeleted";
 
     /**
      * Create an EDBObject with a specified UID and timestamp.
@@ -41,8 +40,8 @@ public class EDBObject extends HashMap<String, Object> {
         this.timestamp = timestamp;
         this.uid = uid;
 
-        put("@uid", uid);
-        put("@timestamp", timestamp);
+        put(UID_CONST, uid);
+        put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
@@ -55,8 +54,8 @@ public class EDBObject extends HashMap<String, Object> {
         this.timestamp = timestamp;
         this.uid = uid;
 
-        put("@uid", uid);
-        put("@timestamp", timestamp);
+        put(UID_CONST, uid);
+        put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
@@ -65,8 +64,8 @@ public class EDBObject extends HashMap<String, Object> {
      */
     public EDBObject(Map<String, Object> rawData) {
         super(rawData);
-        this.timestamp = (Long) rawData.get("@timestamp");
-        this.uid = (String) rawData.get("@uid");
+        this.timestamp = (Long) rawData.get(TIMESTAMP_CONST);
+        this.uid = (String) rawData.get(UID_CONST);
     }
 
     /**
@@ -82,20 +81,25 @@ public class EDBObject extends HashMap<String, Object> {
      */
     public void updateTimestamp(Long timestamp) {
         this.timestamp = timestamp;
-        put("@timestamp", timestamp);
+        put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
      * Retrieve the UID for this object.
      */
     public final String getUID() {
-        return uid;
+        if (uid != null) {
+            return uid;
+        } else {
+            uid = (String) get(UID_CONST);
+            return uid;
+        }
     }
 
     /** Change the UID */
     public void setUID(String uid) {
         this.uid = uid;
-        put("@uid", uid);
+        put(UID_CONST, uid);
     }
 
     /**
@@ -116,7 +120,7 @@ public class EDBObject extends HashMap<String, Object> {
      * Test if this object is a "deletion" entry in a history.
      */
     public final boolean isDeleted() {
-        Object id = get("@isDeleted");
+        Object id = get(DELETED_CONST);
         if (id == null) {
             return false;
         }

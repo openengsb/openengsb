@@ -24,7 +24,7 @@
     <class>org.openengsb.core.edb.internal.JPACommit</class>
     <class>org.openengsb.core.edb.internal.JPAHead</class>
     <class>org.openengsb.core.edb.internal.JPAObject</class>
-    <class>org.openengsb.core.edb.internal.KeyValuePair</class>
+    <class>org.openengsb.core.edb.internal.JPAEntry</class>
     <properties>
       <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
       <property name="openjpa.ConnectionURL" value="jdbc:h2:EDB"/>

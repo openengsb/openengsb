@@ -22,8 +22,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as
+ * it wants. So to say the JPAEntries are concrete key/value pairs extending JPAObjects.
+ */
 @Entity
-public class KeyValuePair {
+public class JPAEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -31,12 +35,12 @@ public class KeyValuePair {
     private String key;
     private String value;
 
-    public KeyValuePair() {
+    public JPAEntry() {
         key = "";
         value = null;
     }
 
-    public KeyValuePair(String key, Object obj) {
+    public JPAEntry(String key, Object obj) {
         this.key = key;
         setValue(obj);
     }

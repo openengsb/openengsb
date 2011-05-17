@@ -68,7 +68,7 @@
       		<includes>**/JPACommit.class</includes>
       		<includes>**/JPAHead.class</includes>
             <includes>**/JPAObject.class</includes>
-      		<includes>**/KeyValuePair.class</includes>
+      		<includes>**/JPAEntry.class</includes>
       		<addDefaultConstructor>true</addDefaultConstructor>
       		<enforcePropertyRestriction>true</enforcePropertyRestriction>
       	</configuration>
