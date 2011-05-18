@@ -90,7 +90,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
         serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
         URL systemResource = ClassLoader.getSystemResource("private.key.data");
-        privateKeySource = new FileKeySource(new File(systemResource.toURI()), "RSA");
+        privateKeySource = new FileKeySource(new File(systemResource.toURI()).getParent(), "RSA");
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {

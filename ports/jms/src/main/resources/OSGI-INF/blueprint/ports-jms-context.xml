@@ -68,7 +68,7 @@
         <bean class="org.openengsb.core.common.security.filter.MessageCryptoFilterFactory">
           <property name="privateKeySource">
             <bean class="org.openengsb.core.common.security.FileKeySource">
-              <property name="keyFilename" value="etc/private.key.data" />
+              <property name="keyDirectory" value="etc/security" />
               <property name="algorithm" value="RSA" />
             </bean>
           </property>
