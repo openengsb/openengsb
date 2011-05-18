@@ -76,8 +76,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
 
     protected FilterAction secureRequestHandler;
     protected RequestHandler requestHandler;
-    protected KeyGeneratorUtils keyGenUtil;
-    protected BinaryMessageCryptoUtil cryptoUtil;
     protected PublicKey serverPublicKey;
     protected AuthenticationManager authManager;
     protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
@@ -85,10 +83,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @SuppressWarnings("unchecked")
     @Before
     public void setupInfrastructure() throws Exception {
-        cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-        keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        KeySerializationUtil keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
-        serverPublicKey = keySerializeUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
+        serverPublicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
         URL systemResource = ClassLoader.getSystemResource("private.key.data");
         privateKeySource = new FileKeySource(new File(systemResource.toURI()).getParent(), "RSA");
         requestHandler = mock(RequestHandler.class);
@@ -157,7 +152,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
 
         secureRequest.getMessage().getMethodCall().setArgs(new Object[]{ "43" }); // manipulate message
 
-        SecretKey sessionKey = keyGenUtil.generateKey();
+        SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
 
         logRequest(encryptedRequest);
@@ -178,14 +173,14 @@ public abstract class GenericSecurePortTest<EncodingType> {
     public void testReplayMessage_shouldBeRejected() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
 
-        SecretKey sessionKey = keyGenUtil.generateKey();
+        SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
         secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
     }
 
     private SecureResponse processRequest(SecureRequest secureRequest) throws Exception {
-        SecretKey sessionKey = keyGenUtil.generateKey();
+        SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         logRequest(encryptedRequest);
         EncodingType encodedResponse =

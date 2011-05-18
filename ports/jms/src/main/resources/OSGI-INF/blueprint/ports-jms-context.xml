@@ -72,6 +72,7 @@
               <property name="algorithm" value="RSA" />
             </bean>
           </property>
+          <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter</value>
         <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />

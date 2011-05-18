@@ -30,7 +30,6 @@ import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -40,21 +39,19 @@ import org.openengsb.core.common.security.filter.MessageCryptoFilterFactory;
 
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 
-    MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-
     @Override
     protected byte[] encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
         byte[] serialized = SerializationUtils.serialize(secureRequest);
-        byte[] content = cryptoUtil.encrypt(serialized, sessionKey);
+        byte[] content = CipherUtils.encrypt(serialized, sessionKey);
         EncryptedMessage message = new EncryptedMessage();
         message.setEncryptedContent(content);
-        message.setEncryptedKey(cryptoUtil.encryptKey(sessionKey, serverPublicKey));
+        message.setEncryptedKey(CipherUtils.encrypt(sessionKey.getEncoded(), serverPublicKey));
         return SerializationUtils.serialize(message);
     }
 
     @Override
     protected SecureResponse decryptAndDecode(byte[] message, SecretKey sessionKey) throws Exception {
-        byte[] content = cryptoUtil.decrypt(message, sessionKey);
+        byte[] content = CipherUtils.decrypt(message, sessionKey);
         return (SecureResponse) SerializationUtils.deserialize(content);
     }
 
@@ -87,7 +84,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
                 };
             }
         };
-        FilterChainElementFactory decrypterFactory = new MessageCryptoFilterFactory(privateKeySource);
+        FilterChainElementFactory decrypterFactory = new MessageCryptoFilterFactory(privateKeySource, "AES");
         FilterChainElementFactory parserFactory = new FilterChainElementFactory() {
             @Override
             public FilterChainElement newInstance() throws FilterConfigurationException {

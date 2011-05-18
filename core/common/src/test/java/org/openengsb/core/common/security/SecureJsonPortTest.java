@@ -24,7 +24,6 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -41,12 +40,11 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureJsonPortTest.class);
 
     private ObjectMapper mapper = new ObjectMapper();
-    private MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
 
     @Override
     protected SecureResponse decryptAndDecode(String message, SecretKey sessionKey) throws Exception {
         LOGGER.info("decrypting: " + new String(message));
-        byte[] decrypt = cryptoUtil.decrypt(Base64.decodeBase64(message), sessionKey);
+        byte[] decrypt = CipherUtils.decrypt(Base64.decodeBase64(message), sessionKey);
         LOGGER.info("decoding: " + new String(decrypt));
         return mapper.readValue(decrypt, SecureResponse.class);
     }
@@ -55,11 +53,11 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
     protected String encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey) throws Exception {
         byte[] content = mapper.writeValueAsBytes(secureRequest);
         LOGGER.info("encrypting: " + new String(content));
-        byte[] encryptedContent = cryptoUtil.encrypt(content, sessionKey);
+        byte[] encryptedContent = CipherUtils.encrypt(content, sessionKey);
 
         EncryptedMessage encryptedMessage = new EncryptedMessage();
         encryptedMessage.setEncryptedContent(encryptedContent);
-        byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, serverPublicKey);
+        byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), serverPublicKey);
         encryptedMessage.setEncryptedKey(encryptedKey);
         return mapper.writeValueAsString(encryptedMessage);
     }
@@ -76,7 +74,7 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
         List<Object> asList =
             Arrays.asList(
                 EncryptedJsonMessageMarshaller.class,
-                new MessageCryptoFilterFactory(privateKeySource),
+                new MessageCryptoFilterFactory(privateKeySource, "AES"),
                 JsonSecureRequestMarshallerFilter.class,
                 defaultSecureMethodCallFilterFactory.create());
         factory.setFilters(asList);

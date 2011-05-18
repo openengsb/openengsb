@@ -42,10 +42,7 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.security.AlgorithmConfig;
-import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
-import org.openengsb.core.common.security.KeyGeneratorUtils;
-import org.openengsb.core.common.security.KeySerializationUtil;
+import org.openengsb.core.common.security.CipherUtils;
 import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.jms.core.JmsTemplate;
@@ -114,8 +111,9 @@ public class JMSPortIT extends AbstractExamTestHelper {
                 + "  \"timestamp\":" + System.currentTimeMillis() + ","
                 + "  \"message\":" + request
                 + "}";
-        KeyGeneratorUtils keyGeneratorUtils = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        SecretKey sessionKey = keyGeneratorUtils.generateKey();
+
+        SecretKey sessionKey =
+            CipherUtils.generateKey(CipherUtils.DEFAULT_SYMMETRIC_ALGORITHM, CipherUtils.DEFAULT_SYMMETRIC_KEYSIZE);
 
         // TODO do this properly when OPENENGSB-1597 is resolved
         File file = new File("target/karaf.home/etc/security/public.key.data");
@@ -128,12 +126,10 @@ public class JMSPortIT extends AbstractExamTestHelper {
         } catch (IOException e) {
             throw new Exception(file.getAbsolutePath(), e);
         }
-        PublicKey publicKey = new KeySerializationUtil(AlgorithmConfig.getDefault()).deserializePublicKey(keyData);
+        PublicKey publicKey = CipherUtils.deserializePublicKey(keyData, CipherUtils.DEFAULT_ASYMMETRIC_ALGORITHM);
 
-        BinaryMessageCryptoUtil binaryMessageCryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-        String encodedMessage =
-            Base64.encodeBase64String(binaryMessageCryptoUtil.encrypt(secureRequest.getBytes(), sessionKey));
-        String encodedKey = Base64.encodeBase64String(binaryMessageCryptoUtil.encryptKey(sessionKey, publicKey));
+        String encodedMessage = Base64.encodeBase64String(CipherUtils.encrypt(secureRequest.getBytes(), sessionKey));
+        String encodedKey = Base64.encodeBase64String(CipherUtils.encrypt(sessionKey.getEncoded(), publicKey));
 
         String encryptedMessage = ""
                 + "{"
@@ -145,7 +141,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
         String result = (String) template.receiveAndConvert("12345");
         byte[] resultData = Base64.decodeBase64(result);
         assertThat(result, not(containsString("The answer to life the universe and everything")));
-        byte[] decryptedResultData = binaryMessageCryptoUtil.decrypt(resultData, sessionKey);
+        byte[] decryptedResultData = CipherUtils.decrypt(resultData, sessionKey);
         result = new String(decryptedResultData);
         assertThat(result, containsString("The answer to life the universe and everything"));
     }

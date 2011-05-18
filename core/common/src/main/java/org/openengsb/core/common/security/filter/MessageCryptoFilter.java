@@ -9,23 +9,22 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.common.security.AlgorithmConfig;
-import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
+import org.openengsb.core.common.security.CipherUtils;
 import org.openengsb.core.common.security.PrivateKeySource;
 
 public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMessage, byte[]> {
 
     private FilterAction next;
 
-    private MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
     private PrivateKeySource privateKeySource;
+    private String secretKeyAlgorithm;
 
-    public MessageCryptoFilter(PrivateKeySource privateKey) {
+    public MessageCryptoFilter(PrivateKeySource privateKeySource, String secretKeyAlgorithm) {
         super(EncryptedMessage.class, byte[].class);
-        this.privateKeySource = privateKey;
+        this.privateKeySource = privateKeySource;
+        this.secretKeyAlgorithm = secretKeyAlgorithm;
     }
 
     @Override
@@ -34,14 +33,15 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
         byte[] decryptedMessage;
         SecretKey sessionKey;
         try {
-            sessionKey = cryptoUtil.decryptKey(encryptedKey, privateKeySource.getPrivateKey());
-            decryptedMessage = cryptoUtil.decrypt(input.getEncryptedContent(), sessionKey);
+            byte[] sessionKeyData = CipherUtils.decrypt(encryptedKey, privateKeySource.getPrivateKey());
+            sessionKey = CipherUtils.deserializeSecretKey(sessionKeyData, secretKeyAlgorithm);
+            decryptedMessage = CipherUtils.decrypt(input.getEncryptedContent(), sessionKey);
         } catch (DecryptionException e) {
             throw new FilterException(e);
         }
         byte[] plainResult = (byte[]) next.filter(decryptedMessage, metaData);
         try {
-            return cryptoUtil.encrypt(plainResult, sessionKey);
+            return CipherUtils.encrypt(plainResult, sessionKey);
         } catch (EncryptionException e) {
             throw new FilterException(e);
         }

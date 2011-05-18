@@ -2,7 +2,9 @@ package org.openengsb.core.common.security;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.security.InvalidKeyException;
@@ -15,7 +17,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,42 +66,21 @@ public class CipherUtilTest {
     private PublicKey generatedPublickey;
     private PrivateKey generatedPrivatekey;
 
-    private BasicCipherUtil cipherUtil;
-    private PublicKeyVerificationUtil verifyUtil;
-    private KeyGeneratorUtils keyGenUtil;
-    private KeySerializationUtil keySerializeUtil;
-
     @Before
     public void setUp() throws Exception {
-        cipherUtil = new BasicCipherUtil(AlgorithmConfig.getDefault());
-        keyGenUtil = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        keySerializeUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
-
-        KeyPair kp = keyGenUtil.generateKeyPair();
+        KeyPair kp = CipherUtils.generateKeyPair("RSA", 2048);
         generatedPublickey = kp.getPublic();
         generatedPrivatekey = kp.getPrivate();
-        verifyUtil = new PublicKeyVerificationUtil();
-    }
-
-    public void testGenerate() throws Exception {
-        keyGenUtil.generateKeyPair();
-        /*
-         * System.out.println("Public key:"); System.out.println("---------------------------------------"); // X509
-         * encoded key printByteArray(kp.getPublic().getEncoded());
-         * System.out.println("---------------------------------------"); System.out.println("Private key:");
-         * System.out.println("---------------------------------------"); // PKCS#8 encoded key
-         * printByteArray(kp.getPrivate().getEncoded()); System.out.println("---------------------------------------");
-         */
     }
 
     @Test
     public void testEncryptSymmetricKey() throws Exception {
-        SecretKey secretKey = keyGenUtil.generateKey();
+        SecretKey secretKey = CipherUtils.generateKey("AES", 128);
 
         byte[] encoded = secretKey.getEncoded();
-        byte[] encryptedKey = cipherUtil.encrypt(encoded, generatedPublickey);
+        byte[] encryptedKey = CipherUtils.encrypt(encoded, generatedPublickey);
 
-        byte[] decryptKey = cipherUtil.decrypt(encryptedKey, generatedPrivatekey);
+        byte[] decryptKey = CipherUtils.decrypt(encryptedKey, generatedPrivatekey);
         SecretKeySpec secretKeySpec = new SecretKeySpec(decryptKey, "AES");
 
         assertThat(secretKeySpec, is(secretKey));
@@ -109,8 +89,8 @@ public class CipherUtilTest {
     @Test
     public void testEncryptWithGenerated() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] encrypted = cipherUtil.encrypt(data, generatedPublickey);
-        byte[] decrypted = cipherUtil.decrypt(encrypted, generatedPrivatekey);
+        byte[] encrypted = CipherUtils.encrypt(data, generatedPublickey);
+        byte[] decrypted = CipherUtils.decrypt(encrypted, generatedPrivatekey);
         String result = new String(decrypted, DEFAULT_ENCODING);
         assertEquals(TEST_STRING, result);
     }
@@ -118,21 +98,21 @@ public class CipherUtilTest {
     @Test
     public void testReadPublicKey() throws Exception {
         byte[] data = generatedPublickey.getEncoded();
-        PublicKey parsedKey = keySerializeUtil.deserializePublicKey(data);
+        PublicKey parsedKey = CipherUtils.deserializePublicKey(data, "RSA");
         assertEquals(generatedPublickey, parsedKey);
     }
 
     @Test
     public void testReadPrivateKey() throws Exception {
         byte[] data = generatedPrivatekey.getEncoded();
-        PrivateKey parsedKey = keySerializeUtil.deserializePrivateKey(data);
+        PrivateKey parsedKey = CipherUtils.deserializePrivateKey(data, "RSA");
         assertEquals(generatedPrivatekey, parsedKey);
     }
 
     @Test
     public void testDecryptReceivedData() throws Exception {
-        PrivateKey key = keySerializeUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
-        byte[] data = cipherUtil.decrypt(Base64.decodeBase64(TEST_STRING_CIPHERED), key);
+        PrivateKey key = CipherUtils.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64), "RSA");
+        byte[] data = CipherUtils.decrypt(Base64.decodeBase64(TEST_STRING_CIPHERED), key);
         String testString = new String(data);
         assertEquals(TEST_STRING, testString);
     }
@@ -140,51 +120,43 @@ public class CipherUtilTest {
     @Test
     public void testSignAndVerify() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = verifyUtil.sign(data, generatedPrivatekey);
-        Assert.assertTrue(verifyUtil.verify(data, signature, generatedPublickey));
+        byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
+        assertTrue(CipherUtils.verify(data, signature, generatedPublickey, CipherUtils.DEFAULT_SIGN_ALGORITHM));
     }
 
     @Test
     public void testInvalidSignature() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
-        byte[] signature = verifyUtil.sign(data, generatedPrivatekey);
-        data[0] = 0;
-        Assert.assertFalse(verifyUtil.verify(data, signature, generatedPublickey));
+        byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
+        data[0]++;
+        assertFalse(CipherUtils.verify(data, signature, generatedPublickey, CipherUtils.DEFAULT_SIGN_ALGORITHM));
     }
 
     @Test
     public void encryptSymmetric() throws Exception {
-        BasicCipherUtil cipherUtil2 = new BasicCipherUtil(AlgorithmConfig.getDefault());
+        SecretKey generateKey = CipherUtils.generateKey("AES", 128);
 
-        SecretKey generateKey = keyGenUtil.generateKey();
-
-        byte[] encrypt = cipherUtil2.encrypt(TEST_STRING.getBytes(), generateKey);
-        byte[] decrypt = cipherUtil2.decrypt(encrypt, generateKey);
+        byte[] encrypt = CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey);
+        byte[] decrypt = CipherUtils.decrypt(encrypt, generateKey);
 
         assertThat(new String(decrypt), is(TEST_STRING));
     }
 
     @Test
     public void encryptBlowfish() throws Exception {
-        cipherUtil = new BasicCipherUtil("RSA", "Blowfish");
+        SecretKey generateKey = CipherUtils.generateKey("Blowfish", 128);
 
-        keyGenUtil.setSecretKeyAlgorithm("Blowfish");
-
-        SecretKey generateKey = keyGenUtil.generateKey();
-
-        byte[] encrypt = cipherUtil.encrypt(TEST_STRING.getBytes(), generateKey);
-        byte[] decrypt = cipherUtil.decrypt(encrypt, generateKey);
+        byte[] encrypt = CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey);
+        byte[] decrypt = CipherUtils.decrypt(encrypt, generateKey);
 
         assertThat(new String(decrypt), is(TEST_STRING));
     }
 
     @Test
     public void encryptWrongKey() throws Exception {
-        BasicCipherUtil cipherUtil2 = new BasicCipherUtil("RSA", "Blowfish");
-        SecretKey generateKey = keyGenUtil.generateKey();
-
+        SecretKey generateKey = CipherUtils.generateKey("AES", 128);
         try {
-            cipherUtil2.encrypt(TEST_STRING.getBytes(), generateKey);
+            CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey, "Blowfish");
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
             assertThat(e.getCause(), is(InvalidKeyException.class));

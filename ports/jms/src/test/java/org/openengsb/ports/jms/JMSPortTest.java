@@ -54,7 +54,6 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.MessageCryptoUtil;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -64,10 +63,7 @@ import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
-import org.openengsb.core.common.security.AlgorithmConfig;
-import org.openengsb.core.common.security.BinaryMessageCryptoUtil;
-import org.openengsb.core.common.security.KeyGeneratorUtils;
-import org.openengsb.core.common.security.KeySerializationUtil;
+import org.openengsb.core.common.security.CipherUtils;
 import org.openengsb.core.common.security.PrivateKeySource;
 import org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller;
@@ -227,9 +223,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     private void setupKeys() {
-        KeySerializationUtil serializationUtil = new KeySerializationUtil(AlgorithmConfig.getDefault());
-        privateKey = serializationUtil.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64));
-        publicKey = serializationUtil.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64));
+        privateKey = CipherUtils.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64), "RSA");
+        publicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
     }
 
     @Test(timeout = 5000)
@@ -257,20 +252,18 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         incomingPort.setFilterChain(secureChain);
         incomingPort.start();
 
-        KeyGeneratorUtils keyGeneratorUtils = new KeyGeneratorUtils(AlgorithmConfig.getDefault());
-        SecretKey sessionKey = keyGeneratorUtils.generateKey();
+        SecretKey sessionKey =
+            CipherUtils.generateKey(CipherUtils.DEFAULT_SYMMETRIC_ALGORITHM, CipherUtils.DEFAULT_SYMMETRIC_KEYSIZE);
 
-        MessageCryptoUtil<byte[]> cryptoUtil = new BinaryMessageCryptoUtil(AlgorithmConfig.getDefault());
-
-        byte[] encryptedKey = cryptoUtil.encryptKey(sessionKey, publicKey);
-        byte[] encryptedContent = cryptoUtil.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
+        byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
+        byte[] encryptedContent = CipherUtils.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
 
         EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
         String encryptedString = new ObjectMapper().writeValueAsString(encryptedMessage);
 
         jmsTemplate.convertAndSend("receive", encryptedString);
         String resultString = (String) jmsTemplate.receiveAndConvert("12345");
-        byte[] result = cryptoUtil.decrypt(Base64.decodeBase64(resultString), sessionKey);
+        byte[] result = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
         SecureResponse result2 = OBJECT_MAPPER.readValue(result, SecureResponse.class);
         MethodResult methodResult = result2.getMessage().getResult();
         Object realResultArg =
@@ -299,8 +292,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         secureFilterChainFactory.setRequestHandler(handler);
         PrivateKeySource keySource = mock(PrivateKeySource.class);
         when(keySource.getPrivateKey()).thenReturn(privateKey);
-        MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource);
-
+        MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource, "AES");
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             EncryptedJsonMessageMarshaller.class,
