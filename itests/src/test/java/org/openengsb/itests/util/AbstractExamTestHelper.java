@@ -38,6 +38,8 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.karaf.testing.AbstractIntegrationTest;
 import org.apache.karaf.testing.Helper;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,14 +56,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
-    private static final String SYS_PROP_LOG = "itests_log";
-    private static final String LOG_LEVEL = "WARN";
+    private static final String LOG_LEVEL = System.getenv("OPENENGSB_LOGLEVEL") != null ?
+            System.getenv("OPENENGSB_LOGLEVEL") : "WARN";
     /**
      * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached. Look for
      * "Listening for transport dt_socket at address: <DEBUG_PORT>"
      */
-    private static final boolean DEBUG = false;
-    private static final String DEBUG_PORT = "5005";
+    private static final boolean DEBUG = System.getenv("OPENENGSB_DEBUG").equals("1");
+    private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
 
     public enum SetupType {
@@ -174,6 +176,10 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         } catch (IOException e) {
             // yes we know about this, but this happens sometimes in windows...
         }
+        if (new File("log4j.properties.local").exists()) {
+            LogManager.resetConfiguration();
+            PropertyConfigurator.configure("log4j.properties.local");
+        }
     }
 
     @AfterClass
@@ -189,13 +195,12 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     public static Option[] configuration() throws Exception {
         Option[] baseOptions = Helper.getDefaultOptions();
         if (DEBUG) {
-            baseOptions = combine(baseOptions, Helper.activateDebugging(DEBUG_PORT));
+            baseOptions = combine(baseOptions, Helper.activateDebugging(Integer.toString(DEBUG_PORT)));
         }
-        String logLvl = System.getProperty(SYS_PROP_LOG) != null ? System.getProperty(SYS_PROP_LOG) : LOG_LEVEL;
         return combine(
             baseOptions,
             Helper.loadKarafStandardFeatures("config", "management"),
-            Helper.setLogLevel(logLvl),
+            Helper.setLogLevel(LOG_LEVEL),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
