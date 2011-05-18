@@ -17,24 +17,26 @@
 
 package org.openengsb.core.test;
 
-import java.util.ResourceBundle;
+import java.io.File;
+import java.net.URL;
 
-public class LocalisedTest extends AbstractOpenEngSBTest {
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
+import org.junit.BeforeClass;
 
-    private final ResourceBundle resources;
+public abstract class AbstractOpenEngSBTest {
 
-    public LocalisedTest() {
-        String name = this.getClass().getName();
-        resources = ResourceBundle.getBundle(name.substring(0, name.length() - 4));
-    }
+    private static final String LOG4J_PROPERTIES_LOCAL = "log4j.local.properties";
 
-    protected String localization(String resourceName) {
-        if (resources != null) {
-            return resources.getString(resourceName);
-        } else {
-            return null;
+    @BeforeClass
+    public static void adaptLoggerPreferences() throws Exception {
+        URL log4jLocalFile = ClassLoader.getSystemResource(LOG4J_PROPERTIES_LOCAL);
+        if (new File(log4jLocalFile.toURI()).exists()) {
+            LogManager.resetConfiguration();
+            PropertyConfigurator.configure(log4jLocalFile);
         }
-
     }
 
+    protected AbstractOpenEngSBTest() {
+    }
 }
