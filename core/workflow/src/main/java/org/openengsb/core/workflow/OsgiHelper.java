@@ -21,13 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public final class OsgiHelper {
-
-    private static OutgoingPortUtilService outgoingPortUtil = OpenEngSBCoreServices.getOutgoingPortUtilService();
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
         throws PortNotAvailableException {
@@ -37,7 +34,7 @@ public final class OsgiHelper {
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
         throws PortNotAvailableException {
         MethodCall methodCall = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
-        outgoingPortUtil.sendMethodCall(portId, destination, methodCall);
+        OpenEngSBCoreServices.getOutgoingPortUtilService().sendMethodCall(portId, destination, methodCall);
     }
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
