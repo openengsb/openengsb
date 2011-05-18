@@ -19,14 +19,13 @@ package org.openengsb.core.console;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.osgi.framework.Version;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out current project version")
 public class OpenEngSBCommand extends OsgiCommandSupport {
 
-  @Override
-  protected Object doExecute() throws Exception {
-    System.out.println(getBundleContext().getBundle().getVersion().toString());
-    return null;
-  }
+    @Override
+    protected Object doExecute() throws Exception {
+        System.out.println(getBundleContext().getBundle().getVersion().toString());
+        return null;
+    }
 }
