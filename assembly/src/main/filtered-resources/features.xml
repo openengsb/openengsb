@@ -44,7 +44,7 @@
     <feature version="[3,4)">spring-web</feature>
     <feature version="[1.2,2)">spring-dm</feature>
     <feature version="[1.2,2)">spring-dm-web</feature>
-    <feature version="${karaf.version}">war</feature>
+    <feature version="${karaf.version}">http</feature>
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
@@ -93,7 +93,6 @@
     <bundle>mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB Core Features -->
@@ -165,7 +164,9 @@
   </feature>
 
   <feature name="openengsb-ui-core" version="${project.version}" >
+    <feature version="${karaf.version}">war</feature>
     <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
 
