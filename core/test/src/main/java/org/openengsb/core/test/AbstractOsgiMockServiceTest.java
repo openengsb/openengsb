@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * ServiceManagement-operations are performed via the {@link BundleContext}. All these calls are handled using two maps
  * to mock a service-registry (serviceReferences, services)
  */
-public abstract class AbstractOsgiMockServiceTest {
+public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOsgiMockServiceTest.class);
 
