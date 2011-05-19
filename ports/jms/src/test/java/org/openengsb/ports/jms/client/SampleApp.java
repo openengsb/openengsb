@@ -1,0 +1,167 @@
+package org.openengsb.ports.jms.client;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.PublicKey;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import javax.crypto.SecretKey;
+import javax.jms.Connection;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.openengsb.core.api.model.BeanDescription;
+import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.security.DecryptionException;
+import org.openengsb.core.api.security.EncryptionException;
+import org.openengsb.core.api.security.model.AuthenticationInfo;
+import org.openengsb.core.api.security.model.EncryptedMessage;
+import org.openengsb.core.api.security.model.SecureRequest;
+import org.openengsb.core.api.security.model.SecureResponse;
+import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
+import org.openengsb.core.common.security.CipherUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+
+/**
+ * Hello world!
+ *
+ */
+public final class SampleApp {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleApp.class);
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final String URL = "tcp://127.0.0.1:6549";
+
+    private static Connection connection;
+    private static Session session;
+    private static MessageProducer producer;
+
+    private static void init() throws JMSException {
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(URL);
+        connection = connectionFactory.createConnection();
+        connection.start();
+
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination destination = session.createQueue("receive");
+        producer = session.createProducer(destination);
+    }
+
+    private static MethodResult call(MethodCall call) throws IOException, JMSException, InterruptedException,
+        ClassNotFoundException, EncryptionException, DecryptionException {
+        MethodCallRequest methodCallRequest = new MethodCallRequest(call);
+        SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
+        String requestString = marshalRequest(methodCallRequest, sessionKey);
+        sendMessage(requestString);
+        String resultString = getResultFromQueue(methodCallRequest.getCallId());
+        return convertStringToResult(resultString, sessionKey);
+    }
+
+    private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey)
+        throws IOException, EncryptionException {
+        AuthenticationInfo info = new UsernamePasswordAuthenticationInfo("admin", "password2");
+        BeanDescription auth = BeanDescription.fromObject(info);
+        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
+        byte[] requestString = MAPPER.writeValueAsBytes(secureRequest);
+        File publicKeyFile =
+            new File("/home/profalbert/openengsb/openengsb/target/runner/etc/security/public.key.data");
+        byte[] publicKeyData = FileUtils.readFileToByteArray(publicKeyFile);
+        PublicKey publicKey = CipherUtils.deserializePublicKey(publicKeyData, "RSA");
+        byte[] encryptedContent = CipherUtils.encrypt(requestString, sessionKey);
+        byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
+        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
+        return MAPPER.writeValueAsString(encryptedMessage);
+    }
+
+    private static MethodResult convertStringToResult(String resultString, SecretKey sessionKey) throws IOException,
+        ClassNotFoundException, DecryptionException {
+        byte[] decryptdContent;
+        try {
+            decryptdContent = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
+        } catch (DecryptionException e) {
+            System.err.println(resultString);
+            throw e;
+        }
+        SecureResponse resultMessage = MAPPER.readValue(decryptdContent, SecureResponse.class);
+        MethodResult result = resultMessage.getMessage().getResult();
+        Class<?> clazz = Class.forName(result.getClassName());
+        Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
+        result.setArg(resultValue);
+        return result;
+    }
+
+    private static void sendMessage(String requestString) throws JMSException {
+        TextMessage message = session.createTextMessage(requestString);
+        producer.send(message);
+    }
+
+    private static String getResultFromQueue(String callId) throws JMSException, InterruptedException {
+        Destination resultDest = session.createQueue(callId);
+        MessageConsumer consumer = session.createConsumer(resultDest);
+        final Semaphore messageSem = new Semaphore(0);
+        final AtomicReference<String> resultReference = new AtomicReference<String>();
+        consumer.setMessageListener(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                try {
+                    String text = ((TextMessage) message).getText();
+                    resultReference.set(text);
+                } catch (JMSException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    messageSem.release();
+                }
+            }
+        });
+        LOGGER.info("waiting for response");
+        if (!messageSem.tryAcquire(10, TimeUnit.SECONDS)) {
+            throw new RuntimeException("no response");
+        }
+        LOGGER.info("response received");
+        return resultReference.get();
+    }
+
+    private static void stop() throws JMSException {
+        session.close();
+        connection.stop();
+        connection.close();
+    }
+
+    /**
+     * Small-test client that can be used for sending jms-messages to a running openengsb
+     */
+    public static void main2(String[] args) throws Exception {
+        LOGGER.info("initializing");
+        init();
+        LOGGER.info("initialized");
+        MethodCall methodCall =
+            new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of("serviceId",
+                "example+example+testlog", "contextId", "foo"));
+        LOGGER.info("calling method");
+        MethodResult methodResult = call(methodCall);
+        System.out.println(methodResult);
+
+        stop();
+        System.exit(0);
+    }
+
+    private SampleApp() {
+    }
+}
