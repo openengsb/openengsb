@@ -30,6 +30,8 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
         try {
             SecureRequest request = mapper.readValue(input, SecureRequest.class);
+            String callId = request.getMessage().getCallId();
+            metaData.put("callId", callId);
             resetArgs(request.getMessage());
             SecureResponse response = (SecureResponse) next.filter(request, metaData);
             return mapper.writeValueAsBytes(response);

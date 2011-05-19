@@ -25,6 +25,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openengsb.core.common.remote.FilterChain;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -47,16 +48,26 @@ public class JMSIncomingPort {
             public void onMessage(Message message) {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
+                    String text;
                     try {
-                        String text = textMessage.getText();
-                        HashMap<String, Object> metadata = new HashMap<String, Object>();
-                        String result = (String) filterChain.filter(text, metadata);
-                        String callId = (String) metadata.get("callId");
-                        if (metadata.containsKey("answer")) {
-                            new JmsTemplate(connectionFactory).convertAndSend(callId, result);
-                        }
+                        text = textMessage.getText();
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
+                    }
+                    HashMap<String, Object> metadata = new HashMap<String, Object>();
+                    String result;
+                    try {
+                        result = (String) filterChain.filter(text, metadata);
+                    } catch (Exception e) {
+                        String callId = (String) metadata.get("callId");
+                        if (callId != null) {
+                            new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
+                        }
+                        return;
+                    }
+                    String callId = (String) metadata.get("callId");
+                    if (metadata.containsKey("answer")) {
+                        new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                     }
                 }
             }
