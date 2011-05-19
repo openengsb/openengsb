@@ -62,6 +62,10 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+  
+  <service interface="org.openengsb.core.api.remote.OutgoingPortUtilService">
+    <bean class="org.openengsb.core.services.internal.DefaultOutgoingPortUtilService" />
+  </service>
 
   <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
