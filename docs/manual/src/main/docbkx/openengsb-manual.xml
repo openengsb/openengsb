@@ -82,6 +82,7 @@
     <xi:include href="user/security.xml"/>
     <xi:include href="user/workflows.xml"/>
     <xi:include href="user/taskbox.xml"/>
+    <xi:include href="user/remote.xml" />
     <xi:include href="user/plugins.xml" />
     <xi:include href="user/deployers.xml" />
     <xi:include href="user/clients.xml" />
