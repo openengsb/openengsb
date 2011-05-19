@@ -23,13 +23,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.AbstractOpenEngSBService;
+
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
@@ -49,7 +51,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
     private String destination;
     private final Map<String, String> metadata = new HashMap<String, String>();
 
-    private CallRouter callRouter;
+    private OutgoingPortUtilService portUtil;
 
     public ProxyConnector() {
     }
@@ -63,16 +65,18 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
             return method.invoke(this, args);
         }
-        MethodReturn callSync =
-            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata, UUID.randomUUID()
-                .toString(), true, null));
-        switch (callSync.getType()) {
+        List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
+        List<String> paramTypeNames = Lists.transform(paramList, Functions.toStringFunction());
+
+        MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
+        MethodResult callResult = portUtil.sendMethodCallWithResult(portId, destination, methodCall);
+        switch (callResult.getType()) {
             case Object:
-                return callSync.getArg();
+                return callResult.getArg();
             case Void:
                 return null;
             case Exception:
-                throw new RuntimeException(callSync.getArg().toString());
+                throw new RuntimeException(callResult.getArg().toString());
             default:
                 throw new IllegalStateException("Return Type has to be either Void, Object or Exception");
         }
@@ -90,8 +94,8 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         metadata.put(key, value);
     }
 
-    public final void setCallRouter(CallRouter callRouter) {
-        this.callRouter = callRouter;
+    public final void setOutgoingPortUtilService(OutgoingPortUtilService portUtil) {
+        this.portUtil = portUtil;
     }
 
     public final String getPortId() {
@@ -102,7 +106,7 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
         return destination;
     }
 
-    public final CallRouter getCallRouter() {
-        return callRouter;
+    public final OutgoingPortUtilService getCallRouter() {
+        return portUtil;
     }
 }

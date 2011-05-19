@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,10 +32,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -44,45 +47,42 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 
-public class CallRouterTest extends AbstractOsgiMockServiceTest {
+public class OutgoingPortUtilServiceTest extends AbstractOsgiMockServiceTest {
 
-    private CallRouter callrouter;
+    private OutgoingPortUtilService callrouter;
     private RequestHandlerImpl requestHandler;
     private TestService serviceMock;
     private OutgoingPort outgoingPortMock;
     private final String testURI = "jms://localhost";
+    private MethodCall methodCall;
 
     @Before
     public void setUp() throws Exception {
         serviceMock = mockService(TestService.class, "foo");
         outgoingPortMock = mockService(OutgoingPort.class, "jms+json-out");
-        callrouter = new DefaultCallRouter();
+        callrouter = new DefaultOutgoingPortUtilService();
         requestHandler = new RequestHandlerImpl();
-    }
 
-    @Test
-    public void testReceiveAnything() throws Exception {
-        callrouter.stop();
-        Thread.sleep(300);
+        Map<String, String> metaData = getMetadata("foo");
+        methodCall = new MethodCall("test", new Object[0], metaData);
     }
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        HashMap<String, String> metaData = getMetadata("foo");
-        final MethodCall call = new MethodCall("test", new Object[0], metaData, "1", true, null);
-        requestHandler.handleCall(call);
-        callrouter.stop();
-        verify(serviceMock, times(1)).test();
+        requestHandler.handleCall(methodCall);
+        verify(serviceMock).test();
     }
 
     private HashMap<String, String> getMetadata(String id) {
@@ -93,9 +93,8 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
-        requestHandler.handleCall(call);
-        callrouter.stop();
+        MethodCall call2 = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"));
+        requestHandler.handleCall(call2);
         verify(serviceMock, never()).test();
         verify(serviceMock, times(1)).test(eq(42));
     }
@@ -103,8 +102,8 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Test
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final MethodCall call = new MethodCall("getAnswer", new Object[0], getMetadata("foo"), "1", true, null);
-        MethodReturn result = requestHandler.handleCall(call);
+        MethodCall call2 = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
+        MethodResult result = requestHandler.handleCall(call2);
 
         verify(serviceMock).getAnswer();
         assertThat((Integer) result.getArg(), is(42));
@@ -112,8 +111,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void recieveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[0], getMetadata("foo"), "1", true, null);
-        MethodReturn result = requestHandler.handleCall(call);
+        MethodResult result = requestHandler.handleCall(methodCall);
 
         verify(serviceMock).test();
         assertThat(result.getType(), equalTo(ReturnType.Void));
@@ -122,31 +120,23 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-
-        callrouter.call("jms+json-out", testURI, new MethodCall());
+        callrouter.sendMethodCall("jms+json-out", testURI, new MethodCall());
         Thread.sleep(300);
-        callrouter.stop();
-        verify(outgoingPortMock, times(1)).send(eq(testURI), any(MethodCall.class));
-    }
-
-    @Test
-    public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
-        callrouter.callSync("jms+json-out", testURI, methodCall);
-        verify(outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
+        verify(outgoingPortMock, times(1)).send(any(MethodCallRequest.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, getMetadata("foo"), "1", true, null);
-        MethodReturn value = new MethodReturn();
-        when(outgoingPortMock.sendSync("jms://localhost", methodCall)).thenReturn(value);
-        MethodReturn result = callrouter.callSync("jms+json-out", "jms://localhost", methodCall);
-        assertThat(result, is(value));
+        MethodResult expectedResult = new MethodResult();
+        MethodResultMessage value = mock(MethodResultMessage.class);
+        when(value.getResult()).thenReturn(expectedResult);
+        when(outgoingPortMock.sendSync(any(MethodCallRequest.class))).thenReturn(value);
+        MethodResult result = callrouter.sendMethodCallWithResult("jms+json-out", "jms://localhost", methodCall);
+        assertThat(result, is(expectedResult));
     }
 
-    private class MethodCallable implements Callable<MethodReturn> {
+    private class MethodCallable implements Callable<MethodResult> {
         private final MethodCall call;
 
         public MethodCallable(MethodCall call) {
@@ -154,7 +144,7 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
         }
 
         @Override
-        public MethodReturn call() throws Exception {
+        public MethodResult call() throws Exception {
             return requestHandler.handleCall(call);
         }
     }
@@ -162,15 +152,27 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
     @Test(timeout = 10000)
     public void testHandleCallsParallel() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final Object sync = addWaitingAnswerToServiceMock();
-        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"), "1", true, null);
-        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"), "1", true, null);
+        final Semaphore sync = new Semaphore(0);
+        Answer<Long> answer = new Answer<Long>() {
+            @Override
+            public Long answer(InvocationOnMock invocationOnMock) {
+                try {
+                    sync.acquire();
+                } catch (InterruptedException e) {
+                    fail(e.toString());
+                }
+                return 42L;
+            }
+        };
+        when(serviceMock.getOtherAnswer()).thenAnswer(answer);
+        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"));
+        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
 
         ExecutorService threadPool = Executors.newCachedThreadPool();
-        Future<MethodReturn> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
-        Future<MethodReturn> normalFuture = threadPool.submit(new MethodCallable(normalCall));
+        Future<MethodResult> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
+        Future<MethodResult> normalFuture = threadPool.submit(new MethodCallable(normalCall));
 
-        MethodReturn normalResult = normalFuture.get();
+        MethodResult normalResult = normalFuture.get();
 
         verify(serviceMock).getAnswer();
         /* getAnswer-call is finished */
@@ -182,41 +184,9 @@ public class CallRouterTest extends AbstractOsgiMockServiceTest {
             // ignore, this is expceted
         }
 
-        synchronized (sync) {
-            sync.notifyAll();
-        }
-        MethodReturn blockingResult = blockingFuture.get();
+        sync.release();
+        MethodResult blockingResult = blockingFuture.get();
         assertThat((Long) blockingResult.getArg(), is(42L));
-    }
-
-    private Object addWaitingAnswerToServiceMock() {
-        final Object sync = new Object();
-        BlockingAnswer<Long> answer = new BlockingAnswer<Long>(sync) {
-            @Override
-            public Long realAnswer(InvocationOnMock invocationOnMock) {
-                return 42L;
-            }
-        };
-        when(serviceMock.getOtherAnswer()).thenAnswer(answer);
-        return sync;
-    }
-
-    private abstract class BlockingAnswer<T> implements Answer<T> {
-        private final Object sync;
-
-        public BlockingAnswer(Object sync) {
-            this.sync = sync;
-        }
-
-        @Override
-        public T answer(InvocationOnMock invocation) throws Throwable {
-            synchronized (sync) {
-                sync.wait();
-            }
-            return realAnswer(invocation);
-        }
-
-        public abstract T realAnswer(InvocationOnMock invocationOnMock);
     }
 
     public interface TestService extends OpenEngSBService {

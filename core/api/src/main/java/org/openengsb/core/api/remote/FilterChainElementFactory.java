@@ -18,15 +18,11 @@
 package org.openengsb.core.api.remote;
 
 /**
- * Implementation of the CallRouter. Basically it should not be required to overwrite this interface, but if one is
- * deployed in the OSGi registry this one is used instead of the default one.
+ * Instances of {@link FilterChainElement}s are not reusable because the next-attribute ties it to a specific chain. So
+ * when configuring Filterchains a factory should be used to combine filters.
  */
-public interface CallRouter {
+public interface FilterChainElementFactory {
 
-    void call(String portId, final String destination, final MethodCall call);
-
-    MethodReturn callSync(String portId, final String destination, final MethodCall call);
-
-    void stop();
+    FilterChainElement newInstance() throws FilterConfigurationException;
 
 }
