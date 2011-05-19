@@ -41,7 +41,8 @@
       responsible for marshalling the result). Since it is a chain of filters, every filter has a successor (next)
       where it passes it's transformed request. After the next filter is done and returns a result the current filter
       transforms the message to the desired output format.</para>
-    <para>This gives filterchains a pyramid-like architecture.<!-- TODO pic --></para>
+    <para>This gives filterchains a pyramid-like architecture.</para>
+    <imagedata fileref="graphics/filterpyramid.png" format="png" width="450" align="center"/>
     <para>Example: Typically an incoming remote call can be divided into the following steps:
       <itemizedlist>
         <listitem>receive: Reads the message in raw form a network stream.</listitem>
