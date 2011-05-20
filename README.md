@@ -20,19 +20,15 @@ Execute ./etc/scripts/build.sh
 
 Now run mvn eclipse:eclipse and import the projects into eclipse. If you simply want to run the openengsb execute ./etc/scripts/run.sh
 
-Create Project
---------------
-Execute etc/scripts/create-project.sh with groupId and artifactId as params to create the base proejct structure.
-
 Scripts
 -------
 Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your effort.
 
-Full Test
----------
-Before a push, run the following command:
+Full Tests
+----------
+Before creating a pull request, run the following command:
 
-etc/scripts/pre-push.sh
+etc/scripts/pre-push.sh (or "mvn openengsb:prePush")
 
 Further Information
 -------------------
