@@ -57,7 +57,7 @@ public class JPAHead {
         return head.size();
     }
 
-    public List<EDBObject> get() {
+    public List<EDBObject> getEDBObjects() {
         if (loaded == null) {
             loaded = new ArrayList<EDBObject>();
             for (JPAObject o : head) {

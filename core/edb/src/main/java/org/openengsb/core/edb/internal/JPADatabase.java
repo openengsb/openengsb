@@ -18,6 +18,7 @@
 package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +38,11 @@ import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
     @PersistenceContext
     private EntityManagerFactory emf;
     private EntityManager entityManager;
@@ -52,16 +56,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public JPADatabase() {
         head = null;
     }
-    
+
+    /**
+     * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
+     */
     public void open() throws EDBException {
+        LOGGER.debug("starting to open EDB for testing via JPA");
         Properties props = new Properties();
         emf = Persistence.createEntityManagerFactory("edb-test", props);
         entityManager = emf.createEntityManager();
         utx = entityManager.getTransaction();
         criteria = new JPACriteriaFunctions(entityManager);
+        LOGGER.debug("starting of EDB successful");
 
         Number max = criteria.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
+            LOGGER.debug("loading JPA Head with timestamp " + max.longValue());
             head = loadHead(max.longValue());
         }
     }
@@ -75,62 +85,63 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public JPACommit createCommit(String committer, String role, long timestamp) {
+        LOGGER.debug("creating commit for committer %s with role %s at timestamp %d",
+            Arrays.asList(committer, role, timestamp + "").toArray());
         return new JPACommit(committer, role, timestamp);
     }
 
     @Override
-    public void commit(EDBCommit obj) throws EDBException {
-        if (obj.getCommitted()) {
+    public void commit(EDBCommit commit) throws EDBException {
+        if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
 
-        obj.finalize();
+        commit.finalize();
         // First prepare a second head... if this fails, we don't need to continue
         JPAHead nextHead;
         if (head != null) {
-            nextHead = new JPAHead(head, obj.getTimestamp());
+            LOGGER.debug("adding a new JPAHead");
+            nextHead = new JPAHead(head, commit.getTimestamp());
         } else {
-            nextHead = new JPAHead(obj.getTimestamp());
+            LOGGER.debug("creating the first JPAHead");
+            nextHead = new JPAHead(commit.getTimestamp());
         }
 
-        for (String del : obj.getDeletions()) {
+        for (String del : commit.getDeletions()) {
             nextHead.delete(del);
         }
-        for (EDBObject update : obj.getObjects()) {
+        for (EDBObject update : commit.getObjects()) {
             String uid = update.getUID();
             nextHead.replace(uid, update);
         }
 
         try {
-            if (utx != null) {
-                utx.begin();
-            }
+            performUtxAction(UTXACTION.BEGIN);
 
-            long timestamp = obj.getTimestamp();
-            obj.setCommitted(true);
-            entityManager.persist(obj);
+            long timestamp = commit.getTimestamp();
+            commit.setCommitted(true);
+            LOGGER.debug("persisting JPACommit and the new JPAHead");
+            entityManager.persist(commit);
             entityManager.persist(nextHead);
 
+            LOGGER.debug("persisting the elements of the new JPAHead");
             for (JPAObject o : nextHead.getJPAObjects()) {
                 entityManager.persist(o);
             }
 
-            for (String id : obj.getDeletions()) {
+            LOGGER.debug("setting the deleted elements as deleted");
+            for (String id : commit.getDeletions()) {
                 EDBObject o = new EDBObject(id, timestamp);
                 o.put("@isDeleted", new Boolean(true));
                 JPAObject j = new JPAObject(o);
                 entityManager.persist(j);
             }
-            if (utx != null) {
-                utx.commit();
-            }
 
+            performUtxAction(UTXACTION.COMMIT);
             head = nextHead;
         } catch (Exception ex) {
             try {
-                if (utx != null) {
-                    utx.rollback();
-                }
+                performUtxAction(UTXACTION.ROLLBACK);
             } catch (Exception e) {
                 throw new EDBException("Failed to rollback transaction to DB", e);
             }
@@ -138,28 +149,65 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
     }
 
+    /**
+     * helper function that performs a UTXACTION if the utx is not null
+     */
+    private void performUtxAction(UTXACTION action) {
+        if (utx == null) {
+            return;
+        }
+        switch (action) {
+            case BEGIN:
+                utx.begin();
+                break;
+            case COMMIT:
+                utx.commit();
+                break;
+            case ROLLBACK:
+                utx.rollback();
+                break;
+            default:
+                LOGGER.warn("unknown Transaction action: " + action.toString());
+                break;
+        }
+    }
+
+    /**
+     * enumeration for categorizing the transaction actions.
+     */
+    private enum UTXACTION {
+            BEGIN, COMMIT, ROLLBACK
+    };
+
     @Override
     public EDBObject getObject(String uid) throws EDBException {
         Number number = criteria.getNewestJPAObjectTimestamp(uid);
         if (number.longValue() <= 0) {
             throw new EDBException("the given uid was never commited to the database");
         }
+        LOGGER.debug("loading JPAObject with the uid %s and the timestamp %d", Arrays.asList(uid, number).toArray());
         JPAObject temp = criteria.getJPAObject(uid, number.longValue());
         return temp.getObject();
     }
 
     @Override
     public List<EDBObject> getHistory(String uid) throws EDBException {
+        LOGGER.debug("loading history of JPAObject with the uid %s", uid);
         List<JPAObject> jpa = criteria.getJPAObjectHistory(uid);
         return generateEDBObjectList(jpa);
     }
 
     @Override
     public List<EDBObject> getHistory(String uid, long from, long to) throws EDBException {
+        LOGGER.debug("loading JPAObject with the uid " + uid + " from"
+                + " the timestamp " + from + " to the timestamp " + to);
         List<JPAObject> jpa = criteria.getJPAObjectHistory(uid, from, to);
         return generateEDBObjectList(jpa);
     }
 
+    /**
+     * transforms a list of JPAObjects to a List of EDBObjects
+     */
     private List<EDBObject> generateEDBObjectList(List<JPAObject> jpaObjects) {
         List<EDBObject> edb = new ArrayList<EDBObject>();
         for (JPAObject j : jpaObjects) {
@@ -170,6 +218,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBLogEntry> getLog(String uid, long from, long to) throws EDBException {
+        LOGGER.debug("loading the log of JPAObject with the uid " + uid + " from"
+                + " the timestamp " + from + " to the timestamp " + to);
         List<EDBObject> hist = getHistory(uid, from, to);
         List<JPACommit> commits = criteria.getJPACommit(uid, from, to);
         if (hist.size() != commits.size()) {
@@ -183,26 +233,32 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         return log;
     }
 
+    /**
+     * loads the JPAHead with the given timestamp
+     */
     private JPAHead loadHead(long timestamp) throws EDBException {
+        LOGGER.debug("load the JPAHead with the timestamp %d", timestamp);
         return criteria.getJPAHead(timestamp);
     }
 
     @Override
     public List<EDBObject> getHead() throws EDBException {
-        return head.get();
+        return head.getEDBObjects();
     }
 
     @Override
     public List<EDBObject> getHead(long timestamp) throws EDBException {
+        LOGGER.debug("load the elements of the JPAHead with the timestamp %d", timestamp);
         JPAHead head = loadHead(timestamp);
         if (head != null) {
-            return head.get();
+            return head.getEDBObjects();
         }
         throw new EDBException("Failed to get head for timestamp " + Long.toString(timestamp));
     }
 
     @Override
     public List<EDBObject> query(String key, Object value) throws EDBException {
+        LOGGER.debug("query for objects with key = %s and value = %s", Arrays.asList(key, value).toArray());
         Map<String, Object> q = new HashMap<String, Object>();
         q.put(key, value);
         return query(q);
@@ -231,15 +287,12 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 // one object that has at least one key/value pair that has at least one of the
                 // others not.
                 if (result.size() == 0) {
+                    LOGGER.debug("there are no objects which have all values from the map");
                     return new ArrayList<EDBObject>();
                 }
 
             }
-            List<EDBObject> res = new ArrayList<EDBObject>();
-            for (JPAObject obj : result) {
-                res.add(obj.getObject());
-            }
-            return res;
+            return generateEDBObjectList(new ArrayList<JPAObject>(result));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
         }
@@ -316,7 +369,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         query.put(key, value);
         return getStateOfLastCommitMatching(query);
     }
-    
+
     public void setEntityManager(EntityManager em) {
         this.entityManager = em;
         criteria = new JPACriteriaFunctions(em);
