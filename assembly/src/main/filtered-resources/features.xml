@@ -72,8 +72,6 @@
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
-    <bundle>mvn:commons-dbcp/commons-dbcp/${commons.dbcp.version}</bundle>
-    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
     <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
     <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
@@ -89,11 +87,23 @@
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <!-- OpenEngSB Core Features -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
+    <!-- OpenEngSB Feature Implementations -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-infrastructure-jpa" version="${project.version}">
+    <bundle>mvn:commons-dbcp/commons-dbcp/${commons.dbcp.version}</bundle>
+    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
     <bundle>mvn:org.apache.geronimo.components/geronimo-transaction/${geronimo.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
@@ -103,18 +113,16 @@
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
-    <!-- OpenEngSB Core Features -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
-    <!-- OpenEngSB Feature Implementations -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-edb" version="${project.version}">
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
     <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
   </feature>
 
-  <feature name="openengsb-infrastructure-jms" version="${project.version}" >
+  <feature name="openengsb-infrastructure-jms" version="${project.version}">
     <feature version="[5.5,6)">activemq-blueprint</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
