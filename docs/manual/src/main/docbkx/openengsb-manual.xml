@@ -57,6 +57,7 @@
       <para>This part contains tutorials for the OpenEngSB.</para>
     </partintro>
     <xi:include href="howto/howtoSetup.xml" />
+    <xi:include href="howto/howtoConsolecommands.xml" />
     <xi:include href="howto/howtoLogging.xml" />
     <xi:include href="howto/howtoContextEditor.xml" />
     <xi:include href="howto/howtoCreateConnector.xml" />
