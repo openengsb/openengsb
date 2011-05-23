@@ -65,10 +65,6 @@
       	<artifactId>openjpa-maven-plugin</artifactId>
       	<version>1.2</version>
       	<configuration>
-      		<includes>**/JPACommit.class</includes>
-      		<includes>**/JPAHead.class</includes>
-            <includes>**/JPAObject.class</includes>
-      		<includes>**/JPAEntry.class</includes>
       		<addDefaultConstructor>true</addDefaultConstructor>
       		<enforcePropertyRestriction>true</enforcePropertyRestriction>
       	</configuration>
@@ -142,8 +138,6 @@
       <scope>provided</scope>
     </dependency>
     <!-- end OpenJPA PCEnhancer depends -->
-
   </dependencies>
-
 </project>
 
