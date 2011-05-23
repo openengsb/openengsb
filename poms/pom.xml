@@ -327,11 +327,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.aries.transaction</groupId>
-        <artifactId>org.apache.aries.transaction.blueprint</artifactId>
-        <version>${aries.transaction.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.transaction</groupId>
         <artifactId>org.apache.aries.transaction.wrappers</artifactId>
         <version>${aries.transaction.version}</version>
       </dependency>
