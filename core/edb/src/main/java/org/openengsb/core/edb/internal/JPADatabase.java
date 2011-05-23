@@ -40,37 +40,25 @@ import org.openengsb.core.api.edb.EDBObject;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
     @PersistenceContext
-    EntityManagerFactory emf;
-    EntityManager em;
-    @Resource
-    EntityTransaction utx;
+    private EntityManagerFactory emf;
+    private EntityManager entityManager;
 
-    private String databaseName;
+    @Resource
+    private EntityTransaction utx;
+
     private JPAHead head;
     private JPACriteriaFunctions criteria;
 
     public JPADatabase() {
-        databaseName = null;
         head = null;
     }
-
-    public JPADatabase(String databaseName) {
-        this.databaseName = databaseName;
-        head = null;
-    }
-
+    
     public void open() throws EDBException {
-        if (databaseName == null) {
-            throw new EDBException(
-                "There is no database name defined. Unable to connect to unknown database");
-        }
         Properties props = new Properties();
-        String connectionUrl = databaseName;
-        props.setProperty("openjpa.ConnectionURL", connectionUrl);
-        emf = Persistence.createEntityManagerFactory("openjpa", props);
-        em = emf.createEntityManager();
-        utx = em.getTransaction();
-        criteria = new JPACriteriaFunctions(em);
+        emf = Persistence.createEntityManagerFactory("edb-test", props);
+        entityManager = emf.createEntityManager();
+        utx = entityManager.getTransaction();
+        criteria = new JPACriteriaFunctions(entityManager);
 
         Number max = criteria.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
@@ -79,14 +67,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     public void close() {
-        em.close();
+        entityManager.close();
         utx = null;
-        em = null;
+        entityManager = null;
         emf = null;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
     }
 
     @Override
@@ -117,29 +101,36 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             nextHead.replace(uid, update);
         }
 
-        utx.begin();
         try {
+            if (utx != null) {
+                utx.begin();
+            }
+
             long timestamp = obj.getTimestamp();
             obj.setCommitted(true);
-            em.persist(obj);
-            em.persist(nextHead);
+            entityManager.persist(obj);
+            entityManager.persist(nextHead);
 
             for (JPAObject o : nextHead.getJPAObjects()) {
-                em.persist(o);
+                entityManager.persist(o);
             }
 
             for (String id : obj.getDeletions()) {
                 EDBObject o = new EDBObject(id, timestamp);
                 o.put("@isDeleted", new Boolean(true));
                 JPAObject j = new JPAObject(o);
-                em.persist(j);
+                entityManager.persist(j);
             }
-            utx.commit();
+            if (utx != null) {
+                utx.commit();
+            }
 
             head = nextHead;
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                if (utx != null) {
+                    utx.rollback();
+                }
             } catch (Exception e) {
                 throw new EDBException("Failed to rollback transaction to DB", e);
             }
@@ -324,5 +315,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         Map<String, Object> query = new HashMap<String, Object>();
         query.put(key, value);
         return getStateOfLastCommitMatching(query);
+    }
+    
+    public void setEntityManager(EntityManager em) {
+        this.entityManager = em;
+        criteria = new JPACriteriaFunctions(em);
     }
 }

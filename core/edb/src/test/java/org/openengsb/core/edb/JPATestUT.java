@@ -61,7 +61,7 @@ public class JPATestUT {
 
     private JPADatabase openDatabase() {
         if (db == null) {
-            db = new JPADatabase("jdbc:h2:JPATest");
+            db = new JPADatabase();
             try {
                 db.open();
             } catch (Exception ex) {
@@ -83,7 +83,7 @@ public class JPATestUT {
     public static void initDB() {
         randSeed = 1295369697576L;
         rand = new Random(randSeed); // 1938491837);
-        File f = new File("JPATest.h2.db");
+        File f = new File("TEST.h2.db");
         if (!f.exists()) {
             return;
         }
@@ -95,7 +95,7 @@ public class JPATestUT {
     @AfterClass
     public static void closeDB() {
         db.close();
-        File f = new File("JPATest.h2.db");
+        File f = new File("TEST.h2.db");
         f.delete();
     }
 
