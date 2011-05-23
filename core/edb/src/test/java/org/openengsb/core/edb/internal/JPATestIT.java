@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb;
+package org.openengsb.core.edb.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,11 +36,8 @@ import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.edb.internal.Diff;
-import org.openengsb.core.edb.internal.JPACommit;
-import org.openengsb.core.edb.internal.JPADatabase;
 
-public class JPATestUT {
+public class JPATestIT {
     // is currently overwritten by a fixed number in initDB
     private static long randSeed = System.currentTimeMillis();
     private static Random rand;
@@ -214,8 +211,8 @@ public class JPATestUT {
             ci.add(v2);
             db.commit(ci);
 
-            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone(); 
-            
+            HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
+
             runTimeStep();
             ci = db.createCommit(randomCommitter(), randomRole(), runTime);
             ci.add(randomTestObject("/useless/3", runTime));
@@ -242,33 +239,33 @@ public class JPATestUT {
                 ordered = false;
             }
         }
-        
+
         assertTrue("the history should be ordered by timestamp", ordered);
         assertTrue(history.get(0).getString("Lock").equals("Key"));
         assertTrue(history.get(0).getString("Cat").equals("Spongebob"));
-        
+
         assertTrue(history.get(1).getString("Lock").equals("Smith"));
         assertTrue(history.get(1).getString("Cat").equals("Spongebob"));
-        
+
         assertTrue(history.get(2).getString("Lock").equals("Smith"));
         assertTrue(history.get(2).getString("Cat").equals("Dog"));
     }
-    
+
     @Test
     public void testHistoryOfDeletion_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
-        
+
         JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
         ci.add(randomTestObject("/deletion/1", runTime));
         db.commit(ci);
-        
+
         runTimeStep();
         ci = db.createCommit(randomCommitter(), randomRole(), runTime);
         ci.delete("/deletion/1");
         db.commit(ci);
-        
+
         List<EDBObject> history = db.getHistory("/deletion/1");
-        
+
         assertEquals("history should contain exactly 2 values.", history.size(), 2);
         assertFalse("First object is not a deletion!", history.get(0).isDeleted());
         assertTrue("Second entry is a deletion!", history.get(1).isDeleted());
