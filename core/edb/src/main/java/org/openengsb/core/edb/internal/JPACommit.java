@@ -52,6 +52,9 @@ public class JPACommit implements EDBCommit {
     // / The object has been committed, you must not commit it twice.
     protected boolean committed = false;
 
+    /**
+     * the empty constructor is only for the jpa enhancer. Do not use it in real code.
+     */
     public JPACommit() {
     }
 

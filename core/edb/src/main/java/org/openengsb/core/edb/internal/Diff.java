@@ -41,7 +41,6 @@ public class Diff implements EDBDiff {
      */
     public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState,
             List<EDBObject> endState) throws EDBException {
-        diff = new HashMap<String, EDBObjectDiff>();
         if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
             this.startCommit = endCommit;
             this.endCommit = startCommit;
@@ -54,6 +53,14 @@ public class Diff implements EDBDiff {
             this.endState = endState;
         }
 
+        createObjectDiffs();
+    }
+
+    /**
+     * Analyzes the start and end state and creates for every object that is different an objectdiff entry
+     */
+    private void createObjectDiffs() throws EDBException {
+        diff = new HashMap<String, EDBObjectDiff>();
         List<EDBObject> tempList = new ArrayList<EDBObject>();
         for (EDBObject o : this.endState) {
             tempList.add(o);

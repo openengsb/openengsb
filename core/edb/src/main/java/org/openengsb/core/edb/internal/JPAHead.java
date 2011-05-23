@@ -34,6 +34,9 @@ public class JPAHead {
     private Long timestamp;
     private List<EDBObject> loaded;
 
+    /**
+     * the empty constructor is only for the jpa enhancer. Do not use it in real code.
+     */
     public JPAHead() {
     }
 

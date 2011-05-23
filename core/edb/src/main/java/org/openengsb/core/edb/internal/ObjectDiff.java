@@ -19,8 +19,10 @@ package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openengsb.core.api.edb.EDBEntry;
 import org.openengsb.core.api.edb.EDBException;
@@ -35,8 +37,16 @@ public class ObjectDiff implements EDBObjectDiff {
     private Map<String, EDBEntry> diff;
     private Integer differences;
 
+    /**
+     * Constructor
+     */
     public ObjectDiff(JPACommit startCommit, JPACommit endCommit,
             EDBObject startState, EDBObject endState) throws EDBException {
+
+        if (startState == null || endState == null) {
+            throw new EDBException("Incomplete Diff object, cannot compare null states!");
+        }
+
         diff = new HashMap<String, EDBEntry>();
         differences = 0;
         if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
@@ -53,47 +63,41 @@ public class ObjectDiff implements EDBObjectDiff {
         updateDiff();
     }
 
+    /**
+     * checks for start state and end state which key/value pairs are in common and which
+     * have been changed, added or deleted
+     */
     private void updateDiff() throws EDBException {
-        if (startState == null || endState == null) {
-            throw new EDBException("Incomplete Diff object, cannot compare null states!");
-        }
+        List<String> keyList = loadKeyList();
 
-        diff.clear();
-        
-        List<String> keyList = new ArrayList<String>();
-        if (startState != null) {
-            for (Map.Entry<String, Object> e : startState.entrySet()) {
-                String key = e.getKey();
-                if (key.equals("id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
-                    continue;
-                }
-                keyList.add(key);
-
-                Object first = e.getValue();
-                Object last = (endState != null) ? endState.get(key) : null;
-
-                if (last != null && first.equals(last)) {
-                    continue;
-                }
-                diff.put(key, new Entry(first, last));
-                ++differences;
+        for (String key : keyList) {
+            if (key.equals("id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
+                continue;
             }
-        }
-        keyList.add("id");
-        keyList.add("@prevTimestamp");
-        keyList.add("@timestamp");
+            Object first = startState.get(key);
+            Object last = endState.get(key);
 
-        // Now we have all keys from stateA, now add the missing keys from stateB
-        if (endState != null) {
-            for (Map.Entry<String, Object> e : endState.entrySet()) {
-                String key = e.getKey();
-                if (keyList.contains(key)) {
-                    continue;
-                }
-                diff.put(key, new Entry(null, e.getValue()));
-                ++differences;
+            // if the key value pair is exactly the same, skip it
+            if (last != null && first != null && first.equals(last)) {
+                continue;
             }
+            diff.put(key, new Entry(first, last));
+            differences++;
         }
+    }
+
+    /**
+     * loads all keys from the start state and the end state
+     */
+    private List<String> loadKeyList() {
+        Set<String> keySet = new HashSet<String>();
+        for (Map.Entry<String, Object> e : startState.entrySet()) {
+            keySet.add(e.getKey());
+        }
+        for (Map.Entry<String, Object> e : endState.entrySet()) {
+            keySet.add(e.getKey());
+        }
+        return new ArrayList<String>(keySet);
     }
 
     @Override

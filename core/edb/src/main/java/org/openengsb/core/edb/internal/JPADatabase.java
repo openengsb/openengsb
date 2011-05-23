@@ -43,13 +43,11 @@ import org.slf4j.LoggerFactory;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
+    @Resource
+    private EntityTransaction utx;
     @PersistenceContext
     private EntityManagerFactory emf;
     private EntityManager entityManager;
-
-    @Resource
-    private EntityTransaction utx;
-
     private JPAHead head;
     private JPACriteriaFunctions criteria;
 
@@ -76,6 +74,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
     }
 
+    /**
+     * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
+     */
     public void close() {
         entityManager.close();
         utx = null;
@@ -290,7 +291,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                     LOGGER.debug("there are no objects which have all values from the map");
                     return new ArrayList<EDBObject>();
                 }
-
             }
             return generateEDBObjectList(new ArrayList<JPAObject>(result));
         } catch (Exception ex) {
