@@ -31,7 +31,7 @@ public interface EDBCommit {
 
     void setCommitted(boolean c);
 
-    boolean getCommitted();
+    boolean isCommitted();
 
     /**
      * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.

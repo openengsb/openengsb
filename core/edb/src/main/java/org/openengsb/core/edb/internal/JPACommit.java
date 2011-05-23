@@ -71,7 +71,7 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public boolean getCommitted() {
+    public boolean isCommitted() {
         return committed;
     }
 
@@ -125,7 +125,7 @@ public class JPACommit implements EDBCommit {
 
     @Override
     public void finalize() throws EDBException {
-        if (getCommitted()) {
+        if (isCommitted()) {
             throw new EDBException("Commit already finalized, probably already committed.");
         }
         fillUIDs();
