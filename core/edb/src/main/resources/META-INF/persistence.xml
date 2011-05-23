@@ -31,7 +31,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
-      <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
+      <property name="openjpa.Log" value="commons"/>
       <!--<property name="openjpa.ConnectionURL" value="jdbc:h2:EDB"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/> -->
@@ -49,7 +49,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
-      <property name="openjpa.Log" value="DefaultLevel=INFO, Tool=INFO"/>
+      <property name="openjpa.Log" value="commons"/> <!-- DefaultLevel=INFO, Tool=INFO"/>  -->
       <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
