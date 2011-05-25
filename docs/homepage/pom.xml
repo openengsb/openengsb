@@ -288,6 +288,10 @@
                <name>write-back</name>
                <value>true</value>
              </property>
+             <property>
+               <name>wrap</name>
+               <value>68</value>
+             </property>
           </jtidyConfiguration>
         </configuration>
       </plugin>
@@ -349,6 +353,22 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <execution>
+            <id>copy-manual-resources</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <copy todir="${basedir}/target/site/docbook">
+                  <fileset dir="${project.build.directory}/openengsb-docs-manual-${project.version}/manual/html-multi/">
+                    <exclude name="**/*.html" />
+                  </fileset>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
           <execution>
             <phase>package</phase>
             <configuration>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 
     Licensed to the Austrian Association for Software Tool Integration (AASTI)
@@ -78,7 +78,7 @@
   </broker>
 
   <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-    <property name="brokerURL" value="tcp://localhost:${openwire}" />
+    <property name="brokerURL" value="failover:(tcp://localhost:${openwire})?timeout=60000" />
   </bean>
 
   <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -51,25 +50,20 @@ public class JMSPortIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-        System.out.println("ServiceID:" + serviceWithId);
         assertNotNull(serviceWithId);
     }
 
     @Test
-    @Ignore("This is a problem because blueprint is not going down correctly (OPENENGSB-1212)")
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         addWorkflow("simpleFlow");
-        System.out.println("Starting Integration Test");
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:6549");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
-        String request = ""
+        String methodCall = ""
                 + "{"
-                + "    \"callId\": \"12345\","
-                + "    \"answer\": true,"
                 + "    \"classes\": ["
                 + "        \"java.lang.String\","
                 + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
@@ -84,6 +78,13 @@ public class JMSPortIT extends AbstractExamTestHelper {
                 + "        {"
                 + "        }"
                 + "    ]"
+                + "}";
+
+        String request = ""
+                + "{"
+                + "  \"callId\":\"12345\","
+                + "  \"answer\":true,"
+                + "  \"methodCall\":" + methodCall
                 + "}";
         template.convertAndSend("receive", request);
         String result = (String) template.receiveAndConvert("12345");

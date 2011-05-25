@@ -27,7 +27,7 @@
   <title>Jira Connector</title>
   
   <para>The Jira Connector is an issue connector for the 
-  <link xlink:href="http://www.atlassian.com/software/jira/">Jira issue and project tracking system</link>.</para>
+  <link xlink:href="http://www.atlassian.com/software/jira/">Jira issue and project tracking system</link>. IMPORTANT: Name of components must not contain ","</para>
 
   <section>
     <title>External Tool Configuration</title>

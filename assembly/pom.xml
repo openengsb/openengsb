@@ -22,6 +22,13 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+  <properties>
+    <java.min.mem>256M</java.min.mem>
+    <java.max.mem>1024M</java.max.mem>
+    <java.min.perm>64M</java.min.perm>
+    <java.max.perm>128M</java.max.perm>
+  </properties>
+
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
@@ -277,8 +284,14 @@
         <configuration>
           <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathUnix>
           <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>
+          <additionalRequiredExecutionPathUnix>
+            <param>bin/karaf</param>
+          </additionalRequiredExecutionPathUnix>
           <provisionArchivePathWindows>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathWindows>
           <provisionExecutionPathWindows>bin/openengsb.bat</provisionExecutionPathWindows>
+          <additionalRequiredExecutionPathWindows>
+            <param>bin/karaf.bat</param>
+          </additionalRequiredExecutionPathWindows>
         </configuration>
       </plugin>
       <plugin>

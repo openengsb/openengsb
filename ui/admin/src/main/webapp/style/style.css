@@ -572,3 +572,9 @@ table.OverviewPanel td.filter-td select {
 	width: 100%;
 	font-size: 0.8em;
 }
+
+.blockedForm input {
+	display: block;
+	width: 250px;
+}
+	

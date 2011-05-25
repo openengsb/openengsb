@@ -26,7 +26,7 @@
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>Issue Domain</title>
-  <para>The issue domain is the tool domain for all issue tracking tools, like Jira, Trac or Mantis.</para> 
+  <para>The issue domain is the tool domain for all issue tracking tools, like Jira, Trac, Github or Mantis.</para> 
   <section>
     <title>Description</title>
     <para>The issue Domain provides the possibility to create, update, delete and comment issues.</para>
@@ -42,6 +42,7 @@
     <title>Connectors</title>  
     <xi:include href="trac.xml" />
     <xi:include href="jira.xml" />
+    <xi:include href="github.xml" />
   </section>
 
 </chapter>

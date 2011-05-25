@@ -3,22 +3,22 @@
 	url = git://github.com:openengsb/openengsb-connector-email.git
 [submodule "connector/git"]
 	path = connector/git
-	url = git://github.com:openengsb/openengsb-connector-git.git
+	url = git://github.com/openengsb/openengsb-connector-git.git
 [submodule "connector/maven"]
 	path = connector/maven
-	url = git://github.com:openengsb/openengsb-connector-maven.git
+	url = git://github.com/openengsb/openengsb-connector-maven.git
 [submodule "connector/jira"]
 	path = connector/jira
-	url = git://github.com:openengsb/openengsb-connector-jira.git
+	url = git://github.com/openengsb/openengsb-connector-jira.git
 [submodule "connector/memoryauditing"]
 	path = connector/memoryauditing
-	url = git://github.com:openengsb/openengsb-connector-memoryauditing.git
+	url = git://github.com/openengsb/openengsb-connector-memoryauditing.git
 [submodule "connector/plaintextreport"]
 	path = connector/plaintextreport
-	url = git://github.com:openengsb/openengsb-connector-plaintextreport.git
+	url = git://github.com/openengsb/openengsb-connector-plaintextreport.git
 [submodule "connector/trac"]
 	path = connector/trac
-	url = git://github.com:openengsb/openengsb-connector-trac.git
+	url = git://github.com/openengsb/openengsb-connector-trac.git
 [submodule "connector/openengsb-connector-gcalendar"]
 	path = connector/openengsb-connector-gcalendar
 	url = git://github.com/openengsb/openengsb-connector-gcalendar.git
@@ -80,3 +80,6 @@
 	path = features/connector/gcontacts
 	url = git://github.com/openengsb/openengsb-connector-gcontacts
 
+[submodule "features/connector/github"]
+	path = features/connector/github
+	url = git://github.com/openengsb/openengsb-connector-github.git
