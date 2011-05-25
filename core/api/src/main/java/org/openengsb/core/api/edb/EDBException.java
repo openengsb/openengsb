@@ -22,13 +22,17 @@ package org.openengsb.core.api.edb;
  * This exception is thrown if an error occeured while processing commands at
  * the edb service. Mainly their reason are IOExceptions and JPAExceptions.
  */
-public class EDBException extends Exception {
+public class EDBException extends RuntimeException {
     public EDBException() {
         super();
     }
 
     public EDBException(String s) {
         super(s);
+    }
+    
+    public EDBException(Throwable t) {
+        super(t);
     }
 
     public EDBException(String s, Throwable t) {
