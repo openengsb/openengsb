@@ -30,30 +30,33 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkflowEditorServiceImpl implements WorkflowEditorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowEditorServiceImpl.class);
 
     private final Map<String, WorkflowRepresentation> workflows = new HashMap<String, WorkflowRepresentation>();
 
     private WorkflowRepresentation currentWorkflow;
 
-    public ConfigPersistenceService getPersistence() {
+    private ConfigPersistenceService getPersistence() {
         return OpenEngSBCoreServices
             .getConfigPersistenceService("WORKFLOW");
     }
 
     @Override
-    public void loadWorkflowsFromDatabase() {
+    public void loadWorkflowsFromDatabase() throws PersistenceException {
         try {
-            List<ConfigItem<WorkflowRepresentation>> load = getPersistence().load(null);
+            List<ConfigItem<WorkflowRepresentation>> load = getPersistence().load(new HashMap<String, String>());
             for (ConfigItem<WorkflowRepresentation> configItem : load) {
                 final WorkflowRepresentation content = configItem.getContent();
                 workflows.put(content.getName(), content);
             }
         } catch (InvalidConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Invalid Configuration: " + e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -68,8 +71,10 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
     public WorkflowRepresentation loadWorkflow(String name) {
         if (workflows.containsKey(name)) {
             currentWorkflow = workflows.get(name);
+            LOGGER.debug("Loading Workflow: " + name);
             return currentWorkflow;
         } else {
+            LOGGER.debug("Loading Workflow " + name + " failed");
             throw new IllegalArgumentException("Workflow Name doesn't exist");
         }
     }
@@ -80,23 +85,25 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
     }
 
     @Override
-    public void saveCurrentWorkflow() {
+    public void saveCurrentWorkflow() throws PersistenceException {
         ConfigItem<WorkflowRepresentation> workflowRepresentation = new ConfigItem<WorkflowRepresentation>();
         workflowRepresentation.setContent(getCurrentWorkflow());
         try {
+            LOGGER.debug("Saving workflow " + getCurrentWorkflow().getName());
             getPersistence().persist(workflowRepresentation);
         } catch (InvalidConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Invalid Configuration: " + e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
     @Override
     public void createWorkflow(String name) {
         if (workflows.containsKey(name)) {
+            LOGGER.info("Creation of Workflow with same name failed");
             throw new IllegalArgumentException("Workflow with same name already exists");
         } else {
+            LOGGER.info("Creating Workflow " + name);
             WorkflowRepresentation workflow = new WorkflowRepresentation();
             workflow.setName(name);
             workflows.put(name, workflow);

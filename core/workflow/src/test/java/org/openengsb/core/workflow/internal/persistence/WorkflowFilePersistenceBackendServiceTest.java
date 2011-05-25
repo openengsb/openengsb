@@ -63,7 +63,9 @@ public class WorkflowFilePersistenceBackendServiceTest {
         new File(folder).mkdirs();
         ConfigItem<WorkflowRepresentation> config = new ConfigItem<WorkflowRepresentation>();
         config.setContent(representation);
+        
         service.persist(config);
+        
         File out = new File(folder + WorkflowFilePersistenceBackendService.PERSISTENCE_FOLDER + name);
         assertTrue(out.exists());
         Scanner s = new Scanner(out);
@@ -72,19 +74,19 @@ public class WorkflowFilePersistenceBackendServiceTest {
     }
 
     @Test
-    public void testLoad_ShouldLoadAllWorkflowsFromFolder() throws InvalidConfigurationException, PersistenceException {
+    public void testLoad_shouldLoadAllWorkflowsFromFolder() throws InvalidConfigurationException, PersistenceException {
         System.setProperty("karaf.data", "src/test/resources/");
         WorkflowFilePersistenceBackendService service =
             new WorkflowFilePersistenceBackendService(converter);
         WorkflowRepresentation rep1 = new WorkflowRepresentation();
         WorkflowRepresentation rep2 = new WorkflowRepresentation();
-        // Make sure it does not only read the first line
         String workflow1 = "Workflow1\nWorkflow1";
         String workflow2 = "Workflow2\nWorkflow2";
         when(converter.unmarshallWorkflow(workflow1)).thenReturn(rep1);
         when(converter.unmarshallWorkflow(workflow2)).thenReturn(rep2);
 
         List<ConfigItem<WorkflowRepresentation>> load = service.load(new HashMap<String, String>());
+        
         verify(converter).unmarshallWorkflow(workflow2);
         verify(converter).unmarshallWorkflow(workflow1);
         assertThat(load.size(), equalTo(2));

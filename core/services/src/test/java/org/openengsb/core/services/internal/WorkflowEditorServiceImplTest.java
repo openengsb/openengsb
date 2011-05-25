@@ -36,7 +36,7 @@ public class WorkflowEditorServiceImplTest {
     }
 
     @Test
-    public void createWorkflow_ShouldBeSetAsCurrentWorkflow() {
+    public void createWorkflow_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
@@ -44,22 +44,26 @@ public class WorkflowEditorServiceImplTest {
     }
 
     @Test
-    public void loadWorkflow_ShouldBeSetAsCurrentWorkflow() {
+    public void loadWorkflow_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
         service.createWorkflow(string);
         assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
+        
         service.loadWorkflow(name);
+        
         assertThat(name, equalTo(service.getCurrentWorkflow().getName()));
     }
 
     @Test
-    public void getWorkflowName_ShouldBeSetAsCurrentWorkflow() {
+    public void getWorkflowName_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
+        
         service.createWorkflow(string);
+        
         assertThat(string, equalTo(service.getWorkflowNames().get(0)));
         assertThat(name, equalTo(service.getWorkflowNames().get(1)));
     }

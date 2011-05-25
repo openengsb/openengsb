@@ -32,8 +32,17 @@ import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * The WorkflowFilePersistenceBackendService stores a to String converted Representation of a Workflow to files that are
+ * named the same as the Workflow. The files are stored in a subdirectory of where the environment variable karaf.data
+ * points to.
+ */
 public class WorkflowFilePersistenceBackendService implements ConfigPersistenceBackendService<WorkflowRepresentation> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowFilePersistenceBackendService.class);
 
     private final WorkflowRepresentationConverter converter;
 
@@ -42,11 +51,11 @@ public class WorkflowFilePersistenceBackendService implements ConfigPersistenceB
     public static final String PERSISTENCE_FOLDER = "/openengsb/workflows/persistence/";
 
     public WorkflowFilePersistenceBackendService(WorkflowRepresentationConverter marshaller) {
-        super();
         this.converter = marshaller;
         String persistenceFolder = System.getProperty("karaf.data") + PERSISTENCE_FOLDER;
         folder = new File(persistenceFolder);
         if (!folder.exists()) {
+            LOGGER.info("Creating Persistence Folder");
             folder.mkdirs();
         }
     }
@@ -54,6 +63,7 @@ public class WorkflowFilePersistenceBackendService implements ConfigPersistenceB
     @Override
     public List<ConfigItem<WorkflowRepresentation>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
+        LOGGER.info("Loading all Workflows");
         List<ConfigItem<WorkflowRepresentation>> result = new ArrayList<ConfigItem<WorkflowRepresentation>>();
         try {
             File[] listFiles = folder.listFiles();
@@ -73,6 +83,7 @@ public class WorkflowFilePersistenceBackendService implements ConfigPersistenceB
 
     @Override
     public void persist(ConfigItem<WorkflowRepresentation> config) throws PersistenceException {
+        LOGGER.info("Persisting Workflow " + config.getContent().getName());
         WorkflowRepresentation content = config.getContent();
         String marshallWorkflow = converter.marshallWorkflow(content);
         File file = new File(folder, content.getName());
@@ -87,8 +98,8 @@ public class WorkflowFilePersistenceBackendService implements ConfigPersistenceB
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
-        // TODO Auto-generated method stub
-
+        LOGGER.info("Remove called, but currently not implemented");
+        throw new UnsupportedOperationException("Remove currently not implemented");
     }
 
     @Override
