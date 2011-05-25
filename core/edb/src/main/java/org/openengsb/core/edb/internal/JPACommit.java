@@ -24,6 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Version;
 
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
@@ -42,6 +43,8 @@ public class JPACommit implements EDBCommit {
     protected List<String> deletions;
     @Column(name = "OIDS")
     protected List<String> oids;
+    @Version
+    private int versionNumber;
 
     private List<JPAObject> jpaObjects;
     protected List<EDBObject> objects;
@@ -143,5 +146,9 @@ public class JPACommit implements EDBCommit {
         for (EDBObject o : objects) {
             oids.add(o.getOID());
         }
+    }
+
+    public int getVersionNumber() {
+        return versionNumber;
     }
 }

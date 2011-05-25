@@ -26,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import org.openengsb.core.api.edb.EDBObject;
 
@@ -37,6 +38,8 @@ import org.openengsb.core.api.edb.EDBObject;
 public class JPAObject {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<JPAEntry> values;
+    @Version
+    private int versionNumber;
     
     private Long timestamp;
     private Boolean isDeleted;
@@ -87,6 +90,10 @@ public class JPAObject {
     
     public List<JPAEntry> getPairs() {
         return values;
+    }
+
+    public int getVersionNumber() {
+        return versionNumber;
     }
 
 }

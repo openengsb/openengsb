@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 /**
  * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as
@@ -31,6 +32,8 @@ public class JPAEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @Version
+    private int versionNumber;
     
     private String key;
     private String value;
@@ -59,5 +62,9 @@ public class JPAEntry {
     
     public Long getId() {
         return id;
+    }
+
+    public int getVersionNumber() {
+        return versionNumber;
     }
 }
