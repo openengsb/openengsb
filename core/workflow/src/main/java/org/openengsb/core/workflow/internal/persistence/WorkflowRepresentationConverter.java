@@ -30,6 +30,9 @@ import org.openengsb.core.api.workflow.model.EndRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
+/**
+ * Converts a WorkflowRepresentation to xml using JAXB.
+ */
 public class WorkflowRepresentationConverter {
 
     private Marshaller marshaller;
