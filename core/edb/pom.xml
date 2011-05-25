@@ -63,7 +63,7 @@
       <plugin>
       	<groupId>org.codehaus.mojo</groupId>
       	<artifactId>openjpa-maven-plugin</artifactId>
-      	<version>1.2</version>
+      	<version>${maven.plugin.openjpa.version}</version>
       	<configuration>
       		<addDefaultConstructor>true</addDefaultConstructor>
       		<enforcePropertyRestriction>true</enforcePropertyRestriction>

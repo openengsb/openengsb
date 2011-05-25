@@ -26,6 +26,9 @@ import javax.persistence.OneToMany;
 
 import org.openengsb.core.api.edb.EDBObject;
 
+/**
+ * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
+ */
 @Entity
 public class JPAHead {
 

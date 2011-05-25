@@ -37,9 +37,6 @@ public class ObjectDiff implements EDBObjectDiff {
     private Map<String, EDBEntry> diff;
     private Integer differences;
 
-    /**
-     * Constructor
-     */
     public ObjectDiff(JPACommit startCommit, JPACommit endCommit,
             EDBObject startState, EDBObject endState) throws EDBException {
 

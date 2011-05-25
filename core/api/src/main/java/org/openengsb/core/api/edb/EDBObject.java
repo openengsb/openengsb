@@ -127,36 +127,36 @@ public class EDBObject extends HashMap<String, Object> {
         return (Boolean) id;
     }
 
-    /**
-     * so far here was used a mongo object. Now there is a manual programming of the object toString method. It just
-     * iterates through the key - value pairs and print them corresponding to their class. So far String and Long are
-     * taken especially into consideration.
-     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
-
         for (Map.Entry<String, Object> entry : this.entrySet()) {
-            if (builder.length() > 2) {
-                builder.append(",");
-            }
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            builder.append(" \"" + key + "\"");
-            builder.append(" : ");
-
-            if (value.getClass().equals(String.class)) {
-                builder.append("\"" + (String) value + "\" ");
-            } else if (value.getClass().equals(Long.class)) {
-                builder.append((Long) value + " ");
-            } else {
-                builder.append(value.toString() + " ");
-            }
+            appendEntry(entry, builder);
         }
-
         builder.append("}");
 
         return builder.toString();
+    }
+
+    /**
+     * analyzes the entry and write the specific information into the StringBuilder.
+     */
+    private void appendEntry(Map.Entry<String, Object> entry, StringBuilder builder) {
+        if (builder.length() > 2) {
+            builder.append(",");
+        }
+        String key = entry.getKey();
+        Object value = entry.getValue();
+
+        builder.append(" \"").append(key).append("\"");
+        builder.append(" : ");
+
+        if (value.getClass().equals(String.class)) {
+            builder.append("\"").append((String) value).append("\" ");
+        } else if (value.getClass().equals(Long.class)) {
+            builder.append((Long) value).append(" ");
+        } else {
+            builder.append(value.toString()).append(" ");
+        }
     }
 }
