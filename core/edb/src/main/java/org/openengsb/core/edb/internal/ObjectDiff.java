@@ -71,7 +71,7 @@ public class ObjectDiff implements EDBObjectDiff {
         List<String> keyList = loadKeyList();
 
         for (String key : keyList) {
-            if (key.equals("id") || key.equals("@prevTimestamp") || key.equals("@timestamp")) {
+            if (key.equals("id") || key.equals("prevTimestamp") || key.equals("timestamp")) {
                 continue;
             }
             Object first = startState.get(key);

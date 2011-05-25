@@ -74,9 +74,9 @@ public class JPAObject {
         for (JPAEntry kvp : values) {
             data.put(kvp.getKey(), kvp.getValue());
         }
-        String s = (String) data.get("@isDeleted");
+        String s = (String) data.get("isDeleted");
         if (s != null) {
-            data.put("@isDeleted", s.equals("true"));
+            data.put("isDeleted", s.equals("true"));
         }
         return new EDBObject(uid, timestamp, data);
     }

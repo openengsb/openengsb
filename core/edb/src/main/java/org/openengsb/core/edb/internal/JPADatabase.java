@@ -133,7 +133,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             LOGGER.debug("setting the deleted elements as deleted");
             for (String id : commit.getDeletions()) {
                 EDBObject o = new EDBObject(id, timestamp);
-                o.put("@isDeleted", new Boolean(true));
+                o.put("isDeleted", new Boolean(true));
                 JPAObject j = new JPAObject(o);
                 entityManager.persist(j);
             }

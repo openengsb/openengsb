@@ -28,9 +28,9 @@ public class EDBObject extends HashMap<String, Object> {
     private Long timestamp;
     private String uid;
 
-    private static final String UID_CONST = "@uid";
-    private static final String TIMESTAMP_CONST = "@timestamp";
-    private static final String DELETED_CONST = "@isDeleted";
+    private static final String UID_CONST = "uid";
+    private static final String TIMESTAMP_CONST = "timestamp";
+    private static final String DELETED_CONST = "isDeleted";
 
     /**
      * Create an EDBObject with a specified UID and timestamp.
