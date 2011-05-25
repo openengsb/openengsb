@@ -23,13 +23,13 @@ import java.util.Map;
 
 /**
  * A Diff object stores hierarchically the differences between two states. It provides access to the commit objects
- * representing the first and last commits which are compared, and contains a Map of UIDs to ObjectDiff objects for each
+ * representing the first and last commits which are compared, and contains a Map of OIDs to ObjectDiff objects for each
  * object which undergoes any change in the range of the two commits.
  */
 public interface EDBDiff {
 
     /**
-     * Get the Mapping from UIDs to ObjectDiff objects. The map only contains objects which actually change between the
+     * Get the Mapping from OIDs to ObjectDiff objects. The map only contains objects which actually change between the
      * two commits, which are compared by this Diff object.
      */
     Map<String, EDBObjectDiff> getObjectDiffs();
@@ -41,7 +41,7 @@ public interface EDBDiff {
     int getDifferenceCount();
 
     /**
-     * Get the ObjectDiff for a specific UID. Note that this function returns null in two cases: Either when no object
+     * Get the ObjectDiff for a specific OID. Note that this function returns null in two cases: Either when no object
      * with this UID exists, or when it does, but is the very same at the time of both commits.
      */
     EDBObjectDiff getDiff(String key);

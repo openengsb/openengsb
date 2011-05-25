@@ -7,15 +7,6 @@ import java.util.Map;
  * Defines the connection to the enterprise database.
  */
 public interface EnterpriseDatabaseService {
-//    /** Open the database with the name chosen by the previous setDatabase() call. */
-//    void open() throws EDBException;
-//
-//    /** Close the database and synchronize all changes to the HD. */
-//    void close();
-//
-//    /** Choose the database which is to be opened with the next open() call. */
-//    void setDatabase(String databaseName, EDBDatabaseType databaseType);
-
     /**
      * Create a commit which is ready to be filled with updates. Note that the provided timestamp must be valid. If
      * there is a commit with a later timestamp in the database, then the commit() call will fail!
@@ -29,9 +20,9 @@ public interface EnterpriseDatabaseService {
     void commit(EDBCommit obj) throws EDBException;
 
     /**
-     * Retrieve the current state of the object with the specified UID.
+     * Retrieve the current state of the object with the specified OID.
      */
-    EDBObject getObject(String uid) throws EDBException;
+    EDBObject getObject(String oid) throws EDBException;
 
     /**
      * Retrieve the current state - a list of all EDBObjects currently available.
@@ -39,19 +30,19 @@ public interface EnterpriseDatabaseService {
     List<EDBObject> getHead() throws EDBException;
 
     /**
-     * Retrieve the history of an object with a specified UID.
+     * Retrieve the history of an object with a specified OID.
      */
-    List<EDBObject> getHistory(String uid) throws EDBException;
+    List<EDBObject> getHistory(String oid) throws EDBException;
 
     /**
-     * Retrieve the history of an object with a specified UID between a specified range of timestamps (inclusive).
+     * Retrieve the history of an object with a specified OID between a specified range of timestamps (inclusive).
      */
-    List<EDBObject> getHistory(String uid, long from, long to) throws EDBException;
+    List<EDBObject> getHistory(String oid, long from, long to) throws EDBException;
 
     /**
      * Get the Log for an object between two timestamps (inclusive).
      */
-    List<EDBLogEntry> getLog(String uid, long from, long to) throws EDBException;
+    List<EDBLogEntry> getLog(String oid, long from, long to) throws EDBException;
 
     /**
      * Retrieve the full state for a provided timestamp. Note, there need not exist a commit for this exact timestamp.
@@ -59,7 +50,9 @@ public interface EnterpriseDatabaseService {
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
 
-    /** Convenience function to query for a single key-value pair in the current state. */
+    /** 
+     * Convenience function to query for a single key-value pair in the current state. 
+     */
     List<EDBObject> query(String key, Object value) throws EDBException;
 
     /**
@@ -67,7 +60,9 @@ public interface EnterpriseDatabaseService {
      */
     List<EDBObject> query(Map<String, Object> query) throws EDBException;
 
-    /** Convenience function to query for a commit with a single matching key-value pair. */
+    /** 
+     * Convenience function to query for a commit with a single matching key-value pair. 
+     */
     List<EDBCommit> getCommits(String key, Object value) throws EDBException;
 
     /**
@@ -81,7 +76,9 @@ public interface EnterpriseDatabaseService {
      */
     EDBCommit getCommit(long from) throws EDBException;
 
-    /** Convenience function to query for a commit with a single matching key-value pair. */
+    /** 
+     * Convenience function to query for a commit with a single matching key-value pair. 
+     */
     EDBCommit getLastCommit(String key, Object value) throws EDBException;
 
     /**
@@ -95,9 +92,9 @@ public interface EnterpriseDatabaseService {
     EDBDiff getDiff(long min, long max) throws EDBException;
 
     /**
-     * Find all UIDs which have been "resurrected" (deleted and recreated)
+     * Find all OIDs which have been "resurrected" (deleted and recreated)
      */
-    List<String> getResurrectedUIDs() throws EDBException;
+    List<String> getResurrectedOIDs() throws EDBException;
 
     /**
      * Fixed-Complex-Query - Get all objects at the state of last commit which matches the provided query.

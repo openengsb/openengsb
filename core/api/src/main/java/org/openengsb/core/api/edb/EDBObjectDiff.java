@@ -20,7 +20,7 @@ package org.openengsb.core.api.edb;
 import java.util.Map;
 
 /**
- * An ObjectDiff compares two EDBObjects of the same UID and stores their differences. Note that "objects" may be null
+ * An ObjectDiff compares two EDBObjects of the same OID and stores their differences. Note that "objects" may be null
  * in case they didn't exist, whereas commits must never be null!
  */
 public interface EDBObjectDiff {

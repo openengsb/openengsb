@@ -92,12 +92,12 @@ public class JPACriteriaFunctions {
      * Returns the most actual JPAObject timestamp.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getNewestJPAObjectTimestamp(String uid) throws EDBException {
+    public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAObject.class);
 
-        Predicate predicate = criteriaBuilder.equal(from.get("uid"), uid);
+        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
         query.where(predicate);
 
         Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
@@ -107,7 +107,7 @@ public class JPACriteriaFunctions {
         try {
             return typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            throw new EDBException("the given uid was never saved in the database", e);
+            throw new EDBException("the given oid was never saved in the database", e);
         }
     }
 
@@ -115,12 +115,12 @@ public class JPACriteriaFunctions {
      * Returns the history (all objects) of a given object.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<JPAObject> getJPAObjectHistory(String uid) throws EDBException {
+    public List<JPAObject> getJPAObjectHistory(String oid) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root from = query.from(JPAObject.class);
 
-        Predicate predicate = criteriaBuilder.equal(from.get("uid"), uid);
+        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
         query.where(predicate);
 
         CriteriaQuery<JPAObject> select = query.select(from);
@@ -133,12 +133,12 @@ public class JPACriteriaFunctions {
      * Returns the history (between from and to) of a given object.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<JPAObject> getJPAObjectHistory(String uid, long from, long to) throws EDBException {
+    public List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
 
-        Predicate predicate1 = criteriaBuilder.equal(f.get("uid"), uid);
+        Predicate predicate1 = criteriaBuilder.equal(f.get("oid"), oid);
         Predicate predicate2 = criteriaBuilder.between(f.get("timestamp"), from, to);
         query.where(criteriaBuilder.and(predicate1, predicate2));
 
@@ -153,7 +153,7 @@ public class JPACriteriaFunctions {
     /**
      * Returns a JPAObject with the given timestamp
      */
-    public JPAObject getJPAObject(String uid, long timestamp) throws EDBException {
+    public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> from = query.from(JPAObject.class);
@@ -161,7 +161,7 @@ public class JPACriteriaFunctions {
         CriteriaQuery<JPAObject> select = query.select(from);
 
         Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), timestamp);
-        Predicate predicate2 = criteriaBuilder.equal(from.get("uid"), uid);
+        Predicate predicate2 = criteriaBuilder.equal(from.get("oid"), oid);
         query.where(criteriaBuilder.and(predicate1, predicate2));
 
         TypedQuery<JPAObject> typedQuery = em.createQuery(select);
@@ -177,10 +177,10 @@ public class JPACriteriaFunctions {
     }
 
     /**
-     * Returns all commits which are involved with the given uid which are between from and to
+     * Returns all commits which are involved with the given oid which are between from and to
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<JPACommit> getJPACommit(String uid, long from, long to) throws EDBException {
+    public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
@@ -190,7 +190,7 @@ public class JPACriteriaFunctions {
         Subquery<JPAObject> subquery = query.subquery(JPAObject.class);
         Root fromJPAObject = subquery.from(JPAObject.class);
         subquery.select(fromJPAObject.get("timestamp"));
-        Predicate predicate1 = criteriaBuilder.equal(fromJPAObject.get("uid"), uid);
+        Predicate predicate1 = criteriaBuilder.equal(fromJPAObject.get("oid"), oid);
         Predicate predicate2 = criteriaBuilder.between(fromJPAObject.get("timestamp"), from, to);
         subquery.where(criteriaBuilder.and(predicate1, predicate2));
         select.where(criteriaBuilder.in(f.get("timestamp")).value(subquery));
@@ -221,14 +221,14 @@ public class JPACriteriaFunctions {
      * Returns all JPAObjects with the given id which are younger than the given timestamp
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String uid, long timestamp) throws EDBException {
+    public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
 
         CriteriaQuery<JPAObject> select = query.select(f);
 
-        Predicate predicate1 = criteriaBuilder.equal(f.get("uid"), uid);
+        Predicate predicate1 = criteriaBuilder.equal(f.get("oid"), oid);
         Predicate predicate2 = criteriaBuilder.gt(f.get("timestamp"), timestamp);
 
         select.where(criteriaBuilder.and(predicate1, predicate2));

@@ -98,7 +98,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
 
         commit.finalize();
-        // First prepare a second head... if this fails, we don't need to continue
         JPAHead nextHead;
         if (head != null) {
             LOGGER.debug("adding a new JPAHead");
@@ -112,8 +111,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             nextHead.delete(del);
         }
         for (EDBObject update : commit.getObjects()) {
-            String uid = update.getUID();
-            nextHead.replace(uid, update);
+            String oid = update.getOID();
+            nextHead.replace(oid, update);
         }
 
         try {
@@ -181,28 +180,28 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     };
 
     @Override
-    public EDBObject getObject(String uid) throws EDBException {
-        Number number = criteria.getNewestJPAObjectTimestamp(uid);
+    public EDBObject getObject(String oid) throws EDBException {
+        Number number = criteria.getNewestJPAObjectTimestamp(oid);
         if (number.longValue() <= 0) {
-            throw new EDBException("the given uid was never commited to the database");
+            throw new EDBException("the given oid was never commited to the database");
         }
-        LOGGER.debug("loading JPAObject with the uid %s and the timestamp %d", Arrays.asList(uid, number).toArray());
-        JPAObject temp = criteria.getJPAObject(uid, number.longValue());
+        LOGGER.debug("loading JPAObject with the oid %s and the timestamp %d", Arrays.asList(oid, number).toArray());
+        JPAObject temp = criteria.getJPAObject(oid, number.longValue());
         return temp.getObject();
     }
 
     @Override
-    public List<EDBObject> getHistory(String uid) throws EDBException {
-        LOGGER.debug("loading history of JPAObject with the uid %s", uid);
-        List<JPAObject> jpa = criteria.getJPAObjectHistory(uid);
+    public List<EDBObject> getHistory(String oid) throws EDBException {
+        LOGGER.debug("loading history of JPAObject with the oid %s", oid);
+        List<JPAObject> jpa = criteria.getJPAObjectHistory(oid);
         return generateEDBObjectList(jpa);
     }
 
     @Override
-    public List<EDBObject> getHistory(String uid, long from, long to) throws EDBException {
-        LOGGER.debug("loading JPAObject with the uid " + uid + " from"
+    public List<EDBObject> getHistory(String oid, long from, long to) throws EDBException {
+        LOGGER.debug("loading JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
-        List<JPAObject> jpa = criteria.getJPAObjectHistory(uid, from, to);
+        List<JPAObject> jpa = criteria.getJPAObjectHistory(oid, from, to);
         return generateEDBObjectList(jpa);
     }
 
@@ -218,11 +217,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public List<EDBLogEntry> getLog(String uid, long from, long to) throws EDBException {
-        LOGGER.debug("loading the log of JPAObject with the uid " + uid + " from"
+    public List<EDBLogEntry> getLog(String oid, long from, long to) throws EDBException {
+        LOGGER.debug("loading the log of JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
-        List<EDBObject> hist = getHistory(uid, from, to);
-        List<JPACommit> commits = criteria.getJPACommit(uid, from, to);
+        List<EDBObject> hist = getHistory(oid, from, to);
+        List<JPACommit> commits = criteria.getJPACommit(oid, from, to);
         if (hist.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
                     + Integer.toString(hist.size()) + " history entries");
@@ -344,13 +343,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public List<String> getResurrectedUIDs() throws EDBException {
+    public List<String> getResurrectedOIDs() throws EDBException {
         List<JPAObject> objects = criteria.getDeletedJPAObjects();
         List<String> result = new ArrayList<String>();
         for (JPAObject o : objects) {
-            List<JPAObject> temp = criteria.getJPAObjectVersionsYoungerThanTimestamp(o.getUID(), o.getTimestamp());
+            List<JPAObject> temp = criteria.getJPAObjectVersionsYoungerThanTimestamp(o.getOID(), o.getTimestamp());
             if (temp.size() != 0) {
-                result.add(o.getUID());
+                result.add(o.getOID());
             }
         }
         return result;

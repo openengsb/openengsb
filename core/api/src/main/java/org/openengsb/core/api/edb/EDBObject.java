@@ -26,35 +26,35 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class EDBObject extends HashMap<String, Object> {
     private Long timestamp;
-    private String uid;
+    private String oid;
 
-    private static final String UID_CONST = "uid";
+    private static final String OID_CONST = "oid";
     private static final String TIMESTAMP_CONST = "timestamp";
     private static final String DELETED_CONST = "isDeleted";
 
     /**
-     * Create an EDBObject with a specified UID and timestamp.
+     * Create an EDBObject with a specified OID and timestamp.
      */
-    public EDBObject(String uid, Long timestamp) {
+    public EDBObject(String oid, Long timestamp) {
         super();
         this.timestamp = timestamp;
-        this.uid = uid;
+        this.oid = oid;
 
-        put(UID_CONST, uid);
+        put(OID_CONST, oid);
         put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
-     * Convenience constructor to create an EDBObject using a Map of data. The UID and timestamp are stored after
-     * loading the data Map, so any already existing values with the special key representing the UID or the Timestamp
+     * Convenience constructor to create an EDBObject using a Map of data. The OID and timestamp are stored after
+     * loading the data Map, so any already existing values with the special key representing the OID or the Timestamp
      * will be overwritten by the provided parameters.
      */
-    public EDBObject(String uid, Long timestamp, Map<String, Object> data) {
+    public EDBObject(String oid, Long timestamp, Map<String, Object> data) {
         super(data);
         this.timestamp = timestamp;
-        this.uid = uid;
+        this.oid = oid;
 
-        put(UID_CONST, uid);
+        put(OID_CONST, oid);
         put(TIMESTAMP_CONST, timestamp);
     }
 
@@ -65,7 +65,7 @@ public class EDBObject extends HashMap<String, Object> {
     public EDBObject(Map<String, Object> rawData) {
         super(rawData);
         this.timestamp = (Long) rawData.get(TIMESTAMP_CONST);
-        this.uid = (String) rawData.get(UID_CONST);
+        this.oid = (String) rawData.get(OID_CONST);
     }
 
     /**
@@ -85,21 +85,21 @@ public class EDBObject extends HashMap<String, Object> {
     }
 
     /**
-     * Retrieve the UID for this object.
+     * Retrieve the OID for this object.
      */
-    public final String getUID() {
-        if (uid != null) {
-            return uid;
+    public final String getOID() {
+        if (oid != null) {
+            return oid;
         } else {
-            uid = (String) get(UID_CONST);
-            return uid;
+            oid = (String) get(OID_CONST);
+            return oid;
         }
     }
 
-    /** Change the UID */
-    public void setUID(String uid) {
-        this.uid = uid;
-        put(UID_CONST, uid);
+    /** Change the OID */
+    public void setOID(String oid) {
+        this.oid = oid;
+        put(OID_CONST, oid);
     }
 
     /**

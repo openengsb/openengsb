@@ -48,7 +48,7 @@ public class JPAObject {
     
     private Long timestamp;
     private Boolean isDeleted;
-    private String uid;
+    private String oid;
 
     public JPAObject() {
         isDeleted = false;
@@ -56,7 +56,7 @@ public class JPAObject {
 
     public JPAObject(EDBObject o) {
         timestamp = o.getTimestamp().longValue();
-        uid = o.getUID();
+        oid = o.getOID();
         isDeleted = o.isDeleted();
 
         loadValues(o);
@@ -78,7 +78,7 @@ public class JPAObject {
         if (s != null) {
             data.put("isDeleted", s.equals("true"));
         }
-        return new EDBObject(uid, timestamp, data);
+        return new EDBObject(oid, timestamp, data);
     }
 
     public Boolean isDeleted() {
@@ -96,8 +96,8 @@ public class JPAObject {
         return timestamp;
     }
 
-    public String getUID() {
-        return uid;
+    public String getOID() {
+        return oid;
     }
     
     public List<JPAEntry> getPairs() {

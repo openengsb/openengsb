@@ -37,6 +37,7 @@ public class JPAHead {
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
+    @Deprecated
     public JPAHead() {
     }
 
@@ -74,22 +75,22 @@ public class JPAHead {
         return head;
     }
 
-    public void delete(String uid) {
+    public void delete(String oid) {
         loaded = null;
         for (int i = 0; i < head.size(); ++i) {
             JPAObject o = head.get(i);
-            if (uid.equals(o.getUID())) {
+            if (oid.equals(o.getOID())) {
                 head.remove(i);
                 return;
             }
         }
     }
 
-    public void replace(String uid, JPAObject obj) {
+    public void replace(String oid, JPAObject obj) {
         loaded = null;
         for (int i = 0; i < head.size(); ++i) {
             JPAObject o = head.get(i);
-            if (uid.equals(o.getUID())) {
+            if (oid.equals(o.getOID())) {
                 head.remove(i);
                 break;
             }
@@ -97,9 +98,9 @@ public class JPAHead {
         head.add(obj);
     }
 
-    public void replace(String uid, EDBObject obj) {
+    public void replace(String oid, EDBObject obj) {
         loaded = null;
-        this.replace(uid, new JPAObject(obj));
+        this.replace(oid, new JPAObject(obj));
     }
 
     public Long getTimestamp() {

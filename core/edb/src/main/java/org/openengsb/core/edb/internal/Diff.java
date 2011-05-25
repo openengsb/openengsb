@@ -36,9 +36,6 @@ public class Diff implements EDBDiff {
     private List<EDBObject> endState;
     private HashMap<String, EDBObjectDiff> diff;
 
-    /**
-     * Constructor
-     */
     public Diff(JPACommit startCommit, JPACommit endCommit, List<EDBObject> startState,
             List<EDBObject> endState) throws EDBException {
         if (endCommit.getTimestamp() < startCommit.getTimestamp()) {
@@ -67,24 +64,24 @@ public class Diff implements EDBDiff {
         }
 
         for (EDBObject a : this.startState) {
-            String uid = a.getUID();
-            EDBObject b = removeIfExist(uid, tempList);
+            String oid = a.getOID();
+            EDBObject b = removeIfExist(oid, tempList);
             ObjectDiff odiff = new ObjectDiff(this.startCommit, this.endCommit, a, b);
             if (odiff.getDifferenceCount() > 0) {
-                diff.put(uid, odiff);
+                diff.put(oid, odiff);
             }
         }
     }
 
     /**
-     * Removes the element with the given uid if it exists in the list and returns it. If it not exists, null will be
+     * Removes the element with the given oid if it exists in the list and returns it. If it not exists, null will be
      * returned.
      */
-    private EDBObject removeIfExist(String uid, List<EDBObject> tempList) {
+    private EDBObject removeIfExist(String oid, List<EDBObject> tempList) {
         Iterator<EDBObject> iterator = tempList.iterator();
         while (iterator.hasNext()) {
             EDBObject obj = iterator.next();
-            if (obj.getUID().equals(uid)) {
+            if (obj.getOID().equals(oid)) {
                 iterator.remove();
                 return obj;
             }
@@ -132,9 +129,9 @@ public class Diff implements EDBDiff {
         StringBuilder builder = new StringBuilder();
         Map<String, EDBObjectDiff> diff = this.getObjectDiffs();
         for (Map.Entry<String, EDBObjectDiff> e : diff.entrySet()) {
-            String uid = e.getKey();
+            String oid = e.getKey();
 
-            builder.append("    Found a difference for object: " + uid);
+            builder.append("Found a difference for object: " + oid);
 
             EDBObjectDiff odiff = e.getValue();
             Map<String, EDBEntry> diffMap = odiff.getDiffMap();
@@ -144,6 +141,7 @@ public class Diff implements EDBDiff {
                 builder.append("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '"
                         + entry.getAfter() + "'");
             }
+            builder.append("\n");
         }
         return builder.toString();
     }

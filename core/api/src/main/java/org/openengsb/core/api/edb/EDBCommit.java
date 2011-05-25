@@ -34,9 +34,9 @@ public interface EDBCommit {
     boolean isCommitted();
 
     /**
-     * For a query-commit: Retrieve a list of UIDs representing the objects which have been changed by this commit.
+     * For a query-commit: Retrieve a list of OIDs representing the objects which have been changed by this commit.
      */
-    List<String> getUIDs();
+    List<String> getOIDs();
 
     /**
      * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
@@ -44,7 +44,7 @@ public interface EDBCommit {
     List<EDBObject> getObjects();
 
     /**
-     * For both, a created, or a queried commit: Retrieve a list of deleted UIDs.
+     * For both, a created, or a queried commit: Retrieve a list of deleted OIDs.
      */
     List<String> getDeletions();
 
@@ -65,7 +65,7 @@ public interface EDBCommit {
     /**
      * Delete an object that already exists.
      */
-    void delete(String uid) throws EDBException;
+    void delete(String oid) throws EDBException;
 
     /** Used by the database to "finalize" the commit */
     void finalize() throws EDBException;

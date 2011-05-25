@@ -103,7 +103,7 @@ public class JPATestIT {
         runTimeStep();
     }
 
-    private EDBObject randomTestObject(String uuid, long runTime) {
+    private EDBObject randomTestObject(String oid, long runTime) {
         // If you use this the object must not in any way relate to the feature you are testing...
         // Using random strings seems to have an effect on the OS' RW-cache... ?
         // Well... if its cache says the HD has the very same text in the block that's supposed to be written
@@ -119,7 +119,7 @@ public class JPATestIT {
             String value = "key value " + Integer.toString(rand.nextInt(100));
             testData.put(key, value);
         }
-        return new EDBObject(uuid, runTime, testData);
+        return new EDBObject(oid, runTime, testData);
     }
 
     private String randomCommitter() {
@@ -451,7 +451,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void testGetResurrectedUIDs_shouldWork() throws Exception {
+    public void testGetResurrectedOIDs_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
 
         HashMap<String, Object> data1 = new HashMap<String, Object>();
@@ -477,10 +477,10 @@ public class JPATestIT {
         ci.add(v1);
         db.commit(ci);
 
-        List<String> uids = db.getResurrectedUIDs();
+        List<String> oids = db.getResurrectedOIDs();
 
-        assertThat(uids.contains("/ress/object"), is(true));
-        assertThat(uids.contains("/ress/object2"), is(false));
+        assertThat(oids.contains("/ress/object"), is(true));
+        assertThat(oids.contains("/ress/object2"), is(false));
     }
 
     @Test(expected = EDBException.class)

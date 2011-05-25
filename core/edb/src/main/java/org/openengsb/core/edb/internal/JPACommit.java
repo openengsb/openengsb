@@ -41,15 +41,14 @@ public class JPACommit implements EDBCommit {
     @Basic
     protected String role;
 
-    protected List<EDBObject> objects; // For built commit objects
+    protected List<EDBObject> objects;
 
     @ElementCollection
     protected List<String> deletions;
 
     @ElementCollection
-    protected List<String> uids; // For queried commit objects
+    protected List<String> oids;
 
-    // / The object has been committed, you must not commit it twice.
     protected boolean committed = false;
 
     /**
@@ -63,7 +62,7 @@ public class JPACommit implements EDBCommit {
         this.committer = committer;
         this.role = role;
 
-        uids = new ArrayList<String>();
+        oids = new ArrayList<String>();
         objects = new ArrayList<EDBObject>();
         deletions = new ArrayList<String>();
     }
@@ -79,8 +78,8 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public List<String> getUIDs() {
-        return uids;
+    public List<String> getOIDs() {
+        return oids;
     }
 
     @Override
@@ -119,11 +118,11 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public void delete(String uid) throws EDBException {
-        if (deletions.contains(uid)) {
+    public void delete(String oid) throws EDBException {
+        if (deletions.contains(oid)) {
             return;
         }
-        deletions.add(uid);
+        deletions.add(oid);
     }
 
     @Override
@@ -131,21 +130,21 @@ public class JPACommit implements EDBCommit {
         if (isCommitted()) {
             throw new EDBException("Commit already finalized, probably already committed.");
         }
-        fillUIDs();
+        fillOIDs();
         jpaObjects = new ArrayList<JPAObject>();
         for (EDBObject o : getObjects()) {
             jpaObjects.add(new JPAObject(o));
         }
     }
 
-    private void fillUIDs() {
-        if (uids == null) {
-            uids = new ArrayList<String>();
+    private void fillOIDs() {
+        if (oids == null) {
+            oids = new ArrayList<String>();
         } else {
-            uids.clear();
+            oids.clear();
         }
         for (EDBObject o : objects) {
-            uids.add(o.getUID());
+            oids.add(o.getOID());
         }
     }
 }
