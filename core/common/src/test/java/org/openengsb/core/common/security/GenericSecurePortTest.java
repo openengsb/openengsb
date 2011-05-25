@@ -104,6 +104,8 @@ public abstract class GenericSecurePortTest<EncodingType> {
 
     protected abstract FilterAction getSecureRequestHandlerFilterChain() throws Exception;
 
+    protected abstract EncodingType manipulateMessage(EncodingType encryptedRequest);
+
     protected abstract EncodingType encodeAndEncrypt(SecureRequest secureRequest, SecretKey sessionKey)
         throws Exception;
 
@@ -130,8 +132,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     }
 
     @Test
-    public void testInvalidAuthentication() throws Exception {
-        UsernamePasswordAuthenticationInfo token = new UsernamePasswordAuthenticationInfo("test", "password");
+    public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
         when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
         MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
         SecureRequest secureRequest =
@@ -147,7 +148,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     }
 
     @Test
-    public void testManipulateMessage() throws Exception {
+    public void testManipulateMessage_shouldCauseVerificationException() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
 
         secureRequest.getMessage().getMethodCall().setArgs(new Object[]{ "43" }); // manipulate message
@@ -166,8 +167,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
         }
 
     }
-
-    protected abstract EncodingType manipulateMessage(EncodingType encryptedRequest);
 
     @Test
     public void testReplayMessage_shouldBeRejected() throws Exception {

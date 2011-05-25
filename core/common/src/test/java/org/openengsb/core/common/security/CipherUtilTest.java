@@ -91,7 +91,7 @@ public class CipherUtilTest {
     }
 
     @Test
-    public void testEncryptSymmetricKey() throws Exception {
+    public void encryptSymmetricKeyWithPublicKey_shouldBeTheSameWhenDecryptedWithPrivateKey() throws Exception {
         SecretKey secretKey = CipherUtils.generateKey("AES", 128);
 
         byte[] encoded = secretKey.getEncoded();
@@ -104,7 +104,7 @@ public class CipherUtilTest {
     }
 
     @Test
-    public void testEncryptWithGenerated() throws Exception {
+    public void encryptMessageWithGeneratedPublicKey_shouldBeTheSameAfterDecryptionWithPrivateKey() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] encrypted = CipherUtils.encrypt(data, generatedPublickey);
         byte[] decrypted = CipherUtils.decrypt(encrypted, generatedPrivatekey);
@@ -113,21 +113,21 @@ public class CipherUtilTest {
     }
 
     @Test
-    public void testReadPublicKey() throws Exception {
+    public void readPublicKeyFromByteArray_shouldBeSamePublicKey() throws Exception {
         byte[] data = generatedPublickey.getEncoded();
         PublicKey parsedKey = CipherUtils.deserializePublicKey(data, "RSA");
         assertEquals(generatedPublickey, parsedKey);
     }
 
     @Test
-    public void testReadPrivateKey() throws Exception {
+    public void readPrivateKeyFromByteArray_shouldBeSamePrivateKey() throws Exception {
         byte[] data = generatedPrivatekey.getEncoded();
         PrivateKey parsedKey = CipherUtils.deserializePrivateKey(data, "RSA");
         assertEquals(generatedPrivatekey, parsedKey);
     }
 
     @Test
-    public void testDecryptReceivedData() throws Exception {
+    public void decryptUsingPrivateKey_shouldResultInDecryptedText() throws Exception {
         PrivateKey key = CipherUtils.deserializePrivateKey(Base64.decodeBase64(PRIVATE_KEY_64), "RSA");
         byte[] data = CipherUtils.decrypt(Base64.decodeBase64(TEST_STRING_CIPHERED), key);
         String testString = new String(data);
@@ -135,14 +135,14 @@ public class CipherUtilTest {
     }
 
     @Test
-    public void testSignAndVerify() throws Exception {
+    public void signAndVerifyMessage_shouldVerifyOK() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
         assertTrue(CipherUtils.verify(data, signature, generatedPublickey, CipherUtils.DEFAULT_SIGN_ALGORITHM));
     }
 
     @Test
-    public void testInvalidSignature() throws Exception {
+    public void signAndVerifyAndManipulate_shouldCauseVerificationFailure() throws Exception {
         byte[] data = TEST_STRING.getBytes(DEFAULT_ENCODING);
         byte[] signature = CipherUtils.sign(data, generatedPrivatekey, CipherUtils.DEFAULT_SIGN_ALGORITHM);
         data[0]++;
