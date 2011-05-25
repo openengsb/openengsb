@@ -17,9 +17,10 @@
 
 package org.openengsb.core.edb.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -133,7 +134,8 @@ public class JPATestIT {
     public void testOpenDatabase_shouldWork() {
         JPADatabase db = openDatabase();
 
-        assertTrue(db != null);
+        assertThat(db, notNullValue());
+        // assertTrue(db != null);
     }
 
     @Test
@@ -151,8 +153,10 @@ public class JPATestIT {
             obj = db.getObject("Tester");
             String hooray = (String) obj.get("Test");
 
-            assertTrue("Test object must exist!", obj != null);
-            assertTrue("Test-string must exist in the queried object", hooray != null);
+            assertThat(obj, notNullValue());
+            assertThat(hooray, notNullValue());
+            // assertTrue("Test object must exist!", obj != null);
+            // assertTrue("Test-string must exist in the queried object", hooray != null);
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
         }
@@ -171,8 +175,10 @@ public class JPATestIT {
             List<EDBCommit> commits1 = db.getCommits("role", "Testrole");
             List<EDBCommit> commits2 = db.getCommits("role", "DoesNotExist");
 
-            assertTrue("Found more than one commit for role=Testrole", commits1.size() == 1);
-            assertTrue("Found at least one commit for role=DoesNotExist", commits2.size() == 0);
+            assertThat(commits1.size(), is(1));
+            assertThat(commits2.size(), is(0));
+            // assertTrue("Found more than one commit for role=Testrole", commits1.size() == 1);
+            // assertTrue("Found at least one commit for role=DoesNotExist", commits2.size() == 0);
         } catch (EDBException ex) {
             fail("Faild to fetch commit list...");
         }
@@ -239,16 +245,15 @@ public class JPATestIT {
                 ordered = false;
             }
         }
+        assertThat(ordered, is(true));
+        assertThat(history.get(0).getString("Lock"), is("Key"));
+        assertThat(history.get(0).getString("Cat"), is("Spongebob"));
+        
+        assertThat(history.get(1).getString("Lock"), is("Smith"));
+        assertThat(history.get(1).getString("Cat"), is("Spongebob"));
 
-        assertTrue("the history should be ordered by timestamp", ordered);
-        assertTrue(history.get(0).getString("Lock").equals("Key"));
-        assertTrue(history.get(0).getString("Cat").equals("Spongebob"));
-
-        assertTrue(history.get(1).getString("Lock").equals("Smith"));
-        assertTrue(history.get(1).getString("Cat").equals("Spongebob"));
-
-        assertTrue(history.get(2).getString("Lock").equals("Smith"));
-        assertTrue(history.get(2).getString("Cat").equals("Dog"));
+        assertThat(history.get(2).getString("Lock"), is("Smith"));
+        assertThat(history.get(2).getString("Cat"), is("Dog"));
     }
 
     @Test
@@ -266,9 +271,9 @@ public class JPATestIT {
 
         List<EDBObject> history = db.getHistory("/deletion/1");
 
-        assertEquals("history should contain exactly 2 values.", history.size(), 2);
-        assertFalse("First object is not a deletion!", history.get(0).isDeleted());
-        assertTrue("Second entry is a deletion!", history.get(1).isDeleted());
+        assertThat(history.size(), is(2));
+        assertThat(history.get(0).isDeleted(), is(false));
+        assertThat(history.get(1).isDeleted(), is(true));
     }
 
     @SuppressWarnings("unchecked")
@@ -324,8 +329,7 @@ public class JPATestIT {
         }
 
         log = db.getLog("/history/test/object", from, to);
-        assertTrue("some data of the object isn't available", log.size() == 3);
-
+        assertThat(log.size(), is(3));
     }
 
     @SuppressWarnings("serial")
@@ -374,11 +378,11 @@ public class JPATestIT {
                 }
             });
 
-            assertTrue("There should be exactly one object with A:B", list1.size() == 1);
-            assertTrue("There should be exactly one object with A:B,Dog:Food", list2.size() == 1);
-            assertTrue("There must be two objects with Cow:Milk", list3.size() == 2);
-            assertTrue("There must not be an object with A:B,Cow:Milk", list4.size() == 0);
-
+            assertThat(list1.size(), is(1));
+            assertThat(list2.size(), is(1));
+            assertThat(list3.size(), is(2));
+            assertThat(list4.size(), is(0));
+            
             // removed because of the by jpa not supported regex command
             // list = db.query(new HashMap<String, Object>() {
             // {
@@ -441,9 +445,9 @@ public class JPATestIT {
         Diff diffBc = db.getDiff(timeB, timeC);
         Diff diffAc = db.getDiff(timeA, timeC);
 
-        assertTrue("There should be exactly one change from A to B", diffAb.getDifferenceCount() == 1);
-        assertTrue("There should be exactly one change from B to C", diffBc.getDifferenceCount() == 1);
-        assertTrue("There should be exactly one change from A to C", diffAc.getDifferenceCount() == 1);
+        assertThat(diffAb.getDifferenceCount(), is(1));
+        assertThat(diffBc.getDifferenceCount(), is(1));
+        assertThat(diffAc.getDifferenceCount(), is(1));
     }
 
     @Test
@@ -475,8 +479,8 @@ public class JPATestIT {
 
         List<String> uids = db.getResurrectedUIDs();
 
-        assertTrue(uids.contains("/ress/object"));
-        assertFalse(uids.contains("/ress/object2"));
+        assertThat(uids.contains("/ress/object"), is(true));
+        assertThat(uids.contains("/ress/object2"), is(false));
     }
 
     @Test(expected = EDBException.class)
