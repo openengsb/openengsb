@@ -56,44 +56,5 @@
 
   </section>
 
-  <section>
-    <title>Adding new commands</title>
-
-    <para>This section describes how to add new commands. The project is located in core/console. To add a new
-      command not much is needed. For an finished example have a look at the
-      class org.openengsb.core.console.OpenEngSBCommand.
-      Here a short descritpion:
-      <programlisting>
-        import org.apache.felix.gogo.commands.Command;
-        import org.apache.karaf.shell.console.OsgiCommandSupport;
-
-        @Command(scope = "openengsb", name = "info", description = "Prints out some information")
-        public class OpenEngSBCommand extends OsgiCommandSupport {
-
-            @Override
-            protected Object doExecute() throws Exception {
-                System.out.println("Here is the information");
-                return null;
-            }
-        }
-      </programlisting>
-      There is just one single other step which has to be done:
-      Go into the core/console/src/main/resources/OSGI-INF/bluepring/shell-config.xml and add the following lines:
-      <programlisting>
-        <![CDATA[
-        <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
-          <command name="openengsb/info">
-            <action class="org.openengsb.core.console.OpenEngSBCommand"/>
-          </command>
-        </command-bundle>
-      ]]>
-      </programlisting>
-      This will lead to following command "openengsb:info". To execute this command,
-      start the OpenengSB console in a shell as described above and type in
-      openengsb:info, this will print out the text "Here is the information"
-    </para>
-
-  </section>
-
 </chapter>
 

@@ -57,6 +57,7 @@
       <para>This part contains tutorials for the OpenEngSB.</para>
     </partintro>
     <xi:include href="howto/howtoSetup.xml" />
+    <xi:include href="howto/howtoAddConsoleCommands.xml" />
     <xi:include href="howto/howtoLogging.xml" />
     <xi:include href="howto/howtoContextEditor.xml" />
     <xi:include href="howto/howtoCreateConnector.xml" />
@@ -88,7 +89,19 @@
     <xi:include href="user/platform.xml" />
   </part>
 
-  <part xml:id="ui.manual">
+  <part xml:id="console.ui.manual">
+    <title>Administration Console</title>
+    <partintro>
+      <para>
+        This part gives an introduction to the OpenEngSB Console . It shows the
+        functionality and gives an idea what the admin can change in the system and how this is done in the console.
+      </para>
+      <para>The target audience of this part are users and in special admins of the system.</para>
+    </partintro>
+    <xi:include href="ui/console.xml"/>
+  </part>
+
+  <part xml:id="web.ui.manual">
     <title>Administration User Interface</title>
     <partintro>
        <para>
@@ -97,7 +110,6 @@
        <para>The target audience of this part are users and in special admins of the system.</para>
      </partintro>
     <xi:include href="ui/testclient.xml"/>
-    <xi:include href="ui/console.xml"/>
     <xi:include href="ui/wiring.xml"/>
   </part>
 
