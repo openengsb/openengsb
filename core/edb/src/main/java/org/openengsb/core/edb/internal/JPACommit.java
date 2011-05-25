@@ -68,7 +68,7 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public void setCommitted(boolean c) {
+    public void setCommitted(Boolean c) {
         committed = c;
     }
 

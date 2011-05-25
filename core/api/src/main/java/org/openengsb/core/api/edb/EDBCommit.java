@@ -22,14 +22,15 @@ import java.util.List;
 
 /**
  * A Commit object represents a change to the dataset. It can either reflect a change that already happened in the past,
- * in which it will contain a list of UIDs which have been changed by this commit. Or a new change that is going to be
+ * in which it will contain a list of OIDs which have been changed by this commit. Or a new change that is going to be
  * committed to the database. The commit object needs a timestamp, representing the time at which the change happened.
  * Then the commit is filled with objects, or deletions. When everything is prepared, the commit() function can be
- * executed to send the change over to the database.
+ * executed to send the change over to the database. If a commit was commitet once, it throws an exception if you want
+ * to commit it again.
  */
 public interface EDBCommit {
 
-    void setCommitted(boolean c);
+    void setCommitted(Boolean c);
 
     boolean isCommitted();
 
