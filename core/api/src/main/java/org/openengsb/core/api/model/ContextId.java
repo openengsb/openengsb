@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,6 +106,10 @@ public class ContextId {
             return false;
         }
         return true;
+    }
+
+    public static Map<String, String> getContextWildCard() {
+        return Collections.emptyMap();
     }
 
 }

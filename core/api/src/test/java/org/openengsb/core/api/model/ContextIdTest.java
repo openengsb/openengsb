@@ -58,9 +58,14 @@ public class ContextIdTest {
     public void testEquals_shouldBeTrueForEqualIds() {
         ContextId id1 = new ContextId("theId");
         ContextId id2 = new ContextId("theId");
-        
+
         assertThat(id1.equals(id2), is(true));
         assertThat(id2.equals(id1), is(true));
+    }
+
+    @Test
+    public void testGetContextWildCard_shouldReturnEmptyMap() {
+        assertThat(ContextId.getContextWildCard().isEmpty(), is(true));
     }
 
 }
