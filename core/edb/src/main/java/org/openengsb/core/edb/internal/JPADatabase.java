@@ -38,6 +38,8 @@ import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.edb.internal.dao.JPACriteriaDAO;
+import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JPAHead head;
-    private JPACriteriaFunctions criteria;
+    private JPADao dao;
 
     public JPADatabase() {
         head = null;
@@ -64,10 +66,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         emf = Persistence.createEntityManagerFactory("edb-test", props);
         entityManager = emf.createEntityManager();
         utx = entityManager.getTransaction();
-        criteria = new JPACriteriaFunctions(entityManager);
+        dao = new JPACriteriaDAO(entityManager);
         LOGGER.debug("starting of EDB successful");
 
-        Number max = criteria.getNewestJPAHeadNumber();
+        Number max = dao.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
             LOGGER.debug("loading JPA Head with timestamp " + max.longValue());
             head = loadHead(max.longValue());
@@ -181,19 +183,19 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        Number number = criteria.getNewestJPAObjectTimestamp(oid);
+        Number number = dao.getNewestJPAObjectTimestamp(oid);
         if (number.longValue() <= 0) {
             throw new EDBException("the given oid was never commited to the database");
         }
         LOGGER.debug("loading JPAObject with the oid %s and the timestamp %d", Arrays.asList(oid, number).toArray());
-        JPAObject temp = criteria.getJPAObject(oid, number.longValue());
+        JPAObject temp = dao.getJPAObject(oid, number.longValue());
         return temp.getObject();
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
         LOGGER.debug("loading history of JPAObject with the oid %s", oid);
-        List<JPAObject> jpa = criteria.getJPAObjectHistory(oid);
+        List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
         return generateEDBObjectList(jpa);
     }
 
@@ -201,7 +203,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public List<EDBObject> getHistory(String oid, long from, long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
-        List<JPAObject> jpa = criteria.getJPAObjectHistory(oid, from, to);
+        List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
         return generateEDBObjectList(jpa);
     }
 
@@ -221,7 +223,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         LOGGER.debug("loading the log of JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
         List<EDBObject> hist = getHistory(oid, from, to);
-        List<JPACommit> commits = criteria.getJPACommit(oid, from, to);
+        List<JPACommit> commits = dao.getJPACommit(oid, from, to);
         if (hist.size() != commits.size()) {
             throw new EDBException("inconsistent log " + Integer.toString(commits.size()) + " commits for "
                     + Integer.toString(hist.size()) + " history entries");
@@ -238,7 +240,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
      */
     private JPAHead loadHead(long timestamp) throws EDBException {
         LOGGER.debug("load the JPAHead with the timestamp %d", timestamp);
-        return criteria.getJPAHead(timestamp);
+        return dao.getJPAHead(timestamp);
     }
 
     @Override
@@ -273,7 +275,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 String key = entry.getKey();
                 Object value = entry.getValue();
 
-                List<JPAObject> temp = criteria.query(key, value);
+                List<JPAObject> temp = dao.query(key, value);
                 if (temp.size() == 0) {
                     return new ArrayList<EDBObject>();
                 }
@@ -306,7 +308,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBCommit> getCommits(Map<String, Object> query) throws EDBException {
-        List<JPACommit> commits = criteria.getCommits(query);
+        List<JPACommit> commits = dao.getCommits(query);
         return new ArrayList<EDBCommit>(commits);
     }
 
@@ -319,13 +321,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public JPACommit getLastCommit(Map<String, Object> query) throws EDBException {
-        JPACommit result = criteria.getLastCommit(query);
+        JPACommit result = dao.getLastCommit(query);
         return result;
     }
 
     @Override
     public JPACommit getCommit(long from) throws EDBException {
-        List<JPACommit> commits = criteria.getJPACommit(from);
+        List<JPACommit> commits = dao.getJPACommit(from);
         if (commits == null || commits.size() != 1) {
             throw new EDBException("there is no commit for this timestamp");
         }
@@ -344,10 +346,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<String> getResurrectedOIDs() throws EDBException {
-        List<JPAObject> objects = criteria.getDeletedJPAObjects();
+        List<JPAObject> objects = dao.getDeletedJPAObjects();
         List<String> result = new ArrayList<String>();
         for (JPAObject o : objects) {
-            List<JPAObject> temp = criteria.getJPAObjectVersionsYoungerThanTimestamp(o.getOID(), o.getTimestamp());
+            List<JPAObject> temp = dao.getJPAObjectVersionsYoungerThanTimestamp(o.getOID(), o.getTimestamp());
             if (temp.size() != 0) {
                 result.add(o.getOID());
             }
@@ -371,6 +373,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     public void setEntityManager(EntityManager em) {
         this.entityManager = em;
-        criteria = new JPACriteriaFunctions(em);
+        dao = new JPACriteriaDAO(em);
     }
 }

@@ -127,7 +127,6 @@
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.vfs.version>20050307052300</commons.vfs.version>
     <commons.codec.version>1.4</commons.codec.version>
-    <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <cglib.version>2.1_3_6</cglib.version>
     <asm.version>3.3_1</asm.version>
@@ -526,11 +525,6 @@
         <artifactId>xmlrpc-client</artifactId>
         <version>${apache.xmlrpc.version}</version>
         <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>net.sourceforge.serp</groupId>
-        <artifactId>serp</artifactId>
-        <version>${serp.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>

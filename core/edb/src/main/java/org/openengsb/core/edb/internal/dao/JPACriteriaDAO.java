@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.edb.internal.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,30 +34,32 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.edb.internal.JPACommit;
+import org.openengsb.core.edb.internal.JPAEntry;
+import org.openengsb.core.edb.internal.JPAHead;
+import org.openengsb.core.edb.internal.JPAObject;
 
-/**
- * A support class where all calls to the database via jpa criteria are done
- */
-public class JPACriteriaFunctions {
+public class JPACriteriaDAO implements JPADao {
 
-    private EntityManager em;
+    private EntityManager entityManager;
 
-    public JPACriteriaFunctions(EntityManager em) {
-        this.em = em;
+    public JPACriteriaDAO() {
     }
 
-    /**
-     * Returns the most actual JPAHead Number.
-     */
+    public JPACriteriaDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Number getNewestJPAHeadNumber() throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAHead.class);
         Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
         CriteriaQuery<Number> select = query.select(maxExpression);
 
-        TypedQuery<Number> typedQuery = em.createQuery(select);
+        TypedQuery<Number> typedQuery = entityManager.createQuery(select);
         try {
             return typedQuery.getSingleResult();
         } catch (NoResultException ex) {
@@ -65,11 +67,9 @@ public class JPACriteriaFunctions {
         }
     }
 
-    /**
-     * Loads the JPAHead with the given timestamp.
-     */
+    @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAHead> query = criteriaBuilder.createQuery(JPAHead.class);
         Root<JPAHead> from = query.from(JPAHead.class);
 
@@ -78,7 +78,7 @@ public class JPACriteriaFunctions {
         Predicate predicate = criteriaBuilder.equal(from.get("timestamp"), timestamp);
         query.where(predicate);
 
-        TypedQuery<JPAHead> typedQuery = em.createQuery(select);
+        TypedQuery<JPAHead> typedQuery = entityManager.createQuery(select);
         List<JPAHead> resultList = typedQuery.getResultList();
 
         if (resultList == null || resultList.size() != 1 || resultList.get(0) == null) {
@@ -88,12 +88,10 @@ public class JPACriteriaFunctions {
         return resultList.get(0);
     }
 
-    /**
-     * Returns the most actual JPAObject timestamp.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAObject.class);
 
@@ -103,7 +101,7 @@ public class JPACriteriaFunctions {
         Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
         CriteriaQuery<Number> select = query.select(maxExpression);
 
-        TypedQuery<Number> typedQuery = em.createQuery(select);
+        TypedQuery<Number> typedQuery = entityManager.createQuery(select);
         try {
             return typedQuery.getSingleResult();
         } catch (NoResultException e) {
@@ -111,12 +109,10 @@ public class JPACriteriaFunctions {
         }
     }
 
-    /**
-     * Returns the history (all objects) of a given object.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root from = query.from(JPAObject.class);
 
@@ -125,16 +121,14 @@ public class JPACriteriaFunctions {
 
         CriteriaQuery<JPAObject> select = query.select(from);
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Returns the history (between from and to) of a given object.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
 
@@ -146,15 +140,13 @@ public class JPACriteriaFunctions {
 
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Returns a JPAObject with the given timestamp
-     */
+    @Override
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> from = query.from(JPAObject.class);
 
@@ -164,7 +156,7 @@ public class JPACriteriaFunctions {
         Predicate predicate2 = criteriaBuilder.equal(from.get("oid"), oid);
         query.where(criteriaBuilder.and(predicate1, predicate2));
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         List<JPAObject> resultList = typedQuery.getResultList();
 
         if (resultList.size() < 1) {
@@ -176,12 +168,10 @@ public class JPACriteriaFunctions {
         return resultList.get(0);
     }
 
-    /**
-     * Returns all commits which are involved with the given oid which are between from and to
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
 
@@ -197,15 +187,13 @@ public class JPACriteriaFunctions {
 
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        TypedQuery<JPACommit> typedQuery = em.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Returns a list with all ever deleted JPAObjects
-     */
+    @Override
     public List<JPAObject> getDeletedJPAObjects() throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> f = query.from(JPAObject.class);
 
@@ -213,16 +201,14 @@ public class JPACriteriaFunctions {
 
         select.where(criteriaBuilder.equal(f.get("isDeleted"), Boolean.TRUE));
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Returns all JPAObjects with the given id which are younger than the given timestamp
-     */
+    @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
 
@@ -233,15 +219,13 @@ public class JPACriteriaFunctions {
 
         select.where(criteriaBuilder.and(predicate1, predicate2));
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Loads a JPACommit with the given timestamp
-     */
+    @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
 
@@ -249,15 +233,13 @@ public class JPACriteriaFunctions {
 
         select.where(criteriaBuilder.equal(f.get("timestamp"), timestamp));
 
-        TypedQuery<JPACommit> typedQuery = em.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * Get all commits which are given with the param map. In the map there are values like commiter, role, etc.
-     */
+    @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
 
@@ -267,15 +249,13 @@ public class JPACriteriaFunctions {
 
         select.where(criteriaBuilder.and(predicates));
 
-        TypedQuery<JPACommit> typedQuery = em.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 
-    /**
-     * like getCommits, but it returns only the newest commit
-     */
+    @Override
     public JPACommit getLastCommit(Map<String, Object> param) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
 
@@ -287,7 +267,7 @@ public class JPACriteriaFunctions {
 
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        TypedQuery<JPACommit> typedQuery = em.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         try {
             return typedQuery.getSingleResult();
         } catch (NoResultException ex) {
@@ -321,12 +301,10 @@ public class JPACriteriaFunctions {
         return temp;
     }
 
-    /**
-     * Returns a list of JPAObjects which have all a JPAEntry with the given key and value.
-     */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> query(String key, Object value) throws EDBException {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> f = query.from(JPAObject.class);
 
@@ -348,7 +326,11 @@ public class JPACriteriaFunctions {
 
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        TypedQuery<JPAObject> typedQuery = em.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

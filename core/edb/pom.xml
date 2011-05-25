@@ -105,10 +105,10 @@
 
     <!-- OpenJPA PCEnhancer dependencies -->
     <dependency>
-      <groupId>net.sourceforge.serp</groupId>
-      <artifactId>serp</artifactId>
-      <scope>provided</scope>
-    </dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+        <scope>provided</scope>
+      </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
