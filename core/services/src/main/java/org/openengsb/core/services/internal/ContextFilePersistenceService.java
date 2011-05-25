@@ -39,7 +39,7 @@ import com.google.common.base.Preconditions;
 
 public class ContextFilePersistenceService implements ConfigPersistenceBackendService {
 
-    private static final String CONTEXT_FILE_EXTENSION = "context";
+    public static final String CONTEXT_FILE_EXTENSION = "context";
     private File storageFolder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextFilePersistenceService.class);

@@ -23,71 +23,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.context.Context;
-import org.openengsb.core.api.context.ContextConnectorService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.context.ContextPath;
-import org.openengsb.core.api.context.ContextStorageBean;
+import org.openengsb.core.api.model.ContextConfiguration;
+import org.openengsb.core.api.model.ContextId;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-public class ContextServiceImpl implements ContextCurrentService, ContextConnectorService {
+public class ContextServiceImpl implements ContextCurrentService {
 
-    private Context rootContext;
-
-    private PersistenceManager persistenceManager;
-
-    private PersistenceService persistence;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextServiceImpl.class);
 
     private BundleContext bundleContext;
-
-    public void init() {
-        try {
-            persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-
-            List<ContextStorageBean> contexts = persistence.query(new ContextStorageBean(null));
-            if (contexts.isEmpty()) {
-                Context root = new Context();
-                persistence.create(new ContextStorageBean(root));
-                rootContext = root;
-            } else {
-                rootContext = contexts.get(0).getRootContext();
-            }
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void storeContext() {
-        try {
-            persistence.update(new ContextStorageBean(null), new ContextStorageBean(rootContext));
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void putValue(String pathAndKey, String value) {
-        String[] split = splitPath(pathAndKey);
-        Context context = getContext(split[0], true);
-        context.put(split[1], value);
-        storeContext();
-    }
-
-    @Override
-    public String getValue(String pathAndKey) {
-        String[] split = splitPath(pathAndKey);
-        Context context = getContext(split[0]);
-        if (context != null) {
-            return context.get(split[1]);
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public Context getContext(String path) {
@@ -100,7 +55,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
         if (currentContextId == null) {
             return null;
         }
-        return rootContext.getChild(currentContextId);
+        return getContextById(currentContextId);
     }
 
     @Override
@@ -111,23 +66,45 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
     @Override
     public void setThreadLocalContext(String contextId) {
         ContextHolder.get().setCurrentContextId(contextId);
-        Context context = rootContext.getChild(contextId);
-        Preconditions.checkArgument(context != null, "no context exists for given context id");
+        Context context = getContextById(contextId);
+        Preconditions.checkArgument(context != null, "No context exists for given context id");
         ContextHolder.get().setCurrentContextId(contextId);
     }
 
     @Override
     public void createContext(String contextId) {
-        rootContext.createChild(contextId);
-        storeContext();
+        LOGGER.debug("Creating context %s", contextId);
+        ContextConfiguration contextConfiguration =
+            new ContextConfiguration(new ContextId(contextId).toMetaData(), null);
+        try {
+            getConfigPersistenceService().persist(contextConfiguration);
+        } catch (InvalidConfigurationException e) {
+            LOGGER.error("Error storing context " + contextId + ": Invalid configuration", e);
+        } catch (PersistenceException e) {
+            LOGGER.error("Error storing context " + contextId + ": Persistence error", e);
+        }
     }
 
     @Override
     public List<String> getAvailableContexts() {
-        Map<String, Context> availableContexts = rootContext.getChildren();
-        List<String> result = new ArrayList<String>(availableContexts.keySet());
-        Collections.sort(result);
-        return result;
+        List<ContextConfiguration> availableContextConfigurations =
+            getContextConfigurationsOrEmptyOnError(ContextId.getContextWildCard());
+        List<String> availableContexts = new ArrayList<String>();
+
+        for (ContextConfiguration configuration : availableContextConfigurations) {
+            availableContexts.add(ContextId.fromMetaData(configuration.getMetaData()).getId());
+        }
+
+        return availableContexts;
+    }
+
+    private Context getContextById(String currentContextId) {
+        ContextId contextId = new ContextId(currentContextId);
+        List<ContextConfiguration> contexts = getContextConfigurationsOrEmptyOnError(contextId.toMetaData());
+        if (contexts.isEmpty()) {
+            return null;
+        }
+        return contexts.get(0).toContext();
     }
 
     private Context getContext(String path, boolean create) {
@@ -149,37 +126,22 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
         return c;
     }
 
-    private String[] splitPath(String pathAndKey) {
-        String path = new ContextPath(pathAndKey).getPath();
-        String[] s = new String[2];
-        int index = path.lastIndexOf('/');
-
-        if (index == -1) {
-            s[0] = "";
-            s[1] = path;
-        } else {
-            s[0] = path.substring(0, index);
-            s[1] = path.substring(index + 1);
-        }
-
-        return s;
-    }
-
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
 
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
+    private List<ContextConfiguration> getContextConfigurationsOrEmptyOnError(Map<String, String> metaData) {
+        try {
+            ConfigPersistenceService persistence = this.getConfigPersistenceService();
+            return persistence.load(metaData);
+        } catch (Exception e) {
+            LOGGER.error("Error loading context configuration from configuration persistence", e);
+            return Collections.emptyList();
+        }
     }
 
-    @Override
-    public String getDefaultConnectorServiceId(String domainName) {
-        return getValue(String.format("/domain/%s/defaultConnector/id", domainName));
+    private ConfigPersistenceService getConfigPersistenceService() {
+        return OpenEngSBCoreServices.getConfigPersistenceService(ContextConfiguration.TYPE_ID);
     }
 
-    @Override
-    public void registerDefaultConnector(String domainName, String serviceId) {
-        putValue(String.format("/domain/%s/defaultConnector/id", domainName), serviceId);
-    }
 }
