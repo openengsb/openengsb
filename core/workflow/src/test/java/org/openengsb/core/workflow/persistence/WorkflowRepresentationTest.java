@@ -20,7 +20,6 @@ package org.openengsb.core.workflow.persistence;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -35,13 +34,11 @@ import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.workflow.internal.persistence.WorkflowRepresentationConverter;
-import org.xml.sax.SAXException;
 
 public class WorkflowRepresentationTest {
 
     @Test
-    public void testWorkflowRepresentationMarshalling_shouldMarshallWorkflowCorrectly() throws
-        SAXException, IOException, JAXBException {
+    public void testWorkflowRepresentationMarshalling_shouldMarshallWorkflowCorrectly() throws JAXBException {
         WorkflowRepresentation representation = createWorkflow();
         WorkflowRepresentationConverter workflowRepresentationMarshaller = new WorkflowRepresentationConverter();
         String converted = workflowRepresentationMarshaller.marshallWorkflow(representation);

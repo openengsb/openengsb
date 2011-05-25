@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
@@ -62,7 +63,7 @@ import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
 @AuthorizeInstantiation("ROLE_USER")
 public class WorkflowEditor extends BasePage {
 
-    private final TreeTable table;
+    private TreeTable table;
 
     private String selected = "";
 
@@ -84,8 +85,80 @@ public class WorkflowEditor extends BasePage {
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+        try {
+            workflowEditorService.loadWorkflowsFromDatabase();
+        } catch (PersistenceException e1) {
+            error(e1.getMessage());
+        }
+        Form<Object> selectForm = createSelectWorkflowForm();
+        createCreateWorkflowForm();
+        Form<Object> exportForm = createExportForm();
+        Form<Object> saveForm = createSaveForm();
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        final Model<WorkflowRepresentation> currentworkflow =
+            new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
+        String label = "";
+        if (workflowEditorService.getWorkflowNames().size() == 0) {
+            selectForm.setVisible(false);
+        }
+        if (currentworkflow.getObject() == null) {
+            label = getString("workflow.create.first");
+            node.setUserObject(new ActionRepresentation());
+            setFormsInvisible(exportForm, saveForm);
+        } else {
+            label = currentworkflow.getObject().getName();
+            node.setUserObject(currentworkflow.getObject().getRoot());
+            ActionRepresentation root = currentworkflow.getObject().getRoot();
+            addActionsToNode(root.getActions(), node);
+            addEventsToNode(root.getEvents(), node);
+        }
+        add(new Label("currentWorkflowName", label));
+        createTable(node, currentworkflow);
+    }
 
-        workflowEditorService.loadWorkflowsFromDatabase();
+    private void createTable(DefaultMutableTreeNode node, final Model<WorkflowRepresentation> currentworkflow) {
+        DefaultTreeModel model = new DefaultTreeModel(node);
+        IColumn[] columns = createTableColumns(currentworkflow);
+        table = new TreeTable("treeTable", model, columns);
+        table.getTreeState().expandAll();
+        add(table);
+    }
+
+    private void setFormsInvisible(Form<Object> exportForm, Form<Object> saveForm) {
+        table.setVisible(false);
+        exportForm.setVisible(false);
+        saveForm.setVisible(false);
+    }
+
+    private IColumn[] createTableColumns(final Model<WorkflowRepresentation> currentworkflow) {
+        IColumn[] columns =
+            new IColumn[]{
+                new PropertyTreeColumn(new ColumnLocation(Alignment.MIDDLE, 8, Unit.PROPORTIONAL), "Name",
+                    "userObject.description"),
+                new AbstractColumn(new ColumnLocation(Alignment.MIDDLE, 4, Unit.PROPORTIONAL), "Add Action") {
+                    @Override
+                    public Component newCell(MarkupContainer parent, String id, final TreeNode node, int level) {
+                        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
+                        NodeRepresentation userObject = (NodeRepresentation) treeNode.getUserObject();
+                        if (userObject instanceof ActionRepresentation) {
+                            return new ActionLinks("links", (ActionRepresentation) userObject, treeNode,
+                                currentworkflow);
+                        }
+                        if (userObject instanceof EventRepresentation) {
+                            return new EventLinks("links", (EventRepresentation) userObject, treeNode);
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public IRenderable newCell(TreeNode node, int level) {
+                        return null;
+                    }
+                } };
+        return columns;
+    }
+
+    private Form<Object> createSelectWorkflowForm() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
             @Override
             protected void onSubmit() {
@@ -96,7 +169,10 @@ public class WorkflowEditor extends BasePage {
         selectForm.add(new DropDownChoice<String>("workflowSelect", new PropertyModel<String>(this, "selected"),
             workflowEditorService.getWorkflowNames()));
         add(selectForm);
+        return selectForm;
+    }
 
+    private void createCreateWorkflowForm() {
         Form<Object> createForm = new Form<Object>("workflowCreateForm") {
             @Override
             protected void onSubmit() {
@@ -109,7 +185,24 @@ public class WorkflowEditor extends BasePage {
         };
         createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
         add(createForm);
+    }
 
+    private Form<Object> createSaveForm() {
+        Form<Object> saveForm = new Form<Object>("saveForm") {
+            @Override
+            protected void onSubmit() {
+                try {
+                    workflowEditorService.saveCurrentWorkflow();
+                } catch (PersistenceException e) {
+                    error(e.getMessage());
+                }
+            }
+        };
+        add(saveForm);
+        return saveForm;
+    }
+
+    private Form<Object> createExportForm() {
         Form<Object> exportForm = new Form<Object>("export") {
             @Override
             protected void onSubmit() {
@@ -137,65 +230,7 @@ public class WorkflowEditor extends BasePage {
             }
         };
         add(exportForm);
-
-        Form<Object> saveForm = new Form<Object>("saveForm") {
-            @Override
-            protected void onSubmit() {
-                workflowEditorService.saveCurrentWorkflow();
-            }
-        };
-        add(saveForm);
-
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        final Model<WorkflowRepresentation> currentworkflow =
-            new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
-        DefaultTreeModel model = new DefaultTreeModel(node);
-        IColumn[] columns =
-            new IColumn[]{
-                new PropertyTreeColumn(new ColumnLocation(Alignment.MIDDLE, 8, Unit.PROPORTIONAL), "Name",
-                    "userObject.description"),
-                new AbstractColumn(new ColumnLocation(Alignment.MIDDLE, 4, Unit.PROPORTIONAL), "Add Action") {
-                    @Override
-                    public Component newCell(MarkupContainer parent, String id, final TreeNode node, int level) {
-                        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
-                        NodeRepresentation userObject = (NodeRepresentation) treeNode.getUserObject();
-                        if (userObject instanceof ActionRepresentation) {
-                            return new ActionLinks("links", (ActionRepresentation) userObject, treeNode,
-                                currentworkflow);
-                        }
-                        if (userObject instanceof EventRepresentation) {
-                            return new EventLinks("links", (EventRepresentation) userObject, treeNode);
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    public IRenderable newCell(TreeNode node, int level) {
-                        return null;
-                    }
-                } };
-
-        table = new TreeTable("treeTable", model, columns);
-        String label = "";
-        if (workflowEditorService.getWorkflowNames().size() == 0) {
-            selectForm.setVisible(false);
-        }
-        if (currentworkflow.getObject() == null) {
-            label = getString("workflow.create.first");
-            node.setUserObject(new ActionRepresentation());
-            table.setVisible(false);
-            exportForm.setVisible(false);
-            saveForm.setVisible(false);
-        } else {
-            label = currentworkflow.getObject().getName();
-            node.setUserObject(currentworkflow.getObject().getRoot());
-            ActionRepresentation root = currentworkflow.getObject().getRoot();
-            addActionsToNode(root.getActions(), node);
-            addEventsToNode(root.getEvents(), node);
-        }
-        add(new Label("currentWorkflowName", label));
-        table.getTreeState().expandAll();
-        add(table);
+        return exportForm;
     }
 
     private void addGlobal(ActionRepresentation action) {

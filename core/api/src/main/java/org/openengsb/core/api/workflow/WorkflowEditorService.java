@@ -19,19 +19,27 @@ package org.openengsb.core.api.workflow;
 
 import java.util.List;
 
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
+/**
+ * The WorkflowEditorService provides the backend infrastructure to manage existing workflows as well as create new
+ * ones.
+ */
 public interface WorkflowEditorService {
 
+    /**
+     * Get the names of all workflows currently loaded.
+     */
     List<String> getWorkflowNames();
 
     WorkflowRepresentation loadWorkflow(String name);
 
     WorkflowRepresentation getCurrentWorkflow();
 
-    void saveCurrentWorkflow();
+    void saveCurrentWorkflow() throws PersistenceException;
 
     void createWorkflow(String name);
 
-    void loadWorkflowsFromDatabase();
+    void loadWorkflowsFromDatabase() throws PersistenceException;
 }
