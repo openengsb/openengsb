@@ -39,14 +39,14 @@ import org.openengsb.core.edb.internal.JPAEntry;
 import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
 
-public class JPACriteriaDAO implements JPADao {
+public class DefaultJPADao implements JPADao {
 
     private EntityManager entityManager;
 
-    public JPACriteriaDAO() {
+    public DefaultJPADao() {
     }
 
-    public JPACriteriaDAO(EntityManager entityManager) {
+    public DefaultJPADao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
