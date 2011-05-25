@@ -29,6 +29,8 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
 
+import com.google.common.base.Preconditions;
+
 public class ObjectDiff implements EDBObjectDiff {
     private JPACommit startCommit;
     private JPACommit endCommit;
@@ -39,10 +41,8 @@ public class ObjectDiff implements EDBObjectDiff {
 
     public ObjectDiff(JPACommit startCommit, JPACommit endCommit,
             EDBObject startState, EDBObject endState) throws EDBException {
-
-        if (startState == null || endState == null) {
-            throw new EDBException("Incomplete Diff object, cannot compare null states!");
-        }
+        Preconditions.checkNotNull(startState, "start state is null!");
+        Preconditions.checkNotNull(endState, "end state is null!");
 
         diff = new HashMap<String, EDBEntry>();
         differences = 0;
@@ -61,8 +61,8 @@ public class ObjectDiff implements EDBObjectDiff {
     }
 
     /**
-     * checks for start state and end state which key/value pairs are in common and which
-     * have been changed, added or deleted
+     * checks for start state and end state which key/value pairs are in common and which have been changed, added or
+     * deleted
      */
     private void updateDiff() throws EDBException {
         List<String> keyList = loadKeyList();

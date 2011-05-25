@@ -270,22 +270,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             Set<JPAObject> result = new HashSet<JPAObject>();
 
             for (Entry<String, Object> entry : queryMap.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                List<JPAObject> temp = dao.query(key, value);
-                if (temp.size() == 0) {
-                    return new ArrayList<EDBObject>();
-                }
-                if (result.size() == 0) {
-                    result.addAll(temp);
-                } else {
-                    result.retainAll(temp);
-                }
-
-                // if the result size at this position ever get 0 we know that there is at least
-                // one object that has at least one key/value pair that has at least one of the
-                // others not.
+                analyzeEntry(entry, result);
+                
                 if (result.size() == 0) {
                     LOGGER.debug("there are no objects which have all values from the map");
                     return new ArrayList<EDBObject>();
@@ -294,6 +280,23 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             return generateEDBObjectList(new ArrayList<JPAObject>(result));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
+        }
+    }
+    
+    private void analyzeEntry(Entry<String, Object> entry, Set<JPAObject> set) {
+        String key = entry.getKey();
+        Object value = entry.getValue();
+
+        List<JPAObject> temp = dao.query(key, value);
+        
+        if (temp.size() == 0) {
+            set = new HashSet<JPAObject>();
+            return;
+        }
+        if (set.size() == 0) {
+            set.addAll(temp);
+        } else {
+            set.retainAll(temp);
         }
     }
 

@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.openengsb.core.api.edb.EDBObject;
@@ -31,8 +32,7 @@ import org.openengsb.core.api.edb.EDBObject;
  */
 @Entity
 public class JPAHead {
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAObject> head;
     private Long timestamp;
     private List<EDBObject> loaded;

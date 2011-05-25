@@ -23,12 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.openengsb.core.api.edb.EDBObject;
@@ -39,10 +35,6 @@ import org.openengsb.core.api.edb.EDBObject;
  * the JPAObject can be converted to an EDBObject.
  */
 public class JPAObject {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "jpaobject_id")
-    private Long id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<JPAEntry> values;
     
@@ -83,13 +75,6 @@ public class JPAObject {
 
     public Boolean isDeleted() {
         return isDeleted;
-    }
-
-    /**
-     * returns the internal Id the JPAObject has.
-     */
-    public Long getId() {
-        return id;
     }
 
     public Long getTimestamp() {

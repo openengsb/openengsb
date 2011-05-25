@@ -243,7 +243,7 @@ public class JPATestIT {
         assertThat(ordered, is(true));
         assertThat(history.get(0).getString("Lock"), is("Key"));
         assertThat(history.get(0).getString("Cat"), is("Spongebob"));
-        
+
         assertThat(history.get(1).getString("Lock"), is("Smith"));
         assertThat(history.get(1).getString("Cat"), is("Spongebob"));
 
@@ -377,7 +377,7 @@ public class JPATestIT {
             assertThat(list2.size(), is(1));
             assertThat(list3.size(), is(2));
             assertThat(list4.size(), is(0));
-            
+
             // removed because of the by jpa not supported regex command
             // list = db.query(new HashMap<String, Object>() {
             // {
