@@ -40,6 +40,10 @@
       backend.id=persistenceService
       configuration.id=CONNECTOR
     </config>
+    <config name="org.openengsb.persistence.config-workflow">
+      backend.id=workflow-persistence
+      configuration.id=WORKFLOW
+    </config>
     <feature version="[3,4)">spring</feature>
     <feature version="[3,4)">spring-web</feature>
     <feature version="[1.2,2)">spring-dm</feature>
