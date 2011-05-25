@@ -24,25 +24,9 @@
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
-  <title>HowTo - Control OpenEngSB via the Karaf-Console</title>
+  <title>OpenEngSB console commands</title>
 
-
-  <section>
-    <title>Goal</title>
-    <para>This tutorial shows how to use the OpenEngSB console. It further describes how to add new commands.</para>
-  </section>
-
-  <section>
-    <title>Time to Complete</title>
-    <para>To read this tutorial and get familiar with the first view commands should not take more than 10
-      minutes
-    </para>
-  </section>
-
-  <section>
-    <title>Prerequisites</title>
-    <para>This HowTo assumes you already have downloaded the OpenEngSB.</para>
-  </section>
+  <para>This section describes how to control OpenEngSB via the Karaf-Console</para>
 
   <section>
     <title>Start the console</title>

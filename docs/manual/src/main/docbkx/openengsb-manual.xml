@@ -57,7 +57,6 @@
       <para>This part contains tutorials for the OpenEngSB.</para>
     </partintro>
     <xi:include href="howto/howtoSetup.xml" />
-    <xi:include href="howto/howtoConsolecommands.xml" />
     <xi:include href="howto/howtoLogging.xml" />
     <xi:include href="howto/howtoContextEditor.xml" />
     <xi:include href="howto/howtoCreateConnector.xml" />
@@ -97,8 +96,9 @@
        </para>
        <para>The target audience of this part are users and in special admins of the system.</para>
      </partintro>
-     <xi:include href="ui/testclient.xml"/>
-     <xi:include href="ui/wiring.xml"/>
+    <xi:include href="ui/testclient.xml"/>
+    <xi:include href="ui/console.xml"/>
+    <xi:include href="ui/wiring.xml"/>
   </part>
 
   <part xml:id="domain.manual">
