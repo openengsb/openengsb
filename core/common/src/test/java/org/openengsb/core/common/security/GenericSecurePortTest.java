@@ -26,18 +26,17 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.net.URL;
 import java.security.PublicKey;
 import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.model.BeanDescription;
@@ -60,17 +59,20 @@ import org.springframework.security.core.Authentication;
 
 public abstract class GenericSecurePortTest<EncodingType> {
 
-    private static final String METHOD_ARG = StringUtils.repeat(""
-            + "It's about time you people started eating some reality sandwiches and get your ducks in a row.\n"
-            + "Perhaps we can then think about parking our cars in the same garage.\n"
-            + "And remember, we don't want to wind ourselves round the axle on this.\n", 1);
+    @Rule
+    public TemporaryFolder dataFolder = new TemporaryFolder();
+
+    private static final String METHOD_ARG =
+        StringUtils
+            .repeat(
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
+                        + "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo "
+                        + "dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor "
+                        + "sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
+                        + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
+                        + " justo duo dolores et ea rebum.", 1);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecurePortTest.class);
-
-    private static final String PUBLIC_KEY_64 = ""
-            + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS"
-            + "9qd8A7MdaVub61Npc6wSuLJNK1qnrSufWkiZxuo7IsyFnZl9bqkr1D/x4UqKEBmGZIh4s4WIMymw"
-            + "TGu2HmAKuKO7JypfQpHemZpLmXTsNse1xFhTfshxWJq4+WqBdeoYZ8p1iwIDAQAB";
 
     protected PrivateKeySource privateKeySource;
 
@@ -83,9 +85,9 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @SuppressWarnings("unchecked")
     @Before
     public void setupInfrastructure() throws Exception {
-        serverPublicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
-        URL systemResource = ClassLoader.getSystemResource("private.key.data");
-        privateKeySource = new FileKeySource(new File(systemResource.toURI()).getParent(), "RSA");
+        System.setProperty("karaf.home", dataFolder.getRoot().getAbsolutePath());
+        serverPublicKey = new FileKeySource("etc/keys", "RSA").getPublicKey();
+        privateKeySource = new FileKeySource("etc/keys", "RSA");
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {

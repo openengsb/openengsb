@@ -40,66 +40,26 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
     private static final String DEFAULT_ALGORITHM = "RSA";
     private static final int DEFAULT_KEY_SIZE = 2048;
 
-    private KeyFactory keyFactory;
+    private String algorithm;
 
-    private FileSource<PrivateKey> privateKeySource;
-    private FileSource<PublicKey> publicKeySource;
-
-    private final class PrivateKeyFileSource extends FileSource<PrivateKey> {
-        public PrivateKeyFileSource(File file) {
-            super(file);
-        }
-
-        @Override
-        protected PrivateKey updateValue(File file) {
-            byte[] keyData;
-            try {
-                keyData = FileUtils.readFileToByteArray(file);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-            KeySpec keySpec = new PKCS8EncodedKeySpec(keyData);
-            try {
-                return keyFactory.generatePrivate(keySpec);
-            } catch (InvalidKeySpecException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    };
-
-    private final class PublicKeyFileSource extends FileSource<PublicKey> {
-        public PublicKeyFileSource(File file) {
-            super(file);
-        }
-
-        @Override
-        protected PublicKey updateValue(File file) {
-            byte[] keyData;
-            try {
-                keyData = FileUtils.readFileToByteArray(file);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-            KeySpec keySpec = new X509EncodedKeySpec(keyData);
-            try {
-                return keyFactory.generatePublic(keySpec);
-            } catch (InvalidKeySpecException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    };
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
 
     public FileKeySource() {
     }
 
     public FileKeySource(String keyDirectory, String algorithm) {
-        setKeyDirectory(keyDirectory);
         setAlgorithm(algorithm);
+        setKeyDirectory(keyDirectory);
     }
 
     public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    private KeyFactory getKeyFactory() {
         try {
-            keyFactory = KeyFactory.getInstance(algorithm);
+            return KeyFactory.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -116,8 +76,8 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
             throw new IllegalArgumentException("keydir must be a directory");
         }
         generateKeysIfRequired(keyDirectoryFile);
-        privateKeySource = new PrivateKeyFileSource(new File(keyDirectoryFile, DEFAULT_PRIVATE_KEY_FILENAME));
-        publicKeySource = new PublicKeyFileSource(new File(keyDirectoryFile, DEFAULT_PUBLIC_KEY_FILENAME));
+        privateKey = readPrivateKeyFromFile(keyDirectoryFile);
+        publicKey = readPublicKeyFromFile(keyDirectoryFile);
     }
 
     private void generateKeysIfRequired(File keyDirectoryFile) {
@@ -139,13 +99,43 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
         }
     }
 
+    protected PrivateKey readPrivateKeyFromFile(File keyDirectory) {
+        byte[] keyData;
+        try {
+            keyData = FileUtils.readFileToByteArray(new File(keyDirectory, DEFAULT_PRIVATE_KEY_FILENAME));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        KeySpec keySpec = new PKCS8EncodedKeySpec(keyData);
+        try {
+            return getKeyFactory().generatePrivate(keySpec);
+        } catch (InvalidKeySpecException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    protected PublicKey readPublicKeyFromFile(File keyDirectory) {
+        byte[] keyData;
+        try {
+            keyData = FileUtils.readFileToByteArray(new File(keyDirectory, DEFAULT_PUBLIC_KEY_FILENAME));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        KeySpec keySpec = new X509EncodedKeySpec(keyData);
+        try {
+            return getKeyFactory().generatePublic(keySpec);
+        } catch (InvalidKeySpecException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     @Override
     public PrivateKey getPrivateKey() {
-        return privateKeySource.getValue();
+        return privateKey;
     }
 
     @Override
     public PublicKey getPublicKey() {
-        return publicKeySource.getValue();
+        return publicKey;
     }
 }
