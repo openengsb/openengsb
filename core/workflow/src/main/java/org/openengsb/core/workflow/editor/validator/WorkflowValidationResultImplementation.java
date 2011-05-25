@@ -15,44 +15,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow.model;
+package org.openengsb.core.workflow.editor.validator;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.openengsb.core.api.workflow.WorkflowValidationResult;
 
-@XmlRootElement
-public class WorkflowRepresentation implements Serializable {
+public class WorkflowValidationResultImplementation implements WorkflowValidationResult {
 
-    private String name;
-    private ActionRepresentation root = new ActionRepresentation();
+    private boolean valid;
 
-    private List<EndRepresentation> endNodes = new ArrayList<EndRepresentation>();
+    private List<String> errors = new ArrayList<String>();
 
-    public final String getName() {
-        return name;
+    @Override
+    public boolean isValid() {
+        return valid;
     }
 
-    public final void setName(String name) {
-        this.name = name;
+    public void notValid() {
+        this.valid = false;
     }
 
-    public final ActionRepresentation getRoot() {
-        return root;
+    @Override
+    public List<String> getErrors() {
+        return errors;
     }
 
-    public final void setRoot(ActionRepresentation root) {
-        this.root = root;
-    }
-
-    public void addEndNode(EndRepresentation end) {
-        this.endNodes.add(end);
-    }
-
-    public List<EndRepresentation> getEndNodes() {
-        return this.endNodes;
+    public void addError(String error) {
+        errors.add(error);
     }
 
 }

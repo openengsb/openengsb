@@ -51,5 +51,5 @@
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
   <osgi:reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <osgi:reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
-
+  <osgi:list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator"/>
 </beans>

@@ -23,14 +23,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public class WorkflowEditorServiceImpl implements WorkflowEditorService {
 
     private final Map<String, WorkflowRepresentation> workflows = new HashMap<String, WorkflowRepresentation>();
 
     private WorkflowRepresentation currentWorkflow;
+
+    public ConfigPersistenceService getPersistence() {
+        return OpenEngSBCoreServices
+            .getConfigPersistenceService("WORKFLOW");
+    }
+
+    @Override
+    public void loadWorkflowsFromDatabase() {
+        try {
+            List<ConfigItem<WorkflowRepresentation>> load = getPersistence().load(null);
+            for (ConfigItem<WorkflowRepresentation> configItem : load) {
+                final WorkflowRepresentation content = configItem.getContent();
+                workflows.put(content.getName(), content);
+            }
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public List<String> getWorkflowNames() {
@@ -56,7 +81,15 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
 
     @Override
     public void saveCurrentWorkflow() {
-
+        ConfigItem<WorkflowRepresentation> workflowRepresentation = new ConfigItem<WorkflowRepresentation>();
+        workflowRepresentation.setContent(getCurrentWorkflow());
+        try {
+            getPersistence().persist(workflowRepresentation);
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

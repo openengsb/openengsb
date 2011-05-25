@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow;
+package org.openengsb.core.workflow.internal.persistence;
 
-import java.util.List;
-
+import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
-public interface WorkflowEditorService {
+public class WorkflowConfigItem extends ConfigItem<WorkflowRepresentation> {
 
-    List<String> getWorkflowNames();
-
-    WorkflowRepresentation loadWorkflow(String name);
-
-    WorkflowRepresentation getCurrentWorkflow();
-
-    void saveCurrentWorkflow();
-
-    void createWorkflow(String name);
-
-    void loadWorkflowsFromDatabase();
 }

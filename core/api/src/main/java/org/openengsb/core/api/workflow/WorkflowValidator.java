@@ -17,21 +17,8 @@
 
 package org.openengsb.core.api.workflow;
 
-import java.util.List;
-
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
-public interface WorkflowEditorService {
-
-    List<String> getWorkflowNames();
-
-    WorkflowRepresentation loadWorkflow(String name);
-
-    WorkflowRepresentation getCurrentWorkflow();
-
-    void saveCurrentWorkflow();
-
-    void createWorkflow(String name);
-
-    void loadWorkflowsFromDatabase();
+public interface WorkflowValidator {
+    WorkflowValidationResult validate(WorkflowRepresentation representation);
 }

@@ -26,16 +26,16 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 
 // TODO: [OPENENGSB-1253] Implement flow backend; dont forget cfg and blueprint
-public class FlowFilePersistenceBackendService implements ConfigPersistenceBackendService {
+public class FlowFilePersistenceBackendService implements ConfigPersistenceBackendService<Object> {
 
     @Override
-    public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
+    public List<ConfigItem<Object>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
         throw new UnsupportedOperationException("Method not implemented by now");
     }
 
     @Override
-    public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
+    public void persist(ConfigItem<Object> config) throws PersistenceException, InvalidConfigurationException {
         throw new UnsupportedOperationException("Method not implemented by now");
     }
 

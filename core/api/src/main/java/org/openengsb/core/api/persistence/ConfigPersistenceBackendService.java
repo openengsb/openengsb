@@ -27,7 +27,7 @@ import org.openengsb.core.api.model.ConfigItem;
  * configuration item type but don't have to. This strongly depends on how much information is required by the backend
  * service.
  */
-public interface ConfigPersistenceBackendService {
+public interface ConfigPersistenceBackendService<E> {
 
     /**
      * Loads an configuration items according to meta-information available. Depending on the backend service the
@@ -36,7 +36,7 @@ public interface ConfigPersistenceBackendService {
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration is no longer valid (modified e.g. directly in a file).
      */
-    List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException;
+    List<ConfigItem<E>> load(Map<String, String> metadata) throws PersistenceException, InvalidConfigurationException;
 
     /**
      * Persists a configuration to the selected backend solution. Please do not use this metod if you're not completely
@@ -47,7 +47,7 @@ public interface ConfigPersistenceBackendService {
      * @throws PersistenceException if the access to the persistence base is not possible
      * @throws InvalidConfigurationException if the configuration passed alone is not valid.
      */
-    void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException;
+    void persist(ConfigItem<E> config) throws PersistenceException, InvalidConfigurationException;
 
     /**
      * Removes all configurations which match the matadata specified. Be careful that the meta-data pattern matches to

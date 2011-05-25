@@ -22,6 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
+
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -32,6 +34,7 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowValidator;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.core.test.NullDomain;
@@ -65,6 +68,7 @@ public class EditEventTest {
         mock.putBean("workflowEditorService", mock(WorkflowEditorService.class));
         mock.putBean(mock(WorkflowConverter.class));
         mock.putBean(mock(RuleManager.class));
+        mock.putBean("validators", new ArrayList<WorkflowValidator>());
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), mock, true));
         tester.startPage(new EditEvent(event, action));
