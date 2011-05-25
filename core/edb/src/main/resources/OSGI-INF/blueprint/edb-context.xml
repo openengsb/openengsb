@@ -25,7 +25,7 @@
 
   <bean id="edbServiceProvider" class="org.openengsb.core.edb.internal.JPADatabase">
     <tx:transaction method="*" value="Required" />
-	<jpa:context property="entityManager" unitname="edb" />
+    <jpa:context property="entityManager" unitname="edb" />
   </bean>
 
   <service interface="org.openengsb.core.api.edb.EnterpriseDatabaseService">

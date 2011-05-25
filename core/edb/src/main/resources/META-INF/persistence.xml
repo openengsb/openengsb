@@ -22,7 +22,7 @@
   <persistence-unit name="edb" transaction-type="JTA">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
-    <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/edb)</jta-data-source>
+    <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
     <class>org.openengsb.core.edb.internal.JPACommit</class>
     <class>org.openengsb.core.edb.internal.JPAHead</class>
@@ -32,9 +32,6 @@
 
     <properties>
       <property name="openjpa.Log" value="commons"/>
-      <!--<property name="openjpa.ConnectionURL" value="jdbc:h2:EDB"/>
-      <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
-      <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/> -->
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
     </properties>
@@ -49,7 +46,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
-      <property name="openjpa.Log" value="commons"/> <!-- DefaultLevel=INFO, Tool=INFO"/>  -->
+      <property name="openjpa.Log" value="commons"/>
       <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
