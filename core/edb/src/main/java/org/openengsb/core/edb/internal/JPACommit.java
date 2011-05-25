@@ -20,8 +20,7 @@ package org.openengsb.core.edb.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.ElementCollection;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -33,27 +32,25 @@ import org.openengsb.core.api.edb.EDBObject;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit implements EDBCommit {
-    private List<JPAObject> jpaObjects;
-    @Basic
+    @Column(name = "COMM", length = 50)
     protected String committer;
-    @Basic
+    @Column(name = "TIME")
     protected Long timestamp;
-    @Basic
+    @Column(name = "ROLE", length = 50)
     protected String role;
-
-    protected List<EDBObject> objects;
-
-    @ElementCollection
+    @Column(name = "DELS")
     protected List<String> deletions;
-
-    @ElementCollection
+    @Column(name = "OIDS")
     protected List<String> oids;
 
+    private List<JPAObject> jpaObjects;
+    protected List<EDBObject> objects;
     protected boolean committed = false;
 
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
      */
+    @Deprecated
     public JPACommit() {
     }
 

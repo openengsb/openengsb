@@ -135,7 +135,6 @@ public class JPATestIT {
         JPADatabase db = openDatabase();
 
         assertThat(db, notNullValue());
-        // assertTrue(db != null);
     }
 
     @Test
@@ -155,8 +154,6 @@ public class JPATestIT {
 
             assertThat(obj, notNullValue());
             assertThat(hooray, notNullValue());
-            // assertTrue("Test object must exist!", obj != null);
-            // assertTrue("Test-string must exist in the queried object", hooray != null);
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
         }
@@ -177,10 +174,8 @@ public class JPATestIT {
 
             assertThat(commits1.size(), is(1));
             assertThat(commits2.size(), is(0));
-            // assertTrue("Found more than one commit for role=Testrole", commits1.size() == 1);
-            // assertTrue("Found at least one commit for role=DoesNotExist", commits2.size() == 0);
         } catch (EDBException ex) {
-            fail("Faild to fetch commit list...");
+            fail("Faild to fetch commit list..." + ex.getLocalizedMessage());
         }
     }
 
