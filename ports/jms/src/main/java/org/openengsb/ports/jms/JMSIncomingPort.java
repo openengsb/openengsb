@@ -48,16 +48,16 @@ public class JMSIncomingPort {
             public void onMessage(Message message) {
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
-                    String text;
+                    String textContent;
                     try {
-                        text = textMessage.getText();
+                        textContent = textMessage.getText();
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
                     }
                     HashMap<String, Object> metadata = new HashMap<String, Object>();
                     String result;
                     try {
-                        result = (String) filterChain.filter(text, metadata);
+                        result = (String) filterChain.filter(textContent, metadata);
                     } catch (Exception e) {
                         String callId = (String) metadata.get("callId");
                         if (callId != null) {

@@ -27,6 +27,10 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 
+/**
+ * extracts the original {@link MethodCallRequest} from a {@link SecureRequest} and invokes the next filter. The
+ * resulting {@link MethodResultMessage} is then wrapped into a {@link SecureResponse}
+ */
 public class WrapperFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
 
     private FilterAction next;
