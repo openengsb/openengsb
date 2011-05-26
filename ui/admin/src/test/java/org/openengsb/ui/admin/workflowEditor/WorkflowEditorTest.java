@@ -23,9 +23,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -35,6 +40,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
@@ -57,12 +67,17 @@ public class WorkflowEditorTest extends AbstractUITest {
     private WorkflowEditorService service;
     private RuleManager ruleManager;
     private WorkflowConverter workflowConverter;
+    private ConfigPersistenceService workflowPersistence;
 
     @Before
-    public void setup() {
+    public void setup() throws InvalidConfigurationException, PersistenceException {
         tester = new WicketTester();
-        service = new WorkflowEditorServiceImpl();
-        context.putBean("workflowEditorService", service);
+        workflowPersistence = mock(ConfigPersistenceService.class);
+        when(workflowPersistence.load(null)).thenReturn(new ArrayList<ConfigItem<?>>());
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.CONFIGURATION_ID, "WORKFLOW");
+        registerService(workflowPersistence, props, ConfigPersistenceService.class);
+        createWorkflowEditorService();
         ruleManager = mock(RuleManager.class);
         context.putBean(ruleManager);
         workflowConverter = mock(WorkflowConverter.class);
@@ -70,6 +85,11 @@ public class WorkflowEditorTest extends AbstractUITest {
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
         tester.startPage(new WorkflowEditor());
+    }
+
+    private void createWorkflowEditorService() throws PersistenceException {
+        service = new WorkflowEditorServiceImpl();
+        context.putBean("workflowEditorService", service);
     }
 
     @Test
@@ -105,12 +125,16 @@ public class WorkflowEditorTest extends AbstractUITest {
         currentWorkflow.getRoot().addAction(action);
         service.createWorkflow("Second");
         tester.startPage(WorkflowEditor.class);
+        selectWorkflowAndIfLoadedCorrectly(string, 1);
+        assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
+    }
+
+    private void selectWorkflowAndIfLoadedCorrectly(String string, int item) {
         FormTester formTester = tester.newFormTester("workflowSelectForm");
-        formTester.select("workflowSelect", 1);
+        formTester.select("workflowSelect", item);
         formTester.submit();
         tester.assertRenderedPage(WorkflowEditor.class);
         tester.assertLabel("currentWorkflowName", string);
-        assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
     }
 
     @Test
@@ -122,9 +146,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         assertThat(service.getCurrentWorkflow(), equalTo(null));
 
         tester.assertLabel("currentWorkflowName", "Please create Workflow first");
-        FormTester createForm = tester.newFormTester("workflowCreateForm");
-        createForm.setValue("name", "Name");
-        createForm.submit();
+        createWorkflow();
         assertThat("Name", equalTo(service.getCurrentWorkflow().getName()));
         tester.assertRenderedPage(EditAction.class);
     }
@@ -213,5 +235,39 @@ public class WorkflowEditorTest extends AbstractUITest {
         assertThat(value.getType(), equalTo(RuleBaseElementType.Process));
         assertThat(value.getName(), equalTo("workflow"));
         assertThat(value.getPackageName(), equalTo(RuleBaseElementId.DEFAULT_RULE_PACKAGE));
+    }
+
+    @Test
+    public void testSave_ShouldCallPersistenceMethod() throws InvalidConfigurationException, PersistenceException {
+        tester.assertInvisible("saveForm");
+        service.createWorkflow("Workflow");
+        tester.startPage(WorkflowEditor.class);
+        tester.assertVisible("saveForm");
+        ArgumentCaptor<ConfigItem> captor = ArgumentCaptor.forClass(ConfigItem.class);
+        FormTester saveFormTester = tester.newFormTester("saveForm");
+        saveFormTester.submit();
+        verify(workflowPersistence).persist(captor.capture());
+        assertThat((WorkflowRepresentation) captor.getValue().getContent(), sameInstance(service.getCurrentWorkflow()));
+    }
+
+    @Test
+    public void testLoad_ShouldHaveLoadedWorkflows() throws InvalidConfigurationException, PersistenceException {
+        List<ConfigItem<?>> items = new ArrayList<ConfigItem<?>>();
+        WorkflowRepresentation rep = new WorkflowRepresentation();
+        final String string = "Name";
+        rep.setName(string);
+        items.add(new ConfigItem<WorkflowRepresentation>(null, rep));
+        when(workflowPersistence.load(null)).thenReturn(items);
+        service.loadWorkflowsFromDatabase();
+        tester.startPage(WorkflowEditor.class);
+        tester.assertVisible("workflowSelectForm");
+        FormTester formTester = tester.newFormTester("workflowSelectForm");
+        selectWorkflowAndIfLoadedCorrectly("Name", 0);
+    }
+
+    private void createWorkflow() {
+        FormTester createForm = tester.newFormTester("workflowCreateForm");
+        createForm.setValue("name", "Name");
+        createForm.submit();
     }
 }

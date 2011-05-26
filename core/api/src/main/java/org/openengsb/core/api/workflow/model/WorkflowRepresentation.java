@@ -21,11 +21,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * A WorkflowRepresentation contains all the necessary data to describe and export a Workflow created via the
+ * WorkflowEditor. A Name as well as a root ActionRepresentation have to be set. Every Workflow has to start with an
+ * Action that is triggered when the workflow is started. EndRepresentations are stored in the WorkflowRepresentation
+ * and referenced in ActionRepresentations and EventRepresentations to be able to share End nodes between them.
+ */
+@XmlRootElement
 public class WorkflowRepresentation implements Serializable {
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();
-    
+
     private List<EndRepresentation> endNodes = new ArrayList<EndRepresentation>();
 
     public final String getName() {
@@ -43,7 +52,7 @@ public class WorkflowRepresentation implements Serializable {
     public final void setRoot(ActionRepresentation root) {
         this.root = root;
     }
-    
+
     public void addEndNode(EndRepresentation end) {
         this.endNodes.add(end);
     }
@@ -51,4 +60,5 @@ public class WorkflowRepresentation implements Serializable {
     public List<EndRepresentation> getEndNodes() {
         return this.endNodes;
     }
+
 }

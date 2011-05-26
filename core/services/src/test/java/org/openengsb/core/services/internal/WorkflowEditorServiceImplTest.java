@@ -20,14 +20,23 @@ package org.openengsb.core.services.internal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.persistence.InvalidConfigurationException;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
 public class WorkflowEditorServiceImplTest {
 
+    private WorkflowEditorServiceImpl service;
+
+    @Before
+    public void setUp() throws InvalidConfigurationException, PersistenceException {
+        service = new WorkflowEditorServiceImpl();
+    }
+
     @Test
-    public void createWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
+    public void createWorkflow_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
@@ -35,30 +44,32 @@ public class WorkflowEditorServiceImplTest {
     }
 
     @Test
-    public void loadWorkflow_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
+    public void loadWorkflow_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
         service.createWorkflow(string);
         assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
+        
         service.loadWorkflow(name);
+        
         assertThat(name, equalTo(service.getCurrentWorkflow().getName()));
     }
 
     @Test
-    public void getWorkflowName_ShouldBeSetAsCurrentWorkflow() {
-        WorkflowEditorServiceImpl service = new WorkflowEditorServiceImpl();
+    public void getWorkflowName_shouldBeSetAsCurrentWorkflow() {
         String name = "name";
         service.createWorkflow(name);
         String string = "123";
+        
         service.createWorkflow(string);
+        
         assertThat(string, equalTo(service.getWorkflowNames().get(0)));
         assertThat(name, equalTo(service.getWorkflowNames().get(1)));
     }
 
     @Test
     public void callCurrentWorkflow_shouldReturnNullWhenNoWorkflowSelected() {
-        assertThat(null, equalTo(new WorkflowEditorServiceImpl().getCurrentWorkflow()));
+        assertThat(null, equalTo(service.getCurrentWorkflow()));
     }
 }

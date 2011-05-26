@@ -33,7 +33,7 @@ import org.osgi.framework.BundleContext;
  * Simple {@link ConfigPersistenceBackendService} implementation directly using the core {@link PersistenceService}.
  * Only disadvantage at the current implementation is that objects have to be stored in simple form.
  */
-public class CorePersistenceServiceBackend implements ConfigPersistenceBackendService {
+public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBackendService<E> {
 
     private PersistenceManager persistenceManager;
     private PersistenceService persistenceService;
@@ -44,32 +44,32 @@ public class CorePersistenceServiceBackend implements ConfigPersistenceBackendSe
     }
 
     @Override
-    public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
+    public List<ConfigItem<E>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
-        List<ConfigItem<?>> configItems = new ArrayList<ConfigItem<?>>();
-        List<InternalConfigurationItem> result =
-            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(metadata, null)));
-        for (InternalConfigurationItem configItem : result) {
+        List<ConfigItem<E>> configItems = new ArrayList<ConfigItem<E>>();
+        List<InternalConfigurationItem<E>> result =
+            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(metadata, null)));
+        for (InternalConfigurationItem<E> configItem : result) {
             configItems.add(configItem.getConfigItem());
         }
         return configItems;
     }
 
     @Override
-    public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
-        List<InternalConfigurationItem> alreadyPresent =
-            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(config.getMetaData(), null)));
+    public void persist(ConfigItem<E> config) throws PersistenceException, InvalidConfigurationException {
+        List<InternalConfigurationItem<E>> alreadyPresent =
+            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(config.getMetaData(), null)));
         if (alreadyPresent.isEmpty()) {
-            persistenceService.create(new InternalConfigurationItem(config));
+            persistenceService.create(new InternalConfigurationItem<E>(config));
         } else {
-            persistenceService.update(alreadyPresent.get(0), new InternalConfigurationItem(config));
+            persistenceService.update(alreadyPresent.get(0), new InternalConfigurationItem<E>(config));
         }
     }
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
-        List<InternalConfigurationItem> result =
-            persistenceService.query(new InternalConfigurationItem(new ConfigItem<Object>(metadata, null)));
+        List<InternalConfigurationItem<E>> result =
+            persistenceService.query(new InternalConfigurationItem<E>(new ConfigItem<E>(metadata, null)));
         persistenceService.delete(result);
     }
 
