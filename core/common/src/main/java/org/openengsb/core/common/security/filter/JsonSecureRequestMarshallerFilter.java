@@ -69,7 +69,7 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
     private static void resetArgs(MethodCallRequest request) {
         MethodCall call = request.getMethodCall();
         if (call.getClasses().size() != call.getArgs().length) {
-            throw new IllegalStateException("Classes and Args have to be the same");
+            throw new IllegalArgumentException("Classes and Args have to be the same");
         }
         ObjectMapper mapper = new ObjectMapper();
         Iterator<String> iterator = call.getClasses().iterator();
