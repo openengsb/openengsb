@@ -32,9 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.security.model.AuthenticationInfo;
-import org.openengsb.core.api.security.model.SecureRequest;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -43,8 +40,10 @@ import com.google.common.collect.Collections2;
  * Container class that is intended to ease serialization. It is especially useful when the Runtime-type of the class is
  * not known, or when doing Serialization on Object-hierarchies.
  *
- * Example: A {@link SecureRequest} contains a field for {@link AuthenticationInfo}. There may exist many
- * implementations of {@link AuthenticationInfo} which can be difficult to handle with some message formats
+ * Example: A {@link org.openengsb.core.api.security.model.SecureRequest} contains a field for
+ * {@link org.openengsb.core.api.security.model.AuthenticationInfo}. There may exist many implementations of
+ * {@link org.openengsb.core.api.security.model.AuthenticationInfo} which can be difficult to handle with some message
+ * formats
  *
  * However this class has some limits. It only supports String and byte[] properties. If any other type is encountered
  * the "toString()"-method is invoked to transform it into the beandescription. To transform it back, the type is

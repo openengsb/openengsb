@@ -62,15 +62,14 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @Rule
     public TemporaryFolder dataFolder = new TemporaryFolder();
 
+    private static final String LOREM_IPSUM = ""
+            + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
+            + "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo "
+            + "dolores et ea rebum.";
+
     private static final String METHOD_ARG =
         StringUtils
-            .repeat(
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut "
-                        + "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo "
-                        + "dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor "
-                        + "sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor "
-                        + "invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et "
-                        + " justo duo dolores et ea rebum.", 1);
+            .repeat(LOREM_IPSUM, 2);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecurePortTest.class);
 
