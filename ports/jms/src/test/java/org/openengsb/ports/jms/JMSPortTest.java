@@ -180,13 +180,11 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setup() {
-
+        setupKeys();
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
         Authentication authentication = mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        setupKeys();
         String num = UUID.randomUUID().toString();
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
         jmsTemplate = new JmsTemplate(connectionFactory);
@@ -227,7 +225,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         publicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
@@ -246,7 +244,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void sendEncryptedMethodCall_shouldSendEncryptedResult() throws Exception {
         FilterChain secureChain = createSecureFilterChain();
         incomingPort.setFilterChain(secureChain);
@@ -288,7 +286,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             }
         });
         secureFilterChainFactory.setAuthenticationManager(authenticationManager);
-
         secureFilterChainFactory.setRequestHandler(handler);
         PrivateKeySource keySource = mock(PrivateKeySource.class);
         when(keySource.getPrivateKey()).thenReturn(privateKey);
@@ -299,7 +296,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             secureFilterChainFactory.create()));
-
         FilterChain secureChain = factory.create();
         return secureChain;
     }

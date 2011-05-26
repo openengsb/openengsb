@@ -49,6 +49,10 @@ public class MethodResult implements Serializable {
         this(arg, type, className, new HashMap<String, String>());
     }
 
+    public MethodResult(Object arg, Map<String, String> metaData) {
+        this(arg, ReturnType.Object, arg.getClass().getName(), metaData);
+    }
+
     public MethodResult(Object arg, ReturnType type, String className, Map<String, String> metaData) {
         this.className = className;
         this.arg = arg;

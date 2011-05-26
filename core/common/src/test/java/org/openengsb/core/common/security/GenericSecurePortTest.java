@@ -45,6 +45,7 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
@@ -81,7 +82,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
     protected AuthenticationManager authManager;
     protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setupInfrastructure() throws Exception {
         System.setProperty("karaf.home", dataFolder.getRoot().getAbsolutePath());
@@ -98,7 +98,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
                 MethodCall call = (MethodCall) invocation.getArguments()[0];
-                return new MethodResult(call.getArgs()[0]);
+                return new MethodResult(call.getArgs()[0], call.getMetaData());
             }
         });
         defaultSecureMethodCallFilterFactory = new DefaultSecureMethodCallFilterFactory();
@@ -120,10 +120,11 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @Test
     public void processMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
+
         SecureResponse response = processRequest(secureRequest);
 
-        MethodResult mr = response.getMessage().getResult();
-        assertThat((String) mr.getArg(), is("42"));
+        MethodResultMessage mr = response.getMessage();
+        assertThat((String) mr.getResult().getArg(), is(METHOD_ARG));
     }
 
     protected SecureRequest prepareSecureRequest() {
@@ -140,10 +141,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @Test
     public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
         when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
-        MethodCall request = new MethodCall("doSomething", new Object[]{ "42", }, new HashMap<String, String>());
-        SecureRequest secureRequest =
-            SecureRequest.create(new MethodCallRequest(request), BeanDescription.fromObject(token));
-
+        SecureRequest secureRequest = prepareSecureRequest();
         try {
             processRequest(secureRequest);
             fail("Expected exception");
@@ -156,8 +154,6 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @Test
     public void testManipulateMessage_shouldCauseVerificationException() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
-
-        secureRequest.getMessage().getMethodCall().setArgs(new Object[]{ "43" }); // manipulate message
 
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
@@ -188,6 +184,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         logRequest(encryptedRequest);
+        @SuppressWarnings("unchecked")
         EncodingType encodedResponse =
             (EncodingType) secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
         logRequest(encodedResponse);

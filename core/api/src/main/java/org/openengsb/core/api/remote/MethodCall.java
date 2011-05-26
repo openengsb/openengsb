@@ -19,6 +19,7 @@ package org.openengsb.core.api.remote;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,17 +111,53 @@ public class MethodCall implements Serializable {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(methodName + "\n");
-        int i = 0;
-        for (Object o : args) {
-            sb.append("arg" + i + ": " + o.getClass().getSimpleName() + o.hashCode() + "\n");
-        }
-        sb.append("metadata:\n");
-        for (Map.Entry<String, String> entry : metaData.entrySet()) {
-            sb.append(entry.getKey() + "=" + entry.getValue());
-        }
-        return sb.toString();
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(args);
+        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
+        result = prime * result + ((metaData == null) ? 0 : metaData.hashCode());
+        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MethodCall other = (MethodCall) obj;
+        if (!Arrays.equals(args, other.args)) {
+            return false;
+        }
+        if (classes == null) {
+            if (other.classes != null) {
+                return false;
+            }
+        } else if (!classes.equals(other.classes)) {
+            return false;
+        }
+        if (metaData == null) {
+            if (other.metaData != null) {
+                return false;
+            }
+        } else if (!metaData.equals(other.metaData)) {
+            return false;
+        }
+        if (methodName == null) {
+            if (other.methodName != null) {
+                return false;
+            }
+        } else if (!methodName.equals(other.methodName)) {
+            return false;
+        }
+        return true;
+    }
+
 }

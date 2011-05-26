@@ -37,7 +37,6 @@ public class SecureRequest extends AbstractSecureMessage<MethodCallRequest> {
         long time = System.currentTimeMillis();
         secureRequest.setTimestamp(time);
         secureRequest.setAuthenticationData(auth);
-        secureRequest.setVerification();
         return secureRequest;
     }
 

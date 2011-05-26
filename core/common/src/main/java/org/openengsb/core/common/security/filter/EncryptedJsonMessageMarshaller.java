@@ -20,6 +20,7 @@ package org.openengsb.core.common.security.filter;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
@@ -52,7 +53,7 @@ public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<S
         }
         LOGGER.info("Encrypted message parsed sucessfully, passing to next filter {}", next.getClass().getName());
         byte[] result = (byte[]) next.filter(message, metaData);
-        return new String(result);
+        return Base64.encodeBase64String(result);
     }
 
     @Override

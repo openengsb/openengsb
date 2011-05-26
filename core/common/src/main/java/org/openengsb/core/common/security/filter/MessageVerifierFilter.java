@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
@@ -89,13 +88,6 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
             }
             lastMessageTimestamp.put(authenticationInfo, request.getTimestamp());
             LOGGER.debug("updated lastMessageTimestamp for {} to {}", authenticationInfo, request.getTimestamp());
-        }
-    }
-
-    private void verifyCheckSum(SecureRequest request) throws MessageVerificationFailedException {
-        if (!ArrayUtils.isEquals(request.calcChecksum(), request.getVerification())) {
-            throw new MessageVerificationFailedException(
-                "checksum verification failed. The message might have been altered.");
         }
     }
 

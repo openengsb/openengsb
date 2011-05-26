@@ -35,7 +35,6 @@ public class SecureResponse extends AbstractSecureMessage<MethodResultMessage> {
         secureResponse.setMessage(original);
         long time = System.currentTimeMillis();
         secureResponse.setTimestamp(time);
-        secureResponse.setVerification();
         return secureResponse;
     }
 }

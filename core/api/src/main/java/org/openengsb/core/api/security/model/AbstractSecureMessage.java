@@ -19,8 +19,6 @@ package org.openengsb.core.api.security.model;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 /**
  * Adds additional integrity information to messages to prevent replay-attacks.
  */
@@ -30,7 +28,6 @@ public abstract class AbstractSecureMessage<MessageType> implements Serializable
 
     protected MessageType message;
     protected Long timestamp;
-    protected byte[] verification;
 
     public MessageType getMessage() {
         return this.message;
@@ -47,30 +44,5 @@ public abstract class AbstractSecureMessage<MessageType> implements Serializable
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-
-    public byte[] getVerification() {
-        return this.verification;
-    }
-
-    public void setVerification(byte[] verification) {
-        this.verification = verification;
-    }
-
-    public byte[] calcChecksum() {
-        String concat = this.getMessage().toString() + this.timestamp;
-        byte[] checksum = DigestUtils.sha(concat);
-        return checksum;
-    }
-
-    protected void setVerification() {
-        this.verification = calcChecksum();
-    }
-
-    // public void verify() {
-    // byte[] refChecksum = calcChecksum(this.getMessage().toString(), this.getTimestamp());
-    // if (!ArrayUtils.isEquals(this.verification, refChecksum)) {
-    // throw new MessageVerificationFailedException("wrong checksum");
-    // }
-    // }
 
 }
