@@ -66,7 +66,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
      * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached. Look for
      * "Listening for transport dt_socket at address: <DEBUG_PORT>"
      */
-    private static final boolean DEBUG = System.getenv("OPENENGSB_DEBUG").equals("1");
+    private static final boolean DEBUG = "1".equals(System.getenv("OPENENGSB_DEBUG"));
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
 
