@@ -27,10 +27,14 @@ import javax.jms.TextMessage;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openengsb.core.common.remote.FilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 public class JMSIncomingPort {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JMSIncomingPort.class);
 
     private static final String RECEIVE = "receive";
 
@@ -46,7 +50,9 @@ public class JMSIncomingPort {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
             public void onMessage(Message message) {
+                LOGGER.trace("JMS-message recieved. Checking if the type is supported");
                 if (message instanceof TextMessage) {
+                    LOGGER.trace("parsing as TextMessage");
                     TextMessage textMessage = (TextMessage) message;
                     String textContent;
                     try {
@@ -57,15 +63,20 @@ public class JMSIncomingPort {
                     HashMap<String, Object> metadata = new HashMap<String, Object>();
                     String result;
                     try {
+                        LOGGER.debug("starting filterchain for incoming message");
                         result = (String) filterChain.filter(textContent, metadata);
                     } catch (Exception e) {
+                        LOGGER.error("an error occured when processing the filterchain", e);
                         String callId = (String) metadata.get("callId");
                         if (callId != null) {
+                            LOGGER.info("callId could be extracted. Sending Exception-response to remote caller ({})",
+                                callId);
                             new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
                         }
                         return;
                     }
                     String callId = (String) metadata.get("callId");
+                    LOGGER.debug("filterchain processed OK, sending result to answer-queue ({})", callId);
                     if (metadata.containsKey("answer")) {
                         new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                     }

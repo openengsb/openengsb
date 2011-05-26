@@ -37,6 +37,21 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * This filter takes a {@link String} representing a JSON-encoded {@link SecureRequest} and parses it. The next filter
+ * returns a SecureResponse which is marshaled to JSON again.
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [JSON-String]         > Filter > [SecureRequest]    > ...
+ *                                                             |
+ *                                                             v
+ *      [JSON-String]         < Filter < [SecureResponse]     < ...
+ * </pre>
+ * </code>
+ */
 public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElement<byte[], byte[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonSecureRequestMarshallerFilter.class);

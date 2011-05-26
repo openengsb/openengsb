@@ -31,6 +31,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the
+ * {@link AuthenticationInfo} and tries to authenticate. If authentication was succesful, the filter-chain will proceed.
+ * The result of the next filter is just passed through.
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *                                                        |
+ *                                                        v
+ *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ * </pre>
+ * </code>
+ */
 public class MessageAuthenticatorFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);

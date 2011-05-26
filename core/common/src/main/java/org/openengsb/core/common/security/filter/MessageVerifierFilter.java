@@ -35,6 +35,21 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
+/**
+ * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
+ * verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [SecureRequest]  > Filter > [SecureRequest]    > ...
+ *                                                        |
+ *                                                        v
+ *      [SecureResponse] < Filter < [SecureResponse]   < ...
+ * </pre>
+ * </code>
+ */
 public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);

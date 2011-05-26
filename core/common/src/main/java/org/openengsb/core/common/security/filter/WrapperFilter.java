@@ -30,6 +30,16 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 /**
  * extracts the original {@link org.openengsb.core.api.remote.MethodCallRequest} from a {@link SecureRequest} and
  * invokes the next filter. The resulting {@link MethodResultMessage} is then wrapped into a {@link SecureResponse}
+ *
+ *
+ * <code>
+ * <pre>
+ *      [SecureRequest]  > Filter > [MethodCallRequest]     > ...
+ *                                                             |
+ *                                                             v
+ *      [SecureResponse] < Filter < [MethodResultMessage]   < ...
+ * </pre>
+ * </code>
  */
 public class WrapperFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
 

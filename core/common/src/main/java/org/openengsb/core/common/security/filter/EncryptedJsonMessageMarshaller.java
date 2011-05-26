@@ -30,6 +30,22 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This filter takes a {@link String} representing a JSON-encoded {@link EncryptedMessage} and parses it. The actual
+ * decryption is left to the next filter. The next filter returns a byte[] with the result that has been encrypted with
+ * the session-key. It is just Base64-encoded for transport.
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [EncryptedMessage(content+encryptedKey) as String] > Filter > [EncryptedMessage-object]    > ...
+ *                                                                                                   |
+ *                                                                                                   v
+ *      [Base64-encoded String of encrypted result]        < Filter < [encrypted result as byte[]] < ...
+ * </pre>
+ * </code>
+ */
 public class EncryptedJsonMessageMarshaller extends AbstractFilterChainElement<String, String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EncryptedJsonMessageMarshaller.class);

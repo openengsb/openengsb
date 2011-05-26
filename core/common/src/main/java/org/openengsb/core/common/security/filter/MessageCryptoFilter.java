@@ -33,6 +33,23 @@ import org.openengsb.core.common.security.PrivateKeySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This filter takes an {@link EncryptedMessage} and decrypts it. This is done by decrypting the contained encrypted
+ * session key with the servers {@link java.security.PrivateKey}. The resulting byte[] is then processed by the next
+ * filter. It returns a serialized version of the result (as byte[] again). The Response is then encrypted with the
+ * previously obtained session-key and returned as byte[].
+ *
+ * This filter is intended for incoming ports.
+ *
+ * <code>
+ * <pre>
+ *      [EncryptedMessage]             > Filter > [byte[] with decrypted content]    > ...
+ *                                                                                      |
+ *                                                                                      v
+ *      [encrypted Response as byte[]] < Filter < [byte[] with serialized result]    < ...
+ * </pre>
+ * </code>
+ */
 public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMessage, byte[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageCryptoFilter.class);

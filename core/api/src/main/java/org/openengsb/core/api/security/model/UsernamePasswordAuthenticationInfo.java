@@ -20,6 +20,11 @@ package org.openengsb.core.api.security.model;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+/**
+ * This class is intended for transporting username and password as authentication token for remote calls. The password
+ * is provided to the authentication-manager as is. Make sure that the content of instances of this class is encrypted
+ * when sending it over network. This is the responsibility of the corresponding filter-chain in the port.
+ */
 public class UsernamePasswordAuthenticationInfo implements AuthenticationInfo {
 
     private String username;
