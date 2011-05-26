@@ -32,10 +32,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.security.model.AuthenticationInfo;
+import org.openengsb.core.api.security.model.SecureRequest;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
+/**
+ * Container class that is intended to ease serialization. It is especially useful when the Runtime-type of the class is
+ * not known, or when doing Serialization on Object-hierarchies.
+ *
+ * Example: A {@link SecureRequest} contains a field for {@link AuthenticationInfo}. There may exist many
+ * implementations of {@link AuthenticationInfo} which can be difficult to handle with some message formats
+ *
+ * However this class has some limits. It only supports String and byte[] properties. If any other type is encountered
+ * the "toString()"-method is invoked to transform it into the beandescription. To transform it back, the type is
+ * searched for a constructor that only takes one String as argument.
+ */
 public class BeanDescription implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,39 +93,52 @@ public class BeanDescription implements Serializable {
         this.className = className;
     }
 
+    /**
+     * reconstructs the original object the {@link BeanDescription} is representing.
+     */
     public Object toObject() {
         Class<?> beanType = getBeanType();
         Collection<PropertyDescriptor> accessibleProperties = getAccessiblePropertiesFromBean(beanType);
+        Object bean;
         try {
-            Object bean = beanType.newInstance();
+            bean = beanType.newInstance();
             for (PropertyDescriptor d : accessibleProperties) {
-                Class<?> propertyType = d.getPropertyType();
-                if (byte[].class.isAssignableFrom(propertyType)) {
-                    d.getWriteMethod().invoke(bean, binaryData.get(d.getName()));
-                } else {
-                    String string = data.get(d.getName());
-                    Object value;
-                    if (propertyType.equals(String.class)) {
-                        value = string;
-                    } else {
-                        Constructor<?> constructor;
-                        try {
-                            constructor = propertyType.getConstructor(String.class);
-                        } catch (NoSuchMethodException e) {
-                            throw new IllegalStateException(e);
-                        }
-                        value = constructor.newInstance(string);
-                    }
-                    d.getWriteMethod().invoke(bean, value);
-                }
+                doSetPropertyOnBean(bean, d);
             }
             return bean;
         } catch (InstantiationException e) {
-            throw new IllegalStateException("cannot instantiate bean using default-constructor", e);
+            throw new IllegalStateException(e);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private void doSetPropertyOnBean(Object bean, PropertyDescriptor d) throws IllegalAccessException,
+        InvocationTargetException, InstantiationException {
+        Class<?> propertyType = d.getPropertyType();
+        if (byte[].class.isAssignableFrom(propertyType)) {
+            d.getWriteMethod().invoke(bean, binaryData.get(d.getName()));
+        } else {
+            Object value = getPropertyValueFromString(d, propertyType);
+            d.getWriteMethod().invoke(bean, value);
+        }
+    }
+
+    private Object getPropertyValueFromString(PropertyDescriptor d, Class<?> propertyType)
+        throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        String string = data.get(d.getName());
+        if (propertyType.equals(String.class)) {
+            return string;
+        } else {
+            Constructor<?> constructor;
+            try {
+                constructor = propertyType.getConstructor(String.class);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return constructor.newInstance(string);
         }
     }
 
@@ -124,6 +151,9 @@ public class BeanDescription implements Serializable {
         }
     }
 
+    /**
+     * reconstructs the original object the {@link BeanDescription} is representing.
+     */
     @SuppressWarnings("unchecked")
     public <T> T toObject(Class<T> type) {
         Class<?> beanType = getBeanType();
