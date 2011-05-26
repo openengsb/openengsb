@@ -29,6 +29,13 @@ import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 
+/**
+ * This factory wraps an existing {@link RequestHandler} to a secure one to be used as final element in a
+ * {@link org.openengsb.core.common.remote.FilterChain}.
+ *
+ * The resulting FilterAction takes care of message verification and authentication.
+ *
+ */
 public class DefaultSecureMethodCallFilterFactory {
 
     private AuthenticationManager authenticationManager;
@@ -40,20 +47,24 @@ public class DefaultSecureMethodCallFilterFactory {
     public FilterAction create() throws FilterConfigurationException {
         FilterChainFactory<SecureRequest, SecureResponse> factory =
             new FilterChainFactory<SecureRequest, SecureResponse>(SecureRequest.class, SecureResponse.class);
-        List<Object> filterFactories = new LinkedList<Object>();
-
-        filterFactories.add(MessageVerifierFilter.class);
-
-        MessageAuthenticatorFactory messageAuthenticatorFactory = new MessageAuthenticatorFactory();
-        messageAuthenticatorFactory.setAuthenticationManager(authenticationManager);
-        filterFactories.add(messageAuthenticatorFactory);
-
-        filterFactories.add(WrapperFilter.class);
-
-        filterFactories.add(new RequestMapperFilter(requestHandler));
-
+        List<Object> filterFactories = createFilterList();
         factory.setFilters(filterFactories);
         return factory.create();
+    }
+
+    private List<Object> createFilterList() {
+        List<Object> filterFactories = new LinkedList<Object>();
+        filterFactories.add(MessageVerifierFilter.class);
+        filterFactories.add(createMessageAuthenticationFactory());
+        filterFactories.add(WrapperFilter.class);
+        filterFactories.add(new RequestMapperFilter(requestHandler));
+        return filterFactories;
+    }
+
+    private MessageAuthenticatorFactory createMessageAuthenticationFactory() {
+        MessageAuthenticatorFactory messageAuthenticatorFactory = new MessageAuthenticatorFactory();
+        messageAuthenticatorFactory.setAuthenticationManager(authenticationManager);
+        return messageAuthenticatorFactory;
     }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
