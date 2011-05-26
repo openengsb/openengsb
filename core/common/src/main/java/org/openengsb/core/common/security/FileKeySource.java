@@ -31,8 +31,12 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileKeySource implements PrivateKeySource, PublicKeySource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileKeySource.class);
 
     private static final String DEFAULT_PRIVATE_KEY_FILENAME = "private.key.data";
     private static final String DEFAULT_PUBLIC_KEY_FILENAME = "public.key.data";

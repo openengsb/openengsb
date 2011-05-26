@@ -32,8 +32,14 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElement<byte[], byte[]> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonSecureRequestMarshallerFilter.class);
 
     private FilterAction next;
 
@@ -45,16 +51,27 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
 
     @Override
     protected byte[] doFilter(byte[] input, Map<String, Object> metaData) {
+        SecureRequest request;
         try {
-            SecureRequest request = mapper.readValue(input, SecureRequest.class);
-            String callId = request.getMessage().getCallId();
-            metaData.put("callId", callId);
-            resetArgs(request.getMessage());
-            SecureResponse response = (SecureResponse) next.filter(request, metaData);
+            LOGGER.trace("attempt to read SecureRequest from inputData");
+            request = mapper.readValue(input, SecureRequest.class);
+        } catch (IOException e) {
+            throw new FilterException(e);
+        }
+        String callId = request.getMessage().getCallId();
+        LOGGER.info("extracted callId \"{}\" from message", callId);
+        metaData.put("callId", callId);
+        LOGGER.debug("converting arguments of inputmessage");
+        resetArgs(request.getMessage());
+        LOGGER.debug("invoking next filter: {}", next.getClass().getName());
+        SecureResponse response = (SecureResponse) next.filter(request, metaData);
+        LOGGER.debug("response received for callId {}: {}. serializing to json", callId, response);
+        try {
             return mapper.writeValueAsBytes(response);
         } catch (IOException e) {
             throw new FilterException(e);
         }
+
     }
 
     @Override
@@ -66,25 +83,34 @@ public class JsonSecureRequestMarshallerFilter extends AbstractFilterChainElemen
     /**
      * Converts the Args read by Jackson into the correct classes that have to be used for calling the method.
      */
-    private static void resetArgs(MethodCallRequest request) {
+    private void resetArgs(MethodCallRequest request) {
         MethodCall call = request.getMethodCall();
-        if (call.getClasses().size() != call.getArgs().length) {
-            throw new IllegalArgumentException("Classes and Args have to be the same");
+        Preconditions.checkArgument(call.getClasses().size() == call.getArgs().length,
+            "length of args and their types does not match");
+        List<Class<?>> classList;
+        try {
+            LOGGER.debug("loading classes referenced in arguments");
+            classList = convertClassesToClassNames(call.getClasses());
+        } catch (ClassNotFoundException e) {
+            throw new FilterException(e);
         }
-        ObjectMapper mapper = new ObjectMapper();
-        Iterator<String> iterator = call.getClasses().iterator();
-
+        Iterator<Class<?>> iterator = classList.iterator();
         List<Object> values = new ArrayList<Object>();
-
         for (Object arg : call.getArgs()) {
-            Class<?> class1;
-            try {
-                class1 = Class.forName(iterator.next());
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            Class<?> class1 = iterator.next();
+            LOGGER.debug("converting argument to type {} ({})", class1.getName(), arg);
             values.add(mapper.convertValue(arg, class1));
         }
         call.setArgs(values.toArray());
+    }
+
+    private List<Class<?>> convertClassesToClassNames(List<String> classes) throws ClassNotFoundException {
+        List<Class<?>> result = new ArrayList<Class<?>>(classes.size());
+        for (String className : classes) {
+            LOGGER.debug("try to load class {} to unmarshal argument", className);
+            result.add(Class.forName(className));
+            LOGGER.debug("{} loaded successfully", className);
+        }
+        return result;
     }
 }

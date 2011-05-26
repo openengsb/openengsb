@@ -30,11 +30,15 @@ import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
 public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);
 
     private FilterAction next;
 
@@ -69,8 +73,9 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     }
 
     private void verify(SecureRequest request) throws MessageVerificationFailedException {
+        LOGGER.trace("checking age of message");
         checkOverallAgeOfRequest(request);
-        verifyCheckSum(request);
+        LOGGER.trace("checking for replay");
         checkForReplayedMessage(request);
     }
 
@@ -83,6 +88,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
                             + "Possible replay detected.");
             }
             lastMessageTimestamp.put(authenticationInfo, request.getTimestamp());
+            LOGGER.debug("updated lastMessageTimestamp for {} to {}", authenticationInfo, request.getTimestamp());
         }
     }
 
@@ -94,8 +100,12 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     }
 
     private void checkOverallAgeOfRequest(SecureRequest request) throws MessageVerificationFailedException {
-        long current = System.currentTimeMillis();
-        if (request.getTimestamp() + timeout < current) {
+        long ageInMillis = System.currentTimeMillis() - request.getTimestamp();
+        LOGGER.debug("request-age in ms: {}", ageInMillis);
+        if (ageInMillis < 0) {
+            throw new MessageVerificationFailedException("Message timestamp was too far in the future");
+        }
+        if (ageInMillis > timeout) {
             throw new MessageVerificationFailedException("Message timestamp is too old.");
         }
     }

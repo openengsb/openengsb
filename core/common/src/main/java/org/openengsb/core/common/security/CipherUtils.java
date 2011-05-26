@@ -37,8 +37,12 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class CipherUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CipherUtils.class);
 
     public static final String DEFAULT_SIGN_ALGORITHM = "SHA1withRSA";
     public static final String DEFAULT_SYMMETRIC_ALGORITHM = "AES";
@@ -53,8 +57,10 @@ public final class CipherUtils {
     public static byte[] decrypt(byte[] text, Key key, String algorithm) throws DecryptionException {
         Cipher cipher;
         try {
+            LOGGER.trace("start decrypting text using {} cipher", algorithm);
             cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.DECRYPT_MODE, key);
+            LOGGER.trace("initialized decryption with key of type {}", key.getClass());
         } catch (GeneralSecurityException e) {
             throw new IllegalArgumentException("unable to initialize cipher for algorithm " + algorithm, e);
         }
@@ -72,8 +78,10 @@ public final class CipherUtils {
     public static byte[] encrypt(byte[] text, Key key, String algorithm) throws EncryptionException {
         Cipher cipher;
         try {
+            LOGGER.trace("start encrypting text using {} cipher", algorithm);
             cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, key);
+            LOGGER.trace("initialized encryption with key of type {}", key.getClass());
         } catch (GeneralSecurityException e) {
             throw new IllegalArgumentException("unable to initialize cipher for algorithm " + algorithm, e);
         }
@@ -85,6 +93,7 @@ public final class CipherUtils {
     }
 
     public static PublicKey deserializePublicKey(byte[] keyData, String algorithm) {
+        LOGGER.trace("deserialize public key from data using algorithm \"{}\"", algorithm);
         X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(keyData);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
@@ -96,6 +105,7 @@ public final class CipherUtils {
     }
 
     public static PrivateKey deserializePrivateKey(byte[] keyData, String algorithm) {
+        LOGGER.trace("deserialize private key from data using algorithm \"{}\"", algorithm);
         PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(keyData);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
@@ -107,6 +117,7 @@ public final class CipherUtils {
     }
 
     public static SecretKey deserializeSecretKey(byte[] keyData, String algorithm) {
+        LOGGER.trace("deserialize secret key from data using algorithm \"{}\"", algorithm);
         return new SecretKeySpec(keyData, algorithm);
     }
 

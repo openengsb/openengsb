@@ -89,6 +89,9 @@ public abstract class GenericSecurePortTest<EncodingType> {
         privateKeySource = new FileKeySource("etc/keys", "RSA");
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
+        Authentication mockedGoodAuthentication = mock(Authentication.class);
+        when(mockedGoodAuthentication.isAuthenticated()).thenReturn(true);
+        when(authManager.authenticate(any(Authentication.class))).thenReturn(mockedGoodAuthentication);
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {

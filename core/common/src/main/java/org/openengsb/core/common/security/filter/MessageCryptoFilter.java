@@ -30,8 +30,12 @@ import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.security.CipherUtils;
 import org.openengsb.core.common.security.PrivateKeySource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMessage, byte[]> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageCryptoFilter.class);
 
     private FilterAction next;
 
@@ -49,15 +53,20 @@ public class MessageCryptoFilter extends AbstractFilterChainElement<EncryptedMes
         byte[] encryptedKey = input.getEncryptedKey();
         byte[] decryptedMessage;
         SecretKey sessionKey;
+        LOGGER.debug("decrypting encryptedMessage");
         try {
+            LOGGER.trace("decrypting session-key");
             byte[] sessionKeyData = CipherUtils.decrypt(encryptedKey, privateKeySource.getPrivateKey());
             sessionKey = CipherUtils.deserializeSecretKey(sessionKeyData, secretKeyAlgorithm);
+            LOGGER.trace("decrypting message using session-key");
             decryptedMessage = CipherUtils.decrypt(input.getEncryptedContent(), sessionKey);
         } catch (DecryptionException e) {
             throw new FilterException(e);
         }
+        LOGGER.debug("forwarding decrypted message to next filter {}", next);
         byte[] plainResult = (byte[]) next.filter(decryptedMessage, metaData);
         try {
+            LOGGER.trace("encrypting result using previously decrypted session-key");
             return CipherUtils.encrypt(plainResult, sessionKey);
         } catch (EncryptionException e) {
             throw new FilterException(e);
