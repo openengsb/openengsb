@@ -19,6 +19,9 @@ package org.openengsb.core.common.security;
 
 import java.security.PublicKey;
 
+/**
+ * service that provides the servers public key to other osgi-services (like filters)
+ */
 public interface PublicKeySource {
 
     PublicKey getPublicKey();
