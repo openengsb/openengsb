@@ -85,8 +85,10 @@ public abstract class GenericSecurePortTest<EncodingType> {
     @Before
     public void setupInfrastructure() throws Exception {
         System.setProperty("karaf.home", dataFolder.getRoot().getAbsolutePath());
-        serverPublicKey = new FileKeySource("etc/keys", "RSA").getPublicKey();
-        privateKeySource = new FileKeySource("etc/keys", "RSA");
+        FileKeySource fileKeySource = new FileKeySource("etc/keys", "RSA");
+        fileKeySource.init();
+        serverPublicKey = fileKeySource.getPublicKey();
+        privateKeySource = fileKeySource;
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationManager.class);
         Authentication mockedGoodAuthentication = mock(Authentication.class);

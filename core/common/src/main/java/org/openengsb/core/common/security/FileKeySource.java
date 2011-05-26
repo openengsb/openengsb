@@ -34,7 +34,11 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 public class FileKeySource implements PrivateKeySource, PublicKeySource {
+
+    private static final String DEFAULT_KEY_DIR = "etc/keys";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileKeySource.class);
 
@@ -48,6 +52,8 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
+
+    private String keyDirectory;
 
     public FileKeySource() {
     }
@@ -70,43 +76,72 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
     }
 
     public void setKeyDirectory(String keyDirectory) {
+        this.keyDirectory = keyDirectory;
+    }
+
+    private File getKeyDirectoryFile() {
+        if (keyDirectory == null) {
+            LOGGER.info("no key-directory defined, defaulting to {}", DEFAULT_KEY_DIR);
+            keyDirectory = DEFAULT_KEY_DIR;
+        }
+        LOGGER.debug("using {} as keyDirectory", keyDirectory);
         File keyDirectoryFile = new File(keyDirectory);
-        if (!keyDirectoryFile.isAbsolute()) {
-            keyDirectoryFile = new File(System.getProperty("karaf.home"), keyDirectory);
+        if (keyDirectoryFile.isAbsolute()) {
+            return keyDirectoryFile;
         }
-        if (!keyDirectoryFile.exists()) {
-            keyDirectoryFile.mkdirs();
-        } else if (!keyDirectoryFile.isDirectory()) {
-            throw new IllegalArgumentException("keydir must be a directory");
-        }
+        LOGGER.info("understanding {} to be a subdirectory of karaf.data", keyDirectory);
+        return new File(System.getProperty("karaf.home"), keyDirectory);
+    }
+
+    public void init() {
+        LOGGER.trace("initialize FileKeySource");
+        File keyDirectoryFile = getKeyDirectoryFile();
+        makeSureDirectoryExists(keyDirectoryFile);
         generateKeysIfRequired(keyDirectoryFile);
         privateKey = readPrivateKeyFromFile(keyDirectoryFile);
         publicKey = readPublicKeyFromFile(keyDirectoryFile);
     }
 
+    private void makeSureDirectoryExists(File keyDirectoryFile) {
+        if (keyDirectoryFile.exists()) {
+            Preconditions.checkState(keyDirectoryFile.isDirectory(), "%s is not a directory", keyDirectoryFile);
+        } else {
+            LOGGER.info("creating keydir: {}", keyDirectoryFile.getAbsolutePath());
+            keyDirectoryFile.mkdirs();
+        }
+    }
+
     private void generateKeysIfRequired(File keyDirectoryFile) {
         File privateKeyFile = new File(keyDirectoryFile, DEFAULT_PRIVATE_KEY_FILENAME);
-        if (privateKeyFile.exists()) {
+        File publicKeyFile = new File(keyDirectoryFile, DEFAULT_PUBLIC_KEY_FILENAME);
+        if (privateKeyFile.exists() && publicKeyFile.exists()) {
+            LOGGER.info("skipping key-generation, because there already are some");
             return;
         }
+        KeyPairGenerator generator;
         try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance(DEFAULT_ALGORITHM);
-            generator.initialize(DEFAULT_KEY_SIZE);
-            KeyPair generatedKeyPair = generator.generateKeyPair();
-            FileUtils.writeByteArrayToFile(privateKeyFile, generatedKeyPair.getPrivate().getEncoded());
-            File publicKeyFile = new File(keyDirectoryFile, DEFAULT_PUBLIC_KEY_FILENAME);
-            FileUtils.writeByteArrayToFile(publicKeyFile, generatedKeyPair.getPublic().getEncoded());
+            LOGGER.info("generating new keypair");
+            generator = KeyPairGenerator.getInstance(DEFAULT_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("failed to generate keypair", e);
+        }
+        generator.initialize(DEFAULT_KEY_SIZE);
+        KeyPair generatedKeyPair = generator.generateKeyPair();
+        try {
+            LOGGER.trace("saving new keypair to files");
+            FileUtils.writeByteArrayToFile(privateKeyFile, generatedKeyPair.getPrivate().getEncoded());
+            FileUtils.writeByteArrayToFile(publicKeyFile, generatedKeyPair.getPublic().getEncoded());
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("failed to write keys to key-directory", e);
         }
     }
 
     protected PrivateKey readPrivateKeyFromFile(File keyDirectory) {
         byte[] keyData;
         try {
-            keyData = FileUtils.readFileToByteArray(new File(keyDirectory, DEFAULT_PRIVATE_KEY_FILENAME));
+            File file = new File(keyDirectory, DEFAULT_PRIVATE_KEY_FILENAME);
+            LOGGER.trace("reading private key form file: {}", file.getAbsolutePath());
+            keyData = FileUtils.readFileToByteArray(file);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -121,7 +156,9 @@ public class FileKeySource implements PrivateKeySource, PublicKeySource {
     protected PublicKey readPublicKeyFromFile(File keyDirectory) {
         byte[] keyData;
         try {
-            keyData = FileUtils.readFileToByteArray(new File(keyDirectory, DEFAULT_PUBLIC_KEY_FILENAME));
+            File file = new File(keyDirectory, DEFAULT_PUBLIC_KEY_FILENAME);
+            LOGGER.trace("reading private key form file: {}", file.getAbsolutePath());
+            keyData = FileUtils.readFileToByteArray(file);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
