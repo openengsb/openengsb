@@ -52,13 +52,14 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
-public abstract class GenericSecurePortTest<EncodingType> {
+public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEngSBTest {
 
     @Rule
     public TemporaryFolder dataFolder = new TemporaryFolder();

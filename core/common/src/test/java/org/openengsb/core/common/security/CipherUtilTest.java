@@ -37,8 +37,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 
-public class CipherUtilTest {
+public class CipherUtilTest extends AbstractOpenEngSBTest {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
