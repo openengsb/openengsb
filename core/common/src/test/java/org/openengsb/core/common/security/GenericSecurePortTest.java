@@ -67,9 +67,9 @@ public abstract class GenericSecurePortTest<EncodingType> {
             + "labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo "
             + "dolores et ea rebum.";
 
-    private static final String METHOD_ARG =
-        StringUtils
-            .repeat(LOREM_IPSUM, 2);
+    private static final String TEST_UMLAUTS = " äöüßêéèỳíóæðÐł€øØãẽĩõũ";
+
+    private static final String METHOD_ARG = StringUtils.repeat(LOREM_IPSUM + TEST_UMLAUTS, 2);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecurePortTest.class);
 
@@ -113,7 +113,7 @@ public abstract class GenericSecurePortTest<EncodingType> {
     protected abstract SecureResponse decryptAndDecode(EncodingType message, SecretKey sessionKey) throws Exception;
 
     @Test
-    public void testDefaultImpls() throws Exception {
+    public void processMethodCall_shouldReturnOriginalArgAsResult() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
         SecureResponse response = processRequest(secureRequest);
 
