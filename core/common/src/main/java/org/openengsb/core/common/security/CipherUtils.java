@@ -56,12 +56,12 @@ public final class CipherUtils {
             cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.DECRYPT_MODE, key);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("unable to initialize cipher for algorithm " + algorithm, e);
         }
         try {
             return cipher.doFinal(text);
         } catch (GeneralSecurityException e) {
-            throw new DecryptionException(e);
+            throw new DecryptionException("unable to decrypt data using algorithm " + algorithm, e);
         }
     }
 
@@ -75,12 +75,12 @@ public final class CipherUtils {
             cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, key);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("unable to initialize cipher for algorithm " + algorithm, e);
         }
         try {
             return cipher.doFinal(text);
         } catch (GeneralSecurityException e) {
-            throw new EncryptionException(e);
+            throw new EncryptionException("unable to encrypt data using algorithm " + algorithm, e);
         }
     }
 
@@ -90,7 +90,8 @@ public final class CipherUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             return keyFactory.generatePublic(pubSpec);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("provided data could not be converted to a PublicKey for algorithm "
+                    + algorithm, e);
         }
     }
 
@@ -100,7 +101,8 @@ public final class CipherUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             return keyFactory.generatePrivate(privSpec);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("provided data could not be converted to a PrivateKey for algorithm "
+                    + algorithm, e);
         }
     }
 
@@ -136,7 +138,7 @@ public final class CipherUtils {
             signature = Signature.getInstance(algorithm);
             signature.initSign(key);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("cannot initialize signature for algorithm " + algorithm, e);
         }
         signature.update(text);
         return signature.sign();
@@ -149,9 +151,8 @@ public final class CipherUtils {
             signature = Signature.getInstance(algorithm);
             signature.initVerify(key);
         } catch (GeneralSecurityException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("cannot initialize signature for algorithm " + algorithm, e);
         }
-
         signature.update(text);
         return signature.verify(signatureValue);
     }
