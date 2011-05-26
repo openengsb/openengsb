@@ -31,6 +31,9 @@ public abstract class AbstractOpenEngSBTest {
     @BeforeClass
     public static void adaptLoggerPreferences() throws Exception {
         URL log4jLocalFile = ClassLoader.getSystemResource(LOG4J_PROPERTIES_LOCAL);
+        if (log4jLocalFile == null) {
+            return;
+        }
         if (new File(log4jLocalFile.toURI()).exists()) {
             LogManager.resetConfiguration();
             PropertyConfigurator.configure(log4jLocalFile);
