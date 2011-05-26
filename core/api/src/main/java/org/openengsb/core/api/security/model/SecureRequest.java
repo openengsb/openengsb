@@ -20,6 +20,11 @@ package org.openengsb.core.api.security.model;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCallRequest;
 
+/**
+ * serves as a container for a {@link MethodCallRequest} and adds attributes relevant for security. Namely
+ * verification-information handled by {@link AbstractSecureMessage} and authenticationInformation.
+ *
+ */
 public class SecureRequest extends AbstractSecureMessage<MethodCallRequest> {
 
     private static final long serialVersionUID = -2350090113804167120L;

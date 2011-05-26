@@ -17,6 +17,11 @@
 
 package org.openengsb.core.api.security;
 
+/**
+ * Serves as baseclass for all Security-related Exceptions in the OpenEngSB (similar to
+ * {@link java.security.GeneralSecurityException}
+ *
+ */
 public abstract class OpenEngSBSecurityException extends Exception {
 
     private static final long serialVersionUID = 1L;

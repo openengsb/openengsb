@@ -19,6 +19,10 @@ package org.openengsb.core.api.security.model;
 
 import org.openengsb.core.api.remote.MethodResultMessage;
 
+/**
+ * wraps the result of a MethodCall to a response-object containing security-relevant information handled by
+ * {@link AbstractSecureMessage}
+ */
 public class SecureResponse extends AbstractSecureMessage<MethodResultMessage> {
 
     private static final long serialVersionUID = 4052853600342752517L;

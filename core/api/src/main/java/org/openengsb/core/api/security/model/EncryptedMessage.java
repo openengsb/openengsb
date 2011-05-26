@@ -19,10 +19,32 @@ package org.openengsb.core.api.security.model;
 
 import java.io.Serializable;
 
+/**
+ * Representation of an encrypted message that is ready to be serialized and transported. When transporting an instance
+ * of this class, the content is supposed to be encrypted.
+ *
+ * This should only be used for incoming messages as the session-key is encrypted using asymmetric cryptography.
+ *
+ * This is the way a client is supposed to create a request:
+ * <ul>
+ * <li>marshal the message to a byte[]</li>
+ * <li>generate a session-key with using the correct algorithm (default is AES-128)</li>
+ * <li>encrypt the message with the session-key</li>
+ * <li>encrypt the session-key with the server's public key</li>
+ * </ul>
+ *
+ * The response to the client is then encrypted with the same session-key
+ */
 @SuppressWarnings("serial")
 public class EncryptedMessage implements Serializable {
 
+    /**
+     * Contains the content of the message to transport, encrypted with the sessionKey.
+     */
     private byte[] encryptedContent;
+    /**
+     * Contains the encrypted Session key (that has been encrypted using the servers public key)
+     */
     private byte[] encryptedKey;
 
     public EncryptedMessage() {

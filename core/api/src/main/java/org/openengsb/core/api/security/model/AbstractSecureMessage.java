@@ -21,6 +21,9 @@ import java.io.Serializable;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+/**
+ * Adds additional integrity information to messages to prevent replay-attacks.
+ */
 public abstract class AbstractSecureMessage<MessageType> implements Serializable {
 
     private static final long serialVersionUID = 8482667667480837182L;

@@ -19,6 +19,15 @@ package org.openengsb.core.api.security.model;
 
 import org.springframework.security.core.Authentication;
 
+/**
+ * This interface serves as bridge between properly serializable AuthenticationInformation (compatible to
+ * {@link org.openengsb.core.api.model.BeanDescription} and internal {@link Authentication}-tokens.
+ *
+ * When implementing authentication-providers for external authentication, this interface needs to be implemented by the
+ * model-class representing the credentials.
+ *
+ * @see UsernamePasswordAuthenticationInfo
+ */
 public interface AuthenticationInfo {
 
     Authentication toSpringSecurityAuthentication();
