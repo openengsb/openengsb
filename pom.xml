@@ -140,6 +140,11 @@
         <version>${karaf.version}</version>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <version>${maven.plugin.openjpa.version}</version>
+      </plugin>
+      <plugin>
         <groupId>org.jasig.maven</groupId>
         <artifactId>maven-notice-plugin</artifactId>
         <configuration>
