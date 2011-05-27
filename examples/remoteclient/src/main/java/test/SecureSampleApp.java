@@ -38,6 +38,9 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
@@ -57,11 +60,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Setup to run this app:
- *  + Start OpenEngSB
- *  + install the jms-feature: features:install openengsb-ports-jms
- *  + copy example+example+testlog.connector to the openengsb/config-directory
- *  + copy openengsb/etc/keys/public.key.data to src/main/resources
+ * Setup to run this app: + Start OpenEngSB + install the jms-feature: features:install openengsb-ports-jms + copy
+ * example+example+testlog.connector to the openengsb/config-directory + copy openengsb/etc/keys/public.key.data to
+ * src/main/resources
  */
 public final class SecureSampleApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleApp.class);
@@ -84,46 +85,72 @@ public final class SecureSampleApp {
         producer = session.createProducer(destination);
     }
 
-    private static MethodResult call(MethodCall call) throws IOException, JMSException, InterruptedException,
-        ClassNotFoundException, EncryptionException, DecryptionException {
+    private static MethodResult call(MethodCall call, AuthenticationInfo authenticationInfo) throws IOException,
+        JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
-        String requestString = marshalRequest(methodCallRequest, sessionKey);
+        String requestString = marshalRequest(methodCallRequest, sessionKey, authenticationInfo);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());
         return convertStringToResult(resultString, sessionKey);
     }
 
-    private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey)
-        throws IOException, EncryptionException {
-        AuthenticationInfo info = new UsernamePasswordAuthenticationInfo("admin", "password");
-        BeanDescription auth = BeanDescription.fromObject(info);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
-        byte[] requestString = MAPPER.writeValueAsBytes(secureRequest);
-        InputStream publicKeyResource = ClassLoader.getSystemResourceAsStream("public.key.data");
-        byte[] publicKeyData = IOUtils.toByteArray(publicKeyResource);
-        PublicKey publicKey = CipherUtils.deserializePublicKey(publicKeyData, "RSA");
+    private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey,
+            AuthenticationInfo authenticationInfo) throws IOException, EncryptionException {
+        byte[] requestString = marshalSecureRequest(methodCallRequest, authenticationInfo);
+        EncryptedMessage encryptedMessage = encryptMessage(sessionKey, requestString);
+        return MAPPER.writeValueAsString(encryptedMessage);
+    }
+
+    private static EncryptedMessage encryptMessage(SecretKey sessionKey, byte[] requestString) throws IOException,
+        EncryptionException {
+        PublicKey publicKey = readPublicKey();
         byte[] encryptedContent = CipherUtils.encrypt(requestString, sessionKey);
         byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
         EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
-        return MAPPER.writeValueAsString(encryptedMessage);
+        return encryptedMessage;
+    }
+
+    private static PublicKey readPublicKey() throws IOException {
+        InputStream publicKeyResource = ClassLoader.getSystemResourceAsStream("public.key.data");
+        byte[] publicKeyData = IOUtils.toByteArray(publicKeyResource);
+        PublicKey publicKey = CipherUtils.deserializePublicKey(publicKeyData, "RSA");
+        return publicKey;
+    }
+
+    private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
+            AuthenticationInfo authenticationInfo)
+        throws IOException, JsonGenerationException, JsonMappingException {
+        BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
+        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
+        return MAPPER.writeValueAsBytes(secureRequest);
     }
 
     private static MethodResult convertStringToResult(String resultString, SecretKey sessionKey) throws IOException,
         ClassNotFoundException, DecryptionException {
-        byte[] decryptdContent;
-        try {
-            decryptdContent = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
-        } catch (DecryptionException e) {
-            System.err.println(resultString);
-            throw e;
-        }
-        SecureResponse resultMessage = MAPPER.readValue(decryptdContent, SecureResponse.class);
+        SecureResponse resultMessage = decryptResponse(resultString, sessionKey);
+        return convertResult(resultMessage);
+    }
+
+    private static MethodResult convertResult(SecureResponse resultMessage) throws ClassNotFoundException {
         MethodResult result = resultMessage.getMessage().getResult();
         Class<?> clazz = Class.forName(result.getClassName());
         Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
         result.setArg(resultValue);
         return result;
+    }
+
+    private static SecureResponse decryptResponse(String resultString, SecretKey sessionKey)
+        throws DecryptionException, IOException, JsonParseException, JsonMappingException {
+        byte[] decryptedContent;
+        try {
+            decryptedContent = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
+        } catch (DecryptionException e) {
+            System.err.println(resultString);
+            throw e;
+        }
+        SecureResponse resultMessage = MAPPER.readValue(decryptedContent, SecureResponse.class);
+        return resultMessage;
     }
 
     private static void sendMessage(String requestString) throws JMSException {
@@ -174,7 +201,7 @@ public final class SecureSampleApp {
             new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of("serviceId",
                 "example+example+testlog", "contextId", "foo"));
         LOGGER.info("calling method");
-        MethodResult methodResult = call(methodCall);
+        MethodResult methodResult = call(methodCall, new UsernamePasswordAuthenticationInfo("admin", "password"));
         System.out.println(methodResult);
 
         stop();
