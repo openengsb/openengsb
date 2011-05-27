@@ -31,8 +31,8 @@ import com.google.common.collect.ImmutableMap;
  * Hello world!
  *
  */
-public class SampleApp {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SampleApp.class);
+public class PlainSampleApp {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlainSampleApp.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
