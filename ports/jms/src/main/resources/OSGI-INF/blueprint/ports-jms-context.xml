@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
 
-    Licensed to the Austrian Association for Software Tool Integration (AASTI)
-    under one or more contributor license agreements. See the NOTICE file
-    distributed with this work for additional information regarding copyright
-    ownership. The AASTI licenses this file to you under the Apache License,
-    Version 2.0 (the "License"); you may not use this file except in compliance
-    with the License. You may obtain a copy of the License at
+  Licensed to the Austrian Association for Software Tool Integration (AASTI)
+  under one or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information regarding copyright
+  ownership. The AASTI licenses this file to you under the Apache License,
+  Version 2.0 (the "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-  xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
   xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
@@ -58,7 +57,6 @@
     <property name="filterChain">
       <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
     </property>
-    <property name="authenticationManager" ref="authenticationManager"></property>
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -66,30 +64,29 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.JsonMethodCallMarshalFilter</value>
-        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
-          <property name="requestHandler" ref="requestHandler" />
+        <value>org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.common.security.filter.MessageCryptoFilterFactory">
+          <property name="privateKeySource">
+            <bean class="org.openengsb.core.common.security.FileKeySource" init-method="init">
+              <property name="algorithm" value="RSA" />
+            </bean>
+          </property>
+          <property name="secretKeyAlgorithm" value="AES" />
         </bean>
+        <value>org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter</value>
+        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
       </list>
     </property>
   </bean>
 
-  <!--
-
-    <property name="inputType" value="java.lang.String" />
-    <property name="outputType" value="java.lang.String" />
-
-    <property name="factory">
-    <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
-    </property>
-
-    <property name="requestHandler" ref="requestHandler" /> -->
-
+  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory">
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="requestHandler" ref="requestHandler" />
+  </bean>
 
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
-  <reference id="authenticationManager"
-    interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>
 

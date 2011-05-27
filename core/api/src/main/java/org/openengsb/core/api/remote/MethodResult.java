@@ -17,10 +17,13 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodResult {
+public class MethodResult implements Serializable {
+
+    private static final long serialVersionUID = 3311624967097440078L;
 
     public enum ReturnType {
             Void, Object, Exception,
@@ -44,6 +47,10 @@ public class MethodResult {
 
     public MethodResult(Object arg, ReturnType type, String className) {
         this(arg, type, className, new HashMap<String, String>());
+    }
+
+    public MethodResult(Object arg, Map<String, String> metaData) {
+        this(arg, ReturnType.Object, arg.getClass().getName(), metaData);
     }
 
     public MethodResult(Object arg, ReturnType type, String className, Map<String, String> metaData) {

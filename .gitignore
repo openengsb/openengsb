@@ -30,6 +30,7 @@ eclipse-workspace
 *.springBeans
 *.checkstyle
 .checkstyleCheckerConfig
+log4j.local.properties
 
 #=================
 #intellij-project

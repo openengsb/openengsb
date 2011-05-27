@@ -82,7 +82,7 @@ public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<Stri
     private static void resetArgs(MethodCallRequest request) {
         MethodCall call = request.getMethodCall();
         if (call.getClasses().size() != call.getArgs().length) {
-            throw new IllegalStateException("Classes and Args have to be the same");
+            throw new IllegalArgumentException("Classes and Args have to be the same");
         }
         ObjectMapper mapper = createObjectMapper();
         Iterator<String> iterator = call.getClasses().iterator();

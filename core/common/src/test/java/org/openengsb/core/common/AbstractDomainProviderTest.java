@@ -29,12 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.core.test.BundleStringHelper;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.osgi.framework.BundleContext;
 
-public class AbstractDomainProviderTest {
+public class AbstractDomainProviderTest extends AbstractOpenEngSBTest {
 
     private static interface NullDomainEvents extends DomainEvents {
 

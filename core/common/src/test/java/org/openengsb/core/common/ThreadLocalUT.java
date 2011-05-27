@@ -24,15 +24,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ThreadLocalUT {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreadLocalUT.class);
 
     /**
      * shows the impact of the proxying and argument-manipulation on performance.
      */
+    @Ignore("because it's just a usetest, and takes quite some time")
     @Test
     public void threadPoolPerformance() throws Exception {
         Runnable command = new Runnable() {
@@ -50,10 +56,10 @@ public class ThreadLocalUT {
 
         ExecutorService regularPool = Executors.newFixedThreadPool(10);
         long start = executeTasks(command, regularPool);
-        System.out.println(System.currentTimeMillis() - start);
+        LOGGER.info("" + (System.currentTimeMillis() - start));
         ExecutorService contextAwareExecutor = ThreadLocalUtil.contextAwareExecutor(regularPool);
         start = executeTasks(command2, contextAwareExecutor);
-        System.out.println(System.currentTimeMillis() - start);
+        LOGGER.info("" + (System.currentTimeMillis() - start));
     }
 
     private long executeTasks(Runnable command, ExecutorService pool) throws InterruptedException, ExecutionException {

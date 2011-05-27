@@ -24,14 +24,19 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RemoteCommunicationException;
 import org.openengsb.core.common.remote.FilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OutgoingPortImpl implements OutgoingPort {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OutgoingPortImpl.class);
 
     private FilterChain filterChain;
 
     @Override
     public void send(MethodCallRequest call) throws RemoteCommunicationException {
         HashMap<String, Object> metaData = getMetaDataMap(call);
+        LOGGER.info("sending methodcall {} away with metadata {}", call, metaData);
         filterChain.filter(call, metaData);
     }
 
@@ -46,6 +51,7 @@ public class OutgoingPortImpl implements OutgoingPort {
     public MethodResultMessage sendSync(MethodCallRequest call) throws RemoteCommunicationException {
         HashMap<String, Object> metaData = getMetaDataMap(call);
         metaData.put("answer", true);
+        LOGGER.info("sending methodcall {} away with metadata {}", call, metaData);
         return (MethodResultMessage) filterChain.filter(call, metaData);
     }
 

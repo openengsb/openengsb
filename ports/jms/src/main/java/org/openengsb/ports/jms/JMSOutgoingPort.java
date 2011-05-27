@@ -21,9 +21,15 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.common.remote.AbstractFilterAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
+
+    private static final int TIMEOUT = 3000;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JMSOutgoingPort.class);
 
     private static final String RECEIVE = "receive";
 
@@ -37,17 +43,21 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
     protected String doFilter(String input, Map<String, Object> metaData) {
         String destination = (String) metaData.get("destination");
         String callId = (String) metaData.get("callId");
+        LOGGER.info("sending message with callId {} to destination {}", callId, destination);
         sendMessage(destination, input);
 
         if (ObjectUtils.notEqual(metaData.get("answer"), true)) {
+            LOGGER.debug("no answer expected, just returning null");
             return null;
         }
+        LOGGER.info("waiting {}ms for response on call with id {}", TIMEOUT, callId);
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.setReceiveTimeout(3000);
+        createJMSTemplate.setReceiveTimeout(TIMEOUT);
         Object receiveAndConvert = createJMSTemplate.receiveAndConvert(callId);
         if (receiveAndConvert == null) {
             throw new RuntimeException("JMS Receive Timeout reached");
         }
+        LOGGER.info("response for call with id {} received", callId);
         return (String) receiveAndConvert;
     }
 
