@@ -233,6 +233,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         if (debug) {
             baseOptions = combine(baseOptions, Helper.activateDebugging(Integer.toString(DEBUG_PORT)));
         }
+        String targetpath = new File("target").getAbsolutePath();
+        FileUtils.deleteDirectory(new File(targetpath, "karaf.data"));
         return combine(
             baseOptions,
             Helper.loadKarafStandardFeatures("config", "management"),
@@ -250,7 +252,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
+            vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
+            vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
+            vmOption("-Dkaraf.base=" + targetpath + "/karaf.base"),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }
+
 }
