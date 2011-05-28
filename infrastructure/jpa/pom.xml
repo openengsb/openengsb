@@ -58,6 +58,17 @@
     <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
 
   <dependencies>
     <dependency>
