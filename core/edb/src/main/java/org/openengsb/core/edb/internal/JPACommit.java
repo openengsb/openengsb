@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -40,8 +41,10 @@ public class JPACommit implements EDBCommit {
     @Column(name = "ROLE", length = 50)
     private String role;
     @Column(name = "DELS")
+    @ElementCollection
     private List<String> deletions;
     @Column(name = "OIDS")
+    @ElementCollection
     private List<String> oids;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;

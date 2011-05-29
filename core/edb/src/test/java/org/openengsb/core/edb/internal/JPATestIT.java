@@ -20,14 +20,11 @@ package org.openengsb.core.edb.internal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,21 +38,9 @@ import org.openengsb.core.api.edb.EDBObject;
 public class JPATestIT {
     // is currently overwritten by a fixed number in initDB
     private static long randSeed = System.currentTimeMillis();
-    private static Random rand;
     private Long runTime;
     private static JPADatabase db;
-
-    private static final String[] RANDOMKEYS = new String[]{
-        "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
-    };
-
-    private static final String[] RANDOMCOMMITTERS = new String[]{
-        "Bernard", "Johnny", "Jack", "Christian", "Latehost", "Panda"
-    };
-
-    private static final String[] RANDOMROLES = new String[]{
-        "Modeller", "Designer", "Programmer", "Annoying Person", "Bossy Bastard"
-    };
+    private static Utils utils;
 
     private JPADatabase openDatabase() {
         if (db == null) {
@@ -80,7 +65,7 @@ public class JPATestIT {
     @BeforeClass
     public static void initDB() {
         randSeed = 1295369697576L;
-        rand = new Random(randSeed); // 1938491837);
+        utils = new Utils(randSeed);
         File f = new File("TEST.h2.db");
         if (!f.exists()) {
             return;
@@ -101,34 +86,7 @@ public class JPATestIT {
     public void setup() {
         // setup stuff
         runTimeStep();
-    }
-
-    private EDBObject randomTestObject(String oid, long runTime) {
-        // If you use this the object must not in any way relate to the feature you are testing...
-        // Using random strings seems to have an effect on the OS' RW-cache... ?
-        // Well... if its cache says the HD has the very same text in the block that's supposed to be written
-        // it COULD skip it - though it's unlikely/unsafe... yet... randomizing the unused content could result
-        // in "more realistic" HD-access-times
-        Map<String, Object> testData = new HashMap<String, Object>();
-
-        // int max = 2 + rand.nextInt( 3);
-        int max = 20;
-
-        for (int i = 0; i < max; ++i) {
-            String key = RANDOMKEYS[rand.nextInt(RANDOMKEYS.length)] + Integer.toString(i);
-            String value = "key value " + Integer.toString(rand.nextInt(100));
-            testData.put(key, value);
-        }
-        return new EDBObject(oid, runTime, testData);
-    }
-
-    private String randomCommitter() {
-        return RANDOMCOMMITTERS[rand.nextInt(RANDOMCOMMITTERS.length)];
-    }
-
-    private String randomRole() {
-        return RANDOMROLES[rand.nextInt(RANDOMROLES.length)];
-    }
+    }    
 
     @Test
     public void testOpenDatabase_shouldWork() {
@@ -195,8 +153,8 @@ public class JPATestIT {
             data1.put("Door", "Bell");
             data1.put("Cat", "Spongebob");
             EDBObject v1 = new EDBObject("/history/object", runTime, data1);
-            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/1", runTime));
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/1", runTime));
             ci.add(v1);
 
             db.commit(ci);
@@ -207,26 +165,26 @@ public class JPATestIT {
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
             data2.put("Lock", "Smith");
             EDBObject v2 = new EDBObject("/history/object", runTime, data2);
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/2", runTime));
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/2", runTime));
             ci.add(v2);
             db.commit(ci);
 
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
 
             runTimeStep();
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/3", runTime));
-            ci.add(randomTestObject("/useless/4", runTime));
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/3", runTime));
+            ci.add(utils.createRandomTestObject("/useless/4", runTime));
             db.commit(ci);
 
             // Now we change something else:
             data3.put("Cat", "Dog");
             runTimeStep();
             EDBObject v3 = new EDBObject("/history/object", runTime, data3);
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
             ci.add(v3);
-            ci.add(randomTestObject("/useless/5", runTime));
+            ci.add(utils.createRandomTestObject("/useless/5", runTime));
             db.commit(ci);
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
@@ -255,12 +213,12 @@ public class JPATestIT {
     public void testHistoryOfDeletion_shouldWork() throws Exception {
         JPADatabase db = openDatabase();
 
-        JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-        ci.add(randomTestObject("/deletion/1", runTime));
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+        ci.add(utils.createRandomTestObject("/deletion/1", runTime));
         db.commit(ci);
 
         runTimeStep();
-        ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
         ci.delete("/deletion/1");
         db.commit(ci);
 
@@ -285,9 +243,9 @@ public class JPATestIT {
             data1.put("Cheese", "Butter");
             EDBObject v1 = new EDBObject("/history/test/object", runTime, data1);
             from = runTime;
-            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/test/1", runTime));
-            ci.add(randomTestObject("/deletion/test/1", runTime));
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/test/1", runTime));
+            ci.add(utils.createRandomTestObject("/deletion/test/1", runTime));
             ci.add(v1);
             db.commit(ci);
             runTimeStep();
@@ -296,26 +254,26 @@ public class JPATestIT {
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
             data2.put("Burger", "Meat");
             EDBObject v2 = new EDBObject("/history/test/object", runTime, data2);
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/test/2", runTime));
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/test/2", runTime));
             ci.delete("/deletion/test/1");
             ci.add(v2);
             db.commit(ci);
 
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
             runTimeStep();
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
-            ci.add(randomTestObject("/useless/test/3", runTime));
-            ci.add(randomTestObject("/useless/test/4", runTime));
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            ci.add(utils.createRandomTestObject("/useless/test/3", runTime));
+            ci.add(utils.createRandomTestObject("/useless/test/4", runTime));
             db.commit(ci);
 
             // Now we change something else:
             data3.put("Cheese", "Milk");
             runTimeStep();
             EDBObject v3 = new EDBObject("/history/test/object", runTime, data3);
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
             ci.add(v3);
-            ci.add(randomTestObject("/useless/test/5", runTime));
+            ci.add(utils.createRandomTestObject("/useless/test/5", runTime));
             to = runTime;
             db.commit(ci);
         } catch (Exception ex) {
@@ -337,7 +295,7 @@ public class JPATestIT {
             data1.put("Cow", "Milk");
             data1.put("Dog", "Food");
             EDBObject v1 = new EDBObject("/test/query1", runTime, data1);
-            JPACommit ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
             ci.add(v1);
             db.commit(ci);
             runTimeStep();
@@ -346,7 +304,7 @@ public class JPATestIT {
             data2.put("Cow", "Milk");
             data2.put("House", "Garden");
             v1 = new EDBObject("/test/query2", runTime, data2);
-            ci = db.createCommit(randomCommitter(), randomRole(), runTime);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
             ci.add(v1);
             db.commit(ci);
             runTimeStep();
