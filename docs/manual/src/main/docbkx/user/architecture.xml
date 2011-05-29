@@ -112,8 +112,7 @@
     providing services. Classically, single purpose server tools, like issue tracker or chat server, match the 
     category of Domain Tools best. Most tools in (software+) engineering environments fit of course in both 
     categories, but since there are significant technically differences between them they are 
-    described as two different component types.
-</para>
+    described as two different component types.</para>
   </section>
 
   <section xml:id="architecture.concept.connectors">
@@ -131,13 +130,36 @@
     <title>EDB (Engineering Data Base)</title>
     <para>The EDB is a database with additional versioning feature. Its main job is to save and version 
     so called tool data. Tool data are information units which are used by tools which are connect to
-    the edb.
-    The connection between the tools and the EDB is done through the EngineeringDatabaseService provided
+    the OpenEngSB. The versioning feature is necessary because it should be possible to restore tool data
+    which has been changed in the meantime. Easiest example for this is the handling of signals.</para>
+
+    <para>Signals are little information units which can for example describe a circuit on a board. This
+    circuits are once planned and building the base for workers which works at another layer (e.g. programmer).
+    If this signals are changed and the other layers didn't notice that, the final product won't work or even
+    worse. With the EDB it is possible to get noticed if a signal has changed and you can check what has been
+    changed.</para>
+
+    <para>The connection between the tools and the EDB is done through the EngineeringDatabaseService provided
     by the core/edb bundle. This service gets a datasource (database) from the infrastructure/jpa bundle.
     The EngineeringDatabaseService is implemented with JPA, that means that every database which support
     JPA can be used as database backend for the EDB.
-    As standard database backend was the H2 database chosen. But with the open concept of jpa this can be
-    replaced with a more performant one.</para>
+    As standard database backend was the H2 database chosen.
+    </para>
+
+    <para>You have also the possibility to replace the database backend used for the EDB. A reason for 
+    this could be that your company wants a more performant database because the sets of tooldata are
+    so big that the standard database isn't fast enough. For exchanging the database backend there are two 
+    cases: You want to replace the database with another database which support JPA or you take another
+    database which doesn't support JPA.</para>
+
+    <para>If you want to replace the standard database with another JPA supporting database, the procedure
+    of changing is rather simple. You have to change the infrastructure/jpa bundle for the new database
+    and make sure that the drivers are loaded by the openengsb (dependencies, features,...) and that is it.</para>
+
+    <para>If you want to replace the standard database with another non JPA supporting database you will have
+    to change first the datasource like descriped in the last paragraph. After that you have to write another
+    bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
+    commands and port it for the new database and replace the standart EngineeringDatabaseService.</para>
   </section>
 
 </chapter>
