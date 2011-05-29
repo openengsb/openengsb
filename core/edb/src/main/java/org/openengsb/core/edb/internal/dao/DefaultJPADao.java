@@ -38,9 +38,11 @@ import org.openengsb.core.edb.internal.JPACommit;
 import org.openengsb.core.edb.internal.JPAEntry;
 import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultJPADao implements JPADao {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
     private EntityManager entityManager;
 
     public DefaultJPADao() {
@@ -53,6 +55,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Number getNewestJPAHeadNumber() throws EDBException {
+        LOGGER.debug("getting newest jpa head timestamp");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAHead.class);
@@ -69,6 +72,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
+        LOGGER.debug("Loading JPAHead for timestamp " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAHead> query = criteriaBuilder.createQuery(JPAHead.class);
         Root<JPAHead> from = query.from(JPAHead.class);
@@ -81,8 +85,10 @@ public class DefaultJPADao implements JPADao {
         TypedQuery<JPAHead> typedQuery = entityManager.createQuery(select);
         List<JPAHead> resultList = typedQuery.getResultList();
 
-        if (resultList == null || resultList.size() != 1 || resultList.get(0) == null) {
+        if (resultList == null || resultList.get(0) == null) {
             throw new EDBException("Head not found for timestamp " + timestamp);
+        } else if (resultList.size() != 1) {
+            throw new EDBException("Multiple heads found for the timestamp " + timestamp);
         }
 
         return resultList.get(0);
@@ -91,6 +97,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
+        LOGGER.debug("Loading newest Timestamp for object with the id " + oid);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
         Root from = query.from(JPAObject.class);
@@ -112,6 +119,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid) throws EDBException {
+        LOGGER.debug("Loading the history for the object " + oid);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root from = query.from(JPAObject.class);
@@ -128,6 +136,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException {
+        LOGGER.debug("Loading the history for the object " + oid + " from " + from + " to " + to);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
@@ -146,6 +155,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
+        LOGGER.debug("Loading object " + oid + " for the time " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> from = query.from(JPAObject.class);
@@ -171,6 +181,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
+        LOGGER.debug("Loading all commits which involve object " + oid + " from " + from + " to " + to);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
@@ -193,6 +204,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public List<JPAObject> getDeletedJPAObjects() throws EDBException {
+        LOGGER.debug("Load all deleted JPAObjects");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> f = query.from(JPAObject.class);
@@ -208,6 +220,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
+        LOGGER.debug("Load all objects with the given oid " + oid + " which are younger than " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
@@ -225,6 +238,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
+        LOGGER.debug("Load the commit for the timestamp " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
@@ -239,6 +253,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
+        LOGGER.debug("Get commits which are given to a param map with " + param.size() + " elements");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
@@ -255,6 +270,7 @@ public class DefaultJPADao implements JPADao {
 
     @Override
     public JPACommit getLastCommit(Map<String, Object> param) throws EDBException {
+        LOGGER.debug("Get last commit which are given to a param map with " + param.size() + " elements");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
@@ -304,6 +320,7 @@ public class DefaultJPADao implements JPADao {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPAObject> query(String key, Object value) throws EDBException {
+        LOGGER.debug("Query for objects which have entries where key = " + key + " and value = " + value);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root<JPAObject> f = query.from(JPAObject.class);

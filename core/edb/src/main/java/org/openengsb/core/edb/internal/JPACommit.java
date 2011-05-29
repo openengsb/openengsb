@@ -30,10 +30,14 @@ import javax.persistence.Version;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit implements EDBCommit {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JPACommit.class);
+    
     @Column(name = "COMMITER", length = 50)
     private String committer;
     @Column(name = "TIME")
@@ -119,15 +123,18 @@ public class JPACommit implements EDBCommit {
         }
         if (!objects.contains(obj)) {
             objects.add(obj);
+            LOGGER.debug("Added object " + obj.getOID() + " to the commit");
         }
     }
 
     @Override
     public void delete(String oid) throws EDBException {
         if (deletions.contains(oid)) {
+            LOGGER.debug("could not delete object " + oid + " because it was never added");
             return;
         }
         deletions.add(oid);
+        LOGGER.debug("deleted object " + oid + " from the commit");
     }
 
     @Override

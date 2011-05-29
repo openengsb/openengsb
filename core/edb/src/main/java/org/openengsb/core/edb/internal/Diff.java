@@ -28,8 +28,11 @@ import org.openengsb.core.api.edb.EDBEntry;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBObjectDiff;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Diff implements EDBDiff {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Diff.class);
     private JPACommit startCommit;
     private JPACommit endCommit;
     private List<EDBObject> startState;
@@ -51,6 +54,7 @@ public class Diff implements EDBDiff {
         }
 
         createObjectDiffs();
+        LOGGER.debug("Diff created. Difference count = " + diff.size());
     }
 
     /**
@@ -63,10 +67,34 @@ public class Diff implements EDBDiff {
             tempList.add(o);
         }
 
+        addModifiedOrDeletedObjects(tempList);
+        addNewObjects(tempList);
+    }
+    
+    /**
+     * add all modified or deleted objects to the diff collection. As base to indicate
+     * if something changed the start state and the list of elements from the end state
+     * is taken.
+     */
+    private void addModifiedOrDeletedObjects(List<EDBObject> tempList) {
         for (EDBObject a : this.startState) {
             String oid = a.getOID();
             EDBObject b = removeIfExist(oid, tempList);
             ObjectDiff odiff = new ObjectDiff(this.startCommit, this.endCommit, a, b);
+            if (odiff.getDifferenceCount() > 0) {
+                diff.put(oid, odiff);
+            }
+        }
+    }
+    
+    /**
+     * add all new object to the diff collection. As base to indicate if an object is new,
+     * the list of elements from the end state which are left is taken.
+     */
+    private void addNewObjects(List<EDBObject> tempList) {
+        for (EDBObject b : tempList) {
+            String oid = b.getOID();
+            ObjectDiff odiff = new ObjectDiff(this.startCommit, this.endCommit, null, b);
             if (odiff.getDifferenceCount() > 0) {
                 diff.put(oid, odiff);
             }
@@ -86,6 +114,7 @@ public class Diff implements EDBDiff {
                 return obj;
             }
         }
+        LOGGER.debug(oid + " wasn't found in the list of end state objects");
         return null;
     }
 
@@ -138,8 +167,8 @@ public class Diff implements EDBDiff {
             for (Map.Entry<String, EDBEntry> de : diffMap.entrySet()) {
                 String key = de.getKey();
                 EDBEntry entry = de.getValue();
-                builder.append("      Entry: '" + key + "' from: '" + entry.getBefore() + "' to: '"
-                        + entry.getAfter() + "'");
+                builder.append("      Entry: '").append(key).append("' from: '").append(entry.getBefore())
+                    .append("' to: '").append(entry.getAfter()).append("'");
             }
             builder.append("\n");
         }
