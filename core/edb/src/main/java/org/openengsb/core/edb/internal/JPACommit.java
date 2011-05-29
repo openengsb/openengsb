@@ -33,22 +33,24 @@ import org.openengsb.core.api.edb.EDBObject;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit implements EDBCommit {
-    @Column(name = "COMM", length = 50)
-    protected String committer;
+    @Column(name = "COMMITER", length = 50)
+    private String committer;
     @Column(name = "TIME")
-    protected Long timestamp;
+    private Long timestamp;
     @Column(name = "ROLE", length = 50)
-    protected String role;
+    private String role;
     @Column(name = "DELS")
-    protected List<String> deletions;
+    private List<String> deletions;
     @Column(name = "OIDS")
-    protected List<String> oids;
+    private List<String> oids;
+    @Column(name = "ISCOMMITED")
+    private Boolean committed = false;
     @Version
-    private int versionNumber;
+    private Integer versionNumber;
 
     private List<JPAObject> jpaObjects;
-    protected List<EDBObject> objects;
-    protected boolean committed = false;
+    private List<EDBObject> objects;
+    
 
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.

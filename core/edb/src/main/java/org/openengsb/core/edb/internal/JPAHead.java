@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -34,10 +35,12 @@ import org.openengsb.core.api.edb.EDBObject;
 @Entity
 public class JPAHead {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<JPAObject> head;
+    private List<JPAObject> objects;
     @Version
-    private int versionNumber;
+    private Integer versionNumber;
+    @Column(name = "TIME")
     private Long timestamp;
+    
     private List<EDBObject> loaded;
 
     /**
@@ -49,7 +52,7 @@ public class JPAHead {
 
     public JPAHead(Long timestamp) {
         this.timestamp = timestamp;
-        head = new ArrayList<JPAObject>();
+        objects = new ArrayList<JPAObject>();
     }
 
     public JPAHead(JPAHead cp, Long timestamp) {
@@ -57,20 +60,20 @@ public class JPAHead {
         List<JPAObject> list = cp.getJPAObjects();
 
         if (list != null) {
-            head = new ArrayList<JPAObject>(list);
+            objects = new ArrayList<JPAObject>(list);
         } else {
-            head = new ArrayList<JPAObject>();
+            objects = new ArrayList<JPAObject>();
         }
     }
 
     public int count() {
-        return head.size();
+        return objects.size();
     }
 
     public List<EDBObject> getEDBObjects() {
         if (loaded == null) {
             loaded = new ArrayList<EDBObject>();
-            for (JPAObject o : head) {
+            for (JPAObject o : objects) {
                 loaded.add(o.getObject());
             }
         }
@@ -78,15 +81,15 @@ public class JPAHead {
     }
 
     public List<JPAObject> getJPAObjects() {
-        return head;
+        return objects;
     }
 
     public void delete(String oid) {
         loaded = null;
-        for (int i = 0; i < head.size(); ++i) {
-            JPAObject o = head.get(i);
+        for (int i = 0; i < objects.size(); ++i) {
+            JPAObject o = objects.get(i);
             if (oid.equals(o.getOID())) {
-                head.remove(i);
+                objects.remove(i);
                 return;
             }
         }
@@ -94,14 +97,14 @@ public class JPAHead {
 
     public void replace(String oid, JPAObject obj) {
         loaded = null;
-        for (int i = 0; i < head.size(); ++i) {
-            JPAObject o = head.get(i);
+        for (int i = 0; i < objects.size(); ++i) {
+            JPAObject o = objects.get(i);
             if (oid.equals(o.getOID())) {
-                head.remove(i);
+                objects.remove(i);
                 break;
             }
         }
-        head.add(obj);
+        objects.add(obj);
     }
 
     public void replace(String oid, EDBObject obj) {

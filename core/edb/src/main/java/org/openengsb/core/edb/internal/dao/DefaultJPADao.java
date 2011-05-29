@@ -314,7 +314,7 @@ public class DefaultJPADao implements JPADao {
         Root fromKeyValuePair = subquery.from(JPAEntry.class);
         subquery.select(fromKeyValuePair);
 
-        Join j = f.join("values");
+        Join j = f.join("entries");
         Path<Object> path = j.get("id");
 
         Predicate predicate1 = criteriaBuilder.equal(fromKeyValuePair.get("key"), key);

@@ -29,11 +29,12 @@ import javax.persistence.Version;
  */
 @Entity
 public class JPAEntry {
+    // Have to be named explicitly here because it is needed for a jpa criteria query
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Version
-    private int versionNumber;
+    private Integer versionNumber;
     
     private String key;
     private String value;

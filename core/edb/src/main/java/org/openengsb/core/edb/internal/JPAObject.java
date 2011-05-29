@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -37,13 +38,15 @@ import org.openengsb.core.api.edb.EDBObject;
  */
 public class JPAObject {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<JPAEntry> values;
-    @Version
-    private int versionNumber;
-    
+    private List<JPAEntry> entries;
+    @Column(name = "TIME")
     private Long timestamp;
+    @Column(name = "ISDELETED")
     private Boolean isDeleted;
+    @Column(name = "OID")
     private String oid;
+    @Version
+    private Integer versionNumber;
 
     public JPAObject() {
         isDeleted = false;
@@ -58,15 +61,15 @@ public class JPAObject {
     }
 
     private void loadValues(EDBObject o) {
-        values = new ArrayList<JPAEntry>();
+        entries = new ArrayList<JPAEntry>();
         for (Map.Entry<String, Object> entry : o.entrySet()) {
-            values.add(new JPAEntry(entry.getKey(), entry.getValue()));
+            entries.add(new JPAEntry(entry.getKey(), entry.getValue()));
         }
     }
 
     public EDBObject getObject() {
         Map<String, Object> data = new HashMap<String, Object>();
-        for (JPAEntry kvp : values) {
+        for (JPAEntry kvp : entries) {
             data.put(kvp.getKey(), kvp.getValue());
         }
         String s = (String) data.get("isDeleted");
@@ -89,7 +92,7 @@ public class JPAObject {
     }
     
     public List<JPAEntry> getPairs() {
-        return values;
+        return entries;
     }
 
     public int getVersionNumber() {
