@@ -1,3 +1,4 @@
+package org.openengsb.core.console;
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
@@ -15,26 +16,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
 
-import java.util.ResourceBundle;
+import org.apache.felix.gogo.commands.Command;
+import org.apache.karaf.shell.console.OsgiCommandSupport;
 
-public class LocalisedTest extends AbstractOpenEngSBTest {
+@Command(scope = "openengsb", name = "info", description = "Prints out current project version")
+public class OpenEngSBCommand extends OsgiCommandSupport {
 
-    private final ResourceBundle resources;
-
-    public LocalisedTest() {
-        String name = this.getClass().getName();
-        resources = ResourceBundle.getBundle(name.substring(0, name.length() - 4));
+    @Override
+    protected Object doExecute() throws Exception {
+        System.out.println(getBundleContext().getBundle().getVersion().toString());
+        return null;
     }
-
-    protected String localization(String resourceName) {
-        if (resources != null) {
-            return resources.getString(resourceName);
-        } else {
-            return null;
-        }
-
-    }
-
 }
