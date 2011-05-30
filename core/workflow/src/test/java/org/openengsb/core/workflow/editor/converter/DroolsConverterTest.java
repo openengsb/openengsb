@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.editor.converter;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -171,7 +172,7 @@ public class DroolsConverterTest {
     }
 
     private void assertConversionResult(String convert, String name) throws SAXException, IOException {
-        XMLAssert.assertXMLEqual(new FileReader(this.getClass().getResource("/converted/" + name + ".xml").getPath()),
+        XMLAssert.assertXMLEqual(new FileReader(new File("./src/test/resources/converted/" + name + ".xml")),
             new StringReader(convert));
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("convertertest.drl", getClass()), ResourceType.DRL);

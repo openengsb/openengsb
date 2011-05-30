@@ -17,12 +17,11 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;

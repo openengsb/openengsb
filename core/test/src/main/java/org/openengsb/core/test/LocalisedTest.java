@@ -19,7 +19,7 @@ package org.openengsb.core.test;
 
 import java.util.ResourceBundle;
 
-public class LocalisedTest {
+public class LocalisedTest extends AbstractOpenEngSBTest {
 
     private final ResourceBundle resources;
 
@@ -30,7 +30,7 @@ public class LocalisedTest {
 
     protected String localization(String resourceName) {
         if (resources != null) {
-            return this.resources.getString(resourceName);
+            return resources.getString(resourceName);
         } else {
             return null;
         }

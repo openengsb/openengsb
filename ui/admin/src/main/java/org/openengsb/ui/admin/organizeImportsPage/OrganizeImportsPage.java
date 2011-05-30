@@ -17,6 +17,11 @@
 
 package org.openengsb.ui.admin.organizeImportsPage;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -162,7 +167,13 @@ public class OrganizeImportsPage extends BasePage {
     private TreeModel createTreeModel() {
         TreeModel model = null;
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Imports");
-        for (String imp : ruleManager.listImports()) {
+        
+        Collection<String> c = ruleManager.listImports();
+        List<String> l = new ArrayList<String>();
+        l.addAll(c);
+        Collections.sort(l);
+        
+        for (String imp : l) {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(imp);
             rootNode.add(child);
         }

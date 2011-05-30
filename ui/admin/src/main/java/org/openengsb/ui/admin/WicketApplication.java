@@ -28,6 +28,7 @@ import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
 
@@ -37,7 +38,7 @@ public class WicketApplication extends OpenEngSBWicketApplication {
         @SuppressWarnings("unchecked")
         Class<? extends Page>[] pages =
             new Class[]{ OpenEngSBPage.class, BasePage.class, Index.class, TestClient.class, LoginPage.class,
-                ServiceListPage.class, TaskOverview.class, UserService.class, SendEventPage.class };
+                ServiceListPage.class, TaskOverview.class, UserService.class, SendEventPage.class, WiringPage.class };
         for (Class<? extends Page> page : pages) {
             mount(new MixedParamUrlCodingStrategy(page.getSimpleName(), page, new String[0]));
         }

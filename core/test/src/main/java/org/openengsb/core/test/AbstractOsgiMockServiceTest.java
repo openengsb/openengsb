@@ -38,7 +38,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.EnumerationUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -68,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * ServiceManagement-operations are performed via the {@link BundleContext}. All these calls are handled using two maps
  * to mock a service-registry (serviceReferences, services)
  */
-public abstract class AbstractOsgiMockServiceTest {
+public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOsgiMockServiceTest.class);
 
@@ -203,7 +202,6 @@ public abstract class AbstractOsgiMockServiceTest {
         });
     }
 
-    @After
     public void clearRegistry() throws Exception {
         bundleContext = null;
         serviceReferences = null;

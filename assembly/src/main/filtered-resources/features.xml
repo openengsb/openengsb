@@ -28,11 +28,23 @@
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
     </config>
+    <config name="org.openengsb.persistence.config-rule">
+      backend.id=persistenceService
+      configuration.id=RULE
+    </config>
+    <config name="org.openengsb.persistence.config-flow">
+      backend.id=persistenceService
+      configuration.id=FLOW
+    </config>
+    <config name="org.openengsb.persistence.config-connector">
+      backend.id=persistenceService
+      configuration.id=CONNECTOR
+    </config>
     <feature version="[3,4)">spring</feature>
     <feature version="[3,4)">spring-web</feature>
     <feature version="[1.2,2)">spring-dm</feature>
     <feature version="[1.2,2)">spring-dm-web</feature>
-    <feature version="${karaf.version}">war</feature>
+    <feature version="${karaf.version}">http</feature>
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
@@ -85,7 +97,6 @@
     <bundle>mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
@@ -95,6 +106,8 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+    <!-- OpenEngSB Console -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-console/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-jpa" version="${project.version}">
@@ -181,7 +194,9 @@
   </feature>
 
   <feature name="openengsb-ui-core" version="${project.version}" >
+    <feature version="${karaf.version}">war</feature>
     <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
 

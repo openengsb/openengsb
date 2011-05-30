@@ -30,6 +30,7 @@ import org.junit.BeforeClass;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.TaskboxServiceInternal;
@@ -38,6 +39,7 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
@@ -139,6 +141,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         serviceUtils.setBundleContext(bundleContext);
         OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        registerService(new DefaultOutgoingPortUtilService(), new Hashtable<String, Object>(),
+            OutgoingPortUtilService.class);
     }
 
 }
