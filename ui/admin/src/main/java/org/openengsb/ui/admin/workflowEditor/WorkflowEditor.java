@@ -59,9 +59,13 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class WorkflowEditor extends BasePage {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowEditor.class);
 
     private TreeTable table;
 
@@ -82,9 +86,7 @@ public class WorkflowEditor extends BasePage {
     List<WorkflowValidator> validators;
 
     public WorkflowEditor() {
-        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
-        feedbackPanel.setOutputMarkupId(true);
-        add(feedbackPanel);
+        createFeedbackPanel();
         try {
             workflowEditorService.loadWorkflowsFromDatabase();
         } catch (PersistenceException e1) {
@@ -101,6 +103,7 @@ public class WorkflowEditor extends BasePage {
         if (workflowEditorService.getWorkflowNames().size() == 0) {
             selectForm.setVisible(false);
         }
+        createTable(node, currentworkflow);
         if (currentworkflow.getObject() == null) {
             label = getString("workflow.create.first");
             node.setUserObject(new ActionRepresentation());
@@ -113,7 +116,12 @@ public class WorkflowEditor extends BasePage {
             addEventsToNode(root.getEvents(), node);
         }
         add(new Label("currentWorkflowName", label));
-        createTable(node, currentworkflow);
+    }
+
+    public void createFeedbackPanel() {
+        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
     }
 
     private void createTable(DefaultMutableTreeNode node, final Model<WorkflowRepresentation> currentworkflow) {
@@ -208,17 +216,18 @@ public class WorkflowEditor extends BasePage {
             protected void onSubmit() {
                 try {
                     boolean valid = true;
+                    LOGGER.info("Validation Workflow: " + workflowEditorService.getCurrentWorkflow().getName());
                     for (WorkflowValidator validator : validators) {
                         WorkflowValidationResult result =
                             validator.validate(workflowEditorService.getCurrentWorkflow());
                         valid = result.isValid() && valid;
                         for (String error : result.getErrors()) {
+                            LOGGER.info("Workflow Validation Error: " + error);
                             error(error);
                         }
                     }
                     if (valid) {
                         String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
-                        System.out.println(convert);
                         addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
                         ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
                             .getCurrentWorkflow().getName()),

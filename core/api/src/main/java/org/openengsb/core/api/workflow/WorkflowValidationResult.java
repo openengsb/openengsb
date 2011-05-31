@@ -19,6 +19,9 @@ package org.openengsb.core.api.workflow;
 
 import java.util.List;
 
+/**
+ * Provides metadata about the validation Result including error messages.
+ */
 public interface WorkflowValidationResult {
     boolean isValid();
 

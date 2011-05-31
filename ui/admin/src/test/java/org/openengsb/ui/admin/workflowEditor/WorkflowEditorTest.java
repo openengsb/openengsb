@@ -100,7 +100,7 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     @Test
-    public void withoutWorkflow_partsShouldBeInvisible() {
+    public void withoutWorkflow_partsshouldBeInvisible() {
         tester.assertInvisible("workflowSelectForm");
         tester.assertInvisible("treeTable");
         tester.assertInvisible("export");
@@ -115,7 +115,7 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     @Test
-    public void selectWorkflow_ShouldShowWorkflowActionDescriptions() {
+    public void selectWorkflow_shouldShowWorkflowActionDescriptions() {
         String string = "Workflow";
         service.createWorkflow(string);
         WorkflowRepresentation currentWorkflow = service.getCurrentWorkflow();
@@ -132,7 +132,9 @@ public class WorkflowEditorTest extends AbstractUITest {
         currentWorkflow.getRoot().addAction(action);
         service.createWorkflow("Second");
         tester.startPage(WorkflowEditor.class);
+
         selectWorkflowAndIfLoadedCorrectly(string, 1);
+
         assertThat(string, equalTo(service.getCurrentWorkflow().getName()));
     }
 
@@ -140,6 +142,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         FormTester formTester = tester.newFormTester("workflowSelectForm");
         formTester.select("workflowSelect", item);
         formTester.submit();
+
         tester.assertRenderedPage(WorkflowEditor.class);
         tester.assertLabel("currentWorkflowName", string);
     }
@@ -148,18 +151,20 @@ public class WorkflowEditorTest extends AbstractUITest {
     public void callCreateWorkflow_shouldCreateWorkflow() {
         FormTester createEmptyWorkflow = tester.newFormTester("workflowCreateForm");
         createEmptyWorkflow.submit();
+
         tester.assertRenderedPage(WorkflowEditor.class);
         assertThat(service.getWorkflowNames().size(), equalTo(0));
         assertThat(service.getCurrentWorkflow(), equalTo(null));
-
         tester.assertLabel("currentWorkflowName", "Please create Workflow first");
+
         createWorkflow();
+
         assertThat("Name", equalTo(service.getCurrentWorkflow().getName()));
         tester.assertRenderedPage(EditAction.class);
     }
 
     @Test
-    public void removeAction_ShouldRemoveActionFromWorkflow() {
+    public void removeAction_shouldRemoveActionFromWorkflow() {
         service.createWorkflow("default");
         ActionRepresentation action = new ActionRepresentation();
         action.setLocation("location");
@@ -168,12 +173,14 @@ public class WorkflowEditorTest extends AbstractUITest {
         service.getCurrentWorkflow().getRoot().addAction(action);
         tester.startPage(WorkflowEditor.class);
         assertThat(service.getCurrentWorkflow().getRoot().getActions().size(), equalTo(1));
+
         tester.clickLink("treeTable:i:1:middleColumns:links:remove");
+
         assertThat(service.getCurrentWorkflow().getRoot().getActions().size(), equalTo(0));
     }
 
     @Test
-    public void removeEvent_ShouldRemoveEventFromWorkflow() {
+    public void removeEvent_shouldRemoveEventFromWorkflow() {
         service.createWorkflow("default");
         EventRepresentation event = new EventRepresentation();
         event.setEvent(NullEvent.class);
@@ -192,7 +199,7 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     @Test
-    public void createAndSetEndNode_ShouldBeShownInEditor() {
+    public void createAndSetEndNode_shouldBeShownInEditor() {
         service.createWorkflow("workflow");
         tester.startPage(WorkflowEditor.class);
         String setEnd = "treeTable:i:0:middleColumns:links:set-end";
@@ -225,7 +232,7 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     @Test
-    public void exportWorkflow_ShouldCallRuleManagerAddWithConverterReturnAndAddGlobal() throws RuleBaseException {
+    public void exportWorkflow_shouldCallRuleManagerAddWithConverterReturnAndAddGlobal() throws RuleBaseException {
         WorkflowValidator validator = mock(WorkflowValidator.class);
         when(validator.validate(Mockito.any(WorkflowRepresentation.class))).thenReturn(
             new WorkflowValidationResultImplementation(true, new String[0]));
@@ -253,34 +260,38 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     @Test
-    public void testSave_ShouldCallPersistenceMethod() throws InvalidConfigurationException, PersistenceException {
+    public void testSave_shouldCallPersistenceMethod() throws InvalidConfigurationException, PersistenceException {
         tester.assertInvisible("saveForm");
         service.createWorkflow("Workflow");
         tester.startPage(WorkflowEditor.class);
         tester.assertVisible("saveForm");
         ArgumentCaptor<ConfigItem> captor = ArgumentCaptor.forClass(ConfigItem.class);
+
         FormTester saveFormTester = tester.newFormTester("saveForm");
         saveFormTester.submit();
+
         verify(workflowPersistence).persist(captor.capture());
         assertThat((WorkflowRepresentation) captor.getValue().getContent(), sameInstance(service.getCurrentWorkflow()));
     }
 
     @Test
-    public void testLoad_ShouldHaveLoadedWorkflows() throws InvalidConfigurationException, PersistenceException {
+    public void testLoad_shouldHaveLoadedWorkflows() throws InvalidConfigurationException, PersistenceException {
         List<ConfigItem<?>> items = new ArrayList<ConfigItem<?>>();
         WorkflowRepresentation rep = new WorkflowRepresentation();
         final String string = "Name";
         rep.setName(string);
         items.add(new ConfigItem<WorkflowRepresentation>(null, rep));
-        when(workflowPersistence.load(null)).thenReturn(items);
+        when(workflowPersistence.load(Mockito.anyMap())).thenReturn(items);
+
         service.loadWorkflowsFromDatabase();
+
         tester.startPage(WorkflowEditor.class);
         tester.assertVisible("workflowSelectForm");
         selectWorkflowAndIfLoadedCorrectly("Name", 0);
     }
 
     @Test
-    public void testExport_ShouldExportWhenValidationWorks() {
+    public void testExport_shouldExportWhenValidationWorks() {
         WorkflowValidator validator = mock(WorkflowValidator.class);
         final String[] errors = new String[]{ "Error1", "Error2" };
         when(validator.validate(Mockito.any(WorkflowRepresentation.class))).thenReturn(
@@ -288,7 +299,9 @@ public class WorkflowEditorTest extends AbstractUITest {
         validators.add(validator);
         service.createWorkflow("TestWorkflow");
         tester.startPage(WorkflowEditor.class);
+
         exportWorkflow();
+
         verify(ruleManager, never()).add(Mockito.any(RuleBaseElementId.class), Mockito.anyString());
         verify(workflowConverter, never()).convert(service.getCurrentWorkflow());
         tester.assertErrorMessages(errors);

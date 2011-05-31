@@ -72,8 +72,7 @@
       <service interface="org.openengsb.core.api.workflow.WorkflowValidator">
         <bean class="org.openengsb.core.workflow.editor.validator.WorkflowValidatorImplementation"/>
       </service>
-    </code>Upon Export of a Workflow every Validator is called and if errors
-    exist the export is stopped.</para>
+    </code>Upon Export of a Workflow every Validator is called and if errors exist the export is stopped.</para>
   </section>
 </chapter>
 

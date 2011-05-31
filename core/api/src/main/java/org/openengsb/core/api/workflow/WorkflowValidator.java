@@ -19,6 +19,10 @@ package org.openengsb.core.api.workflow;
 
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
+/**
+ * WorkflowValidators are called before a Workflow is exported. If a WorkflowValidationResult that is not valid is
+ * returned the export ist stopped.
+ */
 public interface WorkflowValidator {
     WorkflowValidationResult validate(WorkflowRepresentation representation);
 }
