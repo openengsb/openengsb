@@ -90,6 +90,11 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-services</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-security</artifactId>
       <scope>provided</scope>
     </dependency>

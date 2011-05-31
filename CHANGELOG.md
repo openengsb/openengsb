@@ -1,3 +1,81 @@
+openengsb-1.3.0.M2 2011-05-20 
+--------------------------------------------
+
+The second milestone release of the OpenEngSB fixes 43 issues. The most important enhancements are the possibility
+to wire connectors via the admin UI and the rewrite of the ports-infrastructure. This allows an easy introduction
+of security and more complex operations in future 1.3 milestone releases. Besides, new example connectors had been
+added. The OpenEngSB uses the latest versions of Apache Karaf (2.2.1), Aries Blueprint (0.3.1) and OpenEngSB Root (17)
+again. In addition the remote infrastructure had been extended and received further stabilization. Finally bugs,
+identified in former 1.3.x releases, are fixed. Also worth mentioning: The speed and stability of the OpenEngSB had 
+been increased.
+
+### Highlights
+  * Karaf shows information to each bundle now using "osgi:info ID" in the console
+  * New administration page to wire connectors via the UI
+  * Ports remote structure is now based on filter/pipelining
+  * Completely rewritten C# examples
+  * Using the latest Apache Karaf version (2.2.1)
+  * Finally fixing JMS restart/integration test problems
+  * Based on openengsb-framework 1.3.0.M2 connectors/domains could finally run accross various versions
+  * Ports-JMS does no longer require an external JMS Server
+  * Wicket is no longer required in the openengsb-core feature
+  * Using higher default memory/perm-space increases startup speed and stability.
+
+### Details
+** Bug
+    * [OPENENGSB-1212] - JMS Integration tests fail
+    * [OPENENGSB-1244] - Create config-factories via features <config> tag
+    * [OPENENGSB-1351] - JMS does not "survive" a second start
+    * [OPENENGSB-1473] - Messages enqueued to "receive" are automatically dequeued
+    * [OPENENGSB-1476] - maven-tidy plugin invalidates xhtml by line-wrapping
+    * [OPENENGSB-1477] - manual images are not shown on homepage
+    * [OPENENGSB-1513] - package name is not considered when reloading rulebase
+    * [OPENENGSB-1514] - CI tutorial sample project link is invalid
+    * [OPENENGSB-1522] - AuthenticationCredentialsNotFoundException thrown on jms call handle
+    * [OPENENGSB-1530] - mvn install build failure under windows
+    * [OPENENGSB-1533] - Licenses in all nmsprovider-activemq.config are not correct
+    * [OPENENGSB-1535] - OpenEngSB versions are generated wrong for connectors/domains
+    * [OPENENGSB-1537] - Not all submodules in .gitmodule define urls the same schema
+    * [OPENENGSB-1566] - bundle-info patch broke infrastructure-jms
+    * [OPENENGSB-1569] - Classloading in JMS Ports is messed
+    * [OPENENGSB-1602] - openengsb:provision does not start because of permission problem
+    * [OPENENGSB-1616] - README does not reflect the current state-of-the-art
+    * [OPENENGSB-1617] - NOTICE file should not be executable
+
+** Improvement
+    * [OPENENGSB-1323] - sort imports in import-managing-UI
+    * [OPENENGSB-1326] - Extract entire common call-infrastructure from ports
+    * [OPENENGSB-1327] - Make entire ports infrastructure internal
+    * [OPENENGSB-1407] - Make it possible to configure queues on localhost for jms-json remote
+    * [OPENENGSB-1511] - Include into maintenance faq that this policy apply to all components
+    * [OPENENGSB-1538] - Update recommended eclipse plugins
+    * [OPENENGSB-1556] - Increase default memory used with karaf
+    * [OPENENGSB-1567] - Add bundle-info template to connector/domain/client project archetype
+    * [OPENENGSB-1601] - Couple wicket to ui-common feature instead to core common
+    * [OPENENGSB-1608] - Define openengsb domain/connector export versions as variable
+
+** Library Upgrade
+    * [OPENENGSB-1272] - Upgrade to karaf-2.2.1
+    * [OPENENGSB-1545] - Upgrade aries blueprint to 0.3.1
+    * [OPENENGSB-1555] - Upgrade to openengsb-root-16
+    * [OPENENGSB-1582] - Upgrade to openengsb-root-17
+
+** New Feature
+    * [OPENENGSB-948] - Add OSGI-INF/bundle.info as used in Karaf to the openengsb bundles
+    * [OPENENGSB-1292] - create wiring-page (to replace context-editor-page)
+    * [OPENENGSB-1482] - Refactor ports implementation to "pipeline"-infrastructure (to loosen the coupling)
+    * [OPENENGSB-1534] - Add openengsb-connector csharp example
+
+** Task
+    * [OPENENGSB-1089] - Update dev documentation to reflect that each commit should include [OPENENGSB-ISSUEID] in its message
+    * [OPENENGSB-1329] - Create Demo-scenario for humantasks
+    * [OPENENGSB-1417] - Redesign remote messaging from ground up
+    * [OPENENGSB-1484] - Release openengsb-1.3.0.M2
+    * [OPENENGSB-1507] - Push connector and domain submodules to latest version in features
+    * [OPENENGSB-1509] - For the submodules pull AND push urls should be specified
+    * [OPENENGSB-1532] - Integrate OpenEngSB with http://www.ohloh.net/
+
+
 openengsb-1.3.0.M1 2011-05-03 
 --------------------------------------------
 

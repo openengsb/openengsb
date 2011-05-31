@@ -19,17 +19,19 @@ Setup Project and Kick Off
 ==========================
 Execute "mvn install"
 
-Now run "mvn eclipse:eclipse" and import the projects into eclipse. If you simply want to run the openengsb execute "mvn install openengsb:provision"
+Now run "mvn openengsb:eclipse" and import the projects into Eclipse. If you simply want to run the openengsb execute "mvn install openengsb:provision"
+
+If you like to inlcude all connectors/domains too run "ect/scripts/submodulePull.sh" (or "git submodule update --init"). Use "mvn install -Pfeatures" to build them and "mvn openengsb:eclipse -Pfeatures" to import them into Eclipse too.
 
 Scripts
 -------
 Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your effort.
 
-Full Test
----------
+Full Tests
+----------
 Before creating a pull request, run the following command:
 
-etc/scripts/pre-push.sh (or "mvn clean install -Plicense-check,integration-test,checkstyle")
+etc/scripts/pre-push.sh (or "mvn openengsb:prePush")
 
 Further Information
 -------------------

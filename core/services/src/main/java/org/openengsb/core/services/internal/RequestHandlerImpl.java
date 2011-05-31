@@ -21,11 +21,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
-import org.openengsb.core.api.remote.MethodReturn.ReturnType;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.Filter;
@@ -35,25 +37,18 @@ import org.osgi.framework.InvalidSyntaxException;
 public class RequestHandlerImpl implements RequestHandler {
 
     @Override
-    public MethodReturn handleCall(MethodCall call) {
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(RequestHandlerImpl.class.getClassLoader());
-        try {
-            Object service = retrieveOpenEngSBService(call);
-            Object[] args = call.getArgs();
-            Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
-            MethodReturn returnTemplate = createReturnTemplate(call);
-            return invokeMethod(service, method, args, returnTemplate);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+    public MethodResult handleCall(MethodCall call) {
+        Map<String, String> metaData = call.getMetaData();
+        String contextId = metaData.get("contextId");
+        if (contextId != null) {
+            ContextHolder.get().setCurrentContextId(contextId);
         }
-    }
-
-    private MethodReturn createReturnTemplate(MethodCall call) {
-        MethodReturn returnTemplate = new MethodReturn();
-        returnTemplate.setCallId(call.getCallId());
-        returnTemplate.setMetaData(call.getMetaData());
-        return returnTemplate;
+        Object service = retrieveOpenEngSBService(call);
+        Object[] args = call.getArgs();
+        Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
+        MethodResult methodResult = invokeMethod(service, method, args);
+        methodResult.setMetaData(call.getMetaData());
+        return methodResult;
     }
 
     private Object retrieveOpenEngSBService(MethodCall call) {
@@ -78,7 +73,8 @@ public class RequestHandlerImpl implements RequestHandler {
         }
     }
 
-    private MethodReturn invokeMethod(Object service, Method method, Object[] args, MethodReturn returnTemplate) {
+    private MethodResult invokeMethod(Object service, Method method, Object[] args) {
+        MethodResult returnTemplate = new MethodResult();
         try {
             Object result = method.invoke(service, args);
             if (method.getReturnType().getName().equals("void")) {
@@ -86,13 +82,16 @@ public class RequestHandlerImpl implements RequestHandler {
             } else {
                 returnTemplate.setType(ReturnType.Object);
                 returnTemplate.setArg(result);
+                returnTemplate.setClassName(result.getClass().getName());
             }
         } catch (InvocationTargetException e) {
             returnTemplate.setType(ReturnType.Exception);
             returnTemplate.setArg(e.getCause());
+            returnTemplate.setClassName(e.getClass().getName());
         } catch (IllegalAccessException e) {
             returnTemplate.setType(ReturnType.Exception);
             returnTemplate.setArg(e);
+            returnTemplate.setClassName(e.getClass().getName());
         }
         return returnTemplate;
     }
@@ -111,7 +110,7 @@ public class RequestHandlerImpl implements RequestHandler {
         List<Class<?>> clazzes = new ArrayList<Class<?>>();
         for (String clazz : args.getClasses()) {
             try {
-                clazzes.add(Thread.currentThread().getContextClassLoader().loadClass(clazz));
+                clazzes.add(this.getClass().getClassLoader().loadClass(clazz));
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("The classes defined could not be found", e);
             }

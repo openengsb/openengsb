@@ -15,44 +15,81 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.marshaling;
+package org.openengsb.core.common.remote;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import org.openengsb.core.api.remote.FilterAction;
+import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResultMessage;
 
-public class RequestMapping extends MethodCall {
+/**
+ * This filter takes a JSON-serialized {@link MethodCallRequest} and deserializes it. The {@link MethodCallRequest}
+ * object is then passed on to the next filter. The returned {@link MethodResultMessage} is than seralized to JSON
+ * again.
+ *
+ * <code>
+ * <pre>
+ *      [MethodCallRequest as JSON-string]   > Filter > [MethodCallRequest]     > ...
+ *                                                                                 |
+ *                                                                                 v
+ *      [MethodResultMessage as JSON-string] < Filter < [MethodResultMessage]   < ...
+ * </pre>
+ * </code>
+ */
+public class JsonMethodCallMarshalFilter extends AbstractFilterChainElement<String, String> {
 
-    public RequestMapping() {
+    private FilterAction next;
+
+    public JsonMethodCallMarshalFilter() {
+        super(String.class, String.class);
     }
 
-    public RequestMapping(MethodCall call) {
-        super(call.getMethodName(), call.getArgs(), call.getMetaData(), call.getCallId(), call.isAnswer(), call
-            .getClasses());
+    @Override
+    public String doFilter(String input, Map<String, Object> metadata) throws FilterException {
+        ObjectMapper objectMapper = createObjectMapper();
+        MethodCallRequest call;
+        try {
+            call = objectMapper.readValue(input, MethodCallRequest.class);
+            resetArgs(call);
+            MethodResultMessage returnValue = (MethodResultMessage) next.filter(call, metadata);
+            return objectMapper.writeValueAsString(returnValue);
+        } catch (IOException e) {
+            throw new FilterException(e);
+        }
+    }
+
+    @Override
+    public void setNext(FilterAction next) throws FilterConfigurationException {
+        checkNextInputAndOutputTypes(next, MethodCallRequest.class, MethodResultMessage.class);
+        this.next = next;
     }
 
     /**
      * Converts the Args read by Jackson into the correct classes that have to be used for calling the method.
      */
-    public void resetArgs() {
-        if (getClasses().size() != getArgs().length) {
+    private static void resetArgs(MethodCallRequest request) {
+        MethodCall call = request.getMethodCall();
+        if (call.getClasses().size() != call.getArgs().length) {
             throw new IllegalStateException("Classes and Args have to be the same");
         }
         ObjectMapper mapper = createObjectMapper();
-        Iterator<String> iterator = getClasses().iterator();
+        Iterator<String> iterator = call.getClasses().iterator();
 
         List<Object> values = new ArrayList<Object>();
 
-        for (Object arg : getArgs()) {
+        for (Object arg : call.getArgs()) {
             Class<?> class1;
             try {
                 class1 = Class.forName(iterator.next());
@@ -61,20 +98,7 @@ public class RequestMapping extends MethodCall {
             }
             values.add(mapper.convertValue(arg, class1));
         }
-        setArgs(values.toArray());
-    }
-
-    public String convertToMessage() throws IOException {
-        ObjectMapper mapper = createObjectMapper();
-        StringWriter stringWriter = new StringWriter();
-        mapper.writeValue(stringWriter, this);
-        return stringWriter.toString();
-    }
-
-    public static RequestMapping createFromMessage(String message) throws IOException {
-        ObjectMapper mapper = createObjectMapper();
-        RequestMapping mapping = mapper.readValue(new StringReader(message), RequestMapping.class);
-        return mapping;
+        call.setArgs(values.toArray());
     }
 
     private static ObjectMapper createObjectMapper() {
@@ -87,4 +111,5 @@ public class RequestMapping extends MethodCall {
         mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
         return mapper;
     }
+
 }

@@ -21,45 +21,55 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.remote.CallRouter;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.MethodReturn;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
-public class DefaultCallRouter implements CallRouter {
+public class DefaultOutgoingPortUtilService implements OutgoingPortUtilService {
+
+    private final class SendMethodCallTask implements Runnable {
+        private final OutgoingPort port;
+        private final MethodCallRequest request;
+
+        private SendMethodCallTask(OutgoingPort port, MethodCallRequest request) {
+            this.port = port;
+            this.request = request;
+        }
+
+        @Override
+        public void run() {
+            port.send(request);
+        }
+    }
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Override
-    public void call(String portId, final String destination, final MethodCall call) {
-        final OutgoingPort port;
-        port = getPort(portId);
-        Runnable callHandler = new Runnable() {
-            @Override
-            public void run() {
-                port.send(destination, call);
-            }
-        };
+    public void sendMethodCall(String portId, String destination, MethodCall call) {
+        OutgoingPort port = getPort(portId);
+        MethodCallRequest request = new MethodCallRequest(call, false);
+        request.setDestination(destination);
+        Runnable callHandler = new SendMethodCallTask(port, request);
         executor.execute(callHandler);
     }
 
     @Override
-    public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
-        OutgoingPort port;
-        port = getPort(portId);
-        return port.sendSync(destination, call);
+    public MethodResult sendMethodCallWithResult(String portId, String destination, MethodCall call) {
+        OutgoingPort port = getPort(portId);
+        MethodCallRequest request = new MethodCallRequest(call, true);
+        request.setDestination(destination);
+        MethodResultMessage requestResult = port.sendSync(request);
+        return requestResult.getResult();
     }
 
     private OutgoingPort getPort(String portId) throws OsgiServiceNotAvailableException {
         final OutgoingPort port =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
         return port;
-    }
-
-    @Override
-    public void stop() {
-        executor.shutdownNow();
     }
 
 }

@@ -24,7 +24,7 @@ import org.openengsb.core.api.workflow.WorkflowValidationResult;
 
 public class WorkflowValidationResultImplementation implements WorkflowValidationResult {
 
-    private boolean valid;
+    private boolean valid = true;
 
     private List<String> errors = new ArrayList<String>();
 

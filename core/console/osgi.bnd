@@ -15,9 +15,5 @@
 # limitations under the License.
 #
 
-Import-Package: org.springframework.osgi.service.importer,\
-org.aopalliance.aop,\
-org.aopalliance.intercept,\
-org.springframework.aop,\
-org.springframework.aop.framework,\
+Import-Package: org.apache.felix.service.command,\
 *
