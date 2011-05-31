@@ -21,11 +21,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import org.openengsb.core.api.Domain;
 
+/**
+ * An ActionRepresentation describes a method call as well as an accompanying piece of code that is executed when the
+ * Workflow reaches this node during execution. The Domain, method and location have to be set to be able to generate
+ * template code for this Action. The template code then has to be edited to use the workflow environment. Only the code
+ * attribute is exported. All other attributes are metadata to help create the template code. An ActionRepresentation
+ * can have following ActionRepresentations or EventRepresentations.
+ */
 @SuppressWarnings("serial")
 public class ActionRepresentation implements Serializable, NodeRepresentation {
+    @XmlElementWrapper(name = "actions")
+    @XmlElement(name = "event")
     private final List<ActionRepresentation> actions = new ArrayList<ActionRepresentation>();
+    @XmlElementWrapper(name = "events")
+    @XmlElement(name = "event")
     private final List<EventRepresentation> events = new ArrayList<EventRepresentation>();
 
     private EndRepresentation end;

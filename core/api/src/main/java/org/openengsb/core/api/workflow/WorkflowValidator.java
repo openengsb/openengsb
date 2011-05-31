@@ -15,30 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow.model;
+package org.openengsb.core.api.workflow;
+
+import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 
 /**
- * Represents a Leaf in the Workflow Tree. When the Workflow reaches an End node the branch of the Workflow ends.
- * As several branches of the tree can share an End node we need a specific Representation for that node.
+ * WorkflowValidators are called before a Workflow is exported. If a WorkflowValidationResult that is not valid is
+ * returned the export ist stopped.
  */
-public class EndRepresentation {
-
-    private String name;
-
-    public EndRepresentation() {
-    }
-
-    public EndRepresentation(String name) {
-        super();
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+public interface WorkflowValidator {
+    WorkflowValidationResult validate(WorkflowRepresentation representation);
 }

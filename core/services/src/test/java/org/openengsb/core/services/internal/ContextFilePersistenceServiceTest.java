@@ -59,7 +59,7 @@ public class ContextFilePersistenceServiceTest {
     public void load_ShouldGetAllFiles() throws InvalidConfigurationException, PersistenceException {
         Map<String, String> metaData = Collections.emptyMap();
 
-        List<ConfigItem<?>> items = persistenceService.load(metaData);
+        List<ConfigItem<Map<String, String>>> items = persistenceService.load(metaData);
 
         assertThat(items.size(), is(3));
     }
@@ -70,7 +70,7 @@ public class ContextFilePersistenceServiceTest {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put(ContextId.META_KEY_ID, "context2");
 
-        List<ConfigItem<?>> items = persistenceService.load(metaData);
+        List<ConfigItem<Map<String, String>>> items = persistenceService.load(metaData);
 
         assertThat(items.size(), is(1));
         ConfigItem<?> loadedConfiguration = items.get(0);
@@ -132,7 +132,7 @@ public class ContextFilePersistenceServiceTest {
         return metaData;
     }
 
-    private class UnknownConfigItem extends ConfigItem<Object> {
+    private class UnknownConfigItem extends ConfigItem<Map<String, String>> {
     }
 
 }

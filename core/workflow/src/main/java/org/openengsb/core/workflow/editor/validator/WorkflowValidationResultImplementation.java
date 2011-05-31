@@ -15,30 +15,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.workflow.model;
+package org.openengsb.core.workflow.editor.validator;
 
-/**
- * Represents a Leaf in the Workflow Tree. When the Workflow reaches an End node the branch of the Workflow ends.
- * As several branches of the tree can share an End node we need a specific Representation for that node.
- */
-public class EndRepresentation {
+import java.util.ArrayList;
+import java.util.List;
 
-    private String name;
+import org.openengsb.core.api.workflow.WorkflowValidationResult;
 
-    public EndRepresentation() {
+public class WorkflowValidationResultImplementation implements WorkflowValidationResult {
+
+    private boolean valid = true;
+
+    private List<String> errors = new ArrayList<String>();
+
+    @Override
+    public boolean isValid() {
+        return valid;
     }
 
-    public EndRepresentation(String name) {
-        super();
-        this.name = name;
+    public void notValid() {
+        this.valid = false;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public List<String> getErrors() {
+        return errors;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addError(String error) {
+        errors.add(error);
     }
 
 }

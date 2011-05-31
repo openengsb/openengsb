@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-public class ContextFilePersistenceService implements ConfigPersistenceBackendService {
+public class ContextFilePersistenceService implements ConfigPersistenceBackendService<Map<String, String>> {
 
     public static final String CONTEXT_FILE_EXTENSION = "context";
     private File storageFolder;
@@ -45,7 +45,7 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextFilePersistenceService.class);
 
     @Override
-    public List<ConfigItem<?>> load(Map<String, String> metadata) throws PersistenceException,
+    public List<ConfigItem<Map<String, String>>> load(Map<String, String> metadata) throws PersistenceException,
         InvalidConfigurationException {
         LOGGER.debug("Loading Configuration");
         if (metadata == null || metadata.isEmpty()) {
@@ -57,7 +57,8 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
 
     @SuppressWarnings("unchecked")
     @Override
-    public void persist(ConfigItem<?> config) throws PersistenceException, InvalidConfigurationException {
+    public void persist(ConfigItem<Map<String, String>> config) throws PersistenceException,
+        InvalidConfigurationException {
         Preconditions.checkArgument(supports((Class<? extends ConfigItem<?>>) config.getClass()),
             "Argument type not supported");
         Preconditions.checkNotNull(config.getMetaData(), "Invalid metadata");
@@ -90,17 +91,18 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
         return ContextConfiguration.class.isAssignableFrom(configItemType);
     }
 
-    private List<ConfigItem<?>> loadAll() {
+    private List<ConfigItem<Map<String, String>>> loadAll() {
         Collection<File> contextFiles = FileUtils.listFiles(storageFolder, getContextExtensions(), false);
-        List<ConfigItem<?>> contexts = new ArrayList<ConfigItem<?>>();
+        List<ConfigItem<Map<String, String>>> contexts = new ArrayList<ConfigItem<Map<String, String>>>();
         for (File contextFile : contextFiles) {
             contexts.add(loadContextConfigurationFromFile(contextFile));
         }
         return contexts;
     }
 
-    private List<ConfigItem<?>> loadFiltered(Map<String, String> metaData) throws PersistenceException {
-        List<ConfigItem<?>> configurations = new ArrayList<ConfigItem<?>>();
+    private List<ConfigItem<Map<String, String>>> loadFiltered(Map<String, String> metaData)
+        throws PersistenceException {
+        List<ConfigItem<Map<String, String>>> configurations = new ArrayList<ConfigItem<Map<String, String>>>();
         File configurationFile = new File(storageFolder, getFileNameForMetaData(metaData));
         if (configurationFile.exists()) {
             configurations.add(loadContextConfigurationFromFile(configurationFile));
@@ -113,7 +115,7 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
         return String.format("%s.%s", contextId.getId(), CONTEXT_FILE_EXTENSION);
     }
 
-    private ConfigItem<?> loadContextConfigurationFromFile(File configurationFile) {
+    private ConfigItem<Map<String, String>> loadContextConfigurationFromFile(File configurationFile) {
         String contextFileName = FilenameUtils.removeExtension(configurationFile.getName());
         ContextId contextId = new ContextId(contextFileName);
         ContextConfiguration contextConfig = new ContextConfiguration(contextId.toMetaData(), null);
@@ -124,7 +126,7 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
         String[] contextFileExtensions = { CONTEXT_FILE_EXTENSION };
         return contextFileExtensions;
     }
-    
+
     public void setStorageFolderPath(String storageFolderPath) {
         this.storageFolder = new File(storageFolderPath);
     }

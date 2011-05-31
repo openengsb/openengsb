@@ -64,5 +64,15 @@
       WorkflowEditor. The Workflow will be exported to the RuleManager and should then be visible and
       executable on the SendEvent Page.</para>
   </section>
+  <section>
+    <title>Validating a Workflow</title>
+    <para>To validate a Workflow before exporting simply implement the org.openengsb.core.api.workflow.WorkflowValidator
+    interface and export it to osgi with the same interface. An example would be
+    <code>
+      <service interface="org.openengsb.core.api.workflow.WorkflowValidator">
+        <bean class="org.openengsb.core.workflow.editor.validator.WorkflowValidatorImplementation"/>
+      </service>
+    </code>Upon Export of a Workflow every Validator is called and if errors exist the export is stopped.</para>
+  </section>
 </chapter>
 
