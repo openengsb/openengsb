@@ -55,8 +55,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         super.beforeClass();
-        // super.before() should be called automatically before this but somehow isn't
-        super.before();
 
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains("it-taskbox")) {

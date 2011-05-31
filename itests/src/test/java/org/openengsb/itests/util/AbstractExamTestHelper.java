@@ -31,7 +31,6 @@ import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.workingDirectory
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -44,16 +43,11 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.model.ContextConfiguration;
-import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,8 +55,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
-
-    private ConfigPersistenceService contextConfigPersistenceService;
 
     private static final String LOG_LEVEL = System.getenv("OPENENGSB_LOGLEVEL") != null ?
             System.getenv("OPENENGSB_LOGLEVEL") : "WARN";
@@ -88,10 +80,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     protected static String getWorkingDirectory() {
         return "target/paxrunner/features/";
     }
-    
-    protected ConfigPersistenceService getContextConfigPeristenceService() {
-        return this.contextConfigPersistenceService;
-    }
 
     @Before
     public void before() throws Exception {
@@ -100,22 +88,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             waitForBundle(bundle, SetupType.BLUEPRINT);
         }
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
-        setupContextConfigurationPersistence();
         authenticateAsAdmin();
-    }
-
-    private void setupContextConfigurationPersistence() throws IOException {
-        ConfigurationAdmin configAdmin = getOsgiService(ConfigurationAdmin.class);
-        org.osgi.service.cm.Configuration configuration =
-            configAdmin.createFactoryConfiguration(
-                "org.openengsb.persistence.config",
-                getInstalledBundle("org.openengsb.core.services").getLocation());
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.BACKEND_ID, "persistenceService");
-        properties.put(Constants.CONFIGURATION_ID, ContextConfiguration.TYPE_ID);
-        configuration.update(properties);
-        this.contextConfigPersistenceService =
-            OpenEngSBCoreServices.getConfigPersistenceService(ContextConfiguration.TYPE_ID);
     }
 
     public static List<String> getImportantBundleSymbolicNames() {

@@ -18,7 +18,6 @@
 package org.openengsb.itests.htmlunit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -65,8 +64,6 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         super.beforeClass();
-        // super.before() should be called automatically before this but somehow isn't
-        super.before();
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
