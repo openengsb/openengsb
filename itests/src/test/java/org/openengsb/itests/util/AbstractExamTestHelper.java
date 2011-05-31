@@ -31,7 +31,9 @@ import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.workingDirectory
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -48,6 +50,8 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -87,8 +91,25 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
         }
+
+        registerConfigPersistence("contextFilePersistenceService", "CONTEXT");
+        registerConfigPersistence("workflow-persistence", "WORKFLOW");
+        registerConfigPersistence("persistenceService", "CONNECTOR");
+
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
         authenticateAsAdmin();
+    }
+
+    public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
+        ManagedServiceFactory factoryService =
+            getOsgiService(ManagedServiceFactory.class, "(service.pid=org.openengsb.persistence.config)",
+                30000);
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        String pid = "org.openengsb.persistence.config." + UUID.randomUUID();
+        props.put("backend.id", backendId);
+        props.put("configuration.id", configurationId);
+        props.put("service.pid", pid);
+        factoryService.updated(pid, props);
     }
 
     public static List<String> getImportantBundleSymbolicNames() {
