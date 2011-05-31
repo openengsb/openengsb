@@ -34,7 +34,8 @@ if [ ! -e $DIRNAME ]; then
 	unzip $ZIPFILE -d assembly/target
 fi
 
+if 
+
 KARAF_DEBUG=true \
 KARAF_OPTS="-Dwicket.configuration=development" \
-# JAVA_OPTS="-Djline.terminal=jline.UnsupportedTerminal" \
 $DIRNAME/bin/openengsb
