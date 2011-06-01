@@ -59,7 +59,7 @@ public class TaskOverviewPanel extends Panel {
 
         IColumn<Task> actionsColumn = new FilteredAbstractColumn<Task>(Model.of("Actions")) {
             @Override
-            public Component getFilter(String componentId, FilterForm form) {
+            public Component getFilter(String componentId, FilterForm<?> form) {
                 return new GoAndClearFilter(componentId, form);
             }
 
@@ -78,7 +78,7 @@ public class TaskOverviewPanel extends Panel {
         columns.add(new PropertyColumn<Task>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
             "taskCreationTimestamp"));
 
-        FilterForm form = new FilterForm("form", dataProvider);
+        FilterForm<Object> form = new FilterForm<Object>("form", dataProvider);
 
         DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 15);
         dataTable.addTopToolbar(new FilterToolbar(dataTable, form, dataProvider));

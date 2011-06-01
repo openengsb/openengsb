@@ -42,8 +42,8 @@ public class RoleAuthorizationTest extends AbstractLogin {
         formTester.setValue("username", "admin");
         formTester.setValue("password", "password");
         formTester.submit();
-        BookmarkablePageLabelLink userServiceLink =
-            (BookmarkablePageLabelLink) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        BookmarkablePageLabelLink<?> userServiceLink =
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNotNull(userServiceLink);
         assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserService.class.getCanonicalName()));
     }
@@ -55,8 +55,8 @@ public class RoleAuthorizationTest extends AbstractLogin {
         formTester.setValue("username", "user");
         formTester.setValue("password", "password");
         formTester.submit();
-        BookmarkablePageLabelLink userServiceLink =
-            (BookmarkablePageLabelLink) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        BookmarkablePageLabelLink<?> userServiceLink =
+            (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNull(userServiceLink);
     }
 

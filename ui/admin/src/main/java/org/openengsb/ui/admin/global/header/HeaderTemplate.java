@@ -139,7 +139,7 @@ public class HeaderTemplate extends Panel {
      * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
      * should be displayed and authority defines who is authorized to see the link
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
@@ -148,7 +148,7 @@ public class HeaderTemplate extends Panel {
         avialableItems.add(index);
     }
 
-    private void addAuthorizationRoles(BookmarkablePageLabelLink pageLabelLink, String authority) {
+    private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String authority) {
         if (authority != null && !"".equals(authority)) {
             MetaDataRoleAuthorizationStrategy.authorize(pageLabelLink, RENDER, authority);
         } else {

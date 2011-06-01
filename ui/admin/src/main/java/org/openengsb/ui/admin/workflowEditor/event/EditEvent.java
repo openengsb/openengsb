@@ -43,6 +43,7 @@ public class EditEvent extends BasePage {
 
         IModel<List<Class<? extends Event>>> eventsModel =
             new AbstractReadOnlyModel<List<Class<? extends Event>>>() {
+                private static final long serialVersionUID = -1821249760471529173L;
 
                 @Override
                 public List<Class<? extends Event>> getObject() {
@@ -71,6 +72,8 @@ public class EditEvent extends BasePage {
         events.setOutputMarkupId(true);
 
         Form<Object> form = new Form<Object>("eventForm") {
+            private static final long serialVersionUID = -1921082055165607268L;
+
             @Override
             protected void onSubmit() {
                 if (node.getEvent() != null) {
@@ -83,6 +86,8 @@ public class EditEvent extends BasePage {
         };
 
         Button cancelButton = new Button("cancel-button") {
+            private static final long serialVersionUID = -2062083789168059582L;
+
             @Override
             public void onSubmit() {
                 setResponsePage(WorkflowEditor.class);
