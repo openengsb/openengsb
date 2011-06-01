@@ -17,12 +17,23 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MethodCall {
+/**
+ * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
+ * method and so called {@link #metaData}. Since the target system often requires additional information for calling
+ * specific methods (e.g. context setup, target thread, security, active user, ...) it is allowed to add additional
+ * information to each method call to make. Finally this abstraction can extract all {@link Class} objects in the
+ * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
+ * identify the right method.
+ */
+@SuppressWarnings("serial")
+public class MethodCall implements Serializable {
 
     private String methodName;
     private Object[] args;
@@ -97,6 +108,56 @@ public class MethodCall {
             }
         }
         return argsClasses;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(args);
+        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
+        result = prime * result + ((metaData == null) ? 0 : metaData.hashCode());
+        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MethodCall other = (MethodCall) obj;
+        if (!Arrays.equals(args, other.args)) {
+            return false;
+        }
+        if (classes == null) {
+            if (other.classes != null) {
+                return false;
+            }
+        } else if (!classes.equals(other.classes)) {
+            return false;
+        }
+        if (metaData == null) {
+            if (other.metaData != null) {
+                return false;
+            }
+        } else if (!metaData.equals(other.metaData)) {
+            return false;
+        }
+        if (methodName == null) {
+            if (other.methodName != null) {
+                return false;
+            }
+        } else if (!methodName.equals(other.methodName)) {
+            return false;
+        }
+        return true;
     }
 
 }

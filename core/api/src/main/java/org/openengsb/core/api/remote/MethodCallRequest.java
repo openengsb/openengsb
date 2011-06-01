@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -27,8 +28,9 @@ import java.util.UUID;
  * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
  * identify the right method.
  */
-public class MethodCallRequest {
+public class MethodCallRequest implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private MethodCall methodCall;
     private String callId;
     private boolean answer;
