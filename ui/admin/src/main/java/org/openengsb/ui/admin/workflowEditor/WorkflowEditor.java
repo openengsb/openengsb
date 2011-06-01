@@ -144,6 +144,8 @@ public class WorkflowEditor extends BasePage {
                 new PropertyTreeColumn(new ColumnLocation(Alignment.MIDDLE, 8, Unit.PROPORTIONAL), "Name",
                     "userObject.description"),
                 new AbstractColumn(new ColumnLocation(Alignment.MIDDLE, 4, Unit.PROPORTIONAL), "Add Action") {
+                    private static final long serialVersionUID = 742666782257868383L;
+
                     @Override
                     public Component newCell(MarkupContainer parent, String id, final TreeNode node, int level) {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
@@ -168,6 +170,8 @@ public class WorkflowEditor extends BasePage {
 
     private Form<Object> createSelectWorkflowForm() {
         Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
+            private static final long serialVersionUID = 1030454289375165169L;
+
             @Override
             protected void onSubmit() {
                 workflowEditorService.loadWorkflow(selected);
@@ -182,6 +186,8 @@ public class WorkflowEditor extends BasePage {
 
     private void createCreateWorkflowForm() {
         Form<Object> createForm = new Form<Object>("workflowCreateForm") {
+            private static final long serialVersionUID = -1254767212676185569L;
+
             @Override
             protected void onSubmit() {
                 if (name != "" && name != null) {
@@ -197,6 +203,8 @@ public class WorkflowEditor extends BasePage {
 
     private Form<Object> createSaveForm() {
         Form<Object> saveForm = new Form<Object>("saveForm") {
+            private static final long serialVersionUID = 2916102299731955162L;
+
             @Override
             protected void onSubmit() {
                 try {
@@ -212,6 +220,8 @@ public class WorkflowEditor extends BasePage {
 
     private Form<Object> createExportForm() {
         Form<Object> exportForm = new Form<Object>("export") {
+            private static final long serialVersionUID = -4832165565205293266L;
+
             @Override
             protected void onSubmit() {
                 try {

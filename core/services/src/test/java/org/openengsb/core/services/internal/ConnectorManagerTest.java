@@ -73,7 +73,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     }
 
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend persistenceBackend = new CorePersistenceServiceBackend();
+        final CorePersistenceServiceBackend<String> persistenceBackend = new CorePersistenceServiceBackend<String>();
         DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
         persistenceBackend.setPersistenceManager(persistenceManager);
         persistenceBackend.setBundleContext(bundleContext);
