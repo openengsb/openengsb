@@ -36,6 +36,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * public and private keys form binary files in a specific directory. The files are expected to have the names:
+ * {public,private}.key.data
+ *
+ * If the configured path is not absolute it is assumed to be a subdirectory of ${karaf.data}
+ *
+ * Keys are only read once and then kept in memory, so it does not act like a deployer.
+ *
+ */
 public class FileKeySource implements PrivateKeySource, PublicKeySource {
 
     private static final String DEFAULT_KEY_DIR = "etc/keys";
