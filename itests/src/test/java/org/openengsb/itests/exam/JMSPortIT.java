@@ -172,7 +172,7 @@ public class JMSPortIT extends AbstractExamTestHelper {
 
     private PublicKey getPublicKeyFromConfigFile() throws InterruptedException, IOException {
         // FIXME do this properly when OPENENGSB-1597 is resolved
-        File file = new File("target/karaf.home/etc/security/public.key.data");
+        File file = new File(System.getProperty("karaf.home"), "/etc/keys/public.key.data");
         while (!file.exists()) {
             Thread.sleep(1000);
         }
