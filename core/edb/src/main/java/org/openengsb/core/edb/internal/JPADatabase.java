@@ -18,7 +18,6 @@
 package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -85,26 +84,28 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public JPACommit createCommit(String committer, String role, long timestamp) {
-        LOGGER.debug("creating commit for committer %s with role %s at timestamp %d",
-            Arrays.asList(committer, role, timestamp + "").toArray());
-        return new JPACommit(committer, role, timestamp);
+    public JPACommit createCommit(String committer, String role) {
+        LOGGER.debug("creating commit for committer " + committer + " with role " + role);
+        return new JPACommit(committer, role);
     }
 
     @Override
-    public void commit(EDBCommit commit) throws EDBException {
+    public Long commit(EDBCommit commit) throws EDBException {
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
 
+        long timestamp = System.currentTimeMillis();
+        commit.setTimestamp(timestamp);
         commit.finalize();
+
         JPAHead nextHead;
         if (head != null) {
             LOGGER.debug("adding a new JPAHead");
-            nextHead = new JPAHead(head, commit.getTimestamp());
+            nextHead = new JPAHead(head, timestamp);
         } else {
             LOGGER.debug("creating the first JPAHead");
-            nextHead = new JPAHead(commit.getTimestamp());
+            nextHead = new JPAHead(timestamp);
         }
 
         for (String del : commit.getDeletions()) {
@@ -112,13 +113,12 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         }
         for (EDBObject update : commit.getObjects()) {
             String oid = update.getOID();
+            update.updateTimestamp(timestamp);
             nextHead.replace(oid, update);
         }
 
         try {
             performUtxAction(UTXACTION.BEGIN);
-
-            long timestamp = commit.getTimestamp();
             commit.setCommitted(true);
             LOGGER.debug("persisting JPACommit and the new JPAHead");
             entityManager.persist(commit);
@@ -131,7 +131,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
             LOGGER.debug("setting the deleted elements as deleted");
             for (String id : commit.getDeletions()) {
-                EDBObject o = new EDBObject(id, timestamp);
+                EDBObject o = new EDBObject(id);
+                o.updateTimestamp(timestamp);
                 o.put("isDeleted", new Boolean(true));
                 JPAObject j = new JPAObject(o);
                 entityManager.persist(j);
@@ -147,6 +148,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             }
             throw new EDBException("Failed to commit transaction to DB", ex);
         }
+
+        return timestamp;
     }
 
     /**
@@ -183,22 +186,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public EDBObject getObject(String oid) throws EDBException {
         Number number = dao.getNewestJPAObjectTimestamp(oid);
         if (number.longValue() <= 0) {
-            throw new EDBException("the given oid was never commited to the database");
+            throw new EDBException("the given oid " + oid + " was never commited to the database");
         }
-        LOGGER.debug("loading JPAObject with the oid %s and the timestamp %d", Arrays.asList(oid, number).toArray());
+        LOGGER.debug("loading JPAObject with the oid " + oid + " and the timestamp " + number.longValue());
         JPAObject temp = dao.getJPAObject(oid, number.longValue());
         return temp.getObject();
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
-        LOGGER.debug("loading history of JPAObject with the oid %s", oid);
+        LOGGER.debug("loading history of JPAObject with the oid " + oid);
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
         return generateEDBObjectList(jpa);
     }
 
     @Override
-    public List<EDBObject> getHistory(String oid, long from, long to) throws EDBException {
+    public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
@@ -217,7 +220,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public List<EDBLogEntry> getLog(String oid, long from, long to) throws EDBException {
+    public List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading the log of JPAObject with the oid " + oid + " from"
                 + " the timestamp " + from + " to the timestamp " + to);
         List<EDBObject> history = getHistory(oid, from, to);
@@ -237,7 +240,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
      * loads the JPAHead with the given timestamp
      */
     private JPAHead loadHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the JPAHead with the timestamp %d", timestamp);
+        LOGGER.debug("load the JPAHead with the timestamp " + timestamp);
         return dao.getJPAHead(timestamp);
     }
 
@@ -248,7 +251,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> getHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the elements of the JPAHead with the timestamp %d", timestamp);
+        LOGGER.debug("load the elements of the JPAHead with the timestamp " + timestamp);
         JPAHead head = loadHead(timestamp);
         if (head != null) {
             return head.getEDBObjects();
@@ -258,7 +261,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("query for objects with key = %s and value = %s", Arrays.asList(key, value).toArray());
+        LOGGER.debug("query for objects with key = " + key + " and value = " + value);
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
         return query(queryMap);
@@ -271,7 +274,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
             for (Entry<String, Object> entry : queryMap.entrySet()) {
                 analyzeEntry(entry, result);
-                
+
                 if (result.size() == 0) {
                     LOGGER.debug("there are no objects which have all values from the map");
                     return new ArrayList<EDBObject>();
@@ -282,13 +285,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
             throw new EDBException("failed to query for objects with the given map", ex);
         }
     }
-    
+
     private void analyzeEntry(Entry<String, Object> entry, Set<JPAObject> set) {
         String key = entry.getKey();
         Object value = entry.getValue();
 
         List<JPAObject> temp = dao.query(key, value);
-        
+
         if (temp.size() == 0) {
             set = new HashSet<JPAObject>();
             return;
@@ -327,7 +330,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public JPACommit getCommit(long from) throws EDBException {
+    public JPACommit getCommit(Long from) throws EDBException {
         List<JPACommit> commits = dao.getJPACommit(from);
         if (commits == null) {
             throw new EDBException("there is no commit for this timestamp");
@@ -338,11 +341,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public Diff getDiff(long min, long max) throws EDBException {
-        List<EDBObject> headA = getHead(min);
-        List<EDBObject> headB = getHead(max);
+    public Diff getDiff(Long firstTimestamp, Long secondTimestamp) throws EDBException {
+        List<EDBObject> headA = getHead(firstTimestamp);
+        List<EDBObject> headB = getHead(secondTimestamp);
 
-        return new Diff(getCommit(min), getCommit(max), headA, headB);
+        return new Diff(getCommit(firstTimestamp), getCommit(secondTimestamp), headA, headB);
     }
 
     @Override

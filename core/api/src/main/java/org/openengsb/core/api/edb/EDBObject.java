@@ -33,29 +33,25 @@ public class EDBObject extends HashMap<String, Object> {
     private static final String DELETED_CONST = "isDeleted";
 
     /**
-     * Create an EDBObject with a specified OID and timestamp.
+     * Create an EDBObject with a specified OID.
      */
-    public EDBObject(String oid, Long timestamp) {
+    public EDBObject(String oid) {
         super();
-        this.timestamp = timestamp;
         this.oid = oid;
 
         put(OID_CONST, oid);
-        put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
-     * Convenience constructor to create an EDBObject using a Map of data. The OID and timestamp are stored after
-     * loading the data Map, so any already existing values with the special key representing the OID or the Timestamp
+     * Convenience constructor to create an EDBObject using a Map of data. The OID is stored after
+     * loading the data Map, so any already existing values with the special key representing the OID
      * will be overwritten by the provided parameters.
      */
-    public EDBObject(String oid, Long timestamp, Map<String, Object> data) {
+    public EDBObject(String oid, Map<String, Object> data) {
         super(data);
-        this.timestamp = timestamp;
         this.oid = oid;
 
         put(OID_CONST, oid);
-        put(TIMESTAMP_CONST, timestamp);
     }
 
     /**
@@ -76,8 +72,8 @@ public class EDBObject extends HashMap<String, Object> {
     }
 
     /**
-     * This function updates the timestamp for this object. It is useful if you want to add the object to a Commit which
-     * already uses a different timestamp for some reason.
+     * This function updates the timestamp for this object. This is necessary if you want to commit the object
+     * to the database! Should be set by the EnterpriseDatabaseService in the commit procedure.
      */
     public void updateTimestamp(Long timestamp) {
         this.timestamp = timestamp;

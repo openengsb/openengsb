@@ -24,13 +24,14 @@ import java.util.Random;
 import org.openengsb.core.api.edb.EDBObject;
 
 public class Utils {
-    
+
     private static Random rand;
-    
-    public Utils(long seed) {
+
+    public Utils() {
+        long seed = System.currentTimeMillis();
         rand = new Random(seed);
-    }    
-    
+    }
+
     private static final String[] RANDOMKEYS = new String[]{
         "Product", "Handler", "RandomKey", "UserID", "Code", "Auto"
     };
@@ -42,24 +43,17 @@ public class Utils {
     private static final String[] RANDOMROLES = new String[]{
         "Modeller", "Designer", "Programmer", "Annoying Person", "Bossy Bastard"
     };
-    
-    public EDBObject createRandomTestObject(String oid, long runTime) {
-        // If you use this the object must not in any way relate to the feature you are testing...
-        // Using random strings seems to have an effect on the OS' RW-cache... ?
-        // Well... if its cache says the HD has the very same text in the block that's supposed to be written
-        // it COULD skip it - though it's unlikely/unsafe... yet... randomizing the unused content could result
-        // in "more realistic" HD-access-times
-        Map<String, Object> testData = new HashMap<String, Object>();
 
-        // int max = 2 + rand.nextInt( 3);
-        int max = 20;
+    public EDBObject createRandomTestObject(String oid) {
+        Map<String, Object> testData = new HashMap<String, Object>();
+        int max = 5;
 
         for (int i = 0; i < max; ++i) {
             String key = RANDOMKEYS[rand.nextInt(RANDOMKEYS.length)] + Integer.toString(i);
             String value = "key value " + Integer.toString(rand.nextInt(100));
             testData.put(key, value);
         }
-        return new EDBObject(oid, runTime, testData);
+        return new EDBObject(oid, testData);
     }
 
     public String getRandomCommitter() {

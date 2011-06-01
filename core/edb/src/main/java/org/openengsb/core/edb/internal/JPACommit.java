@@ -66,8 +66,7 @@ public class JPACommit implements EDBCommit {
     public JPACommit() {
     }
 
-    public JPACommit(String committer, String role, Long timestamp) {
-        this.timestamp = timestamp;
+    public JPACommit(String committer, String role) {
         this.committer = committer;
         this.role = role;
 
@@ -75,7 +74,7 @@ public class JPACommit implements EDBCommit {
         objects = new ArrayList<EDBObject>();
         deletions = new ArrayList<String>();
     }
-
+    
     @Override
     public void setCommitted(Boolean c) {
         committed = c;
@@ -105,6 +104,11 @@ public class JPACommit implements EDBCommit {
     public final String getCommitter() {
         return committer;
     }
+    
+    @Override
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     @Override
     public final Long getTimestamp() {
@@ -118,9 +122,6 @@ public class JPACommit implements EDBCommit {
 
     @Override
     public void add(EDBObject obj) throws EDBException {
-        if (obj.getTimestamp().longValue() != timestamp) {
-            throw new EDBException("Object's timestamp doesn't match commit's timestamp!");
-        }
         if (!objects.contains(obj)) {
             objects.add(obj);
             LOGGER.debug("Added object " + obj.getOID() + " to the commit");
@@ -145,6 +146,7 @@ public class JPACommit implements EDBCommit {
         fillOIDs();
         jpaObjects = new ArrayList<JPAObject>();
         for (EDBObject o : getObjects()) {
+            o.updateTimestamp(timestamp);
             jpaObjects.add(new JPAObject(o));
         }
     }

@@ -19,10 +19,12 @@ package org.openengsb.core.edb.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,13 +38,10 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 
 public class JPATestIT {
-    // is currently overwritten by a fixed number in initDB
-    private static long randSeed = System.currentTimeMillis();
-    private Long runTime;
     private static JPADatabase db;
     private static Utils utils;
 
-    private JPADatabase openDatabase() {
+    private void openDatabase() {
         if (db == null) {
             db = new JPADatabase();
             try {
@@ -52,20 +51,11 @@ public class JPATestIT {
                 fail("Cannot open database: " + ex.toString());
             }
         }
-        return db;
-    }
-
-    private void runTimeStep() {
-        Long old = runTime;
-        while (old == runTime) {
-            runTime = System.currentTimeMillis();
-        }
     }
 
     @BeforeClass
     public static void initDB() {
-        randSeed = 1295369697576L;
-        utils = new Utils(randSeed);
+        utils = new Utils();
         File f = new File("TEST.h2.db");
         if (!f.exists()) {
             return;
@@ -84,27 +74,23 @@ public class JPATestIT {
 
     @Before
     public void setup() {
-        // setup stuff
-        runTimeStep();
-    }    
+        openDatabase();
+    }
 
     @Test
     public void testOpenDatabase_shouldWork() {
-        JPADatabase db = openDatabase();
-
         assertThat(db, notNullValue());
     }
 
     @Test
     public void testCommit_shouldWork() {
-        JPADatabase db = openDatabase();
         try {
-            JPACommit ci = db.createCommit("TestCommit", "Role", runTime);
-            EDBObject obj = new EDBObject("Tester", runTime);
+            JPACommit ci = db.createCommit("TestCommit", "Role");
+            EDBObject obj = new EDBObject("Tester");
             obj.put("Test", "Hooray");
             ci.add(obj);
 
-            db.commit(ci);
+            long time = db.commit(ci);
 
             obj = null;
             obj = db.getObject("Tester");
@@ -112,6 +98,8 @@ public class JPATestIT {
 
             assertThat(obj, notNullValue());
             assertThat(hooray, notNullValue());
+
+            checkTimeStamps(Arrays.asList(time));
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
         }
@@ -119,19 +107,21 @@ public class JPATestIT {
 
     @Test
     public void testGetCommits_shouldWork() {
-        JPADatabase db = openDatabase();
         try {
-            JPACommit ci = db.createCommit("TestCommit2", "Testrole", runTime);
-            EDBObject obj = new EDBObject("TestObject", runTime);
+            JPACommit ci = db.createCommit("TestCommit2", "Testrole");
+            EDBObject obj = new EDBObject("TestObject");
             obj.put("Bla", "Blabla");
             ci.add(obj);
 
-            db.commit(ci);
+            long time = db.commit(ci);
+
             List<EDBCommit> commits1 = db.getCommits("role", "Testrole");
             List<EDBCommit> commits2 = db.getCommits("role", "DoesNotExist");
 
             assertThat(commits1.size(), is(1));
             assertThat(commits2.size(), is(0));
+
+            checkTimeStamps(Arrays.asList(time));
         } catch (EDBException ex) {
             fail("Faild to fetch commit list..." + ex.getLocalizedMessage());
         }
@@ -139,53 +129,50 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testGetInexistantObject_shouldThrowException() throws Exception {
-        JPADatabase db = openDatabase();
         db.getObject("/this/object/does/not/exist");
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testGetHistoryAndCheckForElements_shouldWork() throws Exception {
-        JPADatabase db = openDatabase();
+        long time1 = 0;
+        long time2 = 0;
+        long time3 = 0;
+        long time4 = 0;
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("Lock", "Key");
             data1.put("Door", "Bell");
             data1.put("Cat", "Spongebob");
-            EDBObject v1 = new EDBObject("/history/object", runTime, data1);
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/1", runTime));
+            EDBObject v1 = new EDBObject("/history/object", data1);
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/1"));
             ci.add(v1);
 
-            db.commit(ci);
+            time1 = db.commit(ci);
 
-            runTimeStep();
-
-            // Now we change stuff:
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
             data2.put("Lock", "Smith");
-            EDBObject v2 = new EDBObject("/history/object", runTime, data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/2", runTime));
+            EDBObject v2 = new EDBObject("/history/object", data2);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/2"));
             ci.add(v2);
-            db.commit(ci);
+
+            time2 = db.commit(ci);
 
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/3"));
+            ci.add(utils.createRandomTestObject("/useless/4"));
+            time3 = db.commit(ci);
 
-            runTimeStep();
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/3", runTime));
-            ci.add(utils.createRandomTestObject("/useless/4", runTime));
-            db.commit(ci);
-
-            // Now we change something else:
             data3.put("Cat", "Dog");
-            runTimeStep();
-            EDBObject v3 = new EDBObject("/history/object", runTime, data3);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            EDBObject v3 = new EDBObject("/history/object", data3);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
             ci.add(v3);
-            ci.add(utils.createRandomTestObject("/useless/5", runTime));
-            db.commit(ci);
+            ci.add(utils.createRandomTestObject("/useless/5"));
+
+            time4 = db.commit(ci);
         } catch (EDBException ex) {
             fail("Error: " + ex.toString());
         }
@@ -207,107 +194,103 @@ public class JPATestIT {
 
         assertThat(history.get(2).getString("Lock"), is("Smith"));
         assertThat(history.get(2).getString("Cat"), is("Dog"));
+
+        checkTimeStamps(Arrays.asList(time1, time2, time3, time4));
     }
 
     @Test
     public void testHistoryOfDeletion_shouldWork() throws Exception {
-        JPADatabase db = openDatabase();
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(utils.createRandomTestObject("/deletion/1"));
+        long time1 = db.commit(ci);
 
-        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-        ci.add(utils.createRandomTestObject("/deletion/1", runTime));
-        db.commit(ci);
-
-        runTimeStep();
-        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
         ci.delete("/deletion/1");
-        db.commit(ci);
+        long time2 = db.commit(ci);
 
         List<EDBObject> history = db.getHistory("/deletion/1");
 
         assertThat(history.size(), is(2));
         assertThat(history.get(0).isDeleted(), is(false));
         assertThat(history.get(1).isDeleted(), is(true));
+
+        checkTimeStamps(Arrays.asList(time1, time2));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testGetLog_shouldWork() throws Exception {
-        JPADatabase db = openDatabase();
-        List<EDBLogEntry> log;
-        long from = -1;
-        long to = -1;
+        long time1 = 0;
+        long time2 = 0;
+        long time3 = 0;
+        long time4 = 0;
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("Burger", "Salad");
             data1.put("Bla", "Blub");
             data1.put("Cheese", "Butter");
-            EDBObject v1 = new EDBObject("/history/test/object", runTime, data1);
-            from = runTime;
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/test/1", runTime));
-            ci.add(utils.createRandomTestObject("/deletion/test/1", runTime));
+            EDBObject v1 = new EDBObject("/history/test/object", data1);
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/test/1"));
+            ci.add(utils.createRandomTestObject("/deletion/test/1"));
             ci.add(v1);
-            db.commit(ci);
-            runTimeStep();
 
-            // Now we change stuff:
+            time1 = db.commit(ci);
+
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
             data2.put("Burger", "Meat");
-            EDBObject v2 = new EDBObject("/history/test/object", runTime, data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/test/2", runTime));
+            EDBObject v2 = new EDBObject("/history/test/object", data2);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/test/2"));
             ci.delete("/deletion/test/1");
             ci.add(v2);
-            db.commit(ci);
+            time2 = db.commit(ci);
 
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
-            runTimeStep();
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
-            ci.add(utils.createRandomTestObject("/useless/test/3", runTime));
-            ci.add(utils.createRandomTestObject("/useless/test/4", runTime));
-            db.commit(ci);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+            ci.add(utils.createRandomTestObject("/useless/test/3"));
+            ci.add(utils.createRandomTestObject("/useless/test/4"));
+            time3 = db.commit(ci);
 
-            // Now we change something else:
             data3.put("Cheese", "Milk");
-            runTimeStep();
-            EDBObject v3 = new EDBObject("/history/test/object", runTime, data3);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+
+            EDBObject v3 = new EDBObject("/history/test/object", data3);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
             ci.add(v3);
-            ci.add(utils.createRandomTestObject("/useless/test/5", runTime));
-            to = runTime;
-            db.commit(ci);
+            ci.add(utils.createRandomTestObject("/useless/test/5"));
+
+            time4 = db.commit(ci);
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("getHistory failed, didn't even get to try getLog: " + ex.toString());
         }
 
-        log = db.getLog("/history/test/object", from, to);
+        List<EDBLogEntry> log = db.getLog("/history/test/object", time1, time4);
         assertThat(log.size(), is(3));
+
+        checkTimeStamps(Arrays.asList(time1, time2, time3, time4));
     }
 
     @SuppressWarnings("serial")
     @Test
     public void testQueryWithSomeAspects_shouldWork() {
-        JPADatabase db = openDatabase();
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("A", "B");
             data1.put("Cow", "Milk");
             data1.put("Dog", "Food");
-            EDBObject v1 = new EDBObject("/test/query1", runTime, data1);
-            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            EDBObject v1 = new EDBObject("/test/query1", data1);
+            JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
             ci.add(v1);
-            db.commit(ci);
-            runTimeStep();
+            long time1 = db.commit(ci);
 
             HashMap<String, Object> data2 = new HashMap<String, Object>();
             data2.put("Cow", "Milk");
             data2.put("House", "Garden");
-            v1 = new EDBObject("/test/query2", runTime, data2);
-            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole(), runTime);
+            v1 = new EDBObject("/test/query2", data2);
+            ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
             ci.add(v1);
-            db.commit(ci);
-            runTimeStep();
+            long time2 = db.commit(ci);
 
             List<EDBObject> list1 = db.query("A", "B");
             List<EDBObject> list2 = db.query(new HashMap<String, Object>() {
@@ -336,6 +319,8 @@ public class JPATestIT {
             assertThat(list3.size(), is(2));
             assertThat(list4.size(), is(0));
 
+            checkTimeStamps(Arrays.asList(time1, time2));
+
             // removed because of the by jpa not supported regex command
             // list = db.query(new HashMap<String, Object>() {
             // {
@@ -352,51 +337,45 @@ public class JPATestIT {
     @SuppressWarnings("unchecked")
     @Test
     public void testDiff_shouldWork() throws Exception {
-        JPADatabase db = openDatabase();
-        long timeA = 0;
-        long timeB = 0;
-        long timeC = 0;
+        long time1 = 0;
+        long time2 = 0;
+        long time3 = 0;
         try {
             HashMap<String, Object> data1 = new HashMap<String, Object>();
             data1.put("KeyA", "Value A 1");
             data1.put("KeyB", "Value B 1");
             data1.put("KeyC", "Value C 1");
-            EDBObject v1 = new EDBObject("/diff/object", runTime, data1);
-            JPACommit ci = db.createCommit("Blub", "Testing", runTime);
+            EDBObject v1 = new EDBObject("/diff/object", data1);
+            JPACommit ci = db.createCommit("Blub", "Testing");
             ci.add(v1);
-            db.commit(ci);
-            timeA = runTime;
+            time1 = db.commit(ci);
 
             HashMap<String, Object> data2 = (HashMap<String, Object>) data1.clone();
-            runTimeStep();
 
             data2.put("KeyD", "Value D 1");
             data2.put("KeyA", "Value A 2");
-            EDBObject v2 = new EDBObject("/diff/object", runTime, data2);
-            ci = db.createCommit("Blub", "Testing", runTime);
+            EDBObject v2 = new EDBObject("/diff/object", data2);
+            ci = db.createCommit("Blub", "Testing");
             ci.add(v2);
-            db.commit(ci);
-            timeB = runTime;
+            time2 = db.commit(ci);
 
-            runTimeStep();
             HashMap<String, Object> data3 = (HashMap<String, Object>) data2.clone();
 
             data3.remove("KeyB");
             data3.put("KeyC", "Value C 3");
-            EDBObject v3 = new EDBObject("/diff/object", runTime, data3);
-            ci = db.createCommit("Blub", "Testing", runTime);
+            EDBObject v3 = new EDBObject("/diff/object", data3);
+            ci = db.createCommit("Blub", "Testing");
             ci.add(v3);
-            db.commit(ci);
-            timeC = runTime;
+            time3 = db.commit(ci);
         } catch (EDBException ex) {
             fail("Failed to prepare commits for comparison!" + ex.getLocalizedMessage());
         }
 
-        runTimeStep();
+        checkTimeStamps(Arrays.asList(time1, time2, time3));
 
-        Diff diffAb = db.getDiff(timeA, timeB);
-        Diff diffBc = db.getDiff(timeB, timeC);
-        Diff diffAc = db.getDiff(timeA, timeC);
+        Diff diffAb = db.getDiff(time1, time2);
+        Diff diffBc = db.getDiff(time2, time3);
+        Diff diffAc = db.getDiff(time1, time3);
 
         assertThat(diffAb.getDifferenceCount(), is(1));
         assertThat(diffBc.getDifferenceCount(), is(1));
@@ -405,47 +384,50 @@ public class JPATestIT {
 
     @Test
     public void testGetResurrectedOIDs_shouldWork() throws Exception {
-        JPADatabase db = openDatabase();
-
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
-        EDBObject v1 = new EDBObject("/ress/object", runTime, data1);
-        JPACommit ci = db.createCommit("Blub", "Testing", runTime);
+        EDBObject v1 = new EDBObject("/ress/object", data1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
         ci.add(v1);
-        db.commit(ci);
+        long time1 = db.commit(ci);
 
-        runTimeStep();
-
-        v1 = new EDBObject("/ress/object2", runTime, data1);
-        ci = db.createCommit("Blub", "Testing", runTime);
+        v1 = new EDBObject("/ress/object2", data1);
+        ci = db.createCommit("Blub", "Testing");
         ci.add(v1);
         ci.delete("/ress/object");
-        db.commit(ci);
+        long time2 = db.commit(ci);
 
-        runTimeStep();
-
-        v1 = new EDBObject("/ress/object", runTime, data1);
-        ci = db.createCommit("Blub", "Testing", runTime);
+        v1 = new EDBObject("/ress/object", data1);
+        ci = db.createCommit("Blub", "Testing");
         ci.delete("/ress/object2");
         ci.add(v1);
-        db.commit(ci);
+        long time3 = db.commit(ci);
 
         List<String> oids = db.getResurrectedOIDs();
 
         assertThat(oids.contains("/ress/object"), is(true));
         assertThat(oids.contains("/ress/object2"), is(false));
+
+        checkTimeStamps(Arrays.asList(time1, time2, time3));
     }
 
     @Test(expected = EDBException.class)
     public void testCommitTwiceSameCommit_shouldThrowError() throws Exception {
-        JPADatabase db = openDatabase();
-
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("KeyA", "Value A 1");
-        EDBObject v1 = new EDBObject("/fail/object", runTime, data1);
-        JPACommit ci = db.createCommit("Blub", "Testing", runTime);
+        EDBObject v1 = new EDBObject("/fail/object", data1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
         ci.add(v1);
         db.commit(ci);
         db.commit(ci);
+    }
+
+    /**
+     * iterates through the list of timestamps and checks if every timestamp is bigger than 0
+     */
+    private void checkTimeStamps(List<Long> timestamps) {
+        for (Long timestamp : timestamps) {
+            assertThat(timestamp, greaterThan((long) 0));
+        }
     }
 }

@@ -21,19 +21,29 @@ import java.util.List;
 
 
 /**
- * A Commit object represents a change to the dataset. It can either reflect a change that already happened in the past,
+ * A Commit object represents a change to the data source. It can either reflect a change that already happened in the past,
  * in which it will contain a list of OIDs which have been changed by this commit. Or a new change that is going to be
- * committed to the database. The commit object needs a timestamp, representing the time at which the change happened.
+ * committed to the database. 
  * Then the commit is filled with objects, or deletions. When everything is prepared, the commit() function can be
- * executed to send the change over to the database. If a commit was commitet once, it throws an exception if you want
+ * executed to send the change over to the database. If a commit was committed once, it throws an exception if you want
  * to commit it again.
  */
 public interface EDBCommit {
+    /**
+     * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
+     */
+    void add(EDBObject obj) throws EDBException;
 
-    void setCommitted(Boolean c);
+    /**
+     * Delete an object that already exists.
+     */
+    void delete(String oid) throws EDBException;
 
-    boolean isCommitted();
-
+    /** 
+     * Used by the database to "finalize" the commit 
+     */
+    void finalize() throws EDBException;
+    
     /**
      * For a query-commit: Retrieve a list of OIDs representing the objects which have been changed by this commit.
      */
@@ -49,25 +59,34 @@ public interface EDBCommit {
      */
     List<String> getDeletions();
 
-    /** Get the committer's name. */
+    /** 
+     * Get the committer's name. 
+     */
     String getCommitter();
 
-    /** Get the commit's timestamp. */
+    /** 
+     * Get the commit's timestamp. 
+     */
     Long getTimestamp();
 
-    /** Get the commit's role. */
+    /** 
+     * Get the commit's role. 
+     */
     String getRole();
-
+    
     /**
-     * Add an object to be committed (updated or created). The object's timestamp must match the commit's timestamp.
+     * returns if this commit was already committed
      */
-    void add(EDBObject obj) throws EDBException;
-
+    boolean isCommitted();
+    
     /**
-     * Delete an object that already exists.
+     * sets if the commit is already committed, should be called by the EnterpriseDatabaseService 
+     * at the commit procedure
      */
-    void delete(String oid) throws EDBException;
-
-    /** Used by the database to "finalize" the commit */
-    void finalize() throws EDBException;
+    void setCommitted(Boolean committed);
+    
+    /**
+     * this setter should be called by the EnterpriseDatabaseService at the commit procedure
+     */
+    void setTimestamp(Long timestamp);
 }

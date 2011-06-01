@@ -76,11 +76,17 @@ public class JPAObject {
         if (s != null) {
             data.put("isDeleted", s.equals("true"));
         }
-        return new EDBObject(oid, timestamp, data);
+        EDBObject object = new EDBObject(oid, data);
+        object.updateTimestamp(timestamp);
+        return object;
     }
 
     public Boolean isDeleted() {
         return isDeleted;
+    }
+    
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Long getTimestamp() {

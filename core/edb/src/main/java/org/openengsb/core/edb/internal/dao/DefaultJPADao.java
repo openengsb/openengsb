@@ -199,6 +199,7 @@ public class DefaultJPADao implements JPADao {
         select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
         TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
+        LOGGER.debug(typedQuery.toString());
         return typedQuery.getResultList();
     }
 

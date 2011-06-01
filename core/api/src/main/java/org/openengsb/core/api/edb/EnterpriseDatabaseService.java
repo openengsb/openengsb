@@ -8,16 +8,14 @@ import java.util.Map;
  */
 public interface EnterpriseDatabaseService {
     /**
-     * Create a commit which is ready to be filled with updates. Note that the provided timestamp must be valid. If
-     * there is a commit with a later timestamp in the database, then the commit() call will fail!
+     * Create a commit which is ready to be filled with updates.
      */
-    EDBCommit createCommit(String committer, String role, long timestamp);
+    EDBCommit createCommit(String committer, String role);
 
     /**
-     * Commit the provided commit object. When you call .commit() on a commit object, this is what happens. Note that it
-     * will throw an exception in case the timestamp is invalid, @see createCommit()
+     * Commit the provided commit object and returns the corresponding time stamp for the commit.
      */
-    void commit(EDBCommit obj) throws EDBException;
+    Long commit(EDBCommit obj) throws EDBException;
 
     /**
      * Retrieve the current state of the object with the specified OID.
@@ -37,12 +35,12 @@ public interface EnterpriseDatabaseService {
     /**
      * Retrieve the history of an object with a specified OID between a specified range of timestamps (inclusive).
      */
-    List<EDBObject> getHistory(String oid, long from, long to) throws EDBException;
+    List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException;
 
     /**
      * Get the Log for an object between two timestamps (inclusive).
      */
-    List<EDBLogEntry> getLog(String oid, long from, long to) throws EDBException;
+    List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException;
 
     /**
      * Retrieve the full state for a provided timestamp. Note, there need not exist a commit for this exact timestamp.
@@ -74,7 +72,7 @@ public interface EnterpriseDatabaseService {
      * Convenience function to get a commit for a timestamp. In this case, if the timestamp doesn't exist, null is
      * returned. Exceptions are only thrown for database errors.
      */
-    EDBCommit getCommit(long from) throws EDBException;
+    EDBCommit getCommit(Long from) throws EDBException;
 
     /** 
      * Convenience function to query for a commit with a single matching key-value pair. 
@@ -89,7 +87,7 @@ public interface EnterpriseDatabaseService {
     /**
      * Compare two states and show the differences.
      */
-    EDBDiff getDiff(long min, long max) throws EDBException;
+    EDBDiff getDiff(Long firstTimestamp, Long secondTimestamp) throws EDBException;
 
     /**
      * Find all OIDs which have been "resurrected" (deleted and recreated)
