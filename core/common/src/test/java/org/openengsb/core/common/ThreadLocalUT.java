@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.ThreadLocalUtil;
@@ -38,7 +37,6 @@ public class ThreadLocalUT {
     /**
      * shows the impact of the proxying and argument-manipulation on performance.
      */
-    @Ignore("because it's just a usetest, and takes quite some time")
     @Test
     public void threadPoolPerformance() throws Exception {
         Runnable command = new Runnable() {
