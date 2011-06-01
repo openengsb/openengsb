@@ -26,7 +26,15 @@ import org.openengsb.core.api.model.BeanDescription;
 public class BeanDescriptionTest {
 
     @Test
-    public void testWrapSimpleBean() throws Exception {
+    public void testWrapSimpleBean_shouldContainStringData() throws Exception {
+        SimpleTestBean bean = new SimpleTestBean("42", 42L);
+        BeanDescription beanDescription = BeanDescription.fromObject(bean);
+        assertThat(beanDescription.getData().get("stringValue"), is("42"));
+        assertThat(beanDescription.getData().get("longValue"), is("42"));
+    }
+
+    @Test
+    public void testWrapAndUnWrapSimpleBean_shouldBeEqualObject() throws Exception {
         SimpleTestBean bean = new SimpleTestBean("42", 42L);
         BeanDescription beanDescription = BeanDescription.fromObject(bean);
         SimpleTestBean bean2 = beanDescription.toObject(SimpleTestBean.class);
