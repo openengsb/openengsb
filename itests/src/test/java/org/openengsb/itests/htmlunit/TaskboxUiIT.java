@@ -64,6 +64,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         super.beforeClass();
+        super.before();
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
