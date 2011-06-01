@@ -50,10 +50,23 @@ public final class CipherUtils {
     public static final String DEFAULT_ASYMMETRIC_ALGORITHM = "RSA";
     public static final int DEFAULT_ASYMMETRIC_KEYSIZE = 2048;
 
+    /**
+     * Decrypts the given data using the given key. The key holds the algorithm used for decryption. If you are
+     * decrypting data that is supposed to be a string, consider that it might be Base64-encoded.
+     *
+     * @throws DecryptionException if the string cannot be decrypted with the given key
+     */
     public static byte[] decrypt(byte[] text, Key key) throws DecryptionException {
         return decrypt(text, key, key.getAlgorithm());
     }
 
+    /**
+     * Decrypts the given data using the given key using the given algorithm. If you are decrypting data that is
+     * supposed to be a string, consider that it might be Base64-encoded.
+     *
+     * @throws DecryptionException if the string cannot be decrypted with the given key
+     * @throws IllegalArgumentException if the algorithm is not supported.
+     */
     public static byte[] decrypt(byte[] text, Key key, String algorithm) throws DecryptionException {
         Cipher cipher;
         try {
@@ -71,10 +84,23 @@ public final class CipherUtils {
         }
     }
 
+    /**
+     * Encrypts the given data using the given key. The key holds the algorithm used for encryption. If you are
+     * encrypting data that is supposed to be a string, consider that it might be Base64-encoded.
+     *
+     * @throws EncryptionException if the string cannot be encrypted with the given key
+     */
     public static byte[] encrypt(byte[] text, Key key) throws EncryptionException {
         return encrypt(text, key, key.getAlgorithm());
     }
 
+    /**
+     * Encrypts the given data using the given key using the given algorithm. If you are encrypting data that is
+     * supposed to be a string, consider encoding it in Base64.
+     *
+     * @throws EncryptionException if the string cannot be encrypted with the given key
+     * @throws IllegalArgumentException if the algorithm is not supported.
+     */
     public static byte[] encrypt(byte[] text, Key key, String algorithm) throws EncryptionException {
         Cipher cipher;
         try {
@@ -92,6 +118,12 @@ public final class CipherUtils {
         }
     }
 
+    /**
+     * converts a byte[] that originally was created using {@link PublicKey#getEncoded()} back to the corresponding
+     * instance.
+     *
+     * Example: CipherUtils.deserializePublicKey(data, "RSA")
+     */
     public static PublicKey deserializePublicKey(byte[] keyData, String algorithm) {
         LOGGER.trace("deserialize public key from data using algorithm \"{}\"", algorithm);
         X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(keyData);
@@ -104,6 +136,12 @@ public final class CipherUtils {
         }
     }
 
+    /**
+     * converts a byte[] that originally was created using {@link PrivateKey#getEncoded()} back to the corresponding
+     * instance.
+     *
+     * Example: CipherUtils.deserializePrivateKey(data, "RSA")
+     */
     public static PrivateKey deserializePrivateKey(byte[] keyData, String algorithm) {
         LOGGER.trace("deserialize private key from data using algorithm \"{}\"", algorithm);
         PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(keyData);
@@ -116,11 +154,22 @@ public final class CipherUtils {
         }
     }
 
+    /**
+     * converts a byte[] that originally was created using {@link SecretKey#getEncoded()} back to the corresponding
+     * instance.
+     *
+     * Example: CipherUtils.deserializeSecretKey(data, "AES")
+     */
     public static SecretKey deserializeSecretKey(byte[] keyData, String algorithm) {
         LOGGER.trace("deserialize secret key from data using algorithm \"{}\"", algorithm);
         return new SecretKeySpec(keyData, algorithm);
     }
 
+    /**
+     * Generate a {@link KeyPair} for the given assymmetric algorithm and keysize
+     *
+     * Example: CipherUtils.generateKeyPair("RSA", 2048)
+     */
     public static KeyPair generateKeyPair(String algorithm, int keySize) {
         KeyPairGenerator keyPairGenerator;
         try {
@@ -132,6 +181,11 @@ public final class CipherUtils {
         return keyPairGenerator.generateKeyPair();
     }
 
+    /**
+     * Generate a {@link SecretKey} for the given symmetric algorithm and keysize
+     *
+     * Example: CipherUtils.generateKeyPair("AES", 128)
+     */
     public static SecretKey generateKey(String algorithm, int keySize) {
         KeyGenerator secretKeyGenerator;
         try {
@@ -143,6 +197,13 @@ public final class CipherUtils {
         return secretKeyGenerator.generateKey();
     }
 
+    /**
+     * create a signature for the given text using the PrivateKey and algorithm
+     *
+     * Example: CipherUtils.sign(data, key, CipherUtils.DEFAULT_SIGN_ALGORITHM)
+     *
+     * @throws SignatureException if the data cannot not be signed
+     */
     public static byte[] sign(byte[] text, PrivateKey key, String algorithm) throws SignatureException {
         Signature signature;
         try {
@@ -155,6 +216,11 @@ public final class CipherUtils {
         return signature.sign();
     }
 
+    /**
+     * verifies if the given data is valid for the given signature and public key.
+     *
+     * @throws SignatureException if the algorithm cannot be initialized
+     */
     public static boolean verify(byte[] text, byte[] signatureValue, PublicKey key, String algorithm)
         throws SignatureException {
         Signature signature;
