@@ -21,6 +21,9 @@ import java.io.Serializable;
 
 /**
  * Adds additional integrity information to messages to prevent replay-attacks.
+ *
+ * The timestamp in the message can be compared to the timestamp of the last message the user sent. An example how this
+ * can be done is in @link{org.openengsb.core.common.security.filter.MessageVerifierFilter}
  */
 public abstract class AbstractSecureMessage<MessageType> implements Serializable {
 
