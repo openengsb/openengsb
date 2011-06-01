@@ -84,7 +84,7 @@ public class JPAObject {
     public Boolean isDeleted() {
         return isDeleted;
     }
-    
+
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
@@ -96,7 +96,7 @@ public class JPAObject {
     public String getOID() {
         return oid;
     }
-    
+
     public List<JPAEntry> getPairs() {
         return entries;
     }

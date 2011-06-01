@@ -48,8 +48,8 @@ public interface EnterpriseDatabaseService {
      */
     List<EDBObject> getHead(long timestamp) throws EDBException;
 
-    /** 
-     * Convenience function to query for a single key-value pair in the current state. 
+    /**
+     * Convenience function to query for a single key-value pair in the current state.
      */
     List<EDBObject> query(String key, Object value) throws EDBException;
 
@@ -58,8 +58,8 @@ public interface EnterpriseDatabaseService {
      */
     List<EDBObject> query(Map<String, Object> query) throws EDBException;
 
-    /** 
-     * Convenience function to query for a commit with a single matching key-value pair. 
+    /**
+     * Convenience function to query for a commit with a single matching key-value pair.
      */
     List<EDBCommit> getCommits(String key, Object value) throws EDBException;
 
@@ -74,8 +74,8 @@ public interface EnterpriseDatabaseService {
      */
     EDBCommit getCommit(Long from) throws EDBException;
 
-    /** 
-     * Convenience function to query for a commit with a single matching key-value pair. 
+    /**
+     * Convenience function to query for a commit with a single matching key-value pair.
      */
     EDBCommit getLastCommit(String key, Object value) throws EDBException;
 

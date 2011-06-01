@@ -30,7 +30,7 @@ public class EDBException extends RuntimeException {
     public EDBException(String s) {
         super(s);
     }
-    
+
     public EDBException(Throwable t) {
         super(t);
     }

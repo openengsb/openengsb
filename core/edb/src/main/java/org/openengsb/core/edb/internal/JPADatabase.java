@@ -97,7 +97,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
-        commit.finalize();
 
         JPAHead nextHead;
         if (head != null) {

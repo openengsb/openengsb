@@ -19,14 +19,12 @@ package org.openengsb.core.api.edb;
 
 import java.util.List;
 
-
 /**
- * A Commit object represents a change to the data source. It can either reflect a change that already happened in the past,
- * in which it will contain a list of OIDs which have been changed by this commit. Or a new change that is going to be
- * committed to the database. 
- * Then the commit is filled with objects, or deletions. When everything is prepared, the commit() function can be
- * executed to send the change over to the database. If a commit was committed once, it throws an exception if you want
- * to commit it again.
+ * A Commit object represents a change to the data source. It can either reflect a change that already happened in the
+ * past, in which it will contain a list of OIDs which have been changed by this commit. Or a new change that is going
+ * to be committed to the database. Then the commit is filled with objects, or deletions. When everything is prepared,
+ * the commit() function can be executed to send the change over to the database. If a commit was committed once, it
+ * throws an exception if you want to commit it again.
  */
 public interface EDBCommit {
     /**
@@ -39,11 +37,6 @@ public interface EDBCommit {
      */
     void delete(String oid) throws EDBException;
 
-    /** 
-     * Used by the database to "finalize" the commit 
-     */
-    void finalize() throws EDBException;
-    
     /**
      * For a query-commit: Retrieve a list of OIDs representing the objects which have been changed by this commit.
      */
@@ -51,7 +44,7 @@ public interface EDBCommit {
 
     /**
      * For a created commit: retrieve the list of all objects that have been add()-ed to this commit.
-    */
+     */
     List<EDBObject> getObjects();
 
     /**
@@ -59,32 +52,32 @@ public interface EDBCommit {
      */
     List<String> getDeletions();
 
-    /** 
-     * Get the committer's name. 
+    /**
+     * Get the committer's name.
      */
     String getCommitter();
 
-    /** 
-     * Get the commit's timestamp. 
+    /**
+     * Get the commit's timestamp.
      */
     Long getTimestamp();
 
-    /** 
-     * Get the commit's role. 
+    /**
+     * Get the commit's role.
      */
     String getRole();
-    
+
     /**
      * returns if this commit was already committed
      */
     boolean isCommitted();
-    
+
     /**
-     * sets if the commit is already committed, should be called by the EnterpriseDatabaseService 
-     * at the commit procedure
+     * sets if the commit is already committed, should be called by the EnterpriseDatabaseService at the commit
+     * procedure
      */
     void setCommitted(Boolean committed);
-    
+
     /**
      * this setter should be called by the EnterpriseDatabaseService at the commit procedure
      */

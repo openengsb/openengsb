@@ -70,11 +70,10 @@ public class Diff implements EDBDiff {
         addModifiedOrDeletedObjects(tempList);
         addNewObjects(tempList);
     }
-    
+
     /**
-     * add all modified or deleted objects to the diff collection. As base to indicate
-     * if something changed the start state and the list of elements from the end state
-     * is taken.
+     * add all modified or deleted objects to the diff collection. As base to indicate if something changed the start
+     * state and the list of elements from the end state is taken.
      */
     private void addModifiedOrDeletedObjects(List<EDBObject> tempList) {
         for (EDBObject a : this.startState) {
@@ -86,10 +85,10 @@ public class Diff implements EDBDiff {
             }
         }
     }
-    
+
     /**
-     * add all new object to the diff collection. As base to indicate if an object is new,
-     * the list of elements from the end state which are left is taken.
+     * add all new object to the diff collection. As base to indicate if an object is new, the list of elements from the
+     * end state which are left is taken.
      */
     private void addNewObjects(List<EDBObject> tempList) {
         for (EDBObject b : tempList) {

@@ -18,8 +18,7 @@
 package org.openengsb.core.api.edb;
 
 /**
- * The Entry object is a pair of values. It is used by the diff functionality to
- * see the differences. 
+ * The Entry object is a pair of values. It is used by the diff functionality to see the differences.
  */
 public interface EDBEntry {
     /**

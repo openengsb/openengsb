@@ -24,8 +24,8 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 
 /**
- * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as
- * it wants. So to say the JPAEntries are concrete key/value pairs extending JPAObjects.
+ * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as it wants. So to say the JPAEntries
+ * are concrete key/value pairs extending JPAObjects.
  */
 @Entity
 public class JPAEntry {
@@ -35,7 +35,7 @@ public class JPAEntry {
     private Long id;
     @Version
     private Integer versionNumber;
-    
+
     private String key;
     private String value;
 
@@ -60,7 +60,7 @@ public class JPAEntry {
     public String getValue() {
         return value;
     }
-    
+
     public Long getId() {
         return id;
     }

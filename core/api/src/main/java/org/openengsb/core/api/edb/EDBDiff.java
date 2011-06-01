@@ -20,7 +20,6 @@ package org.openengsb.core.api.edb;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A Diff object stores hierarchically the differences between two states. It provides access to the commit objects
  * representing the first and last commits which are compared, and contains a Map of OIDs to ObjectDiff objects for each
@@ -65,7 +64,7 @@ public interface EDBDiff {
      * Get the commit at which the comparison ends.
      */
     EDBCommit getEndCommit();
-    
+
     /**
      * Prints the differences in a well formed form
      */

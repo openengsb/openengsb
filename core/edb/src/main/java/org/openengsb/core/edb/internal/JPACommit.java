@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class JPACommit implements EDBCommit {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPACommit.class);
-    
+
     @Column(name = "COMMITER", length = 50)
     private String committer;
     @Column(name = "TIME")
@@ -55,9 +55,7 @@ public class JPACommit implements EDBCommit {
     @Version
     private Integer versionNumber;
 
-    private List<JPAObject> jpaObjects;
     private List<EDBObject> objects;
-    
 
     /**
      * the empty constructor is only for the jpa enhancer. Do not use it in real code.
@@ -74,7 +72,7 @@ public class JPACommit implements EDBCommit {
         objects = new ArrayList<EDBObject>();
         deletions = new ArrayList<String>();
     }
-    
+
     @Override
     public void setCommitted(Boolean c) {
         committed = c;
@@ -87,6 +85,7 @@ public class JPACommit implements EDBCommit {
 
     @Override
     public List<String> getOIDs() {
+        fillOIDs();
         return oids;
     }
 
@@ -104,7 +103,7 @@ public class JPACommit implements EDBCommit {
     public final String getCommitter() {
         return committer;
     }
-    
+
     @Override
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
@@ -136,19 +135,6 @@ public class JPACommit implements EDBCommit {
         }
         deletions.add(oid);
         LOGGER.debug("deleted object " + oid + " from the commit");
-    }
-
-    @Override
-    public void finalize() throws EDBException {
-        if (isCommitted()) {
-            throw new EDBException("Commit already finalized, probably already committed.");
-        }
-        fillOIDs();
-        jpaObjects = new ArrayList<JPAObject>();
-        for (EDBObject o : getObjects()) {
-            o.updateTimestamp(timestamp);
-            jpaObjects.add(new JPAObject(o));
-        }
     }
 
     private void fillOIDs() {

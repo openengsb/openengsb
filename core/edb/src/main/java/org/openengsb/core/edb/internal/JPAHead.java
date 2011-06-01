@@ -40,7 +40,7 @@ public class JPAHead {
     private Integer versionNumber;
     @Column(name = "TIME")
     private Long timestamp;
-    
+
     private List<EDBObject> loaded;
 
     /**
