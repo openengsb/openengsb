@@ -22,7 +22,7 @@ package org.openengsb.core.api.remote;
  */
 public class FilterConfigurationException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6299928939427594347L;
 
     public FilterConfigurationException() {
     }

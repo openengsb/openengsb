@@ -15,25 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api.security;
 
-public class MergeException extends Exception {
+/**
+ * Serves as baseclass for all Security-related Exceptions in the OpenEngSB (similar to
+ * {@link java.security.GeneralSecurityException}
+ *
+ */
+public abstract class OpenEngSBSecurityException extends Exception {
 
-    private static final long serialVersionUID = 7118778098810229881L;
+    private static final long serialVersionUID = -2939758040088724227L;
 
-    public MergeException() {
-        super();
+    public OpenEngSBSecurityException() {
     }
 
-    public MergeException(String message, Throwable cause) {
+    public OpenEngSBSecurityException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public MergeException(String message) {
+    public OpenEngSBSecurityException(String message) {
         super(message);
     }
 
-    public MergeException(Throwable cause) {
+    public OpenEngSBSecurityException(Throwable cause) {
         super(cause);
     }
 

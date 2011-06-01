@@ -15,26 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.security.filter;
 
-public class MergeException extends Exception {
+import org.openengsb.core.api.remote.FilterChainElement;
+import org.openengsb.core.api.remote.FilterChainElementFactory;
+import org.openengsb.core.api.remote.FilterConfigurationException;
+import org.springframework.security.authentication.AuthenticationManager;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+public class MessageAuthenticatorFactory implements FilterChainElementFactory {
 
-    public MergeException() {
-        super();
+    private AuthenticationManager authenticationManager;
+
+    @Override
+    public FilterChainElement newInstance() throws FilterConfigurationException {
+        return new MessageAuthenticatorFilter(authenticationManager);
     }
 
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
-
-    public MergeException(String message) {
-        super(message);
-    }
-
-    public MergeException(Throwable cause) {
-        super(cause);
-    }
-
 }

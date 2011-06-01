@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api.security.model;
 
-public class MergeException extends Exception {
+import org.openengsb.core.api.remote.MethodResultMessage;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+/**
+ * wraps the result of a MethodCall to a response-object containing security-relevant information handled by
+ * {@link AbstractSecureMessage}
+ */
+public class SecureResponse extends AbstractSecureMessage<MethodResultMessage> {
 
-    public MergeException() {
-        super();
+    private static final long serialVersionUID = 4052853600342752517L;
+
+    protected SecureResponse() {
     }
 
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
+    public static SecureResponse create(MethodResultMessage original) {
+        SecureResponse secureResponse = new SecureResponse();
+        secureResponse.setMessage(original);
+        long time = System.currentTimeMillis();
+        secureResponse.setTimestamp(time);
+        return secureResponse;
     }
-
-    public MergeException(String message) {
-        super(message);
-    }
-
-    public MergeException(Throwable cause) {
-        super(cause);
-    }
-
 }

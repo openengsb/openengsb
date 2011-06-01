@@ -15,26 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api.security.model;
 
-public class MergeException extends Exception {
+import org.springframework.security.core.Authentication;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+/**
+ * This interface serves as bridge between properly serializable AuthenticationInformation (compatible to
+ * {@link org.openengsb.core.api.model.BeanDescription} and internal {@link Authentication}-tokens.
+ *
+ * When implementing authentication-providers for external authentication, this interface needs to be implemented by the
+ * model-class representing the credentials.
+ *
+ * @see UsernamePasswordAuthenticationInfo
+ */
+public interface AuthenticationInfo {
 
-    public MergeException() {
-        super();
-    }
-
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MergeException(String message) {
-        super(message);
-    }
-
-    public MergeException(Throwable cause) {
-        super(cause);
-    }
+    Authentication toSpringSecurityAuthentication();
 
 }

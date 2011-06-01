@@ -15,26 +15,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api;
 
-public class MergeException extends Exception {
+public class SimpleTestBean {
+    String stringValue;
+    Long longValue;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+    public SimpleTestBean() {
+    }
 
-    public MergeException() {
+    public SimpleTestBean(String stringValue, Long longValue) {
         super();
+        this.stringValue = stringValue;
+        this.longValue = longValue;
     }
 
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
+    public String getStringValue() {
+        return stringValue;
     }
 
-    public MergeException(String message) {
-        super(message);
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
     }
 
-    public MergeException(Throwable cause) {
-        super(cause);
+    public Long getLongValue() {
+        return longValue;
     }
 
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
+    }
 }

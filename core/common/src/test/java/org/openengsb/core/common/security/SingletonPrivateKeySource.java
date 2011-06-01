@@ -15,26 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.security;
 
-public class MergeException extends Exception {
+import java.security.PrivateKey;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+public class SingletonPrivateKeySource implements PrivateKeySource {
 
-    public MergeException() {
-        super();
+    private PrivateKey key;
+
+    public SingletonPrivateKeySource(PrivateKey key) {
+        this.key = key;
     }
 
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public PrivateKey getPrivateKey() {
+        return key;
     }
-
-    public MergeException(String message) {
-        super(message);
-    }
-
-    public MergeException(Throwable cause) {
-        super(cause);
-    }
-
 }

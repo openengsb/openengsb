@@ -15,26 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.api.security;
 
-public class MergeException extends Exception {
+@SuppressWarnings("serial")
+public class DecryptionException extends OpenEngSBSecurityException {
 
-    private static final long serialVersionUID = 7118778098810229881L;
-
-    public MergeException() {
-        super();
+    public DecryptionException() {
     }
 
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MergeException(String message) {
+    public DecryptionException(String message) {
         super(message);
     }
 
-    public MergeException(Throwable cause) {
+    public DecryptionException(Throwable cause) {
         super(cause);
+    }
+
+    public DecryptionException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

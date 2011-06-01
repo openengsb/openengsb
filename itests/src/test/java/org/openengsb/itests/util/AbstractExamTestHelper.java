@@ -97,7 +97,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("persistenceService", "CONNECTOR");
 
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
-        authenticateAsAdmin();
     }
 
     public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {

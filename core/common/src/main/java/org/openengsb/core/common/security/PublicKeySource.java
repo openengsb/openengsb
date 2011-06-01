@@ -15,26 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.security;
 
-public class MergeException extends Exception {
+import java.security.PublicKey;
 
-    private static final long serialVersionUID = 7118778098810229881L;
+/**
+ * service that provides the servers public key to other osgi-services (like filters)
+ */
+public interface PublicKeySource {
 
-    public MergeException() {
-        super();
-    }
-
-    public MergeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MergeException(String message) {
-        super(message);
-    }
-
-    public MergeException(Throwable cause) {
-        super(cause);
-    }
+    PublicKey getPublicKey();
 
 }
