@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 public class MethodResultMessage implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6620312248741724626L;
 
     private MethodResult result;
     private String callId;

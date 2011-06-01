@@ -51,7 +51,7 @@ import com.google.common.collect.Collections2;
  */
 public class BeanDescription implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3027590994502598619L;
 
     private String className;
     private Map<String, String> data;

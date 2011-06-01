@@ -18,7 +18,8 @@
 package org.openengsb.core.api.security;
 
 public class MessageAuthenticationException extends OpenEngSBSecurityException {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -7250336404894054009L;
 
     public MessageAuthenticationException() {
     }

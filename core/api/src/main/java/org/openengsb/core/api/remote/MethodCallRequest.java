@@ -30,7 +30,8 @@ import java.util.UUID;
  */
 public class MethodCallRequest implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -484867025274841475L;
+
     private MethodCall methodCall;
     private String callId;
     private boolean answer;

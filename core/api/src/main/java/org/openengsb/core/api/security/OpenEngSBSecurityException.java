@@ -24,7 +24,7 @@ package org.openengsb.core.api.security;
  */
 public abstract class OpenEngSBSecurityException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2939758040088724227L;
 
     public OpenEngSBSecurityException() {
     }
