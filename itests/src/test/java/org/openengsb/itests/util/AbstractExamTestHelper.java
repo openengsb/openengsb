@@ -70,6 +70,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
 
+    private boolean isBeforeExecuted = false;
+
     public enum SetupType {
             BLUEPRINT, SPRING, START_ONLY
     }
@@ -87,6 +89,12 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Before
     public void before() throws Exception {
+        if (isBeforeExecuted) {
+            // Fix for test runner bug
+            return;
+        }
+        isBeforeExecuted = true;
+
         List<String> importantBundles = getImportantBundleSymbolicNames();
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
