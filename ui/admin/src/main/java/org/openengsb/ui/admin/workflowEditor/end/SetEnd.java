@@ -40,6 +40,7 @@ public class SetEnd extends BasePage {
 
     public SetEnd(final WorkflowRepresentation workflow, final ActionRepresentation action) {
         IModel<List<EndRepresentation>> endModel = new AbstractReadOnlyModel<List<EndRepresentation>>() {
+            private static final long serialVersionUID = 5782419997546249255L;
 
             @Override
             public List<EndRepresentation> getObject() {
@@ -48,8 +49,11 @@ public class SetEnd extends BasePage {
         };
         Form<Object> form = new Form<Object>("endSelectForm");
         final EndRepresentation endNode = new EndRepresentation();
-        form.add(new DropDownChoice("endSelect", new PropertyModel(this, "end"), endModel));
+        form.add(new DropDownChoice<EndRepresentation>("endSelect", new PropertyModel<EndRepresentation>(this, "end"),
+            endModel));
         form.add(new Button("select") {
+            private static final long serialVersionUID = 3158308687596544898L;
+
             @Override
             public void onSubmit() {
                 action.setEnd(end);
@@ -58,6 +62,8 @@ public class SetEnd extends BasePage {
         });
         form.add(new TextField<String>("name", new PropertyModel<String>(endNode, "name")));
         form.add(new Button("create") {
+            private static final long serialVersionUID = -3039760218698494622L;
+
             @Override
             public void onSubmit() {
                 workflow.addEndNode(endNode);
@@ -66,6 +72,8 @@ public class SetEnd extends BasePage {
             }
         });
         form.add(new Button("cancel") {
+            private static final long serialVersionUID = -6369160331591319981L;
+
             @Override
             public void onSubmit() {
                 setResponsePage(WorkflowEditor.class);
