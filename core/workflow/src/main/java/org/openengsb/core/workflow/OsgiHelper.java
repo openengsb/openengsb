@@ -30,6 +30,7 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public final class OsgiHelper {
 
+    @SuppressWarnings("unused")
     private static ContextCurrentService contextService;
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)

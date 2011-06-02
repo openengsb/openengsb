@@ -25,6 +25,7 @@ import org.apache.wicket.util.convert.converters.AbstractConverter;
 import org.apache.wicket.util.convert.converters.IntegerConverter;
 import org.apache.wicket.util.convert.converters.LongConverter;
 
+@SuppressWarnings("rawtypes")
 public class ValueConverter implements Serializable {
 
     private static final long serialVersionUID = 7243035341677925260L;
@@ -36,6 +37,7 @@ public class ValueConverter implements Serializable {
         converters.put(Long.class, new LongConverter());
     }
 
+    @SuppressWarnings("unchecked")
     public Object convert(Class<?> type, String object) {
         AbstractConverter abstractConverter;
         if (Enum.class.isAssignableFrom(type)) {
@@ -51,6 +53,8 @@ public class ValueConverter implements Serializable {
     }
 
     public class EnumConverter extends AbstractConverter {
+        private static final long serialVersionUID = -3882902766643241025L;
+
         private final Class<? extends Enum> type;
 
         public EnumConverter(Class<? extends Enum> type) {
@@ -58,6 +62,7 @@ public class ValueConverter implements Serializable {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public Object convertToObject(String value, Locale locale) {
             return Enum.valueOf(type, value);
         }

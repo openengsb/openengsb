@@ -27,11 +27,14 @@ import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 
 public class EventLinks extends Panel {
+    private static final long serialVersionUID = 8819268020993116722L;
 
     public EventLinks(String id, final EventRepresentation event,
             final DefaultMutableTreeNode treeNode) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create.action") {
+            private static final long serialVersionUID = 7571612176992513728L;
+
             @Override
             public void onClick() {
                 ActionRepresentation action = new ActionRepresentation();
@@ -40,6 +43,8 @@ public class EventLinks extends Panel {
         });
         add(new Link<DefaultMutableTreeNode>(
                 "remove") {
+            private static final long serialVersionUID = 7728882780573424915L;
+
             @Override
             public void onClick() {
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) treeNode

@@ -25,10 +25,13 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 
 public class LinkPanel extends Panel {
+    private static final long serialVersionUID = 8289452385623401634L;
 
-    public LinkPanel(String id, final TreeNode node, final TreeTable table, Link link) {
+    public LinkPanel(String id, final TreeNode node, final TreeTable table, Link<?> link) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create.node") {
+            private static final long serialVersionUID = 8318546187513735403L;
+
             @Override
             public void onClick() {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;

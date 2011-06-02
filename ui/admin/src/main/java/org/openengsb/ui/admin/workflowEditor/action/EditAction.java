@@ -61,6 +61,7 @@ public class EditAction extends BasePage {
         add(feedbackPanel);
 
         IModel<List<Class<? extends Domain>>> domainModel = new AbstractReadOnlyModel<List<Class<? extends Domain>>>() {
+            private static final long serialVersionUID = 2025153088116670822L;
 
             @Override
             public List<Class<? extends Domain>> getObject() {
@@ -74,6 +75,8 @@ public class EditAction extends BasePage {
             }
         };
         IModel<List<Method>> methodModel = new AbstractReadOnlyModel<List<Method>>() {
+            private static final long serialVersionUID = -8022955494416312574L;
+
             @Override
             public List<Method> getObject() {
                 if (action.getDomain() != null) {
@@ -84,11 +87,13 @@ public class EditAction extends BasePage {
             }
         };
 
-        DropDownChoice domain =
-            new DropDownChoice("domainSelect", new PropertyModel(action, "domain"), domainModel);
+        DropDownChoice<Class<? extends Domain>> domain =
+            new DropDownChoice<Class<? extends Domain>>("domainSelect", new PropertyModel<Class<? extends Domain>>(
+                action, "domain"), domainModel);
         domain.setOutputMarkupId(true);
 
         IChoiceRenderer<Method> methodRenderer = new IChoiceRenderer<Method>() {
+            private static final long serialVersionUID = -6081780028419630690L;
 
             @Override
             public Object getDisplayValue(Method object) {
@@ -115,13 +120,16 @@ public class EditAction extends BasePage {
 
         };
         final DropDownChoice<Method> method =
-            new DropDownChoice<Method>("methodSelect", new PropertyModel(this, "actionMethod"), methodModel,
+            new DropDownChoice<Method>("methodSelect", new PropertyModel<Method>(this, "actionMethod"), methodModel,
                 methodRenderer);
         method.setOutputMarkupId(true);
 
         Form<Object> form = new Form<Object>("actionForm") {
+            private static final long serialVersionUID = -2637470792433348801L;
         };
         Button createTemplateCode = new Button("create-template-code") {
+            private static final long serialVersionUID = 8658058523401324841L;
+
             @Override
             public void onSubmit() {
                 if (action.getDomain() != null && action.getMethodName() != null && action.getLocation() != null) {
@@ -153,6 +161,8 @@ public class EditAction extends BasePage {
         };
 
         Button submitButton = new Button("submit-button") {
+            private static final long serialVersionUID = 6331939408156197715L;
+
             @Override
             public void onSubmit() {
                 if (action.getLocation() != "" && action.getLocation() != null && action.getDomain() != null
@@ -166,6 +176,8 @@ public class EditAction extends BasePage {
         };
 
         Button cancelButton = new Button("cancel-button") {
+            private static final long serialVersionUID = 3838055892315690316L;
+
             @Override
             public void onSubmit() {
                 setResponsePage(WorkflowEditor.class);
