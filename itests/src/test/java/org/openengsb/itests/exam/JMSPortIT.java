@@ -77,7 +77,6 @@ public class JMSPortIT extends AbstractExamTestHelper {
         ruleManager = getOsgiService(RuleManager.class);
     }
 
-    @Ignore
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
@@ -85,7 +84,6 @@ public class JMSPortIT extends AbstractExamTestHelper {
         assertNotNull(serviceWithId);
     }
 
-    @Ignore
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         addWorkflow("simpleFlow");
