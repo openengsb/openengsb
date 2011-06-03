@@ -52,24 +52,24 @@ public class RequestHandlerImpl implements RequestHandler {
     }
 
     private Object retrieveOpenEngSBService(MethodCall call) {
-        String serviceId = retrieveServiceId(call);
-        Filter filter = createFilterForServiceId(serviceId);
-        return OpenEngSBCoreServices.getServiceUtilsService().getService(filter);
+        Map<String, String> metaData = call.getMetaData();
+        String serviceId = metaData.get("serviceId");
+        String filter = metaData.get("serviceFilter");
+        String filterString = createFilterString(filter, serviceId);
+        return OpenEngSBCoreServices.getServiceUtilsService().getService(filterString);
     }
 
-    private String retrieveServiceId(MethodCall call) {
-        String serviceId = call.getMetaData().get("serviceId");
-        if (serviceId == null) {
-            throw new IllegalArgumentException("missing definition of serviceid in methodcall");
-        }
-        return serviceId;
-    }
-
-    private Filter createFilterForServiceId(String serviceId) {
-        try {
-            return FrameworkUtil.createFilter(String.format("(%s=%s)", Constants.ID_KEY, serviceId));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
+    private String createFilterString(String filter, String serviceId) {
+        if (filter == null) {
+            if (serviceId == null) {
+                throw new IllegalArgumentException("must specify either filter or serviceId");
+            }
+            return String.format("(%s=%s)", Constants.ID_KEY, serviceId);
+        } else {
+            if (serviceId == null) {
+                return filter;
+            }
+            return String.format("(&(%s)(%s=%s))", filter, Constants.ID_KEY, serviceId);
         }
     }
 

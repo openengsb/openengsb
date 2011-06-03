@@ -42,6 +42,42 @@ import org.springframework.jms.core.JmsTemplate;
 @RunWith(JUnit4TestRunner.class)
 public class JMSPortIT extends AbstractExamTestHelper {
 
+    private static final String METHOD_CALL_STRING = ""
+            + "{"
+            + "    \"classes\": ["
+            + "        \"java.lang.String\","
+            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
+            + "    ],"
+            + "    \"methodName\": \"executeWorkflow\","
+            + "    \"metaData\": {"
+            + "        \"serviceId\": \"workflowService\","
+            + "        \"contextId\": \"foo\""
+            + "    },"
+            + "    \"args\": ["
+            + "        \"simpleFlow\","
+            + "        {"
+            + "        }"
+            + "    ]"
+            + "}";
+
+    private static final String METHOD_CALL_STRING_FILTER = ""
+            + "{"
+            + "    \"classes\": ["
+            + "        \"java.lang.String\","
+            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
+            + "    ],"
+            + "    \"methodName\": \"executeWorkflow\","
+            + "    \"metaData\": {"
+            + "        \"serviceFilter\": \"(objectClass=org.openengsb.core.api.workflow.WorkflowService)\","
+            + "        \"contextId\": \"foo\""
+            + "    },"
+            + "    \"args\": ["
+            + "        \"simpleFlow\","
+            + "        {"
+            + "        }"
+            + "    ]"
+            + "}";
+
     private RuleManager ruleManager;
 
     @Before
@@ -62,29 +98,28 @@ public class JMSPortIT extends AbstractExamTestHelper {
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
-        String methodCall = ""
-                + "{"
-                + "    \"classes\": ["
-                + "        \"java.lang.String\","
-                + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-                + "    ],"
-                + "    \"methodName\": \"executeWorkflow\","
-                + "    \"metaData\": {"
-                + "        \"serviceId\": \"workflowService\","
-                + "        \"contextId\": \"foo\""
-                + "    },"
-                + "    \"args\": ["
-                + "        \"simpleFlow\","
-                + "        {"
-                + "        }"
-                + "    ]"
-                + "}";
-
         String request = ""
                 + "{"
                 + "  \"callId\":\"12345\","
                 + "  \"answer\":true,"
-                + "  \"methodCall\":" + methodCall
+                + "  \"methodCall\":" + METHOD_CALL_STRING
+                + "}";
+        template.convertAndSend("receive", request);
+        String result = (String) template.receiveAndConvert("12345");
+        assertThat(result, containsString("The answer to life the universe and everything"));
+    }
+
+    @Test
+    public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
+        addWorkflow("simpleFlow");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        JmsTemplate template = new JmsTemplate(cf);
+        String request = ""
+                + "{"
+                + "  \"callId\":\"12345\","
+                + "  \"answer\":true,"
+                + "  \"methodCall\":" + METHOD_CALL_STRING_FILTER
                 + "}";
         template.convertAndSend("receive", request);
         String result = (String) template.receiveAndConvert("12345");
