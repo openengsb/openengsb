@@ -40,7 +40,7 @@ import org.osgi.framework.BundleContext;
 
 public class CorePersistenceServiceBackendTest {
 
-    private CorePersistenceServiceBackend corePersistenceServiceBackend;
+    private CorePersistenceServiceBackend<String> corePersistenceServiceBackend;
 
     @Before
     public void setUp() throws Exception {
@@ -57,7 +57,7 @@ public class CorePersistenceServiceBackendTest {
             createHashMap(new KeyValuePair("test1", "test1"), new KeyValuePair("test2", "test2"));
         RuleConfiguration ruleConfiguration = new RuleConfiguration(meta, "rule");
         corePersistenceServiceBackend.persist(ruleConfiguration);
-        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(meta);
+        List<ConfigItem<String>> result = corePersistenceServiceBackend.load(meta);
 
         assertThat(result, notNullValue());
         assertThat(result.size(), is(1));
@@ -75,7 +75,7 @@ public class CorePersistenceServiceBackendTest {
         corePersistenceServiceBackend.persist(ruleConfiguration);
         corePersistenceServiceBackend.persist(ruleConfiguration2);
         corePersistenceServiceBackend.remove(meta2);
-        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(meta1);
+        List<ConfigItem<String>> result = corePersistenceServiceBackend.load(meta1);
 
         assertThat(result, notNullValue());
         assertThat(result.size(), is(1));
@@ -95,7 +95,7 @@ public class CorePersistenceServiceBackendTest {
         corePersistenceServiceBackend.persist(ruleConfiguration2);
         HashMap<String, String> query = createHashMap(new KeyValuePair("test1", "test1"));
         corePersistenceServiceBackend.remove(query);
-        List<ConfigItem<?>> result = corePersistenceServiceBackend.load(query);
+        List<ConfigItem<String>> result = corePersistenceServiceBackend.load(query);
 
         assertThat(result, notNullValue());
         assertThat(result.size(), is(0));
@@ -110,7 +110,7 @@ public class CorePersistenceServiceBackendTest {
         ruleConfiguration.setContent("difference");
         corePersistenceServiceBackend.persist(ruleConfiguration);
 
-        List<ConfigItem<?>> list = corePersistenceServiceBackend.load(meta);
+        List<ConfigItem<String>> list = corePersistenceServiceBackend.load(meta);
         assertThat(list.size(), is(1));
         assertThat((RuleConfiguration) list.get(0), is(ruleConfiguration));
     }
@@ -123,13 +123,14 @@ public class CorePersistenceServiceBackendTest {
         return meta;
     }
 
-    private CorePersistenceServiceBackend setupCorePersistenceService() {
+    private CorePersistenceServiceBackend<String> setupCorePersistenceService() {
         Bundle bundleMock = mock(Bundle.class);
         when(bundleMock.getSymbolicName()).thenReturn("db");
         BundleContext bundleContextMock = mock(BundleContext.class);
         when(bundleContextMock.getBundle()).thenReturn(bundleMock);
 
-        CorePersistenceServiceBackend corePersistenceServiceBackend = new CorePersistenceServiceBackend();
+        CorePersistenceServiceBackend<String> corePersistenceServiceBackend =
+            new CorePersistenceServiceBackend<String>();
         NeodatisPersistenceManager persistenceManager = new NeodatisPersistenceManager();
         persistenceManager.setPersistenceRootDir("target/data");
         corePersistenceServiceBackend.setPersistenceManager(persistenceManager);
