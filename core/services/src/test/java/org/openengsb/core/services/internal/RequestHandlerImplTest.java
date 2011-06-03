@@ -1,17 +1,19 @@
 package org.openengsb.core.services.internal;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
@@ -27,16 +29,28 @@ import com.google.common.collect.ImmutableMap;
 public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
+    private RequestHandler requestHandler;
 
     public static interface TestInterface {
         Integer test(Integer arg);
+    }
+
+    @Before
+    public void setup() throws Exception {
+        requestHandler = new RequestHandlerImpl();
+    }
+
+    private TestInterface mockServiceWithProps(Map<String, Object> propData) {
+        TestInterface mockService = mock(TestInterface.class);
+        Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
+        registerService(mockService, props, TestInterface.class);
+        return mockService;
     }
 
     @Test
     public void testCallByServiceId_shouldCallService() throws Exception {
         TestInterface mockService = mockService(TestInterface.class, "testid");
         when(mockService.test(anyInt())).thenReturn(21);
-        RequestHandler requestHandler = new RequestHandlerImpl();
 
         Map<String, String> metaData = ImmutableMap.of("serviceId", "testid");
         MethodCall c = new MethodCall("test", new Object[]{ 42 }, metaData);
@@ -49,13 +63,9 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testCallByFilter_shouldCallService() throws Exception {
-        TestInterface mockService = mock(TestInterface.class);
-        ImmutableMap<String, String[]> propData = ImmutableMap.of("testprop", new String[]{ "bla", "bleh", });
-        Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
-        registerService(mockService, props, TestInterface.class);
-
+        Map<String, Object> propData = ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", });
+        TestInterface mockService = mockServiceWithProps(propData);
         when(mockService.test(anyInt())).thenReturn(21);
-        RequestHandler requestHandler = new RequestHandlerImpl();
 
         Map<String, String> metaData = ImmutableMap.of("serviceFilter", "(testprop=bla)");
         MethodCall c = new MethodCall("test", new Object[]{ 42 }, metaData);
@@ -64,6 +74,37 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         verify(mockService).test(42);
         assertThat(result.getClassName(), is(Integer.class.getName()));
         assertThat((Integer) result.getArg(), is(21));
+    }
+
+    @Test
+    public void testCallByFilterAndServiceId_shouldCallService() throws Exception {
+        Map<String, Object> propData =
+            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", }, "id", "xxx");
+        TestInterface mockService = mockServiceWithProps(propData);
+        when(mockService.test(anyInt())).thenReturn(21);
+
+        Map<String, String> metaData = ImmutableMap.of("serviceFilter", "(testprop=bla)", "serviceId", "xxx");
+        MethodCall c = new MethodCall("test", new Object[]{ 42 }, metaData);
+        MethodResult result = requestHandler.handleCall(c);
+
+        verify(mockService).test(42);
+        assertThat(result.getClassName(), is(Integer.class.getName()));
+        assertThat((Integer) result.getArg(), is(21));
+    }
+
+    @Test
+    public void testCallButBothAttrsNull_shouldThrowException() throws Exception {
+        Map<String, Object> propData =
+            ImmutableMap.of("testprop", (Object) new String[]{ "bla", "bleh", });
+        TestInterface mockService = mockServiceWithProps(propData);
+
+        MethodCall c = new MethodCall("test", new Object[]{ 42 });
+        try {
+            requestHandler.handleCall(c);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            verifyZeroInteractions(mockService);
+        }
     }
 
     @Override
