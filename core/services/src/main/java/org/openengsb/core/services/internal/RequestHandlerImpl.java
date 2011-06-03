@@ -30,9 +30,6 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 
 public class RequestHandlerImpl implements RequestHandler {
 
@@ -69,7 +66,7 @@ public class RequestHandlerImpl implements RequestHandler {
             if (serviceId == null) {
                 return filter;
             }
-            return String.format("(&(%s)(%s=%s))", filter, Constants.ID_KEY, serviceId);
+            return String.format("(&%s(%s=%s))", filter, Constants.ID_KEY, serviceId);
         }
     }
 
