@@ -34,7 +34,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -70,6 +69,24 @@ public class JMSPortIT extends AbstractExamTestHelper {
             + "    ]"
             + "}";
 
+    private static final String METHOD_CALL_STRING_FILTER = ""
+            + "{"
+            + "    \"classes\": ["
+            + "        \"java.lang.String\","
+            + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
+            + "    ],"
+            + "    \"methodName\": \"executeWorkflow\","
+            + "    \"metaData\": {"
+            + "        \"serviceFilter\": \"(objectClass=org.openengsb.core.api.workflow.WorkflowService)\","
+            + "        \"contextId\": \"foo\""
+            + "    },"
+            + "    \"args\": ["
+            + "        \"simpleFlow\","
+            + "        {"
+            + "        }"
+            + "    ]"
+            + "}";
+
     private RuleManager ruleManager;
 
     @Before
@@ -91,6 +108,26 @@ public class JMSPortIT extends AbstractExamTestHelper {
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+
+        template.convertAndSend("receive", encryptedMessage);
+        String result = (String) template.receiveAndConvert("12345");
+
+        byte[] resultData = Base64.decodeBase64(result);
+        assertThat(result, not(containsString("The answer to life the universe and everything")));
+        byte[] decryptedResultData = CipherUtils.decrypt(resultData, sessionKey);
+        result = new String(decryptedResultData);
+        assertThat(result, containsString("The answer to life the universe and everything"));
+    }
+    
+    @Test
+    public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
+        addWorkflow("simpleFlow");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        JmsTemplate template = new JmsTemplate(cf);
+        String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
         SecretKey sessionKey = generateSessionKey();
         String encryptedMessage = encryptMessage(secureRequest, sessionKey);
 
