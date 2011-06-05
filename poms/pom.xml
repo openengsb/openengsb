@@ -120,7 +120,6 @@
     <commons.lang.version>2.6</commons.lang.version>
     <commons.compress.version>1.1</commons.compress.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
-    <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <commons.discovery.version>0.2</commons.discovery.version>
