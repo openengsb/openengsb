@@ -1,0 +1,3 @@
+# Copy this file into the config-directory of the running openengsb-instance
+attribute.outputmode=INFO
+attribute.prefix=xxx
