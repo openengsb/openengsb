@@ -54,6 +54,7 @@ public abstract class PersistenceServiceTest {
     @Test
     public void testExactMatchQuery_shouldReturnSingleResult() {
         PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
+        example.setTestEnum(TestEnum.A);
         List<PersistenceTestBean> results = persistence.query(example);
         assertThat(results.size(), is(1));
         PersistenceTestBean result = results.get(0);

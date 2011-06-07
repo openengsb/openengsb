@@ -25,6 +25,8 @@ public class PersistenceTestBean {
 
     private Integer intValue;
 
+    private TestEnum testEnum;
+
     private PersistenceTestBean reference;
 
     public PersistenceTestBean(String stringValue, Integer intValue, PersistenceTestBean reference) {
@@ -57,6 +59,14 @@ public class PersistenceTestBean {
         this.stringValue = stringValue;
     }
 
+    public TestEnum getTestEnum() {
+        return testEnum;
+    }
+
+    public void setTestEnum(TestEnum testEnum) {
+        this.testEnum = testEnum;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -69,8 +79,8 @@ public class PersistenceTestBean {
             return false;
         }
         PersistenceTestBean other = (PersistenceTestBean) obj;
-        return ObjectUtils.equals(this.intValue, other.intValue)
-                && ObjectUtils.equals(this.stringValue, other.stringValue);
+        return ObjectUtils.equals(intValue, other.intValue)
+                && ObjectUtils.equals(stringValue, other.stringValue) && ObjectUtils.equals(testEnum, other.testEnum);
     }
 
     @Override
@@ -81,6 +91,9 @@ public class PersistenceTestBean {
         }
         if (stringValue != null) {
             hash += 13 * stringValue.hashCode();
+        }
+        if (testEnum != null) {
+            hash += 13 * testEnum.hashCode();
         }
         return hash;
     }
