@@ -36,5 +36,4 @@ fi
 
 KARAF_DEBUG=true \
 KARAF_OPTS="-Dwicket.configuration=development" \
-# JAVA_OPTS="-Djline.terminal=jline.UnsupportedTerminal" \
 $DIRNAME/bin/openengsb
