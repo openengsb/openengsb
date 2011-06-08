@@ -48,6 +48,8 @@
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
     <maven.plugin.release.version>2.1</maven.plugin.release.version>
     <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
+    <maven.plugin.openjpa.version>1.2</maven.plugin.openjpa.version>
+    <maven.plugin.bundle.version>2.3.4</maven.plugin.bundle.version>
     <!-- Dependency Versions -->
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Documentation Properties -->
@@ -140,6 +142,11 @@
         <version>${karaf.version}</version>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <version>${maven.plugin.openjpa.version}</version>
+      </plugin>
+      <plugin>
         <groupId>org.jasig.maven</groupId>
         <artifactId>maven-notice-plugin</artifactId>
         <configuration>
@@ -148,6 +155,11 @@
             <param>etc/notice/license-mapping.xml</param>
           </licenseMapping>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven.plugin.bundle.version}</version>
       </plugin>
     </plugins>
   </build>
