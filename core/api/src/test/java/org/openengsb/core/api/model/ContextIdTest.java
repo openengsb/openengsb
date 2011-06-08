@@ -65,7 +65,7 @@ public class ContextIdTest {
 
     @Test
     public void testGetContextWildCard_shouldReturnEmptyMap() {
-        assertThat(ContextId.getContextWildCard().isEmpty(), is(true));
+        assertThat(ContextId.getContextIdWildCard().isEmpty(), is(true));
     }
 
 }

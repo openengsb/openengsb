@@ -88,7 +88,7 @@ public class ContextServiceImpl implements ContextCurrentService {
     @Override
     public List<String> getAvailableContexts() {
         List<ContextConfiguration> availableContextConfigurations =
-            getContextConfigurationsOrEmptyOnError(ContextId.getContextWildCard());
+            getContextConfigurationsOrEmptyOnError(ContextId.getContextIdWildCard());
         List<String> availableContexts = new ArrayList<String>();
 
         for (ContextConfiguration configuration : availableContextConfigurations) {
