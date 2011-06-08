@@ -111,6 +111,16 @@
       file before. The interface you have to implement and register as a service is the 
       <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/ConfigPersistenceBackendService.java">ConfigPersistenceBackendService</link>.
     </para>
+
+    <section>
+      <title>Context configuration persistence</title>
+      <para>The context configuration persistence follows the basic congiguation persistence scheme. In this case the backend 
+        (<link xlink:href="${github}/core/services/src/main/java/org/openengsb/core/services/internal/ContextFilePersistenceService.java">ContextFilePersistenceService</link>)
+        creates files for each context (basically empty files with filename &lt;contextId&gt;.context), the context service
+        (<link xlink:href="${github}/core/services/src/main/java/org/openengsb/core/services/internal/ContextServiceImpl.java">ContexServiceImpl</link>)
+        requests a config persistcene service of type CONTEXT, is given the aforementioned one and uses it to persist its data.
+      </para>
+    </section>
   </section>
 
 </chapter>
