@@ -48,9 +48,9 @@ public class ActionEvent {
         }
 
         @XmlAttribute
-        private String type = "eventType";
+        public String type = "eventType";
         @XmlAttribute
-        private String eventType;
+        public String eventType;
     }
 
     @XmlAttribute

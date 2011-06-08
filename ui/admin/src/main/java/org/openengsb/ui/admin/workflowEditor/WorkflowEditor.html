@@ -19,23 +19,27 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-	xml:lang="en" lang="en">
-<body>
-<wicket:extend>
-	<form wicket:id="workflowSelectForm">
-	  <select wicket:id="workflowSelect"></select>
-	  <input type="submit" value="Select" id="formsubmit" />
-	</form>
-	<form wicket:id="workflowCreateForm">
-	  <input type="text" wicket:id="name" />
-	  <input type="submit" value="Create" id="formsubmit" />
-	</form>
-	<form wicket:id="export">
-	  <input type="submit" value="Export current Workflow" id="formsubmit" />
-	</form>
-	<h2 wicket:id="currentWorkflowName">[currentWorkflowName]</h2>
-	<div wicket:id="treeTable" class="my-tree"></div>
-</wicket:extend>
-</body>
+  xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+  xml:lang="en" lang="en">
+  <body>
+    <wicket:extend>
+      <span wicket:id="feedback" />
+      <form wicket:id="workflowSelectForm">
+        <select wicket:id="workflowSelect"></select>
+        <input type="submit" value="Select" id="formsubmit" />
+      </form>
+      <form wicket:id="workflowCreateForm">
+        <input type="text" wicket:id="name" />
+        <input type="submit" value="Create" id="formsubmit" />
+      </form>
+      <form wicket:id="export">
+        <input type="submit" value="Export current Workflow" id="formsubmit" />
+      </form>
+      <form wicket:id="saveForm">
+        <input type="submit" value="Save current Workflow" id="formsubmit" />
+      </form>
+      <h2 wicket:id="currentWorkflowName">[currentWorkflowName]</h2>
+      <div wicket:id="treeTable" class="my-tree"></div>
+    </wicket:extend>
+  </body>
 </html>

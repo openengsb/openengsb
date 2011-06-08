@@ -47,7 +47,7 @@ import org.osgi.framework.BundleContext;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- *
+ * 
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -78,7 +78,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 
-        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
         backend.setPersistenceManager(new DummyPersistenceManager());
         backend.setBundleContext(bundleContext);
         backend.init();

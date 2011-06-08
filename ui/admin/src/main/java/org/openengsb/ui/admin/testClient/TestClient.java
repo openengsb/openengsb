@@ -551,6 +551,7 @@ public class TestClient extends BasePage {
 
     }
 
+    @SuppressWarnings("unchecked")
     private Object getServiceViaDomainEndpointFactory(ServiceId service) {
         String name = service.getDomainName();
         Class<? extends Domain> aClass;

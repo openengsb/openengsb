@@ -19,7 +19,7 @@ package org.openengsb.core.common.util;
 
 public class MergeException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7118778098810229881L;
 
     public MergeException() {
         super();

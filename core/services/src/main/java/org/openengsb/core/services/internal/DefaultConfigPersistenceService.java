@@ -18,9 +18,11 @@
 package org.openengsb.core.services.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -34,9 +36,9 @@ import org.openengsb.core.api.persistence.PersistenceException;
  */
 public class DefaultConfigPersistenceService implements ConfigPersistenceService {
 
-    private final ConfigPersistenceBackendService backendService;
+    private final ConfigPersistenceBackendService<?> backendService;
 
-    public DefaultConfigPersistenceService(ConfigPersistenceBackendService backendService) {
+    public DefaultConfigPersistenceService(ConfigPersistenceBackendService<?> backendService) {
         this.backendService = backendService;
     }
 
@@ -50,7 +52,8 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
     public <ConfigType extends ConfigItem<?>> List<ConfigType> load(Map<String, String> metadata)
         throws PersistenceException, InvalidConfigurationException {
         List<ConfigType> configItems = new ArrayList<ConfigType>();
-        List<ConfigItem<?>> result = backendService.load(metadata);
+        Collection<ConfigItem<?>> result =
+            CollectionUtils.typedCollection(backendService.load(metadata), ConfigItem.class);
         for (ConfigItem<?> configItem : result) {
             configItems.add((ConfigType) configItem);
         }
@@ -62,10 +65,11 @@ public class DefaultConfigPersistenceService implements ConfigPersistenceService
         backendService.remove(metadata);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public <ConfigType extends ConfigItem<?>> void persist(ConfigType configuration) throws PersistenceException,
         InvalidConfigurationException {
-        backendService.persist(configuration);
+        backendService.persist((ConfigItem) configuration);
     }
 
 }

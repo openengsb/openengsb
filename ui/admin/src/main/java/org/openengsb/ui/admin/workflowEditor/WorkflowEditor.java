@@ -38,13 +38,17 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowValidationResult;
+import org.openengsb.core.api.workflow.WorkflowValidator;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.api.workflow.model.EventRepresentation;
 import org.openengsb.core.api.workflow.model.NodeRepresentation;
@@ -55,11 +59,15 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class WorkflowEditor extends BasePage {
 
-    private final TreeTable table;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowEditor.class);
+
+    private TreeTable table;
 
     private String selected = "";
 
@@ -74,57 +82,70 @@ public class WorkflowEditor extends BasePage {
     @SpringBean
     WorkflowConverter workflowConverter;
 
+    @SpringBean
+    List<WorkflowValidator> validators;
+
     public WorkflowEditor() {
-        Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
-            @Override
-            protected void onSubmit() {
-                workflowEditorService.loadWorkflow(selected);
-                setResponsePage(WorkflowEditor.class);
-            }
-        };
-        selectForm.add(new DropDownChoice<String>("workflowSelect", new PropertyModel<String>(this, "selected"),
-            workflowEditorService.getWorkflowNames()));
-        add(selectForm);
-
-        Form<Object> createForm = new Form<Object>("workflowCreateForm") {
-            @Override
-            protected void onSubmit() {
-                if (name != "" && name != null) {
-                    workflowEditorService.createWorkflow(name);
-                    name = "";
-                    setResponsePage(new EditAction(null, workflowEditorService.getCurrentWorkflow().getRoot()));
-                }
-            }
-        };
-        createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
-        add(createForm);
-
-        Form<Object> exportForm = new Form<Object>("export") {
-            @Override
-            protected void onSubmit() {
-                try {
-                    String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
-                    System.out.println(convert);
-                    addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
-                    ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
-                        .getCurrentWorkflow().getName()),
-                        convert);
-                } catch (RuleBaseException e) {
-                    error(e.getMessage());
-                }
-            }
-        };
-        add(exportForm);
-
+        createFeedbackPanel();
+        try {
+            workflowEditorService.loadWorkflowsFromDatabase();
+        } catch (PersistenceException e1) {
+            error(e1.getMessage());
+        }
+        Form<Object> selectForm = createSelectWorkflowForm();
+        createCreateWorkflowForm();
+        Form<Object> exportForm = createExportForm();
+        Form<Object> saveForm = createSaveForm();
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         final Model<WorkflowRepresentation> currentworkflow =
             new Model<WorkflowRepresentation>(workflowEditorService.getCurrentWorkflow());
+        String label = "";
+        if (workflowEditorService.getWorkflowNames().size() == 0) {
+            selectForm.setVisible(false);
+        }
+        createTable(node, currentworkflow);
+        if (currentworkflow.getObject() == null) {
+            label = getString("workflow.create.first");
+            node.setUserObject(new ActionRepresentation());
+            setFormsInvisible(exportForm, saveForm);
+        } else {
+            label = currentworkflow.getObject().getName();
+            node.setUserObject(currentworkflow.getObject().getRoot());
+            ActionRepresentation root = currentworkflow.getObject().getRoot();
+            addActionsToNode(root.getActions(), node);
+            addEventsToNode(root.getEvents(), node);
+        }
+        add(new Label("currentWorkflowName", label));
+    }
+
+    public void createFeedbackPanel() {
+        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
+    }
+
+    private void createTable(DefaultMutableTreeNode node, final Model<WorkflowRepresentation> currentworkflow) {
         DefaultTreeModel model = new DefaultTreeModel(node);
+        IColumn[] columns = createTableColumns(currentworkflow);
+        table = new TreeTable("treeTable", model, columns);
+        table.getTreeState().expandAll();
+        add(table);
+    }
+
+    private void setFormsInvisible(Form<Object> exportForm, Form<Object> saveForm) {
+        table.setVisible(false);
+        exportForm.setVisible(false);
+        saveForm.setVisible(false);
+    }
+
+    private IColumn[] createTableColumns(final Model<WorkflowRepresentation> currentworkflow) {
         IColumn[] columns =
             new IColumn[]{
                 new PropertyTreeColumn(new ColumnLocation(Alignment.MIDDLE, 8, Unit.PROPORTIONAL), "Name",
                     "userObject.description"),
                 new AbstractColumn(new ColumnLocation(Alignment.MIDDLE, 4, Unit.PROPORTIONAL), "Add Action") {
+                    private static final long serialVersionUID = 742666782257868383L;
+
                     @Override
                     public Component newCell(MarkupContainer parent, String id, final TreeNode node, int level) {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
@@ -144,30 +165,96 @@ public class WorkflowEditor extends BasePage {
                         return null;
                     }
                 } };
+        return columns;
+    }
 
-        table = new TreeTable("treeTable", model, columns);
-        String label = "";
-        if (currentworkflow.getObject() == null) {
-            label = getString("workflow.create.first");
-            node.setUserObject(new ActionRepresentation());
-            table.setVisible(false);
-            selectForm.setVisible(false);
-            exportForm.setVisible(false);
-        } else {
-            label = currentworkflow.getObject().getName();
-            node.setUserObject(currentworkflow.getObject().getRoot());
-            ActionRepresentation root = currentworkflow.getObject().getRoot();
-            addActionsToNode(root.getActions(), node);
-            addEventsToNode(root.getEvents(), node);
-        }
-        add(new Label("currentWorkflowName", label));
-        table.getTreeState().expandAll();
-        add(table);
+    private Form<Object> createSelectWorkflowForm() {
+        Form<Object> selectForm = new Form<Object>("workflowSelectForm") {
+            private static final long serialVersionUID = 1030454289375165169L;
+
+            @Override
+            protected void onSubmit() {
+                workflowEditorService.loadWorkflow(selected);
+                setResponsePage(WorkflowEditor.class);
+            }
+        };
+        selectForm.add(new DropDownChoice<String>("workflowSelect", new PropertyModel<String>(this, "selected"),
+            workflowEditorService.getWorkflowNames()));
+        add(selectForm);
+        return selectForm;
+    }
+
+    private void createCreateWorkflowForm() {
+        Form<Object> createForm = new Form<Object>("workflowCreateForm") {
+            private static final long serialVersionUID = -1254767212676185569L;
+
+            @Override
+            protected void onSubmit() {
+                if (name != "" && name != null) {
+                    workflowEditorService.createWorkflow(name);
+                    name = "";
+                    setResponsePage(new EditAction(null, workflowEditorService.getCurrentWorkflow().getRoot()));
+                }
+            }
+        };
+        createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
+        add(createForm);
+    }
+
+    private Form<Object> createSaveForm() {
+        Form<Object> saveForm = new Form<Object>("saveForm") {
+            private static final long serialVersionUID = 2916102299731955162L;
+
+            @Override
+            protected void onSubmit() {
+                try {
+                    workflowEditorService.saveCurrentWorkflow();
+                } catch (PersistenceException e) {
+                    error(e.getMessage());
+                }
+            }
+        };
+        add(saveForm);
+        return saveForm;
+    }
+
+    private Form<Object> createExportForm() {
+        Form<Object> exportForm = new Form<Object>("export") {
+            private static final long serialVersionUID = -4832165565205293266L;
+
+            @Override
+            protected void onSubmit() {
+                try {
+                    boolean valid = true;
+                    LOGGER.info("Validation Workflow: " + workflowEditorService.getCurrentWorkflow().getName());
+                    for (WorkflowValidator validator : validators) {
+                        WorkflowValidationResult result =
+                            validator.validate(workflowEditorService.getCurrentWorkflow());
+                        valid = result.isValid() && valid;
+                        for (String error : result.getErrors()) {
+                            LOGGER.info("Workflow Validation Error: " + error);
+                            error(error);
+                        }
+                    }
+                    if (valid) {
+                        String convert = workflowConverter.convert(workflowEditorService.getCurrentWorkflow());
+                        addGlobal(workflowEditorService.getCurrentWorkflow().getRoot());
+                        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Process, workflowEditorService
+                            .getCurrentWorkflow().getName()),
+                            convert);
+                    }
+                } catch (RuleBaseException e) {
+                    error(e.getMessage());
+                }
+            }
+        };
+        add(exportForm);
+        return exportForm;
     }
 
     private void addGlobal(ActionRepresentation action) {
         ruleManager.addGlobal(action.getDomain().getName(), action.getLocation());
-        
+
         for (ActionRepresentation newAction : action.getActions()) {
             addGlobal(newAction);
         }

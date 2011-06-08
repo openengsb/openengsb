@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -39,6 +40,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowConverter;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
+import org.openengsb.core.api.workflow.WorkflowValidator;
 import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -71,6 +73,7 @@ public class EditActionTest extends AbstractUITest {
         registerService(provider, props, DomainProvider.class);
         context.putBean(mock(WorkflowConverter.class));
         context.putBean(mock(RuleManager.class));
+        context.putBean("validators", new ArrayList<WorkflowValidator>());
         tester.getApplication().addComponentInstantiationListener(
             new SpringComponentInjector(tester.getApplication(), context, true));
         tester.startPage(new EditAction(parent, action));

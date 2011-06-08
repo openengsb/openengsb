@@ -22,22 +22,22 @@ import org.openengsb.core.api.model.ConfigItem;
 /**
  * Internal wrapper around the {@link ConfigItem} to avoid inheritance and similar problems with neodatis.
  */
-public class InternalConfigurationItem {
+public class InternalConfigurationItem<E> {
 
-    private ConfigItem<?> configItem;
+    private ConfigItem<E> configItem;
 
     public InternalConfigurationItem() {
     }
 
-    public InternalConfigurationItem(ConfigItem<?> configItem) {
+    public InternalConfigurationItem(ConfigItem<E> configItem) {
         this.configItem = configItem;
     }
 
-    public ConfigItem<?> getConfigItem() {
+    public ConfigItem<E> getConfigItem() {
         return configItem;
     }
 
-    public void setConfigItem(ConfigItem<?> configItem) {
+    public void setConfigItem(ConfigItem<E> configItem) {
         this.configItem = configItem;
     }
 

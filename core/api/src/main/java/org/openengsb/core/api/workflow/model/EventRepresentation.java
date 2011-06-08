@@ -21,9 +21,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
+/**
+ * Represents an Event in the OpenEngSB Workflow model. It describes an Event that can take place during Runtime and
+ * which Actions to call or for which other Events to wait before doing any further steps. An EventRepresentation
+ * can contain ActionRepresentations as well as further EventRepresentations.
+ */
 @SuppressWarnings("serial")
 public class EventRepresentation implements NodeRepresentation, Serializable {
+    @XmlElementWrapper(name = "actions")
+    @XmlElement(name = "event")
     private final List<ActionRepresentation> actions = new ArrayList<ActionRepresentation>();
+    @XmlElementWrapper(name = "events")
+    @XmlElement(name = "event")
     private final List<EventRepresentation> events = new ArrayList<EventRepresentation>();
 
     private Class<? extends org.openengsb.core.api.Event> event;
