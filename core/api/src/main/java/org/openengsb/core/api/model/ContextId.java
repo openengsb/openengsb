@@ -108,7 +108,11 @@ public class ContextId {
         return true;
     }
 
-    public static Map<String, String> getContextWildCard() {
+    /***
+     * An empty map is treated as a wildcard for Context IDs in queries.
+     * This means that (where applicable), queries return all contexts in scope when provided with an empty map.  
+     */
+    public static Map<String, String> getContextIdWildCard() {
         return Collections.emptyMap();
     }
 
