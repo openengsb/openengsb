@@ -65,7 +65,7 @@ public class ContextId {
 
     @Override
     public String toString() {
-        return getId();
+        return "Context: " + getId();
     }
     
     @Override
