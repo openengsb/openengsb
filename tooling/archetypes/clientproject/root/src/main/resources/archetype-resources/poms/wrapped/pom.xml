@@ -52,7 +52,6 @@
             <_exportcontents>*</_exportcontents>
             <Export-Package>${bundle.namespace}.*;version="${wrapped.version}"</Export-Package>
             <Private-Package>!*</Private-Package>
-            <_include>-osgi.bnd</_include>
           </instructions>
         </configuration>
       </plugin>
