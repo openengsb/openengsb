@@ -23,8 +23,9 @@ import static junit.framework.Assert.assertSame;
 import java.lang.reflect.Method;
 
 import org.junit.Test;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 
-public class AbstractOpenEngSBInvocationHandlerTest {
+public class AbstractOpenEngSBInvocationHandlerTest extends AbstractOpenEngSBTest {
 
     @Test
     public void testUseDefaultConstructor_shouldForwardAllCalls() throws Throwable {

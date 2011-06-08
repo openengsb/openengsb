@@ -264,6 +264,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         service.createWorkflow("Workflow");
         tester.startPage(WorkflowEditor.class);
         tester.assertVisible("saveForm");
+        @SuppressWarnings("rawtypes")
         ArgumentCaptor<ConfigItem> captor = ArgumentCaptor.forClass(ConfigItem.class);
 
         FormTester saveFormTester = tester.newFormTester("saveForm");
@@ -273,6 +274,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         assertThat((WorkflowRepresentation) captor.getValue().getContent(), sameInstance(service.getCurrentWorkflow()));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testLoad_shouldHaveLoadedWorkflows() throws InvalidConfigurationException, PersistenceException {
         List<ConfigItem<?>> items = new ArrayList<ConfigItem<?>>();

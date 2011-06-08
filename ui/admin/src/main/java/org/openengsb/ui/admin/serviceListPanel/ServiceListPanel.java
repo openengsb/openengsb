@@ -31,7 +31,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.osgi.framework.ServiceReference;
@@ -55,9 +54,6 @@ public class ServiceListPanel extends Panel {
             return getInstanceId().compareTo(o.getInstanceId());
         }
     }
-
-    @SpringBean
-    private ConnectorManager serviceManager;
 
     @SpringBean
     private OsgiUtilsService serviceUtils;

@@ -30,11 +30,14 @@ import org.openengsb.ui.admin.workflowEditor.end.SetEnd;
 import org.openengsb.ui.admin.workflowEditor.event.EditEvent;
 
 public class ActionLinks extends Panel {
+    private static final long serialVersionUID = -126359261924290715L;
 
     public ActionLinks(String id, final ActionRepresentation action, final DefaultMutableTreeNode treeNode,
              final Model<WorkflowRepresentation> workflow) {
         super(id);
         add(new Link<DefaultMutableTreeNode>("create-action") {
+            private static final long serialVersionUID = -6648019848863123255L;
+
             @Override
             public void onClick() {
                 ActionRepresentation action2 = new ActionRepresentation();
@@ -43,6 +46,8 @@ public class ActionLinks extends Panel {
             }
         });
         add(new Link<DefaultMutableTreeNode>("create-event") {
+            private static final long serialVersionUID = 5145766462451841332L;
+
             @Override
             public void onClick() {
                 EventRepresentation event = new EventRepresentation();
@@ -50,6 +55,8 @@ public class ActionLinks extends Panel {
             }
         });
         Link<DefaultMutableTreeNode> remove = new Link<DefaultMutableTreeNode>("remove") {
+            private static final long serialVersionUID = 6219724794357053341L;
+
             @Override
             public void onClick() {
                 DefaultMutableTreeNode parent = (DefaultMutableTreeNode) treeNode.getParent();
@@ -64,6 +71,8 @@ public class ActionLinks extends Panel {
             }
         };
         add(new Link<DefaultMutableTreeNode>("set-end") {
+            private static final long serialVersionUID = -4353846781597001437L;
+
             @Override
             public void onClick() {
                 Object userObject = treeNode.getUserObject();

@@ -25,15 +25,16 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openengsb.core.common.remote.FilterChain;
-import org.openengsb.core.security.BundleAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JMSIncomingPort {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JMSIncomingPort.class);
 
     private static final String RECEIVE = "receive";
 
@@ -45,44 +46,44 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
-    private AuthenticationManager authenticationManager;
-
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
             public void onMessage(Message message) {
+                LOGGER.trace("JMS-message recieved. Checking if the type is supported");
                 if (message instanceof TextMessage) {
+                    LOGGER.trace("parsing as TextMessage");
                     TextMessage textMessage = (TextMessage) message;
+                    String textContent;
                     try {
-                        ensureAuthentication();
-                        String text = textMessage.getText();
-                        HashMap<String, Object> metadata = new HashMap<String, Object>();
-                        String result = (String) filterChain.filter(text, metadata);
-                        String callId = (String) metadata.get("callId");
-                        if (metadata.containsKey("answer")) {
-                            new JmsTemplate(connectionFactory).convertAndSend(callId, result);
-                        }
+                        textContent = textMessage.getText();
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
+                    }
+                    HashMap<String, Object> metadata = new HashMap<String, Object>();
+                    String result;
+                    try {
+                        LOGGER.debug("starting filterchain for incoming message");
+                        result = (String) filterChain.filter(textContent, metadata);
+                    } catch (Exception e) {
+                        LOGGER.error("an error occured when processing the filterchain", e);
+                        String callId = (String) metadata.get("callId");
+                        if (callId != null) {
+                            LOGGER.info("callId could be extracted. Sending Exception-response to remote caller ({})",
+                                callId);
+                            new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
+                        }
+                        return;
+                    }
+                    String callId = (String) metadata.get("callId");
+                    LOGGER.debug("filterchain processed OK, sending result to answer-queue ({})", callId);
+                    if (metadata.containsKey("answer")) {
+                        new JmsTemplate(connectionFactory).convertAndSend(callId, result);
                     }
                 }
             }
         });
         simpleMessageListenerContainer.start();
-    }
-
-    /**
-     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be removed
-     * as it grants universal access.
-     */
-    protected void ensureAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return;
-        }
-        BundleAuthenticationToken token = new BundleAuthenticationToken("openengsb-ports-jms", "");
-        authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
@@ -111,7 +112,4 @@ public class JMSIncomingPort {
         this.filterChain = filterChain;
     }
 
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
 }

@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class WorkflowRepresentation implements Serializable {
+    private static final long serialVersionUID = -6870242194273870758L;
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();

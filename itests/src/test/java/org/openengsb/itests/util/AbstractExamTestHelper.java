@@ -30,14 +30,17 @@ import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.workingDirectory
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
+import java.util.Properties;
 
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.karaf.testing.AbstractIntegrationTest;
 import org.apache.karaf.testing.Helper;
 import org.apache.log4j.LogManager;
@@ -60,13 +63,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
-    private static final String LOG_LEVEL = System.getenv("OPENENGSB_LOGLEVEL") != null ?
-            System.getenv("OPENENGSB_LOGLEVEL") : "WARN";
-    /**
-     * enable this for debugging the integration-tests. Each test will suspend until a debugger is attached. Look for
-     * "Listening for transport dt_socket at address: <DEBUG_PORT>"
+    /*
+     * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources and use
+     * properties to configure them like this: ------------------------------------------ debug=true loglevel=INFO
+     * ------------------------------------------
      */
-    private static final boolean DEBUG = "1".equals(System.getenv("OPENENGSB_DEBUG"));
+
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
 
@@ -105,7 +107,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("persistenceService", "CONNECTOR");
 
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
-        authenticateAsAdmin();
     }
 
     public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
@@ -223,13 +224,29 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     @Configuration
     public static Option[] configuration() throws Exception {
         Option[] baseOptions = Helper.getDefaultOptions();
-        if (DEBUG) {
+        /*
+         * do not change the values for loglevel or debug here, but refer the comment at the top of the class for
+         * further instructions
+         */
+        String loglevel = "WARN";
+        boolean debug = false;
+        InputStream paxLocalStream = ClassLoader.getSystemResourceAsStream("itests.local.properties");
+        if (paxLocalStream != null) {
+            Properties properties = new Properties();
+            properties.load(paxLocalStream);
+            loglevel = (String) ObjectUtils.defaultIfNull(properties.getProperty("loglevel"), loglevel);
+            debug = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
+        }
+
+        if (debug) {
             baseOptions = combine(baseOptions, Helper.activateDebugging(Integer.toString(DEBUG_PORT)));
         }
+        String targetpath = new File("target").getAbsolutePath();
+        FileUtils.deleteDirectory(new File(targetpath, "karaf.data"));
         return combine(
             baseOptions,
             Helper.loadKarafStandardFeatures("config", "management"),
-            Helper.setLogLevel(LOG_LEVEL),
+            Helper.setLogLevel(loglevel),
             mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
@@ -243,7 +260,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
+            vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
+            vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
+            vmOption("-Dkaraf.base=" + targetpath + "/karaf.base"),
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }
+
 }

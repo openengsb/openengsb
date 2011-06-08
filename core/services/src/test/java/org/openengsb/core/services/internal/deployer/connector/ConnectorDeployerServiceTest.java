@@ -128,7 +128,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private void setupPersistence() {
         DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
-        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
         backend.setBundleContext(bundleContext);
         backend.setPersistenceManager(dummyPersistenceManager);
         backend.init();
