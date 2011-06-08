@@ -57,6 +57,7 @@
 
   <modules>
     <module>jms</module>
+    <module>jpa</module>
   </modules>
 
 </project>

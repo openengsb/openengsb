@@ -120,14 +120,12 @@
     <commons.lang.version>2.6</commons.lang.version>
     <commons.compress.version>1.1</commons.compress.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
-    <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <commons.discovery.version>0.2</commons.discovery.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.vfs.version>20050307052300</commons.vfs.version>
     <commons.codec.version>1.4</commons.codec.version>
-    <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <cglib.version>2.1_3_6</cglib.version>
     <asm.version>3.3_1</asm.version>
@@ -185,6 +183,7 @@
     <servicemix.version>3.3.1</servicemix.version>
     <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
     <servicemix-specs-version>1.3.0</servicemix-specs-version>
+    <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
     <slf4j.version>1.6.1</slf4j.version>
     <smack.version>3.1.0</smack.version>
     <spring.activemq.version>2.1</spring.activemq.version>
@@ -207,7 +206,11 @@
     <geronimo.servlet.version>1.1.2</geronimo.servlet.version>
     <geronimo.annotation.version>1.1.1</geronimo.annotation.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+    <geronimo-spec-j2ee.1-5.version>2.0.0</geronimo-spec-j2ee.1-5.version>
     <geronimo.ws.metadata.version>1.1.3</geronimo.ws.metadata.version>
+    <geronimo.jpa2.version>1.1</geronimo.jpa2.version>
+    <geronimo.jta.version>1.1.1</geronimo.jta.version>
+    <geronimo.transaction.version>2.1.3</geronimo.transaction.version>
     <stax.api.version>1.7.0</stax.api.version>
     <stax2.api.version>3.1.1</stax2.api.version>
     <staxex.version>1.0.0</staxex.version>
@@ -221,7 +224,6 @@
     <rome.version>0.5</rome.version>
     <woden.version>1.0.0M6</woden.version>
     <xml.apis.version>1.3.04</xml.apis.version>
-    <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
     <drools.version>5.1.1</drools.version>
     <fastinfoset.version>1.2.7_3</fastinfoset.version>
     <activation.api.version>1.7.0</activation.api.version>
@@ -237,6 +239,13 @@
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <jira.wrapped.version>4.0.0.w1</jira.wrapped.version>
     <junit.version>4.8.2</junit.version>
+    <commons.pool.version>1.5.5</commons.pool.version>
+    <commons.dbcp.version>1.4</commons.dbcp.version>
+    <openjpa.version>2.1.0</openjpa.version>
+    <h2.version>1.3.154</h2.version>
+    <aries.jpa.version>0.3</aries.jpa.version>
+    <aries.jndi.version>0.3</aries.jndi.version>
+    <aries.transaction.version>0.3</aries.transaction.version>
   </properties>
 
   <modules>
@@ -253,6 +262,11 @@
         <version>${guava.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${h2.version}</version>
+      </dependency>
+      <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons.collections.version}</version>
@@ -266,6 +280,16 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons.lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>${commons.pool.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+        <version>${commons.dbcp.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -293,6 +317,46 @@
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>org.apache.aries.blueprint</artifactId>
         <version>${aries.blueprint.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.blueprint</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.manager</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.wrappers</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jndi</groupId>
+        <artifactId>org.apache.aries.jndi</artifactId>
+        <version>${aries.jndi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.api</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.container</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.container.context</artifactId>
+        <version>${aries.jpa.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.aries.proxy</groupId>
@@ -335,6 +399,31 @@
         <version>${geronimo.servlet.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jpa_2.0_spec</artifactId>
+        <version>${geronimo.jpa2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.1_spec</artifactId>
+        <version>${geronimo.jta.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        <version>${geronimo-spec-j2ee.1-5.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.components</groupId>
+        <artifactId>geronimo-transaction</artifactId>
+        <version>${geronimo.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>${openjpa.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.karaf.assemblies.features</groupId>
         <artifactId>standard</artifactId>
         <type>xml</type>
@@ -370,6 +459,11 @@
         <groupId>org.apache.servicemix.bundles</groupId>
         <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
         <version>${javax.mail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+        <version>${servicemix.serp.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.wicket</groupId>
