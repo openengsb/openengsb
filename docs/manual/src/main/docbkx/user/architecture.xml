@@ -149,17 +149,20 @@
     <para>You have also the possibility to replace the database backend used for the EDB. A reason for 
     this could be that your company wants a more performant database because the sets of tooldata are
     so big that the standard database isn't fast enough. For exchanging the database backend there are two 
-    cases: You want to replace the database with another database which support JPA or you take another
-    database which doesn't support JPA.</para>
+    cases: You want to replace the database with another database which is supported by openjpa or you take 
+    another database which isn't supported by openjpa. (List of supported databases can be checked here:
+    http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html)
+    </para>
 
-    <para>If you want to replace the standard database with another JPA supporting database, the procedure
-    of changing is rather simple. You have to change the infrastructure/jpa bundle for the new database
-    and make sure that the drivers are loaded by the openengsb (dependencies, features,...) and that is it.</para>
+    <para>If you want to replace the standard database with another openjpa supported database, the procedure
+    of changing is rather simple. You have to change the properties for the database connection of the infrastructure/jpa 
+    bundle. This could be for example done by changing the values in the features.xml in the assembly folder. After that
+    you have to make sure that the drivers are loaded by the openengsb (dependencies, features,...) and that is it.</para>
 
-    <para>If you want to replace the standard database with another non JPA supporting database you will have
+    <para>If you want to replace the standard database with another non openjpa supported database you will have
     to change first the datasource like descriped in the last paragraph. After that you have to write another
     bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
-    commands and port it for the new database and replace the standart EngineeringDatabaseService.</para>
+    commands and port it for the new database and replace the standard EngineeringDatabaseService.</para>
   </section>
 
 </chapter>
