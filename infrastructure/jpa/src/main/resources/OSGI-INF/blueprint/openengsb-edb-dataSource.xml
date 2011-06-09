@@ -18,15 +18,27 @@
 
 -->
 
+
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
             default-activation="lazy">
 
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.infrastructure.jpa">
+    <cm:default-properties>
+      <cm:property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
+      <cm:property name="url" value="jdbc:h2:EDB" />
+      <cm:property name="username" value="" />
+      <cm:property name="password" value="" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
-    <property name="url" value="jdbc:h2:EDB" />
-    <property name="username" value="" />
-    <property name="password" value="" />
+    <property name="driverClassName" value= "${driverClassName}" />
+    <property name="url" value="${url}" />
+    <property name="username" value="${username}" />
+    <property name="password" value="${password}" />
   </bean>
 
   <service id="xaDataSource" ref="dataSource" interface="javax.sql.DataSource">
