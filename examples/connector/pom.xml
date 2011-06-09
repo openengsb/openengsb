@@ -91,7 +91,7 @@
               org.springframework.aop,
               org.springframework.aop.framework,
               *
-            </Import-Package>                   git
+            </Import-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
