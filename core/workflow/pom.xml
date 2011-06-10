@@ -72,6 +72,27 @@
         </includes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
+              org.drools.event; bundle-symbolic-name="org.drools.core",
+              org.drools.rule, org.drools.compiler,
+              org.springframework.osgi.service.importer,
+              org.aopalliance.aop,
+              org.aopalliance.intercept,
+              org.springframework.aop,
+              org.springframework.aop.framework, *
+            </Import-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
