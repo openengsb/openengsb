@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ContextConfiguration;
+import org.openengsb.core.api.model.ContextId;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 
@@ -67,13 +68,13 @@ public class ContextFilePersistenceServiceTest {
     public void filteredLoad_shouldReturnConfigurationWithCorrespindingMetaData() throws InvalidConfigurationException,
         PersistenceException {
         Map<String, String> metaData = new HashMap<String, String>();
-        metaData.put(ContextFilePersistenceService.META_KEY_ID, "context2");
+        metaData.put(ContextId.META_KEY_ID, "context2");
 
         List<ConfigItem<Map<String, String>>> items = persistenceService.load(metaData);
 
         assertThat(items.size(), is(1));
         ConfigItem<?> loadedConfiguration = items.get(0);
-        assertThat(loadedConfiguration.getMetaData().get(ContextFilePersistenceService.META_KEY_ID), is("context2"));
+        assertThat(loadedConfiguration.getMetaData().get(ContextId.META_KEY_ID), is("context2"));
     }
 
     @Test
@@ -127,7 +128,7 @@ public class ContextFilePersistenceServiceTest {
 
     private Map<String, String> getMetaDataWithContextId(String contextId) {
         Map<String, String> metaData = new HashMap<String, String>();
-        metaData.put(ContextFilePersistenceService.META_KEY_ID, contextId);
+        metaData.put(ContextId.META_KEY_ID, contextId);
         return metaData;
     }
 
