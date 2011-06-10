@@ -115,12 +115,6 @@
   </feature>
 
   <feature name="openengsb-infrastructure-jpa" version="${project.version}">
-    <config name="org.openengsb.infrastructure.jpa">
-       driverClassName=org.h2.jdbcx.JdbcDataSource
-       url=jdbc:h2:EDB
-       username=""
-       password=""
-    </config>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
     <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>

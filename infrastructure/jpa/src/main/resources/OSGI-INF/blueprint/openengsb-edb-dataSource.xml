@@ -28,7 +28,7 @@
   <cm:property-placeholder persistent-id="org.openengsb.infrastructure.jpa">
     <cm:default-properties>
       <cm:property name="driverClassName" value="org.h2.jdbcx.JdbcDataSource" />
-      <cm:property name="url" value="jdbc:h2:EDB" />
+      <cm:property name="url" value="jdbc:h2:openengsb" />
       <cm:property name="username" value="" />
       <cm:property name="password" value="" />
     </cm:default-properties>
