@@ -28,7 +28,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.api.workflow.TaskboxService;
@@ -46,7 +46,6 @@ public class TaskPanel extends Panel {
     @SpringBean(name = "taskboxService")
     private TaskboxService service;
 
-    @SuppressWarnings("unchecked")
     public TaskPanel(String id, Task t) {
         super(id);
         task = t;
@@ -57,18 +56,18 @@ public class TaskPanel extends Panel {
 
         add(new Label("taskdescription", task.getDescription() != null ? task.getDescription() : "N/A"));
 
-        CompoundPropertyModel<Task> taskModel = new CompoundPropertyModel<Task>(task);
-        Form<Task> form = new Form<Task>("inputForm", taskModel);
+        Form<Task> form = new Form<Task>("inputForm");
         form.setOutputMarkupId(true);
 
-        form.add(new Label("taskid", taskModel.bind("taskId")));
-        form.add(new TextField("taskname", taskModel.bind("name")).setRequired(true).add(
+        form.add(new Label("taskid", new PropertyModel<String>(task, "taskId")));
+        form.add(new TextField<String>("taskname", new PropertyModel<String>(task, "name")).setRequired(true).add(
                 StringValidator.minimumLength(2)));
-        form.add(new TextField("tasktype", taskModel.bind("taskType")).setRequired(true).add(
+        form.add(new TextField<String>("tasktype", new PropertyModel<String>(task, "taskType")).setRequired(true).add(
             StringValidator.minimumLength(2)));
         form.add(new Label("taskcreationTimestamp",
                 task.getTaskCreationTimestamp() != null ? task.getTaskCreationTimestamp().toString() : "N/A"));
-        form.add(new TextArea("taskdescription", taskModel.bind("description")).setRequired(true));
+        form.add(new TextArea<String>("taskdescription", new PropertyModel<String>(task, "description"))
+            .setRequired(true));
 
         form.add(new AjaxButton("submitButton", form) {
             @Override
@@ -86,9 +85,9 @@ public class TaskPanel extends Panel {
             }
         });
         add(form);
-        add(new ListView("propertiesList", new ArrayList<String>(task.propertyKeySet())) {
+        add(new ListView<String>("propertiesList", new ArrayList<String>(task.propertyKeySet())) {
             @Override
-            protected void populateItem(ListItem item) {
+            protected void populateItem(ListItem<String> item) {
                 item.add(new Label("propertiesLabel", item.getModel()));
             }
         });

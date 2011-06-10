@@ -56,12 +56,12 @@ public class ActionNode {
 
     public static final class Action {
         @XmlAttribute
-        private String type = "expression";
+        public String type = "expression";
         @XmlAttribute
-        private String dialect = "java";
+        public String dialect = "java";
 
         @XmlValue
-        private String value;
+        public String value;
 
         public void setValue(String value) {
             this.value = value;

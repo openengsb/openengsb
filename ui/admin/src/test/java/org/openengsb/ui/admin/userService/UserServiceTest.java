@@ -54,7 +54,6 @@ public class UserServiceTest extends LocalisedTest {
     private WicketTester tester;
 
     private ApplicationContextMock context;
-    private FormTester formTester;
     private BundleContext bundleContext;
     private UserManager userManager;
 
@@ -121,7 +120,7 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{localization("userExistError")});
+        tester.assertErrorMessages(new String[]{ localization("userExistError") });
         verify(userManager, times(1)).createUser(new User("user1", "password"));
 
     }
@@ -151,7 +150,7 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{localization("passwordError")});
+        tester.assertErrorMessages(new String[]{ localization("passwordError") });
         verify(userManager, times(0)).createUser(new User("user1", "password"));
     }
 
@@ -166,7 +165,7 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{localization("userManagementExceptionError")});
+        tester.assertErrorMessages(new String[]{ localization("userManagementExceptionError") });
     }
 
     @Test

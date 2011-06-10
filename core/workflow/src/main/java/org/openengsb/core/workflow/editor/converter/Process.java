@@ -118,9 +118,9 @@ public class Process {
         }
 
         @XmlAttribute
-        private int id = 1;
+        public int id = 1;
         @XmlAttribute
-        private String name = "Start";
+        public String name = "Start";
     }
 
     public static final class EndNode {
@@ -129,9 +129,9 @@ public class Process {
         }
 
         @XmlAttribute
-        private int id;
+        public int id;
         @XmlAttribute
-        private String name = "End";
+        public String name = "End";
     }
 
     public static final class Split {
@@ -142,9 +142,9 @@ public class Process {
         @XmlAttribute
         private int id;
         @XmlAttribute
-        private String name;
+        public String name;
         @XmlAttribute
-        private int type = 1;
+        public int type = 1;
     }
 
     public static final class Join {
@@ -155,17 +155,17 @@ public class Process {
         @XmlAttribute
         private int id;
         @XmlAttribute
-        private String name;
+        public String name;
         @XmlAttribute
-        private int type = 1;
+        public int type = 1;
     }
 
     public static final class Connection {
 
         @XmlAttribute
-        private int to;
+        public int to;
         @XmlAttribute
-        private int from;
+        public int from;
 
         private Connection() {
         }

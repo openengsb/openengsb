@@ -78,6 +78,8 @@ public class UserService extends BasePage {
         usermanagementContainer.setOutputMarkupId(true);
 
         final Form<UserInput> userForm = new Form<UserInput>("form") {
+            private static final long serialVersionUID = 6420993810725159979L;
+
             @Override
             protected void onSubmit() {
                 createUser();
@@ -107,6 +109,8 @@ public class UserService extends BasePage {
         userForm.add(feedbackPanel);
 
         AjaxButton resetButton = new AjaxButton("resetbutton") {
+            private static final long serialVersionUID = 7997862317008905740L;
+
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 input.setPassword("");
@@ -124,6 +128,8 @@ public class UserService extends BasePage {
         userForm.add(resetButton);
 
         IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
+            private static final long serialVersionUID = 2579825372351310299L;
+
             @Override
             protected List<User> load() {
                 try {
@@ -135,10 +141,14 @@ public class UserService extends BasePage {
             }
         };
         ListView<User> users = new ListView<User>("users", userList) {
+            private static final long serialVersionUID = 7628860457238288128L;
+
             @Override
             protected void populateItem(final ListItem<User> userListItem) {
                 userListItem.add(new Label("user.name", userListItem.getModelObject().getUsername()));
                 userListItem.add(new AjaxLink<User>("user.delete") {
+                    private static final long serialVersionUID = 2004369349622394213L;
+
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         try {
@@ -151,6 +161,8 @@ public class UserService extends BasePage {
                     }
                 });
                 userListItem.add(new AjaxLink<User>("user.update") {
+                    private static final long serialVersionUID = -2327085637957255085L;
+
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         input.setUsername(userListItem.getModelObject().getUsername());
@@ -202,6 +214,7 @@ public class UserService extends BasePage {
     }
 
     private class UserInput implements Serializable {
+        private static final long serialVersionUID = 8089287572532176946L;
 
         private String passwordVerification;
         private String password;

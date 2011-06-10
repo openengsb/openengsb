@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkflowRepresentation implements Serializable {
+    private static final long serialVersionUID = -6870242194273870758L;
 
     private String name;
     private ActionRepresentation root = new ActionRepresentation();
-    
+
     private List<EndRepresentation> endNodes = new ArrayList<EndRepresentation>();
 
     public final String getName() {
@@ -43,7 +44,7 @@ public class WorkflowRepresentation implements Serializable {
     public final void setRoot(ActionRepresentation root) {
         this.root = root;
     }
-    
+
     public void addEndNode(EndRepresentation end) {
         this.endNodes.add(end);
     }

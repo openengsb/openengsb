@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Licensed to the Austrian Association for Software Tool Integration (AASTI)
 # under one or more contributor license agreements. See the NOTICE file
@@ -15,9 +16,24 @@
 # limitations under the License.
 #
 
-Import-Package: org.springframework.osgi.service.importer,\
-org.aopalliance.aop,\
-org.aopalliance.intercept,\
-org.springframework.aop,\
-org.springframework.aop.framework,\
-*
+# Script used to build the entire servicebus and run it. As opposed to
+# run.sh this script does not use the maven-goal openengsb:provision to launch
+# the openengsb, but rather extracts the release-zip. This way it behaves very
+# much like an actual release.
+
+echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
+
+cd $(dirname $0)/../..
+ZIPFILE=`ls assembly/target/openengsb-*.zip 2> /dev/null`
+if [ ! -e "$ZIPFILE" ]; then
+	mvn install -Dmaven.test.skip
+	ZIPFILE=`ls assembly/target/openengsb-*.zip 2> /dev/null`
+fi
+DIRNAME=`echo $ZIPFILE | sed -r s/".zip$"//`
+if [ ! -e $DIRNAME ]; then
+	unzip $ZIPFILE -d assembly/target
+fi
+
+KARAF_DEBUG=true \
+KARAF_OPTS="-Dwicket.configuration=development" \
+$DIRNAME/bin/openengsb
