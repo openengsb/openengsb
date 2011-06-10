@@ -55,6 +55,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         super.beforeClass();
+        // FIXME OPENENGSB-1680
         // The setup method of the superclass should be called but isn't (most likely a pax exam bug),
         // so let's call it manually
         super.before();
