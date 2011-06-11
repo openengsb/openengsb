@@ -69,13 +69,12 @@
     </plugins>
   </build>
 
-
   <dependencies>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
       <scope>provided</scope>
-    </dependency>
+	</dependency>
     <dependency>
       <groupId>org.apache.aries.transaction</groupId>
       <artifactId>org.apache.aries.transaction.blueprint</artifactId>

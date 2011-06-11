@@ -149,17 +149,46 @@
     <para>You have also the possibility to replace the database backend used for the EDB. A reason for 
     this could be that your company wants a more performant database because the sets of tooldata are
     so big that the standard database isn't fast enough. For exchanging the database backend there are two 
-    cases: You want to replace the database with another database which support JPA or you take another
-    database which doesn't support JPA.</para>
+    cases: You want to replace the database with another database which is supported by openjpa or you take 
+    another database which isn't supported by openjpa. (List of supported databases can be checked 
+    <link xlink:href="http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html">here</link>)
+    </para>
 
-    <para>If you want to replace the standard database with another JPA supporting database, the procedure
-    of changing is rather simple. You have to change the infrastructure/jpa bundle for the new database
-    and make sure that the drivers are loaded by the openengsb (dependencies, features,...) and that is it.</para>
+    <para>If you want to replace the standard database with another openjpa supported database, the procedure
+    of changing is rather simple. You have to change the properties for the database connection of the infrastructure/jpa 
+    bundle. This is done by changing the config file "org.openengsb.infrastructure.jpa.cfg". This file is in the 
+    "assembly/src/main/filtered-resources/etc" folder. This file has following entries:
+    <programlisting>
+    driverClassName=[here shall be the name of your driver class name, 
+                     example: org.h2.jdbcx.JdbcDataSource]
+    url=[here shall be the url to the used database file, example: jdbc:h2:openengsb]
+    username=[here shall be the username for authentication at the database]
+    password=[here shall be the password for authentication at the database]
+    </programlisting>
+    After changing of this file, you have to assure that the driver which shall be used by the datasource is loaded
+    at runtime. For that you have to load the database driver before the connection to the database is established.
+    Your database bundle dependency should be added to the poms/pom.xml file. A dependency entry for the h2 database looks
+    like this (the h2.version is defined as property in the same file. Info: had to alter the brackets so that they can be shown here. 
+    Also there should be a dollar sign before the {h2.version} part):
+    <programlisting>
+     [dependency]
+       [groupId]com.h2database[/groupId]
+       [artifactId]h2[/artifactId]
+       [version]{h2.version}[/version]
+     [/dependency]
+    </programlisting>
+   If you made sure the dependency is entered, you have to make sure the database is loaded before the database connection
+   is established. For that just replace following code line in the file "assembly/src/main/filtered-resources/features.xml"
+   with the new database driver bundle (as you can see you only have to copy and paste the values of the dependency):
+   <programlisting>
+     [bundle]mvn:com.h2database/h2/{h2.version}[/bundle]
+   </programlisting>
+   And thats all you have to do.</para>
 
-    <para>If you want to replace the standard database with another non JPA supporting database you will have
+    <para>If you want to replace the standard database with another non openjpa supported database you will have
     to change first the datasource like descriped in the last paragraph. After that you have to write another
     bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
-    commands and port it for the new database and replace the standart EngineeringDatabaseService.</para>
+    commands and port it for the new database and replace the standard EngineeringDatabaseService.</para>
   </section>
 
 </chapter>
