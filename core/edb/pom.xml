@@ -140,6 +140,12 @@
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- needed for testing -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
 
