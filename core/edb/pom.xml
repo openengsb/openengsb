@@ -92,11 +92,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-jpa_2.0_spec</artifactId>
       <scope>provided</scope>
@@ -143,6 +138,12 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- needed for testing -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

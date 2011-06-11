@@ -115,7 +115,7 @@
   </feature>
 
   <feature name="openengsb-infrastructure-jpa" version="${project.version}">
-    <bundle>mvn:commons-dbcp/commons-dbcp/${commons.dbcp.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
     <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>

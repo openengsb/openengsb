@@ -119,7 +119,6 @@
     <commons.io.version>2.0.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commons.compress.version>1.1</commons.compress.version>
-    <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <commons.discovery.version>0.2</commons.discovery.version>
@@ -154,7 +153,6 @@
     <jsch.wrapped.version>${jsch.version}.w1</jsch.wrapped.version>
     <jzlib.version>1.0.7</jzlib.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
-    <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
     <activemq.version>5.5.0</activemq.version>
     <dom4j.version>1.6.1</dom4j.version>
@@ -164,7 +162,6 @@
     <hamcrest.version>1.1</hamcrest.version>
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
-    <h2.version>1.1.116</h2.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jgit.version>0.10.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
@@ -184,6 +181,7 @@
     <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
     <servicemix-specs-version>1.3.0</servicemix-specs-version>
     <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
+    <servicemix.dbcp.version>1.4_1</servicemix.dbcp.version>
     <slf4j.version>1.6.1</slf4j.version>
     <smack.version>3.1.0</smack.version>
     <spring.activemq.version>2.1</spring.activemq.version>
@@ -285,11 +283,6 @@
         <groupId>commons-pool</groupId>
         <artifactId>commons-pool</artifactId>
         <version>${commons.pool.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-dbcp</groupId>
-        <artifactId>commons-dbcp</artifactId>
-        <version>${commons.dbcp.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -465,6 +458,11 @@
         <artifactId>org.apache.servicemix.bundles.serp</artifactId>
         <version>${servicemix.serp.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+        <version>${servicemix.dbcp.version}</version>
+	  </dependency>
       <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
