@@ -34,8 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.UUID;
 import java.util.Properties;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -103,6 +103,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         }
 
         registerConfigPersistence("persistenceService", "CONNECTOR");
+        registerConfigPersistence("persistenceService", "CONTEXT");
 
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
         authenticateAsAdmin();
