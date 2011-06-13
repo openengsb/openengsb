@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -54,12 +53,11 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     public void setup() {
         registerConfigPersistence();
         ContextServiceImpl cs = new ContextServiceImpl();
-        cs.setBundleContext(mock(BundleContext.class));
         this.cs = cs;
     }
 
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend persistenceBackend = new CorePersistenceServiceBackend();
+        final CorePersistenceServiceBackend<?> persistenceBackend = new CorePersistenceServiceBackend<Object>();
         DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
         persistenceBackend.setPersistenceManager(persistenceManager);
         persistenceBackend.setBundleContext(bundleContext);

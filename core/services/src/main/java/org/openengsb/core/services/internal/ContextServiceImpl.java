@@ -32,7 +32,6 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +40,6 @@ import com.google.common.base.Preconditions;
 public class ContextServiceImpl implements ContextCurrentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextServiceImpl.class);
-
-    private BundleContext bundleContext;
 
     @Override
     public Context getContext(String path) {
@@ -126,13 +123,9 @@ public class ContextServiceImpl implements ContextCurrentService {
         return c;
     }
 
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
     private List<ContextConfiguration> getContextConfigurationsOrEmptyOnError(Map<String, String> metaData) {
         try {
-            ConfigPersistenceService persistence = this.getConfigPersistenceService();
+            ConfigPersistenceService persistence = getConfigPersistenceService();
             return persistence.load(metaData);
         } catch (Exception e) {
             LOGGER.error("Error loading context configuration from configuration persistence", e);
