@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -47,11 +47,12 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
-import org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory;
+import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;

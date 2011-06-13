@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.commons.io.FileUtils;
+import org.openengsb.core.api.security.PrivateKeySource;
+import org.openengsb.core.api.security.PublicKeySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

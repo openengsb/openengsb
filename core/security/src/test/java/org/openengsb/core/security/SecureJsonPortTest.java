@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +29,9 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller;
-import org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter;
-import org.openengsb.core.common.security.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
+import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
+import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.security.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 
 public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
 

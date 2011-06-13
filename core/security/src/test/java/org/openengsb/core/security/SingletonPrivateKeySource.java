@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.security;
 
 import java.security.PrivateKey;
+
+import org.openengsb.core.api.security.PrivateKeySource;
 
 public class SingletonPrivateKeySource implements PrivateKeySource {
 

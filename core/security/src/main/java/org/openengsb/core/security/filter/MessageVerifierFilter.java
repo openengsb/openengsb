@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security.filter;
+package org.openengsb.core.security.filter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;

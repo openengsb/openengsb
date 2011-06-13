@@ -64,22 +64,22 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.security.filter.EncryptedJsonMessageMarshaller</value>
-        <bean class="org.openengsb.core.common.security.filter.MessageCryptoFilterFactory">
+        <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
           <property name="privateKeySource">
-            <bean class="org.openengsb.core.common.security.FileKeySource" init-method="init">
+            <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
               <property name="algorithm" value="RSA" />
             </bean>
           </property>
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
-        <value>org.openengsb.core.common.security.filter.JsonSecureRequestMarshallerFilter</value>
+        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
       </list>
     </property>
   </bean>
 
-  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.common.security.filter.DefaultSecureMethodCallFilterFactory">
+  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
     <property name="authenticationManager" ref="authenticationManager" />
     <property name="requestHandler" ref="requestHandler" />
   </bean>

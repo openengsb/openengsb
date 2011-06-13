@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security;
+package org.openengsb.core.api.security;
 
-import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
- * service that provides the servers private key to other osgi-services (like filters)
+ * service that provides the servers public key to other osgi-services (like filters)
  */
-public interface PrivateKeySource {
+public interface PublicKeySource {
 
-    PrivateKey getPrivateKey();
+    PublicKey getPublicKey();
 
 }

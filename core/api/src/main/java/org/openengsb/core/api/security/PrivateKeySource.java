@@ -15,23 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security.filter;
+package org.openengsb.core.api.security;
 
-import org.openengsb.core.api.remote.FilterChainElement;
-import org.openengsb.core.api.remote.FilterChainElementFactory;
-import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.springframework.security.authentication.AuthenticationManager;
+import java.security.PrivateKey;
 
-public class MessageAuthenticatorFactory implements FilterChainElementFactory {
+/**
+ * service that provides the servers private key to other osgi-services (like filters)
+ */
+public interface PrivateKeySource {
 
-    private AuthenticationManager authenticationManager;
+    PrivateKey getPrivateKey();
 
-    @Override
-    public FilterChainElement newInstance() throws FilterConfigurationException {
-        return new MessageAuthenticatorFilter(authenticationManager);
-    }
-
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
 }

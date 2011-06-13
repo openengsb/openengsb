@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.security.filter;
+package org.openengsb.core.security.filter;
 
 import java.util.Map;
 
@@ -26,10 +26,10 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
+import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.common.security.CipherUtils;
-import org.openengsb.core.common.security.PrivateKeySource;
+import org.openengsb.core.security.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
