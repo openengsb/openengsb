@@ -22,12 +22,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Event;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implements AuditingDomain {
 
-    private final List<String> messages = Collections.synchronizedList(new ArrayList<String>());
+    private final List<Event> events = Collections.synchronizedList(new ArrayList<Event>());
 
     public MemoryAuditingServiceImpl() {
     }
@@ -41,14 +42,15 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implemen
         return AliveState.ONLINE;
     }
 
-    @Override
-    public void audit(String message) {
-        messages.add(message);
-    }
 
-    @Override
-    public List<String> getAudits() {
-        return Collections.unmodifiableList(messages);
-    }
+	@Override
+	public void audit(Event event) {
+        events.add(event);
+	}
+
+	@Override
+	public List<Event> getAllAudits() {
+		return Collections.unmodifiableList(events);
+	}
 
 }

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +65,18 @@ public class SendEventPageTest extends AbstractUITest {
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);
-        Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{ "123", "456" }));
+        
+        List<Event> allAudits = new ArrayList<Event>(); 
+        Event event1 = new Event();
+        event1.setName("123");
+        event1.setProcessId(1L);
+        Event event2 = new Event();
+        event2.setName("456");
+        event2.setProcessId(2L);
+        allAudits.add(event1);
+        allAudits.add(event2);
+        
+        Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
         context.putBean("audit", domain);
@@ -163,8 +175,8 @@ public class SendEventPageTest extends AbstractUITest {
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");
         int i = 0;
-        for (String string : domain.getAudits()) {
-            tester.assertLabel("auditsContainer:audits:" + i + ":audit", string);
+        for (Event event : domain.getAllAudits()) {
+            tester.assertLabel("auditsContainer:audits:" + i + ":audit", event.getName());
             i++;
         }
 
