@@ -20,13 +20,14 @@ package org.openengsb.domain.auditing;
 import java.util.List;
 
 import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Event;
 
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.
  */
 public interface AuditingDomain extends Domain {
 
-    void audit(String message);
+    void audit(Event event);
 
-    List<String> getAudits();
+    List<Event> getAllAudits();
 }
