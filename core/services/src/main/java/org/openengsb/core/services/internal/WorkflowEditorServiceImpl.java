@@ -110,4 +110,14 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
             currentWorkflow = workflow;
         }
     }
+
+    @Override
+    public void removeCurrentWorkflow() throws PersistenceException {
+        final HashMap<String, String> metadata = new HashMap<String, String>();
+        metadata.put("name", getCurrentWorkflow().getName());
+        getPersistence().remove(metadata);
+        this.workflows.remove(this.getCurrentWorkflow().getName());
+        this.currentWorkflow = null;
+
+    }
 }

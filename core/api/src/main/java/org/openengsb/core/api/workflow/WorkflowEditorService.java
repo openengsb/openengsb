@@ -42,4 +42,6 @@ public interface WorkflowEditorService {
     void createWorkflow(String name);
 
     void loadWorkflowsFromDatabase() throws PersistenceException;
+    
+    void removeCurrentWorkflow() throws PersistenceException;
 }
