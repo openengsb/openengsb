@@ -98,8 +98,13 @@ public class WorkflowFilePersistenceBackendService implements ConfigPersistenceB
 
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
-        LOGGER.info("Remove called, but currently not implemented");
-        throw new UnsupportedOperationException("Remove currently not implemented");
+        final String name = metadata.get("name");
+        LOGGER.info("Removing Workflow " + name);
+        File workflowToRemove = new File(folder, name);
+        boolean deleted = workflowToRemove.delete();
+        if (!deleted) {
+            throw new PersistenceException("Could not delete Workflow");
+        }
     }
 
     @Override
