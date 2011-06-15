@@ -21,10 +21,20 @@ import java.util.HashMap;
 
 import javax.jws.WebService;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openengsb.core.common.remote.FilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Default handler for all incoming WS messages. This one is not meant to be replaced by a different implementation
+ * though.
+ */
 @WebService(endpointInterface = "org.openengsb.ports.ws.PortReceiver")
 public class DefaultPortReceiver implements PortReceiver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPortReceiver.class);
+
     private FilterChain filterChain;
 
     public DefaultPortReceiver() {
@@ -37,7 +47,14 @@ public class DefaultPortReceiver implements PortReceiver {
     @Override
     public String receive(String message) {
         HashMap<String, Object> metadata = new HashMap<String, Object>();
-        String result = (String) filterChain.filter(message, metadata);
+        String result;
+        try {
+            LOGGER.debug("starting filterchain for incoming message");
+            result = (String) filterChain.filter(message, metadata);
+        } catch (Exception e) {
+            LOGGER.error("an error occured when processing the filterchain", e);
+            result = ExceptionUtils.getStackTrace(e);
+        }
         return result;
     }
 }
