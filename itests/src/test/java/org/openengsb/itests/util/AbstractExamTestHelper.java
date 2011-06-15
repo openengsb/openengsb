@@ -64,9 +64,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     /*
-     * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources and use
-     * properties to configure them like this: ------------------------------------------ debug=true loglevel=INFO
-     * ------------------------------------------
+     * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
+     * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file.
      */
 
     private static final int DEBUG_PORT = 5005;
