@@ -64,7 +64,23 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
     @Before
     public void setup() throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        createAuthenticationProvider();
+        createAuthorizationManager();
 
+        DummyService dummy = new DummyServiceImpl("a");
+        invocation = MethodInvocationUtils.create(dummy, "test");
+    }
+
+    private void createAuthorizationManager() {
+        List<AccessDecisionVoter> voters = new LinkedList<AccessDecisionVoter>();
+        voters.add(new OpenEngSBAccessDecisionVoter());
+
+        AffirmativeBased affirmativeBased = new AffirmativeBased();
+        affirmativeBased.setDecisionVoters(voters);
+        acManager = affirmativeBased;
+    }
+
+    private void createAuthenticationProvider() {
         UserDetailsService userDetailsService = mock(UserDetailsService.class);
         when(userDetailsService.loadUserByUsername(anyString())).thenAnswer(new Answer<UserDetails>() {
             @Override
@@ -77,16 +93,6 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         authProvider = daoAuthenticationProvider;
-
-        List<AccessDecisionVoter> voters = new LinkedList<AccessDecisionVoter>();
-        voters.add(new OpenEngSBAccessDecisionVoter());
-
-        AffirmativeBased affirmativeBased = new AffirmativeBased();
-        affirmativeBased.setDecisionVoters(voters);
-        acManager = affirmativeBased;
-
-        DummyService dummy = new DummyServiceImpl("a");
-        invocation = MethodInvocationUtils.create(dummy, "test");
     }
 
     @Test
