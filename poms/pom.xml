@@ -81,7 +81,7 @@
     <cxf.version>2.4.1</cxf.version>
     <jaxb.api.version>1.8.0</jaxb.api.version>
     <jaxws.api.version>1.7.0</jaxws.api.version>
-    <jsr311.api.version>1.7.0</jsr311.api.version>
+    <jsr311.api.version>1.8.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <pax.exam.version>1.2.4</pax.exam.version>
     <saaj.api.version>1.7.0</saaj.api.version>
