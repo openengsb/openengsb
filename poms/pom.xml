@@ -79,7 +79,7 @@
     <xmlsec.version>1.4.5_1</xmlsec.version>
     <xmlschema.version>2.0</xmlschema.version>
     <cxf.version>2.4.1</cxf.version>
-    <jaxb.api.version>1.7.0</jaxb.api.version>
+    <jaxb.api.version>1.8.0</jaxb.api.version>
     <jaxws.api.version>1.7.0</jaxws.api.version>
     <jsr311.api.version>1.7.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
