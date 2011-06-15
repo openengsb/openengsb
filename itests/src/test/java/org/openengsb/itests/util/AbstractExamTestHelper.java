@@ -247,7 +247,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                     .versionAsInProject(), "activemq-blueprint", "openengsb-connector-memoryauditing",
                 "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
+                    "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
             vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
             vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),

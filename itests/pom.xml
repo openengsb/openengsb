@@ -107,6 +107,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-bundle</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Blueprint Dependency -->
     <dependency>
       <groupId>org.apache.aries.blueprint</groupId>

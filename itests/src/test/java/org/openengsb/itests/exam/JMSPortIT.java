@@ -24,30 +24,19 @@ import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.scanFeatures;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
-import org.openengsb.core.api.workflow.RuleBaseException;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.jms.core.JmsTemplate;
 
 @RunWith(JUnit4TestRunner.class)
-public class JMSPortIT extends AbstractExamTestHelper {
-
-    private RuleManager ruleManager;
+public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Configuration
     public final Option[] configureJms() {
@@ -56,16 +45,11 @@ public class JMSPortIT extends AbstractExamTestHelper {
                 .versionAsInProject(), "openengsb-ports-jms"));
     }
 
-    @Before
-    public void setUp() throws Exception {
-        ruleManager = getOsgiService(RuleManager.class);
-    }
-
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-        System.out.println("ServiceID:" + serviceWithId);
+
         assertNotNull(serviceWithId);
     }
 
@@ -75,38 +59,10 @@ public class JMSPortIT extends AbstractExamTestHelper {
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
-        String request = ""
-                + "{"
-                + "    \"callId\": \"12345\","
-                + "    \"answer\": true,"
-                + "    \"classes\": ["
-                + "        \"java.lang.String\","
-                + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-                + "    ],"
-                + "    \"methodName\": \"executeWorkflow\","
-                + "    \"metaData\": {"
-                + "        \"serviceId\": \"workflowService\","
-                + "        \"contextId\": \"foo\""
-                + "    },"
-                + "    \"args\": ["
-                + "        \"simpleFlow\","
-                + "        {"
-                + "        }"
-                + "    ]"
-                + "}";
-        template.convertAndSend("receive", request);
+        template.convertAndSend("receive", getRequest("12345"));
         String result = (String) template.receiveAndConvert("12345");
+
         assertThat(result, containsString("The answer to life the universe and everything"));
     }
 
-    private void addWorkflow(String workflow) throws IOException, RuleBaseException {
-        if (ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, workflow)) == null) {
-            InputStream is =
-                getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + workflow + ".rf");
-            String testWorkflow = IOUtils.toString(is);
-            RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, workflow);
-            ruleManager.add(id, testWorkflow);
-            IOUtils.closeQuietly(is);
-        }
-    }
 }
