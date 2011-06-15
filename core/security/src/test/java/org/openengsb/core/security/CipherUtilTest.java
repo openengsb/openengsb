@@ -22,9 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -45,7 +43,7 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
 
     /*
      * for the sake of completeness, maybe we need it sometime
-     *
+     * 
      * private static final String PUBLIC_KEY_64 = "" +
      * "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEwQedUFElYBNOW71NYLgKEGSqKEbGQ9xhlCjS" +
      * "9qd8A7MdaVub61Npc6wSuLJNK1qnrSufWkiZxuo7IsyFnZl9bqkr1D/x4UqKEBmGZIh4s4WIMymw" +
@@ -170,15 +168,4 @@ public class CipherUtilTest extends AbstractOpenEngSBTest {
         assertThat(new String(decrypt), is(TEST_STRING));
     }
 
-    @Test
-    public void encryptWrongKey() throws Exception {
-        SecretKey generateKey = CipherUtils.generateKey("AES", 128);
-        try {
-            CipherUtils.encrypt(TEST_STRING.getBytes(), generateKey, "Blowfish");
-            fail("Exception expected");
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getCause(), is(InvalidKeyException.class));
-        }
-
-    }
 }
