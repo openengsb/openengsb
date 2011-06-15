@@ -20,6 +20,9 @@ package org.openengsb.itests.exam;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.scanFeatures;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +39,8 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.jms.core.JmsTemplate;
 
@@ -43,6 +48,13 @@ import org.springframework.jms.core.JmsTemplate;
 public class JMSPortIT extends AbstractExamTestHelper {
 
     private RuleManager ruleManager;
+
+    @Configuration
+    public final Option[] configureJms() {
+        return options(scanFeatures(
+            maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
+                .versionAsInProject(), "openengsb-ports-jms"));
+    }
 
     @Before
     public void setUp() throws Exception {
