@@ -61,17 +61,28 @@
     <property name="outputType" value="java.lang.String" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.JsonMethodCallMarshalFilter</value>
-        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
-          <property name="requestHandler" ref="requestHandler" />
+        <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
+        <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
+          <property name="privateKeySource">
+            <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
+              <property name="algorithm" value="RSA" />
+            </bean>
+          </property>
+          <property name="secretKeyAlgorithm" value="AES" />
         </bean>
+        <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
+        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
       </list>
     </property>
   </bean>
 
+  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="requestHandler" ref="requestHandler" />
+  </bean>
+
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
-  <reference id="authenticationManager"
-    interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
   <reference id="httpService" interface="org.osgi.service.http.HttpService" />
 
 </blueprint>
