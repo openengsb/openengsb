@@ -34,8 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.UUID;
 import java.util.Properties;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -129,8 +129,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
         importantBundles.add("org.openengsb.core.security");
-        importantBundles.add("org.openengsb.infrastructure.jms");
-        importantBundles.add("org.openengsb.ports.jms");
         return importantBundles;
     }
 
@@ -256,7 +254,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "activemq-blueprint", "openengsb-connector-memoryauditing",
-                "openengsb-ports-jms", "openengsb-ui-admin"),
+                "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
