@@ -28,6 +28,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.internal.UserManagerImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -36,9 +37,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public abstract class AbstractLogin extends AbstractUITest {
+public abstract class AbstractLoginTest extends AbstractUITest {
 
-    private UserManagerImpl userManager;
+    private UserManager userManager;
 
     @Before
     public void setup() {
