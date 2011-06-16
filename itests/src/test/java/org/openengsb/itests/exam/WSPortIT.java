@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -70,10 +71,23 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         DOMSource request = convertMessageToDomSource();
+
         DOMSource response = dispatchMessage(dispatcher, request);
         String message = transformResponseToMessage(response);
 
         assertThat(message, containsString("The answer to life the universe and everything"));
+    }
+
+    @Test
+    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        Dispatch<DOMSource> dispatcher = createMessageDispatcher();
+        DOMSource request = convertAuditingRequestToDomSource();
+
+        DOMSource response = dispatchMessage(dispatcher, request);
+        String message = transformResponseToMessage(response);
+
+        assertThat(message, containsString("\"type\":\"Void\""));
+        assertThat(message, not(containsString("Exception")));
     }
 
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
@@ -83,6 +97,25 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;
+    }
+
+    private DOMSource convertAuditingRequestToDomSource() throws Exception {
+        String message =
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
+                    "xmlns:ws=\"http://ws.ports.openengsb.org/\" >" +
+                    "<soapenv:Header/>" +
+                    "<soapenv:Body>" +
+                    "<ws:receive>" +
+                    "<arg0>" + getAuditingRequest("1235") + "</arg0>" +
+                    "</ws:receive>" +
+                    "</soapenv:Body>" +
+                    "</soapenv:Envelope>";
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder db = factory.newDocumentBuilder();
+        Document requestDoc = db.parse(new ByteArrayInputStream(message.getBytes()));
+        DOMSource request = new DOMSource(requestDoc);
+        return request;
     }
 
     private DOMSource convertMessageToDomSource() throws Exception {

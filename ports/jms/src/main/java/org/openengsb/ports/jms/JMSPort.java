@@ -120,7 +120,8 @@ public class JMSPort implements OutgoingPort {
                         ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
                         MethodReturn handleCall = requestHandler.handleCall(readValue);
                         ReturnMapping returnMapping = new ReturnMapping(handleCall);
-                        returnMapping.setClassName(returnMapping.getArg().getClass().getName());
+                        returnMapping.setClassName(returnMapping.getArg() == null ? Void.class.getName()
+                                : returnMapping.getArg().getClass().getName());
                         String answer = returnMapping.convertToMessage();
                         if (readValue.isAnswer()) {
                             new JmsTemplate(connectionFactory).convertAndSend(readValue.getCallId(), answer);
@@ -137,8 +138,8 @@ public class JMSPort implements OutgoingPort {
     }
 
     /**
-     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be 
-     * removed as it grants universal access.
+     * FIXME [OPENENGSB-1226] as soon as authentication over JMS is properly implemented this hack needs to be removed
+     * as it grants universal access.
      */
     protected void ensureAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

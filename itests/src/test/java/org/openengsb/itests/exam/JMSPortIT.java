@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -65,4 +66,17 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(result, containsString("The answer to life the universe and everything"));
     }
 
+    @Test
+    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        JmsTemplate template = new JmsTemplate(cf);
+        template.convertAndSend("receive", getAuditingRequest("12345"));
+        String result = (String) template.receiveAndConvert("12345");
+
+        System.out.println(result);
+
+        assertThat(result, containsString("\"type\":\"Void\""));
+        assertThat(result, not(containsString("Exception")));
+    }
 }

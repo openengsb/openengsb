@@ -61,6 +61,25 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
                 + "}";
     }
 
+    protected String getAuditingRequest(String messageId) {
+        return ""
+                + "{"
+                + "    \"callId\": \"" + messageId + "\","
+                + "    \"answer\": true,"
+                + "    \"classes\": ["
+                + "        \"java.lang.String\""
+                + "    ],"
+                + "    \"methodName\": \"audit\","
+                + "    \"metaData\": {"
+                + "        \"serviceId\": \"auditing+memoryauditing+auditing-root\","
+                + "        \"contextId\": \"foo\""
+                + "    },"
+                + "    \"args\": ["
+                + "        \"testMessage\""
+                + "    ]"
+                + "}";
+    }
+
     protected void addWorkflow(String workflow) throws IOException, RuleBaseException {
         if (ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, workflow)) == null) {
             InputStream is =

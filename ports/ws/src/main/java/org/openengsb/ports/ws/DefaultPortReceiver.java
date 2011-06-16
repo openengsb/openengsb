@@ -48,7 +48,10 @@ public class DefaultPortReceiver implements PortReceiver {
             readValue.resetArgs();
             ContextHolder.get().setCurrentContextId(readValue.getMetaData().get("contextId"));
             MethodReturn handleCall = requestHandler.handleCall(readValue);
-            String answer = new ReturnMapping(handleCall).convertToMessage();
+            ReturnMapping returnMapping = new ReturnMapping(handleCall);
+            returnMapping.setClassName(returnMapping.getArg() == null ? Void.class.getName()
+                    : returnMapping.getArg().getClass().getName());
+            String answer = returnMapping.convertToMessage();
             return answer;
         } catch (IOException e) {
             throw new RuntimeException(e);
