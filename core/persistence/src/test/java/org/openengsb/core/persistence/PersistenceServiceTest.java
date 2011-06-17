@@ -44,6 +44,7 @@ public abstract class PersistenceServiceTest {
         persistence = createPersitenceService();
 
         beanA = new PersistenceTestBean("A", 1, null);
+        beanA.setTestEnum(TestEnum.A);
         beanB = new PersistenceTestBean("B", 1, null);
         beanC = new PersistenceTestBean("C", 3, beanB);
         beanB.setReference(beanC);
@@ -59,6 +60,14 @@ public abstract class PersistenceServiceTest {
         assertThat(results.size(), is(1));
         PersistenceTestBean result = results.get(0);
         assertThat(result, is(beanA));
+    }
+
+    @Test
+    public void testSlightlyModifiedMatchQuery_shouldNotReturnSingleResult() {
+        PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
+        example.setTestEnum(TestEnum.B);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(0));
     }
 
     @Test
