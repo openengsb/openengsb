@@ -42,15 +42,14 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implemen
         return AliveState.ONLINE;
     }
 
-
-	@Override
-	public void audit(Event event) {
+    @Override
+    public void audit(Event event) {
         events.add(event);
-	}
+    }
 
-	@Override
-	public List<Event> getAllAudits() {
-		return Collections.unmodifiableList(events);
-	}
+    @Override
+    public List<Event> getAllAudits() {
+        return Collections.unmodifiableList(events);
+    }
 
 }
