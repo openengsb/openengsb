@@ -18,4 +18,4 @@
 when
   e : Event()
 then
-  auditing.audit(e.toString()); 
+  auditing.audit(e); 
