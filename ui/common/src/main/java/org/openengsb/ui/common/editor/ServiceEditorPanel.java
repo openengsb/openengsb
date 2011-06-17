@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +51,6 @@ import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.core.common.util.DictionaryAsMap;
 import org.osgi.framework.Constants;
 
 import com.google.common.base.Predicate;
@@ -60,7 +58,7 @@ import com.google.common.collect.Collections2;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
@@ -72,7 +70,7 @@ public class ServiceEditorPanel extends Panel {
 
         public EntryModel(Entry<String, Object> entry, int i) {
             this.entry = entry;
-            this.index = i;
+            index = i;
             adjustArraySize();
         }
 
@@ -133,16 +131,15 @@ public class ServiceEditorPanel extends Panel {
         Constants.SERVICE_ID, Constants.OBJECTCLASS);
 
     public ServiceEditorPanel(String id, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties, Form<?> parentForm) {
+            Map<String, String> attributeMap, Map<String, Object> properties, Form<?> parentForm) {
         super(id);
         this.attributes = attributes;
         this.parentForm = parentForm;
         initPanel(attributes, attributeMap, properties);
     }
 
-    public void reloadList(Dictionary<String, Object> properties) {
-        Map<String, Object> wrapped = DictionaryAsMap.wrap(properties);
-        Set<Entry<String, Object>> entrySet = wrapped.entrySet();
+    public void reloadList(Map<String, Object> properties) {
+        Set<Entry<String, Object>> entrySet = properties.entrySet();
         Collection<Entry<String, Object>> filtered =
             Collections2.filter(entrySet, new Predicate<Entry<String, Object>>() {
                 @Override
@@ -162,7 +159,7 @@ public class ServiceEditorPanel extends Panel {
     }
 
     private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
-            Dictionary<String, Object> properties) {
+            Map<String, Object> properties) {
         RepeatingView fields =
             AttributeEditorUtil.createFieldList("fields", attributes, attributeMap);
         add(fields);

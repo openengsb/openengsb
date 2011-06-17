@@ -62,7 +62,6 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.DictionaryUtils;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
@@ -281,7 +280,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void testInstallService_shouldNotOverwriteExistingService() throws Exception {
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription =
             new ConnectorDescription(new HashMap<String, String>(), properties);
@@ -304,8 +303,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = createSampleConnectorFile();
         connectorDeployerService.install(connectorFile);
         ConnectorDescription attributeValues = serviceManager.getAttributeValues(testConnectorId);
-        Dictionary<String, Object> propertyValues =
-            DictionaryUtils.copy(attributeValues.getProperties());
+        Map<String, Object> propertyValues = attributeValues.getProperties();
         propertyValues.put("foo", "bar");
         ConnectorDescription newDesc = new ConnectorDescription(attributeValues.getAttributes(), propertyValues);
         serviceManager.update(testConnectorId, newDesc);
@@ -389,7 +387,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
         ConnectorDescription desc = serviceManager.getAttributeValues(testConnectorId);
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         ConnectorDescription newDesc = new ConnectorDescription(desc.getAttributes(), properties);
 
         serviceManager.update(testConnectorId, newDesc);
@@ -449,7 +447,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void installFailure_shouldLeaveFileAsIs() throws Exception {
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(new HashMap<String, String>(), properties);
         serviceManager.create(testConnectorId, connectorDescription);

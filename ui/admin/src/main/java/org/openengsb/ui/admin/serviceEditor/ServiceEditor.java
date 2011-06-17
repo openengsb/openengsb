@@ -17,7 +17,6 @@
 
 package org.openengsb.ui.admin.serviceEditor;
 
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -45,10 +44,10 @@ public abstract class ServiceEditor extends Panel {
     private ServiceEditorPanel serviceEditorPanel;
     protected Model<ConnectorId> idModel;
     private TextField<String> idfield;
-    protected Dictionary<String, Object> properties;
+    protected Map<String, Object> properties;
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
+            Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
@@ -58,12 +57,12 @@ public abstract class ServiceEditor extends Panel {
     }
 
     public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
+            Map<String, String> attributeMap, Map<String, Object> properties) {
         this(id, serviceId, attributes, attributeMap, properties, new DefaultPassingFormValidator());
     }
 
     public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
+            Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
@@ -72,12 +71,12 @@ public abstract class ServiceEditor extends Panel {
     }
 
     public ServiceEditor(String id, String domainType, String connectorType, List<AttributeDefinition> attributes,
-            Map<String, String> attributeMap, Dictionary<String, Object> properties) {
+            Map<String, String> attributeMap, Map<String, Object> properties) {
         this(id, domainType, connectorType, attributes, attributeMap, properties, new DefaultPassingFormValidator());
     }
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
-            Dictionary<String, Object> properties) {
+            Map<String, Object> properties) {
         this.properties = properties;
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form");
@@ -105,7 +104,7 @@ public abstract class ServiceEditor extends Panel {
                 if (newKey == null) {
                     return;
                 }
-                Dictionary<String, Object> properties = ServiceEditor.this.properties;
+                Map<String, Object> properties = ServiceEditor.this.properties;
                 if (properties.get(newKey) != null) {
                     error("property with the name already exists");
                     return;

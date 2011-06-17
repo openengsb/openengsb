@@ -27,7 +27,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -80,7 +79,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -95,7 +94,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     public void testDeleteService_shouldUnregisterService() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -114,14 +113,14 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     public void testUpdateProperties_shouldMatchNewFilter() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
         registrationManager.updateRegistration(connectorId, connectorDescription);
         ConnectorDescription updated = new ConnectorDescription();
-        Dictionary<String, Object> newProperties = new Hashtable<String, Object>();
+        Map<String, Object> newProperties = new Hashtable<String, Object>();
         newProperties.put("foo", "xxx");
         updated.setProperties(newProperties);
         registrationManager.updateRegistration(connectorId, updated);
@@ -139,7 +138,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
     public void testUpdateAttributes_shouldChangeInstance() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -163,7 +162,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         attributes.put("portId", "jms+json");
         attributes.put("destination", "localhost");
         attributes.put("serviceId", "foo");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 

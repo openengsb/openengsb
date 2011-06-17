@@ -18,7 +18,6 @@
 package org.openengsb.core.services.internal;
 
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,7 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.common.util.DictionaryAsMap;
-import org.openengsb.core.common.util.DictionaryUtils;
+import org.openengsb.core.common.util.MapAsDictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -75,7 +73,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             updateAttributes(id, connectorDescription.getAttributes());
         }
 
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        Map<String, Object> properties = connectorDescription.getProperties();
         if (properties != null) {
             updateProperties(id, properties);
         }
@@ -89,7 +87,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             forceUpdateAttributes(id, connectorDescription.getAttributes());
         }
 
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        Map<String, Object> properties = connectorDescription.getProperties();
         if (properties != null) {
             updateProperties(id, properties);
         }
@@ -135,17 +133,17 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             domainProvider.getDomainInterface().getName(),
         };
 
-        Dictionary<String, Object> properties =
-            populatePropertiesWithRequiredAttributes(description.getProperties(), id);
-        ServiceRegistration serviceRegistration = bundleContext.registerService(clazzes, serviceInstance, properties);
+        Map<String, Object> properties = populatePropertiesWithRequiredAttributes(description.getProperties(), id);
+        ServiceRegistration serviceRegistration =
+            bundleContext.registerService(clazzes, serviceInstance, MapAsDictionary.wrap(properties));
         registrations.put(id, serviceRegistration);
         instances.put(id, serviceInstance);
     }
 
-    private Dictionary<String, Object> populatePropertiesWithRequiredAttributes(
-            final Dictionary<String, Object> properties, ConnectorId id) {
-        Dictionary<String, Object> result = DictionaryUtils.copy(properties);
-        for (Entry<String, Object> entry : DictionaryAsMap.wrap(properties).entrySet()) {
+    private Map<String, Object> populatePropertiesWithRequiredAttributes(
+            final Map<String, Object> properties, ConnectorId id) {
+        Map<String, Object> result = new HashMap<String, Object>(properties);
+        for (Entry<String, Object> entry : properties.entrySet()) {
             result.put(entry.getKey(), entry.getValue());
         }
         result.put(Constants.DOMAIN_KEY, id.getDomainType());
@@ -159,8 +157,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         factory.applyAttributes(instances.get(id), attributes);
     }
 
-    private void updateProperties(ConnectorId id, Dictionary<String, Object> properties) {
-        Dictionary<String, Object> newProps = DictionaryUtils.copy(properties);
+    private void updateProperties(ConnectorId id, Map<String, Object> properties) {
+        Map<String, Object> newProps = new HashMap<String, Object>(properties);
         ServiceRegistration registration = registrations.get(id);
         ServiceReference reference = registration.getReference();
         for (String key : PROTECTED_PROPERTIES) {
@@ -171,7 +169,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
                 }
             }
         }
-        registration.setProperties(newProps);
+        registration.setProperties(MapAsDictionary.wrap(newProps));
     }
 
     private void updateAttributes(ConnectorId id, Map<String, String> attributes)
