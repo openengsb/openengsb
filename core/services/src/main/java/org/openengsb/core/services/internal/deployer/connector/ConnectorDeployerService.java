@@ -19,7 +19,6 @@ package org.openengsb.core.services.internal.deployer.connector;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,7 +35,6 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
-import org.openengsb.core.common.util.DictionaryAsMap;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.security.BundleAuthenticationToken;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
@@ -89,7 +87,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
         ConnectorFile configFile = oldConfigs.get(artifact);
 
-        Dictionary<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
+        Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
             properties.put(Constants.SERVICE_RANKING, "-1");
@@ -164,8 +162,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
         Map<String, String> newAttributes = ConfigUtils.updateMap(attributes, changedAttributes);
         Map<String, Object> newProperties =
-            ConfigUtils.updateMap(DictionaryAsMap.wrap(persistenceContent.getProperties()),
-                changes.getChangedProperties());
+            ConfigUtils.updateMap(persistenceContent.getProperties(), changes.getChangedProperties());
         return new ConnectorDescription(newAttributes, new Hashtable<String, Object>(newProperties));
     }
 

@@ -26,7 +26,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -95,7 +94,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
-        serviceManager.create(connectorId, new ConnectorDescription(attributes));
+        serviceManager.create(connectorId, new ConnectorDescription(attributes, null));
         PageParameters pageParams =
             new PageParameters("domainType=testdomain,connectorType=testconnector,id=" + connectorId.getInstanceId());
         tester.startPage(ConnectorEditorPage.class, pageParams);
@@ -176,9 +175,9 @@ public class EditorPageTest extends AbstractUITest {
     @Test
     public void testEditService() throws Exception {
         ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Map<String, Object> props = new Hashtable<String, Object>();
         props.put("test", "val");
-        serviceManager.create(id, new ConnectorDescription(props));
+        serviceManager.create(id, new ConnectorDescription(null, props));
 
         try {
             serviceUtils.getService("(test=val)", 100L);

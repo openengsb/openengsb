@@ -18,7 +18,6 @@
 package org.openengsb.core.services.internal;
 
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,6 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.DictionaryAsMap;
-import org.openengsb.core.common.util.DictionaryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,11 +88,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     private void addDefaultLocations(ConnectorId id, ConnectorDescription connectorDescription) {
-        Dictionary<String, Object> properties = connectorDescription.getProperties();
+        Map<String, Object> properties = connectorDescription.getProperties();
         if (properties.get("location.root") != null) {
             return;
         }
-        Dictionary<String, Object> copy = DictionaryUtils.copy(properties);
+        Map<String, Object> copy = new HashMap<String, Object>(properties);
         copy.put("location.root", id.getInstanceId());
         connectorDescription.setProperties(copy);
     }
@@ -164,8 +161,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
         updateProperties(old.getProperties(), diff.getProperties());
     }
 
-    private void updateProperties(Dictionary<String, Object> properties, Dictionary<String, Object> diff) {
-        DictionaryAsMap.wrap(properties).putAll(DictionaryAsMap.wrap(diff));
+    private void updateProperties(Map<String, Object> properties, Map<String, Object> diff) {
+        properties.putAll(diff);
     }
 
     private Map<String, String> updateAttributes(Map<String, String> attributes, Map<String, String> diff) {
