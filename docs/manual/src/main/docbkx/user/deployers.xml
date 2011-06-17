@@ -27,35 +27,35 @@
   <title>Deployer services</title>
 
   <para>
-	  The OpenEngSB supports file-based configuration through its deployer services.
-	  These services are constantly checking the "config/" directory for new/changed/deleted configuration files.
+    The OpenEngSB supports file-based configuration through its deployer services.
+    These services are constantly checking the "config/" directory for new/changed/deleted configuration files.
   </para>
   <para>
-	  If a new file is created, its configuration is loaded into the OpenEngSB. When the file changes the configuration is updated
-	  and when it is deleted the configuration is unloaded. Each deployer handles a different type of configuration file
-	  represented by different file name extensions. Details and structure of these files are covered in this section.
+    If a new file is created, its configuration is loaded into the OpenEngSB. When the file changes the configuration is updated
+    and when it is deleted the configuration is unloaded. Each deployer handles a different type of configuration file
+    represented by different file name extensions. Details and structure of these files are covered in this section.
   </para>
   <para>
-	  It should be noted that the OpenEngSB itself uses deployer services for internal configuration. For this purpose the
-	  deployer services also listen for configuration files in "etc/". These config files however are essential for the
-	  correct operation of the OpenEngSB and should not be modified.
+    It should be noted that the OpenEngSB itself uses deployer services for internal configuration. For this purpose the
+    deployer services also listen for configuration files in "etc/". These config files however are essential for the
+    correct operation of the OpenEngSB and should not be modified.
   </para>
 
   <section xml:id="user.deployers.connector">
     <title>Connector configuration</title>
     <para>
-	    The connector deployer service creates, updates or deletes instances of connector services.
+      The connector deployer service creates, updates or deletes instances of connector services.
     </para>
     <para>
-	    All files in the "config/" directory with the extension ".connector" are handled by the connector deployer.
-	    The .connector files have to be simple property files containing the configuration properies of a certain connector service
-	    and their values. Additionaly the property with the key "connector" defines which type of connector should be created
-	    (corresponds to the "connector" property in the service definition) and the property with the key "id" defines the new
-	    service id.
+      All files in the "config/" directory with the extension ".connector" are handled by the connector deployer.
+      The .connector files have to be simple property files containing the configuration properies of a certain connector service
+      and their values. Additionaly the property with the key "connector" defines which type of connector should be created
+      (corresponds to the "connector" property in the service definition) and the property with the key "id" defines the new
+      service id.
     </para>
     <example>
-	    <title>Example .connector configuration file for the email connector</title>
-	    <programlisting>
+      <title>Example .connector configuration file for the email connector</title>
+      <programlisting>
 connector = email
 id = testServiceId
 user = user
@@ -65,22 +65,22 @@ smtpAuth = true
 smtpSender = test@test.com
 smtpPort = 25
 smtpHost = smtp.testserver.com
-	    </programlisting>
+      </programlisting>
     </example>
     <section xml:id="user.deployers.connector.root">
-	    <title>Root services</title>
-	    <para>
-		    Note, that root services (ie. connector services deployed from the "etc/" directory) are deployed with a lower
-		    service ranking.
-		    This is done so that normal services are preferred when matching services.
-	    </para>
+      <title>Root services</title>
+      <para>
+        Note, that root services (ie. connector services deployed from the "etc/" directory) are deployed with a lower
+        service ranking.
+        This is done so that normal services are preferred when matching services.
+      </para>
     </section>
   </section>
   <section xml:id="user.deployers.context">
-	  <title>Context configuration</title>
-	  <para>
-		  The context deployer service creates contexts according to .context files found in the config directory. The context id is the file-name (without the extension). The file content will be ignored. 
-	  </para>
+    <title>Context configuration</title>
+    <para>
+      The context deployer service creates contexts according to .context files found in the config directory. The context id is the file-name (without the extension). The file content will be ignored. 
+    </para>
   </section>
 </chapter>
 
