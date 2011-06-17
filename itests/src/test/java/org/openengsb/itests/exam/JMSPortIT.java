@@ -95,6 +95,20 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(result, not(containsString("The answer to life the universe and everything")));
     }
 
+    @Test
+    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        JmsTemplate template = prepareActiveMqConnection();
+        String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+
+        String result = sendMessage(template, encryptedMessage);
+        String decryptedResult = decryptResult(sessionKey, result);
+
+        assertThat(decryptedResult, containsString("\"type\":\"Void\""));
+        assertThat(decryptedResult, not(containsString("Exception")));
+    }
+
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
         template.convertAndSend("receive", encryptedMessage);
         String result = (String) template.receiveAndConvert("12345");

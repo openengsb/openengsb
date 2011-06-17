@@ -63,6 +63,21 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "    ]"
             + "}";
 
+    protected static final String VOID_CALL_STRING = ""
+            + "{"
+            + "    \"classes\": ["
+            + "        \"java.lang.String\""
+            + "    ],"
+            + "    \"methodName\": \"audit\","
+            + "    \"metaData\": {"
+            + "        \"serviceId\": \"auditing+memoryauditing+auditing-root\","
+            + "        \"contextId\": \"foo\""
+            + "    },"
+            + "    \"args\": ["
+            + "        \"testMessage\""
+            + "    ]"
+            + "}";
+
     protected static final String METHOD_CALL_STRING_FILTER = ""
             + "{"
             + "    \"classes\": ["
@@ -86,28 +101,6 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         ruleManager = getOsgiService(RuleManager.class);
-    }
-
-    protected String getRequest(String messageId) {
-        return ""
-                + "{"
-                + "    \"callId\": \"" + messageId + "\","
-                + "    \"answer\": true,"
-                + "    \"classes\": ["
-                + "        \"java.lang.String\","
-                + "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-                + "    ],"
-                + "    \"methodName\": \"executeWorkflow\","
-                + "    \"metaData\": {"
-                + "        \"serviceId\": \"workflowService\","
-                + "        \"contextId\": \"foo\""
-                + "    },"
-                + "    \"args\": ["
-                + "        \"simpleFlow\","
-                + "        {"
-                + "        }"
-                + "    ]"
-                + "}";
     }
 
     protected void addWorkflow(String workflow) throws IOException, RuleBaseException {
@@ -181,11 +174,16 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         return publicKey;
     }
 
-    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws DecryptionException {
+    protected String decryptResult(SecretKey sessionKey, String result) throws DecryptionException {
         byte[] resultData = Base64.decodeBase64(result);
         assertThat(result, not(containsString("The answer to life the universe and everything")));
         byte[] decryptedResultData = CipherUtils.decrypt(resultData, sessionKey);
         result = new String(decryptedResultData);
+        return result;
+    }
+
+    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws DecryptionException {
+        result = decryptResult(sessionKey, result);
         assertThat(result, containsString("The answer to life the universe and everything"));
     }
 

@@ -113,6 +113,23 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         assertThat(result, not(containsString("The answer to life the universe and everything")));
     }
 
+    @Test
+    public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        Dispatch<DOMSource> dispatcher = createMessageDispatcher();
+        String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+        DOMSource request = convertMessageToDomSource(encryptedMessage);
+
+        DOMSource response = dispatchMessage(dispatcher, request);
+        String result = transformResponseToMessage(response);
+        String decryptedResult = decryptResult(sessionKey, result);
+
+        assertThat(decryptedResult, containsString("\"type\":\"Void\""));
+        assertThat(decryptedResult, not(containsString("Exception")));
+    }
+
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
