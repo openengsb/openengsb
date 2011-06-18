@@ -32,6 +32,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.openengsb.core.api.Event;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -66,7 +67,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     protected static final String VOID_CALL_STRING = ""
             + "{"
             + "    \"classes\": ["
-            + "        \"java.lang.String\""
+            + "        \"" + Event.class.getName() + "\""
             + "    ],"
             + "    \"methodName\": \"audit\","
             + "    \"metaData\": {"
@@ -74,7 +75,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
             + "        \"contextId\": \"foo\""
             + "    },"
             + "    \"args\": ["
-            + "        \"testMessage\""
+            + "        { \"name\": \"testMessage\" }"
             + "    ]"
             + "}";
 
