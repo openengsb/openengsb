@@ -1,4 +1,68 @@
-openengsb-1.2.0.RC1 2011-05-16
+openengsb-1.2.0.RC3 2011-06-18
+--------------------------------------------
+
+This release is the third release candidate of the 1.2.0.RELEASE, based on the 1.2.x branch. One of the most important
+changes in this release is that we use events in the auditing domain now instead of strings. In addition we've improved
+the startup time and memory usage of the OpenEngSB. One really nice improvement in this release is that we allow OSGi-
+filters in remote-calls in addition to the serviceId, required till now. In addition we've fixed various bugs, found in
+the previous release candidate, in remoting and provisioning. An additional important change was the change back to
+Apache Felix from Eclipse Equinox as default runtime environment. Besides the typical documentation improvements we've
+also upgraded 17 libraries including CXF (2.4.1), OpenEngSB Root (18) and JGit (0.12.1).
+
+### Details
+** Bug
+    * [OPENENGSB-1594] - JsonParseException: Unexpected character
+    * [OPENENGSB-1599] - ports-ws does not create a correct webservice wsdl
+    * [OPENENGSB-1602] - openengsb:provision does not start because of permission problem
+    * [OPENENGSB-1616] - README does not reflect the current state-of-the-art
+    * [OPENENGSB-1617] - NOTICE file should not be executable
+    * [OPENENGSB-1618] - connector-archetype should use separate domain-version
+    * [OPENENGSB-1662] - itests fail because of config-persistence-setup-issue
+    * [OPENENGSB-1671] - Ports NullPointerException in case of a Void method
+    * [OPENENGSB-1675] - ConnectorDescription: Use of obsolete class "Dictionary"
+    * [OPENENGSB-1694] - update documentation about connector-config-files
+    * [OPENENGSB-1714] - Features.xml still contains auditing connector & domain feature
+
+** Improvement
+    * [OPENENGSB-1600] - Start JMS ports modules only when required
+    * [OPENENGSB-1601] - Couple wicket to ui-common feature instead to core common
+    * [OPENENGSB-1619] - Reference to raw changelog instead of formatted on HP
+    * [OPENENGSB-1658] - allow osgi-filters in remote-calls instead of just service-ids
+    * [OPENENGSB-1718] - Comment in AbstractExamTestHelper about debug/log is not resistent about formatting
+
+** Library Upgrade
+    * [OPENENGSB-1621] - Upgrade to openengsb-root-18
+    * [OPENENGSB-1698] - Upgrade xmlsec to 1.4.5_1
+    * [OPENENGSB-1699] - Upgrade cxf to 2.4.1
+    * [OPENENGSB-1700] - Upgrade jaxb to 1.8.0
+    * [OPENENGSB-1701] - Upgrade JSR311 to 1.8.0
+    * [OPENENGSB-1702] - Upgrade jaxws to 1.8.0
+    * [OPENENGSB-1703] - Upgrade saaj to 1.8.0
+    * [OPENENGSB-1704] - Upgrade asm to 3.3_2
+    * [OPENENGSB-1705] - Upgrade wss4j to 1.6.1
+    * [OPENENGSB-1706] - Upgrade stax to 1.8.0
+    * [OPENENGSB-1707] - Upgrade activation to 1.8.0
+    * [OPENENGSB-1713] - Upgrade xjc to 2.2.1.1_2
+    * [OPENENGSB-1730] - Upgrade jaxb to 2.2.3
+    * [OPENENGSB-1731] - Upgrade jackson libs to 1.8.2
+    * [OPENENGSB-1732] - Upgrade jgit to 0.12.1
+    * [OPENENGSB-1733] - Upgrade geronimo servlet to 1.2
+    * [OPENENGSB-1734] - Upgrade javax mail api to 1.4.1_4
+
+** New Feature
+    * [OPENENGSB-1690] - use events instead of strings in auditingdomain
+
+** Task
+    * [OPENENGSB-1329] - Create Demo-scenario for humantasks
+    * [OPENENGSB-1590] - Release openengsb-1.2.0.RC3
+    * [OPENENGSB-1646] - Upgrade submodules to latest clienprojects
+    * [OPENENGSB-1659] - create alterntive run-script without openengsb:provision
+    * [OPENENGSB-1661] - update howto about installing domains and connectors
+    * [OPENENGSB-1665] - fix warnings in openengsb project
+    * [OPENENGSB-1697] - Switch back to Apache Felix
+
+
+openengsb-1.2.0.RC2 2011-05-16
 --------------------------------------------
 
 Upgrade karaf to 2.2.1, fix various bugs in json, remoting, classloading, jms integration tests and increase documentation and examples.
@@ -11,8 +75,6 @@ Upgrade karaf to 2.2.1, fix various bugs in json, remoting, classloading, jms in
   * Fix remoting problems
 
 ### Details
-Release Notes - OpenEngSB - Version openengsb-1.2.0.RC2
-
 ** Bug
     * [OPENENGSB-1212] - JMS Integration tests fail
     * [OPENENGSB-1244] - Create config-factories via features <config> tag
