@@ -168,7 +168,7 @@
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.10.1</jgit.version>
+    <jgit.version>0.12.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6.2</joda.version>
     <xmltooling.version>1.3.1</xmltooling.version>
