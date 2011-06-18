@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -67,7 +68,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
                 + "    \"callId\": \"" + messageId + "\","
                 + "    \"answer\": true,"
                 + "    \"classes\": ["
-                + "        \"java.lang.String\""
+                + "        \"" + Event.class.getName() + "\""
                 + "    ],"
                 + "    \"methodName\": \"audit\","
                 + "    \"metaData\": {"
@@ -75,7 +76,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
                 + "        \"contextId\": \"foo\""
                 + "    },"
                 + "    \"args\": ["
-                + "        \"testMessage\""
+                + "        { \"name\": \"testMessage\" }"
                 + "    ]"
                 + "}";
     }
