@@ -216,7 +216,7 @@
     <neethi.version>3.0.0</neethi.version>
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
-    <javax.mail.version>1.4.1_3</javax.mail.version>
+    <javax.mail.version>1.4.1_4</javax.mail.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <quartz.version>1.5.2</quartz.version>
     <rome.version>0.5</rome.version>
