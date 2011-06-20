@@ -23,8 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.security.core.userdetails.User;
-
 @Table(name = "SIMPLEUSER")
 @Entity
 public class SimpleUser {
@@ -45,10 +43,6 @@ public class SimpleUser {
 
     public SimpleUser(String username, String password) {
         this(username, password, null);
-    }
-
-    public SimpleUser(User user) {
-        this(user.getUsername(), user.getPassword());
     }
 
     public SimpleUser() {

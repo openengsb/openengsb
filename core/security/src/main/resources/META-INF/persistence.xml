@@ -12,6 +12,9 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
+    <class>org.openengsb.core.security.model.SimpleUser</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
     <properties>
       <property name="openjpa.Log" value="commons" />
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
