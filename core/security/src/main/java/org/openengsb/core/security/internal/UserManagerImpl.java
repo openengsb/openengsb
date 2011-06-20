@@ -17,7 +17,6 @@
 
 package org.openengsb.core.security.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -31,8 +30,6 @@ import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.User;
 import org.osgi.framework.BundleContext;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserManagerImpl implements UserManager {
@@ -110,19 +107,6 @@ public class UserManagerImpl implements UserManager {
 
     public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-        try {
-            loadUserByUsername(null);
-        } catch (UserNotFoundException ex) {
-            // create dummy admin user
-            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-            createUser(new User("admin", "password", auth));
-
-            List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-            userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            createUser(new User("user", "password", userAuth));
-        }
     }
 
     public void setBundleContext(BundleContext bundleContext) {
