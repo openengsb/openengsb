@@ -17,9 +17,10 @@
 
 package org.openengsb.core.security.internal;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
@@ -35,6 +36,8 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserManagerImpl implements UserManager {
+
+    private EntityManager entityManager;
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;
@@ -86,7 +89,6 @@ public class UserManagerImpl implements UserManager {
         return list.size() > 0;
     }
 
-
     @Override
     public User loadUserByUsername(String username) {
         List<User> list = persistence.query(new User(username));
@@ -111,7 +113,7 @@ public class UserManagerImpl implements UserManager {
         try {
             loadUserByUsername(null);
         } catch (UserNotFoundException ex) {
-            //create dummy admin user
+            // create dummy admin user
             List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
             auth.add(new GrantedAuthorityImpl("ROLE_USER"));
             auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
@@ -125,5 +127,9 @@ public class UserManagerImpl implements UserManager {
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }
