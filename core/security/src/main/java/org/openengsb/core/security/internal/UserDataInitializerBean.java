@@ -20,8 +20,11 @@ package org.openengsb.core.security.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
@@ -34,16 +37,25 @@ public class UserDataInitializerBean {
     }
 
     public void init() {
-        if (userManager.getAllUser().isEmpty()) {
-            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-            userManager.createUser(new User("admin", "password", auth));
+        /*
+         * FIXME [OPENENGSB-1301] This is done in background because integration-tests would break otherwise. It makes
+         * no difference for the runtime-system. This can hack can be removed as soon as OPENENGSB-1301 is fixed.
+         */
+        new Thread() {
+            @Override
+            public void run() {
+                OpenEngSBCoreServices.getServiceUtilsService().getService(DataSource.class);
+                if (userManager.getAllUser().isEmpty()) {
+                    List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+                    auth.add(new GrantedAuthorityImpl("ROLE_USER"));
+                    auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+                    userManager.createUser(new User("admin", "password", auth));
 
-            List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-            userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            userManager.createUser(new User("user", "password", userAuth));
-        }
+                    List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
+                    userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
+                    userManager.createUser(new User("user", "password", userAuth));
+                }
+            }
+        }.start();
     }
-
 }
