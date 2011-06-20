@@ -20,17 +20,20 @@ package org.openengsb.core.security.internal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.security.model.SimpleUser;
 import org.osgi.framework.BundleContext;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 public class UserManagerImpl implements UserManager {
 
@@ -48,65 +51,56 @@ public class UserManagerImpl implements UserManager {
         if (userNameExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
-        try {
-            persistence.create(user);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
+        entityManager.persist(new SimpleUser(user));
     }
 
     @Override
     public void updateUser(User user) {
-        User oldUser = new User(user.getUsername());
-        if (!userNameExists(oldUser.getUsername())) {
-            throw new UserNotFoundException("User with username: " + oldUser.getUsername() + " does not exists");
+        if (!userNameExists(user.getUsername())) {
+            throw new UserNotFoundException("User with username: " + user.getUsername() + " does not exists");
         }
-        try {
-            persistence.update(oldUser, user);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
+        SimpleUser simpleUser = entityManager.find(SimpleUser.class, user.getUsername());
+        simpleUser.setPassword(user.getPassword());
+        simpleUser.setRoles(SimpleUser.convertAuthorityList(user.getAuthorities()));
+        entityManager.merge(simpleUser);
     }
 
     @Override
     public void deleteUser(String username) {
-        if (!userNameExists(username)) {
+        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        if (user == null) {
             throw new UserNotFoundException("User with username: " + username + " does not exists");
         }
-        UserDetails toBeDeleted = new User(username);
-        try {
-            persistence.delete(toBeDeleted);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
+        entityManager.remove(user);
     }
 
     private boolean userNameExists(String username) {
-        List<User> list = persistence.query(new User(username));
-        return list.size() > 0;
+        return entityManager.find(SimpleUser.class, username) != null;
     }
 
     @Override
     public User loadUserByUsername(String username) {
-        List<User> list = persistence.query(new User(username));
-        if (list.size() > 0) {
-            return list.get(0);
-        } else {
-            throw new UserNotFoundException("user with name: " + username + " does not exist");
+        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        if (user == null) {
+            throw new UsernameNotFoundException("user with name: " + username + " does not exist");
         }
+        return user.toSpringUser();
     }
 
     @Override
     public List<User> getAllUser() {
-        return persistence.query(new User(null));
+        TypedQuery<SimpleUser> createQuery = entityManager.createQuery("SELECT u FROM SimpleUser u", SimpleUser.class);
+        List<SimpleUser> resultList = createQuery.getResultList();
+        return Lists.transform(resultList, new Function<SimpleUser, User>() {
+            @Override
+            public User apply(SimpleUser input) {
+                return input.toSpringUser();
+            }
+        });
     }
 
     public void setPersistenceManager(PersistenceManager persistenceManager) {
         this.persistenceManager = persistenceManager;
-    }
-
-    public void init() {
-        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
 
     public void setBundleContext(BundleContext bundleContext) {

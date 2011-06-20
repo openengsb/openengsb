@@ -13,7 +13,7 @@
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
 
-  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl" init-method="init">
+  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
     <tx:transaction method="*" value="Required" />
@@ -54,10 +54,7 @@
         <bean class="org.springframework.security.access.vote.AffirmativeBased">
           <property name="decisionVoters">
             <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" init-method="init">
-                <property name="persistenceManager" ref="persistenceManager" />
-                <property name="bundleContext" ref="blueprintBundleContext" />
-              </bean>
+              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" />
               <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>

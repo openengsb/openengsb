@@ -45,17 +45,21 @@ public class UserDataInitializerBean {
             @Override
             public void run() {
                 OpenEngSBCoreServices.getServiceUtilsService().getService(DataSource.class);
-                if (userManager.getAllUser().isEmpty()) {
-                    List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-                    auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-                    auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-                    userManager.createUser(new User("admin", "password", auth));
-
-                    List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-                    userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-                    userManager.createUser(new User("user", "password", userAuth));
-                }
+                doInit();
             }
         }.start();
+    }
+
+    public void doInit() {
+        if (userManager.getAllUser().isEmpty()) {
+            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
+            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+            userManager.createUser(new User("admin", "password", auth));
+
+            List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
+            userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
+            userManager.createUser(new User("user", "password", userAuth));
+        }
     }
 }

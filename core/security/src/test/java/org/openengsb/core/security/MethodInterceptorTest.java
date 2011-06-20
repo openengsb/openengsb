@@ -29,14 +29,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.api.security.model.ServiceAuthorizedList;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.internal.MetadataSource;
-import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.core.test.DummyPersistenceManager;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
@@ -51,21 +46,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public class MethodInterceptorTest {
+public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     private static final String DEFAULT_USER = "foo";
     private MethodSecurityInterceptor interceptor;
     private ProviderManager authenticationManager;
-    private PersistenceService persistence;
     private DummyService service;
     private DummyService service2;
-    private DummyPersistenceManager persistenceManager;
-    private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {
-        initPersistence();
         authenticationManager = initAuthenticationManager();
         interceptor = new MethodSecurityInterceptor();
         MethodSecurityMetadataSource metadataSource = new MetadataSource();
@@ -80,26 +72,6 @@ public class MethodInterceptorTest {
         service2 = (DummyService) secure(new DummyServiceImpl("21"));
     }
 
-    private void initPersistence() throws PersistenceException {
-        persistenceManager = new DummyPersistenceManager();
-        bundleContextMock = mock(BundleContext.class);
-        Bundle bundleMock = mock(Bundle.class);
-        when(bundleContextMock.getBundle()).thenReturn(bundleMock);
-        persistence = persistenceManager.getPersistenceForBundle(bundleMock);
-
-        List<GrantedAuthority> authorities =
-            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_USER") });
-        persistence.create(new ServiceAuthorizedList("42", authorities));
-
-        User user = new User(DEFAULT_USER, "password", authorities);
-        persistence.create(user);
-
-        List<GrantedAuthority> adminAuthorities =
-            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_ADMIN") });
-        User admin = new User("admin", "adminpw", adminAuthorities);
-        persistence.create(admin);
-    }
-
     private List<AccessDecisionVoter> makeVoterList() {
         List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
         result.add(makeVoter());
@@ -108,16 +80,13 @@ public class MethodInterceptorTest {
 
     private AccessDecisionVoter makeVoter() {
         AuthenticatedUserAccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
-        voter.setPersistenceManager(persistenceManager);
-        voter.setBundleContext(bundleContextMock);
-        voter.init();
         return voter;
     }
 
     private ProviderManager initAuthenticationManager() throws PersistenceException {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
 
-        final UserManagerImpl userDetailsService = createUserDetailsService();
+        final UserDetailsService userDetailsService = createUserDetailsService();
         p.setUserDetailsService(userDetailsService);
 
         ProviderManager authenticationManager = new ProviderManager();
@@ -125,11 +94,16 @@ public class MethodInterceptorTest {
         return authenticationManager;
     }
 
-    private UserManagerImpl createUserDetailsService() throws PersistenceException {
-        final UserManagerImpl userDetailsService = new UserManagerImpl();
-        userDetailsService.setPersistenceManager(persistenceManager);
-        userDetailsService.setBundleContext(bundleContextMock);
-        userDetailsService.init();
+    private UserDetailsService createUserDetailsService() throws PersistenceException {
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
+        User user =
+            new User(DEFAULT_USER, "password", Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
+        when(userDetailsService.loadUserByUsername(DEFAULT_USER)).thenReturn(user);
+
+        List<GrantedAuthority> adminAuthorities =
+            Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN"));
+        User admin = new User("admin", "adminpw", adminAuthorities);
+        when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
         return userDetailsService;
     }
 
@@ -149,13 +123,6 @@ public class MethodInterceptorTest {
     @Test(expected = BadCredentialsException.class)
     public void testFalseAuthenticate() {
         authenticate(DEFAULT_USER, "wrong");
-    }
-
-    @Test
-    public void testInvokeMethod() throws Exception {
-        authenticate(DEFAULT_USER, "password");
-        // just invoke the method, and avoid failing
-        service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test(expected = AccessDeniedException.class)

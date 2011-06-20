@@ -17,11 +17,21 @@
 
 package org.openengsb.core.security.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.openengsb.core.api.security.model.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 @Table(name = "SIMPLEUSER")
 @Entity
@@ -30,6 +40,7 @@ public class SimpleUser {
     @Id
     private String username;
     private String password;
+    @PersistentCollection
     private Collection<String> roles;
 
     public SimpleUser(String username) {
@@ -46,6 +57,35 @@ public class SimpleUser {
     }
 
     public SimpleUser() {
+    }
+
+    public SimpleUser(UserDetails user) {
+        this(user.getUsername(), user.getPassword());
+        roles = convertAuthorityList(user.getAuthorities());
+    }
+
+    public static Collection<String> convertAuthorityList(Collection<GrantedAuthority> authorities) {
+        if (authorities == null) {
+            return null;
+        }
+        return Collections2.transform(authorities, new Function<GrantedAuthority, String>() {
+            @Override
+            public String apply(GrantedAuthority input) {
+                return input.getAuthority();
+            };
+        });
+    }
+
+    private static Collection<GrantedAuthority> convertToAuthorities(Collection<String> authorities) {
+        if (authorities == null) {
+            return null;
+        }
+        return Collections2.transform(authorities, new Function<String, GrantedAuthority>() {
+            @Override
+            public GrantedAuthority apply(String input) {
+                return new GrantedAuthorityImpl(input);
+            };
+        });
     }
 
     public String getUsername() {
@@ -70,6 +110,14 @@ public class SimpleUser {
 
     public void setRoles(Collection<String> roles) {
         this.roles = roles;
+    }
+
+    public User toSpringUser() {
+        if (roles == null) {
+            return new User(username, password);
+        }
+        Collection<GrantedAuthority> authorities = convertToAuthorities(roles);
+        return new User(username, password, new ArrayList<GrantedAuthority>(authorities));
     }
 
 }
