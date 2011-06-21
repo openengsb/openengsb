@@ -111,6 +111,7 @@
     <el.version>2.1.0</el.version>
     <wicket.version>1.4.16</wicket.version>
     <wicket.wrapped.version>${wicket.version}.w1</wicket.wrapped.version>
+    <pax.wicket.version>0.7.0-SNAPSHOT</pax.wicket.version>
     <jackson.version>1.8.0</jackson.version>
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
@@ -372,6 +373,18 @@
         <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.ops4j.pax.wicket</groupId>
+        <artifactId>pax-wicket-service</artifactId>
+        <version>${pax.wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.wicket</groupId>
+  	    <artifactId>pax-wicket-test</artifactId>
+        <version>${pax.wicket.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
         <version>${wicket.version}</version>
@@ -408,19 +421,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket-ioc</artifactId>
-        <version>${wicket.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-jmx</artifactId>
-        <version>${wicket.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.wicket</groupId>
-        <artifactId>wicket-spring</artifactId>
         <version>${wicket.version}</version>
         <scope>provided</scope>
       </dependency>

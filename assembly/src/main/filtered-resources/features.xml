@@ -170,8 +170,8 @@
   </feature>
 
   <feature name="openengsb-ui-core" version="${project.version}" >
-    <feature version="${karaf.version}">war</feature>
     <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
@@ -181,7 +181,7 @@
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
-    <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}/war</bundle>
+    <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-domain-auditing" version="${project.version}" >

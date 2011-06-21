@@ -40,7 +40,7 @@
 
   <description>Administration Interface for the OpenEngSB</description>
 
-  <packaging>war</packaging>
+  <packaging>bundle</packaging>
 
   <url>http://www.openengsb.org</url>
   <licenses>
@@ -151,6 +151,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -170,16 +182,6 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-ioc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
