@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -35,8 +34,6 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -45,10 +42,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.ui.admin.AdminWebSession;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
-import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +77,7 @@ public class ProjectTest {
             @Override
             protected void init() {
                 super.init();
-                addComponentInstantiationListener(new SpringComponentInjector(this, appContext, false));
+                addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(this, appContext));
             }
 
             @Override
@@ -88,7 +87,7 @@ public class ProjectTest {
 
             @Override
             public Session newSession(Request request, Response response) {
-                return new OpenEngSBWebSession(request);
+                return new AdminWebSession(request);
             }
         });
 
@@ -137,8 +136,6 @@ public class ProjectTest {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
 
-        verify(contextService).setThreadLocalContext("foo");
-
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
@@ -146,7 +143,7 @@ public class ProjectTest {
 
         // simulated page reload...
         tester.startPage(new BasePage());
-        verify(contextService).setThreadLocalContext("bar");
+        assertThat(ContextHolder.get().getCurrentContextId(), is("bar"));
     }
 
     @Test

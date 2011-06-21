@@ -38,7 +38,6 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.AbstractRepeater;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +54,7 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class EditorPageTest extends AbstractUITest {
 
@@ -76,7 +76,7 @@ public class EditorPageTest extends AbstractUITest {
         createDomainProviderMock(NullDomain.class, "testdomain");
         factoryMock = createFactoryMock("testconnector", "testdomain");
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, false));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
