@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
@@ -48,6 +50,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -106,6 +109,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("persistenceService", "CONNECTOR");
 
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
+        // FIXME OPENENGSB-1301 workaround because UserDataInitializerBean must start it's own thread
+        OpenEngSBCoreServices.getServiceUtilsService().getService(DataSource.class);
     }
 
     public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
