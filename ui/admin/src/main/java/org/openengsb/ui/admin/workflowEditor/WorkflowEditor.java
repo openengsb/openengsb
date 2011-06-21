@@ -94,6 +94,7 @@ public class WorkflowEditor extends BasePage {
         }
         Form<Object> selectForm = createSelectWorkflowForm();
         createCreateWorkflowForm();
+        Form<Object> removeWorkflowForm = createRemoveWorkflowForm();
         Form<Object> exportForm = createExportForm();
         Form<Object> saveForm = createSaveForm();
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
@@ -107,7 +108,7 @@ public class WorkflowEditor extends BasePage {
         if (currentworkflow.getObject() == null) {
             label = getString("workflow.create.first");
             node.setUserObject(new ActionRepresentation());
-            setFormsInvisible(exportForm, saveForm);
+            setFormsInvisible(removeWorkflowForm, exportForm, saveForm);
         } else {
             label = currentworkflow.getObject().getName();
             node.setUserObject(currentworkflow.getObject().getRoot());
@@ -132,10 +133,11 @@ public class WorkflowEditor extends BasePage {
         add(table);
     }
 
-    private void setFormsInvisible(Form<Object> exportForm, Form<Object> saveForm) {
+    private void setFormsInvisible(Form<Object>... exportForms) {
         table.setVisible(false);
-        exportForm.setVisible(false);
-        saveForm.setVisible(false);
+        for (Form<Object> form : exportForms) {
+            form.setVisible(false);
+        }
     }
 
     private IColumn[] createTableColumns(final Model<WorkflowRepresentation> currentworkflow) {
@@ -199,6 +201,25 @@ public class WorkflowEditor extends BasePage {
         };
         createForm.add(new TextField<String>("name", new PropertyModel<String>(this, "name")));
         add(createForm);
+    }
+
+    private Form<Object> createRemoveWorkflowForm() {
+        Form<Object> removeForm = new Form<Object>("workflowRemoveForm") {
+            @Override
+            protected void onSubmit() {
+                try {
+                    LOGGER.info("Removing workflow " + workflowEditorService.getCurrentWorkflow().getName());
+                    workflowEditorService.removeCurrentWorkflow();
+                    setResponsePage(WorkflowEditor.class);
+                    
+                } catch (PersistenceException e) {
+                    error(e);
+                    LOGGER.error("Removing Workflow failed: " + e.getMessage());
+                }
+            }
+        };
+        add(removeForm);
+        return removeForm;
     }
 
     private Form<Object> createSaveForm() {

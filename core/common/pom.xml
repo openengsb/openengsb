@@ -79,6 +79,21 @@
         </includes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>sun.reflect, *</Import-Package>
+            <!-- This import is required since the WS package relies heavily on reflection and loading of calling classes at runtime-->
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>

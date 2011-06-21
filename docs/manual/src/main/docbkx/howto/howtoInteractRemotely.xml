@@ -95,10 +95,28 @@
           have to work with.</para>
       </section>
     </section>
+
     <section>
       <title>Calling internal Services</title>
       <para>To call an internal Service send a methodcall as described before to the "receive" queue on the server you want to call.
-        The service works exactly as defined before. For example if you want to execute a workflow via the WorkflowService send</para>
+        The service works exactly as defined before. There currently are two ways of specifying which service to
+        address.
+          <itemizedlist>
+            <listitem>
+              serviceId: This will call the service that was exported with the specified "id"-property. It behaves like
+              the following Filter in OSGi-syntax: <code>(id=&lt;serviceId&gt;)</code>
+            </listitem>
+            <listitem>
+              serviceFilter: This way you can specify any filter in OSGi-syntax to adress the service, so it is
+              not necessary to bind the client to a specific id, but to other properties as well (e.g. <code>location.root</code>,
+              <code>location.&lt;context&gt;</code>, <code>objectClass</code>, ...)
+            </listitem>
+          </itemizedlist>
+        You can also use both attributes (serviceId and serviceFilter). It will create a filter matching both
+        constraints.
+      </para>
+
+      <para>Example: if you want to execute a workflow via the WorkflowService send</para>
       <code>{"callId":"12345","answer":true,"classes":["java.lang.String", "org.openengsb.core.api.workflow.model.ProcessBag"],
         "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService", "contextId":"foo"},"args":["simpleFlow", {}]}</code>
       <para>Please be aware that the flow the above method tries to call (simpleFlow) is not available by default on the OpenEngSB.

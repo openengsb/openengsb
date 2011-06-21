@@ -17,9 +17,10 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
+import static junit.framework.Assert.assertNull;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -33,6 +34,7 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
@@ -306,6 +308,19 @@ public class WorkflowEditorTest extends AbstractUITest {
         verify(ruleManager, never()).add(Mockito.any(RuleBaseElementId.class), Mockito.anyString());
         verify(workflowConverter, never()).convert(service.getCurrentWorkflow());
         tester.assertErrorMessages(errors);
+    }
+
+    @Test
+    public void removeWorkflow_shouldRemoveWorkflowFromService() throws PersistenceException {
+        service.createWorkflow("Workflow");
+        tester.startPage(WorkflowEditor.class);
+        FormTester createForm = tester.newFormTester("workflowRemoveForm");
+        createForm.submit();
+        assertNull(service.getCurrentWorkflow());
+        assertThat(service.getWorkflowNames().size(), equalTo(0));
+        ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
+        verify(workflowPersistence).remove(captor.capture());
+        assertThat((String) captor.getValue().get("name"), equalTo("Workflow"));
     }
 
     private void createWorkflow() {

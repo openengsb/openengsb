@@ -72,19 +72,19 @@
     <docbkx.xml.version>5.0-all</docbkx.xml.version>
     <jai.version>1.1.3</jai.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
-    <jaxb.version>2.2.1</jaxb.version>
-    <jaxb.wrapped.version>2.2.1.1_1</jaxb.wrapped.version>
+    <jaxb.version>2.2.3</jaxb.version>
+    <jaxb.wrapped.version>2.2.1.1_2</jaxb.wrapped.version>
     <axiom.version>1.2.10</axiom.version>
     <abdera.version>1.1.2</abdera.version>
-    <xmlsec.version>1.4.4_1</xmlsec.version>
+    <xmlsec.version>1.4.5_1</xmlsec.version>
     <xmlschema.version>2.0</xmlschema.version>
-    <cxf.version>2.4.0</cxf.version>
-    <jaxb.api.version>1.7.0</jaxb.api.version>
-    <jaxws.api.version>1.7.0</jaxws.api.version>
-    <jsr311.api.version>1.7.0</jsr311.api.version>
+    <cxf.version>2.4.1</cxf.version>
+    <jaxb.api.version>1.8.0</jaxb.api.version>
+    <jaxws.api.version>1.8.0</jaxws.api.version>
+    <jsr311.api.version>1.8.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <pax.exam.version>1.2.4</pax.exam.version>
-    <saaj.api.version>1.7.0</saaj.api.version>
+    <saaj.api.version>1.8.0</saaj.api.version>
     <saaj.impl.version>1.3.2_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
@@ -112,7 +112,7 @@
     <wicket.version>1.4.16</wicket.version>
     <wicket.wrapped.version>${wicket.version}.w1</wicket.wrapped.version>
     <pax.wicket.version>0.7.0-SNAPSHOT</pax.wicket.version>
-    <jackson.version>1.8.0</jackson.version>
+    <jackson.version>1.8.2</jackson.version>    
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
@@ -120,18 +120,15 @@
     <commons.io.version>2.0.1</commons.io.version>
     <commons.lang.version>2.6</commons.lang.version>
     <commons.compress.version>1.1</commons.compress.version>
-    <commons.pool.version>1.5.4_1</commons.pool.version>
-    <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <commons.discovery.version>0.2</commons.discovery.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <commons.vfs.version>20050307052300</commons.vfs.version>
     <commons.codec.version>1.4</commons.codec.version>
-    <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <cglib.version>2.1_3_6</cglib.version>
-    <asm.version>3.3_1</asm.version>
+    <asm.version>3.3_2</asm.version>
     <wsdl4j.version>1.6.2_3</wsdl4j.version>
     <jettison.version>1.3</jettison.version>
     <xmlbeans.version>2.4.0_4</xmlbeans.version>
@@ -157,7 +154,6 @@
     <jsch.wrapped.version>${jsch.version}.w1</jsch.wrapped.version>
     <jzlib.version>1.0.7</jzlib.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
-    <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
     <activemq.version>5.5.0</activemq.version>
     <dom4j.version>1.6.1</dom4j.version>
@@ -167,15 +163,14 @@
     <hamcrest.version>1.1</hamcrest.version>
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
-    <h2.version>1.1.116</h2.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.10.1</jgit.version>
+    <jgit.version>0.12.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6.2</joda.version>
     <xmltooling.version>1.3.1</xmltooling.version>
     <openws.version>1.4.1</openws.version>
     <opensaml.version>2.4.1_1</opensaml.version>
-    <wss4j.version>1.6.0</wss4j.version>
+    <wss4j.version>1.6.1</wss4j.version>
     <log4j.version>1.2.14</log4j.version>
     <lucene.version>2.4.1</lucene.version>
     <maven.code.version>3.0-alpha-2</maven.code.version>
@@ -186,6 +181,8 @@
     <servicemix.version>3.3.1</servicemix.version>
     <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
     <servicemix-specs-version>1.3.0</servicemix-specs-version>
+    <servicemix.serp.version>1.13.1_4</servicemix.serp.version>
+    <servicemix.dbcp.version>1.4_1</servicemix.dbcp.version>
     <slf4j.version>1.6.1</slf4j.version>
     <smack.version>3.1.0</smack.version>
     <spring.activemq.version>2.1</spring.activemq.version>
@@ -205,24 +202,27 @@
     <jdom.version>1.1_3</jdom.version>
     <geronimo.ejb.version>1.1</geronimo.ejb.version>
     <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
-    <geronimo.servlet.version>1.1.2</geronimo.servlet.version>
+    <geronimo.servlet.version>1.2</geronimo.servlet.version>
     <geronimo.annotation.version>1.1.1</geronimo.annotation.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+    <geronimo-spec-j2ee.1-5.version>2.0.0</geronimo-spec-j2ee.1-5.version>
     <geronimo.ws.metadata.version>1.1.3</geronimo.ws.metadata.version>
-    <stax.api.version>1.7.0</stax.api.version>
+    <geronimo.jpa2.version>1.1</geronimo.jpa2.version>
+    <geronimo.jta.version>1.1.1</geronimo.jta.version>
+    <geronimo.transaction.version>2.1.3</geronimo.transaction.version>
+    <stax.api.version>1.8.0</stax.api.version>
     <stax2.api.version>3.1.1</stax2.api.version>
     <staxex.version>1.0.0</staxex.version>
     <woodstox.version>4.1.1</woodstox.version>
     <neethi.version>3.0.0</neethi.version>
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
-    <javax.mail.version>1.4.1_3</javax.mail.version>
+    <javax.mail.version>1.4.1_4</javax.mail.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <quartz.version>1.5.2</quartz.version>
     <rome.version>0.5</rome.version>
     <woden.version>1.0.0M6</woden.version>
     <xml.apis.version>1.3.04</xml.apis.version>
-    <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
     <drools.version>5.1.1</drools.version>
     <fastinfoset.version>1.2.7_3</fastinfoset.version>
     <activation.api.version>1.7.0</activation.api.version>
@@ -238,6 +238,13 @@
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <jira.wrapped.version>4.0.0.w1</jira.wrapped.version>
     <junit.version>4.8.2</junit.version>
+    <commons.pool.version>1.5.5</commons.pool.version>
+    <commons.dbcp.version>1.4</commons.dbcp.version>
+    <openjpa.version>2.1.0</openjpa.version>
+    <h2.version>1.3.154</h2.version>
+    <aries.jpa.version>0.3</aries.jpa.version>
+    <aries.jndi.version>0.3</aries.jndi.version>
+    <aries.transaction.version>0.3</aries.transaction.version>
   </properties>
 
   <modules>
@@ -254,6 +261,11 @@
         <version>${guava.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${h2.version}</version>
+      </dependency>
+      <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons.collections.version}</version>
@@ -267,6 +279,11 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons.lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>${commons.pool.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -294,6 +311,46 @@
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>org.apache.aries.blueprint</artifactId>
         <version>${aries.blueprint.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.blueprint</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.manager</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.transaction</groupId>
+        <artifactId>org.apache.aries.transaction.wrappers</artifactId>
+        <version>${aries.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jndi</groupId>
+        <artifactId>org.apache.aries.jndi</artifactId>
+        <version>${aries.jndi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.api</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.container</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
+        <version>${aries.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.jpa</groupId>
+        <artifactId>org.apache.aries.jpa.container.context</artifactId>
+        <version>${aries.jpa.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.aries.proxy</groupId>
@@ -336,6 +393,31 @@
         <version>${geronimo.servlet.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jpa_2.0_spec</artifactId>
+        <version>${geronimo.jpa2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.1_spec</artifactId>
+        <version>${geronimo.jta.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        <version>${geronimo-spec-j2ee.1-5.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.components</groupId>
+        <artifactId>geronimo-transaction</artifactId>
+        <version>${geronimo.transaction.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>${openjpa.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.karaf.assemblies.features</groupId>
         <artifactId>standard</artifactId>
         <type>xml</type>
@@ -373,6 +455,16 @@
         <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+        <version>${servicemix.serp.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+        <version>${servicemix.dbcp.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.ops4j.pax.wicket</groupId>
         <artifactId>pax-wicket-service</artifactId>
         <version>${pax.wicket.version}</version>
@@ -380,7 +472,7 @@
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.wicket</groupId>
-  	    <artifactId>pax-wicket-test</artifactId>
+  	<artifactId>pax-wicket-test</artifactId>
         <version>${pax.wicket.version}</version>
         <scope>test</scope>
       </dependency>

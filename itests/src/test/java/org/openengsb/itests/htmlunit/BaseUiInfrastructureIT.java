@@ -19,7 +19,9 @@ package org.openengsb.itests.htmlunit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.io.File;
 
@@ -68,7 +70,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(sendEventpage.asText().contains("Current Project"));
         HtmlPage servicePage = testClient.getAnchorByText("Services").click();
         webClient.waitForBackgroundJavaScript(1000);
-//        assertTrue(servicePage.asText().contains("Services with state = Connecting"));
+        assertThat(servicePage.asText(), containsString("ONLINE"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();

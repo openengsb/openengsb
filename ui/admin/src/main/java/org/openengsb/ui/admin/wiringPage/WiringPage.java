@@ -20,7 +20,6 @@ package org.openengsb.ui.admin.wiringPage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -75,19 +74,19 @@ import org.slf4j.LoggerFactory;
 @AuthorizeInstantiation("ROLE_ADMIN")
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
-    
+
     @PaxWicketBean
     private WiringService wiringService;
 
     @PaxWicketBean
     private OsgiUtilsService serviceUtils;
-    
+
     @PaxWicketBean
     private ConnectorManager serviceManager;
-    
+
     @PaxWicketBean
     private RuleManager ruleManager;
-    
+
     @PaxWicketBean
     private ContextCurrentService contextService;
     
@@ -99,10 +98,10 @@ public class WiringPage extends BasePage {
     private CheckedTree contextList;
     private AjaxSubmitLink wireButton;
     private FeedbackPanel feedbackPanel;
-    
+
     private String globalName = "";
     private String instanceId = "";
-    
+
     public WiringPage() {
         initializeDomainChooseForm();
         initializeGlobalNameField();
@@ -136,13 +135,13 @@ public class WiringPage extends BasePage {
         domainChooseForm.add(domains);
         add(domainChooseForm);
     }
-    
+
     private void initializeGlobalNameField() {
         txtGlobalName = new TextField<String>("globalName");
         txtGlobalName.setOutputMarkupId(true);
         txtGlobalName.setMarkupId("globalName");
     }
-    
+
     private void initializeInstanceIdField() {
         txtInstanceId = new TextField<String>("instanceId");
         txtInstanceId.setOutputMarkupId(true);
@@ -150,7 +149,6 @@ public class WiringPage extends BasePage {
         txtInstanceId.setEnabled(false);
     }
 
-    
     private void initializeGlobals() {
         globals = new WiringSubjectTree("globals", txtGlobalName);
         globals.getTreeState().expandAll();
@@ -158,7 +156,7 @@ public class WiringPage extends BasePage {
         globals.setOutputMarkupPlaceholderTag(true);
         add(globals);
     }
-    
+
     private void initializeEndpoints() {
         endpoints = new WiringSubjectTree("endpoints", txtInstanceId);
         endpoints.getTreeState().expandAll();
@@ -180,11 +178,11 @@ public class WiringPage extends BasePage {
         wiringForm.setDefaultModel(new CompoundPropertyModel<Object>(this));
         wiringForm.add(txtGlobalName);
         wiringForm.add(txtInstanceId);
-        
+
         contextList = new CheckedTree("contextList", createContextModel());
         contextList.getTreeState().expandAll();
         wiringForm.add(contextList);
-        
+
         wireButton = new AjaxSubmitLink("wireButton", wiringForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -230,23 +228,23 @@ public class WiringPage extends BasePage {
             if (setLocation(globalName, context, description.getProperties())) {
                 updated = true;
                 info(new StringResourceModel("wiringSuccess", this, vmapModel).getString());
-                LOGGER.info("{} got wired with {} in context {}", 
-                    new Object[] { globalName, instanceId, context });
+                LOGGER.info("{} got wired with {} in context {}",
+                    new Object[]{ globalName, instanceId, context });
             } else {
                 info(new StringResourceModel("doubleWiring", this, vmapModel).getString());
-                LOGGER.info("{} already wired with {} in context {}", 
-                    new Object[] { globalName, instanceId, context });
+                LOGGER.info("{} already wired with {} in context {}",
+                    new Object[]{ globalName, instanceId, context });
             }
         }
         if (updated) {
             serviceManager.forceUpdate(connectorId, description);
         }
     }
-    
+
     /**
-     * returns true if location is not already set in the properties, otherwise false 
+     * returns true if location is not already set in the properties, otherwise false
      */
-    private boolean setLocation(String global, String context, Dictionary<String, Object> properties) {
+    private boolean setLocation(String global, String context, Map<String, Object> properties) {
         String locationKey = "location." + context;
         Object propvalue = properties.get(locationKey);
         if (propvalue == null) {
@@ -277,8 +275,8 @@ public class WiringPage extends BasePage {
         if (domainTypeOfGlobal != null) {
             if (!domainTypeOfGlobal.equals(domainTypeOfService)) {
                 info(new StringResourceModel("globalAlreadySet", this, null).getString());
-                LOGGER.info("cannot wire {} with {}, because {} has type {}", 
-                    new Object[] {globalName, instanceId, globalName, domainTypeOfGlobal});
+                LOGGER.info("cannot wire {} with {}, because {} has type {}",
+                    new Object[]{ globalName, instanceId, globalName, domainTypeOfGlobal });
                 return false;
             }
         } else {
@@ -289,7 +287,7 @@ public class WiringPage extends BasePage {
     }
 
     private String getDomainTypeOfServiceName(String domainName) {
-        Filter filter = 
+        Filter filter =
             serviceUtils.makeFilter(DomainProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainName));
         DomainProvider dp = (DomainProvider) serviceUtils.getService(filter);
         if (dp == null || dp.getDomainInterface() == null) {
@@ -334,19 +332,19 @@ public class WiringPage extends BasePage {
     @SuppressWarnings("serial")
     private IModel<? extends List<? extends Class<? extends Domain>>> createDomainListModel() {
         return new LoadableDetachableModel<List<? extends Class<? extends Domain>>>() {
-                @Override
-                protected List<? extends Class<? extends Domain>> load() {
-                    List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
-                    Collections.sort(serviceList, Comparators.forDomainProvider());
-                    List<Class<? extends Domain>> domains = new ArrayList<Class<? extends Domain>>();
-                    for (DomainProvider dp : serviceList) {
-                        domains.add(dp.getDomainInterface());
-                    }
-                    return domains;
+            @Override
+            protected List<? extends Class<? extends Domain>> load() {
+                List<DomainProvider> serviceList = serviceUtils.listServices(DomainProvider.class);
+                Collections.sort(serviceList, Comparators.forDomainProvider());
+                List<Class<? extends Domain>> domains = new ArrayList<Class<? extends Domain>>();
+                for (DomainProvider dp : serviceList) {
+                    domains.add(dp.getDomainInterface());
                 }
-            };
+                return domains;
+            }
+        };
     }
-    
+
     @SuppressWarnings("serial")
     private IModel<TreeModel> createGlobalTreeModel(final Class<? extends Domain> domainType) {
         return new LoadableDetachableModel<TreeModel>() {
@@ -365,7 +363,7 @@ public class WiringPage extends BasePage {
             }
         };
     }
-    
+
     @SuppressWarnings("serial")
     private IModel<TreeModel> createEndpointsModel(final Class<? extends Domain> domainType) {
         return new LoadableDetachableModel<TreeModel>() {
@@ -382,11 +380,11 @@ public class WiringPage extends BasePage {
             }
         };
     }
-    
+
     private TreeModel createContextModel() {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Contexts");
         for (String c : getAvailableContexts()) {
-            rootNode.add(new DefaultMutableTreeNode(c)); 
+            rootNode.add(new DefaultMutableTreeNode(c));
         }
         return new DefaultTreeModel(rootNode);
     }
@@ -414,16 +412,16 @@ public class WiringPage extends BasePage {
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
     }
-    
+
     @SuppressWarnings("serial")
     private class WiringSubjectTree extends LinkTree {
         private TextField<String> subject;
-        
+
         public WiringSubjectTree(String id, TextField<String> subject) {
             super(id);
             this.subject = subject;
         }
-        
+
         @Override
         protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
             DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
@@ -436,10 +434,10 @@ public class WiringPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-            if (this.getModelObject() == null) {
+            if (getModelObject() == null) {
                 return false;
             }
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModelObject().getRoot();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) getModelObject().getRoot();
             return root != null && !root.isLeaf();
         }
     }
@@ -447,7 +445,7 @@ public class WiringPage extends BasePage {
     @SuppressWarnings("serial")
     public static class CheckedTree extends LabelTree {
         private Map<String, IModel<Boolean>> checks = new HashMap<String, IModel<Boolean>>();
-        
+
         public CheckedTree(String id, TreeModel model) {
             super(id, model);
         }

@@ -53,6 +53,10 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/${geronimo.ws.metadata.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/${geronimo.jpa2.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${geronimo.jta.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.5_spec/${geronimo-spec-j2ee.1-5.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${stax.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxb-api-2.2/${jaxb.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/${saaj.api.version}</bundle>
@@ -98,7 +102,6 @@
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
@@ -111,7 +114,32 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-console/${project.version}</bundle>
   </feature>
 
-  <feature name="openengsb-infrastructure-jms" version="${project.version}" >
+  <feature name="openengsb-infrastructure-jpa" version="${project.version}">
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
+    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
+    <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
+    <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
+    <bundle>mvn:org.apache.geronimo.components/geronimo-transaction/${geronimo.transaction.version}</bundle>
+    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
+    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
+    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
+    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container.context/${aries.jpa.version}</bundle>
+    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
+    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
+    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
+    <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
+    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-edb" version="${project.version}">
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
+    <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-infrastructure-jms" version="${project.version}">
     <feature version="[5.5,6)">activemq-blueprint</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>

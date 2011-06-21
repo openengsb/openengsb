@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -114,7 +113,7 @@ public class ServiceEditorPanelTest {
 
     @Test
     public void containsInitialPropertiesFields() throws Exception {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", "42");
         props.put("foo", "bar");
         startEditorPanel(props, attribOption);
@@ -136,7 +135,7 @@ public class ServiceEditorPanelTest {
 
     @Test
     public void containsInitialPropertiesFieldsWithArray() throws Exception {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Map<String, Object> props = new Hashtable<String, Object>();
         props.put("testpropx", new String[]{ "42", "foo" });
         startEditorPanel(props, attribOption);
 
@@ -158,7 +157,7 @@ public class ServiceEditorPanelTest {
         return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
-    private void startEditorPanel(final Dictionary<String, Object> properties,
+    private void startEditorPanel(final Map<String, Object> properties,
             final AttributeDefinition... attributes) {
         editorValues = new HashMap<String, String>();
         defaultValues = new HashMap<String, String>();

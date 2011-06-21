@@ -25,10 +25,7 @@
     <!-- Allows us to use system properties as variables in this configuration file -->
   <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]"/>
   
-  <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl" init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
+  <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl" />
 
   <service ref="contextService">
     <interfaces>

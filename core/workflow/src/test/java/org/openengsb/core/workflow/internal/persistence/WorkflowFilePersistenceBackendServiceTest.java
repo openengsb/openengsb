@@ -43,29 +43,29 @@ import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
 public class WorkflowFilePersistenceBackendServiceTest {
 
     private WorkflowRepresentationConverter converter;
+    private String marshalled = "Marshalled";
+    private WorkflowFilePersistenceBackendService service;
+    private String folder;
 
     @Before
     public void setUp() {
         converter = mock(WorkflowRepresentationConverter.class);
+        folder = "target/test/" + System.currentTimeMillis();
+        System.setProperty("karaf.data", folder);
+        new File(folder).mkdirs();
+        createWorkflowFilePersistence();
+    }
+
+    public void createWorkflowFilePersistence() {
+        service = new WorkflowFilePersistenceBackendService(converter);
     }
 
     @Test
     public void testPersist_shouldWriteContentToCorrectFile() throws PersistenceException, FileNotFoundException {
-        WorkflowRepresentation representation = new WorkflowRepresentation();
         String name = "SomeWorkflow";
-        representation.setName(name);
-        setUp();
-        String marshalled = "Marshalled";
-        when(converter.marshallWorkflow(representation)).thenReturn(marshalled);
-        String folder = "target/test/" + System.currentTimeMillis();
-        System.setProperty("karaf.data", folder);
-        WorkflowFilePersistenceBackendService service = new WorkflowFilePersistenceBackendService(converter);
-        new File(folder).mkdirs();
-        ConfigItem<WorkflowRepresentation> config = new ConfigItem<WorkflowRepresentation>();
-        config.setContent(representation);
-        
-        service.persist(config);
-        
+
+        persistWorkflowToFile(name);
+
         File out = new File(folder + WorkflowFilePersistenceBackendService.PERSISTENCE_FOLDER + name);
         assertTrue(out.exists());
         Scanner s = new Scanner(out);
@@ -73,11 +73,21 @@ public class WorkflowFilePersistenceBackendServiceTest {
         assertFalse(s.hasNextLine());
     }
 
+    public void persistWorkflowToFile(String name) throws PersistenceException {
+        WorkflowRepresentation representation = new WorkflowRepresentation();
+        representation.setName(name);
+        setUp();
+        when(converter.marshallWorkflow(representation)).thenReturn(marshalled);
+
+        ConfigItem<WorkflowRepresentation> config = new ConfigItem<WorkflowRepresentation>();
+        config.setContent(representation);
+
+        service.persist(config);
+    }
+
     @Test
     public void testLoad_shouldLoadAllWorkflowsFromFolder() throws InvalidConfigurationException, PersistenceException {
         System.setProperty("karaf.data", "src/test/resources/");
-        WorkflowFilePersistenceBackendService service =
-            new WorkflowFilePersistenceBackendService(converter);
         WorkflowRepresentation rep1 = new WorkflowRepresentation();
         WorkflowRepresentation rep2 = new WorkflowRepresentation();
         String workflow1 = "Workflow1\nWorkflow1";
@@ -85,12 +95,24 @@ public class WorkflowFilePersistenceBackendServiceTest {
         when(converter.unmarshallWorkflow(workflow1)).thenReturn(rep1);
         when(converter.unmarshallWorkflow(workflow2)).thenReturn(rep2);
 
+        createWorkflowFilePersistence();
         List<ConfigItem<WorkflowRepresentation>> load = service.load(new HashMap<String, String>());
-        
+
         verify(converter).unmarshallWorkflow(workflow2);
         verify(converter).unmarshallWorkflow(workflow1);
         assertThat(load.size(), equalTo(2));
         assertThat(load.get(0).getContent(), sameInstance(rep1));
         assertThat(load.get(1).getContent(), sameInstance(rep2));
+    }
+
+    @Test
+    public void testRemove_shouldRemoveWorkflowFile() throws PersistenceException {
+        final String name = "Workflow";
+        persistWorkflowToFile(name);
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("name", name);
+        service.remove(hashMap);
+        final String[] list = new File(folder + WorkflowFilePersistenceBackendService.PERSISTENCE_FOLDER).list();
+        assertThat(list.length, equalTo(0));
     }
 }

@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.core</groupId>
@@ -41,11 +42,11 @@
   <packaging>bundle</packaging>
 
   <description>
-    Interfaces to be implemented by Domains, Connectors and Events which handle intatiation of Services 
-    and Proxies, classes for registration of bundles and services, classes for localization, classes that 
-    save connector properties (Persistence) and finally classes that enable the web application to have 
+    Interfaces to be implemented by Domains, Connectors and Events which handle intatiation of Services
+    and Proxies, classes for registration of bundles and services, classes for localization, classes that
+    save connector properties (Persistence) and finally classes that enable the web application to have
     access to OSGI bundles. This bundle contains only the model and interface descriptions of all those services.
-    In theory someone can take only a minor number of openengsb bundles, the api and create the rest of the 
+    In theory someone can take only a minor number of openengsb bundles, the api and create the rest of the
     system on his own.
   </description>
 
@@ -81,6 +82,23 @@
         </includes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>org.springframework.osgi.service.importer,
+              org.aopalliance.aop,
+              org.aopalliance.intercept,
+              org.springframework.aop,
+              org.springframework.aop.framework, *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>

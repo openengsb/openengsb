@@ -17,7 +17,6 @@
 
 package org.openengsb.ui.admin.connectorEditorPage;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -66,14 +65,14 @@ public class ConnectorEditorPage extends BasePage {
 
         private ConnectorServiceEditor(String id, String domainType, String connectorType,
                 List<AttributeDefinition> attributes, Map<String, String> attributeMap,
-                Dictionary<String, Object> properties, FormValidator validator) {
+                Map<String, Object> properties, FormValidator validator) {
             super(id, domainType, connectorType, attributes, attributeMap, properties, validator);
             createMode = true;
             this.attributeMap = attributeMap;
         }
 
         private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
-                Map<String, String> attributeMap, Dictionary<String, Object> properties, FormValidator validator) {
+                Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
             super(id, serviceId, attributes, attributeMap, properties, validator);
             createMode = false;
             this.attributeMap = attributeMap;
@@ -160,7 +159,7 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(def.getId(), value);
             }
         }
-        ConnectorDescription description = new ConnectorDescription(values);
+        ConnectorDescription description = new ConnectorDescription(values, null);
         editor =
             new ConnectorServiceEditor("editor", domainType, connectorType, attributes, description.getAttributes(),
                 description.getProperties(), descriptor.getFormValidator());

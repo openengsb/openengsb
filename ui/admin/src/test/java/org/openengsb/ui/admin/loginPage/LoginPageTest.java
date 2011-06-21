@@ -25,12 +25,12 @@ import java.util.List;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
-import org.openengsb.ui.admin.AbstractLogin;
+import org.openengsb.ui.admin.AbstractLoginTest;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.testClient.TestClient;
 
-public class LoginPageTest extends AbstractLogin {
+public class LoginPageTest extends AbstractLoginTest {
 
     @Test
     public void testLoginPageIsDisplayed() throws Exception {

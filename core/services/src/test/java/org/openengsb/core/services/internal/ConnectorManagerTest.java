@@ -94,7 +94,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -108,7 +108,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     public void testUpdateService_shouldUpdateInstance() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -128,7 +128,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.getValidationErrors(anyMap())).thenReturn(errorMessages);
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -156,7 +156,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.getValidationErrors(anyMap())).thenReturn(errorMessages);
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("answer", "42");
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -178,7 +178,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
 
         Map<String, String> attributes = new HashMap<String, String>();
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -216,7 +216,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
 
         Map<String, String> attributes = new HashMap<String, String>();
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
@@ -244,7 +244,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testDeleteService_shouldNotBeAvailableAnymore() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Map<String, Object> properties = new Hashtable<String, Object>();
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 

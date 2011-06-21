@@ -34,8 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.UUID;
 import java.util.Properties;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -64,13 +64,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     /*
-     * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources and use
-     * properties to configure them like this: ------------------------------------------ debug=true loglevel=INFO
-     * ------------------------------------------
+     * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
+     * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file.
      */
 
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
+
+    private boolean isBeforeExecuted = false;
 
     public enum SetupType {
             BLUEPRINT, SPRING, START_ONLY
@@ -89,6 +90,12 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Before
     public void before() throws Exception {
+        if (isBeforeExecuted) {
+            // Fix for test runner bug
+            return;
+        }
+        isBeforeExecuted = true;
+
         List<String> importantBundles = getImportantBundleSymbolicNames();
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
@@ -121,8 +128,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
         importantBundles.add("org.openengsb.core.security");
-        importantBundles.add("org.openengsb.infrastructure.jms");
-        importantBundles.add("org.openengsb.ports.jms");
         return importantBundles;
     }
 
@@ -248,9 +253,10 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "activemq-blueprint", "openengsb-connector-memoryauditing",
-                "openengsb-ports-jms", "openengsb-ui-admin"),
+                "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
+                    "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
             vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
             vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
