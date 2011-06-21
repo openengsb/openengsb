@@ -35,8 +35,6 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-
 public class ContextServiceImpl implements ContextCurrentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextServiceImpl.class);
@@ -53,21 +51,6 @@ public class ContextServiceImpl implements ContextCurrentService {
             return null;
         }
         return getContextById(currentContextId);
-    }
-
-    @Deprecated
-    @Override
-    public String getThreadLocalContext() {
-        return ContextHolder.get().getCurrentContextId();
-    }
-
-    @Deprecated
-    @Override
-    public void setThreadLocalContext(String contextId) {
-        ContextHolder.get().setCurrentContextId(contextId);
-        Context context = getContextById(contextId);
-        Preconditions.checkArgument(context != null, "No context exists for given context id");
-        ContextHolder.get().setCurrentContextId(contextId);
     }
 
     @Override
