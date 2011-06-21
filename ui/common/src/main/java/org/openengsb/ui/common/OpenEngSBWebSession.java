@@ -21,8 +21,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
-import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,17 +36,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * bridge to spring-security. Note: You must have an authenticationManager configured to start new sessions
  */
 @SuppressWarnings("serial")
-public class OpenEngSBWebSession extends AuthenticatedWebSession {
+public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 
-    @SpringBean(name = "authenticationManager")
-    private AuthenticationManager authenticationManager;
-
     public OpenEngSBWebSession(Request request) {
         super(request);
-        injectDependencies();
-        ensureDependenciesNotNull();
     }
 
     public static OpenEngSBWebSession get() {
@@ -56,16 +50,17 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
         } else {
             return null;
         }
-
     }
 
-    private void ensureDependenciesNotNull() {
-        if (authenticationManager == null) {
+    protected abstract AuthenticationManager getAuthenticationManager();
+    
+    protected void ensureDependenciesNotNull() {
+        if (getAuthenticationManager() == null) {
             throw new IllegalStateException("AdminSession requires an authenticationManager.");
         }
     }
 
-    private void injectDependencies() {
+    protected void injectDependencies() {
         InjectorHolder.getInjector().inject(this);
     }
 
@@ -73,7 +68,7 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
     public boolean authenticate(String username, String password) {
         boolean authenticated = false;
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            Authentication authentication = getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
                     username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();

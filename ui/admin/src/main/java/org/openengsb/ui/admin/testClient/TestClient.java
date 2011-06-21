@@ -54,7 +54,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -78,6 +77,7 @@ import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,13 +86,13 @@ public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    @SpringBean
+    @PaxWicketBean
     private WiringService wiringService;
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
-    @SpringBean
+    @PaxWicketBean
     private ConnectorManager serviceManager;
 
     private DropDownChoice<MethodId> methodList;

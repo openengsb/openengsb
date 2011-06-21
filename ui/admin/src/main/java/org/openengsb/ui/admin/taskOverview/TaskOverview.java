@@ -20,13 +20,13 @@ package org.openengsb.ui.admin.taskOverview;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class TaskOverview extends BasePage {
-    @SpringBean(name = "webtaskboxService")
+    @PaxWicketBean(name = "webtaskboxService")
     private WebTaskboxService taskboxService;
 
     public TaskOverview() {

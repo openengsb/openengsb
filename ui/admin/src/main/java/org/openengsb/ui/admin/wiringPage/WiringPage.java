@@ -54,7 +54,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Constants;
@@ -62,11 +61,13 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,17 +76,20 @@ import org.slf4j.LoggerFactory;
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
     
-    @SpringBean
+    @PaxWicketBean
     private WiringService wiringService;
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
     
-    @SpringBean
+    @PaxWicketBean
     private ConnectorManager serviceManager;
     
-    @SpringBean
+    @PaxWicketBean
     private RuleManager ruleManager;
+    
+    @PaxWicketBean
+    private ContextCurrentService contextService;
     
     private DropDownChoice<Class<? extends Domain>> domains;
     private LinkTree globals;
@@ -484,5 +488,9 @@ public class WiringPage extends BasePage {
             }
             return checked;
         }
+    }
+    
+    protected ContextCurrentService getContextService() {
+        return contextService;
     }
 }

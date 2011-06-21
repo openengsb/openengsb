@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -43,19 +42,20 @@ import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 import org.osgi.framework.Filter;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
 
-    @SpringBean
+    @PaxWicketBean
     private ConnectorManager serviceManager;
 
     private ServiceDescriptor descriptor;
 
     private ServiceEditor editor;
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
     @SuppressWarnings("serial")

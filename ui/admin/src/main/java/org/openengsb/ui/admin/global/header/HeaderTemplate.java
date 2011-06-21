@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -43,6 +42,7 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserService;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
@@ -51,7 +51,7 @@ public class HeaderTemplate extends Panel {
 
     private static String menuIndex;
 
-    @SpringBean(name = "openengsbVersion")
+    @PaxWicketBean(name = "openengsbVersion")
     private OpenEngSBVersion openengsbVersion;
 
     public HeaderTemplate(String id, String menuIndex) {

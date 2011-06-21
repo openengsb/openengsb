@@ -18,6 +18,10 @@
 package org.openengsb.ui.admin;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -31,10 +35,14 @@ import org.openengsb.ui.admin.userService.UserService;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
+import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 
 public class WicketApplication extends OpenEngSBWicketApplication {
 
-    public WicketApplication() {
+    private final ApplicationLifecycleListener lifecycleListener;
+    
+    public WicketApplication(ApplicationLifecycleListener lifecycleListener) {
+        this.lifecycleListener = lifecycleListener;
         @SuppressWarnings("unchecked")
         Class<? extends Page>[] pages =
             new Class[]{ OpenEngSBPage.class, BasePage.class, Index.class, TestClient.class, LoginPage.class,
@@ -52,5 +60,33 @@ public class WicketApplication extends OpenEngSBWicketApplication {
     @Override
     protected Class<? extends WebPage> getSignInPageClass() {
         return LoginPage.class;
+    }
+    
+    @Override
+    protected void addInjector() {
+        //a ComponentInitializationListener is set by pax-wicket
+    }
+
+    @Override
+    protected void init() {
+        setApplicationKey("openengsb");
+        lifecycleListener.onInit(this);
+        super.init();
+    }
+    
+    @Override
+    public Session newSession(Request request, Response response) {
+        return new AdminWebSession(request);
+    }
+
+    @Override
+    protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
+        return AdminWebSession.class;
+    }
+
+    @Override
+    protected void onDestroy() {
+        lifecycleListener.onDestroy(this);
+        super.onDestroy();
     }
 }

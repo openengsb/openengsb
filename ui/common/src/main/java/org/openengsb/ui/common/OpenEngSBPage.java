@@ -17,14 +17,11 @@
 
 package org.openengsb.ui.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +36,6 @@ public class OpenEngSBPage extends WebPage {
     public static final String CONTEXT_PARAM = "context";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
-
-    @SpringBean
-    protected ContextCurrentService contextService;
 
     public OpenEngSBPage() {
         initContextForCurrentThread();
@@ -58,31 +52,10 @@ public class OpenEngSBPage extends WebPage {
         }
     }
 
-    protected List<String> getAvailableContexts() {
-        if (contextService == null) {
-            return new ArrayList<String>();
-        }
-        return contextService.getAvailableContexts();
-    }
-
     protected final void initContextForCurrentThread() {
         String sessionContextId = ContextHolder.get().getCurrentContextId();
         if (sessionContextId == null) {
             sessionContextId = "foo";
-        }
-        try {
-            if (contextService != null) {
-                contextService.setThreadLocalContext(sessionContextId);
-            }
-        } catch (IllegalArgumentException e) {
-            LOGGER.debug("initialize default-values in contexts");
-            contextService.createContext(sessionContextId);
-            contextService.createContext(sessionContextId + "2");
-            contextService.setThreadLocalContext(sessionContextId);
-            contextService.putValue("domain/NotificationDomain/defaultConnector/id", "notification");
-            contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
-            contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
-            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         }
     }
 

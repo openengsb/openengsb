@@ -19,16 +19,16 @@ package org.openengsb.ui.admin.ruleEditorPage;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
-    @SpringBean
+    @PaxWicketBean
     private RuleManager ruleManager;
 
     public RuleEditorPage() {
