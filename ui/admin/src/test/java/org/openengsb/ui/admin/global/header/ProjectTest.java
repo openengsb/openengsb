@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -137,16 +136,12 @@ public class ProjectTest {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat(ContextHolder.get().getCurrentContextId(), is("foo"));
 
-        verify(contextService).setThreadLocalContext("foo");
-
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
-
         // simulated page reload...
         tester.startPage(new BasePage());
-        verify(contextService).setThreadLocalContext("bar");
+        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test

@@ -20,7 +20,6 @@ package org.openengsb.core.workflow;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -32,7 +31,6 @@ import org.junit.Test;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -146,8 +144,6 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         workflowService = new WorkflowServiceImpl();
         setupRulemanager();
         workflowService.setRulemanager(manager);
-        ContextCurrentService currentContext = mock(ContextCurrentService.class);
-        when(currentContext.getThreadLocalContext()).thenReturn("42");
         workflowService.setBundleContext(bundleContext);
     }
 

@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.model.ContextConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -70,18 +71,18 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
     private void createTestContextA() {
         cs.createContext("a");
-        cs.setThreadLocalContext("a");
+        ContextHolder.get().setCurrentContextId("a");
     }
 
     @Test
     public void testGetContext() throws Exception {
         cs.createContext("a");
         cs.createContext("b");
-        cs.setThreadLocalContext("a");
+        ContextHolder.get().setCurrentContextId("a");
         Callable<String> callable = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return cs.getThreadLocalContext();
+                return ContextHolder.get().getCurrentContextId();
             }
         };
         ExecutorService pool = Executors.newSingleThreadExecutor();
@@ -113,10 +114,10 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void getCurrentThreadContext() {
         createTestContextA();
-        assertThat(cs.getThreadLocalContext(), is("a"));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
-        cs.setThreadLocalContext("threadLocal");
-        assertThat("threadLocal", is(cs.getThreadLocalContext()));
+        ContextHolder.get().setCurrentContextId("threadLocal");
+        assertThat("threadLocal", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test(timeout = 5000)
@@ -127,7 +128,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
         Thread task1 = new Thread() {
             @Override
             public void run() {
-                cs.setThreadLocalContext("threadLocal");
+                ContextHolder.get().setCurrentContextId("threadLocal");
             }
         };
         task1.start();
@@ -136,7 +137,7 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
         Callable<String> otherTask = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return cs.getThreadLocalContext();
+                return ContextHolder.get().getCurrentContextId();
             }
         };
 
@@ -148,8 +149,8 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
     public void testChangeCurrentContext() throws Exception {
         createTestContextA();
         cs.createContext("x");
-        cs.setThreadLocalContext("x");
-        assertEquals("x", cs.getThreadLocalContext());
+        ContextHolder.get().setCurrentContextId("x");
+        assertEquals("x", ContextHolder.get().getCurrentContextId());
     }
 
     @Override

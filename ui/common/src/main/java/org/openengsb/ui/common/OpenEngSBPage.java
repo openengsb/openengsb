@@ -72,13 +72,13 @@ public class OpenEngSBPage extends WebPage {
         }
         try {
             if (contextService != null) {
-                contextService.setThreadLocalContext(sessionContextId);
+                ContextHolder.get().setCurrentContextId(sessionContextId);
             }
         } catch (IllegalArgumentException e) {
             LOGGER.debug("initialize default-values in contexts");
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
-            contextService.setThreadLocalContext(sessionContextId);
+            ContextHolder.get().setCurrentContextId(sessionContextId);
         }
     }
 

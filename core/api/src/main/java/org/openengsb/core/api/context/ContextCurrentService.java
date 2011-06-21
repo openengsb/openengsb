@@ -28,11 +28,13 @@ public interface ContextCurrentService extends ContextService {
      *
      * @throws IllegalArgumentException if {@code contextId} specifies a non-existing context.
      */
+    @Deprecated
     void setThreadLocalContext(String contextId);
 
     /**
      * Gets the thread-local context's {@code contextId}
      */
+    @Deprecated
     String getThreadLocalContext();
 
     /**
