@@ -35,10 +35,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.TaskboxException;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class TaskOverviewPanel extends Panel {
     private TaskDataProvider dataProvider = new TaskDataProvider();
     private Panel panel = new EmptyPanel("taskPanel");
 
-    @SpringBean(name = "webtaskboxService")
+    @PaxWicketBean(name = "webtaskboxService")
     private WebTaskboxService webtaskboxService;
 
     public TaskOverviewPanel(String id) {

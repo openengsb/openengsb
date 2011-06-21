@@ -24,16 +24,16 @@ import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.model.Task;
+import org.ops4j.pax.wicket.api.InjectorHolder;
+import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 
 @SuppressWarnings({ "serial" })
 public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Object> {
 
-    @SpringBean(name = "taskboxService")
+    @PaxWicketBean(name = "taskboxService")
     private TaskboxService taskboxService;
     private TaskFilter filter = TaskFilter.createTaskFilter();
     private List<Task> list;
