@@ -40,13 +40,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.UserNotFoundException;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
 import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.security.model.SimpleUser;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -108,21 +109,21 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
     @Test
     public void testToCreateUser_ShouldWork() throws Exception {
-        User user = new User("testUser1", "testPass");
+        UserDetails user = Users.create("testUser1", "testPass");
         userManager.createUser(user);
-        User loadUserByUsername = userManager.loadUserByUsername("testUser1");
+        UserDetails loadUserByUsername = userManager.loadUserByUsername("testUser1");
         assertThat(loadUserByUsername, is(user));
     }
 
     @Test(expected = UserExistsException.class)
     public void testToCreateUserWhichAlreadyExists_shouldNotWork() throws Exception {
-        User user = new User("testUser2", "testPass");
+        User user = Users.create("testUser2", "testPass");
         userManager.createUser(user);
     }
 
     @Test
     public void testToLoadAnExistingUser_ShouldWork() {
-        User user = userManager.loadUserByUsername("testUser2");
+        UserDetails user = userManager.loadUserByUsername("testUser2");
         assertThat(user.getUsername(), is("testUser2"));
     }
 
@@ -133,14 +134,14 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
     @Test
     public void updateUser_ShouldWork() throws Exception {
-        User userNew = new User("testUser2", "testPassNew");
+        User userNew = Users.create("testUser2", "testPassNew");
         userManager.updateUser(userNew);
         assertThat(userManager.loadUserByUsername("testUser2").getPassword(), is("testPassNew"));
     }
 
-    @Test(expected = UserNotFoundException.class)
+    @Test(expected = UsernameNotFoundException.class)
     public void updateNotExistingUser_ShouldThrowUserNotFoundException() throws Exception {
-        User userNew = new User("testUser1", "testPassNew");
+        User userNew = Users.create("testUser1", "testPassNew");
         userManager.updateUser(userNew);
     }
 
@@ -150,7 +151,7 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
         assertNull(entityManager.find(SimpleUser.class, "testUser3"));
     }
 
-    @Test(expected = UserNotFoundException.class)
+    @Test(expected = UsernameNotFoundException.class)
     public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws Exception {
         userManager.deleteUser("testUser1");
     }
@@ -169,7 +170,7 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
     @Test
     public void testGetAllUser_ShouldContain3Users() {
-        List<User> allUser = userManager.getAllUser();
-        assertThat(allUser, hasItems(testUser2.toSpringUser(), testUser3.toSpringUser()));
+        List<String> allUser = userManager.getUsernameList();
+        assertThat(allUser, hasItems(testUser2.getUsername(), testUser3.getUsername()));
     }
 }

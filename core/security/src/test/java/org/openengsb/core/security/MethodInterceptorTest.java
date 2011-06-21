@@ -29,7 +29,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
@@ -46,6 +46,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class MethodInterceptorTest extends AbstractOpenEngSBTest {
@@ -96,13 +98,14 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     private UserDetailsService createUserDetailsService() throws PersistenceException {
         UserDetailsService userDetailsService = mock(UserDetailsService.class);
-        User user =
-            new User(DEFAULT_USER, "password", Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
+        UserDetails user =
+            Users.create(DEFAULT_USER, "password",
+                Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
         when(userDetailsService.loadUserByUsername(DEFAULT_USER)).thenReturn(user);
 
         List<GrantedAuthority> adminAuthorities =
             Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN"));
-        User admin = new User("admin", "adminpw", adminAuthorities);
+        User admin = Users.create("admin", "adminpw", adminAuthorities);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
         return userDetailsService;
     }

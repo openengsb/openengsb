@@ -25,11 +25,11 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.openengsb.ui.admin.model.UsernamePassword;
 
 public class LoginPage extends BasePage {
-    private User user = new User(null);
+    private UsernamePassword user = new UsernamePassword();
 
     public LoginPage() {
         initContent();
@@ -37,7 +37,7 @@ public class LoginPage extends BasePage {
 
     private void initContent() {
         @SuppressWarnings("serial")
-        Form<User> loginForm = new Form<User>("loginForm") {
+        Form<UsernamePassword> loginForm = new Form<UsernamePassword>("loginForm") {
             @Override
             protected void onSubmit() {
                 AuthenticatedWebSession session = AuthenticatedWebSession.get();
@@ -54,7 +54,7 @@ public class LoginPage extends BasePage {
                 }
             }
         };
-        loginForm.setModel(new CompoundPropertyModel<User>(user));
+        loginForm.setModel(new CompoundPropertyModel<UsernamePassword>(user));
         add(loginForm);
         loginForm.add(new RequiredTextField<String>("username"));
         loginForm.add(new PasswordTextField("password"));

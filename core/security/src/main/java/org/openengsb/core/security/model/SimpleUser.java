@@ -25,7 +25,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.openjpa.persistence.PersistentCollection;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -112,12 +112,12 @@ public class SimpleUser {
         this.roles = roles;
     }
 
-    public User toSpringUser() {
+    public UserDetails toSpringUser() {
         if (roles == null) {
-            return new User(username, password);
+            return Users.create(username, password);
         }
         Collection<GrantedAuthority> authorities = convertToAuthorities(roles);
-        return new User(username, password, new ArrayList<GrantedAuthority>(authorities));
+        return Users.create(username, password, new ArrayList<GrantedAuthority>(authorities));
     }
 
 }

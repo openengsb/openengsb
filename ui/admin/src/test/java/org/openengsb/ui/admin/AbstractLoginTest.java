@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -29,13 +30,13 @@ import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
-import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.common.util.Users;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
 
 public abstract class AbstractLoginTest extends AbstractUITest {
 
@@ -56,12 +57,13 @@ public abstract class AbstractLoginTest extends AbstractUITest {
         ProviderManager authManager = new ProviderManager();
         List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        userManager = mock(UserManagerImpl.class);
+        userManager = mock(UserManager.class);
         provider.setUserDetailsService(userManager);
         providers.add(provider);
         authManager.setProviders(providers);
 
-        final User user = new User("test", "password");
+        final User user =
+            Users.create("test", "password", Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
         when(userManager.loadUserByUsername("test")).thenAnswer(new Answer<User>() {
             @Override
             public User answer(InvocationOnMock invocationOnMock) {
@@ -71,7 +73,7 @@ public abstract class AbstractLoginTest extends AbstractUITest {
         ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
         grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
         grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-        final User admin = new User("admin", "password", grantedAuthorities);
+        final User admin = Users.create("admin", "password", grantedAuthorities);
         when(userManager.loadUserByUsername("admin")).thenAnswer(new Answer<User>() {
             @Override
             public User answer(InvocationOnMock invocationOnMock) {

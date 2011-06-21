@@ -23,8 +23,8 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
@@ -51,15 +51,15 @@ public class UserDataInitializerBean {
     }
 
     public void doInit() {
-        if (userManager.getAllUser().isEmpty()) {
+        if (userManager.getUsernameList().isEmpty()) {
             List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
             auth.add(new GrantedAuthorityImpl("ROLE_USER"));
             auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-            userManager.createUser(new User("admin", "password", auth));
+            userManager.createUser(Users.create("admin", "password", auth));
 
             List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
             userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            userManager.createUser(new User("user", "password", userAuth));
+            userManager.createUser(Users.create("user", "password", userAuth));
         }
     }
 }
