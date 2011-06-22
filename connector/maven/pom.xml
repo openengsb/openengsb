@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.1.6.RELEASE</version>
+    <version>1.1.7-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
 
   <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-maven</artifactId>
-  <version>1.1.6.RELEASE</version>
+  <version>1.1.7-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Maven</name>
 
