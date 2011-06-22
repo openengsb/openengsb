@@ -32,10 +32,17 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.apache.openjpa.util.UnsupportedException;
+import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBCreateEvent;
+import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
@@ -377,5 +384,58 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
         dao = new DefaultJPADao(entityManager);
+    }
+
+    @Override
+    public void processEvent(Event event) throws EDBException {
+        LOGGER.debug("startet to process event in JPADatabase");
+        if (event instanceof EDBUpdateEvent) {
+            handleEDBUpdateEvent((EDBUpdateEvent) event);
+        } else if (event instanceof EDBCreateEvent) {
+            handleEDBCreateEvent((EDBCreateEvent) event);
+        } else if (event instanceof EDBDeleteEvent) {
+            handleEDBDeleteEvent((EDBDeleteEvent) event);
+        } else {
+            throw new UnsupportedException();
+        }
+    }
+
+    private void handleEDBCreateEvent(EDBCreateEvent event) throws EDBException {
+        LOGGER.debug("received create event " + event.getSavingName());
+
+        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
+        this.commit(commit);
+
+        LOGGER.debug("created object with name " + event.getSavingName());
+    }
+
+    private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        LOGGER.debug("received update event " + event.getSavingName());
+
+        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
+        this.commit(commit);
+
+        LOGGER.debug("updated object with name " + event.getSavingName());
+    }
+
+    private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
+        System.out.println("received delete event " + event.getSavingName());
+
+        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        commit.delete(event.getSavingName());
+
+        this.commit(commit);
+
+        System.out.println("deleted object with name " + event.getSavingName());
+    }
+
+    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String name) {
+        EDBObject object = new EDBObject(name);
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            object.put(entry.getKey(), entry.getValue());
+        }
+        return object;
     }
 }

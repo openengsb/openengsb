@@ -20,6 +20,8 @@ package org.openengsb.core.api.edb;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.Event;
+
 /**
  * Defines the connection to the enterprise database.
  */
@@ -120,4 +122,7 @@ public interface EnterpriseDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
+
+    /** processes an event. The Event must be of type CreateEvent, UpdateEvent or DeleteEvent */
+    void processEvent(Event event) throws EDBException;
 }
