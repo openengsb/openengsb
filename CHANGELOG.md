@@ -1,3 +1,30 @@
+openengsb-1.1.6.RELEASE 2011-06-22
+-------------------------------------------------------
+
+Release containing an upgrade to the latest openengsb-root and some minor fixes to various scripts. This release marks 
+the end of the active support of the 1.1.x series.
+
+### Highlihgts
+  * 
+
+### Details
+** Bug
+    * [OPENENGSB-1616] - README does not reflect the current state-of-the-art
+    * [OPENENGSB-1617] - NOTICE file should not be executable
+
+** Improvement
+    * [OPENENGSB-1619] - Reference to raw changelog instead of formatted on HP
+
+** Library Upgrade
+    * [OPENENGSB-1582] - Upgrade to openengsb-root-17
+    * [OPENENGSB-1621] - Upgrade to openengsb-root-18
+
+** Task
+    * [OPENENGSB-1560] - Release openengsb-1.1.6.RELEASE
+    * [OPENENGSB-1659] - create alterntive run-script without openengsb:provision
+    * [OPENENGSB-1660] - Add templates for eclipse and intellij to etc/
+
+
 openengsb-1.1.5.RELEASE 2011-05-13
 -------------------------------------------------------
 
