@@ -421,14 +421,14 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        System.out.println("received delete event " + event.getSavingName());
+        LOGGER.debug("received delete event " + event.getSavingName());
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
         commit.delete(event.getSavingName());
 
         this.commit(commit);
 
-        System.out.println("deleted object with name " + event.getSavingName());
+        LOGGER.debug("deleted object with name " + event.getSavingName());
     }
 
     private EDBObject convertModelToEDBObject(OpenEngSBModel model, String name) {
