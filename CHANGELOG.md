@@ -1,3 +1,29 @@
+openengsb-1.2.0.RELEASE 2011-06-22
+--------------------------------------------
+
+After five milestone and three RC releases the OpenEngSB team finally decides that openengsb-1.2.0.RELEASE is ready for
+the public. This release is based on the 1.2.x branch. Compared to our last stable version (1.1.x) we packed lots of new
+features, bug-fixes and improvements into this release. One of the most noticable features is that connectors could be
+configured via configuration files now. OpenEngSB 1.2.0 runs on Apache Karaf 2.2.1. In addition a root context had been
+added over the actual context approach. The Domain-services get replaced by DomainEndpointFactory reducing the required
+code to write by far. All exmaple connectors (csharp, python, ...) had been updated to the latest version. Domains and
+features had been extracted into own subprojects to increase the speed. To complete this step there is a new bundle
+project now containing all domains and connectors at once. Another important new point in the switch from 1.1.x to 1.2.x
+is that the old core-common project had been splitted into core-api, core-common and core-services allowing a cleaner
+update and reference approach. Webservices are supported now via CXF 2.4.1 and JMS via AMQ 5.5. Both allow a blueprint
+configuration of the endpoints. Enhancements and fixes where also added to the console, the admin-ui and the 
+documentation. In addition we've done a complete rewrite of the ServiceManager allowing a much cleaner connector-domain
+approach in 1.2.x. 
+
+### Details
+** New Feature
+    * [OPENENGSB-1745] - Add simple script to show the possible tags in submodule folders
+
+** Task
+    * [OPENENGSB-1611] - Release openengsb-1.2.0.RELEASE
+    * [OPENENGSB-1744] - Upgrade maven connector reference to openengsb-connector-maven-1.2.3
+
+
 openengsb-1.2.0.RC3 2011-06-18
 --------------------------------------------
 
@@ -65,7 +91,8 @@ also upgraded 17 libraries including CXF (2.4.1), OpenEngSB Root (18) and JGit (
 openengsb-1.2.0.RC2 2011-05-16
 --------------------------------------------
 
-Upgrade karaf to 2.2.1, fix various bugs in json, remoting, classloading, jms integration tests and increase documentation and examples.
+Upgrade karaf to 2.2.1, fix various bugs in json, remoting, classloading, jms integration tests and increase 
+documentation and examples.
 
 ### Highlights
   * Upgrade to karaf-2.2.1
@@ -334,7 +361,9 @@ enhancing the documentation and including new howtos.
 openengsb-1.2.0.M4 2011-03-23
 --------------------------------------------
 
-This milestone release contains various improvements and bugfixes. In addition the features packaing and the distribution has been completely refactored. In addition two new domains had been added and the exception model had been adapted.
+This milestone release contains various improvements and bugfixes. In addition the features packaing and the 
+distribution has been completely refactored. In addition two new domains had been added and the exception model had 
+been adapted.
 
 ### Highlights
   * Upgrade various libs to their latest versions
@@ -401,7 +430,9 @@ This milestone release contains various improvements and bugfixes. In addition t
 openengsb-1.2.0.M3 2011-03-09
 --------------------------------------------
 
-This milestone release contains many improvements in the manual and on the hompage and an upgrade and some upgrades to some core concepts. In addition many libraries where upgraded. You should really scan the detailed list to find if and mostly where this release affects you.
+This milestone release contains many improvements in the manual and on the hompage and an upgrade and some upgrades to 
+some core concepts. In addition many libraries where upgraded. You should really scan the detailed list to find if and 
+mostly where this release affects you.
 
 ### Highlights
   * Improved manual in various places
@@ -522,7 +553,8 @@ This milestone release contains many improvements in the manual and on the hompa
 openengsb-1.2.0.M2 2011-02-23
 --------------------------------------------
 
-Alhough a milestone release it only contains small changes with an upgrade to karaf-2.1.4, upgrade to equinox instead of felix and some minor enhancements and bugfixes.
+Alhough a milestone release it only contains small changes with an upgrade to karaf-2.1.4, upgrade to equinox instead 
+of felix and some minor enhancements and bugfixes.
 
 ### Highlights
   * Use Equinox instead of Felix
@@ -572,7 +604,8 @@ Alhough a milestone release it only contains small changes with an upgrade to ka
 openengsb-1.2.0.M1 2011-02-09
 --------------------------------------------
 
-Besides many bugfixes and minor improvements this release contains 9 dependency upgrades, the extraction of the openengsb-maven-plugin and the possibility to create connectors from configuration files.
+Besides many bugfixes and minor improvements this release contains 9 dependency upgrades, the extraction of the 
+openengsb-maven-plugin and the possibility to create connectors from configuration files.
 
 ### Highlights
   * Added connector deployer
