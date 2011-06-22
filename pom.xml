@@ -53,7 +53,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>1.1.6.RELEASE</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
