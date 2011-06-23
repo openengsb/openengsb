@@ -32,7 +32,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
-import org.apache.openjpa.util.UnsupportedException;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBCreateEvent;
@@ -75,7 +74,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
         Number max = dao.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
-            LOGGER.debug("loading JPA Head with timestamp " + max.longValue());
+            LOGGER.debug("loading JPA Head with timestamp {}", max.longValue());
             head = loadHead(max.longValue());
         }
     }
@@ -92,7 +91,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public JPACommit createCommit(String committer, String role) {
-        LOGGER.debug("creating commit for committer " + committer + " with role " + role);
+        LOGGER.debug("creating commit for committer {} with role {}", committer, role);
         return new JPACommit(committer, role);
     }
 
@@ -176,7 +175,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 utx.rollback();
                 break;
             default:
-                LOGGER.warn("unknown Transaction action: " + action.toString());
+                LOGGER.warn("unknown Transaction action: {}", action.toString());
                 break;
         }
     }
@@ -194,22 +193,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         if (number.longValue() <= 0) {
             throw new EDBException("the given oid " + oid + " was never commited to the database");
         }
-        LOGGER.debug("loading JPAObject with the oid " + oid + " and the timestamp " + number.longValue());
+        LOGGER.debug("loading JPAObject with the oid {} and the timestamp {}", oid, number.longValue());
         JPAObject temp = dao.getJPAObject(oid, number.longValue());
         return temp.getObject();
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
-        LOGGER.debug("loading history of JPAObject with the oid " + oid);
+        LOGGER.debug("loading history of JPAObject with the oid {}", oid);
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
         return generateEDBObjectList(jpa);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
-        LOGGER.debug("loading JPAObject with the oid " + oid + " from"
-                + " the timestamp " + from + " to the timestamp " + to);
+        LOGGER.debug("loading JPAObject with the oid {} from "
+                + "the timestamp {} to the timestamp {}", new Object[] { oid, from, to});
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
         return generateEDBObjectList(jpa);
     }
@@ -227,8 +226,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException {
-        LOGGER.debug("loading the log of JPAObject with the oid " + oid + " from"
-                + " the timestamp " + from + " to the timestamp " + to);
+        LOGGER.debug("loading the log of JPAObject with the oid {} from "
+                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
         List<EDBObject> history = getHistory(oid, from, to);
         List<JPACommit> commits = dao.getJPACommit(oid, from, to);
         if (history.size() != commits.size()) {
@@ -246,7 +245,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
      * loads the JPAHead with the given timestamp
      */
     private JPAHead loadHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the JPAHead with the timestamp " + timestamp);
+        LOGGER.debug("load the JPAHead with the timestamp {}", timestamp);
         return dao.getJPAHead(timestamp);
     }
 
@@ -257,7 +256,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> getHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the elements of the JPAHead with the timestamp " + timestamp);
+        LOGGER.debug("load the elements of the JPAHead with the timestamp {}", timestamp);
         JPAHead head = loadHead(timestamp);
         if (head != null) {
             return head.getEDBObjects();
@@ -267,7 +266,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("query for objects with key = " + key + " and value = " + value);
+        LOGGER.debug("query for objects with key = {} and value = {}", key, value);
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
         return query(queryMap);
@@ -396,39 +395,39 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         } else if (event instanceof EDBDeleteEvent) {
             handleEDBDeleteEvent((EDBDeleteEvent) event);
         } else {
-            throw new UnsupportedException();
+            throw new IllegalArgumentException();
         }
     }
 
     private void handleEDBCreateEvent(EDBCreateEvent event) throws EDBException {
-        LOGGER.debug("received create event " + event.getSavingName());
+        LOGGER.debug("received create event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
         this.commit(commit);
 
-        LOGGER.debug("created object with name " + event.getSavingName());
+        LOGGER.debug("created object with name {}", event.getSavingName());
     }
 
     private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        LOGGER.debug("received update event " + event.getSavingName());
+        LOGGER.debug("received update event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
         this.commit(commit);
 
-        LOGGER.debug("updated object with name " + event.getSavingName());
+        LOGGER.debug("updated object with name {}", event.getSavingName());
     }
 
     private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        LOGGER.debug("received delete event " + event.getSavingName());
+        LOGGER.debug("received delete event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
         commit.delete(event.getSavingName());
 
         this.commit(commit);
 
-        LOGGER.debug("deleted object with name " + event.getSavingName());
+        LOGGER.debug("deleted object with name {}", event.getSavingName());
     }
 
     private EDBObject convertModelToEDBObject(OpenEngSBModel model, String name) {
