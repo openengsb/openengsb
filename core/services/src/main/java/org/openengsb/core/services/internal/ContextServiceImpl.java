@@ -103,11 +103,13 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
         return rootContext.getChild(currentContextId);
     }
 
+    @Deprecated
     @Override
     public String getThreadLocalContext() {
         return ContextHolder.get().getCurrentContextId();
     }
 
+    @Deprecated
     @Override
     public void setThreadLocalContext(String contextId) {
         ContextHolder.get().setCurrentContextId(contextId);

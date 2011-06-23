@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.openengsb.core.api.context.Context;
 import org.openengsb.core.api.context.ContextConnectorService;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.context.ContextStorageBean;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceManager;
@@ -71,7 +72,7 @@ public class ContextServiceTest {
         result.add(new ContextStorageBean(null));
         when(persistence.query(any(ContextStorageBean.class))).thenReturn(result);
         cs.createContext("a");
-        cs.setThreadLocalContext("a");
+        ContextHolder.get().setCurrentContextId("a");
         Context c = cs.getContext();
         c.put("a", "a");
         Context child = c.createChild("child");
@@ -84,11 +85,11 @@ public class ContextServiceTest {
     public void testGetContext() throws Exception {
         cs.createContext("a");
         cs.createContext("b");
-        cs.setThreadLocalContext("a");
+        ContextHolder.get().setCurrentContextId("a");
         Callable<String> callable = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return cs.getThreadLocalContext();
+                return ContextHolder.get().getCurrentContextId();
             }
         };
         ExecutorService pool = Executors.newSingleThreadExecutor();
@@ -126,10 +127,10 @@ public class ContextServiceTest {
     @Test
     public void getCurrentThreadContext() {
         addTestData();
-        assertThat(cs.getThreadLocalContext(), is("a"));
+        assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
-        cs.setThreadLocalContext("threadLocal");
-        assertThat("threadLocal", is(cs.getThreadLocalContext()));
+        ContextHolder.get().setCurrentContextId("threadLocal");
+        assertThat("threadLocal", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test(timeout = 5000)
@@ -140,7 +141,7 @@ public class ContextServiceTest {
         Thread task1 = new Thread() {
             @Override
             public void run() {
-                cs.setThreadLocalContext("threadLocal");
+                ContextHolder.get().setCurrentContextId("threadLocal");
             }
         };
         task1.start();
@@ -149,7 +150,7 @@ public class ContextServiceTest {
         Callable<String> otherTask = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return cs.getThreadLocalContext();
+                return ContextHolder.get().getCurrentContextId();
             }
         };
 
@@ -213,8 +214,8 @@ public class ContextServiceTest {
     public void testChangeCurrentContext() throws Exception {
         addTestData();
         cs.createContext("x");
-        cs.setThreadLocalContext("x");
-        assertEquals("x", cs.getThreadLocalContext());
+        ContextHolder.get().setCurrentContextId("x");
+        assertEquals("x", ContextHolder.get().getCurrentContextId());
     }
 
     @Test

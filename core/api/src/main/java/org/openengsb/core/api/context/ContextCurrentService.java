@@ -25,19 +25,21 @@ import java.util.List;
 public interface ContextCurrentService extends ContextService {
     /**
      * Sets the the thread-local context identified by the given {@code contextId}.
-     *
+     * 
      * @throws IllegalArgumentException if {@code contextId} specifies a non-existing context.
      */
+    @Deprecated
     void setThreadLocalContext(String contextId);
 
     /**
      * Gets the thread-local context's {@code contextId}
      */
+    @Deprecated
     String getThreadLocalContext();
 
     /**
      * Creates a new empty context with the given {@code contextId}.
-     *
+     * 
      * @throws IllegalArgumentException if a context with the given id exists
      */
     void createContext(String contextId);
