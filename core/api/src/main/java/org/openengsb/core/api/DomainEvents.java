@@ -17,12 +17,22 @@
 
 package org.openengsb.core.api;
 
+import org.openengsb.core.api.edb.EDBCreateEvent;
+import org.openengsb.core.api.edb.EDBDeleteEvent;
+import org.openengsb.core.api.edb.EDBUpdateEvent;
+
 /**
  * Base interface all domain event interfaces have to implement to be available in the OpenEngSB environment. This is a
  * marker interface, which should be extended by interfaces of the respective domains. The methods of these domain event
  * interfaces should be of the form {@code raiseEvent(MyDomainSpecificEvent e)}. The methods can have additional
- * parameters, but the first parameter has to be a subclass of the {@link Event} class.
+ * parameters, but the first parameter has to be a subclass of the {@link Event} class. It has already the three basic
+ * events for EDB in it so that every domain can fire them as soon as it is created.
  */
 public interface DomainEvents {
 
+    void raiseEvent(EDBCreateEvent e);
+
+    void raiseEvent(EDBDeleteEvent e);
+
+    void raiseEvent(EDBUpdateEvent e);
 }
