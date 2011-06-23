@@ -21,6 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.edb.EDBEvent;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EnterpriseDatabaseService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -31,6 +34,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ForwardHandler.class);
     private WorkflowService workflowService;
+    private EnterpriseDatabaseService edbService;
 
     public ForwardHandler() {
         super(true);
@@ -40,13 +44,26 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
     public Object handleInvoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
         InvocationTargetException {
         checkMethod(method);
-        LOGGER.info("Forwarding event to workflow service");
-        try {
-            workflowService.processEvent((Event) args[0]);
-        } catch (WorkflowException e) {
-            throw new InvocationTargetException(e);
-        }
+        forwardEvent((Event) args[0]);
         return null;
+    }
+
+    private void forwardEvent(Event event) throws InvocationTargetException {
+        if (EDBEvent.class.isAssignableFrom(event.getClass())) {
+            LOGGER.info("Forwarding event to edb service");
+            try {
+                edbService.processEvent(event);
+            } catch (EDBException e) {
+                throw new InvocationTargetException(e);
+            }
+        } else {
+            LOGGER.info("Forwarding event to workflow service");
+            try {
+                workflowService.processEvent(event);
+            } catch (WorkflowException e) {
+                throw new InvocationTargetException(e);
+            }
+        }
     }
 
     private void checkMethod(Method method) {
@@ -68,6 +85,10 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setEdbService(EnterpriseDatabaseService edbService) {
+        this.edbService = edbService;
     }
 
 }
