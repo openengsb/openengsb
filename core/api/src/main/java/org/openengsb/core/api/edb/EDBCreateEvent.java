@@ -25,7 +25,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * name the model should be saved. Because this name should be unique, it is recommended to use a connector name + id
  * for the name.
  */
-public class EDBCreateEvent extends Event {
+public class EDBCreateEvent extends Event implements EDBEvent {
 
     private OpenEngSBModel model;
     private String savingName;

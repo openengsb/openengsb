@@ -23,7 +23,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 /**
  * Represents a update Event. Try to update an OpenEngSBModel object in the EDB under the given name.
  */
-public class EDBUpdateEvent extends Event {
+public class EDBUpdateEvent extends Event implements EDBEvent {
 
     private OpenEngSBModel model;
     private String savingName;
