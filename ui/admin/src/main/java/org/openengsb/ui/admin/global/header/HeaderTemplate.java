@@ -42,7 +42,7 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserService;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {

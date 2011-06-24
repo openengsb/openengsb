@@ -39,7 +39,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

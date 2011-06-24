@@ -17,9 +17,6 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
@@ -29,7 +26,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
@@ -37,13 +33,9 @@ import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWebSession;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class BasePage extends OpenEngSBPage {
-    
-    @PaxWicketBean
-    private ContextCurrentService contextService;
     
     public BasePage() {
         initCommonContent();
@@ -153,20 +145,5 @@ public class BasePage extends OpenEngSBPage {
             return contextId;
         }
         return contextId;
-    }
-    
-    protected List<String> getAvailableContexts() {
-        if (getContextService() == null) {
-            return new ArrayList<String>();
-        }
-        return getContextService().getAvailableContexts();
-    }
-    
-    /**
-     * Should be overidden by sub classes to provide an instance of ContextCurrentService.
-     * This is needed since pax wicket injector injects also super classes.
-     */
-    protected ContextCurrentService getContextService() {
-        return contextService;
     }
 }

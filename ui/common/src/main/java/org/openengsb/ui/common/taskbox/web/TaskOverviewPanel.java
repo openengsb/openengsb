@@ -38,7 +38,7 @@ import org.apache.wicket.model.Model;
 import org.openengsb.core.api.workflow.TaskboxException;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

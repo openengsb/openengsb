@@ -2,7 +2,7 @@ package org.openengsb.ui.admin;
 
 import org.apache.wicket.Request;
 import org.openengsb.ui.common.OpenEngSBWebSession;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.springframework.security.authentication.AuthenticationManager;
 
 @SuppressWarnings("serial")

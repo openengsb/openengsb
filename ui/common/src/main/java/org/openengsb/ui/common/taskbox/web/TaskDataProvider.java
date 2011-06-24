@@ -28,7 +28,7 @@ import org.apache.wicket.model.IModel;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.model.Task;
 import org.ops4j.pax.wicket.api.InjectorHolder;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings({ "serial" })
 public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator<Object> {

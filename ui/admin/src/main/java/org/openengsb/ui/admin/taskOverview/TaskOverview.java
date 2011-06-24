@@ -22,7 +22,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class TaskOverview extends BasePage {

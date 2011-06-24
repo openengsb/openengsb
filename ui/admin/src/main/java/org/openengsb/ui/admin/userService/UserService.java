@@ -47,7 +47,7 @@ import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 

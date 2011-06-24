@@ -60,13 +60,12 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,9 +86,6 @@ public class WiringPage extends BasePage {
     @PaxWicketBean
     private RuleManager ruleManager;
 
-    @PaxWicketBean
-    private ContextCurrentService contextService;
-    
     private DropDownChoice<Class<? extends Domain>> domains;
     private LinkTree globals;
     private LinkTree endpoints;
@@ -489,9 +485,5 @@ public class WiringPage extends BasePage {
             }
             return checked;
         }
-    }
-    
-    protected ContextCurrentService getContextService() {
-        return contextService;
     }
 }

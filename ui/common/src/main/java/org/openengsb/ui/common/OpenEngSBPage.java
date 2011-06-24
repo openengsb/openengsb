@@ -17,11 +17,14 @@
 
 package org.openengsb.ui.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,9 @@ public class OpenEngSBPage extends WebPage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
+    @PaxWicketBean
+    private ContextCurrentService contextService;
+
     public OpenEngSBPage() {
         initContextForCurrentThread();
     }
@@ -50,6 +56,13 @@ public class OpenEngSBPage extends WebPage {
             LOGGER.debug("setting context-id from pageparameter: {}", contextId);
             ContextHolder.get().setCurrentContextId(contextId);
         }
+    }
+
+    protected List<String> getAvailableContexts() {
+        if (contextService == null) {
+            return new ArrayList<String>();
+        }
+        return contextService.getAvailableContexts();
     }
 
     protected final void initContextForCurrentThread() {

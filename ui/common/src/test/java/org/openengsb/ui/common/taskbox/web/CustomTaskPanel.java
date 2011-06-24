@@ -33,7 +33,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.Task;
-import org.ops4j.pax.wicket.util.proxy.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 public class CustomTaskPanel extends Panel {
     private static final long serialVersionUID = -1163492145404543013L;
