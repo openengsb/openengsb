@@ -78,10 +78,6 @@ public class OpenEngSBPage extends WebPage {
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
             ContextHolder.get().setCurrentContextId(sessionContextId);
-            contextService.putValue("domain/NotificationDomain/defaultConnector/id", "notification");
-            contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
-            contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
-            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         }
     }
 

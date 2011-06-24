@@ -50,7 +50,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-
         assertNotNull(serviceWithId);
     }
 
@@ -60,7 +59,20 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
-        template.convertAndSend("receive", getRequest("12345"));
+        String request = getRequest("12345");
+        template.convertAndSend("receive", request);
+        String result = (String) template.receiveAndConvert("12345");
+        assertThat(result, containsString("The answer to life the universe and everything"));
+    }
+
+    @Test
+    public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
+        addWorkflow("simpleFlow");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        JmsTemplate template = new JmsTemplate(cf);
+        String request = getFilterRequest("12345");
+        template.convertAndSend("receive", request);
         String result = (String) template.receiveAndConvert("12345");
 
         assertThat(result, containsString("The answer to life the universe and everything"));

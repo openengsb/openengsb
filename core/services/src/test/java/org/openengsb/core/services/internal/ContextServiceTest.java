@@ -20,17 +20,12 @@ package org.openengsb.core.services.internal;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,47 +33,47 @@ import java.util.concurrent.Future;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.context.Context;
-import org.openengsb.core.api.context.ContextConnectorService;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.context.ContextStorageBean;
+import org.openengsb.core.api.model.ContextConfiguration;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.osgi.framework.Bundle;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.BundleContext;
 
-public class ContextServiceTest {
+public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
+    private DefaultOsgiUtilsService serviceUtils;
     private ContextCurrentService cs;
-
-    private PersistenceService persistence;
 
     @Before
     public void setup() {
+        registerConfigPersistence();
         ContextServiceImpl cs = new ContextServiceImpl();
         cs.setBundleContext(mock(BundleContext.class));
-        persistence = mock(PersistenceService.class);
-        PersistenceManager persistenceManager = mock(PersistenceManager.class);
-        when(persistenceManager.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistence);
-        cs.setPersistenceManager(persistenceManager);
-        cs.init();
         this.cs = cs;
     }
 
-    private void addTestData() {
-        List<ContextStorageBean> result = new ArrayList<ContextStorageBean>();
-        result.add(new ContextStorageBean(null));
-        when(persistence.query(any(ContextStorageBean.class))).thenReturn(result);
+    private void registerConfigPersistence() {
+        final CorePersistenceServiceBackend persistenceBackend = new CorePersistenceServiceBackend();
+        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        persistenceBackend.setPersistenceManager(persistenceManager);
+        persistenceBackend.setBundleContext(bundleContext);
+        persistenceBackend.init();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.CONFIGURATION_ID, ContextConfiguration.TYPE_ID);
+        props.put(Constants.BACKEND_ID, "dummy");
+        registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
+    }
+
+    private void createTestContextA() {
         cs.createContext("a");
         ContextHolder.get().setCurrentContextId("a");
-        Context c = cs.getContext();
-        c.put("a", "a");
-        Context child = c.createChild("child");
-        child.put("b", "b");
-        Context child2 = child.createChild("child2");
-        child2.put("c", "c");
     }
 
     @Test
@@ -98,27 +93,21 @@ public class ContextServiceTest {
     }
 
     @Test
-    public void testContextIsCreated_shouldWork() throws PersistenceException {
-        verify(persistence).create(any(ContextStorageBean.class));
-    }
-
-    @Test
     public void getEmptyAvailableContexts() {
         assertThat(cs.getAvailableContexts().size(), is(0));
     }
 
     @Test
     public void getSingleAvailableContexts() {
-        addTestData();
+        createTestContextA();
         assertThat(cs.getAvailableContexts().size(), is(1));
         assertThat(cs.getAvailableContexts().get(0), is("a"));
     }
 
     @Test
     public void getAvailableContextsWithCreate() throws PersistenceException {
-        addTestData();
+        createTestContextA();
         cs.createContext("temp");
-        verify(persistence, atLeast(1)).update(any(ContextStorageBean.class), any(ContextStorageBean.class));
         assertThat(cs.getAvailableContexts().contains("a"), is(true));
         assertThat(cs.getAvailableContexts().contains("temp"), is(true));
         assertThat(cs.getAvailableContexts().size(), is(2));
@@ -126,7 +115,7 @@ public class ContextServiceTest {
 
     @Test
     public void getCurrentThreadContext() {
-        addTestData();
+        createTestContextA();
         assertThat(ContextHolder.get().getCurrentContextId(), is("a"));
         cs.createContext("threadLocal");
         ContextHolder.get().setCurrentContextId("threadLocal");
@@ -135,7 +124,7 @@ public class ContextServiceTest {
 
     @Test(timeout = 5000)
     public void contextIsLocalToCurrentThread() throws Exception {
-        addTestData();
+        createTestContextA();
         cs.createContext("threadLocal");
         assertThat(cs.getContext(), notNullValue());
         Thread task1 = new Thread() {
@@ -159,81 +148,18 @@ public class ContextServiceTest {
     }
 
     @Test
-    public void pathIsRootSlash_shouldReturnRootContext() {
-        addTestData();
-        assertThat(cs.getContext("/").get("a"), is("a"));
-    }
-
-    @Test
-    public void pathWithRootSlash_shouldResolveFromRoot() {
-        addTestData();
-        assertThat(cs.getContext("/child").get("b"), is("b"));
-    }
-
-    @Test
-    public void pathWithoutRootSlash_shouldResolveFromRoot() {
-        addTestData();
-        assertThat(cs.getContext("child").get("b"), is("b"));
-        assertThat(cs.getContext("child/").get("b"), is("b"));
-    }
-
-    @Test
-    public void pathWithMultipleLevels_shouldResolveToLevel() {
-        addTestData();
-        assertThat(cs.getContext("/child/child2").get("c"), is("c"));
-    }
-
-    @Test
-    public void putValueWithDeepPath_shouldSetRightChildValue() {
-        addTestData();
-        cs.putValue("/child/child2/new", "new");
-        assertThat(cs.getContext().getChild("child").getChild("child2").get("new"), is("new"));
-    }
-
-    @Test
-    public void getValueWithDeepPath_shouldReturnRightChildValue() {
-        addTestData();
-        assertThat(cs.getValue("/child/child2/c"), is("c"));
-    }
-
-    @Test
-    public void getValueWithNonExistingPath_shouldReturnNull() {
-        addTestData();
-        assertThat(cs.getValue("/non-existing/path"), nullValue());
-    }
-
-    @Test
-    public void putValueWithNonExistingInnerPath_shouldCreatePathAndPutValue() throws PersistenceException {
-        addTestData();
-        cs.putValue("/non-existing/path/and/key", "a");
-        verify(persistence, atLeast(1)).update(any(ContextStorageBean.class), any(ContextStorageBean.class));
-        assertThat(cs.getValue("/non-existing/path/and/key"), is("a"));
-    }
-
-    @Test
     public void testChangeCurrentContext() throws Exception {
-        addTestData();
+        createTestContextA();
         cs.createContext("x");
         ContextHolder.get().setCurrentContextId("x");
         assertEquals("x", ContextHolder.get().getCurrentContextId());
     }
 
-    @Test
-    public void testRegisterDefaultConnector() throws Exception {
-        addTestData();
-        ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
-        /*
-         * Forwardhandler expects the value at this path
-         */
-        String value = cs.getValue("/domain/mydomain/defaultConnector/id");
-        assertThat(value, is("myservice"));
-    }
-
-    @Test
-    public void getDefaultConnector() throws Exception {
-        addTestData();
-        ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
-        String defaultConnectorServiceId = ((ContextConnectorService) cs).getDefaultConnectorServiceId("mydomain");
-        assertThat(defaultConnectorServiceId, is("myservice"));
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        serviceUtils = new DefaultOsgiUtilsService();
+        serviceUtils.setBundleContext(bundleContext);
+        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
+        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
     }
 }

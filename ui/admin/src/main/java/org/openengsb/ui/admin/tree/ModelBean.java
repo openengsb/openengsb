@@ -48,20 +48,6 @@ public class ModelBean implements Serializable {
         }
     }
 
-    public String getValue() {
-        return contextService.getValue(key);
-    }
-
-    public void setValue(String value) {
-        if (isLeaf) {
-            String pushValue = "";
-            if (value != null) {
-                pushValue = value;
-            }
-            contextService.putValue(key, pushValue);
-        }
-    }
-
     public boolean isLeaf() {
         return isLeaf;
     }

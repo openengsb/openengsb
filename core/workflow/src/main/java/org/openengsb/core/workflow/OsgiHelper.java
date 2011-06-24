@@ -19,19 +19,12 @@ package org.openengsb.core.workflow;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.remote.MethodCall;
-import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 
 public final class OsgiHelper {
-
-    @SuppressWarnings("unused")
-    private static ContextCurrentService contextService;
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e)
         throws PortNotAvailableException {
@@ -40,15 +33,8 @@ public final class OsgiHelper {
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, Map<String, String> metaData)
         throws PortNotAvailableException {
-        OutgoingPort port;
-        try {
-            port = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, portId);
-        } catch (OsgiServiceNotAvailableException e1) {
-            throw new PortNotAvailableException("Port with id " + portId + " not available", e1);
-        }
-        MethodCall call =
-            new MethodCall("processRemoteEvent", new Object[]{ e }, metaData, UUID.randomUUID().toString(), true, null);
-        port.send(destination, call);
+        MethodCall methodCall = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
+        OpenEngSBCoreServices.getOutgoingPortUtilService().sendMethodCall(portId, destination, methodCall);
     }
 
     public static void sendRemoteEvent(String portId, String destination, RemoteEvent e, String serviceId)
@@ -56,10 +42,6 @@ public final class OsgiHelper {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", serviceId);
         sendRemoteEvent(portId, destination, e, metaData);
-    }
-
-    public static void setContextService(ContextCurrentService contextService) {
-        OsgiHelper.contextService = contextService;
     }
 
     private OsgiHelper() {
