@@ -71,7 +71,7 @@ public class OpenEngSBPage extends WebPage {
             sessionContextId = "foo";
         }
 
-        if (contextService != null && contextService.getAvailableContexts().contains(sessionContextId)) {
+        if (this.getAvailableContexts().contains(sessionContextId)) {
             ContextHolder.get().setCurrentContextId(sessionContextId);
         } else {
             LOGGER.debug("initialize default-values in contexts");
