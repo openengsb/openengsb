@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
@@ -73,7 +74,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
             contextService.createContext(CONTEXT);
         }
-        contextService.setThreadLocalContext(CONTEXT);
+        ContextHolder.get().setCurrentContextId(CONTEXT);
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class);
