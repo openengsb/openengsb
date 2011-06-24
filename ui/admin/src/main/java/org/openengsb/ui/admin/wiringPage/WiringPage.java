@@ -372,8 +372,11 @@ public class WiringPage extends BasePage {
                 DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Domain endpoints");
                 if (domainType != null) {
                     for (Domain d : wiringService.getDomainEndpoints(domainType, "*")) {
-                        DefaultMutableTreeNode child = new DefaultMutableTreeNode(d.getInstanceId());
-                        rootNode.add(child);
+                        String id = d.getInstanceId();
+                        if (id !=null ) {
+                            DefaultMutableTreeNode child = new DefaultMutableTreeNode(id);
+                            rootNode.add(child);
+                        }
                     }
                 }
                 return new DefaultTreeModel(rootNode);
