@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
@@ -81,7 +82,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         contextService.createContext("42");
-        contextService.setThreadLocalContext("42");
+        ContextHolder.get().setCurrentContextId("42");
 
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };

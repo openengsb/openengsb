@@ -58,11 +58,13 @@ public class ContextServiceImpl implements ContextCurrentService {
         return getContextById(currentContextId);
     }
 
+    @Deprecated
     @Override
     public String getThreadLocalContext() {
         return ContextHolder.get().getCurrentContextId();
     }
 
+    @Deprecated
     @Override
     public void setThreadLocalContext(String contextId) {
         ContextHolder.get().setCurrentContextId(contextId);

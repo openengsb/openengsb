@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
  * time. In order for this page to work, a spring-bean of the class
- *
+ * 
  * @link{org.openengsb.core.common.context.ContextCurrentService must be available
  */
 public class OpenEngSBPage extends WebPage {
@@ -70,21 +70,20 @@ public class OpenEngSBPage extends WebPage {
         if (sessionContextId == null) {
             sessionContextId = "foo";
         }
-        try {
-            if (contextService != null) {
-                contextService.setThreadLocalContext(sessionContextId);
-            }
-        } catch (IllegalArgumentException e) {
+
+        if (this.getAvailableContexts().contains(sessionContextId)) {
+            ContextHolder.get().setCurrentContextId(sessionContextId);
+        } else {
             LOGGER.debug("initialize default-values in contexts");
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
-            contextService.setThreadLocalContext(sessionContextId);
+            ContextHolder.get().setCurrentContextId(sessionContextId);
         }
     }
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();
