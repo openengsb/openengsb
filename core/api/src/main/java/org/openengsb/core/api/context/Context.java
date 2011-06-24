@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
  */
 public class Context {
 
+    private String id;
     private Map<String, String> values = new TreeMap<String, String>();
     private Map<String, Context> children = new TreeMap<String, Context>();
 
@@ -100,6 +101,14 @@ public class Context {
         Preconditions.checkNotNull(nameOrKey, "name or key for removal is null");
         values.remove(nameOrKey);
         children.remove(nameOrKey);
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     @Override

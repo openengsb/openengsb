@@ -20,12 +20,13 @@ package org.openengsb.core.workflow;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.remote.MethodCall;
+import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.workflow.EventRegistrationService;
@@ -74,13 +75,13 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                        requestHandler.handleCall((MethodCall) invocation.getArguments()[1]);
+                        requestHandler.handleCall(((MethodCallRequest) invocation.getArguments()[0]).getMethodCall());
                     };
                 };
                 executorService.execute(runnable);
                 return null;
             }
-        }).when(outgoingPort).send(any(String.class), any(MethodCall.class));
+        }).when(outgoingPort).send(any(MethodCallRequest.class));
     }
 
     private RequestHandler getRequestHandler() {
@@ -109,7 +110,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", "test://localhost");
         service.processEvent(new TestEvent());
-        verify(outgoingPort).send(eq("test://localhost"), any(MethodCall.class));
+        verify(outgoingPort, timeout(5000)).send(any(MethodCallRequest.class));
     }
 
     @Test
@@ -122,18 +123,25 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testRegisterEvent_shouldProcessRemoteEvent() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        trackInvocations((DummyExampleDomain) domains.get("example"), latch).doSomething("it works");
+
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
+        assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
+
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
-        verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
     }
 
     @Test
     public void testRegisterMultipleEvents_shouldOnlyProcessOneEvent() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        trackInvocations((DummyExampleDomain) domains.get("example"), latch).doSomething("it works");
+
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         RemoteEvent reg2 = new RemoteEvent(TestEvent.class.getName());
@@ -144,9 +152,21 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
+
+        assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
+
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
-        verify((DummyExampleDomain) domains.get("example")).doSomething("it works");
+    }
+
+    private <T> T trackInvocations(T mock, final CountDownLatch latch) {
+        return doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                latch.countDown();
+                return null;
+            }
+        }).when(mock);
     }
 
 }

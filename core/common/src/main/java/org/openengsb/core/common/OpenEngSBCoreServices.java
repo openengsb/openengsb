@@ -22,6 +22,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.osgi.framework.Filter;
 
 /**
@@ -76,6 +77,10 @@ public final class OpenEngSBCoreServices {
      */
     public static void setOsgiServiceUtils(OsgiUtilsService serviceUtils) throws OsgiServiceNotAvailableException {
         OpenEngSBCoreServices.serviceUtils = serviceUtils.getOsgiServiceProxy(OsgiUtilsService.class);
+    }
+
+    public static OutgoingPortUtilService getOutgoingPortUtilService() throws OsgiServiceNotAvailableException {
+        return serviceUtils.getOsgiServiceProxy(OutgoingPortUtilService.class);
     }
 
 }
