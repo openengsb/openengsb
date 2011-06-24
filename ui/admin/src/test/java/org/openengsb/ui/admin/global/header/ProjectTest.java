@@ -139,11 +139,9 @@ public class ProjectTest {
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
-
         // simulated page reload...
         tester.startPage(new BasePage());
-        assertThat(ContextHolder.get().getCurrentContextId(), is("bar"));
+        assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
 
     @Test

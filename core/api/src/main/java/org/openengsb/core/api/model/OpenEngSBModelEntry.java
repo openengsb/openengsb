@@ -15,37 +15,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.tree;
+package org.openengsb.core.api.model;
 
-import java.io.Serializable;
+/**
+ * Simple Model Entry class. Every model entry has three fields: key, value and type. Key defines the id, value is
+ * the value for the key and type defines the type of the value.
+ */
+public class OpenEngSBModelEntry {
+    private String key;
+    private Object value;
+    private Class<?> type;
 
-import org.openengsb.core.api.context.ContextHolder;
-
-@SuppressWarnings("serial")
-public class ModelBean implements Serializable {
-
-    private final String key;
-    private final boolean isLeaf;
-
-    public ModelBean(String key, boolean isLeaf) {
+    public OpenEngSBModelEntry(String key, Object value, Class<?> type) {
         this.key = key;
-        this.isLeaf = isLeaf;
+        this.value = value;
+        this.type = type;
     }
 
     public String getKey() {
         return key;
     }
 
-    public String getNiceKey() {
-        String[] path = key.split("/");
-        if (path.length - 1 >= 0) {
-            return path[path.length - 1];
-        } else {
-            return ContextHolder.get().getCurrentContextId();
-        }
+    public Object getValue() {
+        return value;
     }
 
-    public boolean isLeaf() {
-        return isLeaf;
+    public Class<?> getType() {
+        return type;
     }
+
 }
+

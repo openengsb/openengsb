@@ -15,37 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.tree;
+package org.openengsb.core.api.model;
 
-import java.io.Serializable;
+import java.util.List;
 
-import org.openengsb.core.api.context.ContextHolder;
+/**
+ * Represents a generic model which should be used by any model data in the domains. With this model it is possible
+ * to use one model for all kinds of domain model data. The function here defined should convert any specific domain
+ * tool data into our most generic model type.
+ */
+public interface OpenEngSBModel {
 
-@SuppressWarnings("serial")
-public class ModelBean implements Serializable {
-
-    private final String key;
-    private final boolean isLeaf;
-
-    public ModelBean(String key, boolean isLeaf) {
-        this.key = key;
-        this.isLeaf = isLeaf;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getNiceKey() {
-        String[] path = key.split("/");
-        if (path.length - 1 >= 0) {
-            return path[path.length - 1];
-        } else {
-            return ContextHolder.get().getCurrentContextId();
-        }
-    }
-
-    public boolean isLeaf() {
-        return isLeaf;
-    }
+    /**
+     * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific
+     * domain.
+     */
+    List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
 }
+
