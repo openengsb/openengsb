@@ -133,6 +133,11 @@
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
   </feature>
 
+  <feature name="openengsb-ekb" version="${project.version}">
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
+  </feature>
+
   <feature name="openengsb-edb" version="${project.version}">
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
