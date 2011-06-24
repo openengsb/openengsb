@@ -20,6 +20,7 @@ package org.openengsb.ui.admin.tree;
 import java.io.Serializable;
 
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 
 @SuppressWarnings("serial")
 public class ModelBean implements Serializable {
@@ -43,7 +44,7 @@ public class ModelBean implements Serializable {
         if (path.length - 1 >= 0) {
             return path[path.length - 1];
         } else {
-            return contextService.getThreadLocalContext();
+            return ContextHolder.get().getCurrentContextId();
         }
     }
 
