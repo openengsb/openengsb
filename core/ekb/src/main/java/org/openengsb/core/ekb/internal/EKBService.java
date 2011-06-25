@@ -41,7 +41,7 @@ public class EKBService implements EngineeringKnowlegeBaseService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends OpenEngSBModel> T createModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
+    public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createModelObject for model interface {} called", model.getName());
 
         ClassLoader classLoader = model.getClassLoader();

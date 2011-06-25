@@ -39,7 +39,7 @@ public class EKBServiceTest {
 
     @Test
     public void testSetterAndGetterWithStringObject_shouldWork() {
-        TestModel model = service.createModelObject(TestModel.class);
+        TestModel model = service.createEmptyModelObject(TestModel.class);
         model.setId("testId");
 
         assertThat(model.getId(), is("testId"));
@@ -47,7 +47,7 @@ public class EKBServiceTest {
 
     @Test
     public void testSetterAndGetterWithDateObject_shouldWork() {
-        TestModel model = service.createModelObject(TestModel.class);
+        TestModel model = service.createEmptyModelObject(TestModel.class);
         Date date = new Date();
         model.setDate(date);
 
@@ -56,13 +56,13 @@ public class EKBServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNotGetterOrSetterMethod_shouldThrowException() {
-        TestModel model = service.createModelObject(TestModel.class);
+        TestModel model = service.createEmptyModelObject(TestModel.class);
         model.testMethod();
     }
 
     @Test
     public void testGetOpenEngSBModelEntries_shouldWork() {
-        TestModel model = service.createModelObject(TestModel.class);
+        TestModel model = service.createEmptyModelObject(TestModel.class);
 
         String id = "testId";
         Date date = new Date();
