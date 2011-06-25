@@ -403,31 +403,31 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         LOGGER.debug("received create event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
         this.commit(commit);
 
-        LOGGER.debug("created object with name {}", event.getSavingName());
+        LOGGER.debug("created object with name {}", event.getOid());
     }
 
     private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         LOGGER.debug("received update event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getSavingName()));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
         this.commit(commit);
 
-        LOGGER.debug("updated object with name {}", event.getSavingName());
+        LOGGER.debug("updated object with name {}", event.getOid());
     }
 
     private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
         JPACommit commit = createCommit(event.getCommitter(), event.getRole());
-        commit.delete(event.getSavingName());
+        commit.delete(event.getOid());
 
         this.commit(commit);
 
-        LOGGER.debug("deleted object with name {}", event.getSavingName());
+        LOGGER.debug("deleted object with name {}", event.getOid());
     }
 
     private EDBObject convertModelToEDBObject(OpenEngSBModel model, String name) {

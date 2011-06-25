@@ -21,18 +21,18 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Represents a update Event. Try to update an OpenEngSBModel object in the EDB under the given name.
+ * Represents a update Event. Try to update an OpenEngSBModel object in the EDB under the oid.
  */
 public class EDBUpdateEvent extends Event implements EDBEvent {
 
     private OpenEngSBModel model;
-    private String savingName;
+    private String oid;
     private String committer;
     private String role;
 
-    public EDBUpdateEvent(OpenEngSBModel model, String savingName, String committer, String role) {
+    public EDBUpdateEvent(OpenEngSBModel model, String oid, String committer, String role) {
         this.model = model;
-        this.savingName = savingName;
+        this.oid = oid;
         this.committer = committer;
         this.role = role;
     }
@@ -41,8 +41,8 @@ public class EDBUpdateEvent extends Event implements EDBEvent {
         return model;
     }
 
-    public String getSavingName() {
-        return savingName;
+    public String getOid() {
+        return oid;
     }
     
     public String getCommitter() {

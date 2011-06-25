@@ -20,22 +20,22 @@ package org.openengsb.core.api.edb;
 import org.openengsb.core.api.Event;
 
 /**
- * Represents a delete Event. Try to delete an OpenEngSBModel object in the EDB under the given name.
+ * Represents a delete Event. Try to delete an OpenEngSBModel object in the EDB with the given oid.
  */
 public class EDBDeleteEvent extends Event implements EDBEvent {
     
-    private String savingName;
+    private String oid;
     private String committer;
     private String role;
 
-    public EDBDeleteEvent(String savingName, String committer, String role) {
-        this.savingName = savingName;
+    public EDBDeleteEvent(String oid, String committer, String role) {
+        this.oid = oid;
         this.committer = committer;
         this.role = role;
     }
 
-    public String getSavingName() {
-        return savingName;
+    public String getOid() {
+        return oid;
     }
     
     public String getCommitter() {
