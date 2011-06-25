@@ -17,22 +17,44 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.openengsb.core.api.edb.EnterpriseDatabaseService;
 import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
+ * OpenEngSBModel interfaces.
+ */
 public class EKBService implements EngineeringKnowlegeBaseService {
-    
-    EnterpriseDatabaseService edbService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EKBService.class);
+
+    @SuppressWarnings("unused")
+    private EnterpriseDatabaseService edbService;
+
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends OpenEngSBModel> T createModelObject(T model) {
-        // TODO Auto-generated method stub
-        return null;
+    public <T extends OpenEngSBModel> T createModelObject(Class<T> model) {
+        LOGGER.debug("createModelObject for model interface {} called", model.getName());
+
+        ClassLoader classLoader = model.getClassLoader();
+        Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
+        InvocationHandler handler = makeHandler();
+
+        return (T) Proxy.newProxyInstance(classLoader, classes, handler);
+    }
+    
+    private EKBProxyHandler makeHandler() {
+        EKBProxyHandler handler = new EKBProxyHandler();
+        return handler;
     }
     
     public void setEdbService(EnterpriseDatabaseService edbService) {
         this.edbService = edbService;
     }
-
 }
