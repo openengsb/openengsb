@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Date;
@@ -73,8 +74,10 @@ public class EKBServiceTest {
 
         boolean idExisting = false;
         boolean dateExisting = false;
+        boolean nameExisting = false;
         String tempId = null;
         Date tempDate = null;
+        String tempName = null;
 
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("id")) {
@@ -83,13 +86,18 @@ public class EKBServiceTest {
             } else if (entry.getKey().equals("date")) {
                 dateExisting = true;
                 tempDate = (Date) entry.getValue();
+            } else if (entry.getKey().equals("name")) {
+                nameExisting = true;
+                tempName = (String) entry.getValue();
             }
         }
         
         assertThat(idExisting, is(true));
         assertThat(dateExisting, is(true));
+        assertThat(nameExisting, is(true));
         
         assertThat(tempId, is(id));
         assertThat(tempDate, is(date));
+        assertThat(tempName, nullValue());
     }
 }

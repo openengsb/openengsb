@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.openengsb.core.api.edb.EnterpriseDatabaseService;
@@ -44,13 +45,13 @@ public class EKBService implements EngineeringKnowlegeBaseService {
 
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
-        InvocationHandler handler = makeHandler();
-
+        InvocationHandler handler = makeHandler(model.getMethods());
+        
         return (T) Proxy.newProxyInstance(classLoader, classes, handler);
     }
     
-    private EKBProxyHandler makeHandler() {
-        EKBProxyHandler handler = new EKBProxyHandler();
+    private EKBProxyHandler makeHandler(Method[] methods) {
+        EKBProxyHandler handler = new EKBProxyHandler(methods);
         return handler;
     }
     

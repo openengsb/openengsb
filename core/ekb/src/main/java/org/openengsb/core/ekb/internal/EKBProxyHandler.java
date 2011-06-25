@@ -34,10 +34,18 @@ import org.slf4j.LoggerFactory;
 public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyHandler.class);
-    private Map<String, Object> objects;
+    private Map<String, OpenEngSBModelEntry> objects;
 
-    public EKBProxyHandler() {
-        objects = new HashMap<String, Object>();
+    @SuppressWarnings("rawtypes")
+    public EKBProxyHandler(Method[] methods) {
+        objects = new HashMap<String, OpenEngSBModelEntry>();
+        for (Method method : methods) {
+            if (method.getName().startsWith("set")) {
+                String propertyName = getPropertyName(method.getName());
+                Class clasz = method.getParameterTypes()[0];
+                objects.put(propertyName, new OpenEngSBModelEntry(propertyName, null, clasz));
+            }
+        }
     }
 
     @Override
@@ -54,21 +62,21 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
             return handleGetMethod(method);
         } else {
             LOGGER.error("EKBProxyHandler is only able to handle getters and setters");
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("EKBProxyHandler is only able to handle getters and setters");
         }
     }
 
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
         String propertyName = getPropertyName(method.getName());
-        objects.put(propertyName, args[0]);
+        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], args[0].getClass()));
     }
 
     private Object handleGetMethod(Method method) throws Throwable {
         String propertyName = getPropertyName(method.getName());
-        return objects.get(propertyName);
+        return objects.get(propertyName).getValue();
     }
 
-    private String getPropertyName(String methodName) throws Throwable {
+    private String getPropertyName(String methodName) {
         String propertyName = methodName.substring(3);
         char firstChar = propertyName.charAt(0);
         char newFirstChar = Character.toLowerCase(firstChar);
@@ -77,12 +85,7 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     private Object handleGetOpenEngSBModelEntries() throws Throwable {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-
-        for (String key : objects.keySet()) {
-            Object object = objects.get(key);
-            entries.add(new OpenEngSBModelEntry(key, object, object.getClass()));
-        }
-
+        entries.addAll(objects.values());
         return entries;
     }
 }
