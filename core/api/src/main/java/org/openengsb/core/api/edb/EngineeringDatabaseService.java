@@ -23,9 +23,9 @@ import java.util.Map;
 import org.openengsb.core.api.Event;
 
 /**
- * Defines the connection to the enterprise database.
+ * Defines the connection to the engineering database.
  */
-public interface EnterpriseDatabaseService {
+public interface EngineeringDatabaseService {
     /**
      * Create a commit which is ready to be filled with updates.
      */

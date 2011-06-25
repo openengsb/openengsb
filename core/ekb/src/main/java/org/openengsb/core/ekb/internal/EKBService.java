@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.openengsb.core.api.edb.EnterpriseDatabaseService;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -37,7 +37,7 @@ public class EKBService implements EngineeringKnowlegeBaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBService.class);
 
     @SuppressWarnings("unused")
-    private EnterpriseDatabaseService edbService;
+    private EngineeringDatabaseService edbService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -56,7 +56,7 @@ public class EKBService implements EngineeringKnowlegeBaseService {
         return handler;
     }
     
-    public void setEdbService(EnterpriseDatabaseService edbService) {
+    public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
 }

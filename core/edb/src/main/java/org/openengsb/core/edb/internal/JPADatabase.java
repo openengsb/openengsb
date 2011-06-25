@@ -47,7 +47,7 @@ import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
+public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
     private EntityTransaction utx;
     @PersistenceContext(name = "openengsb-edb")

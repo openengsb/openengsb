@@ -28,7 +28,7 @@
     <jpa:context property="entityManager" unitname="edb" />
   </bean>
 
-  <service interface="org.openengsb.core.api.edb.EnterpriseDatabaseService">
+  <service interface="org.openengsb.core.api.edb.EngineeringDatabaseService">
     <ref component-id="edbServiceProvider" />
   </service>
 

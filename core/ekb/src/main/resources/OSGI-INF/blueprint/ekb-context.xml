@@ -29,6 +29,6 @@
     <ref component-id="ekbServiceProvider" />
   </service>
   
-  <reference id="edbService" interface="org.openengsb.core.api.edb.EnterpriseDatabaseService" />
+  <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
   
 </blueprint>

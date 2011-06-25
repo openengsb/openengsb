@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EnterpriseDatabaseService;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -34,7 +34,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ForwardHandler.class);
     private WorkflowService workflowService;
-    private EnterpriseDatabaseService edbService;
+    private EngineeringDatabaseService edbService;
 
     public ForwardHandler() {
         super(true);
@@ -87,7 +87,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
         this.workflowService = workflowService;
     }
 
-    public void setEdbService(EnterpriseDatabaseService edbService) {
+    public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
 
