@@ -37,13 +37,21 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
     private Map<String, OpenEngSBModelEntry> objects;
 
     @SuppressWarnings("rawtypes")
-    public EKBProxyHandler(Method[] methods) {
+    public EKBProxyHandler(Method[] methods, OpenEngSBModelEntry... entries) {
         objects = new HashMap<String, OpenEngSBModelEntry>();
         for (Method method : methods) {
             if (method.getName().startsWith("set")) {
                 String propertyName = getPropertyName(method.getName());
                 Class clasz = method.getParameterTypes()[0];
                 objects.put(propertyName, new OpenEngSBModelEntry(propertyName, null, clasz));
+            }
+        }
+        for (OpenEngSBModelEntry entry : entries) {
+            if (objects.containsKey(entry.getKey())) {
+                objects.put(entry.getKey(), entry);
+            } else {
+                LOGGER.error("entry \"{}\" can not be set because the interface doesn't contain this field!",
+                    entry.getKey());
             }
         }
     }

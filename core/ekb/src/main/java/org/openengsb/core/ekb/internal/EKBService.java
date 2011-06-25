@@ -24,6 +24,7 @@ import java.lang.reflect.Proxy;
 import org.openengsb.core.api.edb.EnterpriseDatabaseService;
 import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,18 +41,18 @@ public class EKBService implements EngineeringKnowlegeBaseService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends OpenEngSBModel> T createModelObject(Class<T> model) {
+    public <T extends OpenEngSBModel> T createModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createModelObject for model interface {} called", model.getName());
 
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
-        InvocationHandler handler = makeHandler(model.getMethods());
+        InvocationHandler handler = makeHandler(model.getMethods(), entries);
         
         return (T) Proxy.newProxyInstance(classLoader, classes, handler);
     }
     
-    private EKBProxyHandler makeHandler(Method[] methods) {
-        EKBProxyHandler handler = new EKBProxyHandler(methods);
+    private EKBProxyHandler makeHandler(Method[] methods, OpenEngSBModelEntry[] entries) {
+        EKBProxyHandler handler = new EKBProxyHandler(methods, entries);
         return handler;
     }
     

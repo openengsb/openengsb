@@ -91,11 +91,11 @@ public class EKBServiceTest {
                 tempName = (String) entry.getValue();
             }
         }
-        
+
         assertThat(idExisting, is(true));
         assertThat(dateExisting, is(true));
         assertThat(nameExisting, is(true));
-        
+
         assertThat(tempId, is(id));
         assertThat(tempDate, is(date));
         assertThat(tempName, nullValue());
