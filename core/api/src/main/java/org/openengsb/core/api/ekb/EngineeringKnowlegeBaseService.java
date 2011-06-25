@@ -19,6 +19,10 @@ package org.openengsb.core.api.ekb;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
+/**
+ * The interface for the ekb service. Contains the function for creating a proxy for simulating simple
+ * OpenEngSBModel interfaces.
+ */
 public interface EngineeringKnowlegeBaseService {
     
     <T extends OpenEngSBModel> T createModelObject(Class<T> model);
