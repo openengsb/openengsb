@@ -21,6 +21,6 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 
 public interface EngineeringKnowlegeBaseService {
     
-    <T extends OpenEngSBModel> T createModelObject(T model);
+    <T extends OpenEngSBModel> T createModelObject(Class<T> model);
     
 }
