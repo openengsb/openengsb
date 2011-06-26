@@ -127,7 +127,7 @@ public class UserService extends BasePage {
         resetButton.setDefaultFormProcessing(false);
         userForm.add(resetButton);
 
-        IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
+        final IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
             private static final long serialVersionUID = 2579825372351310299L;
 
             @Override
@@ -153,7 +153,7 @@ public class UserService extends BasePage {
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         try {
                             userManager.deleteUser(userListItem.getModelObject().getUsername());
-                            getList().remove(userListItem.getModelObject());
+                            userList.detach();
                             ajaxRequestTarget.addComponent(usermanagementContainer);
                         } catch (UserManagementException e) {
                             error(new StringResourceModel("userManagementExceptionError", this, null).getString());

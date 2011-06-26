@@ -17,8 +17,11 @@
 
 package org.openengsb.ui.admin.userService;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -28,6 +31,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -48,6 +53,9 @@ import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.google.common.collect.Lists;
 
 public class UserServiceTest extends LocalisedTest {
 
@@ -94,6 +102,43 @@ public class UserServiceTest extends LocalisedTest {
         tester.assertNoErrorMessage();
         verify(userManager, times(1)).createUser(new User("user1", "password"));
 
+    }
+
+    @Test
+    public void createAndDeleteUser_ShouldWork() {
+        final User testUser = new User("user", "password");
+        final List<User> userList = Lists.newArrayList(testUser);
+
+        when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
+            @Override
+            public List<User> answer(InvocationOnMock invocation) throws Throwable {
+                return new ArrayList<User>(userList);
+            }
+        });
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                userList.remove(testUser);
+                return null;
+            }
+        }).when(userManager).deleteUser("user");
+        when(userManager.loadUserByUsername("user")).thenAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                if (userList.contains(testUser)) {
+                    return testUser;
+                }
+                throw new UsernameNotFoundException("user not found");
+            }
+        });
+
+        tester.startPage(UserService.class);
+        AjaxLink<?> link =
+            (AjaxLink<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users:0:user.delete");
+        tester.executeAjaxEvent(link, "onclick");
+        ListView<?> userListView =
+            (ListView<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users");
+        assertThat(userListView.size(), is(0));
     }
 
     @Test
