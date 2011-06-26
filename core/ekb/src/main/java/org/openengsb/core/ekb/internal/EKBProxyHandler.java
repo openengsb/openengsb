@@ -68,6 +68,10 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
         } else if (method.getName().startsWith("get")) {
             LOGGER.debug("called getter method \"{}\" was called", method.getName());
             return handleGetMethod(method);
+        }
+        if (method.getName().equals("toString")) {
+            LOGGER.debug("toString() was called");
+            return handleToString();
         } else {
             LOGGER.error("EKBProxyHandler is only able to handle getters and setters");
             throw new IllegalArgumentException("EKBProxyHandler is only able to handle getters and setters");
@@ -76,7 +80,9 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
         String propertyName = getPropertyName(method.getName());
-        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], args[0].getClass()));
+        Class<?> clasz = method.getParameterTypes()[0];
+
+        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
     }
 
     private Object handleGetMethod(Method method) throws Throwable {
@@ -95,5 +101,20 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         entries.addAll(objects.values());
         return entries;
+    }
+
+    private String handleToString() {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        builder.append("{ ");
+        for (OpenEngSBModelEntry entry : objects.values()) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(entry.getKey()).append(" == ").append(entry.getValue());
+            first = false;
+        }
+        builder.append(" }");
+        return builder.toString();
     }
 }
