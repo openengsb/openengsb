@@ -39,23 +39,47 @@ public class EKBService implements EngineeringKnowlegeBaseService {
     @SuppressWarnings("unused")
     private EngineeringDatabaseService edbService;
 
+    @Override
+    public Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) throws IllegalArgumentException {
+        LOGGER.debug("createModelObject for model interface {} called", model.getName());
+
+        boolean valid = false;
+
+        for (Class<?> i : model.getInterfaces()) {
+            if (i.equals(OpenEngSBModel.class)) {
+                valid = true;
+                break;
+            }
+        }
+
+        if (!valid) {
+            throw new IllegalArgumentException("the model class is not an interface of OpenEngSBModel");
+        }
+        
+        return generateProxy(model, entries);
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
-        LOGGER.debug("createModelObject for model interface {} called", model.getName());
+        LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
 
+        return (T) generateProxy(model, entries);
+    }
+    
+    private Object generateProxy(Class<?> model, OpenEngSBModelEntry... entries) {
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
         InvocationHandler handler = makeHandler(model.getMethods(), entries);
-        
-        return (T) Proxy.newProxyInstance(classLoader, classes, handler);
+
+        return Proxy.newProxyInstance(classLoader, classes, handler);
     }
-    
+
     private EKBProxyHandler makeHandler(Method[] methods, OpenEngSBModelEntry[] entries) {
         EKBProxyHandler handler = new EKBProxyHandler(methods, entries);
         return handler;
     }
-    
+
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }

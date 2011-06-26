@@ -26,6 +26,16 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
  */
 public interface EngineeringKnowlegeBaseService {
     
+    /**
+     * Creates a proxy for the model interface which simulates an implementation of the interface.
+     */
     <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries);
-    
+ 
+    /**
+     * calling this function should only be done in the MethodUtil class. There it is necessary because we only
+     * have a class field and we have no idea if this class extends OpenEngSBModel or not. Throws an IllegalArgument
+     * Exception if the model parameter isn't an interface which extends OpenEngSBModel. 
+     */
+    @Deprecated
+    Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) throws IllegalArgumentException;
 }
