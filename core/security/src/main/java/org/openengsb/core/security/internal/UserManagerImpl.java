@@ -22,14 +22,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.security.model.SimpleUser;
-import org.osgi.framework.BundleContext;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.google.common.base.Function;
@@ -38,10 +35,6 @@ import com.google.common.collect.Lists;
 public class UserManagerImpl implements UserManager {
 
     private EntityManager entityManager;
-
-    private PersistenceService persistence;
-    private PersistenceManager persistenceManager;
-    private BundleContext bundleContext;
 
     public UserManagerImpl() {
     }
@@ -97,14 +90,6 @@ public class UserManagerImpl implements UserManager {
                 return input.toSpringUser();
             }
         });
-    }
-
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
     public void setEntityManager(EntityManager entityManager) {

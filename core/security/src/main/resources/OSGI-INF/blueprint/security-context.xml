@@ -21,11 +21,7 @@
   xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0" xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-
   <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
