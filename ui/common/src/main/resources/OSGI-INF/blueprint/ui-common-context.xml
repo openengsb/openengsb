@@ -32,9 +32,14 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+  
+  <bean class="org.openengsb.ui.common.util.MethodUtil">
+      <property name="ekbService" ref="ekbService" />
+  </bean>
 
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+  <reference id="ekbService" interface="org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService" />
 
 </blueprint>
 
