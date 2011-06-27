@@ -18,6 +18,7 @@
 package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
@@ -27,6 +28,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -44,11 +46,16 @@ import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.SimpleUser;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.google.common.collect.Sets;
 
 public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
@@ -168,8 +175,21 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testGetAllUser_ShouldContain3Users() {
+    public void testGetAllUser_ShouldContain2Users() {
         List<String> allUser = userManager.getUsernameList();
         assertThat(allUser, hasItems(testUser2.getUsername(), testUser3.getUsername()));
     }
+
+    @Test
+    public void createUserWithRoles_shouldContainRoles() throws Exception {
+        Role role = new Role("ROLE_USER");
+        GrantedAuthority roleAuthority = new RoleAuthority(role);
+        Collection<GrantedAuthority> authorities = Sets.newHashSet(roleAuthority);
+        UserDetails user = Users.create("testuser", "password", authorities);
+        userManager.createUser(user);
+
+        UserDetails loadedUser = userManager.loadUserByUsername("testuser");
+        assertThat(loadedUser.getAuthorities(), hasItem(roleAuthority));
+    }
+
 }

@@ -23,6 +23,10 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
     <class>org.openengsb.core.security.model.SimpleUser</class>
+    <class>org.openengsb.core.security.model.Role</class>
+    <class>org.openengsb.core.security.model.Permission</class>
+    <class>org.openengsb.core.security.model.ServicePermission</class>
+
     <properties>
       <property name="openjpa.Log" value="commons" />
       <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST" />

@@ -24,6 +24,7 @@ import javax.persistence.TypedQuery;
 
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.security.UserUtils;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,7 +41,7 @@ public class UserManagerImpl implements UserManager {
         if (userExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
-        entityManager.persist(new SimpleUser(user));
+        entityManager.persist(UserUtils.toSimpleUser(user));
     }
 
     @Override
@@ -50,7 +51,8 @@ public class UserManagerImpl implements UserManager {
         }
         SimpleUser simpleUser = entityManager.find(SimpleUser.class, user.getUsername());
         simpleUser.setPassword(user.getPassword());
-        simpleUser.setRoles(SimpleUser.convertAuthorityList(user.getAuthorities()));
+        simpleUser.setRoles(UserUtils.getRolesFromSpringUser(user));
+        simpleUser.setPermissions(UserUtils.getPermissionsFromSpringUser(user));
         entityManager.merge(simpleUser);
     }
 
@@ -69,7 +71,7 @@ public class UserManagerImpl implements UserManager {
         if (user == null) {
             throw new UsernameNotFoundException("user with name: " + username + " does not exist");
         }
-        return user.toSpringUser();
+        return UserUtils.toSpringUser(user);
     }
 
     @Override

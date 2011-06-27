@@ -19,11 +19,17 @@ package org.openengsb.core.security.model;
 
 import java.lang.reflect.Method;
 
+import javax.persistence.Entity;
+
 import org.openengsb.core.api.OpenEngSBService;
 
-public class ServicePermission implements Permission {
+@Entity
+public class ServicePermission extends Permission {
 
     private String instanceId;
+
+    public ServicePermission() {
+    }
 
     public ServicePermission(String service) {
         instanceId = service;
@@ -35,6 +41,14 @@ public class ServicePermission implements Permission {
             return false;
         }
         return ((OpenEngSBService) service).getInstanceId().equals(instanceId);
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
 }

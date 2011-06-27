@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import com.google.common.collect.Lists;
 
-public class PermissionAuthority extends OpenEngSBGrantedAuthority {
+public class PermissionAuthority implements OpenEngSBGrantedAuthority {
 
     private static final long serialVersionUID = -8184393786529026862L;
 
@@ -45,6 +45,12 @@ public class PermissionAuthority extends OpenEngSBGrantedAuthority {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
+    }
+
+    @Override
+    public String getAuthority() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

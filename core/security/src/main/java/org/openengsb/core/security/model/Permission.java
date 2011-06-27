@@ -19,8 +19,29 @@ package org.openengsb.core.security.model;
 
 import java.lang.reflect.Method;
 
-public interface Permission {
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
-    boolean permits(Object service, Method operation, Object[] args);
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Permission {
+
+    @Id
+    @GeneratedValue
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public abstract boolean permits(Object service, Method operation, Object[] args);
 
 }

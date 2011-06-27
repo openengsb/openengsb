@@ -21,16 +21,8 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public abstract class OpenEngSBGrantedAuthority implements GrantedAuthority {
+public interface OpenEngSBGrantedAuthority extends GrantedAuthority {
 
-    private static final long serialVersionUID = -1763672424492282903L;
-
-    // null because it needs to be handled in a specific AccessDecisionVoter
-    @Override
-    public String getAuthority() {
-        return null;
-    }
-
-    public abstract Collection<Permission> getPermissions();
+    Collection<Permission> getPermissions();
 
 }

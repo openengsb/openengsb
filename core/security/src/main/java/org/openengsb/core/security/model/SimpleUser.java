@@ -17,21 +17,13 @@
 
 package org.openengsb.core.security.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.openengsb.core.common.util.Users;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 @Table(name = "SIMPLEUSER")
 @Entity
@@ -40,8 +32,10 @@ public class SimpleUser {
     @Id
     private String username;
     private String password;
-    @PersistentCollection
-    private Collection<String> roles;
+    @OneToMany(cascade = { CascadeType.PERSIST })
+    private Collection<Role> roles;
+    @OneToMany(cascade = { CascadeType.PERSIST })
+    private Collection<Permission> permissions;
 
     public SimpleUser(String username) {
         this.username = username;
@@ -57,35 +51,6 @@ public class SimpleUser {
     }
 
     public SimpleUser() {
-    }
-
-    public SimpleUser(UserDetails user) {
-        this(user.getUsername(), user.getPassword());
-        roles = convertAuthorityList(user.getAuthorities());
-    }
-
-    public static Collection<String> convertAuthorityList(Collection<GrantedAuthority> authorities) {
-        if (authorities == null) {
-            return null;
-        }
-        return Collections2.transform(authorities, new Function<GrantedAuthority, String>() {
-            @Override
-            public String apply(GrantedAuthority input) {
-                return input.getAuthority();
-            };
-        });
-    }
-
-    private static Collection<GrantedAuthority> convertToAuthorities(Collection<String> authorities) {
-        if (authorities == null) {
-            return null;
-        }
-        return Collections2.transform(authorities, new Function<String, GrantedAuthority>() {
-            @Override
-            public GrantedAuthority apply(String input) {
-                return new GrantedAuthorityImpl(input);
-            };
-        });
     }
 
     public String getUsername() {
@@ -104,20 +69,20 @@ public class SimpleUser {
         this.password = password;
     }
 
-    public Collection<String> getRoles() {
+    public Collection<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<String> roles) {
+    public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
 
-    public UserDetails toSpringUser() {
-        if (roles == null) {
-            return Users.create(username, password);
-        }
-        Collection<GrantedAuthority> authorities = convertToAuthorities(roles);
-        return Users.create(username, password, new ArrayList<GrantedAuthority>(authorities));
+    public Collection<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Collection<Permission> permissions) {
+        this.permissions = permissions;
     }
 
 }

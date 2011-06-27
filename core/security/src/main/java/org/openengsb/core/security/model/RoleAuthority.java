@@ -19,7 +19,7 @@ package org.openengsb.core.security.model;
 
 import java.util.Collection;
 
-public class RoleAuthority extends OpenEngSBGrantedAuthority {
+public class RoleAuthority implements OpenEngSBGrantedAuthority {
 
     private static final long serialVersionUID = 5228017671125937885L;
 
@@ -43,6 +43,36 @@ public class RoleAuthority extends OpenEngSBGrantedAuthority {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public String getAuthority() {
+        return role.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((role == null) ? 0 : role.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RoleAuthority other = (RoleAuthority) obj;
+        if (role == null) {
+            if (other.role != null)
+                return false;
+        } else if (!role.equals(other.role))
+            return false;
+        return true;
     }
 
 }
