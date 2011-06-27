@@ -18,6 +18,7 @@
 package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -77,6 +78,14 @@ public class GroupManagerImplIT extends AbstractJPATest {
         groupManager.createGroup("test", new ArrayList<GrantedAuthority>());
         List<String> findAllGroups = groupManager.findAllGroups();
         assertThat(findAllGroups, hasItem("test"));
+    }
+
+    @Test
+    public void testDeleteGroup_shouldNotShowUpInGroupList() throws Exception {
+        groupManager.createGroup("test", new ArrayList<GrantedAuthority>());
+        groupManager.deleteGroup("test");
+        List<String> findAllGroups = groupManager.findAllGroups();
+        assertThat(findAllGroups, not(hasItem("test")));
     }
 
     @Test

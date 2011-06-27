@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.security.UserUtils;
 import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.Role;
@@ -40,8 +41,11 @@ public class GroupManagerImpl implements GroupManager {
 
     @Override
     public void deleteGroup(String groupName) {
-        // TODO Auto-generated method stub
-
+        Role role = entityManager.find(Role.class, groupName);
+        if (role == null) {
+            throw new UserManagementException("group with name " + groupName + " not found");
+        }
+        entityManager.remove(role);
     }
 
     @Override
