@@ -19,7 +19,6 @@ package org.openengsb.core.security.model;
 
 import java.lang.reflect.Method;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
