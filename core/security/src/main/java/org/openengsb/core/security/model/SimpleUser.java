@@ -26,6 +26,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 @Table(name = "SIMPLEUSER")
 @Entity
 public class SimpleUser {
@@ -42,13 +45,9 @@ public class SimpleUser {
         this.username = username;
     }
 
-    public SimpleUser(String username, String password, Collection<String> roles) {
-        this.username = username;
-        this.password = password;
-    }
-
     public SimpleUser(String username, String password) {
-        this(username, password, null);
+        this(username);
+        this.password = password;
     }
 
     public SimpleUser() {
@@ -76,6 +75,15 @@ public class SimpleUser {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+        Iterable<Role> outdatedRoles = Iterables.filter(roles, new Predicate<Role>() {
+            @Override
+            public boolean apply(Role input) {
+                return !input.getMembers().contains(this);
+            }
+        });
+        for (Role r : outdatedRoles) {
+            r.addMember(this);
+        }
     }
 
     public Collection<Permission> getPermissions() {
@@ -89,6 +97,20 @@ public class SimpleUser {
     @Override
     public String toString() {
         return username + " [password hidden] " + roles;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+        if (!role.getMembers().contains(this)) {
+            role.addMember(this);
+        }
+    }
+
+    public void removeRole(Role role) {
+        roles.remove(role);
+        if (role.getMembers().contains(this)) {
+            role.removeMember(this);
+        }
     }
 
 }

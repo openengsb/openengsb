@@ -19,6 +19,7 @@ package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
@@ -37,9 +38,9 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -266,5 +267,20 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
         TypedQuery<Role> query2 = entityManager.createQuery("SELECT r FROM Role R", Role.class);
         assertThat(query2.getResultList().size(), is(3));
+    }
+
+    @Test
+    public void createUsersWithRoles_shouldMaintainRelationBothWays() throws Exception {
+        GrantedAuthority roleAuthority = new RoleAuthority(new Role("test"));
+        UserDetails user = Users.create("xx", "password", Sets.newHashSet(roleAuthority));
+        userManager.createUser(user);
+
+        Role role = entityManager.find(Role.class, "test");
+
+        // because this does not work:
+        // assertThat(role.getMembers(), hasItem(hasProperty("username", is("xx"))));
+        @SuppressWarnings("unchecked")
+        Collection<Object> members2 = CollectionUtils.unmodifiableCollection(role.getMembers());
+        assertThat(members2, hasItem(hasProperty("username", is("xx"))));
     }
 }

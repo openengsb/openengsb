@@ -48,16 +48,16 @@ public class UserManagerImpl implements UserManager {
         }
         SimpleUser simpleUser = UserUtils.toSimpleUser(user);
         entityManager.persist(simpleUser);
-        Collection<RoleAuthority> roles = UserUtils.filterCollectionByType(user.getAuthorities(), RoleAuthority.class);
-        for (RoleAuthority r : roles) {
-            Role role = entityManager.find(Role.class, r.getRole().getName());
-            Collection<SimpleUser> members = role.getMembers();
-            if (members == null) {
-                members = new HashSet<SimpleUser>();
-                role.setMembers(members);
-            }
-            members.add(simpleUser);
-        }
+//        Collection<RoleAuthority> roles = UserUtils.filterCollectionByType(user.getAuthorities(), RoleAuthority.class);
+//        for (RoleAuthority r : roles) {
+//            Role role = entityManager.find(Role.class, r.getRole().getName());
+//            Collection<SimpleUser> members = role.getMembers();
+//            if (members == null) {
+//                members = new HashSet<SimpleUser>();
+//                role.setMembers(members);
+//            }
+//            members.add(simpleUser);
+//        }
     }
 
     @Override

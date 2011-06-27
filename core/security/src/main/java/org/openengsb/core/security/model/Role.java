@@ -24,10 +24,11 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 @Entity
 public class Role implements Serializable {
@@ -58,7 +59,20 @@ public class Role implements Serializable {
     public Role(String name, Collection<Role> roles, Collection<Permission> permissions) {
         this.name = name;
         this.roles = roles;
+        updateUserRoleRelation(roles);
         this.permissions = permissions;
+    }
+
+    private void updateUserRoleRelation(Collection<Role> roles) {
+        Iterable<SimpleUser> outdatedMembers = Iterables.filter(members, new Predicate<SimpleUser>() {
+            @Override
+            public boolean apply(SimpleUser input) {
+                return !input.getRoles().contains(this);
+            }
+        });
+        for (SimpleUser r : outdatedMembers) {
+            r.addRole(this);
+        }
     }
 
     public String getName() {
@@ -95,9 +109,6 @@ public class Role implements Serializable {
 
     public Collection<Permission> getAllPermissions() {
         Collection<Permission> result = new ArrayList<Permission>();
-        if (permissions != null) {
-            result.addAll(permissions);
-        }
         for (Role role : roles) {
             if (role == this) {
                 throw new IllegalStateException("cyclic dependency detected");
@@ -105,6 +116,20 @@ public class Role implements Serializable {
             result.addAll(role.getAllPermissions());
         }
         return result;
+    }
+
+    public void addMember(SimpleUser member) {
+        members.add(member);
+        if (!member.getRoles().contains(this)) {
+            member.addRole(this);
+        }
+    }
+
+    public void removeMember(SimpleUser member) {
+        members.add(member);
+        if (member.getRoles().contains(this)) {
+            member.removeRole(this);
+        }
     }
 
     @Override
