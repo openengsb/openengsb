@@ -25,7 +25,6 @@
     <class>org.openengsb.core.security.model.SimpleUser</class>
     <properties>
       <property name="openjpa.Log" value="commons" />
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST" />
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
