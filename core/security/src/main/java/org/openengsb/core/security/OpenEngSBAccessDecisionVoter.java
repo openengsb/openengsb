@@ -22,38 +22,31 @@ import java.util.Collection;
 import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.security.model.OpenEngSBGrantedAuthority;
 import org.openengsb.core.security.model.Permission;
-import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 
-public class OpenEngSBAccessDecisionVoter implements AccessDecisionVoter {
-
-    @Override
-    public boolean supports(ConfigAttribute attribute) {
-        return false;
-    }
-
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return MethodInvocation.class.isAssignableFrom(clazz);
-    }
+public class OpenEngSBAccessDecisionVoter extends AbstractAccessDecisionVoter {
 
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        Collection<GrantedAuthority> openengsbAuthorities =
-            Collections2.filter(user.getAuthorities(), Predicates.instanceOf(OpenEngSBGrantedAuthority.class));
+        UserDetails user = getAuthenticatedUser(authentication);
+        if (user == null) {
+            return ACCESS_ABSTAIN;
+        }
+
+        Collection<OpenEngSBGrantedAuthority> openengsbAuthorities = getRelevantAuthorities(user);
         if (openengsbAuthorities.isEmpty()) {
             return ACCESS_ABSTAIN;
         }
         MethodInvocation invocation = (MethodInvocation) object;
-        for (GrantedAuthority g : openengsbAuthorities) {
-            Collection<Permission> permissions = ((OpenEngSBGrantedAuthority) g).getPermissions();
+        for (OpenEngSBGrantedAuthority g : openengsbAuthorities) {
+            Collection<Permission> permissions = g.getPermissions();
             for (Permission p : permissions) {
                 if (p.permits(invocation.getThis(), invocation.getMethod(), invocation.getArguments())) {
                     return ACCESS_GRANTED;
@@ -61,5 +54,18 @@ public class OpenEngSBAccessDecisionVoter implements AccessDecisionVoter {
             }
         }
         return ACCESS_ABSTAIN;
+    }
+
+    private Collection<OpenEngSBGrantedAuthority> getRelevantAuthorities(UserDetails user) {
+        Collection<GrantedAuthority> filteredAuthorities =
+            Collections2.filter(user.getAuthorities(), Predicates.instanceOf(OpenEngSBGrantedAuthority.class));
+        Collection<OpenEngSBGrantedAuthority> openengsbAuthorities =
+            Collections2.transform(filteredAuthorities, new Function<GrantedAuthority, OpenEngSBGrantedAuthority>() {
+                @Override
+                public OpenEngSBGrantedAuthority apply(GrantedAuthority input) {
+                    return (OpenEngSBGrantedAuthority) input;
+                }
+            });
+        return openengsbAuthorities;
     }
 }

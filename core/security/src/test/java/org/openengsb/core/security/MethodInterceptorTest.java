@@ -32,6 +32,8 @@ import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
+import org.openengsb.core.security.model.PermissionAuthority;
+import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -79,6 +81,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
         result.add(new AdminRoleVoter());
         result.add(new AnnotationRoleVoter());
+        result.add(new OpenEngSBAccessDecisionVoter());
         return result;
     }
 
@@ -104,6 +107,10 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
             Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN"));
         User admin = Users.create("admin", "adminpw", adminAuthorities);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
+
+        ServicePermission servicePermission = new ServicePermission("42");
+        UserDetails testuser = Users.create("testuser", "password", new PermissionAuthority(servicePermission));
+        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testuser);
         return userDetailsService;
     }
 
@@ -143,6 +150,18 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     public void testAccessAnnotatedMethod() throws Exception {
         authenticate(DEFAULT_USER, "password");
         service2.publicTest();
+    }
+
+    @Test
+    public void testServicePermission_shouldGrantAccess() throws Exception {
+        authenticate("testuser", "password");
+        service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testServicePermission_shouldDenyAccess() throws Exception {
+        authenticate("testuser", "password");
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     private void authenticate(String user, String password) {
