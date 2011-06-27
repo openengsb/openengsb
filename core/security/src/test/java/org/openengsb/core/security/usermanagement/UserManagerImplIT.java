@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
