@@ -45,8 +45,11 @@ import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.security.model.Permission;
+import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.GrantedAuthority;
@@ -189,4 +192,15 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
         assertThat(loadedUser.getAuthorities(), hasItem(roleAuthority));
     }
 
+    @Test
+    public void createUserWithPermissions_shouldContainPermissions() throws Exception {
+        Permission p = new ServicePermission("test");
+        GrantedAuthority authority = new PermissionAuthority(p);
+        Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
+        UserDetails user = Users.create("testuser", "password", authorities);
+        userManager.createUser(user);
+
+        UserDetails loadedUser = userManager.loadUserByUsername("testuser");
+        assertThat(loadedUser.getAuthorities(), hasItem(authority));
+    }
 }

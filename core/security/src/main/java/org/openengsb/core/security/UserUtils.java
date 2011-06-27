@@ -2,7 +2,9 @@ package org.openengsb.core.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.PermissionAuthority;
@@ -22,7 +24,10 @@ public final class UserUtils {
         if (user.getRoles() == null) {
             return Users.create(user.getUsername(), user.getPassword());
         }
-        Collection<GrantedAuthority> authorities = convertToAuthorities(user.getRoles());
+        List<GrantedAuthority> authorities =
+            new ArrayList<GrantedAuthority>(user.getRoles().size() + user.getPermissions().size());
+        authorities.addAll(convertRolesToAuthorities(user.getRoles()));
+        authorities.addAll(convertPermissionsToAuthorities(user.getPermissions()));
         return Users.create(user.getUsername(), user.getPassword(), new ArrayList<GrantedAuthority>(authorities));
     }
 
@@ -58,7 +63,7 @@ public final class UserUtils {
         return roles;
     }
 
-    private static Collection<GrantedAuthority> convertToAuthorities(Collection<Role> authorities) {
+    private static Collection<GrantedAuthority> convertRolesToAuthorities(Collection<Role> authorities) {
         if (authorities == null) {
             return null;
         }
@@ -66,6 +71,18 @@ public final class UserUtils {
             @Override
             public GrantedAuthority apply(Role input) {
                 return new RoleAuthority(input);
+            };
+        });
+    }
+
+    private static Collection<GrantedAuthority> convertPermissionsToAuthorities(Collection<Permission> authorities) {
+        if (authorities == null) {
+            return null;
+        }
+        return Collections2.transform(authorities, new Function<Permission, GrantedAuthority>() {
+            @Override
+            public GrantedAuthority apply(Permission input) {
+                return new PermissionAuthority(input);
             };
         });
     }

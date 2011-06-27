@@ -25,7 +25,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 @Entity
 public class Role implements Serializable {
@@ -36,8 +35,7 @@ public class Role implements Serializable {
     private String name;
     @OneToMany(cascade = { CascadeType.PERSIST })
     private Collection<Role> roles;
-    // @OneToMany(cascade = { CascadeType.PERSIST })
-    @Transient
+    @OneToMany
     private Collection<Permission> permissions;
 
     public Role() {
