@@ -20,24 +20,12 @@ package org.openengsb.core.security.usermanagement;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.security.internal.GroupManagerImpl;
 import org.openengsb.core.security.internal.UserManagerImpl;
@@ -46,40 +34,10 @@ import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
-import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.provisioning.GroupManager;
 
-public class GroupManagerImplIT extends AbstractOpenEngSBTest {
-
-    private final class WrapInTransactionHandler implements InvocationHandler {
-        private final EntityManager entityManger;
-        private final Object original;
-
-        private WrapInTransactionHandler(EntityManager entityManager, Object original) {
-            this.entityManger = entityManager;
-            this.original = original;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            entityManger.getTransaction().begin();
-            Object result;
-            try {
-                result = method.invoke(original, args);
-            } catch (InvocationTargetException e) {
-                entityManager.getTransaction().rollback();
-                throw e.getCause();
-            }
-            entityManager.getTransaction().commit();
-            return result;
-        }
-    }
-
-    @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-    private EntityManager entityManager;
+public class GroupManagerImplIT extends AbstractJPATest {
 
     private UserManager userManager;
     private GroupManager groupManager;
@@ -97,15 +55,6 @@ public class GroupManagerImplIT extends AbstractOpenEngSBTest {
         entityManager.persist(testUser3);
     }
 
-    private void setupPersistence() {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("openjpa.ConnectionURL", "jdbc:h2:" + tmpFolder.getRoot().getAbsolutePath() + "/TEST");
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("security-test", props);
-        final EntityManager entityManager = emf.createEntityManager();
-        this.entityManager = entityManager;
-    }
-
     private void setupUserManager() {
         final UserManagerImpl userManager = new UserManagerImpl();
         userManager.setEntityManager(entityManager);
@@ -114,13 +63,6 @@ public class GroupManagerImplIT extends AbstractOpenEngSBTest {
         GroupManagerImpl groupManager = new GroupManagerImpl();
         groupManager.setEntityManager(entityManager);
         this.groupManager = createWrapInTransactionProxy(groupManager, GroupManager.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T createWrapInTransactionProxy(T original, Class<T> interfaze) {
-        InvocationHandler invocationHandler = new WrapInTransactionHandler(entityManager, original);
-        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{ interfaze },
-            invocationHandler);
     }
 
     @Test
@@ -146,10 +88,9 @@ public class GroupManagerImplIT extends AbstractOpenEngSBTest {
         assertThat(role.getPermissions(), hasItem(permission));
     }
 
-    protected void persist(Object o) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(o);
-        entityManager.getTransaction().commit();
+    @Override
+    public String getPersistenceUnitName() {
+        return "security-test";
     }
 
 }

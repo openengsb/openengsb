@@ -26,25 +26,14 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
@@ -57,7 +46,6 @@ import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
-import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,12 +53,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.google.common.collect.Sets;
 
-public class UserManagerImplIT extends AbstractOpenEngSBTest {
-
-    @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-    private EntityManager entityManager;
+public class UserManagerImplIT extends AbstractJPATest {
 
     private UserManager userManager;
 
@@ -87,36 +70,15 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
         entityManager.persist(testUser3);
     }
 
-    private void setupPersistence() {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("openjpa.ConnectionURL", "jdbc:h2:" + tmpFolder.getRoot().getAbsolutePath() + "/TEST");
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("security-test", props);
-        final EntityManager entityManager = emf.createEntityManager();
-        this.entityManager = entityManager;
+    @Override
+    public String getPersistenceUnitName() {
+        return "security-test";
     }
 
     private void setupUserManager() {
         final UserManagerImpl userManager = new UserManagerImpl();
         userManager.setEntityManager(entityManager);
-        InvocationHandler invocationHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                entityManager.getTransaction().begin();
-                Object result;
-                try {
-                    result = method.invoke(userManager, args);
-                } catch (InvocationTargetException e) {
-                    entityManager.getTransaction().rollback();
-                    throw e.getCause();
-                }
-                entityManager.getTransaction().commit();
-                return result;
-            }
-        };
-        this.userManager =
-            (UserManager) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{ UserManager.class },
-                invocationHandler);
+        this.userManager = createWrapInTransactionProxy(userManager, UserManager.class);
     }
 
     @Test
