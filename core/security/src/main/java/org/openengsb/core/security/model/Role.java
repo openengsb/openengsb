@@ -32,7 +32,10 @@ import javax.persistence.NamedQuery;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-@NamedQueries({ @NamedQuery(name = "listAllRoles", query = "SELECT r.name FROM Role r") })
+@NamedQueries({
+    @NamedQuery(name = "listAllRoles", query = "SELECT r.name FROM Role r"),
+    @NamedQuery(name = "listUsersWithRole",
+        query = "SELECT u.username FROM Role r JOIN r.members u WHERE r.name = :groupname"), })
 @Entity
 public class Role implements Serializable {
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.openengsb.core.api.security.UserManagementException;
@@ -12,6 +13,10 @@ import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.provisioning.GroupManager;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.sun.org.apache.xpath.internal.functions.FuncBoolean;
 
 public class GroupManagerImpl implements GroupManager {
 
@@ -25,8 +30,9 @@ public class GroupManagerImpl implements GroupManager {
 
     @Override
     public List<String> findUsersInGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
+        TypedQuery<String> query = entityManager.createNamedQuery("listUsersWithRole", String.class);
+        query.setParameter("groupname", groupName);
+        return query.getResultList();
     }
 
     @Override

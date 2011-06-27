@@ -18,7 +18,9 @@
 package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.GroupManager;
 
 public class GroupManagerImplIT extends AbstractJPATest {
@@ -95,6 +98,20 @@ public class GroupManagerImplIT extends AbstractJPATest {
         groupManager.createGroup("test", Arrays.asList(permissionAuthority));
         Role role = entityManager.find(Role.class, "test");
         assertThat(role.getPermissions(), hasItem(permission));
+    }
+
+    @Test
+    public void findUsersInGroup_shouldReturnMembers() throws Exception {
+        Role role = new Role("test");
+        testUser2.addRole(role);
+        entityManager.getTransaction().begin();
+        entityManager.persist(role);
+        entityManager.merge(testUser2);
+        entityManager.getTransaction().commit();
+
+        List<String> findUsersInGroup = groupManager.findUsersInGroup("test");
+        assertThat(findUsersInGroup.size(), is(1));
+        assertThat(findUsersInGroup, hasItem("testUser2"));
     }
 
     @Override

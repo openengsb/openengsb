@@ -18,6 +18,7 @@
 package org.openengsb.core.security.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class SimpleUser {
     private String username;
     private String password;
     @ManyToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Role> roles;
+    private Collection<Role> roles = new HashSet<Role>();
     @OneToMany(cascade = { CascadeType.PERSIST })
     private Collection<Permission> permissions;
 
