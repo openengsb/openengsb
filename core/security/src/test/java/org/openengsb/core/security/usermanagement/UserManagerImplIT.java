@@ -19,6 +19,8 @@ package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
@@ -35,6 +37,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,6 +49,7 @@ import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.security.model.OpenEngSBGrantedAuthority;
 import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.Role;
@@ -202,5 +207,64 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
         UserDetails loadedUser = userManager.loadUserByUsername("testuser");
         assertThat(loadedUser.getAuthorities(), hasItem(authority));
+    }
+
+    @Test
+    public void setRolePermissions_shouldReflectOnUser() throws Exception {
+        Permission p = new ServicePermission("test");
+        Role role = new Role("test", Sets.newHashSet(p));
+        GrantedAuthority authority = new RoleAuthority(role);
+        Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
+        UserDetails user = Users.create("testuser", "password", authorities);
+        userManager.createUser(user);
+
+        UserDetails loadedUser = userManager.loadUserByUsername("testuser");
+        GrantedAuthority authority2 = loadedUser.getAuthorities().iterator().next();
+        assertThat(authority2, instanceOf(OpenEngSBGrantedAuthority.class));
+        OpenEngSBGrantedAuthority openengsbAuthority = (OpenEngSBGrantedAuthority) authority2;
+        assertThat(openengsbAuthority.getPermissions(), hasItem(p));
+    }
+
+    @Test
+    public void changeRolePermissions_shouldReflectOnUser() throws Exception {
+        Permission p = new ServicePermission("test");
+        Role role = new Role("test", Sets.newHashSet(p));
+        GrantedAuthority authority = new RoleAuthority(role);
+        Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
+        UserDetails user = Users.create("testuser", "password", authorities);
+        userManager.createUser(user);
+
+        role.getPermissions().clear();
+        entityManager.getTransaction().begin();
+        entityManager.merge(role);
+        entityManager.getTransaction().commit();
+
+        UserDetails loadedUser = userManager.loadUserByUsername("testuser");
+        GrantedAuthority authority2 = loadedUser.getAuthorities().iterator().next();
+        assertThat(authority2, instanceOf(OpenEngSBGrantedAuthority.class));
+        OpenEngSBGrantedAuthority openengsbAuthority = (OpenEngSBGrantedAuthority) authority2;
+        assertThat(openengsbAuthority.getPermissions(), not(hasItem(p)));
+    }
+
+    @Test
+    public void createUsersWithTwoRoles_shouldWork() throws Exception {
+        GrantedAuthority roleAuthority = new RoleAuthority(new Role("test"));
+        Role role2 = new Role("test2");
+        GrantedAuthority roleAuthority2 = new RoleAuthority(role2);
+        Role role3 = new Role("test3");
+        RoleAuthority roleAuthority3 = new RoleAuthority(role3);
+
+        UserDetails user = Users.create("xx", "password", Sets.newHashSet(roleAuthority, roleAuthority3));
+        userManager.createUser(user);
+        UserDetails user2 = Users.create("xx2", "password", Sets.newHashSet(roleAuthority2, roleAuthority3));
+        userManager.createUser(user2);
+
+        TypedQuery<SimpleUser> query =
+            entityManager.createQuery("SELECT r FROM SimpleUser r WHERE (SELECT COUNT(p) FROM r.roles p) > 0 ",
+                SimpleUser.class);
+        assertThat(query.getResultList().size(), is(2));
+
+        TypedQuery<Role> query2 = entityManager.createQuery("SELECT r FROM Role R", Role.class);
+        assertThat(query2.getResultList().size(), is(3));
     }
 }

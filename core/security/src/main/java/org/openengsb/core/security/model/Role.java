@@ -20,10 +20,13 @@ package org.openengsb.core.security.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -33,10 +36,12 @@ public class Role implements Serializable {
 
     @Id
     private String name;
-    @OneToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Role> roles;
-    @OneToMany
-    private Collection<Permission> permissions;
+    @ManyToMany(cascade = { CascadeType.PERSIST })
+    private Collection<Role> roles = new HashSet<Role>();
+    @ManyToMany(cascade = { CascadeType.PERSIST })
+    private Collection<Permission> permissions = new HashSet<Permission>();
+    @ManyToMany(mappedBy = "roles")
+    private Collection<SimpleUser> members = new HashSet<SimpleUser>();
 
     public Role() {
     }
@@ -78,6 +83,14 @@ public class Role implements Serializable {
 
     public void setPermissions(Collection<Permission> permissions) {
         this.permissions = permissions;
+    }
+
+    public Collection<SimpleUser> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Collection<SimpleUser> members) {
+        this.members = members;
     }
 
     public Collection<Permission> getAllPermissions() {
@@ -129,6 +142,11 @@ public class Role implements Serializable {
         } else if (!roles.equals(other.roles))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Role: " + name;
     }
 
 }

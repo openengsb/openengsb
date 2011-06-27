@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,7 +33,7 @@ public class SimpleUser {
     @Id
     private String username;
     private String password;
-    @OneToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany(cascade = { CascadeType.PERSIST })
     private Collection<Role> roles;
     @OneToMany(cascade = { CascadeType.PERSIST })
     private Collection<Permission> permissions;
@@ -83,6 +84,11 @@ public class SimpleUser {
 
     public void setPermissions(Collection<Permission> permissions) {
         this.permissions = permissions;
+    }
+
+    @Override
+    public String toString() {
+        return username + " [password hidden] " + roles;
     }
 
 }

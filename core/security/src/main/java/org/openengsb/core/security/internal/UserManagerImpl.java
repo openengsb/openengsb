@@ -17,14 +17,19 @@
 
 package org.openengsb.core.security.internal;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.security.UserUtils;
+import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,7 +46,18 @@ public class UserManagerImpl implements UserManager {
         if (userExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
-        entityManager.persist(UserUtils.toSimpleUser(user));
+        SimpleUser simpleUser = UserUtils.toSimpleUser(user);
+        entityManager.persist(simpleUser);
+        Collection<RoleAuthority> roles = UserUtils.filterCollectionByType(user.getAuthorities(), RoleAuthority.class);
+        for (RoleAuthority r : roles) {
+            Role role = entityManager.find(Role.class, r.getRole().getName());
+            Collection<SimpleUser> members = role.getMembers();
+            if (members == null) {
+                members = new HashSet<SimpleUser>();
+                role.setMembers(members);
+            }
+            members.add(simpleUser);
+        }
     }
 
     @Override
