@@ -1,10 +1,13 @@
 package org.openengsb.core.security.internal;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.openengsb.core.security.UserUtils;
+import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.provisioning.GroupManager;
@@ -28,6 +31,10 @@ public class GroupManagerImpl implements GroupManager {
     @Override
     public void createGroup(String groupName, List<GrantedAuthority> authorities) {
         Role role = new Role(groupName);
+        Collection<Role> roles = UserUtils.getRolesFromSpringUser(authorities);
+        role.setRoles(roles);
+        Collection<Permission> permissions = UserUtils.getPermissionsFromSpringUser(authorities);
+        role.setPermissions(permissions);
         entityManager.persist(role);
     }
 

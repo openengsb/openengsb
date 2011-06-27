@@ -33,14 +33,14 @@ public final class UserUtils {
 
     public static SimpleUser toSimpleUser(UserDetails user) {
         SimpleUser simpleUser = new SimpleUser(user.getUsername(), user.getPassword());
-        simpleUser.setRoles(getRolesFromSpringUser(user));
-        simpleUser.setPermissions(getPermissionsFromSpringUser(user));
+        simpleUser.setRoles(getRolesFromSpringUser(user.getAuthorities()));
+        simpleUser.setPermissions(getPermissionsFromSpringUser(user.getAuthorities()));
         return simpleUser;
     }
 
-    public static Collection<Permission> getPermissionsFromSpringUser(UserDetails user) {
+    public static Collection<Permission> getPermissionsFromSpringUser(Collection<GrantedAuthority> authorities) {
         Collection<PermissionAuthority> permissionAuthorities =
-            filterCollectionByType(user.getAuthorities(), PermissionAuthority.class);
+            filterCollectionByType(authorities, PermissionAuthority.class);
         Collection<Permission> permissions =
             Collections2.transform(permissionAuthorities, new Function<PermissionAuthority, Permission>() {
                 @Override
@@ -51,9 +51,8 @@ public final class UserUtils {
         return permissions;
     }
 
-    public static Collection<Role> getRolesFromSpringUser(UserDetails user) {
-        Collection<RoleAuthority> roleAuthorities =
-            filterCollectionByType(user.getAuthorities(), RoleAuthority.class);
+    public static Collection<Role> getRolesFromSpringUser(Collection<GrantedAuthority> authorities) {
+        Collection<RoleAuthority> roleAuthorities = filterCollectionByType(authorities, RoleAuthority.class);
         Collection<Role> roles = Collections2.transform(roleAuthorities, new Function<RoleAuthority, Role>() {
             @Override
             public Role apply(RoleAuthority input) {

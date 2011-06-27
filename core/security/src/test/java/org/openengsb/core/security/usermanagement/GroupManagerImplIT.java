@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,10 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.security.internal.GroupManagerImpl;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.security.model.Permission;
+import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.GrantedAuthority;
@@ -120,17 +124,26 @@ public class GroupManagerImplIT extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testListAllGroups() throws Exception {
+    public void testListAllGroups_shouldContainTest() throws Exception {
         persist(new Role("test"));
         List<String> findAllGroups = groupManager.findAllGroups();
         assertThat(findAllGroups, hasItem("test"));
     }
 
     @Test
-    public void testCreateGroup() throws Exception {
+    public void testCreateGroup_shouldShowUpInGroupList() throws Exception {
         groupManager.createGroup("test", new ArrayList<GrantedAuthority>());
         List<String> findAllGroups = groupManager.findAllGroups();
         assertThat(findAllGroups, hasItem("test"));
+    }
+
+    @Test
+    public void createGroupWithAuthorities_shouldContainAuthorities() throws Exception {
+        Permission permission = new ServicePermission("asdf");
+        GrantedAuthority permissionAuthority = new PermissionAuthority(permission);
+        groupManager.createGroup("test", Arrays.asList(permissionAuthority));
+        Role role = entityManager.find(Role.class, "test");
+        assertThat(role.getPermissions(), hasItem(permission));
     }
 
     protected void persist(Object o) {
