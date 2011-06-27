@@ -32,7 +32,10 @@ import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
+import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.PermissionAuthority;
+import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
@@ -52,6 +55,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import com.google.common.collect.Sets;
 
 public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
@@ -108,9 +113,15 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         User admin = Users.create("admin", "adminpw", adminAuthorities);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
 
-        ServicePermission servicePermission = new ServicePermission("42");
-        UserDetails testuser = Users.create("testuser", "password", new PermissionAuthority(servicePermission));
-        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testuser);
+        Permission servicePermission = new ServicePermission("42");
+        UserDetails testuser = Users.create("serviceuser", "password", new PermissionAuthority(servicePermission));
+        when(userDetailsService.loadUserByUsername("serviceuser")).thenReturn(testuser);
+
+        Role role = new Role("serviceUsers", Sets.newHashSet(servicePermission));
+
+        UserDetails roleUser = Users.create("roleuser", "password", new RoleAuthority(role));
+        when(userDetailsService.loadUserByUsername("roleuser")).thenReturn(roleUser);
+
         return userDetailsService;
     }
 
@@ -154,13 +165,25 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     @Test
     public void testServicePermission_shouldGrantAccess() throws Exception {
-        authenticate("testuser", "password");
+        authenticate("serviceuser", "password");
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void testServicePermission_shouldDenyAccess() throws Exception {
-        authenticate("testuser", "password");
+        authenticate("serviceuser", "password");
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test
+    public void testRolePermission_shouldGrantAccess() throws Exception {
+        authenticate("roleuser", "password");
+        service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testRolePermission_shouldDenyAccess() throws Exception {
+        authenticate("roleuser", "password");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
