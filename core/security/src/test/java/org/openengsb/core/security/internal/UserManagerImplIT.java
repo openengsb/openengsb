@@ -24,24 +24,23 @@ import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -54,6 +53,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
+
     private EntityManager entityManager;
 
     private UserManager userManager;
@@ -61,15 +63,8 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
     private SimpleUser testUser2;
     private SimpleUser testUser3;
 
-    @BeforeClass
-    @AfterClass
-    public static void clearDB() {
-        FileUtils.deleteQuietly(new File("TEST.h2.db"));
-    }
-
     @Before
     public void setUp() throws Exception {
-        clearDB();
         setupPersistence();
         setupUserManager();
         testUser2 = new SimpleUser("testUser2", "testPass");
@@ -79,7 +74,9 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
     }
 
     private void setupPersistence() {
-        Properties props = new Properties();
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("openjpa.ConnectionURL", "jdbc:h2:" + tmpFolder.getRoot().getAbsolutePath() + "/TEST");
+
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("security-test", props);
         final EntityManager entityManager = emf.createEntityManager();
         this.entityManager = entityManager;
