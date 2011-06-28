@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
  * OpenEngSBModel interfaces.
  */
-public class EKBService implements EngineeringKnowlegeBaseService {
+public class EKBService implements EngineeringKnowledgeBaseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBService.class);
 

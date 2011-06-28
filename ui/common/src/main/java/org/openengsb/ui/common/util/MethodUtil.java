@@ -35,7 +35,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public final class MethodUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
 
-    private static EngineeringKnowlegeBaseService ekbService;
+    private static EngineeringKnowledgeBaseService ekbService;
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -175,7 +175,7 @@ public final class MethodUtil {
         }
     }
 
-    public void setEkbService(EngineeringKnowlegeBaseService ekbService) {
+    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
         MethodUtil.ekbService = ekbService;
         // this.ekbService = ekbService;
     }

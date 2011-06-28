@@ -34,12 +34,12 @@
   <groupId>org.openengsb.core</groupId>
   <artifactId>openengsb-core-ekb</artifactId>
   <version>1.3.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Core :: Engineering Knowledgebase</name>
+  <name>OpenEngSB :: Core :: Engineering Knowledge Base</name>
 
   <packaging>bundle</packaging>
 
   <description>
-    OpenEngSB Engineering Knowledgebase Service. It's purpose is the querying of tooldata out of the EDB and handling of creating Tooldata. It builds a proxy which
+    OpenEngSB Engineering Knowledge Base Service. It's purpose is the querying of tool data out of the EDB and handling of creating Tooldata. It builds a proxy which
     builds a simple implementation for every tool data by forwarding tool data creating access to a proxy.
   </description>
 

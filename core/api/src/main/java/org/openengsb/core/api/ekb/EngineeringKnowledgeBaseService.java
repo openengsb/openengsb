@@ -24,7 +24,7 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
  * The interface for the ekb service. Contains the function for creating a proxy for simulating simple
  * OpenEngSBModel interfaces.
  */
-public interface EngineeringKnowlegeBaseService {
+public interface EngineeringKnowledgeBaseService {
     
     /**
      * Creates a proxy for the model interface which simulates an implementation of the interface.

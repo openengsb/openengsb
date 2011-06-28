@@ -25,7 +25,7 @@
     <property name="edbService" ref="edbService"/>
   </bean>
 
-  <service interface="org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService">
+  <service interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService">
     <ref component-id="ekbServiceProvider" />
   </service>
   

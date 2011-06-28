@@ -26,11 +26,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.ekb.EngineeringKnowlegeBaseService;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class EKBServiceTest {
-    private EngineeringKnowlegeBaseService service;
+    private EngineeringKnowledgeBaseService service;
 
     @Before
     public void setup() {
