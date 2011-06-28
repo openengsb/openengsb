@@ -60,7 +60,7 @@
   <build>
     <resources>
       <resource>
-        <!--<directory>src/main/resources</directory>-->
+        <!--<directory>src/main/resources</directory> -->
         <filtering>false</filtering>
         <directory>${basedir}/src/main/java</directory>
         <includes>
@@ -68,14 +68,12 @@
           <include>**/**.properties</include>
           <include>**/**.css</include>
           <include>**/**.js</include>
+          <include>**/**.png</include>
         </includes>
       </resource>
       <resource>
         <filtering>false</filtering>
         <directory>${basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/**.*</include>
-        </includes>
       </resource>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
@@ -85,6 +83,23 @@
         </includes>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/test/java</directory>
+        <includes>
+          <include>**/**.html</include>
+          <include>**/**.properties</include>
+          <include>**/**.css</include>
+          <include>**/**.js</include>
+          <include>**/**.png</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/test/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
