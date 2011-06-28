@@ -61,7 +61,12 @@
   <bean id="openengsbAppFactory" class="org.openengsb.ui.admin.WicketApplicationFactory" />
   
   <wicket:filter id="contextIdFilter" filterClass="org.openengsb.ui.common.util.ContextIdFilter" priority="1" applicationName="openengsb" />
-  
-  <wicket:filter id="securityFilter" filterClass="org.openengsb.ui.common.util.DelegatingSecurityFilter" priority="2" applicationName="openengsb" />
-  
+
+  <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register">
+    <constructor-arg name="bundleContext" ref="bundleContext" />
+    <constructor-arg name="applicationName" value="openengsb" />
+    <constructor-arg name="priority" value="2" />
+    <property name="securityFilterChain" ref="springSecurityFilterChain" />
+  </bean>
+
 </beans>
