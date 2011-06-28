@@ -15,38 +15,28 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.ruleEditorPage;
+package org.openengsb.ui.admin;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.ui.admin.basePage.BasePage;
-import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
-import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
+import org.apache.wicket.Request;
+import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.springframework.security.authentication.AuthenticationManager;
 
-@AuthorizeInstantiation("ROLE_USER")
-public class RuleEditorPage extends BasePage implements RuleManagerProvider {
+@SuppressWarnings("serial")
+public class AdminWebSession extends OpenEngSBWebSession {
 
-    @PaxWicketBean
-    private RuleManager ruleManager;
+    @PaxWicketBean(name = "authenticationManager")
+    private AuthenticationManager authenticationManager;
 
-    public RuleEditorPage() {
-        initContent();
-    }
-
-    public RuleEditorPage(PageParameters parameters) {
-        super(parameters);
-        initContent();
-    }
-
-    private void initContent() {
-        add(new RuleEditorPanel("ruleEditor", this));
+    public AdminWebSession(Request request) {
+        super(request);
+        injectDependencies();
+        ensureDependenciesNotNull();
     }
 
     @Override
-    public RuleManager getRuleManager() {
-        return ruleManager;
+    protected AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
     }
 
 }

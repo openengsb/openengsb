@@ -44,7 +44,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -64,6 +63,7 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class WiringPageTest extends AbstractUITest {
 
@@ -101,8 +101,8 @@ public class WiringPageTest extends AbstractUITest {
             (ContextCurrentService) context.getBean(mock(ContextCurrentService.class).getClass().getName());
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(WiringPage.class);
     }
 

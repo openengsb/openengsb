@@ -36,7 +36,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -66,6 +65,7 @@ import org.openengsb.core.test.NullEvent;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.end.SetEnd;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class WorkflowEditorTest extends AbstractUITest {
 
@@ -91,7 +91,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         workflowConverter = mock(WorkflowConverter.class);
         context.putBean(workflowConverter);
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(new WorkflowEditor());
     }
 

@@ -32,8 +32,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.tree.LinkTree;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -44,6 +42,8 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class OrganizeImportsPageTest {
     private WicketTester tester;
@@ -53,14 +53,14 @@ public class OrganizeImportsPageTest {
     @Before
     public void init() throws RuleBaseException {
         tester = new WicketTester();
-        AnnotApplicationContextMock appContext = new AnnotApplicationContextMock();
+        ApplicationContextMock appContext = new ApplicationContextMock();
         ContextCurrentService contextService = mock(ContextCurrentService.class);
         appContext.putBean(contextService);
         appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), appContext, false));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
 
         imports = new ArrayList<String>();
         imports.add("aaaa.bbbb.ccc");

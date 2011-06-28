@@ -17,9 +17,6 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
@@ -39,7 +36,7 @@ import org.openengsb.ui.common.OpenEngSBWebSession;
 
 @SuppressWarnings("serial")
 public class BasePage extends OpenEngSBPage {
-
+    
     public BasePage() {
         initCommonContent();
     }
@@ -148,13 +145,5 @@ public class BasePage extends OpenEngSBPage {
             return contextId;
         }
         return contextId;
-    }
-
-    @Override
-    public List<String> getAvailableContexts() {
-        if (contextService == null) {
-            return new ArrayList<String>();
-        }
-        return contextService.getAvailableContexts();
     }
 }

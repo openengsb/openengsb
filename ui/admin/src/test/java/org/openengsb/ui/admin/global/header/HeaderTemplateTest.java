@@ -25,7 +25,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Event;
@@ -39,6 +38,7 @@ import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class HeaderTemplateTest extends AbstractUITest {
 
@@ -95,7 +95,7 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     private void setupTesterWithSpringMockContext() {
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @SuppressWarnings("unchecked")

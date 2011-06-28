@@ -24,8 +24,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -41,6 +39,8 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class EditEventTest {
 
@@ -48,7 +48,7 @@ public class EditEventTest {
 
     private FormTester formTester;
 
-    private ApplicationContextMock mock;
+    private ApplicationContextMock context;
 
     private EventRepresentation event;
 
@@ -62,15 +62,15 @@ public class EditEventTest {
         action.setMethodName(NullDomain.class.getMethods()[0].getName());
         event = new EventRepresentation();
         tester = new WicketTester();
-        mock = new ApplicationContextMock();
-        mock.putBean(mock(ContextCurrentService.class));
-        mock.putBean("openengsbVersion", new OpenEngSBVersion());
-        mock.putBean("workflowEditorService", mock(WorkflowEditorService.class));
-        mock.putBean(mock(WorkflowConverter.class));
-        mock.putBean(mock(RuleManager.class));
-        mock.putBean("validators", new ArrayList<WorkflowValidator>());
+        context = new ApplicationContextMock();
+        context.putBean(mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("workflowEditorService", mock(WorkflowEditorService.class));
+        context.putBean(mock(WorkflowConverter.class));
+        context.putBean(mock(RuleManager.class));
+        context.putBean("validators", new ArrayList<WorkflowValidator>());
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), mock, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(new EditEvent(event, action));
         formTester = tester.newFormTester("eventForm");
     }
