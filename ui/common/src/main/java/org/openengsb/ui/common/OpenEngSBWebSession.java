@@ -68,8 +68,8 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     public boolean authenticate(String username, String password) {
         boolean authenticated = false;
         try {
-            Authentication authentication = getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
-                    username, password));
+            Authentication authentication = getAuthenticationManager().authenticate(
+                new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();
         } catch (AuthenticationException e) {

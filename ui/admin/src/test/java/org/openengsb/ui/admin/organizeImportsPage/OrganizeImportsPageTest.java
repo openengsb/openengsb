@@ -59,8 +59,8 @@ public class OrganizeImportsPageTest {
         appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
-        tester.getApplication()
-            .addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
 
         imports = new ArrayList<String>();
         imports.add("aaaa.bbbb.ccc");

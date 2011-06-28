@@ -59,8 +59,8 @@ public class OrganizeGlobalsPageTest {
         appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
-        tester.getApplication()
-            .addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
 
         globals = new TreeMap<String, String>();
         globals.put("glob1", "aaaa.bbbb.ccc");

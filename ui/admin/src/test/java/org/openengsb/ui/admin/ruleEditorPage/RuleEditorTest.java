@@ -68,8 +68,8 @@ public class RuleEditorTest {
         appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
-        tester.getApplication()
-            .addComponentInstantiationListener( new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
+        tester.getApplication().addComponentInstantiationListener(
+                new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
         Collection<RuleBaseElementId> rules = Arrays
             .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));

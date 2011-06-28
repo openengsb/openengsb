@@ -101,8 +101,8 @@ public class WiringPageTest extends AbstractUITest {
             (ContextCurrentService) context.getBean(mock(ContextCurrentService.class).getClass().getName());
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
-        tester.getApplication()
-            .addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(WiringPage.class);
     }
 
