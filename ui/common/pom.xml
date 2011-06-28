@@ -96,6 +96,15 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+		  <instructions>
+            <Import-Package>org.ops4j.pax.wicket.util.proxy,
+              net.sf.cglib.core,
+              net.sf.cglib.proxy,
+              net.sf.cglib.reflect, *
+            </Import-Package>
+		  </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -128,6 +137,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
 
     <!-- OpenEngSB Dependencies -->
     <dependency>
@@ -151,6 +164,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -160,7 +185,6 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -174,18 +198,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-ioc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-jmx</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>

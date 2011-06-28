@@ -29,11 +29,11 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.Task;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class TaskPanel extends Panel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskPanel.class);
 
-    @SpringBean(name = "taskboxService")
+    @PaxWicketBean(name = "taskboxService")
     private TaskboxService service;
 
     public TaskPanel(String id, Task t) {

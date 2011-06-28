@@ -40,7 +40,7 @@
 
   <description>Administration Interface for the OpenEngSB</description>
 
-  <packaging>war</packaging>
+  <packaging>bundle</packaging>
 
   <url>http://www.openengsb.org</url>
   <licenses>
@@ -103,25 +103,15 @@
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
-              org.drools.rule, org.drools.compiler, *
+              org.drools.rule, org.drools.compiler,
+              org.springframework.security.web.authentication,
+              org.springframework.security.authentication,
+              org.ops4j.pax.wicket.util.proxy,
+              net.sf.cglib.core,
+              net.sf.cglib.proxy,
+              net.sf.cglib.reflect, *
             </Import-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-ClassPath>.,WEB-INF/classes,
-              WEB-INF/lib/*.jar
-            </Bundle-ClassPath>
-            <Web-ContextPath>openengsb</Web-ContextPath>
           </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven.war.plugin.version}</version>
-        <configuration>
-          <attachClasses>true</attachClasses>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
         </configuration>
       </plugin>
     </plugins>
@@ -165,6 +155,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -174,7 +176,6 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -188,18 +189,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-ioc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-jmx</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>

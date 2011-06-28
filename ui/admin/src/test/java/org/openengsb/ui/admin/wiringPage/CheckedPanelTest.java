@@ -25,8 +25,8 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.TagTester;
-import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class CheckedPanelTest {
         labelModel.setObject("testlabel");
         
         tester = new WicketTester();
-        tester.startPanel(new TestPanelSource() {
+        tester.startPanel(new ITestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
                 checkedPanel = new CheckedPanel(panelId, checkModel, labelModel);

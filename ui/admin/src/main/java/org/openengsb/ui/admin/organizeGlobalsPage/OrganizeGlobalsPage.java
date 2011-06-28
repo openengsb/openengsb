@@ -34,10 +34,10 @@ import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class OrganizeGlobalsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);
 
-    @SpringBean
+    @PaxWicketBean
     private RuleManager ruleManager;
 
     private String globalName = "";

@@ -15,32 +15,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.taskOverview;
+package org.openengsb.ui.admin;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.ui.admin.basePage.BasePage;
-import org.openengsb.ui.common.taskbox.WebTaskboxService;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.ops4j.pax.wicket.api.ApplicationFactory;
+import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 
-@AuthorizeInstantiation("ROLE_USER")
-public class TaskOverview extends BasePage {
-    @PaxWicketBean(name = "webtaskboxService")
-    private WebTaskboxService taskboxService;
+public class WicketApplicationFactory implements ApplicationFactory {
 
-    public TaskOverview() {
-        initContent();
-    }
-
-    public TaskOverview(PageParameters parameters) {
-        super(parameters);
-        initContent();
-    }
-
-    private void initContent() {
-        Panel p = taskboxService.getOverviewPanel();
-        this.add(p);
+    @Override
+    public WebApplication createWebApplication(ApplicationLifecycleListener lifecycleListener) {
+        return new WicketApplication(lifecycleListener);
     }
 
 }

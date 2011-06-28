@@ -21,10 +21,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+  xmlns:wicket="http://www.ops4j.org/schema/wicket"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
-        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
+        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd
+        http://www.ops4j.org/schema/wicket http://www.ops4j.org/schema/wicket/wicket.xsd">
 
   <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
     <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
@@ -51,5 +53,20 @@
   <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
   <osgi:reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
   <osgi:reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
-  <osgi:list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator"/>
+  <osgi:list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator" />
+  
+  <wicket:application id="openengsbApplication" homepageClass="org.openengsb.ui.admin.index.Index" mountPoint="/openengsb"
+    applicationName="openengsb" applicationFactory="openengsbAppFactory" />
+  
+  <bean id="openengsbAppFactory" class="org.openengsb.ui.admin.WicketApplicationFactory" />
+  
+  <wicket:filter id="contextIdFilter" filterClass="org.openengsb.ui.common.util.ContextIdFilter" priority="1" applicationName="openengsb" />
+
+  <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register">
+    <constructor-arg name="bundleContext" ref="bundleContext" />
+    <constructor-arg name="applicationName" value="openengsb" />
+    <constructor-arg name="priority" value="2" />
+    <property name="securityFilterChain" ref="springSecurityFilterChain" />
+  </bean>
+
 </beans>
