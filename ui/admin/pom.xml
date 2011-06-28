@@ -103,9 +103,14 @@
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
               org.drools.event; bundle-symbolic-name="org.drools.core",
-              org.drools.rule, org.drools.compiler, *
+              org.drools.rule, org.drools.compiler,
+              org.springframework.security.web.authentication,
+              org.springframework.security.authentication,
+              org.ops4j.pax.wicket.util.proxy,
+              net.sf.cglib.core,
+              net.sf.cglib.proxy,
+              net.sf.cglib.reflect, *
             </Import-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -175,10 +180,12 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-devutils</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -187,6 +194,7 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-auth-roles</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test Dependencies -->

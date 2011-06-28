@@ -94,9 +94,10 @@
               org.aopalliance.intercept,
               org.springframework.aop,
               org.springframework.aop.framework,
-              org.ops4j.pax.wicket.util.proxy,
-              net.sf.cglib.core,
-              net.sf.cglib.proxy, *
+              org.ops4j.pax.wicket.util.proxy; resolution:="optional",
+              net.sf.cglib.core; resolution:="optional",
+              net.sf.cglib.proxy; resolution:="optional",
+              net.sf.cglib.reflect; resolution:="optional", *
             </Import-Package>
           </instructions>
         </configuration>
