@@ -43,7 +43,8 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/LoginPage/";
-
+    private final long WAITING_FOR_WICKET = 3000L;
+    
     @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
@@ -57,6 +58,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testIfAllMainNavigationLinksWork() throws Exception {
+        Thread.sleep(WAITING_FOR_WICKET);
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -81,6 +83,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testUserLoginWithLimitedAccess() throws Exception {
+        Thread.sleep(WAITING_FOR_WICKET);
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -93,6 +96,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
+        Thread.sleep(WAITING_FOR_WICKET);
         HtmlPage page = webClient.getPage("http://localhost:" + WEBUI_PORT + "/openengsb/");
         page = page.getAnchorByText("Login").click();
 
