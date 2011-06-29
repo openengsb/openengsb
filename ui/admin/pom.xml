@@ -121,6 +121,8 @@
               org.drools.rule, org.drools.compiler,
               org.springframework.security.web.authentication,
               org.springframework.security.authentication,
+              org.springframework.security.core.userdetails,
+              org.springframework.dao,
               org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core,
               net.sf.cglib.proxy,
