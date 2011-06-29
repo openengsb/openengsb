@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api.edb;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
@@ -25,7 +24,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * name the model should be saved. Because this name should be unique, it is recommended to use a connector name + id
  * for the name.
  */
-public class EDBCreateEvent extends Event implements EDBEvent {
+public class EDBCreateEvent extends EDBEvent {
 
     private OpenEngSBModel model;
     private String oid;
@@ -48,5 +47,4 @@ public class EDBCreateEvent extends Event implements EDBEvent {
     public String getRole() {
         return role;
     }
-
 }

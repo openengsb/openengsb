@@ -17,13 +17,12 @@
 
 package org.openengsb.core.api.edb;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
  * Represents a update Event. Try to update an OpenEngSBModel object in the EDB under the oid.
  */
-public class EDBUpdateEvent extends Event implements EDBEvent {
+public class EDBUpdateEvent extends EDBEvent {
 
     private OpenEngSBModel model;
     private String oid;

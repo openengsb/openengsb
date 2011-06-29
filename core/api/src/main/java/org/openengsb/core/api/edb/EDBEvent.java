@@ -17,9 +17,39 @@
 
 package org.openengsb.core.api.edb;
 
+import org.openengsb.core.api.Event;
+
 /**
  * Interface for easier maintaining of the Events in the DomainEventsProxyFacory
  */
-public interface EDBEvent {
+public abstract class EDBEvent extends Event {
+    
+    private String domainId;
+    private String connectorId;
+    private String instanceId;
+    
+    void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+    
+    String getDomainId() {
+        return domainId;
+    }
+    
+    void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+    
+    String getConnectorId() {
+        return connectorId;
+    }
+    
+    void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
+    
+    String getInstanceId() {
+        return instanceId;
+    }
 
 }

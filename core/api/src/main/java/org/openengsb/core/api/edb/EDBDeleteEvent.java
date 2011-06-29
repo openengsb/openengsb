@@ -17,12 +17,10 @@
 
 package org.openengsb.core.api.edb;
 
-import org.openengsb.core.api.Event;
-
 /**
  * Represents a delete Event. Try to delete an OpenEngSBModel object in the EDB with the given oid.
  */
-public class EDBDeleteEvent extends Event implements EDBEvent {
+public class EDBDeleteEvent extends EDBEvent {
     
     private String oid;
     private String role;
