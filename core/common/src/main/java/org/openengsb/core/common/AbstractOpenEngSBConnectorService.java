@@ -37,18 +37,18 @@ public class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService 
     }
 
     public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String savingName,
-            String commiter, String role) throws EDBException {
+            String role) throws EDBException {
         switch (type) {
             case INSERT:
-                EDBCreateEvent create = new EDBCreateEvent(model, savingName, commiter, role);
+                EDBCreateEvent create = new EDBCreateEvent(model, savingName, role);
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(savingName, commiter, role);
+                EDBDeleteEvent delete = new EDBDeleteEvent(savingName, role);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model, savingName, commiter, role);
+                EDBUpdateEvent update = new EDBUpdateEvent(model, savingName, role);
                 events.raiseEvent(update);
                 break;
             default:

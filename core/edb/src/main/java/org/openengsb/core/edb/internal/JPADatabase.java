@@ -46,6 +46,7 @@ import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
@@ -402,7 +403,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void handleEDBCreateEvent(EDBCreateEvent event) throws EDBException {
         LOGGER.debug("received create event");
 
-        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
         this.commit(commit);
 
@@ -411,8 +412,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         LOGGER.debug("received update event");
-
-        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
         this.commit(commit);
 
@@ -422,7 +422,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        JPACommit commit = createCommit(event.getCommitter(), event.getRole());
+        System.out.println();
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.delete(event.getOid());
 
         this.commit(commit);
@@ -436,5 +437,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             object.put(entry.getKey(), entry.getValue());
         }
         return object;
+    }
+    
+    private String getAuthenticatedUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

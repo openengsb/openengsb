@@ -29,13 +29,11 @@ public class EDBCreateEvent extends Event implements EDBEvent {
 
     private OpenEngSBModel model;
     private String oid;
-    private String committer;
     private String role;
 
-    public EDBCreateEvent(OpenEngSBModel model, String oid, String committer, String role) {
+    public EDBCreateEvent(OpenEngSBModel model, String oid, String role) {
         this.model = model;
         this.oid = oid;
-        this.committer = committer;
         this.role = role;
     }
 
@@ -45,10 +43,6 @@ public class EDBCreateEvent extends Event implements EDBEvent {
 
     public String getOid() {
         return oid;
-    }
-    
-    public String getCommitter() {
-        return committer;
     }
     
     public String getRole() {

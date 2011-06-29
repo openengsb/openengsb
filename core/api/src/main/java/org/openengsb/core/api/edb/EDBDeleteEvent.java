@@ -25,21 +25,15 @@ import org.openengsb.core.api.Event;
 public class EDBDeleteEvent extends Event implements EDBEvent {
     
     private String oid;
-    private String committer;
     private String role;
 
-    public EDBDeleteEvent(String oid, String committer, String role) {
+    public EDBDeleteEvent(String oid, String role) {
         this.oid = oid;
-        this.committer = committer;
         this.role = role;
     }
 
     public String getOid() {
         return oid;
-    }
-    
-    public String getCommitter() {
-        return committer;
     }
     
     public String getRole() {
