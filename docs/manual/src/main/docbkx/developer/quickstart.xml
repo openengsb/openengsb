@@ -68,8 +68,9 @@
     <section xml:id="developer.quickstart.infrastructure.maven">
       <title>Maven Repository</title>
       <para>The OpenEngSB is available at <link xlink:href="http://repo1.maven.org/maven2/org/openengsb/">Maven Central</link>. We still
-        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org/</link> and snapshots are available
-        via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
+        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org</link>.Please keep in mind 
+        that we try to get rid of this own infrastructure as soon as possible. Therefore the use of this repository is as minimal as possible.
+        Snapshots are available via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
     </section>
 
     <section xml:id="developer.quickstart.infrastructure.hudson">
