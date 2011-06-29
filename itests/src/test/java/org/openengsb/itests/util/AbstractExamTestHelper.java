@@ -74,7 +74,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     private boolean isBeforeExecuted = false;
 
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
