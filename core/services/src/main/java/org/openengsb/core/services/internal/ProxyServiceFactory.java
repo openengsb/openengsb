@@ -35,6 +35,9 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
     private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
 
+    private String domainId;
+    private String connectorId;
+
     private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
 
     public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
@@ -101,6 +104,26 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
+    }
+
+    @Override
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+
+    @Override
+    public String getDomainId() {
+        return domainId;
+    }
+
+    @Override
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
+    @Override
+    public String getConnectorId() {
+        return connectorId;
     }
 
 }

@@ -36,6 +36,7 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
+import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
@@ -404,7 +405,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("received create event");
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
+        commit.add(convertModelToEDBObject(event.getModel(), event));
         this.commit(commit);
 
         LOGGER.debug("created object with name {}", event.getOid());
@@ -413,7 +414,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         LOGGER.debug("received update event");
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid()));
+        commit.add(convertModelToEDBObject(event.getModel(), event));
         this.commit(commit);
 
         LOGGER.debug("updated object with name {}", event.getOid());
@@ -422,7 +423,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        System.out.println();
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.delete(event.getOid());
 
@@ -431,11 +431,14 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("deleted object with name {}", event.getOid());
     }
 
-    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String name) {
-        EDBObject object = new EDBObject(name);
+    private EDBObject convertModelToEDBObject(OpenEngSBModel model, EDBEvent event) {
+        EDBObject object = new EDBObject(event.getName());
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             object.put(entry.getKey(), entry.getValue());
         }
+        object.put("domainId", event.getDomainId());
+        object.put("connectorId", event.getConnectorId());
+        object.put("instanceId", event.getInstanceId());
         return object;
     }
     

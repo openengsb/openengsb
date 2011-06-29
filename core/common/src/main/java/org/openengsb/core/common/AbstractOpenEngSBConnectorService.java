@@ -21,12 +21,16 @@ import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
+import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
-public class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService {
+public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService {
+    
+    private String domainId;
+    private String connectorId;
     
     public AbstractOpenEngSBConnectorService() {
         super();
@@ -41,18 +45,43 @@ public class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService 
         switch (type) {
             case INSERT:
                 EDBCreateEvent create = new EDBCreateEvent(model, savingName, role);
+                enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
             case DELETE:
                 EDBDeleteEvent delete = new EDBDeleteEvent(savingName, role);
+                enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
                 EDBUpdateEvent update = new EDBUpdateEvent(model, savingName, role);
+                enrichEDBEvent(update);
                 events.raiseEvent(update);
                 break;
             default:
                 throw new DomainMethodExecutionException("unsupported type of event --> " + type);
         }
+    }
+    
+    private void enrichEDBEvent(EDBEvent event) {
+        event.setDomainId(domainId);
+        event.setConnectorId(connectorId);
+        event.setInstanceId(instanceId);
+    }
+
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
+    public String getConnectorId() {
+        return connectorId;
     }
 }

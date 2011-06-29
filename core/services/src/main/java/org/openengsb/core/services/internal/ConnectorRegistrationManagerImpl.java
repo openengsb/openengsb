@@ -103,6 +103,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         throws ConnectorValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
+        
+        factory.setDomainId(id.getDomainType());
+        factory.setConnectorId(id.getConnectorType());
 
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
         if (!errors.isEmpty()) {

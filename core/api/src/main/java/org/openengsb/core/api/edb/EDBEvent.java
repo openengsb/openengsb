@@ -28,27 +28,27 @@ public abstract class EDBEvent extends Event {
     private String connectorId;
     private String instanceId;
     
-    void setDomainId(String domainId) {
+    public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
     
-    String getDomainId() {
+    public String getDomainId() {
         return domainId;
     }
     
-    void setConnectorId(String connectorId) {
+    public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
     
-    String getConnectorId() {
+    public String getConnectorId() {
         return connectorId;
     }
     
-    void setInstanceId(String instanceId) {
+    public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
     }
     
-    String getInstanceId() {
+    public String getInstanceId() {
         return instanceId;
     }
 

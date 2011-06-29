@@ -52,5 +52,12 @@ public interface ConnectorInstanceFactory {
      *
      */
     void applyAttributes(Domain instance, Map<String, String> attributes);
-
+    
+    void setDomainId(String domainId);
+    
+    String getDomainId();
+    
+    void setConnectorId(String connectorId);
+    
+    String getConnectorId();
 }
