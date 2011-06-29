@@ -40,7 +40,7 @@ import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 public class WicketApplication extends OpenEngSBWicketApplication {
 
     private final ApplicationLifecycleListener lifecycleListener;
-    
+
     public WicketApplication(ApplicationLifecycleListener lifecycleListener) {
         this.lifecycleListener = lifecycleListener;
         @SuppressWarnings("unchecked")
@@ -61,19 +61,18 @@ public class WicketApplication extends OpenEngSBWicketApplication {
     protected Class<? extends WebPage> getSignInPageClass() {
         return LoginPage.class;
     }
-    
+
     @Override
     protected void addInjector() {
-        //a ComponentInitializationListener is set by pax-wicket
+        // a ComponentInitializationListener is set by pax-wicket
     }
 
     @Override
     protected void init() {
-        setApplicationKey("openengsb");
         lifecycleListener.onInit(this);
         super.init();
     }
-    
+
     @Override
     public Session newSession(Request request, Response response) {
         return new AdminWebSession(request);
