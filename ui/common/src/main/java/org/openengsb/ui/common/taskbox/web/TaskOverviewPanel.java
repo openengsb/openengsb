@@ -50,7 +50,7 @@ public class TaskOverviewPanel extends Panel {
     private TaskDataProvider dataProvider = new TaskDataProvider();
     private Panel panel = new EmptyPanel("taskPanel");
 
-    @PaxWicketBean(name = "webtaskboxService")
+    @PaxWicketBean(name = "webTaskboxService")
     private WebTaskboxService webtaskboxService;
 
     public TaskOverviewPanel(String id) {
