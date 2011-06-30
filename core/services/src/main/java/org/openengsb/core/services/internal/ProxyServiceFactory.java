@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -34,9 +35,6 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     private DomainProvider domainProvider;
     private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
     private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
-
-    private String domainId;
-    private String connectorId;
 
     private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
 
@@ -66,12 +64,12 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    public Connector createNewInstance(String id) {
         ProxyConnector handler = new ProxyConnector(id);
         updateInstanceCallRouter();
         handler.setOutgoingPortUtilService(callRouter);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
+        Connector newProxyInstance =
+            (Connector) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ domainProvider.getDomainInterface(), },
                 handler);
         handlers.put(newProxyInstance, handler);
@@ -104,26 +102,6 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
-    }
-
-    @Override
-    public void setDomainId(String domainId) {
-        this.domainId = domainId;
-    }
-
-    @Override
-    public String getDomainId() {
-        return domainId;
-    }
-
-    @Override
-    public void setConnectorId(String connectorId) {
-        this.connectorId = connectorId;
-    }
-
-    @Override
-    public String getConnectorId() {
-        return connectorId;
     }
 
 }

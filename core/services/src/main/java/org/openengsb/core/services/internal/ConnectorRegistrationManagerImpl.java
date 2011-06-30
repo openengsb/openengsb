@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -103,9 +104,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         throws ConnectorValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
-        
-        factory.setDomainId(id.getDomainType());
-        factory.setConnectorId(id.getConnectorType());
 
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
         if (!errors.isEmpty()) {
@@ -127,8 +125,11 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
             DomainProvider domainProvider, ConnectorInstanceFactory factory) {
-        Domain serviceInstance = factory.createNewInstance(id.toString());
+        Connector serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
+        
+        serviceInstance.setDomainId(id.getDomainType());
+        serviceInstance.setConnectorId(id.getConnectorType());
 
         String[] clazzes = new String[]{
             OpenEngSBService.class.getName(),

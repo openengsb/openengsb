@@ -17,6 +17,7 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.edb.EDBCreateEvent;
@@ -27,7 +28,7 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
-public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService {
+public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
     
     private String domainId;
     private String connectorId;
@@ -69,18 +70,22 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         event.setInstanceId(instanceId);
     }
 
+    @Override
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
 
+    @Override
     public String getDomainId() {
         return domainId;
     }
 
+    @Override
     public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
 
+    @Override
     public String getConnectorId() {
         return connectorId;
     }

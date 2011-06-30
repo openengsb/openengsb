@@ -32,9 +32,6 @@ import org.openengsb.core.api.Domain;
 public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Domain> implements
         ConnectorInstanceFactory {
     
-    private String domainId;
-    private String connectorId;
-
     @SuppressWarnings("unchecked")
     @Override
     public void applyAttributes(Domain instance, Map<String, String> attributes) {
@@ -62,25 +59,4 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Dom
         // do nothing. override to add validation
         return Collections.emptyMap();
     }
-    
-    @Override
-    public void setDomainId(String domainId) {
-        this.domainId = domainId;
-    }
-    
-    @Override
-    public String getDomainId() {
-        return domainId;
-    }
-    
-    @Override
-    public void setConnectorId(String connectorId) {
-        this.connectorId = connectorId;
-    }
-    
-    @Override
-    public String getConnectorId() {
-        return connectorId;
-    }
-
 }

@@ -44,7 +44,7 @@ public interface ConnectorInstanceFactory {
      *
      * The created instance only contains default-values that are changed later.
      */
-    Domain createNewInstance(String id);
+    Connector createNewInstance(String id);
 
     /**
      * This method is used for filling in the attributes of a service. It can be assumed that the attributes have been
@@ -52,12 +52,4 @@ public interface ConnectorInstanceFactory {
      *
      */
     void applyAttributes(Domain instance, Map<String, String> attributes);
-    
-    void setDomainId(String domainId);
-    
-    String getDomainId();
-    
-    void setConnectorId(String connectorId);
-    
-    String getConnectorId();
 }
