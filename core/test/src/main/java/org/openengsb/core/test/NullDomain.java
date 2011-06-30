@@ -17,10 +17,10 @@
 
 package org.openengsb.core.test;
 
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.Raises;
 
-public interface NullDomain extends Domain {
+public interface NullDomain extends Connector {
 
     @Raises(NullEvent.class)
     void nullMethod();

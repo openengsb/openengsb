@@ -54,6 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -67,10 +68,10 @@ import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
 
 public class WiringPageTest extends AbstractUITest {
 
-    public interface TestDomainInterface extends Domain {
+    public interface TestDomainInterface extends Connector {
     }
 
-    public interface AnotherTestDomainInterface extends Domain {
+    public interface AnotherTestDomainInterface extends Connector {
     }
 
     private RuleManager ruleManager;
@@ -401,9 +402,9 @@ public class WiringPageTest extends AbstractUITest {
         createDomainProviderMock(AnotherTestDomainInterface.class, "anotherTestDomain");
         createConnectorProviderMock("testconnector", "testdomain");
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
-        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Connector>() {
             @Override
-            public Domain answer(InvocationOnMock invocation) throws Throwable {
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
                 TestDomainInterface newMock = mock(TestDomainInterface.class);
                 when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
                 return newMock;

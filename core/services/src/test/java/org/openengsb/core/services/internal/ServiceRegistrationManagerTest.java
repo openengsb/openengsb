@@ -24,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +74,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         serviceManagerImpl.setServiceUtils(serviceUtils);
         registrationManager = serviceManagerImpl;
     }
-
+    
     @Test
     public void testCreateService_shouldCreateInstanceWithFactory() throws Exception {
         Map<String, String> attributes = new HashMap<String, String>();
@@ -170,7 +171,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
-        verify(callrouter).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
+        verify(callrouter, times(3)).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 

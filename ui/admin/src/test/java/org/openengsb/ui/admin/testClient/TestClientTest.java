@@ -66,6 +66,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -89,7 +90,7 @@ import org.osgi.framework.ServiceReference;
 
 public class TestClientTest extends AbstractUITest {
 
-    public interface AnotherTestInterface extends Domain {
+    public interface AnotherTestInterface extends Connector {
 
     }
 
@@ -109,6 +110,24 @@ public class TestClientTest extends AbstractUITest {
         @Override
         public String getInstanceId() {
             return instanceId;
+        }
+
+        @Override
+        public void setDomainId(String domainId) {
+        }
+
+        @Override
+        public String getDomainId() {
+            return null;
+        }
+
+        @Override
+        public void setConnectorId(String connectorId) {
+        }
+
+        @Override
+        public String getConnectorId() {
+            return null;
         }
 
     }
@@ -677,9 +696,9 @@ public class TestClientTest extends AbstractUITest {
         createDomainProviderMock(AnotherTestInterface.class, "anotherTestDomain");
         createConnectorProviderMock("testconnector", "testdomain");
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
-        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Connector>() {
             @Override
-            public Domain answer(InvocationOnMock invocation) throws Throwable {
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
                 TestInterface newMock = mock(TestInterface.class);
                 testService = newMock;
                 when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
