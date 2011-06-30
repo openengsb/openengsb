@@ -405,7 +405,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("received create event");
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
         this.commit(commit);
 
         LOGGER.debug("created object with name {}", event.getOid());
@@ -414,7 +414,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         LOGGER.debug("received update event");
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
         this.commit(commit);
 
         LOGGER.debug("updated object with name {}", event.getOid());
@@ -431,8 +431,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("deleted object with name {}", event.getOid());
     }
 
-    private EDBObject convertModelToEDBObject(OpenEngSBModel model, EDBEvent event) {
-        EDBObject object = new EDBObject(event.getName());
+    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event) {
+        EDBObject object = new EDBObject(oid);
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             object.put(entry.getKey(), entry.getValue());
         }
