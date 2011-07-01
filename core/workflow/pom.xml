@@ -102,6 +102,14 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>com.springsource.org.codehaus.janino</artifactId>
       <scope>test</scope>
