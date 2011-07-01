@@ -231,7 +231,7 @@
     <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-api</artifactId>
+      <artifactId>knowledge-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

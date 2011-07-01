@@ -72,9 +72,12 @@
     <bundle>mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
     <bundle>mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
     <bundle>mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
-    <bundle>mvn:org.drools/drools-api/${drools.version}</bundle>
+    <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+	<bundle>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
+	<bundle>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+
     <!-- OpenEngSB Commons Dependencies -->
     <bundle>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
