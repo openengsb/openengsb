@@ -24,7 +24,9 @@
       http://www.ops4j.org/schema/wicket http://www.ops4j.org/schema/wicket/wicket.xsd">
 
   <wicket:classResolver id="classResolver" applicationName="openengsb" />
-  
+
   <wicket:injectionProvider id="injectionProvider" applicationName="openengsb" />
-        
- </beans>
+
+  <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
+
+</beans>

@@ -27,7 +27,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
+@PaxWicketMountPoint(mountPoint = "login")
 public class LoginPage extends BasePage {
     private User user = new User(null);
 

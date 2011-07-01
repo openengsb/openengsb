@@ -42,9 +42,11 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
 
     @PaxWicketBean

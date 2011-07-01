@@ -67,6 +67,8 @@
   <wicket:filter id="contextIdFilter" filterClass="org.openengsb.ui.common.util.ContextIdFilter" priority="1"
     applicationName="openengsb" />
 
+  <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
+
   <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
     lazy-init="false">
     <constructor-arg name="bundleContext" ref="bundleContext" />

@@ -24,8 +24,10 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "rules")
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
     @PaxWicketBean

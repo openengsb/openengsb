@@ -40,10 +40,12 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "imports")
 public class OrganizeImportsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeImportsPage.class);
 
@@ -167,12 +169,12 @@ public class OrganizeImportsPage extends BasePage {
     private TreeModel createTreeModel() {
         TreeModel model = null;
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Imports");
-        
+
         Collection<String> c = ruleManager.listImports();
         List<String> l = new ArrayList<String>();
         l.addAll(c);
         Collections.sort(l);
-        
+
         for (String imp : l) {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(imp);
             rootNode.add(child);

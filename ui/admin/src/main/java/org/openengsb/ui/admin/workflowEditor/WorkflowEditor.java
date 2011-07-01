@@ -59,10 +59,12 @@ import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "workflows")
 public class WorkflowEditor extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowEditor.class);
@@ -211,7 +213,7 @@ public class WorkflowEditor extends BasePage {
                     LOGGER.info("Removing workflow " + workflowEditorService.getCurrentWorkflow().getName());
                     workflowEditorService.removeCurrentWorkflow();
                     setResponsePage(WorkflowEditor.class);
-                    
+
                 } catch (PersistenceException e) {
                     error(e);
                     LOGGER.error("Removing Workflow failed: " + e.getMessage());

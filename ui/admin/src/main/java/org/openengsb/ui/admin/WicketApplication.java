@@ -23,17 +23,8 @@ import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.target.coding.MixedParamUrlCodingStrategy;
-import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
-import org.openengsb.ui.admin.sendEventPage.SendEventPage;
-import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
-import org.openengsb.ui.admin.taskOverview.TaskOverview;
-import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserService;
-import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
 import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 
@@ -43,13 +34,6 @@ public class WicketApplication extends OpenEngSBWicketApplication {
 
     public WicketApplication(ApplicationLifecycleListener lifecycleListener) {
         this.lifecycleListener = lifecycleListener;
-        @SuppressWarnings("unchecked")
-        Class<? extends Page>[] pages =
-            new Class[]{ OpenEngSBPage.class, BasePage.class, Index.class, TestClient.class, LoginPage.class,
-                ServiceListPage.class, TaskOverview.class, UserService.class, SendEventPage.class, WiringPage.class };
-        for (Class<? extends Page> page : pages) {
-            mount(new MixedParamUrlCodingStrategy(page.getSimpleName(), page, new String[0]));
-        }
     }
 
     @Override

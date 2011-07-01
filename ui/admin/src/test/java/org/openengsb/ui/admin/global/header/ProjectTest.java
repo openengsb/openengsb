@@ -96,7 +96,8 @@ public class ProjectTest {
         session.signIn("", "password");
 
         when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
-        basePage = tester.startPage(new BasePage());
+        basePage = tester.startPage(new BasePage() {
+        });
     }
 
     private void mockAuthentication() {
@@ -140,7 +141,8 @@ public class ProjectTest {
         formTester.select("projectChoice", 1);
 
         // simulated page reload...
-        tester.startPage(new BasePage());
+        tester.startPage(new BasePage() {
+        });
         assertThat("bar", is(ContextHolder.get().getCurrentContextId()));
     }
 

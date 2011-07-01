@@ -38,10 +38,12 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "globals")
 public class OrganizeGlobalsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);
 

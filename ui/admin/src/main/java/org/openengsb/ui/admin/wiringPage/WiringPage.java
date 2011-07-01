@@ -66,11 +66,13 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_ADMIN")
+@PaxWicketMountPoint(mountPoint = "wiring")
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 

@@ -114,9 +114,9 @@
         <configuration>
 		  <instructions>
             <Import-Package>org.ops4j.pax.wicket.util.proxy,
-              net.sf.cglib.core,
-              net.sf.cglib.proxy,
-              net.sf.cglib.reflect, *
+              net.sf.cglib.core;version="[2,3)",
+              net.sf.cglib.proxy;version="[2,3)",
+              net.sf.cglib.reflect;version="[2,3)", *
             </Import-Package>
 		  </instructions>
         </configuration>

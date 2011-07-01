@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @link{org.openengsb.core.common.context.ContextCurrentService must be available
  */
-public class OpenEngSBPage extends WebPage {
+public abstract class OpenEngSBPage extends WebPage {
 
     public static final String CONTEXT_PARAM = "context";
 
@@ -70,7 +70,7 @@ public class OpenEngSBPage extends WebPage {
         if (sessionContextId == null) {
             sessionContextId = "foo";
         }
-        if (this.getAvailableContexts().contains(sessionContextId)) {
+        if (getAvailableContexts().contains(sessionContextId)) {
             ContextHolder.get().setCurrentContextId(sessionContextId);
         } else {
             LOGGER.debug("initialize default-values in contexts");

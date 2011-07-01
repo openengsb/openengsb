@@ -35,8 +35,8 @@ import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWebSession;
 
 @SuppressWarnings("serial")
-public class BasePage extends OpenEngSBPage {
-    
+public abstract class BasePage extends OpenEngSBPage {
+
     public BasePage() {
         initCommonContent();
     }
@@ -127,7 +127,7 @@ public class BasePage extends OpenEngSBPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     @Override
     public String getHeaderMenuItem() {

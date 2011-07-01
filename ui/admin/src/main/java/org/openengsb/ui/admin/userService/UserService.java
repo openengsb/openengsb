@@ -48,12 +48,14 @@ import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
+@PaxWicketMountPoint(mountPoint = "users")
 public class UserService extends BasePage {
-    
+
     UserInput input = new UserInput();
     RequiredTextField<String> usernameField;
     PasswordTextField passwordField;
