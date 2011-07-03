@@ -124,6 +124,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.core.api");
         importantBundles.add("org.openengsb.core.common");
+        importantBundles.add("org.openengsb.core.edb");
+        importantBundles.add("org.openengsb.core.ekb");
         importantBundles.add("org.openengsb.core.service");
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
@@ -252,7 +254,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                    .versionAsInProject(), "activemq-blueprint", "openengsb-connector-memoryauditing",
+                    .versionAsInProject(), "activemq-blueprint", "openengsb-edb", "openengsb-ekb", "openengsb-connector-memoryauditing",
                 "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
