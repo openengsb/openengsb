@@ -58,7 +58,7 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Connector instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
@@ -99,7 +99,7 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }

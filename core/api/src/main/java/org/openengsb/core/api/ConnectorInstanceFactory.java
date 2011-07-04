@@ -36,7 +36,7 @@ public interface ConnectorInstanceFactory {
      *
      * returns a Collection of error-messages. should return an empty map if there are no errors
      */
-    Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes);
+    Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes);
 
     /**
      * creates a new instance with the given service-id. The serviceId should then be the the same as returned by
@@ -51,5 +51,5 @@ public interface ConnectorInstanceFactory {
      * validated before.
      *
      */
-    void applyAttributes(Domain instance, Map<String, String> attributes);
+    void applyAttributes(Connector instance, Map<String, String> attributes);
 }

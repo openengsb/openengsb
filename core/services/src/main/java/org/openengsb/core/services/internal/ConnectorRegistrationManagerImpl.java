@@ -58,7 +58,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     private BundleContext bundleContext;
 
     private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
-    private Map<ConnectorId, Domain> instances = new HashMap<ConnectorId, Domain>();
+    private Map<ConnectorId, Connector> instances = new HashMap<ConnectorId, Connector>();
 
     @Override
     public String getInstanceId() {
@@ -117,7 +117,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
 
-        Domain serviceInstance = factory.createNewInstance(id.toString());
+        Connector serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
         finishCreatingInstance(id, description, domainProvider, factory);
