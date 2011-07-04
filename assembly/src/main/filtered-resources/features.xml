@@ -82,8 +82,8 @@
     <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
-	<bundle>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
-	<bundle>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
+    <bundle>mvn:org.jbpm/jbpm-flow/${jbpm.version}</bundle>
+    <bundle>mvn:org.jbpm/jbpm-flow-builder/${jbpm.version}</bundle>
 
     <!-- OpenEngSB Commons Dependencies -->
     <bundle>mvn:commons-codec/commons-codec/${commons.codec.version}</bundle>
