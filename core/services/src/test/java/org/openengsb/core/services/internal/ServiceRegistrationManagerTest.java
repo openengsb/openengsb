@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
@@ -153,7 +154,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
         serviceUtils.getService("(foo=bar)", 100L);
         ConnectorInstanceFactory factory = serviceUtils.getService(ConnectorInstanceFactory.class);
-        verify(factory).applyAttributes(any(Domain.class), eq(newAttrs));
+        verify(factory).applyAttributes(any(Connector.class), eq(newAttrs));
     }
 
     @Test
