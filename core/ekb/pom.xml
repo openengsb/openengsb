@@ -39,8 +39,9 @@
   <packaging>bundle</packaging>
 
   <description>
-    OpenEngSB Engineering Knowledge Base Service. It's purpose is the querying of tool data out of the EDB and handling of creating Tooldata. It builds a proxy which
-    builds a simple implementation for every tool data by forwarding tool data creating access to a proxy.
+    OpenEngSB Engineering Knowledge Base Service. It's purpose is the querying of tool data out of the EDB and handling
+    of creating Tooldata. It builds a proxy which builds a simple implementation for every tool data by forwarding tool
+    data creating access to a proxy.
   </description>
 
   <url>http://www.openengsb.org</url>
