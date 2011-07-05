@@ -37,10 +37,13 @@ public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBacken
 
     private PersistenceManager persistenceManager;
     private PersistenceService persistenceService;
+
     private BundleContext bundleContext;
 
     public void init() {
-        persistenceService = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+        if (persistenceService == null) {
+            persistenceService = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+        }
     }
 
     @Override
@@ -87,4 +90,7 @@ public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBacken
         this.bundleContext = bundleContext;
     }
 
+    public void setPersistenceService(PersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+    }
 }

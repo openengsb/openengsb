@@ -25,11 +25,14 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
+import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
+import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
@@ -43,22 +46,23 @@ public final class PersistenceTestUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);
 
     public static RuleManager getRuleManagerWithMockedPersistence() throws Exception {
-        PersistenceRuleManager manager = new PersistenceRuleManager();
-        DummyPersistence persistenceMock = new DummyPersistence();
-        manager.setPersistence(persistenceMock);
-        manager.init();
-        return manager;
-    }
-
-    public static RuleManager getRuleManager() throws Exception {
-        return getRuleManagerWithMockedPersistence();
+        DummyPersistence persistence = new DummyPersistence();
+        return getRuleManagerWithPersistence(persistence);
     }
 
     public static RuleManager getRuleManagerWithPersistenceService() throws PersistenceException, IOException,
         RuleBaseException {
-        PersistenceRuleManager manager = new PersistenceRuleManager();
         NeodatisPersistenceService persistence = createPersistence();
-        manager.setPersistence(persistence);
+        return getRuleManagerWithPersistence(persistence);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static RuleManager getRuleManagerWithPersistence(PersistenceService persistence) {
+        PersistenceRuleManager manager = new PersistenceRuleManager();
+        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
+        backend.setPersistenceService(persistence);
+        ConfigPersistenceService configService = new DefaultConfigPersistenceService(backend);
+        manager.setPersistenceService(configService);
         manager.init();
         return manager;
     }
