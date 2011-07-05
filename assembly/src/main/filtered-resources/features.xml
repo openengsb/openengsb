@@ -53,8 +53,10 @@
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/${geronimo.ws.metadata.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/${geronimo.jpa2.version}</bundle>
+    <bundle start-level="10">mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/${geronimo.jms.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${geronimo.jta.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.5_spec/${geronimo-spec-j2ee.1-5.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-management_1.1_spec/${geronimo.j2ee.management.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${stax.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxb-api-2.2/${jaxb.api.version}</bundle>
@@ -90,6 +92,8 @@
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
+    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
+    <bundle>mvn:org.apache.commons/commons-jexl/${commons.jexl.version}</bundle>
     <!-- OpenEngSB Remote Dependencies -->
     <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
     <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
@@ -118,7 +122,6 @@
 
   <feature name="openengsb-infrastructure-jpa" version="${project.version}">
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
@@ -141,8 +144,31 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
   </feature>
 
+  <feature name="openengsb-infrastructure-activemq" version="${project.version}">
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.activemq/kahadb/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-console/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-ra/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-pool/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-karaf/${activemq.version}</bundle>
+    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${scripting.version}</bundle>
+    <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
+  </feature>
+
+  <feature name="activemq-web-console" version="${project.version}" >
+    <feature version="[2,3)">war</feature>
+    <bundle>mvn:org.apache.activemq/activemq-web-console/${activemq.version}/war</bundle>
+  </feature>
+
   <feature name="openengsb-infrastructure-jms" version="${project.version}">
-    <feature version="[5.5,6)">activemq-blueprint</feature>
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
 
@@ -182,9 +208,9 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/${xerces.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/${bcel.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
     <bundle>mvn:org.apache.cxf/cxf-bundle/${cxf.version}</bundle>
   </feature>
 
