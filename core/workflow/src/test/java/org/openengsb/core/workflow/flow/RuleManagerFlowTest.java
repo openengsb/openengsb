@@ -71,7 +71,7 @@ public class RuleManagerFlowTest {
     }
 
     protected RuleManager getRuleBaseSource() throws Exception {
-        RuleManager source = PersistenceTestUtil.getRuleManager();
+        RuleManager source = PersistenceTestUtil.getRuleManagerWithMockedPersistence();
         return source;
     }
 

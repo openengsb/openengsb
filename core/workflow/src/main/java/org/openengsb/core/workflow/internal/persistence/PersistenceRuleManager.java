@@ -23,45 +23,62 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.openengsb.core.workflow.model.RuleBaseElement;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class PersistenceRuleManager extends AbstractRuleManager implements BundleContextAware {
+public class PersistenceRuleManager extends AbstractRuleManager {
 
-    private PersistenceManager persistenceManager;
-    private PersistenceService persistence;
-    private BundleContext bundleContext;
+    private static final String META_RULE = "rule";
+    private static final String META_RULE_TYPE = "type";
+    private static final String META_RULE_NAME = "name";
+    private static final String META_RULE_PACKAGE = "package";
+
+    private static final String META_IMPORT = "import";
+    private static final String META_IMPORT_CLASS = "class";
+
+    private static final String META_GLOBAL = "global";
+    private static final String META_GLOBAL_VARIABLE = "variable";
+
+    private ConfigPersistenceService persistenceService;
 
     @Override
     public void init() throws RuleBaseException {
-        if (persistence == null) {
-            Bundle self = bundleContext.getBundle();
-            persistence = persistenceManager.getPersistenceForBundle(self);
+        if (persistenceService == null) {
+            persistenceService =
+                OpenEngSBCoreServices.getConfigPersistenceService("persistenceService");
         }
+
         super.init();
 
     }
 
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
-        List<RuleBaseElement> existingRules = persistence.query(new RuleBaseElement(name));
-        if (!existingRules.isEmpty()) {
-            throw new RuleBaseException("rule already exists");
-        }
-        RuleBaseElement objectToPersist = new RuleBaseElement(name, code);
         try {
-            persistence.create(objectToPersist);
+            List<ConfigItem<RuleBaseElement>> existingRules =
+                persistenceService.load(getMetadataFromRuleBaseElement(new RuleBaseElement(name)));
+            if (!existingRules.isEmpty()) {
+                throw new RuleBaseException("rule already exists");
+            }
+        } catch (PersistenceException e1) {
+            throw new RuntimeException("could not load existing rules from persistence service", e1);
+        }
+
+        RuleBaseElement objectToPersist = new RuleBaseElement(name, code);
+        Map<String, String> metaData = getMetadataFromRuleBaseElement(objectToPersist);
+        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, objectToPersist);
+
+        try {
+            persistenceService.persist(conf);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -69,7 +86,7 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
             builder.reloadPackage(name.getPackageName());
         } catch (RuleBaseException e) {
             try {
-                persistence.delete(objectToPersist);
+                persistenceService.remove(metaData);
                 throw e;
             } catch (PersistenceException e1) {
                 throw new RuntimeException("could not remove previously added rule, that broke the rulebase", e1);
@@ -79,19 +96,28 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
 
     @Override
     public String get(RuleBaseElementId name) {
-        List<RuleBaseElement> query = persistence.query(new RuleBaseElement(name));
-        if (query.size() != 1) {
-            return null;
+        try {
+            List<ConfigItem<RuleBaseElement>> existingRules =
+                persistenceService.load(getMetadataFromRuleBaseElement(new RuleBaseElement(name)));
+            if (existingRules.isEmpty()) {
+                return null;
+            } else {
+                return existingRules.get(0).getContent().getCode();
+            }
+        } catch (PersistenceException e) {
+            throw new RuntimeException("error reading rule from persistence", e);
         }
-        return query.get(0).getCode();
     }
 
     @Override
     public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
-        RuleBaseElement oldBean = new RuleBaseElement(name);
         RuleBaseElement newBean = new RuleBaseElement(name, newCode);
+
+        Map<String, String> metaData = getMetadataFromRuleBaseElement(newBean);
+        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, newBean);
+
         try {
-            persistence.update(oldBean, newBean);
+            persistenceService.persist(conf);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -101,7 +127,8 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
         try {
-            persistence.delete(new RuleBaseElement(name));
+            Map<String, String> metaData = getMetadataFromRuleBaseElement(new RuleBaseElement(name));
+            persistenceService.remove(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -125,10 +152,16 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     }
 
     private Collection<RuleBaseElementId> listByExample(RuleBaseElementId example) {
-        List<RuleBaseElement> queryResult = persistence.query(new RuleBaseElement(example));
+        List<ConfigItem<RuleBaseElement>> queryResult;
+        try {
+            queryResult = persistenceService.load(getMetadataFromRuleBaseElement(new RuleBaseElement(example)));
+        } catch (PersistenceException e) {
+            throw new RuntimeException("error reading rule from persistence", e);
+        }
+
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (RuleBaseElement element : queryResult) {
-            result.add(element.generateId());
+        for (ConfigItem<RuleBaseElement> element : queryResult) {
+            result.add(element.getContent().generateId());
         }
         return result;
     }
@@ -136,12 +169,14 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     @Override
     public void addImport(String className) throws RuleBaseException {
         ImportDeclaration imp = new ImportDeclaration(className);
-        if (persistence.query(imp).isEmpty()) {
-            try {
-                persistence.create(imp);
-            } catch (PersistenceException e) {
-                throw new RuleBaseException(e);
+        Map<String, String> metaData = getMetadataFromImportDeclaration(imp);
+        ConfigItem<ImportDeclaration> cnf = new ConfigItem<ImportDeclaration>(metaData, imp);
+        try {
+            if (persistenceService.load(metaData).isEmpty()) {
+                persistenceService.persist(cnf);
             }
+        } catch (PersistenceException e) {
+            throw new RuleBaseException(e);
         }
         builder.reloadRulebase();
     }
@@ -149,7 +184,9 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     @Override
     public void removeImport(String className) throws RuleBaseException {
         try {
-            persistence.delete(new ImportDeclaration(className));
+            ImportDeclaration imp = new ImportDeclaration(className);
+            Map<String, String> metaData = getMetadataFromImportDeclaration(imp);
+            persistenceService.remove(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -158,10 +195,17 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
 
     @Override
     public Collection<String> listImports() {
-        List<ImportDeclaration> queryResult = persistence.query(new ImportDeclaration());
+        ImportDeclaration imp = new ImportDeclaration();
+        Map<String, String> metaData = getMetadataFromImportDeclaration(imp);
+        List<ConfigItem<ImportDeclaration>> queryResult;
+        try {
+            queryResult = persistenceService.load(metaData);
+        } catch (PersistenceException e) {
+            throw new RuleBaseException(e);
+        }
         Collection<String> result = new HashSet<String>();
-        for (ImportDeclaration i : queryResult) {
-            result.add(i.getClassName());
+        for (ConfigItem<ImportDeclaration> i : queryResult) {
+            result.add(i.getContent().getClassName());
         }
         return result;
     }
@@ -169,12 +213,20 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     @Override
     public void addGlobal(String className, String name) throws RuleBaseException {
         GlobalDeclaration globalDeclaration = new GlobalDeclaration(name);
-        if (!persistence.query(globalDeclaration).isEmpty()) {
+        Map<String, String> metaData = getMetadataFromGlobalDeclaration(globalDeclaration);
+        List<ConfigItem<GlobalDeclaration>> queryResult;
+        try {
+            queryResult = persistenceService.load(metaData);
+        } catch (PersistenceException e) {
+            throw new RuleBaseException(e);
+        }
+        if (!queryResult.isEmpty()) {
             throw new RuleBaseException(String.format("Global with name \"%s\" already exists", name));
         }
         globalDeclaration.setClassName(className);
+        ConfigItem<GlobalDeclaration> cnf = new ConfigItem<GlobalDeclaration>(metaData, globalDeclaration);
         try {
-            persistence.create(globalDeclaration);
+            persistenceService.persist(cnf);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -184,8 +236,9 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     @Override
     public void removeGlobal(String name) throws RuleBaseException {
         GlobalDeclaration globalDeclaration = new GlobalDeclaration(name);
+        Map<String, String> metaData = getMetadataFromGlobalDeclaration(globalDeclaration);
         try {
-            persistence.delete(globalDeclaration);
+            persistenceService.remove(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -194,24 +247,57 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
 
     @Override
     public Map<String, String> listGlobals() {
-        List<GlobalDeclaration> query = persistence.query(new GlobalDeclaration());
+        GlobalDeclaration globalDeclaration = new GlobalDeclaration();
+        Map<String, String> metaData = getMetadataFromGlobalDeclaration(globalDeclaration);
+        List<ConfigItem<GlobalDeclaration>> queryResult;
+        try {
+            queryResult = persistenceService.load(metaData);
+        } catch (PersistenceException e) {
+            throw new RuleBaseException(e);
+        }
         Map<String, String> globals = new HashMap<String, String>();
-        for (GlobalDeclaration g : query) {
-            globals.put(g.getVariableName(), g.getClassName());
+        for (ConfigItem<GlobalDeclaration> g : queryResult) {
+            globals.put(g.getContent().getVariableName(), g.getContent().getClassName());
         }
         return globals;
     }
 
-    public void setPersistence(PersistenceService persistence) {
-        this.persistence = persistence;
+    public void setPersistenceService(ConfigPersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
     }
 
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    private Map<String, String> getMetadataFromRuleBaseElement(RuleBaseElement element) {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put(META_RULE, META_RULE);
+        if (element.getName() != null) {
+            ret.put(META_RULE_NAME, element.getName());
+        }
+        if (element.getPackageName() != null) {
+            ret.put(META_RULE_PACKAGE, element.getPackageName());
+        }
+        if (element.getType() != null) {
+            ret.put(META_RULE_TYPE, element.getType().toString());
+        }
+        return ret;
     }
 
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
+    private Map<String, String> getMetadataFromImportDeclaration(ImportDeclaration element) {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put(META_IMPORT, META_IMPORT);
+        if (element.getClassName() != null) {
+            ret.put(META_IMPORT_CLASS, element.getClassName());
+        }
+        return ret;
+
+    }
+
+    private Map<String, String> getMetadataFromGlobalDeclaration(GlobalDeclaration element) {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put(META_GLOBAL, META_GLOBAL);
+        if (element.getVariableName() != null) {
+            ret.put(META_GLOBAL_VARIABLE, element.getVariableName());
+        }
+        return ret;
+
     }
 }

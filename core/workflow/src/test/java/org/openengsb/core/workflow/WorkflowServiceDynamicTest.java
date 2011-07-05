@@ -148,7 +148,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
+        manager = PersistenceTestUtil.getRuleManagerWithMockedPersistence();
         mockDomain("deploy");
         mockDomain("build");
         mockDomain("test");
@@ -166,4 +166,3 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
 }
-
