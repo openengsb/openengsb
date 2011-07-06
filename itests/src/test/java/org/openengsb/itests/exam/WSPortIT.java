@@ -69,6 +69,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
+        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
@@ -83,7 +84,8 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     @Test
-    public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
+    public void startSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
+        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
@@ -99,6 +101,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void testSendMethodCallWithWrongAuthentication_shouldFail() throws Exception {
+        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "wrong-password");
@@ -115,6 +118,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
