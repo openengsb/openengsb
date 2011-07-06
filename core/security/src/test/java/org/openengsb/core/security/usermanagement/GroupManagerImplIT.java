@@ -30,11 +30,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.GroupManagerImpl;
 import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -112,6 +114,17 @@ public class GroupManagerImplIT extends AbstractJPATest {
         List<String> findUsersInGroup = groupManager.findUsersInGroup("test");
         assertThat(findUsersInGroup.size(), is(1));
         assertThat(findUsersInGroup, hasItem("testUser2"));
+    }
+
+    @Test
+    public void addUserToGroup_shouldShowGroupWithUserAndViceVersa() throws Exception {
+        groupManager.createGroup("testrole", new ArrayList<GrantedAuthority>());
+        userManager.createUser(Users.create("user", "password"));
+        groupManager.addUserToGroup("user", "testrole");
+        List<String> usersInGroup = groupManager.findUsersInGroup("testrole");
+        assertThat(usersInGroup, hasItem("user"));
+        UserDetails user = userManager.loadUserByUsername("user");
+        assertFalse(user.getAuthorities().isEmpty());
     }
 
     @Override
