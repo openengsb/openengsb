@@ -178,7 +178,6 @@ public final class MethodUtil {
 
     public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
         MethodUtil.ekbService = ekbService;
-        // this.ekbService = ekbService;
     }
 
 }

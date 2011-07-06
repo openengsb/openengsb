@@ -68,8 +68,7 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
         } else if (method.getName().startsWith("get")) {
             LOGGER.debug("called getter method \"{}\" was called", method.getName());
             return handleGetMethod(method);
-        }
-        if (method.getName().equals("toString")) {
+        } else if (method.getName().equals("toString")) {
             LOGGER.debug("toString() was called");
             return handleToString();
         } else {
