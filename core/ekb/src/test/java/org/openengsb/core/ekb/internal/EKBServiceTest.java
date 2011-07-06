@@ -59,6 +59,19 @@ public class EKBServiceTest {
         TestModel model = service.createEmptyModelObject(TestModel.class);
         model.testMethod();
     }
+    
+    @SuppressWarnings("deprecation")
+    @Test(expected = IllegalArgumentException.class) 
+    public void testCreateModelObjectWithIllegalModel_shouldThrowException() {
+        service.createModelObject(String.class);
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testCreateModelObjectWithLegalModel_shouldWork() {
+        service.createModelObject(TestModel.class);
+    }
+    
 
     @Test
     public void testGetOpenEngSBModelEntries_shouldWork() {

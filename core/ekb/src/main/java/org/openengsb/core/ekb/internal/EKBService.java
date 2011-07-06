@@ -20,7 +20,10 @@ package org.openengsb.core.ekb.internal;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.functors.EqualPredicate;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -43,22 +46,15 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     public Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) throws IllegalArgumentException {
         LOGGER.debug("createModelObject for model interface {} called", model.getName());
 
-        boolean valid = false;
+        EqualPredicate predicate = new EqualPredicate(OpenEngSBModel.class);
 
-        for (Class<?> i : model.getInterfaces()) {
-            if (i.equals(OpenEngSBModel.class)) {
-                valid = true;
-                break;
-            }
-        }
-
-        if (!valid) {
+        if (CollectionUtils.countMatches(Arrays.asList(model.getInterfaces()), predicate) == 0) {
             throw new IllegalArgumentException("the model class is not an interface of OpenEngSBModel");
         }
         
         return generateProxy(model, entries);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
@@ -66,7 +62,7 @@ public class EKBService implements EngineeringKnowledgeBaseService {
 
         return (T) generateProxy(model, entries);
     }
-    
+
     private Object generateProxy(Class<?> model, OpenEngSBModelEntry... entries) {
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
