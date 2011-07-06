@@ -141,6 +141,11 @@
       <artifactId>guava</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-example</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.neodatis.odb</groupId>
