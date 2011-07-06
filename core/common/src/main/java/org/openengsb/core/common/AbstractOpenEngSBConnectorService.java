@@ -30,8 +30,8 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 
 public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
     
-    private String domainId;
-    private String connectorId;
+    protected String domainId;
+    protected String connectorId;
     
     public AbstractOpenEngSBConnectorService() {
         super();
@@ -41,21 +41,21 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         super(instanceId);
     }
 
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String savingName,
+    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String oid,
             String role) throws EDBException {
         switch (type) {
             case INSERT:
-                EDBCreateEvent create = new EDBCreateEvent(model, savingName, role);
+                EDBCreateEvent create = new EDBCreateEvent(model, oid, role);
                 enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(savingName, role);
+                EDBDeleteEvent delete = new EDBDeleteEvent(oid, role);
                 enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model, savingName, role);
+                EDBUpdateEvent update = new EDBUpdateEvent(model, oid, role);
                 enrichEDBEvent(update);
                 events.raiseEvent(update);
                 break;
