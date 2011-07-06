@@ -18,7 +18,6 @@
 package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Date;
@@ -63,41 +62,51 @@ public class EKBServiceTest {
     @Test
     public void testGetOpenEngSBModelEntries_shouldWork() {
         TestModel model = service.createEmptyModelObject(TestModel.class);
-
         String id = "testId";
-        Date date = new Date();
-
-        model.setDate(date);
         model.setId(id);
-
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
         boolean idExisting = false;
-        boolean dateExisting = false;
-        boolean nameExisting = false;
         String tempId = null;
-        Date tempDate = null;
-        String tempName = null;
 
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("id")) {
                 idExisting = true;
                 tempId = (String) entry.getValue();
-            } else if (entry.getKey().equals("date")) {
-                dateExisting = true;
-                tempDate = (Date) entry.getValue();
-            } else if (entry.getKey().equals("name")) {
-                nameExisting = true;
-                tempName = (String) entry.getValue();
             }
         }
 
         assertThat(idExisting, is(true));
-        assertThat(dateExisting, is(true));
-        assertThat(nameExisting, is(true));
-
         assertThat(tempId, is(id));
+    }
+    
+    @Test
+    public void testGetOpenEngSBModelEntriesNonSimpleObject_shouldWork() {
+        TestModel model = service.createEmptyModelObject(TestModel.class);
+        Date date = new Date();
+        model.setDate(date);
+        
+        boolean dateExisting = false;
+        Date tempDate = null;
+                
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getKey().equals("date")) {
+                dateExisting = true;
+                tempDate = (Date) entry.getValue();
+            }
+        }
+        
+        assertThat(dateExisting, is(true));
         assertThat(tempDate, is(date));
-        assertThat(tempName, nullValue());
+    }
+    
+    @Test
+    public void testGetOpenEngSBModelEntriesWhichWerentSettet_shouldWork() {
+        TestModel model = service.createEmptyModelObject(TestModel.class);
+        
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+        
+        // 3 because the model define 3 fields
+        assertThat(entries.size(), is(3));
     }
 }
