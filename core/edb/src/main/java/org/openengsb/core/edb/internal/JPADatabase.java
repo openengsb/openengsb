@@ -32,7 +32,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
-import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
@@ -387,50 +386,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         dao = new DefaultJPADao(entityManager);
     }
 
-    @Override
-    public void processEvent(Event event) throws EDBException {
-        LOGGER.debug("startet to process event in JPADatabase");
-        if (event instanceof EDBUpdateEvent) {
-            handleEDBUpdateEvent((EDBUpdateEvent) event);
-        } else if (event instanceof EDBCreateEvent) {
-            handleEDBCreateEvent((EDBCreateEvent) event);
-        } else if (event instanceof EDBDeleteEvent) {
-            handleEDBDeleteEvent((EDBDeleteEvent) event);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void handleEDBCreateEvent(EDBCreateEvent event) throws EDBException {
-        LOGGER.debug("received create event");
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
-        this.commit(commit);
-
-        LOGGER.debug("created object with name {}", event.getOid());
-    }
-
-    private void handleEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        LOGGER.debug("received update event");
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
-        this.commit(commit);
-
-        LOGGER.debug("updated object with name {}", event.getOid());
-    }
-
-    private void handleEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        LOGGER.debug("received delete event");
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.delete(event.getOid());
-
-        this.commit(commit);
-
-        LOGGER.debug("deleted object with name {}", event.getOid());
-    }
-
     private EDBObject convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event) {
         EDBObject object = new EDBObject(oid);
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
@@ -444,5 +399,41 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     
     private String getAuthenticatedUser() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
+        System.out.println("receive create event");
+        LOGGER.debug("received create event");
+
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
+        this.commit(commit);
+
+        LOGGER.debug("created object with name {}", event.getOid());
+    }
+
+    @Override
+    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
+        System.out.println("receive delete event");
+        LOGGER.debug("received delete event");
+
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        commit.delete(event.getOid());
+
+        this.commit(commit);
+
+        LOGGER.debug("deleted object with name {}", event.getOid());
+    }
+
+    @Override
+    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        System.out.println("receive update event");
+        LOGGER.debug("received update event");
+        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
+        this.commit(commit);
+
+        LOGGER.debug("updated object with name {}", event.getOid());
     }
 }
