@@ -45,6 +45,7 @@ public final class MethodUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
 
     private static EngineeringKnowledgeBaseService ekbService;
+    private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -137,8 +138,7 @@ public final class MethodUtil {
         }
         if (type.equals(Date.class) && String.class.isInstance(value)) {
             try {
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                return formatter.parse((String) value);
+                return dateFormatter.parse((String) value);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
