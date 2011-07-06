@@ -31,11 +31,4 @@ public interface EngineeringKnowledgeBaseService {
      */
     <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries);
  
-    /**
-     * calling this function should only be done in the MethodUtil class. There it is necessary because we only
-     * have a class field and we have no idea if this class extends OpenEngSBModel or not. Throws an IllegalArgument
-     * Exception if the model parameter isn't an interface which extends OpenEngSBModel. 
-     */
-    @Deprecated
-    Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) throws IllegalArgumentException;
 }

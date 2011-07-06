@@ -37,6 +37,7 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,14 +90,14 @@ public final class MethodUtil {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static Object buildBean(Class<?> beanClass, Map<String, String> values) {
         try {
             Object obj = null;
 
             if (beanClass.isInterface()) {
-                // deprecated function is necessary here
-                obj = ekbService.createModelObject(beanClass);
+                @SuppressWarnings("unchecked")
+                Class<? extends OpenEngSBModel> model = (Class<? extends OpenEngSBModel>) beanClass;
+                obj = ekbService.createEmptyModelObject(model);
             } else {
                 obj = beanClass.newInstance();
             }

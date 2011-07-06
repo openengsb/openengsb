@@ -20,10 +20,7 @@ package org.openengsb.core.ekb.internal;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.functors.EqualPredicate;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -42,33 +39,16 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     @SuppressWarnings("unused")
     private EngineeringDatabaseService edbService;
 
-    @Override
-    public Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) throws IllegalArgumentException {
-        LOGGER.debug("createModelObject for model interface {} called", model.getName());
-
-        EqualPredicate predicate = new EqualPredicate(OpenEngSBModel.class);
-
-        if (CollectionUtils.countMatches(Arrays.asList(model.getInterfaces()), predicate) == 0) {
-            throw new IllegalArgumentException("the model class is not an interface of OpenEngSBModel");
-        }
-        
-        return generateProxy(model, entries);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
 
-        return (T) generateProxy(model, entries);
-    }
-
-    private Object generateProxy(Class<?> model, OpenEngSBModelEntry... entries) {
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
         InvocationHandler handler = makeHandler(model.getMethods(), entries);
-
-        return Proxy.newProxyInstance(classLoader, classes, handler);
+        
+        return (T) Proxy.newProxyInstance(classLoader, classes, handler);
     }
 
     private EKBProxyHandler makeHandler(Method[] methods, OpenEngSBModelEntry[] entries) {
