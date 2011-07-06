@@ -18,9 +18,9 @@
 package org.openengsb.core.api;
 
 /**
- * Base interface for Connectors, it makes the transparent setting of domainId and connectorId in background possible.
- * Important for enhancing of EDB events so that the EDB knows from where the change came. See
- * AbstractOpenEngSBConnectorService
+ * Base interface for connector implementations, it makes the transparent setting of domainId and connectorId in 
+ * background possible. Important for enhancing of EDB events so that the EDB knows from where the change came. 
+ * See AbstractOpenEngSBConnectorService
  */
 public interface Connector extends Domain {
 
@@ -31,5 +31,4 @@ public interface Connector extends Domain {
     void setConnectorId(String connectorId);
 
     String getConnectorId();
-
 }
