@@ -401,17 +401,24 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private boolean checkIfActiveOidExisting(String oid) {
+        try {
+            EDBObject obj = getObject(oid);
+            if (!obj.isDeleted()) {
+                return true;
+            }
+        } catch (EDBException e) {
+            // nothing to do here
+        }
+        return false;
+    }
+
     @Override
     public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
         LOGGER.debug("received create event");
 
-        try {
-            EDBObject obj = getObject(event.getOid());
-            if (!obj.isDeleted()) {
-                throw new EDBException("object under the given oid is already existing");
-            }
-        } catch (EDBException e) {
-            // nothing to do here
+        if (checkIfActiveOidExisting(event.getOid())) {
+            throw new EDBException("object under the given oid is already existing");
         }
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
@@ -425,14 +432,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        try {
-            EDBObject obj = getObject(event.getOid());
-
-            if (obj.isDeleted()) {
-                throw new EDBException("the object with the given oid is already deleted");
-            }
-        } catch (EDBException e) {
-            throw new EDBException("the given oid is not existing");
+        if (!checkIfActiveOidExisting(event.getOid())) {
+            throw new EDBException("the object under given oid is not existing or already deleted");
         }
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
