@@ -405,6 +405,15 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
         LOGGER.debug("received create event");
 
+        try {
+            EDBObject obj = getObject(event.getOid());
+            if (!obj.isDeleted()) {
+                throw new EDBException("object under the given oid is already existing");
+            }
+        } catch (EDBException e) {
+            // nothing to do here
+        }
+
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
         this.commit(commit);
@@ -416,12 +425,14 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        EDBObject obj = getObject(event.getOid());
+        try {
+            EDBObject obj = getObject(event.getOid());
 
-        if (obj == null) {
+            if (obj.isDeleted()) {
+                throw new EDBException("the object with the given oid is already deleted");
+            }
+        } catch (EDBException e) {
             throw new EDBException("the given oid is not existing");
-        } else if (obj.isDeleted()) {
-            throw new EDBException("the object with the given oid is already deleted");
         }
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
