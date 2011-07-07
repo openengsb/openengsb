@@ -17,23 +17,39 @@
 
 package org.openengsb.core.ekb.internal;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
+import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class EKBServiceTest {
-    private EngineeringKnowledgeBaseService service;
+    private EKBService service;
+    private EngineeringDatabaseService edbService;
 
     @Before
     public void setup() {
         this.service = new EKBService();
+
+        edbService = mock(EngineeringDatabaseService.class);
+
+        EDBObject edbObject = new EDBObject("testoid");
+        edbObject.put("id", "testid");
+        edbObject.put("date", new Date());
+        edbObject.put("name", "testname");
+
+        when(edbService.getObject("testoid")).thenReturn(edbObject);
+
+        this.service.setEdbService(edbService);
     }
 
     @Test
@@ -57,7 +73,7 @@ public class EKBServiceTest {
     public void testNotGetterOrSetterMethod_shouldThrowException() {
         TestModel model = service.createEmptyModelObject(TestModel.class);
         model.testMethod();
-    }    
+    }
 
     @Test
     public void testGetOpenEngSBModelEntries_shouldWork() {
@@ -79,34 +95,52 @@ public class EKBServiceTest {
         assertThat(idExisting, is(true));
         assertThat(tempId, is(id));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesNonSimpleObject_shouldWork() {
         TestModel model = service.createEmptyModelObject(TestModel.class);
         Date date = new Date();
         model.setDate(date);
-        
+
         boolean dateExisting = false;
         Date tempDate = null;
-                
+
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             if (entry.getKey().equals("date")) {
                 dateExisting = true;
                 tempDate = (Date) entry.getValue();
             }
         }
-        
+
         assertThat(dateExisting, is(true));
         assertThat(tempDate, is(date));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesWhichWerentSettet_shouldWork() {
         TestModel model = service.createEmptyModelObject(TestModel.class);
-        
+
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-        
+
         // 3 because the model define 3 fields
         assertThat(entries.size(), is(3));
+    }
+
+    @Test
+    public void testGetModelWithProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+
+        assertThat(model.getName(), is("testname"));
+        assertThat(model.getId(), is("testid"));
+        assertThat(model.getDate(), instanceOf(Date.class));
+    }
+
+    @Test
+    public void testGetModelWithImplementedClass_shouldWork() {
+        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+
+        assertThat(model.getName(), is("testname"));
+        assertThat(model.getId(), is("testid"));
+        assertThat(model.getDate(), instanceOf(Date.class));
     }
 }
