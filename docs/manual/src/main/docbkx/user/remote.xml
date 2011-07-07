@@ -29,12 +29,15 @@
   <para>The OpenEngSB provides interfaces for interacting with other applications on the network in a generic way that
     allows using any programming language, transport protocol and message marshalling/encoding. This does not mean that
     it magically supports all protocols and encodings, but rather that it provides a generic API that provides means for
-    integration of new protocols etc. All external communication is based on single messages.</para>
+    integration of new protocols etc. All external communication is based on single messages, which means the whole
+    mechanism is stateless on its own. To realize stateful computations, either the filter(s) or the service must
+    provide such functionality.</para>
 
   <section xml:id="developer.remote.filters">
     <title>Filters</title>
-    <para>Similar to filterchains used in Java's Servlet infrastructure the OpenEngSB uses Filters to modularize the
-      processing and transport of incoming and outgoing messages. A filter is responsible for one (or more) specific
+    <para>Following the <ulink url="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">
+      "Chain of Responsibility"-Pattern</ulink> the OpenEngSB uses Filters to modularize the processing and transport of
+      incoming and outgoing messages. A filter is responsible for one (or more) specific
       transformation steps. Ideally a Filter should only represent a specific transformation step to increase
       reusability.</para>
     <para>A filter is responsible for both ways of a transformation (for example a filter that parses a request is also
@@ -63,6 +66,9 @@
       from the request and passes it on to the RequestHandler and wraps the returned MethodResult into a
       MethodResultMessage. The MethodResultMessage is then returned to the "JsonMethodCallMarshalFilter". There the
       MethodResultMessage is encoded in JSON and returned to the MessageHandler which then sends it to the answer-queue.
+      In the JMS-Port the result is sent to a queue named after the "callId" submitted in the Request. The callId
+      however cannot necessarily be extracted from the plain-text message at the beginning of the chain. Therefore a map
+      containing values obtained in the filter chain (propertyContainer) is passed in to each filter during processing.
     </para>
     <para>This is only a specific example of creating a port. Another port behaving similarly but using xml as encoding
       can easily be configured. It can use the same bean but with a different filterchain. In the filterchain the first
