@@ -209,7 +209,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
         LOGGER.debug("loading JPAObject with the oid {} from "
-                + "the timestamp {} to the timestamp {}", new Object[] { oid, from, to});
+                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
         return generateEDBObjectList(jpa);
     }
@@ -396,14 +396,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         object.put("instanceId", event.getInstanceId());
         return object;
     }
-    
+
     private String getAuthenticatedUser() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @Override
     public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
-        System.out.println("receive create event");
         LOGGER.debug("received create event");
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
@@ -415,8 +414,15 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        System.out.println("receive delete event");
         LOGGER.debug("received delete event");
+
+        EDBObject obj = getObject(event.getOid());
+
+        if (obj == null) {
+            throw new EDBException("the given oid is not existing");
+        } else if (obj.isDeleted()) {
+            throw new EDBException("the object with the given oid is already deleted");
+        }
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.delete(event.getOid());
@@ -428,7 +434,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        System.out.println("receive update event");
         LOGGER.debug("received update event");
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
