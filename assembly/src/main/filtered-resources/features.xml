@@ -65,6 +65,9 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
     <bundle start-level='10'>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
+    <!-- Templating -->
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
     <!-- jaxb -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/${jaxb.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
@@ -146,16 +149,14 @@
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}">
     <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
-    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
+        <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/kahadb/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-console/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-ra/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-pool/${activemq.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-karaf/${activemq.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/${scripting.version}</bundle>
     <bundle>mvn:org.apache.xbean/xbean-blueprint/${xbean.blueprint.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
@@ -209,8 +210,6 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/${bcel.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
     <bundle>mvn:org.apache.cxf/cxf-bundle/${cxf.version}</bundle>
   </feature>
 
