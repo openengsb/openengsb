@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -122,8 +123,8 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 3 because the model define 3 fields
-        assertThat(entries.size(), is(3));
+        // 4 because the model define 4 fields
+        assertThat(entries.size(), is(4));
     }
 
     @Test
@@ -142,5 +143,25 @@ public class EKBServiceTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.getId(), is("testid"));
         assertThat(model.getDate(), instanceOf(Date.class));
+    }
+
+    @Test
+    public void testGetModelProxiedInterfaceReturnsReallyAllValues_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+
+        boolean testExists = false;
+        Object testValue = null;
+
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals("test")) {
+                testExists = true;
+                testValue = entry.getValue();
+            }
+        }
+
+        assertThat(testExists, is(true));
+        assertThat(testValue, nullValue());
     }
 }

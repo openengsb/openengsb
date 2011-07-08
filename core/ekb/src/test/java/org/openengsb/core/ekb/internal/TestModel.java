@@ -39,4 +39,8 @@ interface TestModel extends OpenEngSBModel {
     void setName(String name);
     
     void testMethod();
+    
+    void setTest(String test);
+    
+    String getTest();
 }

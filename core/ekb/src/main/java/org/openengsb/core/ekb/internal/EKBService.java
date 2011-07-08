@@ -86,10 +86,9 @@ public class EKBService implements EngineeringKnowledgeBaseService {
             BeanInfo beanInfo = Introspector.getBeanInfo(model);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                Method setterMethod = propertyDescriptor.getWriteMethod();
+                String propertyName = propertyDescriptor.getName();
                 if (object.containsKey(propertyDescriptor.getName())) {
-                    Method setterMethod = propertyDescriptor.getWriteMethod();
-                    String propertyName = propertyDescriptor.getName();
-
                     try {
                         setterMethod.invoke(instance, object.get(propertyName));
                     } catch (IllegalArgumentException ex) {
