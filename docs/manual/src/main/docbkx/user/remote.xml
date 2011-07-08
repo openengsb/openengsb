@@ -54,7 +54,8 @@
     <para>A filter is responsible for both ways of a transformation (for example a filter that parses a request is also
       responsible for marshalling the result). Since it is a chain of filters, every filter has a successor (next)
       where it passes it's transformed request. After the next filter is done and returns a result the current filter
-      transforms the message to the desired output format.</para>
+      transforms the message to the desired output format. This gives filterchains a pyramid-like architecture
+      (see <xref linkend="filters.pyramid"/>)</para>
 
     <figure id="filters.pyramid">
       <title>Pyramid-like architecture of filters</title>
@@ -67,7 +68,6 @@
         />
       </imageobject>
     </figure>
-    <para>This gives filterchains a pyramid-like architecture (see <xref linkend="filters.pyramid"/>).</para>
     <para>Example: Typically an incoming remote call can be divided into the following steps:
       <itemizedlist>
         <listitem>receive: Reads the message in raw form a network stream.</listitem>
