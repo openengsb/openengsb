@@ -20,6 +20,8 @@ package org.openengsb.core.api.remote;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
  * method and so called {@link #metaData}. Since the target system often requires additional information for calling
@@ -28,6 +30,7 @@ import java.util.UUID;
  * {@link #getClasses()} required to load this method call correctly into the class loader. The classes are used to
  * identify the right method.
  */
+@XmlRootElement
 public class MethodCallRequest implements Serializable {
 
     private static final long serialVersionUID = -484867025274841475L;

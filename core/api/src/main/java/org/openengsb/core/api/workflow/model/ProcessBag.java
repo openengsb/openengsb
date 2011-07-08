@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.openengsb.core.api.persistence.IgnoreInQueries;
 import org.openengsb.core.api.workflow.ProcessBagException;
 
@@ -34,6 +36,7 @@ import org.openengsb.core.api.workflow.ProcessBagException;
  * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
 @SuppressWarnings("serial")
+@XmlRootElement
 public class ProcessBag implements Serializable {
     private String processId;
     private String context;

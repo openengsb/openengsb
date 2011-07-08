@@ -17,9 +17,12 @@
 
 package org.openengsb.core.api.workflow.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * used to store values like handles to remote processes in the working memory
  */
+@XmlRootElement
 public class Value {
     private String key;
     private Object value;
