@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Container class that describes a connector. It serves as common model for
  * {@link org.openengsb.core.api.model.ConnectorConfiguration} in
@@ -38,6 +40,7 @@ import java.util.Map;
  * specification for more details http://www.osgi.org/Download/Release4V42).
  */
 @SuppressWarnings("serial")
+@XmlRootElement
 public class ConnectorDescription implements Serializable {
 
     private Map<String, String> attributes;

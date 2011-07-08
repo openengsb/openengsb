@@ -20,8 +20,11 @@ package org.openengsb.core.api.workflow.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.openengsb.core.api.Event;
 
+@XmlRootElement
 public class RemoteEvent extends Event {
     private String className;
     private Map<String, String> nestedEventProperties = new HashMap<String, String>();

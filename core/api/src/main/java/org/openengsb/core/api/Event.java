@@ -23,6 +23,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Event {
     private String name;
     private Long processId;
