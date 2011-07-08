@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.remote" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Remoting</title>
+
+  <para>The OpenEngSB provides interfaces for interacting with other applications on the network in a generic way that
+    allows using any programming language, transport protocol and message marshalling/encoding. This does not mean that
+    it magically supports all protocols and encodings, but rather that it provides a generic API that provides means for
+    integration of new protocols etc. All external communication is based on single messages.</para>
+
+  <section xml:id="developer.remote.filters">
+    <title>Filters</title>
+    <para>Similar to filterchains used in Java's Servlet infrastructure the OpenEngSB uses Filters to modularize the
+      processing and transport of incoming and outgoing messages. A filter is responsible for one (or more) specific
+      transformation steps. Ideally a Filter should only represent a specific transformation step to increase
+      reusability.</para>
+    <para>A filter is responsible for both ways of a transformation (for example a filter that parses a request is also
+      responsible for marshalling the result). Since it is a chain of filters, every filter has a successor (next)
+      where it passes it's transformed request. After the next filter is done and returns a result the current filter
+      transforms the message to the desired output format.</para>
+    <para>This gives filterchains a pyramid-like architecture.</para>
+    <imagedata fileref="graphics/filterpyramid.png" format="png" width="450" align="center"/>
+    <para>Example: Typically an incoming remote call can be divided into the following steps:
+      <itemizedlist>
+        <listitem>receive: Reads the message in raw form a network stream.</listitem>
+        <listitem>unmarshal request: transform the raw stream into a MethodCall object</listitem>
+        <listitem>handle the request: resolve the corresponding osgi-service, invoke the method and wrap the result in
+          a MethodResult object</listitem>
+        <listitem>marshal result: marshal the result for transporting it over the network</listitem>
+        <listitem>send result: send the result back to the caller over the network</listitem>
+      </itemizedlist>
+    </para>
+    <para>A port realizing such a transport would consist of a task listening for incoming messages and a chain with
+      two Filters: One for marshalling and one handling the request itself. An example for such an implementation is
+      the "jms-json-basic"-port in the "openengsb-ports-jms" project. The incoming port is represented by a single
+      that listens on a specific jms-queue for new requests. If a Text-message is received it is passed on to the
+      filterchain as a string. The filterchain starts with a "JsonMethodCallMarshalFilter". As the name indicates, this
+      filter expects a string containing a json-encoded MethodCall. The string is transformed into a MethodCallRequest
+      object and passed on to the next filter. The next filter is the RequestHandlerFilter. It extracts the MethodCall
+      from the request and passes it on to the RequestHandler and wraps the returned MethodResult into a
+      MethodResultMessage. The MethodResultMessage is then returned to the "JsonMethodCallMarshalFilter". There the
+      MethodResultMessage is encoded in JSON and returned to the MessageHandler which then sends it to the answer-queue.
+    </para>
+    <para>This is only a specific example of creating a port. Another port behaving similarly but using xml as encoding
+      can easily be configured. It can use the same bean but with a different filterchain. In the filterchain the first
+      element is replaced by an XMLMethodCallMarshalFilter. the RequestHandlerFilter is the same as in the jms-json-port.
+    </para>
+  </section>
+  <section xml:id="developer.remote.filterconfig">
+    <title>Configure a filterchain</title>
+    <para>An instance of FilterChainElement may only be part of one FilterChain. In order to reuse FilterChainElements
+      in other filterchains new instances must be created. This is because the instances of the filters may contain
+      references to the next element in the chain.</para>
+    <para>That's why Filterchains are supposed to be configured using a FilterChainFactory. A filterchain is a bean configured
+      with a list of filters. Each element may either be the Classname of a FilterAction-class (which must have a
+      public default constructor) or an instance of a FilterChainElementFactory. The last element in the list may
+      also be an instance of a FilterAction (or other FilterChain). The following example shows how to configure a
+      port via blueprint.</para>
+    <programlisting>
+<![CDATA[<bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+  <property name="inputType" value="java.lang.String" />
+  <property name="outputType" value="java.lang.String" />
+  <!-- the list of filters -->
+  <property name="filters">
+    <list>
+      <!-- A class implementing the FilterChainElement-interface -->
+      <value>org.openengsb.core.common.remote.JsonMethodCallMarshalFilter</value>
+      <!-- instance of a filter-factory -->
+      <bean class="org.openengsb.ports.myport.MyFilterFactory">
+        <propety name="foo" value="bar" />
+      </bean>
+      <!-- The last item in the list may be an instance of a FilterAction -->
+      <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+        <property name="requestHandler" ref="requestHandler" />
+      </bean>
+    </list>
+  </property>
+</bean>]]>
+    </programlisting>
+    <para>When configuring the filter-chain you have to make sure that each filter in the list is compatible with its
+      predecessor. Compatibility is checked when the create-method is invoked. In the above example this would be while
+      processing the blueprint-file.</para>
+  </section>
+  <section xml:id="developer.remote.customfilters">
+    <title>Develop custom filters</title>
+    <para>The filters provided by the openengsb only cover the the requirements for the ports that are provided by the
+      openengsb itself. For custom ports, custom filter-classes may be required. <!-- TODO class-diagram --></para>
+    <para>Filterclasses that are to be used at the end of a chain must implement the FilterAction-interface. In order
+      to be usable anywhere in the filterchain the Classes must implement the FilterChainElement-interface. The
+      interfaces do not use generic parameters because the benefit is really minimal as the information is erased
+      during compilation. There are however abstract classes (with generic paremeters) that make it easier to implement
+      new FilterChainElements</para>
+  </section>
+  <section xml:id="developer.remote.incoming">
+    <title>Develop an incoming port</title>
+    <para>Incoming ports receive messages and process them using a filterchain. There are no restrictions on how the
+      implementation of the incoming port actually looks like. Typically an incoming port is an object that spawns a
+      listening thread and uses a filterchain to process incoming messages. This is an example of how the incoming port
+      for JMS could look like.</para>
+    <programlisting>
+<![CDATA[<!-- example of a bean representing an incoming port -->
+<bean id="incomingPortBean" class="org.openengsb.ports.myport.MyIncomingPort" init-method="start" destroy-method="stop">
+  <property name="factory">
+    <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
+  </property>
+  <property name="filterChain">
+    <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
+  </property>
+</bean>]]>
+    </programlisting>
+    <para>Every filterchain should use make sure to pass the MethodCall to the RequestHandler in the and (using a
+      RequestHandlerFilter.</para>
+  </section>
+  <section xml:id="developer.remote.outgoing">
+    <title>Develop an Outgoing port</title>
+    <para>Outgoing port implementations must follow a few more guidelines than incoming ports, because the OpenEngSB
+      needs to be aware of Outgoing ports present in the system in order to use them in other components (like
+      RemoteEvents).</para>
+    <para>An outgoing ports is represented as an OSGi-service that implements the OutgoingPort-interface. Also it uses
+      the "id"-property (not to be confused with "service.id" defined in the OSGi-spec) as a unique identification for
+      components that want to interact with remote applications. A reference implementation of the
+      OutgoingPort-interface is provided in the "openengsb-core-common"-project.</para>
+      <programlisting>
+<![CDATA[<!-- service representing the outgoing port -->
+<service interface="org.openengsb.core.api.remote.OutgoingPort">
+  <service-properties>
+    <entry key="id" value="jms-json" />
+  </service-properties>
+  <!-- the outgoing port uses a filter-chain to manage the entire calling-procedure -->
+  <bean class="org.openengsb.core.common.OutgoingPortImpl">
+    <property name="filterChain">
+      <bean factory-ref="outgoingFilterChainFactory" factory-method="create" />
+    </property>
+  </bean>
+</service>]]>
+      </programlisting>
+      <para>The actual network-communication is also implemented in a FilterAction. This is an example how a
+        filterchain can be used to handle an outgoing methodCall with a result.</para>
+      <programlisting>
+<![CDATA[<bean id="outgoingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+  <property name="inputType" value="org.openengsb.core.api.remote.MethodCallRequest" />
+  <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
+  <property name="filters">
+    <list>
+      <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
+      <bean class="org.openengsb.ports.jms.JMSOutgoingPortFilter">
+        <property name="factory">
+          <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
+        </property>
+      </bean>
+    </list>
+  </property>
+</bean>]]>
+      </programlisting>
+  </section>
+</chapter>
+
