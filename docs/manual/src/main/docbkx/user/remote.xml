@@ -37,15 +37,37 @@
     <title>Filters</title>
     <para>Following the <ulink url="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">
       "Chain of Responsibility"-Pattern</ulink> the OpenEngSB uses Filters to modularize the processing and transport of
-      incoming and outgoing messages. A filter is responsible for one (or more) specific
+      incoming and outgoing messages (see <xref linkend="filters.architecture" />). A filter is responsible for one (or more) specific
       transformation steps. Ideally a Filter should only represent a specific transformation step to increase
       reusability.</para>
+    <figure id="filters.architecture">
+      <title>How filters fit in the architecture</title>
+      <imageobject>
+        <imagedata
+          scalefit="1"
+          width="450"
+          fileref="graphics/filtersinarchitecture.png" format="PNG"
+          align="center"
+        />
+      </imageobject>
+    </figure>
     <para>A filter is responsible for both ways of a transformation (for example a filter that parses a request is also
       responsible for marshalling the result). Since it is a chain of filters, every filter has a successor (next)
       where it passes it's transformed request. After the next filter is done and returns a result the current filter
       transforms the message to the desired output format.</para>
-    <para>This gives filterchains a pyramid-like architecture.</para>
-    <imagedata fileref="graphics/filterpyramid.png" format="png" width="450" align="center"/>
+
+    <figure id="filters.pyramid">
+      <title>Pyramid-like architecture of filters</title>
+      <imageobject>
+        <imagedata
+          scalefit="1"
+          width="450"
+          fileref="graphics/filterpyramid.png" format="PNG"
+          align="center"
+        />
+      </imageobject>
+    </figure>
+    <para>This gives filterchains a pyramid-like architecture (see <xref linkend="filters.pyramid"/>).</para>
     <para>Example: Typically an incoming remote call can be divided into the following steps:
       <itemizedlist>
         <listitem>receive: Reads the message in raw form a network stream.</listitem>
