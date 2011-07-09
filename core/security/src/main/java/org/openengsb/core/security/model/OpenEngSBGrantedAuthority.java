@@ -19,10 +19,11 @@ package org.openengsb.core.security.model;
 
 import java.util.Collection;
 
+import org.openengsb.core.api.security.model.Permission;
 import org.springframework.security.core.GrantedAuthority;
 
 public interface OpenEngSBGrantedAuthority extends GrantedAuthority {
 
-    Collection<Permission> getPermissions();
+    Collection<? extends Permission> getPermissions();
 
 }

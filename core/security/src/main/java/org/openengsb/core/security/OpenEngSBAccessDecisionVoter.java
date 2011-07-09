@@ -20,8 +20,8 @@ package org.openengsb.core.security;
 import java.util.Collection;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.security.model.OpenEngSBGrantedAuthority;
-import org.openengsb.core.security.model.Permission;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,7 +46,7 @@ public class OpenEngSBAccessDecisionVoter extends AbstractAccessDecisionVoter {
         }
         MethodInvocation invocation = (MethodInvocation) object;
         for (OpenEngSBGrantedAuthority g : openengsbAuthorities) {
-            Collection<Permission> permissions = g.getPermissions();
+            Collection<? extends Permission> permissions = g.getPermissions();
             for (Permission p : permissions) {
                 if (p.permits(invocation.getThis(), invocation.getMethod(), invocation.getArguments())) {
                     return ACCESS_GRANTED;

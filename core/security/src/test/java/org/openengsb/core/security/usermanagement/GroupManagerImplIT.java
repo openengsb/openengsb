@@ -18,35 +18,32 @@
 package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.model.Role;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.internal.GroupManagerImpl;
+import org.openengsb.core.security.internal.RoleManagerImpl;
 import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.core.security.model.Permission;
-import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.Role;
-import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.AbstractPermission;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.GroupManager;
 
 public class GroupManagerImplIT extends AbstractJPATest {
 
     private UserManager userManager;
-    private GroupManager groupManager;
+    private RoleManager groupManager;
 
     private SimpleUser testUser2;
     private SimpleUser testUser3;
@@ -66,62 +63,64 @@ public class GroupManagerImplIT extends AbstractJPATest {
         userManager.setEntityManager(entityManager);
         this.userManager = createWrapInTransactionProxy(userManager, UserManager.class);
 
-        GroupManagerImpl groupManager = new GroupManagerImpl();
+        RoleManagerImpl groupManager = new RoleManagerImpl();
         groupManager.setEntityManager(entityManager);
-        this.groupManager = createWrapInTransactionProxy(groupManager, GroupManager.class);
+        this.groupManager = createWrapInTransactionProxy(groupManager, RoleManager.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testListAllGroups_shouldContainTest() throws Exception {
-        persist(new Role("test"));
-        List<String> findAllGroups = groupManager.findAllGroups();
-        assertThat(findAllGroups, hasItem("test"));
+        persist(new RoleImpl("test"));
+        @SuppressWarnings("rawtypes")
+        List findAllGroups = groupManager.findAllRoles();
+        assertThat(findAllGroups, hasItem(hasProperty("name", is("test"))));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCreateGroup_shouldShowUpInGroupList() throws Exception {
-        groupManager.createGroup("test", new ArrayList<GrantedAuthority>());
-        List<String> findAllGroups = groupManager.findAllGroups();
-        assertThat(findAllGroups, hasItem("test"));
+        groupManager.createRole("test");
+        @SuppressWarnings("rawtypes")
+        List findAllGroups = groupManager.findAllRoles();
+        assertThat(findAllGroups, hasItem(hasProperty("name", is("test"))));
     }
 
     @Test
     public void testDeleteGroup_shouldNotShowUpInGroupList() throws Exception {
-        groupManager.createGroup("test", new ArrayList<GrantedAuthority>());
-        groupManager.deleteGroup("test");
-        List<String> findAllGroups = groupManager.findAllGroups();
-        assertThat(findAllGroups, not(hasItem("test")));
+        groupManager.createRole("test");
+        groupManager.deleteRole("test");
+        List<Role> findAllGroups = groupManager.findAllRoles();
+        assertTrue(findAllGroups.isEmpty());
     }
 
     @Test
     public void createGroupWithAuthorities_shouldContainAuthorities() throws Exception {
-        Permission permission = new ServicePermission("asdf");
-        GrantedAuthority permissionAuthority = new PermissionAuthority(permission);
-        groupManager.createGroup("test", Arrays.asList(permissionAuthority));
-        Role role = entityManager.find(Role.class, "test");
+        AbstractPermission permission = new ServicePermission("asdf");
+        groupManager.createRole("test", permission);
+        RoleImpl role = entityManager.find(RoleImpl.class, "test");
         assertThat(role.getPermissions(), hasItem(permission));
     }
 
     @Test
     public void findUsersInGroup_shouldReturnMembers() throws Exception {
-        Role role = new Role("test");
+        RoleImpl role = new RoleImpl("test");
         testUser2.addRole(role);
         entityManager.getTransaction().begin();
         entityManager.persist(role);
         entityManager.merge(testUser2);
         entityManager.getTransaction().commit();
-
-        List<String> findUsersInGroup = groupManager.findUsersInGroup("test");
+        List<String> findUsersInGroup = groupManager.findAllUsersWithRole("test");
         assertThat(findUsersInGroup.size(), is(1));
         assertThat(findUsersInGroup, hasItem("testUser2"));
     }
 
     @Test
     public void addUserToGroup_shouldShowGroupWithUserAndViceVersa() throws Exception {
-        groupManager.createGroup("testrole", new ArrayList<GrantedAuthority>());
+        groupManager.createRole("testrole");
         userManager.createUser(Users.create("user", "password"));
-        groupManager.addUserToGroup("user", "testrole");
-        List<String> usersInGroup = groupManager.findUsersInGroup("testrole");
+        groupManager.addRoleToUser("user", "testrole");
+        List<String> usersInGroup = groupManager.findAllUsersWithRole("testrole");
         assertThat(usersInGroup, hasItem("user"));
         UserDetails user = userManager.loadUserByUsername("user");
         assertFalse(user.getAuthorities().isEmpty());

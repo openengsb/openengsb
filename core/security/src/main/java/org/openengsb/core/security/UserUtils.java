@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.model.Permission;
+import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,49 +37,50 @@ public final class UserUtils {
         return simpleUser;
     }
 
-    public static Collection<Permission> getPermissionsFromSpringUser(Collection<GrantedAuthority> authorities) {
+    public static Collection<AbstractPermission> getPermissionsFromSpringUser(Collection<GrantedAuthority> authorities) {
         Collection<PermissionAuthority> permissionAuthorities =
             filterCollectionByType(authorities, PermissionAuthority.class);
-        Collection<Permission> permissions =
-            Collections2.transform(permissionAuthorities, new Function<PermissionAuthority, Permission>() {
+        Collection<AbstractPermission> permissions =
+            Collections2.transform(permissionAuthorities, new Function<PermissionAuthority, AbstractPermission>() {
                 @Override
-                public Permission apply(PermissionAuthority input) {
-                    return input.getPermission();
+                public AbstractPermission apply(PermissionAuthority input) {
+                    return (AbstractPermission) input.getPermission();
                 }
             });
         return permissions;
     }
 
-    public static Collection<Role> getRolesFromSpringUser(Collection<GrantedAuthority> authorities) {
+    public static Collection<RoleImpl> getRolesFromSpringUser(Collection<GrantedAuthority> authorities) {
         Collection<RoleAuthority> roleAuthorities = filterCollectionByType(authorities, RoleAuthority.class);
-        Collection<Role> roles = Collections2.transform(roleAuthorities, new Function<RoleAuthority, Role>() {
+        Collection<RoleImpl> roles = Collections2.transform(roleAuthorities, new Function<RoleAuthority, RoleImpl>() {
             @Override
-            public Role apply(RoleAuthority input) {
-                return input.getRole();
+            public RoleImpl apply(RoleAuthority input) {
+                return (RoleImpl) input.getRole();
             }
         });
         return roles;
     }
 
-    private static Collection<GrantedAuthority> convertRolesToAuthorities(Collection<Role> authorities) {
+    private static Collection<GrantedAuthority> convertRolesToAuthorities(Collection<RoleImpl> authorities) {
         if (authorities == null) {
             return null;
         }
-        return Collections2.transform(authorities, new Function<Role, GrantedAuthority>() {
+        return Collections2.transform(authorities, new Function<RoleImpl, GrantedAuthority>() {
             @Override
-            public GrantedAuthority apply(Role input) {
+            public GrantedAuthority apply(RoleImpl input) {
                 return new RoleAuthority(input);
             };
         });
     }
 
-    private static Collection<GrantedAuthority> convertPermissionsToAuthorities(Collection<Permission> authorities) {
+    private static Collection<GrantedAuthority> convertPermissionsToAuthorities(
+            Collection<AbstractPermission> authorities) {
         if (authorities == null) {
             return null;
         }
-        return Collections2.transform(authorities, new Function<Permission, GrantedAuthority>() {
+        return Collections2.transform(authorities, new Function<AbstractPermission, GrantedAuthority>() {
             @Override
-            public GrantedAuthority apply(Permission input) {
+            public GrantedAuthority apply(AbstractPermission input) {
                 return new PermissionAuthority(input);
             };
         });

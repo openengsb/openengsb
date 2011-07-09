@@ -24,7 +24,7 @@ import javax.persistence.Entity;
 import org.openengsb.core.api.OpenEngSBService;
 
 @Entity
-public class ServicePermission extends Permission {
+public class ServicePermission extends AbstractPermission {
 
     private String instanceId;
 

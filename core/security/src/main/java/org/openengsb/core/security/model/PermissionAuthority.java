@@ -19,6 +19,8 @@ package org.openengsb.core.security.model;
 
 import java.util.Collection;
 
+import org.openengsb.core.api.security.model.Permission;
+
 import com.google.common.collect.Lists;
 
 public class PermissionAuthority implements OpenEngSBGrantedAuthority {
@@ -76,7 +78,5 @@ public class PermissionAuthority implements OpenEngSBGrantedAuthority {
             return false;
         return true;
     }
-    
-    
 
 }

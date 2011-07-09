@@ -17,17 +17,17 @@
 
 package org.openengsb.core.security.model;
 
-import java.lang.reflect.Method;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.openengsb.core.api.security.model.Permission;
+
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Permission {
+public abstract class AbstractPermission implements Permission {
 
     @Id
     @GeneratedValue
@@ -40,8 +40,6 @@ public abstract class Permission {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    public abstract boolean permits(Object service, Method operation, Object[] args);
 
     @Override
     public int hashCode() {
@@ -59,7 +57,7 @@ public abstract class Permission {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Permission other = (Permission) obj;
+        AbstractPermission other = (AbstractPermission) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

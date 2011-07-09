@@ -26,11 +26,18 @@
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
+  <bean id="roleManager" class="org.openengsb.core.security.internal.RoleManagerImpl">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="openengsb-security" />
+  </bean>
+
   <bean class="org.openengsb.core.security.internal.UserDataInitializerBean" init-method="init">
     <property name="userManager" ref="userManager" />
+    <property name="roleManager" ref="roleManager" />
   </bean>
 
   <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
+  <service interface="org.openengsb.core.api.security.RoleManager" ref="roleManager" />
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userManager" />
@@ -60,7 +67,9 @@
         <bean class="org.springframework.security.access.vote.AffirmativeBased">
           <property name="decisionVoters">
             <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" />
+              <bean class="org.openengsb.core.security.OpenEngSBAccessDecisionVoter" />
+              <bean class="org.openengsb.core.security.AdminRoleVoter" />
+              <bean class="org.openengsb.core.security.AnnotationRoleVoter" />
               <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>

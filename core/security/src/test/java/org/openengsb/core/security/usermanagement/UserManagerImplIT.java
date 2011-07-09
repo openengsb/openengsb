@@ -36,14 +36,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.UserDataInitializerBean;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.OpenEngSBGrantedAuthority;
-import org.openengsb.core.security.model.Permission;
 import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.Role;
 import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -150,7 +151,7 @@ public class UserManagerImplIT extends AbstractJPATest {
 
     @Test
     public void createUserWithRoles_shouldContainRoles() throws Exception {
-        Role role = new Role("ROLE_USER");
+        RoleImpl role = new RoleImpl("ROLE_USER");
         GrantedAuthority roleAuthority = new RoleAuthority(role);
         Collection<GrantedAuthority> authorities = Sets.newHashSet(roleAuthority);
         UserDetails user = Users.create("testuser", "password", authorities);
@@ -162,7 +163,7 @@ public class UserManagerImplIT extends AbstractJPATest {
 
     @Test
     public void createUserWithPermissions_shouldContainPermissions() throws Exception {
-        Permission p = new ServicePermission("test");
+        AbstractPermission p = new ServicePermission("test");
         GrantedAuthority authority = new PermissionAuthority(p);
         Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
         UserDetails user = Users.create("testuser", "password", authorities);
@@ -172,10 +173,11 @@ public class UserManagerImplIT extends AbstractJPATest {
         assertThat(loadedUser.getAuthorities(), hasItem(authority));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void setRolePermissions_shouldReflectOnUser() throws Exception {
-        Permission p = new ServicePermission("test");
-        Role role = new Role("test", Sets.newHashSet(p));
+        AbstractPermission p = new ServicePermission("test");
+        RoleImpl role = new RoleImpl("test", Sets.newHashSet(p));
         GrantedAuthority authority = new RoleAuthority(role);
         Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
         UserDetails user = Users.create("testuser", "password", authorities);
@@ -185,13 +187,14 @@ public class UserManagerImplIT extends AbstractJPATest {
         GrantedAuthority authority2 = loadedUser.getAuthorities().iterator().next();
         assertThat(authority2, instanceOf(OpenEngSBGrantedAuthority.class));
         OpenEngSBGrantedAuthority openengsbAuthority = (OpenEngSBGrantedAuthority) authority2;
-        assertThat(openengsbAuthority.getPermissions(), hasItem(p));
+        assertThat((Collection<Permission>) openengsbAuthority.getPermissions(), hasItem((Permission) p));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void changeRolePermissions_shouldReflectOnUser() throws Exception {
-        Permission p = new ServicePermission("test");
-        Role role = new Role("test", Sets.newHashSet(p));
+        AbstractPermission p = new ServicePermission("test");
+        RoleImpl role = new RoleImpl("test", Sets.newHashSet(p));
         GrantedAuthority authority = new RoleAuthority(role);
         Collection<GrantedAuthority> authorities = Sets.newHashSet(authority);
         UserDetails user = Users.create("testuser", "password", authorities);
@@ -206,15 +209,15 @@ public class UserManagerImplIT extends AbstractJPATest {
         GrantedAuthority authority2 = loadedUser.getAuthorities().iterator().next();
         assertThat(authority2, instanceOf(OpenEngSBGrantedAuthority.class));
         OpenEngSBGrantedAuthority openengsbAuthority = (OpenEngSBGrantedAuthority) authority2;
-        assertThat(openengsbAuthority.getPermissions(), not(hasItem(p)));
+        assertThat((Collection<Permission>) openengsbAuthority.getPermissions(), not(hasItem((Permission) p)));
     }
 
     @Test
     public void createUsersWithTwoRoles_shouldWork() throws Exception {
-        GrantedAuthority roleAuthority = new RoleAuthority(new Role("test"));
-        Role role2 = new Role("test2");
+        GrantedAuthority roleAuthority = new RoleAuthority(new RoleImpl("test"));
+        RoleImpl role2 = new RoleImpl("test2");
         GrantedAuthority roleAuthority2 = new RoleAuthority(role2);
-        Role role3 = new Role("test3");
+        RoleImpl role3 = new RoleImpl("test3");
         RoleAuthority roleAuthority3 = new RoleAuthority(role3);
 
         UserDetails user = Users.create("xx", "password", Sets.newHashSet(roleAuthority, roleAuthority3));
@@ -227,17 +230,17 @@ public class UserManagerImplIT extends AbstractJPATest {
                 SimpleUser.class);
         assertThat(query.getResultList().size(), is(2));
 
-        TypedQuery<Role> query2 = entityManager.createQuery("SELECT r FROM Role R", Role.class);
+        TypedQuery<RoleImpl> query2 = entityManager.createQuery("SELECT r FROM RoleImpl R", RoleImpl.class);
         assertThat(query2.getResultList().size(), is(3));
     }
 
     @Test
     public void createUsersWithRoles_shouldMaintainRelationBothWays() throws Exception {
-        GrantedAuthority roleAuthority = new RoleAuthority(new Role("test"));
+        GrantedAuthority roleAuthority = new RoleAuthority(new RoleImpl("test"));
         UserDetails user = Users.create("xx", "password", Sets.newHashSet(roleAuthority));
         userManager.createUser(user);
 
-        Role role = entityManager.find(Role.class, "test");
+        RoleImpl role = entityManager.find(RoleImpl.class, "test");
 
         // because this does not work:
         // assertThat(role.getMembers(), hasItem(hasProperty("username", is("xx"))));

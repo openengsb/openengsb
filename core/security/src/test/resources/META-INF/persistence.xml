@@ -24,8 +24,8 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
     <class>org.openengsb.core.security.model.SimpleUser</class>
-    <class>org.openengsb.core.security.model.Role</class>
-    <class>org.openengsb.core.security.model.Permission</class>
+    <class>org.openengsb.core.security.model.RoleImpl</class>
+    <class>org.openengsb.core.security.model.AbstractPermission</class>
     <class>org.openengsb.core.security.model.ServicePermission</class>
 
     <properties>

@@ -17,23 +17,24 @@
 
 package org.openengsb.core.security.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.sql.DataSource;
 
+import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class UserDataInitializerBean {
 
     private UserManager userManager;
+    private RoleManager roleManager;
 
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
+    }
+
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
     }
 
     public void init() {
@@ -52,14 +53,13 @@ public class UserDataInitializerBean {
 
     public void doInit() {
         if (userManager.getUsernameList().isEmpty()) {
-            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-            userManager.createUser(Users.create("admin", "password", auth));
-
-            List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-            userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            userManager.createUser(Users.create("user", "password", userAuth));
+            roleManager.createRole("ROLE_ADMIN");
+            roleManager.createRole("ROLE_USER");
+            userManager.createUser(Users.create("admin", "password"));
+            roleManager.addRoleToUser("admin", "ROLE_ADMIN");
+            roleManager.addRoleToUser("admin", "ROLE_USER");
+            userManager.createUser(Users.create("user", "password"));
+            roleManager.addRoleToUser("user", "ROLE_USER");
         }
     }
 }

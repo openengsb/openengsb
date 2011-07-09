@@ -23,53 +23,60 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.Role;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 @NamedQueries({
-    @NamedQuery(name = "listAllRoles", query = "SELECT r.name FROM Role r"),
+    @NamedQuery(name = "listAllRoles", query = "SELECT r FROM RoleImpl r"),
     @NamedQuery(name = "listUsersWithRole",
-        query = "SELECT u.username FROM Role r JOIN r.members u WHERE r.name = :groupname"), })
+        query = "SELECT u.username FROM RoleImpl r JOIN r.members u WHERE r.name = :groupname"), })
 @Entity
-public class Role implements Serializable {
+public class RoleImpl implements Role, Serializable {
 
     private static final long serialVersionUID = 807120463662044757L;
 
     @Id
     private String name;
+
+    @Column(nullable = true)
+    private String context;
     @ManyToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Role> roles = new HashSet<Role>();
+    private Collection<RoleImpl> nestedRoles = new HashSet<RoleImpl>();
     @ManyToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Permission> permissions = new HashSet<Permission>();
+    private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
     @ManyToMany(mappedBy = "roles")
     private Collection<SimpleUser> members = new HashSet<SimpleUser>();
 
-    public Role() {
+    public RoleImpl() {
     }
 
-    public Role(String name) {
+    public RoleImpl(String name) {
         this.name = name;
     }
 
-    public Role(String name, Collection<Permission> permissions) {
+    public RoleImpl(String name, Collection<AbstractPermission> permissions) {
         this.name = name;
         this.permissions = permissions;
     }
 
-    public Role(String name, Collection<Role> roles, Collection<Permission> permissions) {
+    public RoleImpl(String name, Collection<RoleImpl> roles, Collection<AbstractPermission> permissions) {
         this.name = name;
-        this.roles = roles;
+        this.nestedRoles = roles;
         updateUserRoleRelation(roles);
         this.permissions = permissions;
     }
 
-    private void updateUserRoleRelation(Collection<Role> roles) {
+    private void updateUserRoleRelation(Collection<? extends Role> roles) {
         Iterable<SimpleUser> outdatedMembers = Iterables.filter(members, new Predicate<SimpleUser>() {
             @Override
             public boolean apply(SimpleUser input) {
@@ -89,19 +96,11 @@ public class Role implements Serializable {
         this.name = name;
     }
 
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Collection<Permission> getPermissions() {
+    public Collection<AbstractPermission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Collection<Permission> permissions) {
+    public void setPermissions(Collection<AbstractPermission> permissions) {
         this.permissions = permissions;
     }
 
@@ -114,8 +113,8 @@ public class Role implements Serializable {
     }
 
     public Collection<Permission> getAllPermissions() {
-        Collection<Permission> result = new ArrayList<Permission>();
-        for (Role role : roles) {
+        Collection<Permission> result = new ArrayList<Permission>(permissions);
+        for (Role role : nestedRoles) {
             if (role == this) {
                 throw new IllegalStateException("cyclic dependency detected");
             }
@@ -144,7 +143,7 @@ public class Role implements Serializable {
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((permissions == null) ? 0 : permissions.hashCode());
-        result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+        result = prime * result + ((nestedRoles == null) ? 0 : nestedRoles.hashCode());
         return result;
     }
 
@@ -156,7 +155,7 @@ public class Role implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Role other = (Role) obj;
+        RoleImpl other = (RoleImpl) obj;
         if (name == null) {
             if (other.name != null)
                 return false;
@@ -167,10 +166,10 @@ public class Role implements Serializable {
                 return false;
         } else if (!permissions.equals(other.permissions))
             return false;
-        if (roles == null) {
-            if (other.roles != null)
+        if (nestedRoles == null) {
+            if (other.nestedRoles != null)
                 return false;
-        } else if (!roles.equals(other.roles))
+        } else if (!nestedRoles.equals(other.nestedRoles))
             return false;
         return true;
     }
@@ -178,6 +177,25 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role: " + name;
+    }
+
+    @Override
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    @Override
+    public Collection<? extends Role> getNestedRoles() {
+        return nestedRoles;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setNestedRoles(Collection<? extends Role> nestedRoles) {
+        this.nestedRoles = (Collection<RoleImpl>) nestedRoles;
     }
 
 }

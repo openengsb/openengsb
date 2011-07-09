@@ -32,9 +32,9 @@ import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
-import org.openengsb.core.security.model.Permission;
+import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
@@ -113,11 +113,11 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         User admin = Users.create("admin", "adminpw", adminAuthorities);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
 
-        Permission servicePermission = new ServicePermission("42");
+        AbstractPermission servicePermission = new ServicePermission("42");
         UserDetails testuser = Users.create("serviceuser", "password", new PermissionAuthority(servicePermission));
         when(userDetailsService.loadUserByUsername("serviceuser")).thenReturn(testuser);
 
-        Role role = new Role("serviceUsers", Sets.newHashSet(servicePermission));
+        RoleImpl role = new RoleImpl("serviceUsers", Sets.newHashSet(servicePermission));
 
         UserDetails roleUser = Users.create("roleuser", "password", new RoleAuthority(role));
         when(userDetailsService.loadUserByUsername("roleuser")).thenReturn(roleUser);

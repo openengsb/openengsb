@@ -32,9 +32,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.model.Permission;
+import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.Role;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
@@ -115,8 +115,8 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
 
     @Test
     public void testControlViaRole_shouldGrant() throws Exception {
-        Permission servicePermission = new ServicePermission("a");
-        Role role = new Role("admins", Lists.newArrayList(servicePermission));
+        AbstractPermission servicePermission = new ServicePermission("a");
+        RoleImpl role = new RoleImpl("admins", Lists.newArrayList(servicePermission));
         GrantedAuthority roleAuthority = new RoleAuthority(role);
         registerUser(Users.create("admin", "password", Lists.newArrayList(roleAuthority)));
 
@@ -127,8 +127,8 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
 
     @Test(expected = AccessDeniedException.class)
     public void testControlViaRole_shouldDenyAccess() throws Exception {
-        Permission servicePermission = new ServicePermission("b");
-        Role role = new Role("admins", Lists.newArrayList(servicePermission));
+        AbstractPermission servicePermission = new ServicePermission("b");
+        RoleImpl role = new RoleImpl("admins", Lists.newArrayList(servicePermission));
         GrantedAuthority roleAuthority = new RoleAuthority(role);
         registerUser(Users.create("admin", "password", Lists.newArrayList(roleAuthority)));
 

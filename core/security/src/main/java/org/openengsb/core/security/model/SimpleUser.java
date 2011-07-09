@@ -38,9 +38,9 @@ public class SimpleUser {
     private String username;
     private String password;
     @ManyToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Role> roles = new HashSet<Role>();
+    private Collection<RoleImpl> roles = new HashSet<RoleImpl>();
     @OneToMany(cascade = { CascadeType.PERSIST })
-    private Collection<Permission> permissions;
+    private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
 
     public SimpleUser(String username) {
         this.username = username;
@@ -70,28 +70,28 @@ public class SimpleUser {
         this.password = password;
     }
 
-    public Collection<Role> getRoles() {
+    public Collection<RoleImpl> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Collection<RoleImpl> roles) {
         this.roles = roles;
-        Iterable<Role> outdatedRoles = Iterables.filter(roles, new Predicate<Role>() {
+        Iterable<RoleImpl> outdatedRoles = Iterables.filter(roles, new Predicate<RoleImpl>() {
             @Override
-            public boolean apply(Role input) {
+            public boolean apply(RoleImpl input) {
                 return !input.getMembers().contains(this);
             }
         });
-        for (Role r : outdatedRoles) {
+        for (RoleImpl r : outdatedRoles) {
             r.addMember(this);
         }
     }
 
-    public Collection<Permission> getPermissions() {
+    public Collection<AbstractPermission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Collection<Permission> permissions) {
+    public void setPermissions(Collection<AbstractPermission> permissions) {
         this.permissions = permissions;
     }
 
@@ -100,14 +100,14 @@ public class SimpleUser {
         return username + " [password hidden] " + roles;
     }
 
-    public void addRole(Role role) {
+    public void addRole(RoleImpl role) {
         roles.add(role);
         if (!role.getMembers().contains(this)) {
             role.addMember(this);
         }
     }
 
-    public void removeRole(Role role) {
+    public void removeRole(RoleImpl role) {
         roles.remove(role);
         if (role.getMembers().contains(this)) {
             role.removeMember(this);

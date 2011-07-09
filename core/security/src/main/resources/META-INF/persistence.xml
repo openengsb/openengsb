@@ -24,6 +24,10 @@
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
     <class>org.openengsb.core.security.model.SimpleUser</class>
+    <class>org.openengsb.core.security.model.RoleImpl</class>
+    <class>org.openengsb.core.security.model.AbstractPermission</class>
+    <class>org.openengsb.core.security.model.ServicePermission</class>
+    
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>

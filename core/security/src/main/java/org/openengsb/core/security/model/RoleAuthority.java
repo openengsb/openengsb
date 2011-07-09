@@ -19,6 +19,9 @@ package org.openengsb.core.security.model;
 
 import java.util.Collection;
 
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.Role;
+
 public class RoleAuthority implements OpenEngSBGrantedAuthority {
 
     private static final long serialVersionUID = 5228017671125937885L;
@@ -33,8 +36,8 @@ public class RoleAuthority implements OpenEngSBGrantedAuthority {
     }
 
     @Override
-    public Collection<Permission> getPermissions() {
-        return role.getPermissions();
+    public Collection<? extends Permission> getPermissions() {
+        return role.getAllPermissions();
     }
 
     public Role getRole() {
