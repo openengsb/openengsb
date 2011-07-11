@@ -20,6 +20,8 @@ package org.openengsb.core.api.workflow.model;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  * A Task is based on a {@link ProcessBag} and used for human interaction. It
@@ -32,6 +34,7 @@ import java.util.UUID;
  * user interaction. The old ProcessBag is then replaced with this new one.
  */
 @SuppressWarnings("serial")
+@XmlRootElement
 public class Task extends ProcessBag {
     public Task() {
         super();
