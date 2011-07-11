@@ -19,6 +19,7 @@ package org.openengsb.core.services.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +30,6 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
@@ -66,7 +64,10 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
             return method.invoke(this, args);
         }
         List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
-        List<String> paramTypeNames = Lists.transform(paramList, Functions.toStringFunction());
+        List<String> paramTypeNames = new ArrayList<String>();
+        for (Class<?> paramType : paramList) {
+            paramTypeNames.add(paramType.getName());
+        }
 
         MethodCall methodCall = new MethodCall(method.getName(), args, metadata, paramTypeNames);
         MethodResult callResult = portUtil.sendMethodCallWithResult(portId, destination, methodCall);
