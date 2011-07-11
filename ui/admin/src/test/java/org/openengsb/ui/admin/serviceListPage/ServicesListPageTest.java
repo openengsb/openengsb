@@ -27,7 +27,6 @@ import java.util.Locale;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanelTester;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.AliveState;
@@ -40,6 +39,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
 
 public class ServicesListPageTest extends AbstractUITest {
@@ -52,7 +52,7 @@ public class ServicesListPageTest extends AbstractUITest {
         props.put(Constants.CONNECTOR_KEY, "bla");
 
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
 
     }
 

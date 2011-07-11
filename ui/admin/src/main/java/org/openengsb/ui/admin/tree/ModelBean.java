@@ -19,17 +19,15 @@ package org.openengsb.ui.admin.tree;
 
 import java.io.Serializable;
 
-import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 
 @SuppressWarnings("serial")
 public class ModelBean implements Serializable {
 
-    private final ContextCurrentService contextService;
     private final String key;
     private final boolean isLeaf;
 
-    public ModelBean(ContextCurrentService contextService, String key, boolean isLeaf) {
-        this.contextService = contextService;
+    public ModelBean(String key, boolean isLeaf) {
         this.key = key;
         this.isLeaf = isLeaf;
     }
@@ -43,7 +41,7 @@ public class ModelBean implements Serializable {
         if (path.length - 1 >= 0) {
             return path[path.length - 1];
         } else {
-            return contextService.getThreadLocalContext();
+            return ContextHolder.get().getCurrentContextId();
         }
     }
 

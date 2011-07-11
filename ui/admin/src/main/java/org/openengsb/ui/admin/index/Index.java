@@ -19,7 +19,9 @@ package org.openengsb.ui.admin.index;
 
 import org.apache.wicket.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
+@PaxWicketMountPoint(mountPoint = "index")
 public class Index extends BasePage {
     public Index() {
 

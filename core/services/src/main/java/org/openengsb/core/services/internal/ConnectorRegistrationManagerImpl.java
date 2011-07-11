@@ -147,9 +147,14 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     private Object secureService(Domain serviceInstance) {
+        ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
         ProxyFactory factory = new ProxyFactory(serviceInstance);
         factory.addAdvice(interceptor);
-        return factory.getProxy();
+        Object result = factory.getProxy();
+        Thread.currentThread().setContextClassLoader(orig);
+        return result;
+
     }
 
     private Map<String, Object> populatePropertiesWithRequiredAttributes(

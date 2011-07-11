@@ -39,7 +39,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.tester.TestPanelSource;
+import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,7 +165,7 @@ public class ServiceEditorPanelTest {
             editorValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
             defaultValues.put(a.getId(), a.getDefaultValue().getString(Locale.ENGLISH));
         }
-        editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
+        editor = (ServiceEditorPanel) tester.startPanel(new ITestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
                 return new ServiceEditorPanel(panelId, Arrays.asList(attributes), editorValues, properties,

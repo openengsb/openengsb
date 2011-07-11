@@ -29,18 +29,18 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.model.Task;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 public class CustomTaskPanel extends Panel {
     private static final long serialVersionUID = -1163492145404543013L;
 
     private Task task;
 
-    @SpringBean(name = "taskboxService")
+    @PaxWicketBean(name = "taskboxService")
     private TaskboxService service;
 
     @SuppressWarnings({ "serial" })

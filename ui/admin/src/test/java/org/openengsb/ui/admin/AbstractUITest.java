@@ -20,8 +20,6 @@ package org.openengsb.ui.admin;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -42,6 +40,8 @@ import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -65,7 +65,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         context.putBean(Mockito.mock(ContextCurrentService.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(OpenEngSBCoreServices.getWiringService());

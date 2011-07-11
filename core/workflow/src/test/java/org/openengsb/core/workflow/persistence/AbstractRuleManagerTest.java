@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.workflow;
+package org.openengsb.core.workflow.persistence;
 
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -29,7 +29,7 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 
-public abstract class AbstractRuleManagerIT {
+public abstract class AbstractRuleManagerTest {
     protected RuleManager ruleManager;
     protected KnowledgeBase rulebase;
     protected StatefulKnowledgeSession session;
@@ -37,7 +37,7 @@ public abstract class AbstractRuleManagerIT {
 
     @Before
     public void setUp() throws Exception {
-        ruleManager = PersistenceTestUtil.getRuleManager();
+        ruleManager = PersistenceTestUtil.getRuleManagerWithPersistenceService();
         rulebase = ruleManager.getRulebase();
     }
 
@@ -97,7 +97,7 @@ public abstract class AbstractRuleManagerIT {
                 return null;
             }
         };
-        session.setGlobal("example", exampleService);
+        session.setGlobal("example2", exampleService);
     }
 
     /**

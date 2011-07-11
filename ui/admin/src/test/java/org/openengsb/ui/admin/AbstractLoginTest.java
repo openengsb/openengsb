@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.util.Users;
+import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,10 +46,11 @@ public abstract class AbstractLoginTest extends AbstractUITest {
     @Before
     public void setup() {
         mockAuthentication();
-        tester = new WicketTester(new WicketApplication() {
+        ApplicationLifecycleListener listener = mock(ApplicationLifecycleListener.class);
+        tester = new WicketTester(new WicketApplication(listener) {
             @Override
             protected void addInjector() {
-                addComponentInstantiationListener(new SpringComponentInjector(this, context, true));
+                addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(this, context));
             }
         });
     }

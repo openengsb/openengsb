@@ -33,8 +33,6 @@ import java.util.List;
 
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -50,6 +48,8 @@ import org.openengsb.core.common.util.Users;
 import org.openengsb.core.test.LocalisedTest;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -87,7 +87,7 @@ public class UserServiceTest extends LocalisedTest {
 
     private void setupTesterWithSpringMockContext() {
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test

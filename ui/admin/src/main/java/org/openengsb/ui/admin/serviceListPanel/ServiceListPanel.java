@@ -29,10 +29,10 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
@@ -55,7 +55,7 @@ public class ServiceListPanel extends Panel {
         }
     }
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {
