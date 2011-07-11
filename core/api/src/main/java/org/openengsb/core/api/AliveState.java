@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum AliveState {
 
     /**

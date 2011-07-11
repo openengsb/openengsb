@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -49,6 +51,7 @@ import com.google.common.collect.Collections2;
  * the "toString()"-method is invoked to transform it into the beandescription. To transform it back, the type is
  * searched for a constructor that only takes one String as argument.
  */
+@XmlRootElement
 public class BeanDescription implements Serializable {
 
     private static final long serialVersionUID = -3027590994502598619L;

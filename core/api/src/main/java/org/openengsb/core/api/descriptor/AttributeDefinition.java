@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
@@ -32,6 +34,7 @@ import org.openengsb.core.api.validation.ValidationResultImpl;
 import com.google.common.base.Preconditions;
 
 @SuppressWarnings("serial")
+@XmlRootElement
 public class AttributeDefinition implements Serializable {
 
     public static class Option implements Serializable {
