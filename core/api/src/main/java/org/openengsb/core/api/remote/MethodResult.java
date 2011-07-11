@@ -17,10 +17,16 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodResult {
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class MethodResult implements Serializable {
+
+    private static final long serialVersionUID = 3311624967097440078L;
 
     public enum ReturnType {
             Void, Object, Exception,
