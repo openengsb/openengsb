@@ -19,9 +19,12 @@ package org.openengsb.core.api.model;
 
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Specific configuration model for the configuration to get up an connector.
  */
+@XmlRootElement
 public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
 
     public static final String TYPE_ID = "CONNECTOR";

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.openengsb.core.api.Constants;
 
 /**
@@ -33,6 +35,7 @@ import org.openengsb.core.api.Constants;
  *
  */
 @SuppressWarnings("serial")
+@XmlRootElement
 public class ConnectorId implements Serializable {
 
     private static final String CONNECTOR_ID_SEPARATOR = "+";

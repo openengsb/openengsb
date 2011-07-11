@@ -17,13 +17,20 @@
 
 package org.openengsb.core.api.remote;
 
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * This object wraps the return values of a remote method call. The different types which could be returned are stored
  * in {@link #type}. The object itself is available via {@link #getArg()}. Since this is the result of an remote call it
  * is possible that additional meta-data was added (describing e.g. context, username, ...) could have been added to
  * this message. Those could be retrieved via {@link #getMetaData()}.
  */
-public class MethodResultMessage {
+@XmlRootElement
+public class MethodResultMessage implements Serializable {
+
+    private static final long serialVersionUID = 6620312248741724626L;
 
     private MethodResult result;
     private String callId;

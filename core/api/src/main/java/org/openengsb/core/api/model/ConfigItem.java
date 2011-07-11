@@ -20,10 +20,13 @@ package org.openengsb.core.api.model;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * General ConfigurationObject which should not be instanciated by itself, but rather have to be implemented in a
  * ConfigurationObject.
  */
+@XmlRootElement
 public class ConfigItem<ContentType> {
 
     protected Map<String, String> metaData;
