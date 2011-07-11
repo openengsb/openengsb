@@ -13,8 +13,10 @@ import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
 import org.openengsb.core.security.model.AbstractPermission;
+import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.SimpleUser;
+import org.springframework.security.core.GrantedAuthority;
 
 public class RoleManagerImpl implements RoleManager {
 
@@ -118,8 +120,10 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void addPermissionsToRole(String rolename, Permission... permission) {
-        // TODO Auto-generated method stub
-
+        RoleImpl r = entityManager.find(RoleImpl.class, rolename);
+        for (Permission p : permission) {
+            r.getPermissions().add((AbstractPermission) p);
+        }
     }
 
     @Override
@@ -138,6 +142,12 @@ public class RoleManagerImpl implements RoleManager {
     public void removePermissionsFromUser(String username, Permission... permissions) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public GrantedAuthority createRoleAuthority(String rolename) {
+        Role r = entityManager.find(RoleImpl.class, rolename);
+        return new RoleAuthority(r);
     }
 
     public void setEntityManager(EntityManager entityManager) {

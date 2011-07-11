@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -37,9 +38,9 @@ public class SimpleUser {
     @Id
     private String username;
     private String password;
-    @ManyToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<RoleImpl> roles = new HashSet<RoleImpl>();
-    @OneToMany(cascade = { CascadeType.PERSIST })
+    @OneToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
 
     public SimpleUser(String username) {

@@ -21,8 +21,10 @@ import javax.sql.DataSource;
 
 import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
+import org.openengsb.core.security.model.AllPermission;
 
 public class UserDataInitializerBean {
 
@@ -54,6 +56,7 @@ public class UserDataInitializerBean {
     public void doInit() {
         if (userManager.getUsernameList().isEmpty()) {
             roleManager.createRole("ROLE_ADMIN");
+            roleManager.addPermissionsToRole("ROLE_ADMIN", (Permission) new AllPermission());
             roleManager.createRole("ROLE_USER");
             userManager.createUser(Users.create("admin", "password"));
             roleManager.addRoleToUser("admin", "ROLE_ADMIN");

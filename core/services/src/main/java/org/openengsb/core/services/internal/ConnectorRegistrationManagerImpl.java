@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -38,8 +39,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.springframework.aop.framework.ProxyFactory;
 
 public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationManager {
+
+    private MethodInterceptor interceptor;
 
     /*
      * These attributes may not be removed from a service.
@@ -134,10 +138,18 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         };
 
         Map<String, Object> properties = populatePropertiesWithRequiredAttributes(description.getProperties(), id);
+        Object secureInstance = secureService(serviceInstance);
         ServiceRegistration serviceRegistration =
-            bundleContext.registerService(clazzes, serviceInstance, MapAsDictionary.wrap(properties));
+            bundleContext.registerService(clazzes, secureInstance, MapAsDictionary.wrap(properties));
+
         registrations.put(id, serviceRegistration);
         instances.put(id, serviceInstance);
+    }
+
+    private Object secureService(Domain serviceInstance) {
+        ProxyFactory factory = new ProxyFactory(serviceInstance);
+        factory.addAdvice(interceptor);
+        return factory.getProxy();
     }
 
     private Map<String, Object> populatePropertiesWithRequiredAttributes(
@@ -209,5 +221,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    public void setInterceptor(MethodInterceptor interceptor) {
+        this.interceptor = interceptor;
     }
 }

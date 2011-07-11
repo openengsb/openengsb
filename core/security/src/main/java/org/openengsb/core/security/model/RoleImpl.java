@@ -25,6 +25,7 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
@@ -50,9 +51,9 @@ public class RoleImpl implements Role, Serializable {
 
     @Column(nullable = true)
     private String context;
-    @ManyToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<RoleImpl> nestedRoles = new HashSet<RoleImpl>();
-    @ManyToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
     @ManyToMany(mappedBy = "roles")
     private Collection<SimpleUser> members = new HashSet<SimpleUser>();
@@ -141,9 +142,8 @@ public class RoleImpl implements Role, Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((context == null) ? 0 : context.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((permissions == null) ? 0 : permissions.hashCode());
-        result = prime * result + ((nestedRoles == null) ? 0 : nestedRoles.hashCode());
         return result;
     }
 
@@ -156,20 +156,15 @@ public class RoleImpl implements Role, Serializable {
         if (getClass() != obj.getClass())
             return false;
         RoleImpl other = (RoleImpl) obj;
+        if (context == null) {
+            if (other.context != null)
+                return false;
+        } else if (!context.equals(other.context))
+            return false;
         if (name == null) {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
-            return false;
-        if (permissions == null) {
-            if (other.permissions != null)
-                return false;
-        } else if (!permissions.equals(other.permissions))
-            return false;
-        if (nestedRoles == null) {
-            if (other.nestedRoles != null)
-                return false;
-        } else if (!nestedRoles.equals(other.nestedRoles))
             return false;
         return true;
     }

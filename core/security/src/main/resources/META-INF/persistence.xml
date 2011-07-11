@@ -27,6 +27,7 @@
     <class>org.openengsb.core.security.model.RoleImpl</class>
     <class>org.openengsb.core.security.model.AbstractPermission</class>
     <class>org.openengsb.core.security.model.ServicePermission</class>
+    <class>org.openengsb.core.security.model.AllPermission</class>
     
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

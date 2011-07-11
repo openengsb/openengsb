@@ -57,6 +57,9 @@
   <service interface="org.springframework.security.authentication.AuthenticationManager" ref="authenticationManager" />
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
+    <service-properties>
+      <entry key="name" value="securityInterceptor" />
+    </service-properties>
     <bean class="org.openengsb.core.security.SecurityInterceptor">
       <property name="securityMetadataSource">
         <bean class="org.openengsb.core.security.internal.MetadataSource" />
@@ -68,8 +71,9 @@
           <property name="decisionVoters">
             <list>
               <bean class="org.openengsb.core.security.OpenEngSBAccessDecisionVoter" />
-              <bean class="org.openengsb.core.security.AdminRoleVoter" />
-              <bean class="org.openengsb.core.security.AnnotationRoleVoter" />
+              <bean class="org.openengsb.core.security.AnnotationRoleVoter">
+                <property name="roleManager" ref="roleManager" />
+              </bean>
               <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>

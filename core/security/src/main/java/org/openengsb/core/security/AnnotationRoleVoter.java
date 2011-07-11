@@ -12,12 +12,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.security.AuthorizedRoles;
+import org.openengsb.core.api.security.RoleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.google.common.base.Function;
@@ -27,6 +27,8 @@ import com.google.common.collect.Sets;
 public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationRoleVoter.class);
+
+    private RoleManager roleManager;
 
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
@@ -85,7 +87,7 @@ public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
             Collections2.transform(getRolesFromAnnotation(annotation), new Function<String, GrantedAuthority>() {
                 @Override
                 public GrantedAuthority apply(String input) {
-                    return new GrantedAuthorityImpl(input);
+                    return roleManager.createRoleAuthority(input);
                 }
             });
         Set<GrantedAuthority> result = new HashSet<GrantedAuthority>(authorities.size());
@@ -98,5 +100,9 @@ public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
         CollectionUtils.addAll(authorities, annotation.value());
         LOGGER.debug("annotation-value: " + authorities);
         return authorities;
+    }
+
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
     }
 }

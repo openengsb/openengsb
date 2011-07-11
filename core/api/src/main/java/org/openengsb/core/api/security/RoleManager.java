@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
+import org.springframework.security.core.GrantedAuthority;
 
 public interface RoleManager {
 
@@ -44,5 +45,7 @@ public interface RoleManager {
     void removePermissionsFromRole(String rolename, Permission... permissions);
 
     void removePermissionsFromUser(String username, Permission... permissions);
+
+    GrantedAuthority createRoleAuthority(String rolename);
 
 }
