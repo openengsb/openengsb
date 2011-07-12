@@ -88,19 +88,10 @@ public class EKBService implements EngineeringKnowledgeBaseService {
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 Method setterMethod = propertyDescriptor.getWriteMethod();
                 String propertyName = propertyDescriptor.getName();
-                if (object.containsKey(propertyDescriptor.getName())) {
-                    try {
-                        setterMethod.invoke(instance, object.get(propertyName));
-                    } catch (IllegalArgumentException ex) {
-                        LOGGER.error("illegal argument exception when invoking {} with argument {}",
-                            setterMethod.getName(), object.get(propertyName));
-                    } catch (IllegalAccessException ex) {
-                        LOGGER.error("illegal access exception when invoking {} with argument {}",
-                            setterMethod.getName(), object.get(propertyName));
-                    } catch (InvocationTargetException ex) {
-                        LOGGER.error("invocatin target exception when invoking {} with argument {}",
-                            setterMethod.getName(), object.get(propertyName));
-                    }
+                Object value = object.get(propertyName);
+
+                if (object.containsKey(propertyName)) {
+                    setValueInInstance(instance, value, setterMethod);
                 }
             }
         } catch (IntrospectionException ex) {
@@ -108,6 +99,32 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         }
 
         return instance;
+    }
+
+    private void setValueInInstance(Object instance, Object value, Method setterMethod) {
+        Class<?> type = setterMethod.getParameterTypes()[0];
+        if (type.isEnum()) {
+            Object []enumValues = type.getEnumConstants();
+            for (Object enumValue : enumValues) {
+                if (enumValue.toString().equals(value.toString())) {
+                    value = enumValue;
+                    break;
+                }
+            }
+        }
+
+        try {
+            setterMethod.invoke(instance, value);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("illegal argument exception when invoking {} with argument {}",
+                setterMethod.getName(), value);
+        } catch (IllegalAccessException ex) {
+            LOGGER.error("illegal access exception when invoking {} with argument {}",
+                setterMethod.getName(), value);
+        } catch (InvocationTargetException ex) {
+            LOGGER.error("invocatin target exception when invoking {} with argument {}",
+                setterMethod.getName(), value);
+        }
     }
 
     private <T extends OpenEngSBModel> List<T> convertEDBObjectsToModelObjects(Class<T> model,
