@@ -34,9 +34,13 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceListPanel.class);
 
     private class ServiceEntry implements Comparable<ServiceEntry>, Serializable {
         private Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -69,7 +73,12 @@ public class ServiceListPanel extends Panel {
                     entry.properties.put(key, ref.getProperty(key));
                 }
                 Domain service = serviceUtils.getService(Domain.class, ref);
-                entry.aliveState = service.getAliveState();
+                try {
+                    entry.aliveState = service.getAliveState();
+                } catch (Exception e) {
+                    LOGGER.error("Couldn't load service entry " + ref, e);
+                    entry.aliveState = AliveState.OFFLINE;
+                }
                 result.add(entry);
             }
             return result;
