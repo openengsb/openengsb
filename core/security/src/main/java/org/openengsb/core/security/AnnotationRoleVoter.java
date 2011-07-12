@@ -99,6 +99,4 @@ public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
         return authorities;
     }
 
-    public void setRoleManager(RoleManager roleManager) {
-    }
 }
