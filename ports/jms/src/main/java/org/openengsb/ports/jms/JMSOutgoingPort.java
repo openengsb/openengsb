@@ -65,7 +65,7 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
 
     private void sendMessage(String destination, String message) {
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.convertAndSend(destination, message);
+        createJMSTemplate.convertAndSend(message);
     }
 
     public void setFactory(JMSTemplateFactory factory) {
