@@ -20,6 +20,8 @@ package org.openengsb.ui.admin;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -47,7 +49,7 @@ import org.osgi.framework.BundleContext;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -75,6 +77,12 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         registrationManager.setServiceUtils(serviceUtils);
+        registrationManager.setInterceptor(new MethodInterceptor() {
+            @Override
+            public Object invoke(MethodInvocation invocation) throws Throwable {
+                return invocation.proceed();
+            }
+        });
         ConnectorManagerImpl serviceManager = new ConnectorManagerImpl();
         serviceManager.setRegistrationManager(registrationManager);
 

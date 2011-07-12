@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +35,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.Permission;
@@ -138,6 +140,8 @@ public class UserManagerImplIT extends AbstractJPATest {
         entityManager.getTransaction().commit();
         UserDataInitializerBean userDataInitializerBean = new UserDataInitializerBean();
         userDataInitializerBean.setUserManager(userManager);
+        RoleManager roleManager = mock(RoleManager.class);
+        userDataInitializerBean.setRoleManager(roleManager);
         userDataInitializerBean.doInit();
         UserDetails loadUserByUsername = userManager.loadUserByUsername("admin");
         assertThat(loadUserByUsername.getPassword(), is("password"));

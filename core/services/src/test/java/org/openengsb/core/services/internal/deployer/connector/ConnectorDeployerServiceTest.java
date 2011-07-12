@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -142,6 +144,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         registrationManager.setServiceUtils(OpenEngSBCoreServices.getServiceUtilsService());
+        registrationManager.setInterceptor(new MethodInterceptor() {
+            @Override
+            public Object invoke(MethodInvocation invocation) throws Throwable {
+                return invocation.proceed();
+            }
+        });
         serviceManagerImpl.setRegistrationManager(registrationManager);
         serviceManager = serviceManagerImpl;
         return serviceManagerImpl;

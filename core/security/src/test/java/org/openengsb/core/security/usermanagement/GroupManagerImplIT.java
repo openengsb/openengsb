@@ -73,7 +73,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
     public void testListAllGroups_shouldContainTest() throws Exception {
         persist(new RoleImpl("test"));
         @SuppressWarnings("rawtypes")
-        List findAllGroups = groupManager.findAllRoles();
+        Iterable<Object> findAllGroups = (Iterable) groupManager.findAllRoles();
         assertThat(findAllGroups, hasItem(hasProperty("name", is("test"))));
     }
 
@@ -82,7 +82,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
     public void testCreateGroup_shouldShowUpInGroupList() throws Exception {
         groupManager.createRole("test");
         @SuppressWarnings("rawtypes")
-        List findAllGroups = groupManager.findAllRoles();
+        List<Object> findAllGroups = (List) groupManager.findAllRoles();
         assertThat(findAllGroups, hasItem(hasProperty("name", is("test"))));
     }
 

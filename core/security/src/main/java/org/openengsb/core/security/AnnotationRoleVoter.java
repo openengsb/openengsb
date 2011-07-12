@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -20,31 +21,36 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationRoleVoter.class);
 
-    private RoleManager roleManager;
-
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
-        Set<GrantedAuthority> retrieveAnnotations = retrieveAnnotations((MethodInvocation) object);
+        final Set<String> retrieveAnnotations = retrieveAnnotations((MethodInvocation) object);
         Collection<GrantedAuthority> userAuthorities = ((UserDetails) authentication.getPrincipal()).getAuthorities();
-        @SuppressWarnings("unchecked")
-        Collection<GrantedAuthority> intersection = CollectionUtils.intersection(retrieveAnnotations, userAuthorities);
-        if (intersection.isEmpty()) {
+
+        try {
+            GrantedAuthority role = Iterables.find(userAuthorities, new Predicate<GrantedAuthority>() {
+                @Override
+                public boolean apply(GrantedAuthority input) {
+                    return retrieveAnnotations.contains(input.getAuthority());
+                }
+            });
+            LOGGER.info("granted access because method was annotated for access by Role " + role.getAuthority());
+            return ACCESS_GRANTED;
+        } catch (NoSuchElementException e) {
             return ACCESS_ABSTAIN;
         }
-        return ACCESS_GRANTED;
     }
 
-    private Set<GrantedAuthority> retrieveAnnotations(MethodInvocation invocation) {
+    private Set<String> retrieveAnnotations(MethodInvocation invocation) {
         LOGGER.trace("deciding with annotations: {}", invocation);
-        Set<GrantedAuthority> rolesFromMethodAnnotation = new HashSet<GrantedAuthority>();
+        Set<String> rolesFromMethodAnnotation = new HashSet<String>();
 
         String methodName = invocation.getMethod().getName();
         Class<?>[] arguments = invocation.getMethod().getParameterTypes();
@@ -78,21 +84,12 @@ public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
         return result;
     }
 
-    private Set<GrantedAuthority> getRolesFromMethodAnnotation(Method method) {
+    private Set<String> getRolesFromMethodAnnotation(Method method) {
         AuthorizedRoles annotation = method.getAnnotation(AuthorizedRoles.class);
         if (annotation == null) {
             return Sets.newHashSet();
         }
-        Collection<GrantedAuthority> authorities =
-            Collections2.transform(getRolesFromAnnotation(annotation), new Function<String, GrantedAuthority>() {
-                @Override
-                public GrantedAuthority apply(String input) {
-                    return roleManager.createRoleAuthority(input);
-                }
-            });
-        Set<GrantedAuthority> result = new HashSet<GrantedAuthority>(authorities.size());
-        result.addAll(authorities);
-        return result;
+        return getRolesFromAnnotation(annotation);
     }
 
     private Set<String> getRolesFromAnnotation(AuthorizedRoles annotation) {
@@ -103,6 +100,5 @@ public class AnnotationRoleVoter extends AbstractAccessDecisionVoter {
     }
 
     public void setRoleManager(RoleManager roleManager) {
-        this.roleManager = roleManager;
     }
 }

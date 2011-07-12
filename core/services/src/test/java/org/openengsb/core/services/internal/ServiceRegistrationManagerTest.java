@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -71,6 +73,12 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorRegistrationManagerImpl serviceManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceManagerImpl.setBundleContext(bundleContext);
         serviceManagerImpl.setServiceUtils(serviceUtils);
+        serviceManagerImpl.setInterceptor(new MethodInterceptor() {
+            @Override
+            public Object invoke(MethodInvocation invocation) throws Throwable {
+                return invocation.proceed();
+            }
+        });
         registrationManager = serviceManagerImpl;
     }
 

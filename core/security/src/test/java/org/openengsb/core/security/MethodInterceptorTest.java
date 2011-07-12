@@ -30,12 +30,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.security.model.Role;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
 import org.openengsb.core.security.model.AbstractPermission;
+import org.openengsb.core.security.model.AllPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
-import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
@@ -50,7 +52,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -104,11 +105,11 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         UserDetailsService userDetailsService = mock(UserDetailsService.class);
         UserDetails user =
             Users.create(DEFAULT_USER, "password",
-                Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
+                Arrays.asList((GrantedAuthority) new RoleAuthority(new RoleImpl("ROLE_USER"))));
         when(userDetailsService.loadUserByUsername(DEFAULT_USER)).thenReturn(user);
 
-        List<GrantedAuthority> adminAuthorities =
-            Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN"));
+        Role adminRole = new RoleImpl("ROLE_ADMIN", Arrays.asList((AbstractPermission) new AllPermission()));
+        List<GrantedAuthority> adminAuthorities = Arrays.asList((GrantedAuthority) new RoleAuthority(adminRole));
         User admin = Users.create("admin", "adminpw", adminAuthorities);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
 
