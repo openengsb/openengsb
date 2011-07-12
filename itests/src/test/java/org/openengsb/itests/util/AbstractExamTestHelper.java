@@ -70,11 +70,13 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
+    protected static final int RMI_REGISTRY_PORT = 1100;
+    protected static final int RMI_SERVER_PORT = 44445;
 
     private boolean isBeforeExecuted = false;
 
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -257,7 +259,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
                     "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
-            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
+            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
+                    + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
+            waitForFrameworkStartup(),
             vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
             vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
             vmOption("-Dkaraf.base=" + targetpath + "/karaf.base"),
