@@ -113,7 +113,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         call.setDestination("host?endpoint");
         outgoingPort.send(call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), captor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
         JsonNode readTree = requestMessage.get("methodCall");
@@ -126,12 +126,12 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
+    public void callSendSync_shouldSenMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(METHOD_RESULT_MESSAGE);
         outgoingPort.sendSync(call);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), sendIdCaptor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
 
         String destination =
             new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")

@@ -25,8 +25,6 @@ import org.springframework.jms.core.JmsTemplate;
 
 public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
 
-    private static final String RECEIVE = "receive";
-
     private JMSTemplateFactory factory;
 
     public JMSOutgoingPort() {
@@ -57,10 +55,11 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
 
     private void sendMessage(String destination, String message) {
         JmsTemplate createJMSTemplate = createJMSTemplate(DestinationUrl.createDestinationUrl(destination));
-        createJMSTemplate.convertAndSend(RECEIVE, message);
+        createJMSTemplate.convertAndSend(message);
     }
 
     public void setFactory(JMSTemplateFactory factory) {
         this.factory = factory;
     }
 }
+
