@@ -97,6 +97,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     public void remove(ConnectorId id) {
         registrations.get(id).unregister();
         registrations.remove(id);
+        // FIXME: [OPENENGSB-1809] clean way to shutdown the container
+        instances.remove(id);
     }
 
     private void createService(ConnectorId id, ConnectorDescription description)
