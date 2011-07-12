@@ -127,6 +127,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
             DomainProvider domainProvider, ConnectorInstanceFactory factory) {
         Domain serviceInstance = factory.createNewInstance(id.toString());
+        if (serviceInstance == null) {
+            throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
+        }
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
         String[] clazzes = new String[]{
