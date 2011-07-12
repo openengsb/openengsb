@@ -85,7 +85,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     private List<AccessDecisionVoter> makeVoterList() {
         List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
-        result.add(new AnnotationRoleVoter());
+        result.add(new AuthorizedRoleAnnotationVoter());
         result.add(new OpenEngSBAccessDecisionVoter());
         return result;
     }

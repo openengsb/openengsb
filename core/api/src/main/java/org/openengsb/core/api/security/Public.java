@@ -15,22 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api;
+package org.openengsb.core.api.security;
 
-import org.openengsb.core.api.security.Public;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Every service published within the OpenEngSB context creates an instanceId, which identifies itself unique in the
- * system. Those unique values are also interested directly from the code to identify which OpenEngSB someone is working
- * with. The {@link #getInstanceId()} method returns exactly this unique id for each OpenEngSB service.
+ * When annotated methods are invoked, the Authorization-manager will always grant permission to execute this method
  */
-public interface OpenEngSBService {
-
-    /**
-     * Each created service in the OpenEngSB has its own unique id which could be resolved from code by this method.
-     */
-    @Public
-    String getInstanceId();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Inherited
+public @interface Public {
 
 }
-

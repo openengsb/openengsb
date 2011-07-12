@@ -19,6 +19,9 @@ public abstract class AbstractAccessDecisionVoter implements AccessDecisionVoter
     }
 
     protected UserDetails getAuthenticatedUser(Authentication auth) {
+        if (auth == null) {
+            return null;
+        }
         Object principal = auth.getPrincipal();
         if (principal instanceof UserDetails) {
             return (UserDetails) principal;

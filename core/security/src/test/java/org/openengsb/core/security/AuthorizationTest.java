@@ -75,7 +75,8 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
     private void createAuthorizationManager() {
         List<AccessDecisionVoter> voters = new LinkedList<AccessDecisionVoter>();
         voters.add(new OpenEngSBAccessDecisionVoter());
-
+        voters.add(new AuthorizedRoleAnnotationVoter());
+        voters.add(new PublicAnnotationVoter());
         AffirmativeBased affirmativeBased = new AffirmativeBased();
         affirmativeBased.setDecisionVoters(voters);
         acManager = affirmativeBased;
@@ -160,6 +161,11 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
 
         ContextHolder.get().setCurrentContextId("foo");
         acManager.decide(successToken, invocation, null);
+    }
+
+    @Test
+    public void testPublicAccessMethod_shouldGrantAccess() throws Exception {
+        acManager.decide(null, MethodInvocationUtils.create(new DummyServiceImpl("foo"), "getInstanceId"), null);
     }
 
     private void registerUser(UserDetails user) {
