@@ -91,6 +91,10 @@ public class EKBService implements EngineeringKnowledgeBaseService {
                 Object value = object.get(propertyName);
 
                 if (object.containsKey(propertyName)) {
+                    Class<?> type = setterMethod.getParameterTypes()[0];
+                    if (type.isEnum()) {
+                        value = getEnumValue(type, value);
+                    }
                     setValueInInstance(instance, value, setterMethod);
                 }
             }
@@ -101,18 +105,18 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         return instance;
     }
 
-    private void setValueInInstance(Object instance, Object value, Method setterMethod) {
-        Class<?> type = setterMethod.getParameterTypes()[0];
-        if (type.isEnum()) {
-            Object []enumValues = type.getEnumConstants();
-            for (Object enumValue : enumValues) {
-                if (enumValue.toString().equals(value.toString())) {
-                    value = enumValue;
-                    break;
-                }
+    private Object getEnumValue(Class<?> type, Object value) {
+        Object[] enumValues = type.getEnumConstants();
+        for (Object enumValue : enumValues) {
+            if (enumValue.toString().equals(value.toString())) {
+                value = enumValue;
+                break;
             }
         }
+        return value;
+    }
 
+    private void setValueInInstance(Object instance, Object value, Method setterMethod) {
         try {
             setterMethod.invoke(instance, value);
         } catch (IllegalArgumentException ex) {
