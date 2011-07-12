@@ -46,7 +46,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      * indefinitely {@link ServiceTracker#waitForService(long)} A timeout < 0 means that the service tracker will not
      * wait for the service at all. If the service is not available immediately an
      * {@link OsgiServiceNotAvailableException} is thrown.
-     *
+     * 
      */
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
@@ -59,8 +59,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(Filter filter) {
-            this.tracker = new ServiceTracker(bundleContext, filter, null);
-            this.info = filter.toString();
+            tracker = new ServiceTracker(bundleContext, filter, null);
+            info = filter.toString();
         }
 
         protected ServiceTrackerInvocationHandler(String className, long timeout) {
@@ -69,8 +69,8 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
         }
 
         protected ServiceTrackerInvocationHandler(String className) {
-            this.tracker = new ServiceTracker(bundleContext, className, null);
-            this.info = "Class: " + className;
+            tracker = new ServiceTracker(bundleContext, className, null);
+            info = "Class: " + className;
         }
 
         protected ServiceTrackerInvocationHandler(Class<?> targetClass, long timeout) {
@@ -180,7 +180,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new ServiceTrackerInvocationHandler(filter, timeout));
     }
 
@@ -203,7 +203,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new ServiceTrackerInvocationHandler(targetClass, timeout));
     }
 
@@ -314,7 +314,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     /**
      * tries to retrieve the service from the given service-tracker for the amount of milliseconds provided by the given
      * timeout.
-     *
+     * 
      * @throws OsgiServiceNotAvailableException if the service could not be found within the given timeout
      */
     private Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)

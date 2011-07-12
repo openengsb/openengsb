@@ -314,7 +314,7 @@ public class TestClient extends BasePage {
                     }
                 });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
-                        .getDescription())));
+                    .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
 
@@ -323,7 +323,7 @@ public class TestClient extends BasePage {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
                             return serviceUtils.listServices(ConnectorProvider.class,
-                                    String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
+                                String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
                         }
                     };
                 item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
@@ -339,7 +339,7 @@ public class TestClient extends BasePage {
                         });
                         item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
                         item.add(new Label("service.description", new LocalizableStringModel(this, desc
-                                .getDescription())));
+                            .getDescription())));
                     }
                 });
             }
@@ -405,7 +405,7 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         String providerName = provider.getName().getString(getSession().getLocale());
         DefaultMutableTreeNode providerNode =
-                new DefaultMutableTreeNode(providerName);
+            new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
 
         // add domain entry to call via domain endpoint factory
@@ -558,7 +558,6 @@ public class TestClient extends BasePage {
         try {
             aClass = (Class<? extends Domain>) Class.forName(service.getServiceClass());
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
 

@@ -82,7 +82,6 @@ public class MethodUtilTest {
 
         @Override
         public Object nullMethod(Object o, String b) {
-            // TODO Auto-generated method stub
             return null;
         }
     }
@@ -118,13 +117,12 @@ public class MethodUtilTest {
 
         @Override
         public Object nullMethod(Object o, String b) {
-            // TODO Auto-generated method stub
             return null;
         }
     }
 
     public static enum TestEnum {
-            ONE, TWO
+        ONE, TWO
     }
 
     @Test
