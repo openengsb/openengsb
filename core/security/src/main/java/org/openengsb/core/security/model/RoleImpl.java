@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -49,8 +48,6 @@ public class RoleImpl implements Role, Serializable {
     @Id
     private String name;
 
-    @Column(nullable = true)
-    private String context;
     @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<RoleImpl> nestedRoles = new HashSet<RoleImpl>();
     @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
@@ -72,7 +69,7 @@ public class RoleImpl implements Role, Serializable {
 
     public RoleImpl(String name, Collection<RoleImpl> roles, Collection<AbstractPermission> permissions) {
         this.name = name;
-        this.nestedRoles = roles;
+        nestedRoles = roles;
         updateUserRoleRelation(roles);
         this.permissions = permissions;
     }
@@ -89,6 +86,7 @@ public class RoleImpl implements Role, Serializable {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -113,6 +111,7 @@ public class RoleImpl implements Role, Serializable {
         this.members = members;
     }
 
+    @Override
     public Collection<Permission> getAllPermissions() {
         Collection<Permission> result = new ArrayList<Permission>(permissions);
         for (Role role : nestedRoles) {
@@ -142,45 +141,35 @@ public class RoleImpl implements Role, Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((context == null) ? 0 : context.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RoleImpl other = (RoleImpl) obj;
-        if (context == null) {
-            if (other.context != null)
-                return false;
-        } else if (!context.equals(other.context))
-            return false;
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
         return "Role: " + name;
-    }
-
-    @Override
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
     }
 
     @Override

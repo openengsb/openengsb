@@ -35,20 +35,10 @@ public class RoleManagerImpl implements RoleManager {
     }
 
     @Override
-    public List<Role> findAllRoles(String context) {
-        throw new UnsupportedOperationException("NYI");
-    }
-
-    @Override
     public List<String> findAllUsersWithRole(String roleName) {
         TypedQuery<String> query = entityManager.createNamedQuery("listUsersWithRole", String.class);
         query.setParameter("groupname", roleName);
         return query.getResultList();
-    }
-
-    @Override
-    public List<String> findAllUsersWithRole(String roleName, String context) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -77,43 +67,13 @@ public class RoleManagerImpl implements RoleManager {
     }
 
     @Override
-    public void createRole(String name, String context, Permission... permissions) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void deleteRole(String name, String context) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void addRoleToUser(String username, String rolename, String context) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void removeRoleFromuser(String username, String rolename) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeRoleFromuser(String username, String rolename, String context) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public List<Permission> getAllPermissions(String rolename) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Permission> getAllPermissions(String rolename, String context) {
         // TODO Auto-generated method stub
         return null;
     }
