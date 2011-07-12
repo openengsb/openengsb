@@ -32,17 +32,20 @@ public class TestModel2 implements OpenEngSBModel {
     private String id;
     private String name;
     private Date date;
+    private ENUM enumeration;
 
-    public TestModel2() {
-
+    enum ENUM {
+            A,
+            B,
+            C
     }
 
     @Override
     public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
-        return Arrays.asList(new OpenEngSBModelEntry("id", id, String.class), new OpenEngSBModelEntry("name", name,
-            String.class),
-            new OpenEngSBModelEntry("date", date, Date.class));
-
+        return Arrays.asList(new OpenEngSBModelEntry("id", id, String.class),
+            new OpenEngSBModelEntry("name", name, String.class),
+            new OpenEngSBModelEntry("date", date, Date.class),
+            new OpenEngSBModelEntry("test", enumeration, ENUM.class));
     }
 
     public void setId(String id) {
@@ -67,5 +70,13 @@ public class TestModel2 implements OpenEngSBModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ENUM getEnumeration() {
+        return enumeration;
+    }
+
+    public void setEnumeration(ENUM enumeration) {
+        this.enumeration = enumeration;
     }
 }

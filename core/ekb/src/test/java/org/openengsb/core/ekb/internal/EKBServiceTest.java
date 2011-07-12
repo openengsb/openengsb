@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 public class EKBServiceTest {
     private EKBService service;
@@ -47,6 +48,7 @@ public class EKBServiceTest {
         edbObject.put("id", "testid");
         edbObject.put("date", new Date());
         edbObject.put("name", "testname");
+        edbObject.put("enumeration", "A");
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
 
@@ -123,8 +125,8 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 4 because the model define 4 fields
-        assertThat(entries.size(), is(4));
+        // 5 because the model define 5 fields
+        assertThat(entries.size(), is(5));
     }
 
     @Test
@@ -134,6 +136,7 @@ public class EKBServiceTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.getId(), is("testid"));
         assertThat(model.getDate(), instanceOf(Date.class));
+        assertThat(model.getEnumeration(), is(ENUM.A));
     }
 
     @Test
@@ -143,6 +146,29 @@ public class EKBServiceTest {
         assertThat(model.getName(), is("testname"));
         assertThat(model.getId(), is("testid"));
         assertThat(model.getDate(), instanceOf(Date.class));
+        assertThat(model.getEnumeration(), is(ENUM.A));
+    }
+    
+    @Test
+    public void testInteractionWithEnumValuesWithRealImplementation_shouldWork() {
+        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        
+        ENUM temp = model.getEnumeration();
+        model.setEnumeration(ENUM.B);
+        
+        assertThat(temp, is(ENUM.A));
+        assertThat(model.getEnumeration(), is(ENUM.B));
+    }
+    
+    @Test
+    public void testInteractionWithEnumValuesWithProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+        
+        ENUM temp = model.getEnumeration();
+        model.setEnumeration(ENUM.B);
+        
+        assertThat(temp, is(ENUM.A));
+        assertThat(model.getEnumeration(), is(ENUM.B));
     }
 
     @Test

@@ -20,6 +20,7 @@ package org.openengsb.core.ekb.internal;
 import java.util.Date;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
  * little interface for testing the proxy functionality of the EKBServiceTest
@@ -43,4 +44,8 @@ interface TestModel extends OpenEngSBModel {
     void setTest(String test);
     
     String getTest();
+    
+    void setEnumeration(ENUM enumeration);
+    
+    ENUM getEnumeration();
 }
