@@ -43,17 +43,18 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.osgi.framework.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
+
     @SpringBean
     private ConnectorManager serviceManager;
-
     private ServiceDescriptor descriptor;
-
     private ServiceEditor editor;
-
     @SpringBean
     private OsgiUtilsService serviceUtils;
 
@@ -101,6 +102,9 @@ public class ConnectorEditorPage extends BasePage {
                 for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
                     error(String.format("%s: %s", entry.getKey(), entry.getValue()));
                 }
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("Couldn't create service", e);
+                error("The service already exists in the system. Please choose a different servcie id.");
             }
         }
 
