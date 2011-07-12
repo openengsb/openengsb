@@ -309,11 +309,18 @@
       </section>
       <section>
         <title>Purpose of the openengsb-maven-plugin</title>
-        <para>TBD</para>
+        <para>The purpose of the OpenEngSB Maven Plugin is to provide additional useful goals for
+          the development of the OpenEngSB itself and all projects which base on the OpenEngSB. It
+          helps in various goals starting in assembling, checkstyle, license checking and many other
+          various goals which would otherwise require to duplicate tons of version (and manage it in
+          addition) between the OpenEngSB and projects which are based on the OpenEngSB.</para>
       </section>
       <section>
         <title>Changing the default configuration of the mojos</title>
-        <para>TBD</para>
+        <para>Currently the default configurations can not be changed or adapted in the OpenEngSB
+          plugin. This means that all changes and adaptions have to be made directly in the
+          openengsb-maven-plugin. This situation is not ideal. The version 1.6.0 of the plugin will
+          tackle this drawback.</para>
       </section>
       <section>
         <title>Available Goals</title>
@@ -565,4 +572,3 @@
   </section>
 
 </chapter>
-
