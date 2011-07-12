@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 public class AllPermission extends AbstractPermission {
 
     @Override
-    public boolean permits(Object service, Method operation, Object[] args) {
+    protected boolean internalPermits(Object service, Method operation, Object[] args) {
         return true;
     }
 }

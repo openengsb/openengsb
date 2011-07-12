@@ -35,8 +35,13 @@ public class ServicePermission extends AbstractPermission {
         instanceId = service;
     }
 
+    public ServicePermission(String instanceId, String contextId) {
+        super(contextId);
+        this.instanceId = instanceId;
+    }
+
     @Override
-    public boolean permits(Object service, Method operation, Object[] args) {
+    public boolean internalPermits(Object service, Method operation, Object[] args) {
         if (!(service instanceof OpenEngSBService)) {
             return false;
         }
@@ -61,18 +66,23 @@ public class ServicePermission extends AbstractPermission {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ServicePermission other = (ServicePermission) obj;
         if (instanceId == null) {
-            if (other.instanceId != null)
+            if (other.instanceId != null) {
                 return false;
-        } else if (!instanceId.equals(other.instanceId))
+            }
+        } else if (!instanceId.equals(other.instanceId)) {
             return false;
+        }
         return true;
     }
 

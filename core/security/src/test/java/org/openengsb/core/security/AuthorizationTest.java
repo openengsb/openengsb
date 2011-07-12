@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
@@ -134,6 +135,30 @@ public class AuthorizationTest extends AbstractOpenEngSBTest {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("admin", "password");
         Authentication successToken = authProvider.authenticate(authToken);
+        acManager.decide(successToken, invocation, null);
+    }
+
+    @Test
+    public void testContextDependentPermission_shouldAllowAccess() throws Exception {
+        GrantedAuthority authority = new PermissionAuthority(new ServicePermission("a", "foo"));
+        registerUser(Users.create("admin", "password", Lists.newArrayList(authority)));
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("admin", "password");
+        Authentication successToken = authProvider.authenticate(authToken);
+
+        ContextHolder.get().setCurrentContextId("foo");
+        acManager.decide(successToken, invocation, null);
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testWrongContextPermission_shouldDenyAccess() throws Exception {
+        GrantedAuthority authority = new PermissionAuthority(new ServicePermission("a", "bar"));
+        registerUser(Users.create("admin", "password", Lists.newArrayList(authority)));
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("admin", "password");
+        Authentication successToken = authProvider.authenticate(authToken);
+
+        ContextHolder.get().setCurrentContextId("foo");
         acManager.decide(successToken, invocation, null);
     }
 
