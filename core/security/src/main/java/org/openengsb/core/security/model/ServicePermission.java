@@ -59,7 +59,7 @@ public class ServicePermission extends AbstractPermission {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = super.hashCode();
+        int result = 1;
         result = prime * result + ((instanceId == null) ? 0 : instanceId.hashCode());
         return result;
     }

@@ -17,6 +17,7 @@
 
 package org.openengsb.core.security.usermanagement;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -101,6 +102,34 @@ public class GroupManagerImplIT extends AbstractJPATest {
         groupManager.createRole("test", permission);
         RoleImpl role = entityManager.find(RoleImpl.class, "test");
         assertThat(role.getPermissions(), hasItem(permission));
+    }
+
+    @Test
+    public void removePermissionFromRole_shouldNotHavePermissionAnymore() throws Exception {
+        AbstractPermission permission = new ServicePermission("asdf");
+        groupManager.createRole("test", permission);
+        groupManager.removePermissionsFromRole("test", permission);
+        RoleImpl role = entityManager.find(RoleImpl.class, "test");
+        assertThat(role.getPermissions(), not(hasItem(permission)));
+    }
+
+    @Test
+    public void addPermissionsToUser_shouldContainPermissions() throws Exception {
+        AbstractPermission permission = new ServicePermission("asdf");
+        userManager.createUser(Users.create("user", "password"));
+        groupManager.addPermissionToUser("user", permission);
+        SimpleUser user = entityManager.find(SimpleUser.class, "user");
+        assertThat(user.getPermissions(), hasItem(permission));
+    }
+
+    @Test
+    public void removePermissionsFromUser_shouldNotContainPermissions() throws Exception {
+        AbstractPermission permission = new ServicePermission("asdf");
+        userManager.createUser(Users.create("user", "password"));
+        groupManager.addPermissionToUser("user", permission);
+        groupManager.removePermissionsFromUser("user", permission);
+        SimpleUser user = entityManager.find(SimpleUser.class, "user");
+        assertThat(user.getPermissions(), not(hasItem(permission)));
     }
 
     @Test

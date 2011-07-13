@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.model.Permission;
@@ -108,20 +109,27 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void addPermissionToUser(String username, Permission... permission) {
-        // TODO Auto-generated method stub
-
+        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        CollectionUtils.addAll(user.getPermissions(), permission);
+        entityManager.merge(user);
     }
 
     @Override
     public void removePermissionsFromRole(String rolename, Permission... permissions) {
-        // TODO Auto-generated method stub
-
+        RoleImpl role = entityManager.find(RoleImpl.class, rolename);
+        for (Permission p : permissions) {
+            role.getPermissions().remove(p);
+        }
+        entityManager.merge(role);
     }
 
     @Override
     public void removePermissionsFromUser(String username, Permission... permissions) {
-        // TODO Auto-generated method stub
-
+        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        for (Permission p : permissions) {
+            user.getPermissions().remove(p);
+        }
+        entityManager.merge(user);
     }
 
     @Override
