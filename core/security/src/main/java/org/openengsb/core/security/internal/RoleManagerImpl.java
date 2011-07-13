@@ -34,6 +34,9 @@ import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.SimpleUser;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 public class RoleManagerImpl implements RoleManager {
 
     private EntityManager entityManager;
@@ -46,12 +49,7 @@ public class RoleManagerImpl implements RoleManager {
     }
 
     @Override
-    public List<Role> findAllGlobalRoles() {
-        throw new UnsupportedOperationException("NYI");
-    }
-
-    @Override
-    public List<String> findAllUsersWithRole(String roleName) {
+    public Collection<String> findAllUsersWithRole(String roleName) {
         TypedQuery<String> query = entityManager.createNamedQuery("listUsersWithRole", String.class);
         query.setParameter("groupname", roleName);
         return query.getResultList();
@@ -83,15 +81,21 @@ public class RoleManagerImpl implements RoleManager {
     }
 
     @Override
-    public void removeRoleFromuser(String username, String rolename) {
-        // TODO Auto-generated method stub
-
+    public void removeRoleFromuser(String username, final String rolename) {
+        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        Iterables.removeIf(user.getRoles(), new Predicate<Role>() {
+            @Override
+            public boolean apply(Role input) {
+                return input.getName().equals(rolename);
+            }
+        });
+        entityManager.merge(user);
     }
 
     @Override
-    public List<Permission> getAllPermissions(String rolename) {
-        // TODO Auto-generated method stub
-        return null;
+    public Collection<Permission> getAllPermissions(String rolename) {
+        RoleImpl role = entityManager.find(RoleImpl.class, rolename);
+        return role.getAllPermissions();
     }
 
     @Override

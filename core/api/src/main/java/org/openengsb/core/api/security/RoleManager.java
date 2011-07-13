@@ -16,7 +16,7 @@
  */
 package org.openengsb.core.api.security;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
@@ -24,11 +24,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 public interface RoleManager {
 
-    List<Role> findAllRoles();
+    Collection<Role> findAllRoles();
 
-    List<Role> findAllGlobalRoles();
+    Collection<String> findAllUsersWithRole(String roleName);
 
-    List<String> findAllUsersWithRole(String roleName);
+    Collection<Permission> getAllPermissions(String rolename);
 
     void createRole(String name, Permission... permissions);
 
@@ -37,8 +37,6 @@ public interface RoleManager {
     void addRoleToUser(String username, String rolename);
 
     void removeRoleFromuser(String username, String rolename);
-
-    List<Permission> getAllPermissions(String rolename);
 
     void addPermissionsToRole(String rolename, Permission... permission);
 

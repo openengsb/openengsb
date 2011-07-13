@@ -24,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -90,7 +91,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
     public void testDeleteGroup_shouldNotShowUpInGroupList() throws Exception {
         groupManager.createRole("test");
         groupManager.deleteRole("test");
-        List<Role> findAllGroups = groupManager.findAllRoles();
+        Collection<Role> findAllGroups = groupManager.findAllRoles();
         assertTrue(findAllGroups.isEmpty());
     }
 
@@ -110,7 +111,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
         entityManager.persist(role);
         entityManager.merge(testUser2);
         entityManager.getTransaction().commit();
-        List<String> findUsersInGroup = groupManager.findAllUsersWithRole("test");
+        Collection<String> findUsersInGroup = groupManager.findAllUsersWithRole("test");
         assertThat(findUsersInGroup.size(), is(1));
         assertThat(findUsersInGroup, hasItem("testUser2"));
     }
@@ -120,10 +121,20 @@ public class GroupManagerImplIT extends AbstractJPATest {
         groupManager.createRole("testrole");
         userManager.createUser(Users.create("user", "password"));
         groupManager.addRoleToUser("user", "testrole");
-        List<String> usersInGroup = groupManager.findAllUsersWithRole("testrole");
+        Collection<String> usersInGroup = groupManager.findAllUsersWithRole("testrole");
         assertThat(usersInGroup, hasItem("user"));
         UserDetails user = userManager.loadUserByUsername("user");
         assertFalse(user.getAuthorities().isEmpty());
+    }
+
+    @Test
+    public void removeUserFromGroup_shouldNotBeShownInListAnymore() throws Exception {
+        groupManager.createRole("testrole");
+        userManager.createUser(Users.create("user", "password"));
+        groupManager.addRoleToUser("user", "testrole");
+        groupManager.removeRoleFromuser("user", "testrole");
+        Collection<String> usersInGroup = groupManager.findAllUsersWithRole("testrole");
+        assertTrue(usersInGroup.isEmpty());
     }
 
     @Override
