@@ -34,6 +34,9 @@ public class TestModel2 implements OpenEngSBModel {
     private Date date;
     private ENUM enumeration;
     private List<String> list;
+    private SubModel sub;
+    
+    private List<SubModel> subs;
 
     enum ENUM {
             A,
@@ -50,6 +53,8 @@ public class TestModel2 implements OpenEngSBModel {
         for (int i = 0; i < list.size(); i++) {
             entries.add(new OpenEngSBModelEntry("list" + i, list.get(i), String.class));
         }
+        entries.add(new OpenEngSBModelEntry("sub.id", sub.getId(), String.class));
+        entries.add(new OpenEngSBModelEntry("sub.value", sub.getValue(), String.class));
         return entries;
     }
 
@@ -91,5 +96,21 @@ public class TestModel2 implements OpenEngSBModel {
 
     public void setList(List<String> list) {
         this.list = list;
+    }
+    
+    public void setSub(SubModel sub) {
+        this.sub = sub;
+    }
+    
+    public SubModel getSub() {
+        return sub;
+    }
+    
+    public void setSubs(List<SubModel> subs) {
+        this.subs = subs;
+    }
+    
+    public List<SubModel> getSubs() {
+        return subs;
     }
 }

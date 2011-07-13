@@ -53,6 +53,12 @@ public class EKBServiceTest {
         edbObject.put("list0", "blub");
         edbObject.put("list1", "blab");
         edbObject.put("list2", "blob");
+        edbObject.put("sub.id", "testid");
+        edbObject.put("sub.value", "testvalue");
+        edbObject.put("subs0.id", "AAAAA");
+        edbObject.put("subs0.value", "BBBBB");
+        edbObject.put("subs1.id", "CCCCC");
+        edbObject.put("subs1.value", "DDDDD");
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
 
@@ -128,8 +134,8 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 6 because the model define 6 fields
-        assertThat(entries.size(), is(6));
+        // 8 because the model define 8 fields
+        assertThat(entries.size(), is(8));
     }
 
     @Test
@@ -202,6 +208,62 @@ public class EKBServiceTest {
         assertThat(testList.get(0), is("test1"));
         assertThat(testList.get(1), is("test2"));
         assertThat(testList.get(2), is("test3"));
+    }
+    
+    @Test
+    public void testComplexAsParameterWithImplementedClass_shouldWork() {
+        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        
+        SubModel sub = model.getSub();
+        
+        assertThat(sub.getId(), is("testid"));
+        assertThat(sub.getValue(), is("testvalue"));
+        
+        sub.setId("blabla");
+        sub.setValue("blublub");
+        
+        assertThat(sub.getId(), is("blabla"));
+        assertThat(sub.getValue(), is("blublub"));
+    }
+    
+    @Test
+    public void testListOfComplexAsParameterWithImplementedClass_shouldWork() {
+        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        
+        List<SubModel> sub = model.getSubs();
+        
+        assertThat(sub.get(0).getId(), is("AAAAA"));
+        assertThat(sub.get(0).getValue(), is("BBBBB"));
+        assertThat(sub.get(1).getId(), is("CCCCC"));
+        assertThat(sub.get(1).getValue(), is("DDDDD"));
+    }
+    
+    @Test
+    public void testListOfComplexAsParameterWithProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+        
+        List<SubModel> sub = model.getSubs();
+        
+        assertThat(sub.get(0).getId(), is("AAAAA"));
+        assertThat(sub.get(0).getValue(), is("BBBBB"));
+        assertThat(sub.get(1).getId(), is("CCCCC"));
+        assertThat(sub.get(1).getValue(), is("DDDDD"));
+    }
+    
+    @Test
+    public void testComplexAsParameterWithProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+        
+        SubModel sub = model.getSub();
+        
+        assertThat(sub.getId(), is("testid"));
+        assertThat(sub.getValue(), is("testvalue"));
+        
+        sub.setId("blabla");
+        sub.setValue("blublub");
+        
+        assertThat(sub.getId(), is("blabla"));
+        assertThat(sub.getValue(), is("blublub"));
     }
     
     @Test
