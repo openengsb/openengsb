@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,9 @@ public class EKBServiceTest {
         edbObject.put("date", new Date());
         edbObject.put("name", "testname");
         edbObject.put("enumeration", "A");
+        edbObject.put("list0", "blub");
+        edbObject.put("list1", "blab");
+        edbObject.put("list2", "blob");
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
 
@@ -94,7 +98,6 @@ public class EKBServiceTest {
                 tempId = (String) entry.getValue();
             }
         }
-
         assertThat(idExisting, is(true));
         assertThat(tempId, is(id));
     }
@@ -125,8 +128,8 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 5 because the model define 5 fields
-        assertThat(entries.size(), is(5));
+        // 6 because the model define 6 fields
+        assertThat(entries.size(), is(6));
     }
 
     @Test
@@ -147,6 +150,58 @@ public class EKBServiceTest {
         assertThat(model.getId(), is("testid"));
         assertThat(model.getDate(), instanceOf(Date.class));
         assertThat(model.getEnumeration(), is(ENUM.A));
+    }
+    
+    @Test
+    public void testListAsParameterWithImplementedClass_shouldWork() {
+        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        
+        List<String> testList = model.getList();
+        
+        assertThat(testList.size(), is(3));
+        assertThat(testList.get(0), is("blub"));
+        assertThat(testList.get(1), is("blab"));
+        assertThat(testList.get(2), is("blob"));
+        
+        List<String> temp = new ArrayList<String>();
+        temp.add("test1");
+        temp.add("test2");
+        temp.add("test3");
+        
+        model.setList(temp);
+        
+        testList = model.getList();
+        
+        assertThat(testList.size(), is(3));
+        assertThat(testList.get(0), is("test1"));
+        assertThat(testList.get(1), is("test2"));
+        assertThat(testList.get(2), is("test3"));
+    }
+    
+    @Test
+    public void testListAsParameterWithProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "testoid");
+        
+        List<String> testList = model.getList();
+        
+        assertThat(testList.size(), is(3));
+        assertThat(testList.get(0), is("blub"));
+        assertThat(testList.get(1), is("blab"));
+        assertThat(testList.get(2), is("blob"));
+        
+        List<String> temp = new ArrayList<String>();
+        temp.add("test1");
+        temp.add("test2");
+        temp.add("test3");
+        
+        model.setList(temp);
+        
+        testList = model.getList();
+        
+        assertThat(testList.size(), is(3));
+        assertThat(testList.get(0), is("test1"));
+        assertThat(testList.get(1), is("test2"));
+        assertThat(testList.get(2), is("test3"));
     }
     
     @Test

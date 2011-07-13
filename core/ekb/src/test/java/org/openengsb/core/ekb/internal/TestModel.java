@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
@@ -48,4 +49,8 @@ interface TestModel extends OpenEngSBModel {
     void setEnumeration(ENUM enumeration);
     
     ENUM getEnumeration();
+    
+    void setList(List<String> list);
+    
+    List<String> getList();
 }
