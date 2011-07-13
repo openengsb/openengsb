@@ -24,7 +24,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,22 +53,25 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     @Override
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
+        return (T) createModelObject(model, entries);
+    }
 
+    private Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) {
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
         InvocationHandler handler = makeHandler(model.getMethods(), entries);
 
-        return (T) Proxy.newProxyInstance(classLoader, classes, handler);
+        return Proxy.newProxyInstance(classLoader, classes, handler);
     }
 
     private EKBProxyHandler makeHandler(Method[] methods, OpenEngSBModelEntry[] entries) {
         EKBProxyHandler handler = new EKBProxyHandler(methods, entries);
         return handler;
     }
-
-    private <T extends OpenEngSBModel> T createInstance(Class<T> model) {
-        if (model.isInterface()) {
-            return createEmptyModelObject(model);
+    
+    private Object createNewInstance(Class<?> model) {
+        if (model.isInterface() && !model.isAssignableFrom(List.class)) {
+            return createModelObject(model);
         } else {
             try {
                 return model.newInstance();
@@ -80,14 +85,20 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends OpenEngSBModel> T convertEDBObjectToModel(Class<T> model, EDBObject object) {
-        T instance = createInstance(model);
+        return (T) convertEDBObjectToModel(model, object, "");
+    }
+
+    private Object convertEDBObjectToModel(Class<?> model, EDBObject object, String propertyPrefix) {
+        Object instance = createNewInstance(model);
+        boolean nothingSet = true;
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(model);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 Method setterMethod = propertyDescriptor.getWriteMethod();
-                String propertyName = propertyDescriptor.getName();
+                String propertyName = propertyPrefix + propertyDescriptor.getName();
                 Object value = object.get(propertyName);
 
                 if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
@@ -95,22 +106,57 @@ public class EKBService implements EngineeringKnowledgeBaseService {
                     if (type.isEnum()) {
                         value = getEnumValue(type, value);
                     } else if (type.isAssignableFrom(List.class)) {
-                        value = getListValue(propertyName, object);
+                        Class<?> clazz = getGenericParameterClass(setterMethod);
+                        value = getListValue(clazz, propertyName, object);
                     }
+                } else if (setterMethod != null && setterMethod.getParameterTypes()[0].isInterface()) {
+                    if (setterMethod.getParameterTypes()[0].isAssignableFrom(List.class)) {
+                        Class<?> clazz = getGenericParameterClass(setterMethod);
+                        value = getListValue(clazz, propertyName, object);
+                    } else {
+                        value = convertEDBObjectToModel(setterMethod.getParameterTypes()[0], object,
+                                   propertyName + ".");
+                    }
+                }
+                if (value != null) {
                     setValueInInstance(instance, value, setterMethod);
+                    nothingSet = false;
                 }
             }
         } catch (IntrospectionException ex) {
             LOGGER.error("instantiation exception while trying to create instance of class {}", model.getName());
         }
 
-        return instance;
+        if (nothingSet) {
+            return null;
+        } else {
+            return instance;
+        }
     }
 
-    private Object getListValue(String propertyName, EDBObject object) {
+    private Class<?> getGenericParameterClass(Method setterMethod) {
+        Type t = setterMethod.getGenericParameterTypes()[0];
+        try {
+            ParameterizedType pType = (ParameterizedType) t;
+            Class<?> clazz = (Class<?>) pType.getActualTypeArguments()[0];
+            return clazz;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
-            Object obj = object.get(propertyName + i);
+            Object obj;
+
+            if (type.isInterface() && !type.isAssignableFrom(List.class)) {
+                obj = convertEDBObjectToModel(type, object, propertyName + i + ".");
+            } else {
+                obj = object.get(propertyName + i);
+            }
+
             if (obj == null) {
                 break;
             }
