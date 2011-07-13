@@ -90,10 +90,12 @@ public class EKBService implements EngineeringKnowledgeBaseService {
                 String propertyName = propertyDescriptor.getName();
                 Object value = object.get(propertyName);
 
-                if (object.containsKey(propertyName)) {
+                if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
                     Class<?> type = setterMethod.getParameterTypes()[0];
                     if (type.isEnum()) {
                         value = getEnumValue(type, value);
+                    } else if (type.isAssignableFrom(List.class)) {
+                        value = getListValue(propertyName, object);
                     }
                     setValueInInstance(instance, value, setterMethod);
                 }
@@ -103,6 +105,18 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         }
 
         return instance;
+    }
+
+    private Object getListValue(String propertyName, EDBObject object) {
+        List<Object> temp = new ArrayList<Object>();
+        for (int i = 0;; i++) {
+            Object obj = object.get(propertyName + i);
+            if (obj == null) {
+                break;
+            }
+            temp.add(obj);
+        }
+        return temp;
     }
 
     private Object getEnumValue(Class<?> type, Object value) {
