@@ -7,7 +7,6 @@ import java.util.List;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.ClassUtils;
-import org.openengsb.core.security.AuthorizedRoleAnnotationVoter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

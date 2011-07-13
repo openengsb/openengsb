@@ -71,7 +71,8 @@
           <property name="decisionVoters">
             <list>
               <bean class="org.openengsb.core.security.OpenEngSBAccessDecisionVoter" />
-              <bean class="org.openengsb.core.security.AnnotationRoleVoter" />
+              <bean class="org.openengsb.core.security.AuthorizedRoleAnnotationVoter" />
+              <bean class="org.openengsb.core.security.PublicAnnotationVoter" />
               <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>
