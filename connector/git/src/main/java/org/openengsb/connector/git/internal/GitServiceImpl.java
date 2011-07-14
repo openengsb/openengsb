@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -64,6 +65,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     private File localWorkspace;
     private String watchBranch;
     private FileRepository repository;
+    private boolean submodulesHack;
 
     public GitServiceImpl(String instanceId) {
         super(instanceId);
@@ -72,6 +74,28 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     @Override
     public AliveState getAliveState() {
         return AliveState.OFFLINE;
+    }
+
+    private void submoduleHack(boolean initial) throws InterruptedException, IOException {
+        LinkedList<String> commands = new LinkedList<String>();
+
+        log.error("JGit exception caught, activating the submodule hack");
+
+        String s = File.separator;
+        File lock = new File(localWorkspace + s + ".git" + s + "index.lock");
+        lock.delete();
+
+        commands.add("git");
+        commands.add("reset");
+        commands.add("--hard");
+        if (!initial) {
+            commands.add("origin/" + watchBranch);
+        }
+
+        ProcessBuilder builder = new ProcessBuilder(commands);
+        builder.directory(localWorkspace);
+        int exit = builder.start().waitFor();
+        log.debug("Git command exited with status " + exit);
     }
 
     @Override
@@ -92,7 +116,15 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             ObjectId remote = repository.resolve(Constants.R_REMOTES + "origin/" + watchBranch);
             Git git = new Git(repository);
             MergeCommand merge = git.merge().include("remote", remote).setStrategy(MergeStrategy.OURS);
-            merge.call();
+            try {
+                merge.call();
+            } catch (Exception e2) {
+                if (submodulesHack) {
+                    submoduleHack(false);
+                } else {
+                    throw e2;
+                }
+            }
         } catch (Exception e) {
             if (repository != null) {
                 repository.close();
@@ -125,7 +157,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
     }
 
-    protected boolean checkoutWatchBranch(FetchResult result) throws IOException {
+    protected boolean checkoutWatchBranch(FetchResult result) throws IOException, InterruptedException {
         Ref head = result.getAdvertisedRef(Constants.R_HEADS + watchBranch);
         if (head == null) {
             return false;
@@ -153,7 +185,15 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         final WorkDirCheckout co;
 
         co = new WorkDirCheckout(repository, repository.getWorkTree(), index, tree);
-        co.checkout();
+        try {
+            co.checkout();
+        } catch (UnsupportedOperationException e) {
+            if (submodulesHack) {
+                submoduleHack(true);
+            } else {
+                throw e;
+            }
+        }
         index.write();
         return true;
     }
@@ -344,4 +384,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         throw new DomainMethodNotImplementedException();
     }
 
+    public void setSubmodulesHack(String string) {
+        submodulesHack = new Boolean(string).booleanValue();
+    }
 }
