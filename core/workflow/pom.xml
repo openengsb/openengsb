@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.core</groupId>
     <artifactId>openengsb-core-parent</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1.RELEASE</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
 
   <groupId>org.openengsb.core</groupId>
   <artifactId>openengsb-core-workflow</artifactId>
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.1.RELEASE</version>
   <name>OpenEngSB :: Core :: Workflow Engine</name>
 
   <packaging>bundle</packaging>
