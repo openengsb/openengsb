@@ -1,3 +1,55 @@
+openengsb-1.2.1.RELEASE 2011-07-14
+--------------------------------------------
+
+This release of Apache Karaf is based off of the 2.2.x series branch, representing an update to Apache Karaf 1.2.0.RELEASE. It contains
+bug fixes identified in the prior release, and introduces improvements including; pipeline infrastructure for remoting. completely 
+adapted context store. make entire ports infrastructure internal and no longer visible for other bundles. increase stability of the
+Admin UI. The entire OpenEngSB model has jaxb annotations now. Documentation enhancements at various places. There has also been a few
+small dependency upgrades to karaf and openengsb-root.
+
+** Bug
+    * [OPENENGSB-1597] - karaf.data, karaf.base and karaf.home are not set in itests
+    * [OPENENGSB-1638] - OpenEngSB uses org.apache.aries.transaction.manager in version 0.2-incubating
+    * [OPENENGSB-1771] - Documentation still points at old hudson instance
+    * [OPENENGSB-1772] - Documentation does not clearify that we do not want to use our own mvn repository
+    * [OPENENGSB-1774] - Json-Marshalling: ClassNotFoundException
+    * [OPENENGSB-1779] - Instance Id cannot be reused
+    * [OPENENGSB-1810] - Creating two connectors with the same name throws an uncatched exception in the UI
+    * [OPENENGSB-1816] - Messages via jms are always sent to RECEIVE
+
+** Epic
+    * [OPENENGSB-267] - adapt context store design and name
+
+** Improvement
+    * [OPENENGSB-1008] - Add external, interesting tutorials to hp and usermanual
+    * [OPENENGSB-1187] - configure karaf-ports in tests to something different than opencit uses
+    * [OPENENGSB-1285] - Exception after creating an proxy
+    * [OPENENGSB-1326] - Extract entire common call-infrastructure from ports
+    * [OPENENGSB-1327] - Make entire ports infrastructure internal
+    * [OPENENGSB-1799] - Use script based solution instead of pax:provision
+    * [OPENENGSB-1808] - Increase readability of org.apache.karaf.features.cfg
+    * [OPENENGSB-1811] - ConnectorRegistrationManagerImpl#finishCreatingInstance does not handle case that factory returns null
+    * [OPENENGSB-1812] - Cleanup code of (auto-generated) TODOs
+
+** Library Upgrade
+    * [OPENENGSB-1766] - Upgrade to openengsb-root-19
+    * [OPENENGSB-1778] - Upgrade to karaf-2.2.2
+
+** New Feature
+    * [OPENENGSB-1482] - Refactor ports implementation to "pipeline"-infrastructure (to loosen the coupling)
+
+** Task
+    * [OPENENGSB-1417] - Redesign remote messaging from ground up
+    * [OPENENGSB-1562] - add environment-variable to override the log-level in Tests
+    * [OPENENGSB-1564] - put jaxb-annotations in models in core-api
+    * [OPENENGSB-1614] - Add documentation for pipeline API
+    * [OPENENGSB-1660] - Add templates for eclipse and intellij to etc/
+    * [OPENENGSB-1670] - deprecate ContextCurrentService.{get,set}ThreadLocalContext methods
+    * [OPENENGSB-1756] - Release openengsb-1.2.1.RELEASE
+    * [OPENENGSB-1773] - Purpose and configuration of openengsb-maven-plugin missing in documentation
+    * [OPENENGSB-1786] - Move workflow tests from itest project into workflow project
+
+
 openengsb-1.2.0.RELEASE 2011-06-22
 --------------------------------------------
 
