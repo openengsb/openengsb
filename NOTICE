@@ -110,9 +110,9 @@ This project includes:
   AspectJ weaver under Eclipse Public License - v 1.0
   avalon-framework under Apache License, Version 2.0
   axis under Apache License, Version 2.0
-  biz.aQute:bndlib under MIT
+  BND Library under This material is licensed under the Apache Software License, Version 2.0
   cglib under Apache License, Version 2.0
-  Codec under Apache License, Version 2.0
+  Codec under The Apache Software License, Version 2.0
   com.springsource.org.codehaus.janino under BSD license
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
@@ -125,7 +125,6 @@ This project includes:
   CSS Parser under GNU Lesser General Public License
   Data Mapper for Jackson under The Apache Software License, Version 2.0
   Discovery under The Apache Software License, Version 2.0
-  Dough Lea's util.concurrent package under Public domain, Sun Microsoystems
   Drools :: API under The Apache Software License, Version 2.0
   Drools :: Compiler under The Apache Software License, Version 2.0
   Drools :: Core under The Apache Software License, Version 2.0
@@ -309,6 +308,7 @@ This project includes:
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
   Xerces2 Java Parser under The Apache Software License, Version 2.0
+  XML Commons External Components XML APIs under The Apache Software License, Version 2.0
   XML Commons Resolver Component under The Apache Software License, Version 2.0
   Xml Compatibility extensions for Jackson under The Apache Software License, Version 2.0 or GNU Lesser General Public License (LGPL), Version 2.1
   XML Pull Parsing API under Public Domain
