@@ -41,6 +41,9 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
         if (attributes.containsKey("branch")) {
             instance.setWatchBranch(attributes.get("branch"));
         }
+        if (attributes.containsKey("submodulesHack")) {
+            instance.setSubmodulesHack(attributes.get("submodulesHack"));
+        }
     }
 
     @Override
@@ -59,6 +62,8 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
             .description("service.workspace.description").build());
         builder.attribute(builder.newAttribute().id("branch").name("service.branch.name")
             .description("service.branch.description").build());
+        builder.attribute(builder.newAttribute().id("submodulesHack").name("service.submodulesHack.name")
+            .description("service.submodulesHack.description").asBoolean().build());
         return builder.build();
     }
 
