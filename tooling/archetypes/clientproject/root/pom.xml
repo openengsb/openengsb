@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.openengsb.tooling.archetypes.clientproject</groupId>
     <artifactId>openengsb-tooling-archetypes-clientproject-parent</artifactId>
-    <version>1.2.1.RELEASE</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.tooling.archetypes.clientproject</groupId>
   <artifactId>org.openengsb.tooling.archetypes.clientproject.root</artifactId>
-  <version>1.2.1.RELEASE</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
   <name>OpenEngSB :: Tooling :: Archetypes :: Client Project :: Root</name>

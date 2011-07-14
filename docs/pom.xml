@@ -25,13 +25,13 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>1.2.1.RELEASE</version>
+    <version>1.2.2-SNAPSHOT</version>
     <relativePath>../poms/</relativePath>
   </parent>
 
   <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-parent</artifactId>
-  <version>1.2.1.RELEASE</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OpenEngSB :: Documentation :: Parent</name>
 

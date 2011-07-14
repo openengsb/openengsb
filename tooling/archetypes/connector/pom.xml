@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.openengsb.tooling.archetypes</groupId>
     <artifactId>openengsb-tooling-archetypes-parent</artifactId>
-    <version>1.2.1.RELEASE</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.tooling.archetypes</groupId>
   <artifactId>openengsb-tooling-archetypes-connector</artifactId>
-  <version>1.2.1.RELEASE</version>
+  <version>1.2.2-SNAPSHOT</version>
 
   <name>OpenEngSB :: Tooling :: Archetypes :: Connector</name>
 
