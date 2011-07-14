@@ -56,7 +56,7 @@
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current />
+    <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
     <repos.source>http://github.com</repos.source>
   </properties>
@@ -183,7 +183,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -192,7 +192,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -204,22 +204,7 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  <profile><id>2712da88-51aa-4aa9-af92-f274af1f2e66</id><build><plugins><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-release-plugin</artifactId>
-      <version>${maven.plugin.release.version}</version>
-      <configuration>
-        <autoVersionSubmodules>true</autoVersionSubmodules>
-        <mavenExecutorId>forked-path</mavenExecutorId>
-        <useReleaseProfile>false</useReleaseProfile>
-        <pushChanges>false</pushChanges>
-        <arguments>-Psonatype-oss-release -DpushChanges=false</arguments>
-        <preparationGoals>clean install</preparationGoals>
-        <checkModificationExcludes>
-          <checkModificationExclude>pom.xml</checkModificationExclude>
-        </checkModificationExcludes>
-      </configuration>
-    </plugin></plugins><resources /></build><modules /></profile></profiles>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
