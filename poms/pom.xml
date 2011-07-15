@@ -137,7 +137,6 @@
     <spec.jms11.version>1.1.1</spec.jms11.version>
     <spec.jpa20.version>1.1</spec.jpa20.version>
     <spec.jta11.version>1.1.1</spec.jta11.version>
-    <openjpa.version>2.0.0</openjpa.version>
     <mockito.version>1.8.5</mockito.version>
     <dbunit.version>2.4.7</dbunit.version>
     <felix.configadmin.version>1.2.8</felix.configadmin.version>
