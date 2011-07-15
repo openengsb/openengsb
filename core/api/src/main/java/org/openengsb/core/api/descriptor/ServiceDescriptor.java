@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
@@ -29,6 +32,7 @@ import org.openengsb.core.api.validation.FormValidator;
 import com.google.common.base.Preconditions;
 
 @SuppressWarnings("serial")
+@XmlRootElement
 public class ServiceDescriptor implements Serializable {
     private String id;
     private Class<? extends Domain> serviceType;
@@ -36,6 +40,7 @@ public class ServiceDescriptor implements Serializable {
     private LocalizableString description;
     private Class<? extends Domain> implementationType;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
+    @XmlTransient
     private FormValidator formValidator;
 
     public ServiceDescriptor() {

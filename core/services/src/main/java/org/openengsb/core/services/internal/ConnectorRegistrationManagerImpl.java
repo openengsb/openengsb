@@ -97,6 +97,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     public void remove(ConnectorId id) {
         registrations.get(id).unregister();
         registrations.remove(id);
+        // FIXME: [OPENENGSB-1809] clean way to shutdown the container
+        instances.remove(id);
     }
 
     private void createService(ConnectorId id, ConnectorDescription description)
@@ -125,6 +127,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
             DomainProvider domainProvider, ConnectorInstanceFactory factory) {
         Domain serviceInstance = factory.createNewInstance(id.toString());
+        if (serviceInstance == null) {
+            throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
+        }
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
         String[] clazzes = new String[]{

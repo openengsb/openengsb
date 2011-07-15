@@ -87,7 +87,10 @@
         <configuration>
           <instructions>
             <Import-Package>sun.reflect, *</Import-Package>
-            <!-- This import is required since the WS package relies heavily on reflection and loading of calling classes at runtime-->
+            <!--
+              This import is required since the WS package relies heavily on reflection 
+              and loading of calling classes at runtime
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
           </instructions>

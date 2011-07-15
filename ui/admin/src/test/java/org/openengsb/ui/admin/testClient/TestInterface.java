@@ -31,3 +31,4 @@ public interface TestInterface extends Domain {
     void update(Integer integer);
 
 }
+

@@ -77,7 +77,7 @@
     <menu name="Documentation" >
       <item name="Manual" href="manual/index.html"  />
       <item name="FAQ" href="reference/faq.html" />
-      <item name="Additional Material" href="reference/additional.html" />
+      <item name="Articles" href="reference/additional.html" />
       <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
     </menu>
 
