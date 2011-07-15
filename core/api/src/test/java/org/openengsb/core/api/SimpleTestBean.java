@@ -46,3 +46,4 @@ public class SimpleTestBean {
         this.longValue = longValue;
     }
 }
+
