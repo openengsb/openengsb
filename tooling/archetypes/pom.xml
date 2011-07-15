@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.openengsb.tooling</groupId>
     <artifactId>openengsb-tooling-parent</artifactId>
-    <version>1.3.0.M3</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.tooling.archetypes</groupId>
   <artifactId>openengsb-tooling-archetypes-parent</artifactId>
-  <version>1.3.0.M3</version>
+  <version>1.3.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Tooling :: Archetypes :: Parent</name>
 

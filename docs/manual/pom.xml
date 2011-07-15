@@ -25,12 +25,12 @@
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.3.0.M3</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-manual</artifactId>
-  <version>1.3.0.M3</version>
+  <version>1.3.0-SNAPSHOT</version>
   <name>OpenEngSB :: Documentation :: Manual</name>
   <packaging>pom</packaging>
 
