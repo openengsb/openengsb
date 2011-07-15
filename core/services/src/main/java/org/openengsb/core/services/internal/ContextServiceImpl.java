@@ -88,6 +88,16 @@ public class ContextServiceImpl implements ContextCurrentService {
     }
 
     @Override
+    public void deleteContext(String contextId) {
+        LOGGER.debug("deleting context {}", contextId);
+        try {
+            getConfigPersistenceService().remove(new ContextId(contextId).toMetaData());
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<String> getAvailableContexts() {
         List<ContextConfiguration> availableContextConfigurations =
             getContextConfigurationsOrEmptyOnError(ContextId.getContextIdWildCard());

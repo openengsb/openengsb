@@ -18,6 +18,7 @@
 package org.openengsb.core.services.internal;
 
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -153,6 +154,13 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
         cs.createContext("x");
         ContextHolder.get().setCurrentContextId("x");
         assertEquals("x", ContextHolder.get().getCurrentContextId());
+    }
+
+    @Test
+    public void createAndDeleteContext_shouldBeAbleToRecreate() throws Exception {
+        cs.createContext("foobar");
+        cs.deleteContext("foobar");
+        assertThat(cs.getAvailableContexts(), not(hasItem("foobar")));
     }
 
     @Override

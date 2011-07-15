@@ -45,6 +45,11 @@ public interface ContextCurrentService extends ContextService {
     void createContext(String contextId);
 
     /**
+     * Removes the given context
+     */
+    void deleteContext(String contextId);
+
+    /**
      * Get all root context nodes in a natural order. These can be set using the {@link #setThreadLocalContext(String)}
      * method.
      */
