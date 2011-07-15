@@ -123,6 +123,12 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
     }
 
     @Override
+    public void deleteContext(String contextId) {
+        rootContext.remove(contextId);
+        storeContext();
+    }
+
+    @Override
     public List<String> getAvailableContexts() {
         Map<String, Context> availableContexts = rootContext.getChildren();
         List<String> result = new ArrayList<String>(availableContexts.keySet());

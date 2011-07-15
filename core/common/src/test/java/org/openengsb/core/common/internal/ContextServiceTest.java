@@ -228,6 +228,14 @@ public class ContextServiceTest {
     }
 
     @Test
+    public void createAndRemoveContext_shouldBeAbleToRecreate() throws Exception {
+        addTestData();
+        cs.createContext("foobar");
+        cs.deleteContext("foobar");
+        cs.createContext("foobar");
+    }
+
+    @Test
     public void getDefaultConnector() throws Exception {
         addTestData();
         ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
