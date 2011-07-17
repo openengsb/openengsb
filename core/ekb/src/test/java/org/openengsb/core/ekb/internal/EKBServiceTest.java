@@ -128,13 +128,13 @@ public class EKBServiceTest {
         assertThat(dateExisting, is(true));
         assertThat(tempDate, is(date));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesListObjects_shouldWork() {
         List<String> test = Arrays.asList("string1", "string2", "string3");
         OpenEngSBModelEntry entry = new OpenEngSBModelEntry("list", test, test.getClass());
         TestModel model = service.createEmptyModelObject(TestModel.class, entry);
-        
+
         boolean stringEntry1 = false;
         boolean stringEntry2 = false;
         boolean stringEntry3 = false;
@@ -155,6 +155,23 @@ public class EKBServiceTest {
         assertThat(stringEntry2, is(true));
         assertThat(stringEntry3, is(true));
     }
+    
+    @Test
+    public void testGetOpenEngSBModelEntriesEnumObjects_shouldWork() {
+        ENUM enumeration = ENUM.A;
+        OpenEngSBModelEntry entry = new OpenEngSBModelEntry("enumeration", enumeration, ENUM.class);
+        TestModel model = service.createEmptyModelObject(TestModel.class, entry);
+
+        boolean enumEntry = false;
+
+        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
+            if (e.getKey().equals("enumeration") && e.getValue().equals("A")) {
+                enumEntry = true;
+            }
+        }
+
+        assertThat(enumEntry, is(true));
+    }
 
     @Test
     public void testGetOpenEngSBModelEntriesWhichWerentSettet_shouldWork() {
@@ -165,7 +182,7 @@ public class EKBServiceTest {
         // 6 because the model define 6 simple fields
         assertThat(entries.size(), is(6));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesForListElementsWithProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
@@ -192,16 +209,16 @@ public class EKBServiceTest {
         assertThat(listValue2, is(true));
         assertThat(listValue3, is(true));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesForComplexElementWithProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-        
+
         boolean subValue1 = false;
         boolean subValue2 = false;
-        
+
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("sub.id") && entry.getValue().equals("testid")) {
                 subValue1 = true;
@@ -210,22 +227,22 @@ public class EKBServiceTest {
                 subValue2 = true;
             }
         }
-        
+
         assertThat(subValue1, is(true));
         assertThat(subValue2, is(true));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesForListOfComplexElementsWithProxiedInterface_shouldWork() {
         TestModel model = service.getModel(TestModel.class, "testoid");
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-        
+
         boolean subValue1 = false;
         boolean subValue2 = false;
         boolean subValue3 = false;
         boolean subValue4 = false;
-        
+
         for (OpenEngSBModelEntry entry : entries) {
             if (entry.getKey().equals("subs0.id") && entry.getValue().equals("AAAAA")) {
                 subValue1 = true;
@@ -240,7 +257,7 @@ public class EKBServiceTest {
                 subValue4 = true;
             }
         }
-        
+
         assertThat(subValue1, is(true));
         assertThat(subValue2, is(true));
         assertThat(subValue3, is(true));
@@ -415,5 +432,33 @@ public class EKBServiceTest {
 
         assertThat(testExists, is(true));
         assertThat(testValue, nullValue());
+    }
+
+    @Test
+    public void testCreateProxyableObject_shouldWork() {
+        TestModel model = service.createEmptyModelObject(TestModel.class);
+
+        SubModel sub = service.createEKBProxyableObject(SubModel.class);
+        sub.setId("testid");
+        sub.setValue("testvalue");
+
+        model.setSub(sub);
+
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+
+        boolean subValue1 = false;
+        boolean subValue2 = false;
+
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals("sub.id") && entry.getValue().equals("testid")) {
+                subValue1 = true;
+            }
+            if (entry.getKey().equals("sub.value") && entry.getValue().equals("testvalue")) {
+                subValue2 = true;
+            }
+        }
+
+        assertThat(subValue1, is(true));
+        assertThat(subValue2, is(true));
     }
 }

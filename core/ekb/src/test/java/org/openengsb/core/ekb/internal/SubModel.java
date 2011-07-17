@@ -17,7 +17,9 @@
 
 package org.openengsb.core.ekb.internal;
 
-public interface SubModel {
+import org.openengsb.core.api.ekb.EKBProxyable;
+
+public interface SubModel extends EKBProxyable {
     
     void setId(String id);
     
