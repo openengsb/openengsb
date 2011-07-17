@@ -17,6 +17,11 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +89,33 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
         objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
     }
 
+    private List<OpenEngSBModelEntry> createSubmodelElements(Class<?> clazz, Object object, String propertyPrefix) {
+        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                String propertyName = propertyPrefix + propertyDescriptor.getName();
+                try {
+                    Object obj = propertyDescriptor.getReadMethod().invoke(object);
+                    entries.add(new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
+                } catch (IllegalArgumentException e) {
+                    LOGGER.warn("IllegalArgumentException while loading the value for property {}",
+                        propertyDescriptor.getName());
+                } catch (IllegalAccessException e) {
+                    LOGGER.warn("IllegalAccessException while loading the value for property {}",
+                        propertyDescriptor.getName());
+                } catch (InvocationTargetException e) {
+                    LOGGER.warn("InvocationTargetException while loading the value for property {}",
+                        propertyDescriptor.getName());
+                }
+            }
+        } catch (IntrospectionException ex) {
+            LOGGER.error("instantiation exception while trying to create instance of class {}", clazz.getName());
+        }
+        return entries;
+    }
+
     private Object handleGetMethod(Method method) throws Throwable {
         String propertyName = getPropertyName(method.getName());
         return objects.get(propertyName).getValue();
@@ -98,7 +130,27 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     private Object handleGetOpenEngSBModelEntries() throws Throwable {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-        entries.addAll(objects.values());
+        for (OpenEngSBModelEntry entry : objects.values()) {
+            Class<?> clasz = entry.getType();
+            if (List.class.isAssignableFrom(clasz)) {
+                List<?> list = (List<?>) entry.getValue();
+                if (list == null) {
+                    continue;
+                }
+                Class<?> clazz = list.get(0).getClass();
+                for (int i = 0; i < list.size(); i++) {
+                    if (clazz.isInterface() || clazz.getName().contains("$Proxy")) {
+                        entries.addAll(createSubmodelElements(clazz, list.get(i), entry.getKey() + i + "."));
+                    } else {
+                        entries.add(new OpenEngSBModelEntry(entry.getKey() + i, list.get(i), list.get(i).getClass()));
+                    }
+                }
+            } else if (clasz.isInterface() && entry.getValue() != null) {
+                entries.addAll(createSubmodelElements(clasz, entry.getValue(), entry.getKey() + "."));
+            } else {
+                entries.add(entry);
+            }
+        }
         return entries;
     }
 

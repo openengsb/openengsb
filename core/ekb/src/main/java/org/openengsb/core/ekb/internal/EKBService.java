@@ -68,9 +68,9 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         EKBProxyHandler handler = new EKBProxyHandler(methods, entries);
         return handler;
     }
-    
+
     private Object createNewInstance(Class<?> model) {
-        if (model.isInterface() && !model.isAssignableFrom(List.class)) {
+        if (model.isInterface()) {
             return createModelObject(model);
         } else {
             try {
@@ -105,12 +105,13 @@ public class EKBService implements EngineeringKnowledgeBaseService {
                     Class<?> type = setterMethod.getParameterTypes()[0];
                     if (type.isEnum()) {
                         value = getEnumValue(type, value);
-                    } else if (type.isAssignableFrom(List.class)) {
+                    } else if (List.class.isAssignableFrom(type)) {
                         Class<?> clazz = getGenericParameterClass(setterMethod);
                         value = getListValue(clazz, propertyName, object);
                     }
-                } else if (setterMethod != null && setterMethod.getParameterTypes()[0].isInterface()) {
-                    if (setterMethod.getParameterTypes()[0].isAssignableFrom(List.class)) {
+                } else if (setterMethod != null
+                        && setterMethod.getParameterTypes()[0].isInterface()) {
+                    if (List.class.isAssignableFrom(setterMethod.getParameterTypes()[0])) {
                         Class<?> clazz = getGenericParameterClass(setterMethod);
                         value = getListValue(clazz, propertyName, object);
                     } else {
@@ -151,7 +152,7 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         for (int i = 0;; i++) {
             Object obj;
 
-            if (type.isInterface() && !type.isAssignableFrom(List.class)) {
+            if (type.isInterface() && !List.class.isAssignableFrom(type)) {
                 obj = convertEDBObjectToModel(type, object, propertyName + i + ".");
             } else {
                 obj = object.get(propertyName + i);
