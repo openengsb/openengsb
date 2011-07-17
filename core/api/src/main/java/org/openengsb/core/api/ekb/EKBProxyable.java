@@ -15,21 +15,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
-
-import java.util.List;
-
-import org.openengsb.core.api.ekb.EKBProxyable;
+package org.openengsb.core.api.ekb;
 
 /**
- * Represents a generic model which should be used by any model data in the domains. With this model it is possible to
- * use one model for all kinds of domain model data. The function here defined should convert any specific domain tool
- * data into our most generic model type.
+ * Represents an interface to mark all interfaces which should be proxyable by the EKB. This interfaces should only
+ * define getter and setter functions. Main useage of this interface is to mark submodels so that the connectors can use
+ * domain models with submodels (Appointment -> Location)
  */
-public interface OpenEngSBModel extends EKBProxyable {
+public interface EKBProxyable {
 
-    /**
-     * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.
-     */
-    List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
 }
