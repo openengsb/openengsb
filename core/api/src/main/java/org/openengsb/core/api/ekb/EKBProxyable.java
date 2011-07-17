@@ -20,7 +20,7 @@ package org.openengsb.core.api.ekb;
 /**
  * Represents an interface to mark all interfaces which should be proxyable by the EKB. This interfaces should only
  * define getter and setter functions. Main useage of this interface is to mark submodels so that the connectors can use
- * domain models with submodels (Appointment -> Location)
+ * domain models with submodels (Contact -> Location)
  */
 public interface EKBProxyable {
 
