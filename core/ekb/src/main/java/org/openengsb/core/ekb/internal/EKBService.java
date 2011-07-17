@@ -17,12 +17,8 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
@@ -33,6 +29,7 @@ import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.ekb.EKBProxyable;
 import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -56,16 +53,23 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         return (T) createModelObject(model, entries);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends EKBProxyable> T createEKBProxyableObject(Class<T> proxyable) {
+        LOGGER.debug("createEKBProxyableObject for proxyable interface {} called", proxyable.getName());
+        return (T) createModelObject(proxyable);
+    }
+
     private Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) {
         ClassLoader classLoader = model.getClassLoader();
         Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
-        InvocationHandler handler = makeHandler(model.getMethods(), entries);
+        InvocationHandler handler = makeHandler(model, entries);
 
         return Proxy.newProxyInstance(classLoader, classes, handler);
     }
 
-    private EKBProxyHandler makeHandler(Method[] methods, OpenEngSBModelEntry[] entries) {
-        EKBProxyHandler handler = new EKBProxyHandler(methods, entries);
+    private EKBProxyHandler makeHandler(Class<?> model, OpenEngSBModelEntry[] entries) {
+        EKBProxyHandler handler = new EKBProxyHandler(model, entries);
         return handler;
     }
 
@@ -77,7 +81,6 @@ public class EKBService implements EngineeringKnowledgeBaseService {
                 return model.newInstance();
             } catch (InstantiationException e) {
                 LOGGER.error("instantiation exception while trying to create instance of class {}", model.getName());
-                e.printStackTrace();
             } catch (IllegalAccessException e) {
                 LOGGER.error("illegal access exception while trying to create instance of class {}", model.getName());
             }
@@ -93,39 +96,34 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     private Object convertEDBObjectToModel(Class<?> model, EDBObject object, String propertyPrefix) {
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(model);
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                Method setterMethod = propertyDescriptor.getWriteMethod();
-                String propertyName = propertyPrefix + propertyDescriptor.getName();
-                Object value = object.get(propertyName);
 
-                if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
-                    Class<?> type = setterMethod.getParameterTypes()[0];
-                    if (type.isEnum()) {
-                        value = getEnumValue(type, value);
-                    } else if (List.class.isAssignableFrom(type)) {
-                        Class<?> clazz = getGenericParameterClass(setterMethod);
-                        value = getListValue(clazz, propertyName, object);
-                    }
-                } else if (setterMethod != null
-                        && setterMethod.getParameterTypes()[0].isInterface()) {
-                    if (List.class.isAssignableFrom(setterMethod.getParameterTypes()[0])) {
-                        Class<?> clazz = getGenericParameterClass(setterMethod);
-                        value = getListValue(clazz, propertyName, object);
-                    } else {
-                        value = convertEDBObjectToModel(setterMethod.getParameterTypes()[0], object,
-                                   propertyName + ".");
-                    }
+        for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
+            Method setterMethod = propertyDescriptor.getWriteMethod();
+            String propertyName = propertyPrefix + propertyDescriptor.getName();
+            Object value = object.get(propertyName);
+
+            if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
+                Class<?> type = setterMethod.getParameterTypes()[0];
+                if (type.isEnum()) {
+                    value = getEnumValue(type, value);
+                } else if (List.class.isAssignableFrom(type)) {
+                    Class<?> clazz = getGenericParameterClass(setterMethod);
+                    value = getListValue(clazz, propertyName, object);
                 }
-                if (value != null) {
-                    setValueInInstance(instance, value, setterMethod);
-                    nothingSet = false;
+            } else if (setterMethod != null
+                        && setterMethod.getParameterTypes()[0].isInterface()) {
+                if (List.class.isAssignableFrom(setterMethod.getParameterTypes()[0])) {
+                    Class<?> clazz = getGenericParameterClass(setterMethod);
+                    value = getListValue(clazz, propertyName, object);
+                } else {
+                    value = convertEDBObjectToModel(setterMethod.getParameterTypes()[0], object,
+                                   propertyName + ".");
                 }
             }
-        } catch (IntrospectionException ex) {
-            LOGGER.error("instantiation exception while trying to create instance of class {}", model.getName());
+            if (value != null) {
+                EKBUtils.invokeSetterMethod(setterMethod, instance, value);
+                nothingSet = false;
+            }
         }
 
         if (nothingSet) {
@@ -137,14 +135,9 @@ public class EKBService implements EngineeringKnowledgeBaseService {
 
     private Class<?> getGenericParameterClass(Method setterMethod) {
         Type t = setterMethod.getGenericParameterTypes()[0];
-        try {
-            ParameterizedType pType = (ParameterizedType) t;
-            Class<?> clazz = (Class<?>) pType.getActualTypeArguments()[0];
-            return clazz;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        ParameterizedType pType = (ParameterizedType) t;
+        Class<?> clazz = (Class<?>) pType.getActualTypeArguments()[0];
+        return clazz;
     }
 
     private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
@@ -175,21 +168,6 @@ public class EKBService implements EngineeringKnowledgeBaseService {
             }
         }
         return value;
-    }
-
-    private void setValueInInstance(Object instance, Object value, Method setterMethod) {
-        try {
-            setterMethod.invoke(instance, value);
-        } catch (IllegalArgumentException ex) {
-            LOGGER.error("illegal argument exception when invoking {} with argument {}",
-                setterMethod.getName(), value);
-        } catch (IllegalAccessException ex) {
-            LOGGER.error("illegal access exception when invoking {} with argument {}",
-                setterMethod.getName(), value);
-        } catch (InvocationTargetException ex) {
-            LOGGER.error("invocatin target exception when invoking {} with argument {}",
-                setterMethod.getName(), value);
-        }
     }
 
     private <T extends OpenEngSBModel> List<T> convertEDBObjectsToModelObjects(Class<T> model,
