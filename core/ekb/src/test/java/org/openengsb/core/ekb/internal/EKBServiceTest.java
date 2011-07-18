@@ -155,7 +155,7 @@ public class EKBServiceTest {
         assertThat(stringEntry2, is(true));
         assertThat(stringEntry3, is(true));
     }
-    
+
     @Test
     public void testGetOpenEngSBModelEntriesEnumObjects_shouldWork() {
         ENUM enumeration = ENUM.A;
@@ -181,6 +181,48 @@ public class EKBServiceTest {
 
         // 6 because the model define 6 simple fields
         assertThat(entries.size(), is(6));
+    }
+
+    @Test
+    public void testFunctionalityOfAddingTailInformation_shouldWork() {
+        TestModel model = service.createEmptyModelObject(TestModel.class);
+
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("tailentry", "tail", String.class));
+        boolean tailEntry = false;
+
+        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
+            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
+                tailEntry = true;
+            }
+        }
+        assertThat(tailEntry, is(true));
+    }
+    
+    @Test
+    public void testFunctionalityOfRemovingTailInformation_shouldWork() {
+        TestModel model = service.createEmptyModelObject(TestModel.class);
+
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("tailentry", "tail", String.class));
+        boolean tailEntry = false;
+
+        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
+            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
+                tailEntry = true;
+            }
+        }
+        
+        model.removeOpenEngSBModelEntry("tailentry");
+        
+        boolean tailAway = true;
+        
+        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
+            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
+                tailEntry = false;
+            }
+        }
+        
+        assertThat(tailEntry, is(true));
+        assertThat(tailAway, is(true));
     }
 
     @Test
