@@ -99,27 +99,10 @@ public class EKBService implements EngineeringKnowledgeBaseService {
 
         for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
             Method setterMethod = propertyDescriptor.getWriteMethod();
-            String propertyName = propertyPrefix + propertyDescriptor.getName();
-            Object value = object.get(propertyName);
-
-            if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
-                Class<?> type = setterMethod.getParameterTypes()[0];
-                if (type.isEnum()) {
-                    value = getEnumValue(type, value);
-                } else if (List.class.isAssignableFrom(type)) {
-                    Class<?> clazz = getGenericParameterClass(setterMethod);
-                    value = getListValue(clazz, propertyName, object);
-                }
-            } else if (setterMethod != null
-                        && setterMethod.getParameterTypes()[0].isInterface()) {
-                if (List.class.isAssignableFrom(setterMethod.getParameterTypes()[0])) {
-                    Class<?> clazz = getGenericParameterClass(setterMethod);
-                    value = getListValue(clazz, propertyName, object);
-                } else {
-                    value = convertEDBObjectToModel(setterMethod.getParameterTypes()[0], object,
-                                   propertyName + ".");
-                }
+            if (propertyDescriptor.getWriteMethod() == null) {
+                continue;
             }
+            Object value = getValueForProperty(propertyDescriptor, object, propertyPrefix);
             if (value != null) {
                 EKBUtils.invokeSetterMethod(setterMethod, instance, value);
                 nothingSet = false;
@@ -131,6 +114,33 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         } else {
             return instance;
         }
+    }
+    
+    private Object getValueForProperty(PropertyDescriptor propertyDescriptor, EDBObject object, String propertyPrefix) {
+        Method setterMethod = propertyDescriptor.getWriteMethod();
+        String propertyName = propertyPrefix + propertyDescriptor.getName();
+        Object value = object.get(propertyName);
+        Class<?> parameterType = setterMethod.getParameterTypes()[0];
+
+        if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
+            // value might be enum or a simple list
+            if (parameterType.isEnum()) {
+                value = getEnumValue(parameterType, value);
+            } else if (List.class.isAssignableFrom(parameterType)) {
+                Class<?> clazz = getGenericParameterClass(setterMethod);
+                value = getListValue(clazz, propertyName, object);
+            }
+        } else if (parameterType.isInterface()) {
+            // value might be a complex type or a list of complex types
+            if (List.class.isAssignableFrom(parameterType)) {
+                Class<?> clazz = getGenericParameterClass(setterMethod);
+                value = getListValue(clazz, propertyName, object);
+            } else {
+                value = convertEDBObjectToModel(parameterType, object, propertyName + ".");
+            }
+        }
+        
+        return value;
     }
 
     private Class<?> getGenericParameterClass(Method setterMethod) {
