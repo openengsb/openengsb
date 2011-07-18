@@ -68,7 +68,7 @@
           <enforcePropertyRestriction>true</enforcePropertyRestriction>
         </configuration>
         <executions>
-          execution>
+          <execution>
             <id>enhancer</id>
             <phase>process-classes</phase>
             <goals>
@@ -149,4 +149,3 @@
     </dependency>
   </dependencies>
 </project>
-
