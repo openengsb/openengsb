@@ -32,4 +32,16 @@ public interface OpenEngSBModel extends EKBProxyable {
      * Returns a list of OpenEngSBModelEntries. The list contains all data fields which are used by the specific domain.
      */
     List<OpenEngSBModelEntry> getOpenEngSBModelEntries();
+
+    /**
+     * Adds a OpenEngSBModelEntry to the model. Can be used to add information that is not in a domain model defined
+     * ("tail").
+     */
+    void addOpenEngSBModelEntry(OpenEngSBModelEntry entry);
+
+    /**
+     * Removes a OpenEngSBModelEntry from the model. Should be used with caution. Can produce problems with complex
+     * types or lists. Should only be used to maintain the "tail".
+     */
+    void removeOpenEngSBModelEntry(String key);
 }
