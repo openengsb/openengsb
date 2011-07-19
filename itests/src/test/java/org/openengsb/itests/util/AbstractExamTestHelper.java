@@ -107,7 +107,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("contextFilePersistenceService", "CONTEXT");
         registerConfigPersistence("workflow-persistence", "WORKFLOW");
         registerConfigPersistence("persistenceService", "CONNECTOR");
-
+        registerConfigPersistence("persistenceService", "RULE");
+        
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
     }
 
