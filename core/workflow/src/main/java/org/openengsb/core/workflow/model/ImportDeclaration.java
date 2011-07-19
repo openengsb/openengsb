@@ -17,7 +17,14 @@
 
 package org.openengsb.core.workflow.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ImportDeclaration {
+
+    private static final String META_IMPORT = "import";
+    private static final String META_IMPORT_CLASS = "class";
+
     private String className;
 
     public ImportDeclaration(String className) {
@@ -35,4 +42,12 @@ public class ImportDeclaration {
         this.className = className;
     }
 
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put(META_IMPORT, META_IMPORT);
+        if (this.getClassName() != null) {
+            ret.put(META_IMPORT_CLASS, this.getClassName());
+        }
+        return ret;
+    }
 }

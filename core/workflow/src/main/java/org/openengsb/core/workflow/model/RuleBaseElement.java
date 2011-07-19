@@ -17,10 +17,19 @@
 
 package org.openengsb.core.workflow.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class RuleBaseElement {
+
+    private static final String META_RULE = "rule";
+    private static final String META_RULE_TYPE = "type";
+    private static final String META_RULE_NAME = "name";
+    private static final String META_RULE_PACKAGE = "package";
+
     private String code;
     private RuleBaseElementType type;
     private String packageName;
@@ -79,6 +88,21 @@ public class RuleBaseElement {
     @Override
     public String toString() {
         return String.format("%s %s[%s]", type, packageName, name);
+    }
+
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put(META_RULE, META_RULE);
+        if (this.getName() != null) {
+            ret.put(META_RULE_NAME, this.getName());
+        }
+        if (this.getPackageName() != null) {
+            ret.put(META_RULE_PACKAGE, this.getPackageName());
+        }
+        if (this.getType() != null) {
+            ret.put(META_RULE_TYPE, this.getType().toString());
+        }
+        return ret;
     }
 
 }
