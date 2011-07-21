@@ -43,10 +43,26 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void init() throws RuleBaseException {
         if (persistenceService == null) {
             /*
-             * Temporary use persistenceService until file-persistence is ready
+             * Temporary use persistenceService until file-persistence is ready; Usage of own thread because of FIXME
+             * [OPENENGSB-1301]
              */
-            persistenceService =
-                OpenEngSBCoreServices.getConfigPersistenceService("RULE");
+
+            new Thread() {
+                public void run() {
+                    persistenceService =
+                            OpenEngSBCoreServices.getConfigPersistenceService("RULE");
+                }
+            }.start();
+
+            while (persistenceService == null) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
         }
         super.init();
     }
