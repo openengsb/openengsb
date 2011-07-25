@@ -24,6 +24,9 @@
     <command name="openengsb/info">
       <action class="org.openengsb.core.console.OpenEngSBCommand"/>
     </command>
+    <command name="openengsb/domains">
+      <action class="org.openengsb.core.console.ServicesInfo"/>
+    </command>
   </command-bundle>
 
 </blueprint>

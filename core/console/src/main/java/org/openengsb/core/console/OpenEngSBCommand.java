@@ -18,6 +18,7 @@ package org.openengsb.core.console;
 
 
 import org.apache.felix.gogo.commands.Command;
+import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out current project version")
@@ -27,5 +28,10 @@ public class OpenEngSBCommand extends OsgiCommandSupport {
     protected Object doExecute() throws Exception {
         System.out.println(getBundleContext().getBundle().getVersion().toString());
         return null;
+    }
+
+    @Override
+    public Object execute(CommandSession session) throws Exception {
+        return super.execute(session);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }
