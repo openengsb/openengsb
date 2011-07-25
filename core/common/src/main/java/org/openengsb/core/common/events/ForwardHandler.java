@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
@@ -61,6 +62,8 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
                     edbService.processEDBDeleteEvent((EDBDeleteEvent) event);
                 } else if (event instanceof EDBUpdateEvent) {
                     edbService.processEDBUpdateEvent((EDBUpdateEvent) event);
+                } else if (event instanceof EDBBatchEvent) {
+                    edbService.processEDBBatchEvent((EDBBatchEvent) event);
                 }
             } catch (EDBException e) {
                 throw new InvocationTargetException(e);
