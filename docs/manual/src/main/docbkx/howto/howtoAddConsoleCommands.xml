@@ -53,14 +53,14 @@
     <title>Adding new commands</title>
     <para>This section describes how to add a new commands. The project is located in core/console. To add a new
       command not much is needed. For an finished example have a look at the
-      class org.openengsb.core.console.OpenEngSBCommand.
+      class org.openengsb.core.console.OpenEngSBInfo.
       Here a short description:
       <programlisting>
         import org.apache.felix.gogo.commands.Command;
         import org.apache.karaf.shell.console.OsgiCommandSupport;
 
         @Command(scope = "openengsb", name = "info", description = "Prints out some information")
-        public class OpenEngSBCommand extends OsgiCommandSupport {
+        public class OpenEngSBInfo extends OsgiCommandSupport {
 
             @Override
             protected Object doExecute() throws Exception {
@@ -75,8 +75,8 @@
         <![CDATA[
         <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
           <command name="openengsb/info">
-            <action class="org.openengsb.core.console.OpenEngSBCommand"/>
-          </command>
+            <action class="org.openengsb.core.console.OpenEngSBInfo"/>
+OpenEngSBInfo
         </command-bundle>
       ]]>
       </programlisting>
