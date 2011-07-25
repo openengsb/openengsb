@@ -29,33 +29,33 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
-    
+
     protected String domainId;
     protected String connectorId;
-    
+
     public AbstractOpenEngSBConnectorService() {
         super();
     }
-    
+
     public AbstractOpenEngSBConnectorService(String instanceId) {
         super(instanceId);
     }
 
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String oid,
-            String role) throws EDBException {
+    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String oid)
+        throws EDBException {
         switch (type) {
             case INSERT:
-                EDBCreateEvent create = new EDBCreateEvent(model, oid, role);
+                EDBCreateEvent create = new EDBCreateEvent(model, oid);
                 enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(oid, role);
+                EDBDeleteEvent delete = new EDBDeleteEvent(oid);
                 enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model, oid, role);
+                EDBUpdateEvent update = new EDBUpdateEvent(model, oid);
                 enrichEDBEvent(update);
                 events.raiseEvent(update);
                 break;
@@ -63,7 +63,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
                 throw new DomainMethodExecutionException("unsupported type of event --> " + type);
         }
     }
-    
+
     private void enrichEDBEvent(EDBEvent event) {
         event.setDomainId(domainId);
         event.setConnectorId(connectorId);
