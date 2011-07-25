@@ -29,6 +29,7 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.commands.info.InfoProvider;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
