@@ -535,7 +535,7 @@ public class JPATestIT {
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
         TestModel model = new TestModel();
         model.setName("blub");
-        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/3", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/4", "test");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -544,7 +544,7 @@ public class JPATestIT {
         model.setName("blab");
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/3", "test");
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/4", "test");
         update.setConnectorId("testconnector");
         update.setDomainId("testdomain");
         update.setInstanceId("testinstance");
