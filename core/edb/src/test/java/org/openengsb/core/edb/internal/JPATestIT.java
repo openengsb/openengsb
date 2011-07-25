@@ -32,6 +32,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
@@ -454,6 +455,51 @@ public class JPATestIT {
 
         assertThat(name, is("blub"));
         assertThat(version, is(1));
+    }
+    
+    @Test
+    public void testSendEDBBatchEvent_shouldWork() throws Exception {
+        TestModel model = new TestModel();
+        model.setName("blub");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/batchevent/1");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+        
+        EDBObject obj = db.getObject("/batchevent/1");
+        
+        String name1 = (String) obj.get("name");
+        Integer version1 = Integer.parseInt((String) obj.get("edbversion"));
+        
+        model.setName("blab");
+        EDBBatchEvent e = new EDBBatchEvent();
+        e.setConnectorId("testconnector");
+        e.setDomainId("testdomain");
+        e.setInstanceId("testinstance");
+        e.addModelUpdate("/batchevent/1", model);
+        e.addModelCreate("/batchevent/2", model);
+        
+        db.processEDBBatchEvent(e);
+
+        obj = db.getObject("/batchevent/1");
+
+        String name2 = (String) obj.get("name");
+        Integer version2 = Integer.parseInt((String) obj.get("edbversion"));
+        
+        obj = db.getObject("/batchevent/2");
+        
+        String name3 = (String) obj.get("name");
+        Integer version3 = Integer.parseInt((String) obj.get("edbversion"));
+
+        assertThat(name1, is("blub"));
+        assertThat(version1, is(1));
+        
+        assertThat(name2, is("blab"));
+        assertThat(version2, is(2));
+        
+        assertThat(name3, is("blab"));
+        assertThat(version3, is(1));
     }
 
     @Test(expected = EDBException.class)
