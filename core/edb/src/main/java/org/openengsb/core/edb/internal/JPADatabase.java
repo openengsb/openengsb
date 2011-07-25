@@ -381,12 +381,16 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return getStateOfLastCommitMatching(query);
     }
 
+    private Integer getVersionOfOid(String oid) throws EDBException {
+        return dao.getVersionOfOid(oid);
+    }
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
         dao = new DefaultJPADao(entityManager);
     }
 
-    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event) {
+    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
         EDBObject object = new EDBObject(oid);
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             object.put(entry.getKey(), entry.getValue());
@@ -394,10 +398,15 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         object.put("domainId", event.getDomainId());
         object.put("connectorId", event.getConnectorId());
         object.put("instanceId", event.getInstanceId());
+        object.put("edbversion", version);
         return object;
     }
 
     private String getAuthenticatedUser() {
+        // if JPADatabase is called via integration tests
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return "testuser";
+        }
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
@@ -413,6 +422,30 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return false;
     }
 
+    private Integer getModelVersion(OpenEngSBModel model) {
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getKey().equals("edbversion")) {
+                return (Integer) entry.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * simple check mechanism if there is a conflict between a model which should be saved and the existing model under
+     * the given oid, based on the values which are in the edb.
+     */
+    private void checkForConflict(OpenEngSBModel model, String oid) throws EDBException {
+        EDBObject object = getObject(oid);
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            Object value = object.get(entry.getKey());
+            if (value == null || !value.equals(entry.getValue())) {
+                throw new EDBException();
+            }
+        }
+    }
+
     @Override
     public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
         LOGGER.debug("received create event");
@@ -422,7 +455,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
 
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, 1));
         this.commit(commit);
 
         LOGGER.debug("created object with name {}", event.getOid());
@@ -447,8 +480,28 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         LOGGER.debug("received update event");
+
+        Integer modelVersion = getModelVersion(event.getModel());
+
+        if (modelVersion != null) {
+            Integer currentVersion = getVersionOfOid(event.getOid());
+            if (!modelVersion.equals(currentVersion)) {
+                try {
+                    checkForConflict(event.getModel(), event.getOid());
+                } catch (EDBException e) {
+                    LOGGER.info("conflict detected, user get informed");
+                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
+                            + event.getOid() + " saved.");
+                }
+
+                modelVersion = currentVersion;
+            }
+        } else {
+            modelVersion = getVersionOfOid(event.getOid());
+        }
+
         JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event));
+        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, modelVersion + 1));
         this.commit(commit);
 
         LOGGER.debug("updated object with name {}", event.getOid());
