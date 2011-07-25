@@ -409,6 +409,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+    
+    private String getAuthenticatedRole() {
+        // TODO: replace with loading of the role from the context after the pull request for that is merged
+        return "testrole";
+    }
 
     private boolean checkIfActiveOidExisting(String oid) {
         try {
@@ -454,7 +459,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             throw new EDBException("object under the given oid is already existing");
         }
 
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, 1));
         this.commit(commit);
 
@@ -469,7 +474,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             throw new EDBException("the object under given oid is not existing or already deleted");
         }
 
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
         commit.delete(event.getOid());
 
         this.commit(commit);
@@ -500,7 +505,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             modelVersion = getVersionOfOid(event.getOid());
         }
 
-        JPACommit commit = createCommit(getAuthenticatedUser(), event.getRole());
+        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, modelVersion + 1));
         this.commit(commit);
 
