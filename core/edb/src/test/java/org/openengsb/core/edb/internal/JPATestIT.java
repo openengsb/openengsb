@@ -33,9 +33,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBCreateEvent;
+import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class JPATestIT {
     private static JPADatabase db;
@@ -420,6 +424,131 @@ public class JPATestIT {
         ci.add(v1);
         db.commit(ci);
         db.commit(ci);
+    }
+
+    @Test(expected = EDBException.class)
+    public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
+        TestModel model = new TestModel();
+        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/1", "test");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+        db.processEDBCreateEvent(event);
+    }
+
+    @Test
+    public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
+        TestModel model = new TestModel();
+        model.setName("blub");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/2", "test");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+
+        EDBObject obj = db.getObject("/createevent/2");
+
+        String name = (String) obj.get("name");
+        Integer version = Integer.parseInt((String) obj.get("edbversion"));
+
+        assertThat(name, is("blub"));
+        assertThat(version, is(1));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
+        EDBDeleteEvent event = new EDBDeleteEvent("/deleteevent/1", "test");
+        db.processEDBDeleteEvent(event);
+    }
+
+    @Test
+    public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
+        TestModel model = new TestModel();
+        model.setName("blub");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/2", "test");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+
+        EDBObject obj = db.getObject("/updateevent/2");
+
+        String name1 = (String) obj.get("name");
+        Integer version1 = Integer.parseInt((String) obj.get("edbversion"));
+
+        model.setName("blab");
+
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/2", "test");
+        update.setConnectorId("testconnector");
+        update.setDomainId("testdomain");
+        update.setInstanceId("testinstance");
+        db.processEDBUpdateEvent(update);
+
+        obj = db.getObject("/updateevent/2");
+
+        String name2 = (String) obj.get("name");
+        Integer version2 = Integer.parseInt((String) obj.get("edbversion"));
+
+        assertThat(name1, is("blub"));
+        assertThat(version1, is(1));
+        assertThat(name2, is("blab"));
+        assertThat(version2, is(2));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
+        TestModel model = new TestModel();
+        model.setName("blub");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/3", "test");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+
+        EDBObject obj = db.getObject("/updateevent/3");
+
+        String name1 = (String) obj.get("name");
+        Integer version1 = Integer.parseInt((String) obj.get("edbversion"));
+
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", 0, Integer.class));
+
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/3", "test");
+        update.setConnectorId("testconnector");
+        update.setDomainId("testdomain");
+        update.setInstanceId("testinstance");
+        db.processEDBUpdateEvent(update);
+
+        // results in no conflict because the values are the same even if the version is different
+        obj = db.getObject("/updateevent/3");
+
+        String name2 = (String) obj.get("name");
+        Integer version2 = Integer.parseInt((String) obj.get("edbversion"));
+
+        assertThat(name1, is("blub"));
+        assertThat(version1, is(1));
+        assertThat(name2, is("blab"));
+        assertThat(version2, is(2));
+    }
+
+    @Test(expected = EDBException.class)
+    public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
+        TestModel model = new TestModel();
+        model.setName("blub");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/3", "test");
+        event.setConnectorId("testconnector");
+        event.setDomainId("testdomain");
+        event.setInstanceId("testinstance");
+        db.processEDBCreateEvent(event);
+
+        model.setName("blab");
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", 0, Integer.class));
+
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/3", "test");
+        update.setConnectorId("testconnector");
+        update.setDomainId("testdomain");
+        update.setInstanceId("testinstance");
+        db.processEDBUpdateEvent(update);
     }
 
     /**
