@@ -135,4 +135,9 @@ public interface EngineeringDatabaseService {
      * processes an edb update event
      */
     void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
+    
+    /**
+     * processes an edb batch event
+     */
+    void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
 }
