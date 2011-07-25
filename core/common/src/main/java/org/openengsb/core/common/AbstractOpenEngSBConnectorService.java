@@ -20,6 +20,7 @@ package org.openengsb.core.common;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.DomainMethodExecutionException;
+import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
@@ -32,6 +33,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
 
     protected String domainId;
     protected String connectorId;
+    protected EDBBatchEvent batchEvent;
 
     public AbstractOpenEngSBConnectorService() {
         super();
@@ -61,6 +63,53 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
                 break;
             default:
                 throw new DomainMethodExecutionException("unsupported type of event --> " + type);
+        }
+    }
+
+    public void initiateEDBBatch() {
+        batchEvent = new EDBBatchEvent();
+        enrichEDBEvent(batchEvent);
+    }
+
+    public void addCreateModelToBatch(String oid, OpenEngSBModel model) {
+        checkEDBBatchEvent();
+        batchEvent.addModelCreate(oid, model);
+    }
+
+    public void removeCreateModelFromBatch(String oid) {
+        checkEDBBatchEvent();
+        batchEvent.removeModelCreate(oid);
+    }
+
+    public void addDeleteModelToBatch(String oid) {
+        checkEDBBatchEvent();
+        batchEvent.addModelDelete(oid);
+    }
+
+    public void removeDeleteModelFromBatch(String oid) {
+        checkEDBBatchEvent();
+        batchEvent.removeModelDelete(oid);
+    }
+
+    public void addUpdateModelToBatch(String oid, OpenEngSBModel model) {
+        checkEDBBatchEvent();
+        batchEvent.addModelUpdate(oid, model);
+    }
+
+    public void removeUpdateModelFromBatch(String oid) {
+        checkEDBBatchEvent();
+        batchEvent.removeModelUpdate(oid);
+    }
+
+    public void sendEDBBatchEvent(DomainEvents events) throws EDBException {
+        checkEDBBatchEvent();
+        events.raiseEvent(batchEvent);
+        batchEvent = null;
+    }
+
+    private void checkEDBBatchEvent() {
+        if (batchEvent == null) {
+            throw new EDBException("EDBBatchEvent wasn't initiated");
         }
     }
 
