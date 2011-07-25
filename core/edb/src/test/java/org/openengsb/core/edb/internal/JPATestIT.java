@@ -429,7 +429,7 @@ public class JPATestIT {
     @Test(expected = EDBException.class)
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
         TestModel model = new TestModel();
-        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/1", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/1");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -441,7 +441,7 @@ public class JPATestIT {
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
         TestModel model = new TestModel();
         model.setName("blub");
-        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/2", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/createevent/2");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -458,7 +458,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        EDBDeleteEvent event = new EDBDeleteEvent("/deleteevent/1", "test");
+        EDBDeleteEvent event = new EDBDeleteEvent("/deleteevent/1");
         db.processEDBDeleteEvent(event);
     }
 
@@ -466,7 +466,7 @@ public class JPATestIT {
     public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
         TestModel model = new TestModel();
         model.setName("blub");
-        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/2", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/2");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -479,7 +479,7 @@ public class JPATestIT {
 
         model.setName("blab");
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/2", "test");
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/2");
         update.setConnectorId("testconnector");
         update.setDomainId("testdomain");
         update.setInstanceId("testinstance");
@@ -500,7 +500,7 @@ public class JPATestIT {
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
         TestModel model = new TestModel();
         model.setName("blub");
-        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/3", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/3");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -513,7 +513,7 @@ public class JPATestIT {
 
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/3", "test");
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/3");
         update.setConnectorId("testconnector");
         update.setDomainId("testdomain");
         update.setInstanceId("testinstance");
@@ -535,7 +535,7 @@ public class JPATestIT {
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
         TestModel model = new TestModel();
         model.setName("blub");
-        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/4", "test");
+        EDBCreateEvent event = new EDBCreateEvent(model, "/updateevent/4");
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -544,7 +544,7 @@ public class JPATestIT {
         model.setName("blab");
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/4", "test");
+        EDBUpdateEvent update = new EDBUpdateEvent(model, "/updateevent/4");
         update.setConnectorId("testconnector");
         update.setDomainId("testdomain");
         update.setInstanceId("testinstance");
