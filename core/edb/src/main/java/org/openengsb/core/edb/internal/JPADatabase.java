@@ -481,29 +481,35 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
         LOGGER.debug("deleted object with name {}", event.getOid());
     }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        LOGGER.debug("received update event");
-
-        Integer modelVersion = getModelVersion(event.getModel());
+    
+    private Integer investigateVersionAndCheckForConflict(OpenEngSBModel model, String oid) throws EDBException {
+        Integer modelVersion = getModelVersion(model);
 
         if (modelVersion != null) {
-            Integer currentVersion = getVersionOfOid(event.getOid());
+            Integer currentVersion = getVersionOfOid(oid);
             if (!modelVersion.equals(currentVersion)) {
                 try {
-                    checkForConflict(event.getModel(), event.getOid());
+                    checkForConflict(model, oid);
                 } catch (EDBException e) {
                     LOGGER.info("conflict detected, user get informed");
                     throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
-                            + event.getOid() + " saved.");
+                            + oid + " saved.");
                 }
 
                 modelVersion = currentVersion;
             }
         } else {
-            modelVersion = getVersionOfOid(event.getOid());
+            modelVersion = getVersionOfOid(oid);
         }
+        
+        return modelVersion;
+    }
+
+    @Override
+    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        LOGGER.debug("received update event");
+
+        Integer modelVersion = investigateVersionAndCheckForConflict(event.getModel(), event.getOid());
 
         JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
         commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, modelVersion + 1));
