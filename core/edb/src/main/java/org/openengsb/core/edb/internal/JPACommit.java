@@ -25,7 +25,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Version;
 
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
@@ -52,8 +51,6 @@ public class JPACommit implements EDBCommit {
     private List<String> oids;
     @Column(name = "ISCOMMITED")
     private Boolean committed = false;
-    @Version
-    private Integer versionNumber;
 
     private List<EDBObject> objects;
 
@@ -146,9 +143,5 @@ public class JPACommit implements EDBCommit {
         for (EDBObject o : objects) {
             oids.add(o.getOID());
         }
-    }
-
-    public int getVersionNumber() {
-        return versionNumber;
     }
 }
