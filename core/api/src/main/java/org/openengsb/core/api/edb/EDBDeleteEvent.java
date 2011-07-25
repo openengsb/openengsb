@@ -23,19 +23,13 @@ package org.openengsb.core.api.edb;
 public class EDBDeleteEvent extends EDBEvent {
     
     private String oid;
-    private String role;
 
-    public EDBDeleteEvent(String oid, String role) {
+    public EDBDeleteEvent(String oid) {
         this.oid = oid;
-        this.role = role;
     }
 
     public String getOid() {
         return oid;
-    }
-    
-    public String getRole() {
-        return role;
     }
 
 }

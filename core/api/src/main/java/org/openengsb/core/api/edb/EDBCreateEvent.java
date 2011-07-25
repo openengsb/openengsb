@@ -28,12 +28,10 @@ public class EDBCreateEvent extends EDBEvent {
 
     private OpenEngSBModel model;
     private String oid;
-    private String role;
 
-    public EDBCreateEvent(OpenEngSBModel model, String oid, String role) {
+    public EDBCreateEvent(OpenEngSBModel model, String oid) {
         this.model = model;
         this.oid = oid;
-        this.role = role;
     }
 
     public OpenEngSBModel getModel() {
@@ -42,9 +40,5 @@ public class EDBCreateEvent extends EDBEvent {
 
     public String getOid() {
         return oid;
-    }
-    
-    public String getRole() {
-        return role;
     }
 }
