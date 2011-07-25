@@ -17,6 +17,12 @@
 
 package org.openengsb.core.console;
 
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -31,7 +37,7 @@ import org.fusesource.jansi.Ansi;
 import org.osgi.framework.Bundle;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
-public class OpenEngSBInfo extends OsgiCommandSupport {
+public class ServicesInfo extends OsgiCommandSupport {
 
     private NumberFormat fmtI = new DecimalFormat("###,###", new DecimalFormatSymbols(Locale.ENGLISH));
     private NumberFormat fmtD = new DecimalFormat("###,##0.000", new DecimalFormatSymbols(Locale.ENGLISH));
@@ -43,8 +49,15 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
     private List<InfoProvider> infoProviders = new LinkedList<InfoProvider>();
 
     protected Object doExecute() throws Exception {
-        int maxNameLen = 25;
+        int maxNameLen;
 
+        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+        OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+        ThreadMXBean threads = ManagementFactory.getThreadMXBean();
+        MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
+        ClassLoadingMXBean cl = ManagementFactory.getClassLoadingMXBean();
+
+        maxNameLen = 25;
         //
         // print OpenEngSB information
         //
