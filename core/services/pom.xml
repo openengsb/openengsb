@@ -75,6 +75,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.info</include>
+          <include>OSGI-INF/blueprint/common-context.xml</include>
         </includes>
       </resource>
     </resources>
@@ -115,6 +116,11 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.fileinstall</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.commands</artifactId>
     </dependency>
   </dependencies>
 
