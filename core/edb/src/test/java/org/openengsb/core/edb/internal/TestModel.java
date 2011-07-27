@@ -40,6 +40,14 @@ public class TestModel implements OpenEngSBModel {
     public String getName() {
         return (String) entries.get("name").getValue();
     }
+    
+    public void setEdbId(String edbId) {
+        entries.put("edbId", new OpenEngSBModelEntry("edbId", edbId, String.class));
+    }
+    
+    public String getEdbId() {
+        return (String) entries.get("edbId").getValue();
+    }
 
     @Override
     public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
