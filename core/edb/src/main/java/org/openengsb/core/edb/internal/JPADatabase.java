@@ -69,9 +69,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("starting to open EDB for testing via JPA");
         Properties props = new Properties();
         emf = Persistence.createEntityManagerFactory("edb-test", props);
-        entityManager = emf.createEntityManager();
+        setEntityManager(emf.createEntityManager());
         utx = entityManager.getTransaction();
-        dao = new DefaultJPADao(entityManager);
         LOGGER.debug("starting of EDB successful");
 
         Number max = dao.getNewestJPAHeadNumber();
