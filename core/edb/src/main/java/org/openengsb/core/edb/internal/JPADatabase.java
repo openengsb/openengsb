@@ -497,7 +497,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         commit.add(convertModelToEDBObject(event.getModel(), oid, event, 1));
         this.commit(commit);
 
-        System.out.println("created object with name " + oid);
         LOGGER.debug("created object with name {}", oid);
     }
 
@@ -530,7 +529,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         commit.add(convertModelToEDBObject(event.getModel(), oid, event, modelVersion + 1));
         this.commit(commit);
 
-        System.out.println("updated object with name " + oid);
         LOGGER.debug("updated object with name {}", oid);
     }
 

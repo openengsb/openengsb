@@ -112,15 +112,15 @@ public class JPATestIT {
     @Test
     public void testGetCommits_shouldWork() {
         try {
-            JPACommit ci = db.createCommit("TestCommit2", "Testrole");
+            JPACommit ci = db.createCommit("TestCommit2", "Testcontext");
             EDBObject obj = new EDBObject("TestObject");
             obj.put("Bla", "Blabla");
             ci.add(obj);
 
             long time = db.commit(ci);
 
-            List<EDBCommit> commits1 = db.getCommits("role", "Testrole");
-            List<EDBCommit> commits2 = db.getCommits("role", "DoesNotExist");
+            List<EDBCommit> commits1 = db.getCommits("context", "Testcontext");
+            List<EDBCommit> commits2 = db.getCommits("context", "DoesNotExist");
 
             assertThat(commits1.size(), is(1));
             assertThat(commits2.size(), is(0));

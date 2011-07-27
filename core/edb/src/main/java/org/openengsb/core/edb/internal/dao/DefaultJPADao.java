@@ -264,7 +264,7 @@ public class DefaultJPADao implements JPADao {
         Predicate[] predicates = analyzeParamMap(criteriaBuilder, f, param);
 
         select.where(criteriaBuilder.and(predicates));
-
+        
         TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
@@ -306,8 +306,8 @@ public class DefaultJPADao implements JPADao {
                 predicates.add(criteriaBuilder.equal(from.get("timestamp"), value));
             } else if (key.equals("committer")) {
                 predicates.add(criteriaBuilder.equal(from.get("committer"), value));
-            } else if (key.equals("role")) {
-                predicates.add(criteriaBuilder.equal(from.get("role"), value));
+            } else if (key.equals("context")) {
+                predicates.add(criteriaBuilder.equal(from.get("context"), value));
             }
         }
         Predicate[] temp = new Predicate[predicates.size()];
