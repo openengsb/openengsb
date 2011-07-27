@@ -43,21 +43,21 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         super(instanceId);
     }
 
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events, String oid)
+    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, String modelId, DomainEvents events)
         throws EDBException {
         switch (type) {
             case INSERT:
-                EDBCreateEvent create = new EDBCreateEvent(model, oid);
+                EDBCreateEvent create = new EDBCreateEvent(model);
                 enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(oid);
+                EDBDeleteEvent delete = new EDBDeleteEvent(modelId);
                 enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model, oid);
+                EDBUpdateEvent update = new EDBUpdateEvent(model);
                 enrichEDBEvent(update);
                 events.raiseEvent(update);
                 break;
@@ -71,34 +71,19 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         enrichEDBEvent(batchEvent);
     }
 
-    public void addCreateModelToBatch(String oid, OpenEngSBModel model) {
+    public void addCreateModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelCreate(oid, model);
+        batchEvent.addModelCreate(model);
     }
 
-    public void removeCreateModelFromBatch(String oid) {
+    public void addDeleteModelToBatch(String modelId) {
         checkEDBBatchEvent();
-        batchEvent.removeModelCreate(oid);
+        batchEvent.addModelDelete(modelId);
     }
 
-    public void addDeleteModelToBatch(String oid) {
+    public void addUpdateModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelDelete(oid);
-    }
-
-    public void removeDeleteModelFromBatch(String oid) {
-        checkEDBBatchEvent();
-        batchEvent.removeModelDelete(oid);
-    }
-
-    public void addUpdateModelToBatch(String oid, OpenEngSBModel model) {
-        checkEDBBatchEvent();
-        batchEvent.addModelUpdate(oid, model);
-    }
-
-    public void removeUpdateModelFromBatch(String oid) {
-        checkEDBBatchEvent();
-        batchEvent.removeModelUpdate(oid);
+        batchEvent.addModelUpdate(model);
     }
 
     public void sendEDBBatchEvent(DomainEvents events) throws EDBException {
