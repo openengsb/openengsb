@@ -27,18 +27,12 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 public class EDBCreateEvent extends EDBEvent {
 
     private OpenEngSBModel model;
-    private String oid;
 
-    public EDBCreateEvent(OpenEngSBModel model, String oid) {
+    public EDBCreateEvent(OpenEngSBModel model) {
         this.model = model;
-        this.oid = oid;
     }
 
     public OpenEngSBModel getModel() {
         return model;
-    }
-
-    public String getOid() {
-        return oid;
     }
 }

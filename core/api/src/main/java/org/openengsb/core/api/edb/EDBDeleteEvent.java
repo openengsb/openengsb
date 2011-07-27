@@ -22,14 +22,14 @@ package org.openengsb.core.api.edb;
  */
 public class EDBDeleteEvent extends EDBEvent {
     
-    private String oid;
+    private String modelId;
 
-    public EDBDeleteEvent(String oid) {
-        this.oid = oid;
+    public EDBDeleteEvent(String modelId) {
+        this.modelId = modelId;
     }
 
-    public String getOid() {
-        return oid;
+    public String getModelId() {
+        return modelId;
     }
 
 }

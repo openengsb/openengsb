@@ -18,52 +18,38 @@
 package org.openengsb.core.api.edb;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 public class EDBBatchEvent extends EDBEvent {
-    private Map<String, OpenEngSBModel> creates;
-    private Map<String, OpenEngSBModel> updates;
+    private List <OpenEngSBModel> creates;
+    private List <OpenEngSBModel> updates;
     private List<String> deletes;
     
     public EDBBatchEvent() {
-        creates = new HashMap<String, OpenEngSBModel>();
-        updates = new HashMap<String, OpenEngSBModel>();
+        creates = new ArrayList<OpenEngSBModel>();
+        updates = new ArrayList<OpenEngSBModel>();
         deletes = new ArrayList<String>();
     }
     
-    public void addModelCreate(String oid, OpenEngSBModel model) {
-        creates.put(oid, model);
+    public void addModelCreate(OpenEngSBModel model) {
+        creates.add(model);
     }
     
-    public void removeModelCreate(String oid) {
-        creates.remove(oid);
-    }
-    
-    public void addModelUpdate(String oid, OpenEngSBModel model) {
-        updates.put(oid, model);
-    }
-    
-    public void removeModelUpdate(String oid) {
-        updates.remove(oid);
+    public void addModelUpdate(OpenEngSBModel model) {
+        updates.add(model);
     }
     
     public void addModelDelete(String oid) {
         deletes.add(oid);
     }
     
-    public void removeModelDelete(String oid) {
-        deletes.remove(oid);
-    }
-    
-    public Map<String, OpenEngSBModel> getCreations() {
+    public List<OpenEngSBModel> getCreations() {
         return creates;
     }
     
-    public Map<String, OpenEngSBModel> getUpdates() {
+    public List<OpenEngSBModel> getUpdates() {
         return updates;
     }
     
