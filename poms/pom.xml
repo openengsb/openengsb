@@ -623,6 +623,11 @@
         <version>${htmlunit.wrapped.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.karaf.shell</groupId>
+        <artifactId>org.apache.karaf.shell.commands</artifactId>
+        <version>${karaf.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
