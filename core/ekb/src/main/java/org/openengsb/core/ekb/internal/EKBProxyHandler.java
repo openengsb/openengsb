@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,9 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
         String propertyName = EKBUtils.getPropertyName(method);
+        if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
+            objects.put("edbId", new OpenEngSBModelEntry("edbId", args[0].toString(), String.class));
+        }
         Class<?> clasz = method.getParameterTypes()[0];
         objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
     }
