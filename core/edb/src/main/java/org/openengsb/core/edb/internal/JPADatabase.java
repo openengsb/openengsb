@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,6 +33,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBCreateEvent;
@@ -91,9 +93,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     }
 
     @Override
-    public JPACommit createCommit(String committer, String role) {
-        LOGGER.debug("creating commit for committer {} with role {}", committer, role);
-        return new JPACommit(committer, role);
+    public JPACommit createCommit(String committer, String contextId) {
+        LOGGER.debug("creating commit for committer {} with contextId {}", committer, contextId);
+        return new JPACommit(committer, contextId);
     }
 
     @Override
@@ -398,7 +400,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         object.put("domainId", event.getDomainId());
         object.put("connectorId", event.getConnectorId());
         object.put("instanceId", event.getInstanceId());
-        object.put("edbversion", version);
+        object.put("edbVersion", version);
         return object;
     }
 
@@ -410,9 +412,12 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    private String getAuthenticatedRole() {
-        // TODO: replace with loading of the role from the context after the pull request for that is merged
-        return "testrole";
+    private String getActualContextId() {
+        // if JPADatabase is called via integration tests
+        if (ContextHolder.get() == null) {
+            return "testrole";
+        }
+        return ContextHolder.get().getCurrentContextId();
     }
 
     private boolean checkIfActiveOidExisting(String oid) {
@@ -429,7 +434,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     private Integer getModelVersion(OpenEngSBModel model) {
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
-            if (entry.getKey().equals("edbversion")) {
+            if (entry.getKey().equals("edbVersion")) {
                 return (Integer) entry.getValue();
             }
         }
@@ -451,35 +456,144 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
     }
 
+    private String createOID(OpenEngSBModel model, EDBEvent event) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(createOIDPrefix(event));
+        String modelId = getOpenEngSBModelId(model);
+        if (modelId != null) {
+            builder.append(modelId);
+        } else {
+            builder.append(UUID.randomUUID().toString());
+        }
+
+        return builder.toString();
+    }
+
+    private String createOIDPrefix(EDBEvent event) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(event.getDomainId()).append("/").append(event.getConnectorId()).append("/");
+        return builder.toString();
+    }
+
+    private String getOpenEngSBModelId(OpenEngSBModel model) {
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getKey().equals("edbId")) {
+                return (String) entry.getValue();
+            }
+        }
+        return null;
+    }
+
     @Override
     public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
         LOGGER.debug("received create event");
+        String oid = createOID(event.getModel(), event);
 
-        if (checkIfActiveOidExisting(event.getOid())) {
+        if (checkIfActiveOidExisting(oid)) {
             throw new EDBException("object under the given oid is already existing");
         }
 
-        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, 1));
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+        commit.add(convertModelToEDBObject(event.getModel(), oid, event, 1));
         this.commit(commit);
 
-        LOGGER.debug("created object with name {}", event.getOid());
+        System.out.println("created object with name " + oid);
+        LOGGER.debug("created object with name {}", oid);
     }
 
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        if (!checkIfActiveOidExisting(event.getOid())) {
+        String oid = createOIDPrefix(event) + event.getModelId();
+
+        if (!checkIfActiveOidExisting(oid)) {
             throw new EDBException("the object under given oid is not existing or already deleted");
         }
 
-        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
-        commit.delete(event.getOid());
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+        commit.delete(oid);
 
         this.commit(commit);
 
-        LOGGER.debug("deleted object with name {}", event.getOid());
+        LOGGER.debug("deleted object with name {}", oid);
+    }
+
+    @Override
+    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        LOGGER.debug("received update event");
+
+        String oid = createOID(event.getModel(), event);
+        Integer modelVersion = investigateVersionAndCheckForConflict(event.getModel(), oid);
+
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+        commit.add(convertModelToEDBObject(event.getModel(), oid, event, modelVersion + 1));
+        this.commit(commit);
+
+        System.out.println("updated object with name " + oid);
+        LOGGER.debug("updated object with name {}", oid);
+    }
+
+    @Override
+    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
+        LOGGER.debug("received batch event");
+
+        List<String> deletions = checkDeletions(event.getDeletions(), event);
+        List<EDBObject> inserts = checkCreations(event.getCreations(), event);
+        List<EDBObject> updates = checkUpdates(event.getUpdates(), event);
+
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+
+        for (EDBObject object : inserts) {
+            commit.add(object);
+        }
+        for (String oid : deletions) {
+            commit.delete(oid);
+        }
+        for (EDBObject object : updates) {
+            commit.add(object);
+        }
+        this.commit(commit);
+
+        LOGGER.debug("successfully run through the edb batch event");
+    }
+
+    private List<EDBObject> checkCreations(List<OpenEngSBModel> creations, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : creations) {
+            String oid = createOID(model, event);
+            if (checkIfActiveOidExisting(oid)) {
+                throw new EDBException("object under the given oid is already existing");
+            } else {
+                objects.add(convertModelToEDBObject(model, oid, event, 1));
+            }
+        }
+        return objects;
+    }
+
+    private List<String> checkDeletions(List<String> deletions, EDBEvent event) throws EDBException {
+        List<String> oids = new ArrayList<String>();
+        for (String modelId : deletions) {
+            String oid = createOIDPrefix(event) + modelId;
+            if (!checkIfActiveOidExisting(oid)) {
+                throw new EDBException("the object under given oid is not existing or already deleted");
+            } else {
+                oids.add(oid);
+            }
+        }
+        return oids;
+    }
+
+    private List<EDBObject> checkUpdates(List<OpenEngSBModel> updates, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : updates) {
+            String oid = createOID(model, event);
+            Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
+            modelVersion++;
+            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", modelVersion, Integer.class));
+            objects.add(convertModelToEDBObject(model, oid, event, modelVersion));
+        }
+        return objects;
     }
 
     private Integer investigateVersionAndCheckForConflict(OpenEngSBModel model, String oid) throws EDBException {
@@ -503,67 +617,5 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
 
         return modelVersion;
-    }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        LOGGER.debug("received update event");
-
-        Integer modelVersion = investigateVersionAndCheckForConflict(event.getModel(), event.getOid());
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
-        commit.add(convertModelToEDBObject(event.getModel(), event.getOid(), event, modelVersion + 1));
-        this.commit(commit);
-
-        LOGGER.debug("updated object with name {}", event.getOid());
-    }
-
-    @Override
-    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        LOGGER.debug("received batch event");
-
-        checkCreations(event.getCreations());
-        checkDeletions(event.getDeletions());
-        checkUpdates(event.getUpdates());
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getAuthenticatedRole());
-        for (String oid : event.getCreations().keySet()) {
-            commit.add(convertModelToEDBObject(event.getCreations().get(oid), oid, event, 1));
-        }
-        for (String oid : event.getDeletions()) {
-            commit.delete(oid);
-        }
-        for (String oid : event.getUpdates().keySet()) {
-            OpenEngSBModel model = event.getUpdates().get(oid);
-            Integer version = getModelVersion(model);
-            commit.add(convertModelToEDBObject(model, oid, event, version));
-        }
-        this.commit(commit);
-
-        LOGGER.debug("successfully run through the edb batch event");
-    }
-
-    private void checkCreations(Map<String, OpenEngSBModel> creations) throws EDBException {
-        for (String oid : creations.keySet()) {
-            if (checkIfActiveOidExisting(oid)) {
-                throw new EDBException("object under the given oid is already existing");
-            }
-        }
-    }
-
-    private void checkDeletions(List<String> deletions) throws EDBException {
-        for (String oid : deletions) {
-            if (!checkIfActiveOidExisting(oid)) {
-                throw new EDBException("the object under given oid is not existing or already deleted");
-            }
-        }
-    }
-
-    private void checkUpdates(Map<String, OpenEngSBModel> updates) throws EDBException {
-        for (String oid : updates.keySet()) {
-            OpenEngSBModel model = updates.get(oid);
-            Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
-            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbversion", modelVersion + 1, Integer.class));
-        }
     }
 }

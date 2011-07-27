@@ -41,8 +41,8 @@ public class JPACommit implements EDBCommit {
     private String committer;
     @Column(name = "TIME")
     private Long timestamp;
-    @Column(name = "ROLE", length = 50)
-    private String role;
+    @Column(name = "CONTEXT", length = 50)
+    private String context;
     @Column(name = "DELS")
     @ElementCollection
     private List<String> deletions;
@@ -61,9 +61,9 @@ public class JPACommit implements EDBCommit {
     public JPACommit() {
     }
 
-    public JPACommit(String committer, String role) {
+    public JPACommit(String committer, String contextId) {
         this.committer = committer;
-        this.role = role;
+        this.context = contextId;
 
         oids = new ArrayList<String>();
         objects = new ArrayList<EDBObject>();
@@ -112,8 +112,8 @@ public class JPACommit implements EDBCommit {
     }
 
     @Override
-    public final String getRole() {
-        return role;
+    public final String getContextId() {
+        return context;
     }
 
     @Override
