@@ -68,6 +68,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
      * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file.
      */
 
+    private static final long DEFAULT_TIMEOUT = 40000;
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
     protected static final int RMI_REGISTRY_PORT = 1100;
@@ -76,7 +77,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     private boolean isBeforeExecuted = false;
 
     public enum SetupType {
-        BLUEPRINT, SPRING, START_ONLY
+            BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -196,6 +197,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Assert.fail(String.format("Bundle %s does not start blueprint service", bundle.getSymbolicName()));
         }
         tracker.close();
+    }
+
+    @Override
+    protected <T> T getOsgiService(Class<T> type) {
+        return getOsgiService(type, null, DEFAULT_TIMEOUT);
     }
 
     @BeforeClass
