@@ -241,7 +241,7 @@
     <commons.pool.version>1.5.5</commons.pool.version>
     <commons.jexl.version>2.0.1</commons.jexl.version>
     <commons.dbcp.version>1.4</commons.dbcp.version>
-    <openjpa.version>2.1.0</openjpa.version>
+    <openjpa.version>2.1.1</openjpa.version>
     <scripting.version>1.5.0</scripting.version>
     <xbean.blueprint.version>3.7</xbean.blueprint.version>
     <h2.version>1.3.154</h2.version>
