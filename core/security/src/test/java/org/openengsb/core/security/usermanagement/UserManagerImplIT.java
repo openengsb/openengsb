@@ -159,7 +159,7 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
         entityManager.getTransaction().commit();
         UserDataInitializerBean userDataInitializerBean = new UserDataInitializerBean();
         userDataInitializerBean.setUserManager(userManager);
-        userDataInitializerBean.doInit();
+        userDataInitializerBean.init();
         UserDetails loadUserByUsername = userManager.loadUserByUsername("admin");
         assertThat(loadUserByUsername.getPassword(), is("password"));
     }

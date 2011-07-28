@@ -109,8 +109,6 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("persistenceService", "CONNECTOR");
 
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
-        // FIXME OPENENGSB-1301 workaround because UserDataInitializerBean must start it's own thread
-        OpenEngSBCoreServices.getServiceUtilsService().getService(DataSource.class);
     }
 
     public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
@@ -127,6 +125,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     public static List<String> getImportantBundleSymbolicNames() {
         List<String> importantBundles = new ArrayList<String>();
+        importantBundles.add("org.openengsb.infrastucture.jpa");
         importantBundles.add("org.openengsb.core.api");
         importantBundles.add("org.openengsb.core.common");
         importantBundles.add("org.openengsb.core.service");
@@ -255,6 +254,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
                 .versionAsInProject()),
+            mavenBundle(maven().groupId("org.apache.felix").artifactId("org.apache.felix.configadmin")
+                        .versionAsInProject()),
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "openengsb-infrastructure-jpa", "activemq-blueprint",
