@@ -49,6 +49,7 @@
     <feature version="[1.2,2)">spring-dm</feature>
     <feature version="[1.2,2)">spring-dm-web</feature>
     <feature version="${karaf.version}">http</feature>
+    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
@@ -115,7 +116,11 @@
   </feature>
 
   <feature name="openengsb-infrastructure-jpa" version="${project.version}">
+    <feature version="[0.3,0.4)">jpa</feature>
+    <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
+    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
+    <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.5_spec/${geronimo-spec-j2ee.1-5.version}</bundle>
     <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
