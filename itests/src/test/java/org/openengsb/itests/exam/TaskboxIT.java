@@ -68,7 +68,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
         ContextHolder.get().setCurrentContextId("it-taskbox");
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
-        taskboxService = getOsgiService(TaskboxService.class, 30000);
+        taskboxService = getOsgiService(TaskboxService.class);
     }
 
     @Test
