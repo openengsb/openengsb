@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -42,19 +41,23 @@ import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
 
-    @SpringBean
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
+
+    @PaxWicketBean
     private ConnectorManager serviceManager;
-
     private ServiceDescriptor descriptor;
-
     private ServiceEditor editor;
-
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
     @SuppressWarnings("serial")
@@ -101,6 +104,9 @@ public class ConnectorEditorPage extends BasePage {
                 for (Entry<String, String> entry : e.getErrorMessages().entrySet()) {
                     error(String.format("%s: %s", entry.getKey(), entry.getValue()));
                 }
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("Couldn't create service", e);
+                error("The service already exists in the system. Please choose a different servcie id.");
             }
         }
 

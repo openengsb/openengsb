@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
@@ -53,7 +54,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
     private static final String CONTEXT = "it-taskbox";
     private static final String WORKFLOW = "HIDemoWorkflow";
     private static final String PAGE_ENTRY_URL =
-        "http://localhost:" + WEBUI_PORT + "/openengsb/TaskOverview/?context=" + CONTEXT;
+        "http://localhost:" + WEBUI_PORT + "/openengsb/tasks/?context=" + CONTEXT;
     private static final int MAX_RETRY = 5;
 
     private WebClient webClient;
@@ -73,7 +74,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
             contextService.createContext(CONTEXT);
         }
-        contextService.setThreadLocalContext(CONTEXT);
+        ContextHolder.get().setCurrentContextId(CONTEXT);
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class);
@@ -129,7 +130,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
                 taskTwoRow = table.getRow(3);
                 isRight =
                     taskOneRow.asText().contains("step2") && taskOneRow.asText().contains("taskdescription")
-                            && taskTwoRow.asText().contains("step1") && (table.getRowCount() == 4);
+                            && taskTwoRow.asText().contains("step1") && table.getRowCount() == 4;
                 if (!isRight) {
                     Thread.sleep(3000);
                 }
@@ -156,7 +157,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
                 table = taskOverviewPage.getFirstByXPath("//table");
                 taskOneRow = table.getRow(2);
                 isRight =
-                    taskOneRow.asText().contains("step1") && (table.getRowCount() == 3);
+                    taskOneRow.asText().contains("step1") && table.getRowCount() == 3;
                 if (!isRight) {
                     Thread.sleep(3000);
                 }

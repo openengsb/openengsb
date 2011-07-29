@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.itests.workflow;
+package org.openengsb.core.workflow.persistence;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -37,8 +37,8 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 @RunWith(Parameterized.class)
-public class PersistenceRuleManagerCrudIT extends
-        AbstractRuleManagerIT {
+public class PersistenceRuleManagerCrudTest extends
+        AbstractRuleManagerTest {
 
     public static final class TestElement {
         private final RuleBaseElementId id;
@@ -116,7 +116,7 @@ public class PersistenceRuleManagerCrudIT extends
     protected String[] code = new String[4];
     protected RuleBaseElementId[] id = new RuleBaseElementId[4];
 
-    public PersistenceRuleManagerCrudIT(List<TestElement> testelements) {
+    public PersistenceRuleManagerCrudTest(List<TestElement> testelements) {
         for (int i = 0; i < 3; i++) {
             TestElement el = testelements.get(i);
             code[i] = el.code;

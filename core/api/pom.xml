@@ -18,8 +18,7 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.core</groupId>
@@ -93,7 +92,11 @@
               org.aopalliance.aop,
               org.aopalliance.intercept,
               org.springframework.aop,
-              org.springframework.aop.framework, *
+              org.springframework.aop.framework,
+              org.ops4j.pax.wicket.util.proxy; resolution:="optional",
+              net.sf.cglib.core; resolution:="optional",
+              net.sf.cglib.proxy; resolution:="optional",
+              net.sf.cglib.reflect; resolution:="optional", *
             </Import-Package>
           </instructions>
         </configuration>
@@ -105,7 +108,7 @@
     <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-api</artifactId>
+      <artifactId>knowledge-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>

@@ -18,13 +18,8 @@
 package org.openengsb.ui.common;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 /**
  * Base class for Wicket Applications in OpenEngSB and client projects.
@@ -40,7 +35,7 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
     }
 
     protected void addInjector() {
-        addComponentInstantiationListener(new SpringComponentInjector(this));
+        
     }
 
     @Override
@@ -49,16 +44,6 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
             ((OpenEngSBPage) page).initContextForCurrentThread();
         }
         return super.newAjaxRequestTarget(page);
-    }
-
-    @Override
-    public Session newSession(Request request, Response response) {
-        return new OpenEngSBWebSession(request);
-    }
-
-    @Override
-    protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
-        return OpenEngSBWebSession.class;
     }
 
 }

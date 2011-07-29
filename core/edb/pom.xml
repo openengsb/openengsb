@@ -61,21 +61,21 @@
   <build>
     <plugins>
       <plugin>
-      	<groupId>org.codehaus.mojo</groupId>
-      	<artifactId>openjpa-maven-plugin</artifactId>
-      	<configuration>
-      		<addDefaultConstructor>true</addDefaultConstructor>
-      		<enforcePropertyRestriction>true</enforcePropertyRestriction>
-      	</configuration>
-      	<executions>
-      		<execution>
-      			<id>enhancer</id>
-      			<phase>process-classes</phase>
-      			<goals>
-      				<goal>enhance</goal>
-      			</goals>
-      		</execution>
-      	</executions>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <configuration>
+          <addDefaultConstructor>true</addDefaultConstructor>
+          <enforcePropertyRestriction>true</enforcePropertyRestriction>
+        </configuration>
+        <executions>
+          <execution>
+            <id>enhancer</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>enhance</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -109,10 +109,10 @@
 
     <!-- OpenJPA PCEnhancer dependencies -->
     <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.serp</artifactId>
-        <scope>provided</scope>
-      </dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
@@ -140,6 +140,7 @@
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <!-- needed for testing -->
     <dependency>
       <groupId>com.h2database</groupId>
@@ -148,4 +149,3 @@
     </dependency>
   </dependencies>
 </project>
-

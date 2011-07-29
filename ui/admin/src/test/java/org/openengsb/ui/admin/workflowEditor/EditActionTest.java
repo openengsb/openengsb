@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -45,6 +44,7 @@ import org.openengsb.core.api.workflow.model.ActionRepresentation;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class EditActionTest extends AbstractUITest {
 
@@ -75,7 +75,7 @@ public class EditActionTest extends AbstractUITest {
         context.putBean(mock(RuleManager.class));
         context.putBean("validators", new ArrayList<WorkflowValidator>());
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(new EditAction(parent, action));
         formTester = tester.newFormTester("actionForm");
     }

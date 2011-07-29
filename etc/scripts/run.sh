@@ -28,5 +28,5 @@ source $(dirname $0)/openengsbplugin-common.sh
 cd $ABSPATH/../../
 
 mvn install -Dmaven.test.skip=true
-mvn openengsb:provision
+./etc/scripts/exec.sh
 

@@ -33,11 +33,12 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.core.workflow.model.TestObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RuleFlowUT {
+public class RuleFlowUT extends AbstractOpenEngSBTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleFlowUT.class);
 

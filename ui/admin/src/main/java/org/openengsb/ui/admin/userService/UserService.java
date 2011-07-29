@@ -42,16 +42,18 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.User;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
+@PaxWicketMountPoint(mountPoint = "users")
 public class UserService extends BasePage {
 
     UserInput input = new UserInput();
@@ -59,7 +61,7 @@ public class UserService extends BasePage {
     PasswordTextField passwordField;
     private PasswordTextField passwordVerficationField;
 
-    @SpringBean
+    @PaxWicketBean
     private UserManager userManager;
     private boolean editMode = false;
     private TextField<String> rolesField;

@@ -1,4 +1,3 @@
-package org.openengsb.core.console;
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
@@ -16,16 +15,28 @@ package org.openengsb.core.console;
  * limitations under the License.
  */
 
+package org.openengsb.ui.admin;
 
-import org.apache.felix.gogo.commands.Command;
-import org.apache.karaf.shell.console.OsgiCommandSupport;
+import org.apache.wicket.Request;
+import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.springframework.security.authentication.AuthenticationManager;
 
-@Command(scope = "openengsb", name = "info", description = "Prints out current project version")
-public class OpenEngSBCommand extends OsgiCommandSupport {
+@SuppressWarnings("serial")
+public class AdminWebSession extends OpenEngSBWebSession {
+
+    @PaxWicketBean(name = "authenticationManager")
+    private AuthenticationManager authenticationManager;
+
+    public AdminWebSession(Request request) {
+        super(request);
+        injectDependencies();
+        ensureDependenciesNotNull();
+    }
 
     @Override
-    protected Object doExecute() throws Exception {
-        System.out.println(getBundleContext().getBundle().getVersion().toString());
-        return null;
+    protected AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
     }
+
 }

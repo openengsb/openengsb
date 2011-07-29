@@ -40,7 +40,7 @@
         list. Therefore, the first step to get involved into the development of the OpenEngSB is to register to the 
         <link xlink:href="http://groups.google.com/group/openengsb-dev">Google Groups OpenEngSB Developer Mailing List
         </link> and say hello world.</para>
-      <para>While notifications from the Hudson Build Server, about code commits and Jira issues are vital for the
+      <para>While notifications from the OpenCIT Build Server, about code commits and Jira issues are vital for the
         OpenEngSB core developer, they may not be as interesting for you. If you get annoyed by the automatically 
         generated notification mails ignore all mails from openengsb@gmail.com and noreply@github.com to 
         openengsb-dev@googlegroups.com. Please remember it is important to configure both, <literal>to</literal> and 
@@ -68,19 +68,21 @@
     <section xml:id="developer.quickstart.infrastructure.maven">
       <title>Maven Repository</title>
       <para>The OpenEngSB is available at <link xlink:href="http://repo1.maven.org/maven2/org/openengsb/">Maven Central</link>. We still
-        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org/</link> and snapshots are available
-        via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
+        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org</link>.Please keep in mind 
+        that we try to get rid of this own infrastructure as soon as possible. Therefore the use of this repository is as minimal as possible.
+        Snapshots are available via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
     </section>
 
-    <section xml:id="developer.quickstart.infrastructure.hudson">
+    <section xml:id="developer.quickstart.infrastructure.build">
       <title>Build Server</title>
-      <para>The master and integration branch of the OpenEngSB repository are watched and built by a Hudson build server 
-        instance available at <link xlink:href="http://build.openengsb.org/hudson/">build.openengsb.org</link>. Notifications 
-        about failures are directly sent to the OpenEngSB developer list.</para>
+      <para>The master and integration branch of the OpenEngSB repository are watched and built by an 
+        <link xlink:href="http://opencit.openengsb.org">OpenCIT</link> build server instance available at 
+        <link xlink:href="http://build.openengsb.org/opencit/">build.openengsb.org</link>. Notifications about failures are directly sent to 
+        the OpenEngSB developer list.</para>
     </section>
 
   </section>
-  
+
   <section xml:id="developer.quickstart.pre">
     <title>Prerequisites</title>
     <para>First of all the latest JDK has to be installed on the system and the <envar>JAVA_HOME</envar> variable has to be
@@ -307,11 +309,18 @@
       </section>
       <section>
         <title>Purpose of the openengsb-maven-plugin</title>
-        <para>TBD</para>
+        <para>The purpose of the OpenEngSB Maven Plugin is to provide additional useful goals for
+          the development of the OpenEngSB itself and all projects which base on the OpenEngSB. It
+          helps in various goals starting in assembling, checkstyle, license checking and many other
+          various goals which would otherwise require to duplicate tons of version (and manage it in
+          addition) between the OpenEngSB and projects which are based on the OpenEngSB.</para>
       </section>
       <section>
         <title>Changing the default configuration of the mojos</title>
-        <para>TBD</para>
+        <para>Currently the default configurations can not be changed or adapted in the OpenEngSB
+          plugin. This means that all changes and adaptions have to be made directly in the
+          openengsb-maven-plugin. This situation is not ideal. The version 1.6.0 of the plugin will
+          tackle this drawback.</para>
       </section>
       <section>
         <title>Available Goals</title>
@@ -563,4 +572,3 @@
   </section>
 
 </chapter>
-
