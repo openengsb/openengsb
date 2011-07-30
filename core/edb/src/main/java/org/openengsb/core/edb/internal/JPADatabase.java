@@ -417,7 +417,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (ContextHolder.get() == null) {
             return "testcontext";
         }
-        System.out.println(ContextHolder.get().getCurrentContextId());
         return ContextHolder.get().getCurrentContextId();
     }
 
