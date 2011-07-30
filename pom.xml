@@ -55,6 +55,8 @@
     <!-- Documentation Properties -->
     <github>https://github.com/openengsb/openengsb/blob/master</github>
     <github.raw>https://github.com/openengsb/openengsb/raw/master</github.raw>
+    <github.base>https://github.com/openengsb/</github.base>
+    <github.master.path>/tree/master/</github.master.path>
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
