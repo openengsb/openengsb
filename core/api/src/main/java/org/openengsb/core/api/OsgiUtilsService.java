@@ -74,6 +74,13 @@ public interface OsgiUtilsService {
     <T> T getService(Class<T> clazz, ServiceReference reference) throws OsgiServiceNotAvailableException;
 
     /**
+     * resolves the service-reference to the service-object
+     *
+     * @throws OsgiServiceNotAvailableException if the service is represented by the reference is not available anymore
+     */
+    Object getService(ServiceReference reference) throws OsgiServiceNotAvailableException;
+
+    /**
      * retrieves the highest ranked service that exports the given interface and the has the given instanceid
      *
      * @throws OsgiServiceNotAvailableException when the service is not available after 30 seconds
@@ -247,6 +254,20 @@ public interface OsgiUtilsService {
      * NOTE that the returned references may become invalid at any time.
      */
     List<ServiceReference> listServiceReferences(Class<?> clazz);
+
+    /**
+     * list all service-references that are exported with the given interface.
+     *
+     * NOTE that the returned references may become invalid at any time.
+     */
+    List<ServiceReference> listServiceReferences(String filter);
+
+    /**
+     * list all service-references that are exported with the given interface.
+     *
+     * NOTE that the returned references may become invalid at any time.
+     */
+    List<ServiceReference> listServiceReferences(Class<?> clazz, String filter);
 
     /**
      * returns a list of all serivce-objects of services exported with the given interface.

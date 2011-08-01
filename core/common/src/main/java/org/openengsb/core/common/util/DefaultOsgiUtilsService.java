@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -331,13 +332,26 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     @Override
     public List<ServiceReference> listServiceReferences(Class<?> clazz) {
+        return listServiceReferences(clazz, null);
+    }
+
+    @Override
+    public List<ServiceReference> listServiceReferences(String filter) {
+        return listServiceReferences(null, filter);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ServiceReference> listServiceReferences(Class<?> clazz, String filter) {
         List<ServiceReference> result = new ArrayList<ServiceReference>();
+        String className = clazz == null ? null : clazz.getName();
         try {
-            ServiceReference[] serviceReferences = bundleContext.getServiceReferences(clazz.getName(), null);
+            ServiceReference[] serviceReferences = bundleContext.getServiceReferences(className, filter);
             if (serviceReferences == null) {
                 return result;
             }
             CollectionUtils.addAll(result, serviceReferences);
+            Collections.sort(result);
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
@@ -372,11 +386,16 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @Override
     public <T> T getService(final Class<T> clazz, final ServiceReference reference)
         throws OsgiServiceNotAvailableException {
+        return (T) getService(reference);
+    }
+
+    @Override
+    public Object getService(ServiceReference reference) throws OsgiServiceNotAvailableException {
         Object service = bundleContext.getService(reference);
         if (service == null) {
             throw new OsgiServiceNotAvailableException("service retrieved from the bundlecontext was null");
         }
-        return (T) service;
+        return service;
     }
 
     /**
