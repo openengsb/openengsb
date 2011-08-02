@@ -34,6 +34,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.MapAsDictionary;
+import org.openengsb.core.services.internal.pseudo.ProxyServiceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;

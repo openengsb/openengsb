@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.services.internal.pseudo;
 
 import java.lang.reflect.Proxy;
 import java.util.Collections;
@@ -28,6 +28,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 
 public class ProxyServiceFactory implements ConnectorInstanceFactory {
 

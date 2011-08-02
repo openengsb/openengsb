@@ -1,4 +1,4 @@
-package org.openengsb.core.services.internal;
+package org.openengsb.core.services.internal.pseudo;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

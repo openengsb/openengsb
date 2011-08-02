@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.services.internal.pseudo;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
