@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.model.ConfigItem;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -31,9 +31,12 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
+import org.openengsb.core.workflow.model.GlobalConfiguration;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
+import org.openengsb.core.workflow.model.ImportConfiguration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.openengsb.core.workflow.model.RuleConfiguration;
 
 public class PersistenceRuleManager extends AbstractRuleManager {
 
@@ -43,26 +46,10 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void init() throws RuleBaseException {
         if (persistenceService == null) {
             /*
-             * Temporary use persistenceService until file-persistence is ready; Usage of own thread because of FIXME
-             * [OPENENGSB-1301]
+             * Temporary use persistenceService until file-persistence is ready
              */
-
-            new Thread() {
-                public void run() {
-                    persistenceService =
-                            OpenEngSBCoreServices.getConfigPersistenceService("RULE");
-                }
-            }.start();
-
-            while (persistenceService == null) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
+            persistenceService =
+                            OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_RULE);
         }
         super.init();
     }
@@ -70,18 +57,18 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
         try {
-            List<ConfigItem<RuleBaseElement>> existingRules =
+            List<RuleConfiguration> existingRules =
                 persistenceService.load(new RuleBaseElement(name).toMetadata());
             if (!existingRules.isEmpty()) {
                 throw new RuleBaseException("rule already exists");
             }
         } catch (PersistenceException e1) {
-            throw new RuntimeException("could not load existing rules from persistence service", e1);
+            throw new RuleBaseException("could not load existing rules from persistence service", e1);
         }
 
         RuleBaseElement objectToPersist = new RuleBaseElement(name, code);
         Map<String, String> metaData = objectToPersist.toMetadata();
-        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, objectToPersist);
+        RuleConfiguration conf = new RuleConfiguration(metaData, objectToPersist);
 
         try {
             persistenceService.persist(conf);
@@ -95,7 +82,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
                 persistenceService.remove(metaData);
                 throw e;
             } catch (PersistenceException e1) {
-                throw new RuntimeException("could not remove previously added rule, that broke the rulebase", e1);
+                throw new RuleBaseException("could not remove previously added rule, that broke the rulebase", e1);
             }
         }
     }
@@ -103,7 +90,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     @Override
     public String get(RuleBaseElementId name) {
         try {
-            List<ConfigItem<RuleBaseElement>> existingRules =
+            List<RuleConfiguration> existingRules =
                 persistenceService.load(new RuleBaseElement(name).toMetadata());
             if (existingRules.isEmpty()) {
                 return null;
@@ -111,7 +98,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
                 return existingRules.get(0).getContent().getCode();
             }
         } catch (PersistenceException e) {
-            throw new RuntimeException("error reading rule from persistence", e);
+            throw new RuleBaseException("error reading rule from persistence", e);
         }
     }
 
@@ -120,7 +107,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         RuleBaseElement newBean = new RuleBaseElement(name, newCode);
 
         Map<String, String> metaData = newBean.toMetadata();
-        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, newBean);
+        RuleConfiguration conf = new RuleConfiguration(metaData, newBean);
 
         try {
             persistenceService.persist(conf);
@@ -158,15 +145,15 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     }
 
     private Collection<RuleBaseElementId> listByExample(RuleBaseElementId example) {
-        List<ConfigItem<RuleBaseElement>> queryResult;
+        List<RuleConfiguration> queryResult;
         try {
             queryResult = persistenceService.load(new RuleBaseElement(example).toMetadata());
         } catch (PersistenceException e) {
-            throw new RuntimeException("error reading rule from persistence", e);
+            throw new RuleBaseException("error reading rule from persistence", e);
         }
 
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (ConfigItem<RuleBaseElement> element : queryResult) {
+        for (RuleConfiguration element : queryResult) {
             result.add(element.getContent().generateId());
         }
         return result;
@@ -176,7 +163,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void addImport(String className) throws RuleBaseException {
         ImportDeclaration imp = new ImportDeclaration(className);
         Map<String, String> metaData = imp.toMetadata();
-        ConfigItem<ImportDeclaration> cnf = new ConfigItem<ImportDeclaration>(metaData, imp);
+        ImportConfiguration cnf = new ImportConfiguration(metaData, imp);
         try {
             if (persistenceService.load(metaData).isEmpty()) {
                 persistenceService.persist(cnf);
@@ -203,14 +190,14 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public Collection<String> listImports() {
         ImportDeclaration imp = new ImportDeclaration();
         Map<String, String> metaData = imp.toMetadata();
-        List<ConfigItem<ImportDeclaration>> queryResult;
+        List<ImportConfiguration> queryResult;
         try {
             queryResult = persistenceService.load(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
         Collection<String> result = new HashSet<String>();
-        for (ConfigItem<ImportDeclaration> i : queryResult) {
+        for (ImportConfiguration i : queryResult) {
             result.add(i.getContent().getClassName());
         }
         return result;
@@ -220,7 +207,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void addGlobal(String className, String name) throws RuleBaseException {
         GlobalDeclaration globalDeclaration = new GlobalDeclaration(name);
         Map<String, String> metaData = globalDeclaration.toMetadata();
-        List<ConfigItem<GlobalDeclaration>> queryResult;
+        List<GlobalConfiguration> queryResult;
         try {
             queryResult = persistenceService.load(metaData);
         } catch (PersistenceException e) {
@@ -230,7 +217,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
             throw new RuleBaseException(String.format("Global with name \"%s\" already exists", name));
         }
         globalDeclaration.setClassName(className);
-        ConfigItem<GlobalDeclaration> cnf = new ConfigItem<GlobalDeclaration>(metaData, globalDeclaration);
+        GlobalConfiguration cnf = new GlobalConfiguration(metaData, globalDeclaration);
         try {
             persistenceService.persist(cnf);
         } catch (PersistenceException e) {
@@ -255,14 +242,14 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public Map<String, String> listGlobals() {
         GlobalDeclaration globalDeclaration = new GlobalDeclaration();
         Map<String, String> metaData = globalDeclaration.toMetadata();
-        List<ConfigItem<GlobalDeclaration>> queryResult;
+        List<GlobalConfiguration> queryResult;
         try {
             queryResult = persistenceService.load(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
         Map<String, String> globals = new HashMap<String, String>();
-        for (ConfigItem<GlobalDeclaration> g : queryResult) {
+        for (GlobalConfiguration g : queryResult) {
             globals.put(g.getContent().getVariableName(), g.getContent().getClassName());
         }
         return globals;
