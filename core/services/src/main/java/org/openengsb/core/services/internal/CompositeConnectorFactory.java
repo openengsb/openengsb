@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +25,7 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
-public class CompositeConnectorFactory implements ConnectorInstanceFactory {
-
-    private DomainProvider domainProvider;
-    private Map<Domain, CompositeConnector> handlers = new HashMap<Domain, CompositeConnector>();
+public class CompositeConnectorFactory extends PseudoConnectorFactory<CompositeConnector> {
 
     private static Map<String, CompositeConnectorFactory> instances = new HashMap<String, CompositeConnectorFactory>();
 
@@ -41,28 +37,18 @@ public class CompositeConnectorFactory implements ConnectorInstanceFactory {
     }
 
     protected CompositeConnectorFactory(DomainProvider domainProvider) {
-        this.domainProvider = domainProvider;
+        super(domainProvider);
     }
 
-    private void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
+    @Override
+    protected void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
         // TODO set service-list from attributes
         // TODO set composite-handler form attributes
     }
 
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
-        CompositeConnector handler = handlers.get(instance);
-        updateHandlerAttributes(handler, attributes);
-    }
-
-    @Override
-    public Domain createNewInstance(String id) {
-        CompositeConnector handler = new CompositeConnector(id);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), }, handler);
-        handlers.put(newProxyInstance, handler);
-        return newProxyInstance;
+    protected CompositeConnector createNewHandler(String id) {
+        return new CompositeConnector(id);
     }
 
     @Override

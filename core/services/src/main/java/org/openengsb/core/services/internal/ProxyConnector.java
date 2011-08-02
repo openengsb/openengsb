@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,25 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
  * port-implementation (like jms+json)
  */
-public class ProxyConnector extends AbstractOpenEngSBService implements InvocationHandler {
-
-    /**
-     * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
-     * to the remote object
-     */
-    @SuppressWarnings("unchecked")
-    private static final List<Class<? extends Object>> SELF_HANDLED_CLASSES = Arrays.asList(Object.class,
-        OpenEngSBService.class);
+public class ProxyConnector extends PseudoConnector {
 
     private String portId;
     private String destination;
@@ -51,18 +40,12 @@ public class ProxyConnector extends AbstractOpenEngSBService implements Invocati
 
     private OutgoingPortUtilService portUtil;
 
-    public ProxyConnector() {
-    }
-
     public ProxyConnector(String instanceId) {
         super(instanceId);
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
-            return method.invoke(this, args);
-        }
+    public Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         List<Class<?>> paramList = Arrays.asList(method.getParameterTypes());
         List<String> paramTypeNames = new ArrayList<String>();
         for (Class<?> paramType : paramList) {

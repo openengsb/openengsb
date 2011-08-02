@@ -1,17 +1,13 @@
 package org.openengsb.core.services.internal;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.openengsb.core.api.CompositeConnectorStrategy;
-import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.ServiceReference;
 
@@ -28,17 +24,9 @@ import org.osgi.framework.ServiceReference;
  * specific language governing permissions and limitations under the License.
  */
 
-public class CompositeConnector extends AbstractOpenEngSBService implements InvocationHandler {
-
-    /**
-     * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
-     * to the remote object
-     */
-    private static final List<Class<?>> SELF_HANDLED_CLASSES = Arrays.asList(new Class<?>[]{ Object.class,
-        OpenEngSBService.class });
+public class CompositeConnector extends PseudoConnector {
 
     private Collection<String> services;
-
     private CompositeConnectorStrategy compositeHandler;
 
     public CompositeConnector(String instanceId) {
@@ -46,10 +34,7 @@ public class CompositeConnector extends AbstractOpenEngSBService implements Invo
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
-            return method.invoke(this, args);
-        }
+    protected Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         List<ServiceReference> services = getOsgiServices();
         return compositeHandler.invoke(services, method, args);
     }

@@ -39,7 +39,7 @@ public class ProxyConnectorTest {
     @Test
     public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
         OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector();
+        ProxyConnector proxy = new ProxyConnector("foo");
         proxy.setOutgoingPortUtilService(router);
         String id = "id";
         String test = "test";
@@ -69,7 +69,7 @@ public class ProxyConnectorTest {
     @Test
     public void callInvokeWithException_ShouldThrowException() {
         OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector();
+        ProxyConnector proxy = new ProxyConnector("foo");
         proxy.setOutgoingPortUtilService(router);
         String message = "Message";
         MethodResult result = new MethodResult(message, ReturnType.Exception);

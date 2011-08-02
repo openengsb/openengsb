@@ -26,15 +26,8 @@ public class CompositeConnectorProvider extends AbstractConnectorProvider {
     @Override
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
-        builder.id("external-connector-proxy");
-        builder.name("proxy.name", "[proxy-name]");
-        builder.description("proxy.description");
-        builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
-            .description("proxy.port.description").build());
-        builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
-            .description("proxy.destination.description").build());
-        builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
-            .description("proxy.serviceId.description").build());
+        builder.id("connector-composition");
+        // TODO proper descriptor
         return builder.build();
     }
 }
