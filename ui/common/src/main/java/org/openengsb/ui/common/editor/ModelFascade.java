@@ -15,36 +15,30 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.ui.common.editor;
 
-import java.util.Properties;
+import java.util.List;
 
-import org.apache.karaf.shell.commands.info.InfoProvider;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.form.FormComponent;
 
-/**
- * Showing base OpenEngSB information in Karaf info command
- */
-public class OpenEngSBInfoProvider implements InfoProvider {
+public class ModelFascade<T> {
+    private FormComponent<T> mainComponent;
+    private List<Component> helpComponents;
 
-    private String name;
-    private Properties properties;
-
-    @Override
-    public String getName() {
-        return name;
+    public FormComponent<T> getMainComponent() {
+        return mainComponent;
     }
 
-    @Override
-    public Properties getProperties() {
-        return properties;
+    public void setMainComponent(FormComponent<T> wicketMainComponent) {
+        mainComponent = wicketMainComponent;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public List<Component> getHelpComponents() {
+        return helpComponents;
     }
 
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    public void setHelpComponents(List<Component> wicketHelpComponents) {
+        helpComponents = wicketHelpComponents;
     }
 }
-

@@ -17,7 +17,10 @@
 
 package org.openengsb.ui.common.editor.fields;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -26,6 +29,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.ui.common.editor.ModelFascade;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 /**
@@ -34,21 +38,33 @@ import org.openengsb.ui.common.model.LocalizableStringModel;
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {
 
+	//rbair: TODO use onInitialize, not the constructor
+	//the refactor the whole mess
     public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator,
             boolean editable) {
         super(id);
-        FormComponent<T> component = createFormComponent(attribute, model);
+        ModelFascade<T> component = createFormComponent(attribute, model);
+        
+        List<Component> helpComponents = component.getHelpComponents();
+        if (helpComponents != null) {
+        	for (Component child : helpComponents) {
+        		add(child);
+        	}
+        }        
+        FormComponent<T> mainComponent = component.getMainComponent();
+        mainComponent.setOutputMarkupId(true);
+        mainComponent.setMarkupId(attribute.getId());
+        //editable is always set to true
+        mainComponent.setEnabled(editable);
         if (validator != null) {
-            component.add(validator);
+        	mainComponent.add(validator);
         }
-        component.setLabel(new LocalizableStringModel(this, attribute.getName()));
-        component.setOutputMarkupId(true);
-        component.setMarkupId(attribute.getId());
-        component.setRequired(attribute.isRequired());
-        component.setEnabled(editable);
-        add(new SimpleFormComponentLabel("name", component).add(new SimpleAttributeModifier("for", attribute.getId())));
-        add(component);
-        addTooltip(attribute);
+        mainComponent.setRequired(attribute.isRequired());
+        mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
+        add(new SimpleFormComponentLabel("name", mainComponent).add(new SimpleAttributeModifier("for", attribute.getId())));
+        add(mainComponent);
+        
+        addTooltip(attribute); 
     }
 
     public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator) {
@@ -66,5 +82,5 @@ public abstract class AbstractField<T> extends Panel {
         add(tooltip);
     }
 
-    protected abstract FormComponent<T> createFormComponent(AttributeDefinition attribute, IModel<String> model);
+    protected abstract ModelFascade createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }

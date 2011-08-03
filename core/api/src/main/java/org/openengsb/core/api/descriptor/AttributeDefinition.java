@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.OAuthData;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
@@ -64,7 +65,9 @@ public class AttributeDefinition implements Serializable {
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
     private boolean isPassword;
+    private boolean isOAuth;
     private FieldValidator validator = new AllValidValidator();
+    private OAuthData oAuthConfiguration = null;
 
     /**
      * Returns the attribute identifier.
@@ -114,8 +117,16 @@ public class AttributeDefinition implements Serializable {
         return isPassword;
     }
 
+    public boolean isOAuth() {
+        return isOAuth;
+    }
+
+    public OAuthData getOAuthConfiguration() {
+        return oAuthConfiguration;
+    }
+
     public FieldValidator getValidator() {
-        return this.validator;
+        return validator;
     }
 
     public static Builder builder(StringLocalizer strings) {
@@ -161,6 +172,11 @@ public class AttributeDefinition implements Serializable {
             return this;
         }
 
+        public Builder oAuthConfiguration(OAuthData conf) {
+            attr.oAuthConfiguration = conf;
+            return this;
+        }
+
         public Builder asBoolean() {
             attr.isBoolean = true;
             return this;
@@ -168,6 +184,11 @@ public class AttributeDefinition implements Serializable {
 
         public Builder asPassword() {
             attr.isPassword = true;
+            return this;
+        }
+
+        public Builder asOAuth() {
+            attr.isOAuth = true;
             return this;
         }
 
@@ -190,9 +211,9 @@ public class AttributeDefinition implements Serializable {
                 checkNotEmpty(o.getValue(), "option has empty value");
             }
             Preconditions.checkState(!(attr.isBoolean && !attr.options.isEmpty()),
-                    "boolean and options are incompatible");
+                "boolean and options are incompatible");
             Preconditions.checkState(!(attr.isPassword && !attr.options.isEmpty()),
-                    "password and options are incompatible");
+                "password and options are incompatible");
             Preconditions.checkState(!(attr.isPassword && attr.isBoolean), "password and boolean are incompatible");
             return attr;
         }

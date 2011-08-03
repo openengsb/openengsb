@@ -15,36 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.ui.common.model;
 
-import java.util.Properties;
+import java.util.Hashtable;
 
-import org.apache.karaf.shell.commands.info.InfoProvider;
+import org.openengsb.core.api.OAuthData;
 
 /**
- * Showing base OpenEngSB information in Karaf info command
+ * The problem with oauth is that the callback come in on a different place than the original call. Therfore we have to
+ * build a "bridge" to handle such cases. This class is static and used to transfer such objects between various threads
+ * and objects.
  */
-public class OpenEngSBInfoProvider implements InfoProvider {
+public class OAuthPageFactory {
 
-    private String name;
-    private Properties properties;
+    static Hashtable<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
 
-    @Override
-    public String getName() {
-        return name;
+    public static OAuthData getOAuthObject(String sessionID) {
+        OAuthData tmp = oAuthObjects.get(sessionID);
+        return tmp;
     }
 
-    @Override
-    public Properties getProperties() {
-        return properties;
+    public static void removeOAuthObject(String sessionID) {
+        oAuthObjects.remove(sessionID);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    public static void putOAuthObject(String sessionID, OAuthData object) {
+        oAuthObjects.put(sessionID, object);
     }
 }
-

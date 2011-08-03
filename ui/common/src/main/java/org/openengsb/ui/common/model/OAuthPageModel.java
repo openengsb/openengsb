@@ -15,36 +15,41 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.ui.common.model;
 
-import java.util.Properties;
-
-import org.apache.karaf.shell.commands.info.InfoProvider;
+import org.apache.wicket.model.IModel;
+import org.openengsb.core.api.OAuthData;
 
 /**
- * Showing base OpenEngSB information in Karaf info command
+ * The wicket {@link IModel} storing {@link OAuthData} in a reusable object.
  */
-public class OpenEngSBInfoProvider implements InfoProvider {
+public class OAuthPageModel implements IModel<OAuthData> {
 
-    private String name;
-    private Properties properties;
+    private static final long serialVersionUID = -4841795218087845120L;
 
-    @Override
-    public String getName() {
-        return name;
+    private IModel<OAuthData> oAuthContainingModel;
+
+    public OAuthPageModel(IModel<OAuthData> oAuthContainingModel)
+    {
+        this.oAuthContainingModel = oAuthContainingModel;
     }
 
     @Override
-    public Properties getProperties() {
-        return properties;
+    public OAuthData getObject()
+    {
+        return oAuthContainingModel.getObject();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public void setObject(OAuthData object)
+    {
+        oAuthContainingModel.setObject(object);
     }
 
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    @Override
+    public void detach()
+    {
+        oAuthContainingModel.detach();
     }
+
 }
-

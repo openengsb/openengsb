@@ -17,11 +17,11 @@
 
 package org.openengsb.ui.common.editor.fields;
 
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.ui.common.editor.ModelFascade;
 
 @SuppressWarnings("serial")
 public class InputField extends AbstractField<String> {
@@ -36,8 +36,10 @@ public class InputField extends AbstractField<String> {
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-        TextField<String> field = new TextField<String>("field", model);
-        return field;
+    protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    	TextField<String> text = new TextField<String>("field", model);
+        ModelFascade<String> retVal = new ModelFascade<String>();
+        retVal.setMainComponent(text);
+        return retVal;
     }
 }
