@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.1.7-SNAPSHOT</version>
+    <version>1.1.7.RELEASE</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-jira</artifactId>
-  <version>1.1.7-SNAPSHOT</version>
+  <version>1.1.7.RELEASE</version>
 
   <name>OpenEngSB :: Connector :: Jira</name>
 
