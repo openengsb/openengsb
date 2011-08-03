@@ -42,9 +42,9 @@ import com.google.common.collect.Sets;
 
 public class PseudoConnectorManager {
 
-    private static final class Registration {
+    private static class Registration {
 
-        public Registration(PseudoConnectorProvider pseudoConnector, DomainProvider domainProvider,
+        Registration(PseudoConnectorProvider pseudoConnector, DomainProvider domainProvider,
                 ServiceRegistration factoryService) {
             this.pseudoConnector = pseudoConnector;
             this.domainProvider = domainProvider;
