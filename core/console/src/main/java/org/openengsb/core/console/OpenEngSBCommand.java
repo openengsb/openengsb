@@ -30,8 +30,4 @@ public class OpenEngSBCommand extends OsgiCommandSupport {
         return null;
     }
 
-    @Override
-    public Object execute(CommandSession session) throws Exception {
-        return super.execute(session);    //To change body of overridden methods use File | Settings | File Templates.
-    }
 }

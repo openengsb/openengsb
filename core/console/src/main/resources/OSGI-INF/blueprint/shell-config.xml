@@ -25,7 +25,7 @@
       <action class="org.openengsb.core.console.OpenEngSBCommand"/>
     </command>
     <command name="openengsb/domains">
-      <action class="org.openengsb.core.console.ServicesInfo"/>
+      <action class="org.openengsb.core.console.DomainInfoCommand"/>
     </command>
   </command-bundle>
 

@@ -31,7 +31,7 @@ import org.openengsb.core.common.util.Comparators;
 import org.osgi.framework.ServiceReference;
 
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
-public class ServicesInfo extends OsgiCommandSupport {
+public class DomainInfoCommand extends OsgiCommandSupport {
 
     protected Object doExecute() throws Exception {
         int maxNameLen = 25;
@@ -46,11 +46,6 @@ public class ServicesInfo extends OsgiCommandSupport {
         }
 
         return null;
-    }
-
-    @Override
-    public Object execute(CommandSession session) throws Exception {
-        return super.execute(session);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     private void printValue(String name, int pad, String value) {
