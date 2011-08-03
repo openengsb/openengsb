@@ -9,6 +9,7 @@ import java.util.List;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.PseudoConnector;
 import org.osgi.framework.ServiceReference;
 
 /**

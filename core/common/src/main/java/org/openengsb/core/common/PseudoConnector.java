@@ -1,4 +1,4 @@
-package org.openengsb.core.services.internal.pseudo;
+package org.openengsb.core.common;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.common.AbstractOpenEngSBService;
 
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license

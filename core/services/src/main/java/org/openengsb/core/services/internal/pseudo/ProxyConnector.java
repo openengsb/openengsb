@@ -27,6 +27,7 @@ import java.util.Map;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
+import org.openengsb.core.common.PseudoConnector;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a

@@ -24,6 +24,7 @@ import java.util.Map;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.common.PseudoConnectorFactory;
 
 public class CompositeConnectorFactory extends PseudoConnectorFactory<CompositeConnector> {
 
