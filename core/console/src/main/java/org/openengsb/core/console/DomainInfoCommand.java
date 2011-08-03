@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.fusesource.jansi.Ansi;
 import org.openengsb.core.api.DomainProvider;

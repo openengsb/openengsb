@@ -18,7 +18,6 @@ package org.openengsb.core.console;
 
 
 import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out current project version")
