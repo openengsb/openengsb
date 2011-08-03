@@ -44,7 +44,7 @@ public class PseudoConnectorManager {
 
     private static class Registration {
 
-        Registration(PseudoConnectorProvider pseudoConnector, DomainProvider domainProvider,
+        protected Registration(PseudoConnectorProvider pseudoConnector, DomainProvider domainProvider,
                 ServiceRegistration factoryService) {
             this.pseudoConnector = pseudoConnector;
             this.domainProvider = domainProvider;
@@ -87,12 +87,7 @@ public class PseudoConnectorManager {
 
                 @Override
                 public Object addingService(ServiceReference reference) {
-                    PseudoConnectorProvider pseudoConnectorProvider =
-                        (PseudoConnectorProvider) bundleContext.getService(reference);
-                    for (DomainProvider p : getServicesFromTracker(domainProviderTracker, DomainProvider.class)) {
-                        registerConnectorFactoryService(pseudoConnectorProvider, p);
-                        // TODO create ConnectorProvider for every registered domainProvider
-                    }
+                    createNewFactoryForPseudoConnectorProvider(reference);
                     return bundleContext.getService(reference);
                 }
 
@@ -110,7 +105,6 @@ public class PseudoConnectorManager {
                         Registration r = factoryServices.next();
                         r.factoryService.unregister();
                     }
-
                 }
 
                 @Override
@@ -120,16 +114,19 @@ public class PseudoConnectorManager {
 
                 @Override
                 public Object addingService(ServiceReference reference) {
-                    Collection<PseudoConnectorProvider> pseudoProviders =
-                        getServicesFromTracker(pseudoConnectorProviderTracker, PseudoConnectorProvider.class);
                     DomainProvider newProvider = (DomainProvider) bundleContext.getService(reference);
-                    for (PseudoConnectorProvider p : pseudoProviders) {
-                        registerConnectorFactoryService(p, newProvider);
-                    }
+                    createNewFactoryForDomainProvider(newProvider);
                     return newProvider;
                 }
+
             });
         domainProviderTracker.open();
+        Object[] services = domainProviderTracker.getServices();
+        if (services != null) {
+            for (Object service : services) {
+                createNewFactoryForDomainProvider((DomainProvider) service);
+            }
+        }
     }
 
     protected void registerConnectorFactoryService(PseudoConnectorProvider pseudoConnectorProvider,
@@ -137,6 +134,7 @@ public class PseudoConnectorManager {
         ConnectorInstanceFactory factory = pseudoConnectorProvider.createFactory(p);
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(org.openengsb.core.api.Constants.DOMAIN_KEY, p.getId());
+
         properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, pseudoConnectorProvider.getId());
         ServiceRegistration serviceRegistration =
             bundleContext.registerService(ConnectorInstanceFactory.class.getName(), factory, properties);
@@ -156,7 +154,7 @@ public class PseudoConnectorManager {
 
     }
 
-    protected Iterator<Registration> getFactoriesForPseudoConnectorForRemoval(final PseudoConnectorProvider provider) {
+    private Iterator<Registration> getFactoriesForPseudoConnectorForRemoval(final PseudoConnectorProvider provider) {
         Iterator<Registration> consumingIterator = Iterators.consumingIterator(registeredFactories.iterator());
         return Iterators.filter(consumingIterator, new Predicate<Registration>() {
             @Override
@@ -166,7 +164,7 @@ public class PseudoConnectorManager {
         });
     }
 
-    protected Iterator<Registration> getFactoriesForDomainProviderForRemoval(final DomainProvider provider) {
+    private Iterator<Registration> getFactoriesForDomainProviderForRemoval(final DomainProvider provider) {
         Iterator<Registration> consumingIterator = Iterators.consumingIterator(registeredFactories.iterator());
         return Iterators.filter(consumingIterator, new Predicate<Registration>() {
             @Override
@@ -174,6 +172,23 @@ public class PseudoConnectorManager {
                 return ObjectUtils.equals(input.domainProvider, provider);
             }
         });
+    }
+
+    private void createNewFactoryForPseudoConnectorProvider(ServiceReference reference) {
+        PseudoConnectorProvider pseudoConnectorProvider =
+            (PseudoConnectorProvider) bundleContext.getService(reference);
+        for (DomainProvider p : getServicesFromTracker(domainProviderTracker, DomainProvider.class)) {
+            registerConnectorFactoryService(pseudoConnectorProvider, p);
+            // TODO create ConnectorProvider for every registered domainProvider
+        }
+    }
+
+    private void createNewFactoryForDomainProvider(DomainProvider newProvider) {
+        Collection<PseudoConnectorProvider> pseudoProviders =
+            getServicesFromTracker(pseudoConnectorProviderTracker, PseudoConnectorProvider.class);
+        for (PseudoConnectorProvider p : pseudoProviders) {
+            registerConnectorFactoryService(p, newProvider);
+        }
     }
 
     public void setBundleContext(BundleContext bundleContext) {

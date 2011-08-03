@@ -144,6 +144,21 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
          * register a new service. This step involves creating mock-objects for ServiceRegistration and
          * ServiceReference.
          */
+        when(bundleContext.registerService(anyString(), any(), any(Dictionary.class))).thenAnswer(
+            new Answer<ServiceRegistration>() {
+                @Override
+                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                    String clazz = (String) invocation.getArguments()[0];
+                    final Object service = invocation.getArguments()[1];
+                    @SuppressWarnings("unchecked")
+                    Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
+                    return registerNewServiceInBundleContext(new String[]{ clazz }, service, dict);
+                }
+            });
+        /*
+         * register a new service. This step involves creating mock-objects for ServiceRegistration and
+         * ServiceReference.
+         */
         when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
             new Answer<ServiceRegistration>() {
                 @Override
@@ -152,39 +167,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                     final Object service = invocation.getArguments()[1];
                     @SuppressWarnings("unchecked")
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
-                    final ServiceReference serviceReference = registerService(service, dict, clazzes);
-                    ServiceRegistration result = mock(ServiceRegistration.class);
-
-                    // unregistering removes the service from both maps
-                    doAnswer(new Answer<Void>() {
-                        @Override
-                        public Void answer(InvocationOnMock invocation) throws Throwable {
-                            services.remove(serviceReference);
-                            serviceReferences.remove(serviceReference);
-                            return null;
-                        }
-                    }).when(result).unregister();
-
-                    // when properties are replaced, place a copy of the new properties-dictionary in the
-                    // serviceReferences-map (that overwrites the old dictionary)
-                    doAnswer(new Answer<Void>() {
-                        @Override
-                        public Void answer(InvocationOnMock invocation) throws Throwable {
-                            @SuppressWarnings("unchecked")
-                            Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
-                            Dictionary<String, Object> newDict = new Hashtable<String, Object>();
-                            Enumeration<String> keys = arg.keys();
-                            while (keys.hasMoreElements()) {
-                                String next = keys.nextElement();
-                                newDict.put(next, arg.get(next));
-                            }
-                            serviceReferences.put(serviceReference, newDict);
-                            return null;
-                        }
-                    }).when(result).setProperties(any(Dictionary.class));
-
-                    when(result.getReference()).thenReturn(serviceReference);
-                    return result;
+                    return registerNewServiceInBundleContext(clazzes, service, dict);
                 }
             });
 
@@ -316,12 +299,14 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      *
      * Also the factory is registered as a service with the required properties
      */
-    protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
+    protected ConnectorInstanceFactory createFactoryMock(String connector,
+            final Class<? extends Domain> connectorClass,
+            String... domains) throws Exception {
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
             @Override
             public Domain answer(InvocationOnMock invocation) throws Throwable {
-                Domain result = mock(Domain.class);
+                Domain result = mock(connectorClass);
                 String id = (String) invocation.getArguments()[0];
                 when(result.getInstanceId()).thenReturn(id);
                 return result;
@@ -390,6 +375,43 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         when(descriptor.getDescription()).thenReturn(desc);
         when(connectorProvider.getDescriptor()).thenReturn(descriptor);
         return connectorProvider;
+    }
+
+    private ServiceRegistration registerNewServiceInBundleContext(String[] clazzes, final Object service,
+            Dictionary<String, Object> dict) {
+        final ServiceReference serviceReference = registerService(service, dict, clazzes);
+        ServiceRegistration result = mock(ServiceRegistration.class);
+
+        // unregistering removes the service from both maps
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                services.remove(serviceReference);
+                serviceReferences.remove(serviceReference);
+                return null;
+            }
+        }).when(result).unregister();
+
+        // when properties are replaced, place a copy of the new properties-dictionary in the
+        // serviceReferences-map (that overwrites the old dictionary)
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                @SuppressWarnings("unchecked")
+                Dictionary<String, Object> arg = (Dictionary<String, Object>) invocation.getArguments()[0];
+                Dictionary<String, Object> newDict = new Hashtable<String, Object>();
+                Enumeration<String> keys = arg.keys();
+                while (keys.hasMoreElements()) {
+                    String next = keys.nextElement();
+                    newDict.put(next, arg.get(next));
+                }
+                serviceReferences.put(serviceReference, newDict);
+                return null;
+            }
+        }).when(result).setProperties(any(Dictionary.class));
+
+        when(result.getReference()).thenReturn(serviceReference);
+        return result;
     }
 
 }
