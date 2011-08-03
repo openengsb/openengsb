@@ -7,7 +7,7 @@
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
-    <karaf.version>2.1.5</karaf.version>
+    <karaf.version>2.1.6</karaf.version>
     <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
     <!-- Current Branch Version Information -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
