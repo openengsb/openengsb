@@ -17,11 +17,14 @@
 
 package org.openengsb.core.services.internal.pseudo;
 
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.PseudoConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
 
-public class ProxyConnectorProvider extends AbstractConnectorProvider {
+public class ProxyConnectorProvider extends AbstractConnectorProvider implements PseudoConnectorProvider {
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -36,5 +39,10 @@ public class ProxyConnectorProvider extends AbstractConnectorProvider {
         builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
             .description("proxy.serviceId.description").build());
         return builder.build();
+    }
+
+    @Override
+    public ConnectorInstanceFactory createFactory(DomainProvider provider) {
+        return new ProxyServiceFactory(provider);
     }
 }
