@@ -1,3 +1,19 @@
+openengsb-1.1.7.RELEASE 2011-08-03
+-------------------------------------------------------
+
+Release containing a major bugfix to the jgit submodule, a minor extension and a Karaf upgrade.
+
+** Library Upgrade
+    * [OPENENGSB-1830] - Upgrade karaf to 2.1.6
+
+** New Feature
+    * [OPENENGSB-1458] - Workaround for the jgit submodule problem
+    * [OPENENGSB-1795] - add method to delete context
+
+** Task
+    * [OPENENGSB-1752] - Release openengsb-1.1.7.RELEASE
+
+
 openengsb-1.1.6.RELEASE 2011-06-22
 -------------------------------------------------------
 
