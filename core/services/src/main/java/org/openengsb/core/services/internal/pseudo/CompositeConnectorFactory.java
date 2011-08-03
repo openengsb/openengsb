@@ -18,24 +18,13 @@
 package org.openengsb.core.services.internal.pseudo;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.common.PseudoConnectorFactory;
 
 public class CompositeConnectorFactory extends PseudoConnectorFactory<CompositeConnector> {
-
-    private static Map<String, CompositeConnectorFactory> instances = new HashMap<String, CompositeConnectorFactory>();
-
-    public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
-        if (!instances.containsKey(domainProvider.getId())) {
-            instances.put(domainProvider.getId(), new CompositeConnectorFactory(domainProvider));
-        }
-        return instances.get(domainProvider.getId());
-    }
 
     protected CompositeConnectorFactory(DomainProvider domainProvider) {
         super(domainProvider);

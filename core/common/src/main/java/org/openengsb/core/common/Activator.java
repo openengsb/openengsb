@@ -28,6 +28,11 @@ public class Activator implements BundleActivator {
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(context);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
+
+        PseudoConnectorManager pseudoConnectorManager = new PseudoConnectorManager();
+        pseudoConnectorManager.setBundleContext(context);
+        pseudoConnectorManager.setUtilsService(osgiServiceUtils);
+        pseudoConnectorManager.init();
     }
 
     @Override

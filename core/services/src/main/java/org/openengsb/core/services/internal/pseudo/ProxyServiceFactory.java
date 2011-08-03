@@ -18,10 +18,8 @@
 package org.openengsb.core.services.internal.pseudo;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
@@ -33,15 +31,6 @@ import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 public class ProxyServiceFactory extends PseudoConnectorFactory<ProxyConnector> {
 
     private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
-
-    private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
-
-    public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
-        if (!instances.containsKey(domainProvider.getId())) {
-            instances.put(domainProvider.getId(), new ProxyServiceFactory(domainProvider));
-        }
-        return instances.get(domainProvider.getId());
-    }
 
     protected ProxyServiceFactory(DomainProvider domainProvider) {
         super(domainProvider);

@@ -34,7 +34,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.MapAsDictionary;
-import org.openengsb.core.services.internal.pseudo.ProxyServiceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -190,10 +189,6 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
         String connectorType = id.getConnectorType();
-        if (connectorType.equals(Constants.EXTERNAL_CONNECTOR_PROXY)) {
-            DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-            return ProxyServiceFactory.getInstance(domainProvider);
-        }
         Filter connectorFilter =
             serviceUtils.makeFilter(ConnectorInstanceFactory.class,
                 String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
