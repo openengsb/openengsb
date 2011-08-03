@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal.pseudo;
 
-import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +27,11 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.PseudoConnectorFactory;
 import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 
-public class ProxyServiceFactory implements ConnectorInstanceFactory {
+public class ProxyServiceFactory extends PseudoConnectorFactory<ProxyConnector> {
 
-    private DomainProvider domainProvider;
-    private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
     private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
 
     private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
@@ -46,10 +44,11 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     protected ProxyServiceFactory(DomainProvider domainProvider) {
-        this.domainProvider = domainProvider;
+        super(domainProvider);
     }
 
-    private void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
+    @Override
+    public void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));
         String destination = attributes.get("destination");
         handler.setDestination(destination);
@@ -64,16 +63,11 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    protected ProxyConnector createNewHandler(String id) {
         ProxyConnector handler = new ProxyConnector(id);
         updateInstanceCallRouter();
         handler.setOutgoingPortUtilService(callRouter);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), },
-                handler);
-        handlers.put(newProxyInstance, handler);
-        return newProxyInstance;
+        return handler;
     }
 
     private void updateInstanceCallRouter() {
