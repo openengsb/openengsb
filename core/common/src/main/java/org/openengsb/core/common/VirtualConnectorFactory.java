@@ -25,18 +25,19 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
-public abstract class PseudoConnectorFactory<PseudoType extends PseudoConnector> implements ConnectorInstanceFactory {
+public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnector>
+        implements ConnectorInstanceFactory {
 
     private DomainProvider domainProvider;
-    protected Map<Domain, PseudoType> handlers = new HashMap<Domain, PseudoType>();
+    protected Map<Domain, VirtualType> handlers = new HashMap<Domain, VirtualType>();
 
-    protected PseudoConnectorFactory(DomainProvider domainProvider) {
+    protected VirtualConnectorFactory(DomainProvider domainProvider) {
         this.domainProvider = domainProvider;
     }
 
     @Override
     public Domain createNewInstance(String id) {
-        PseudoType handler = createNewHandler(id);
+        VirtualType handler = createNewHandler(id);
         Domain newProxyInstance =
             (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ domainProvider.getDomainInterface(), }, handler);
@@ -44,14 +45,14 @@ public abstract class PseudoConnectorFactory<PseudoType extends PseudoConnector>
         return newProxyInstance;
     }
 
-    protected abstract PseudoType createNewHandler(String id);
+    protected abstract VirtualType createNewHandler(String id);
 
     @Override
     public void applyAttributes(Domain instance, Map<String, String> attributes) {
-        PseudoType handler = handlers.get(instance);
+        VirtualType handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
 
-    protected abstract void updateHandlerAttributes(PseudoType handler, Map<String, String> attributes);
+    protected abstract void updateHandlerAttributes(VirtualType handler, Map<String, String> attributes);
 
 }

@@ -14,19 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.services.internal.pseudo;
+package org.openengsb.core.common;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import org.openengsb.core.api.CompositeConnectorStrategy;
-import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.PseudoConnector;
-import org.osgi.framework.ServiceReference;
+import org.openengsb.core.api.OpenEngSBService;
 
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license
@@ -41,39 +36,27 @@ import org.osgi.framework.ServiceReference;
  * specific language governing permissions and limitations under the License.
  */
 
-public class CompositeConnector extends PseudoConnector {
+public abstract class VirtualConnector extends AbstractOpenEngSBService implements InvocationHandler {
 
-    private Collection<String> services;
-    private CompositeConnectorStrategy compositeHandler;
+    /**
+     * methods declared in these classes are always handled by the invocation handler itself rather than forwarding it
+     * to the remote object
+     */
+    private static final List<Class<?>> SELF_HANDLED_CLASSES = Arrays.asList(new Class<?>[]{ Object.class,
+        OpenEngSBService.class });
 
-    public CompositeConnector(String instanceId) {
+    protected VirtualConnector(String instanceId) {
         super(instanceId);
     }
 
     @Override
-    protected Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-        List<ServiceReference> services = getOsgiServices();
-        return compositeHandler.invoke(services, method, args);
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<ServiceReference> getOsgiServices() {
-        OsgiUtilsService utilsService = OpenEngSBCoreServices.getServiceUtilsService();
-        List<ServiceReference> result = new ArrayList<ServiceReference>();
-        for (String filter : services) {
-            List<ServiceReference> references = utilsService.listServiceReferences(filter);
-            result.addAll(references);
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (SELF_HANDLED_CLASSES.contains(method.getDeclaringClass())) {
+            return method.invoke(this, args);
         }
-        Collections.sort(result);
-        return result;
+        return doInvoke(proxy, method, args);
     }
 
-    public void setServices(Collection<String> services) {
-        this.services = services;
-    }
-
-    public void setCompositeHandler(CompositeConnectorStrategy compositeHandler) {
-        this.compositeHandler = compositeHandler;
-    }
+    protected abstract Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable;
 
 }

@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.pseudo;
+package org.openengsb.core.services.internal.virtual;
 
 import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.common.PseudoConnectorFactory;
+import org.openengsb.core.common.VirtualConnectorFactory;
 
-public class CompositeConnectorFactory extends PseudoConnectorFactory<CompositeConnector> {
+public class CompositeConnectorFactory extends VirtualConnectorFactory<CompositeConnector> {
 
     protected CompositeConnectorFactory(DomainProvider domainProvider) {
         super(domainProvider);

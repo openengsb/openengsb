@@ -39,7 +39,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.PseudoConnectorProvider;
+import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.MethodCall;
@@ -48,7 +48,7 @@ import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.Activator;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.pseudo.ProxyConnectorProvider;
+import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
@@ -75,7 +75,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         registrationManager = serviceManagerImpl;
         ProxyConnectorProvider proxyConnectorProvider = new ProxyConnectorProvider();
         proxyConnectorProvider.setId(Constants.EXTERNAL_CONNECTOR_PROXY);
-        registerService(proxyConnectorProvider, new Hashtable<String, Object>(), PseudoConnectorProvider.class);
+        registerService(proxyConnectorProvider, new Hashtable<String, Object>(), VirtualConnectorProvider.class);
         new Activator().start(bundleContext);
     }
 

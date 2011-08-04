@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api;
 
-public interface PseudoConnectorProvider extends ConnectorProvider {
+public interface VirtualConnectorProvider extends ConnectorProvider {
 
     ConnectorInstanceFactory createFactory(DomainProvider provider);
 

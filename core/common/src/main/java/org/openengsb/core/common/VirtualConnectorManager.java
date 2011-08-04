@@ -28,7 +28,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.PseudoConnectorProvider;
+import org.openengsb.core.api.VirtualConnectorProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -40,25 +40,25 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 
-public class PseudoConnectorManager {
+public class VirtualConnectorManager {
 
     private static class Registration {
 
-        protected Registration(PseudoConnectorProvider pseudoConnector, DomainProvider domainProvider,
+        protected Registration(VirtualConnectorProvider virtualConnector, DomainProvider domainProvider,
                 ServiceRegistration factoryService) {
-            this.pseudoConnector = pseudoConnector;
+            this.virtualConnector = virtualConnector;
             this.domainProvider = domainProvider;
             this.factoryService = factoryService;
         }
 
-        private PseudoConnectorProvider pseudoConnector;
+        private VirtualConnectorProvider virtualConnector;
         private DomainProvider domainProvider;
         private ServiceRegistration factoryService;
     }
 
     private Collection<Registration> registeredFactories = Sets.newHashSet();
 
-    private ServiceTracker pseudoConnectorProviderTracker;
+    private ServiceTracker virtualConnectorProviderTracker;
 
     private ServiceTracker domainProviderTracker;
 
@@ -67,13 +67,13 @@ public class PseudoConnectorManager {
     private OsgiUtilsService utilsService;
 
     public void init() {
-        Filter pseudoConnectorFilter = utilsService.makeFilterForClass(PseudoConnectorProvider.class);
-        pseudoConnectorProviderTracker =
-            new ServiceTracker(bundleContext, pseudoConnectorFilter, new ServiceTrackerCustomizer() {
+        Filter virtualConnectorFilter = utilsService.makeFilterForClass(VirtualConnectorProvider.class);
+        virtualConnectorProviderTracker =
+            new ServiceTracker(bundleContext, virtualConnectorFilter, new ServiceTrackerCustomizer() {
                 @Override
                 public void removedService(ServiceReference reference, Object service) {
-                    PseudoConnectorProvider provider = (PseudoConnectorProvider) service;
-                    Iterator<Registration> factoryServices = getFactoriesForPseudoConnectorForRemoval(provider);
+                    VirtualConnectorProvider provider = (VirtualConnectorProvider) service;
+                    Iterator<Registration> factoryServices = getFactoriesForVirtualConnectorForRemoval(provider);
                     while (factoryServices.hasNext()) {
                         Registration r = factoryServices.next();
                         r.factoryService.unregister();
@@ -87,12 +87,12 @@ public class PseudoConnectorManager {
 
                 @Override
                 public Object addingService(ServiceReference reference) {
-                    createNewFactoryForPseudoConnectorProvider(reference);
+                    createNewFactoryForVirtualConnectorProvider(reference);
                     return bundleContext.getService(reference);
                 }
 
             });
-        pseudoConnectorProviderTracker.open();
+        virtualConnectorProviderTracker.open();
 
         Filter domainProviderFilter = utilsService.makeFilterForClass(DomainProvider.class);
         domainProviderTracker =
@@ -129,16 +129,16 @@ public class PseudoConnectorManager {
         }
     }
 
-    protected void registerConnectorFactoryService(PseudoConnectorProvider pseudoConnectorProvider,
+    protected void registerConnectorFactoryService(VirtualConnectorProvider virtualConnectorProvider,
             DomainProvider p) {
-        ConnectorInstanceFactory factory = pseudoConnectorProvider.createFactory(p);
+        ConnectorInstanceFactory factory = virtualConnectorProvider.createFactory(p);
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(org.openengsb.core.api.Constants.DOMAIN_KEY, p.getId());
 
-        properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, pseudoConnectorProvider.getId());
+        properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, virtualConnectorProvider.getId());
         ServiceRegistration serviceRegistration =
             bundleContext.registerService(ConnectorInstanceFactory.class.getName(), factory, properties);
-        registeredFactories.add(new Registration(pseudoConnectorProvider, p, serviceRegistration));
+        registeredFactories.add(new Registration(virtualConnectorProvider, p, serviceRegistration));
     }
 
     protected static <T> Collection<T> getServicesFromTracker(ServiceTracker tracker, Class<T> serviceClass) {
@@ -154,12 +154,12 @@ public class PseudoConnectorManager {
 
     }
 
-    private Iterator<Registration> getFactoriesForPseudoConnectorForRemoval(final PseudoConnectorProvider provider) {
+    private Iterator<Registration> getFactoriesForVirtualConnectorForRemoval(final VirtualConnectorProvider provider) {
         Iterator<Registration> consumingIterator = Iterators.consumingIterator(registeredFactories.iterator());
         return Iterators.filter(consumingIterator, new Predicate<Registration>() {
             @Override
             public boolean apply(Registration input) {
-                return ObjectUtils.equals(input.pseudoConnector, provider);
+                return ObjectUtils.equals(input.virtualConnector, provider);
             }
         });
     }
@@ -174,19 +174,19 @@ public class PseudoConnectorManager {
         });
     }
 
-    private void createNewFactoryForPseudoConnectorProvider(ServiceReference reference) {
-        PseudoConnectorProvider pseudoConnectorProvider =
-            (PseudoConnectorProvider) bundleContext.getService(reference);
+    private void createNewFactoryForVirtualConnectorProvider(ServiceReference reference) {
+        VirtualConnectorProvider virtualConnectorProvider =
+            (VirtualConnectorProvider) bundleContext.getService(reference);
         for (DomainProvider p : getServicesFromTracker(domainProviderTracker, DomainProvider.class)) {
-            registerConnectorFactoryService(pseudoConnectorProvider, p);
+            registerConnectorFactoryService(virtualConnectorProvider, p);
             // TODO create ConnectorProvider for every registered domainProvider
         }
     }
 
     private void createNewFactoryForDomainProvider(DomainProvider newProvider) {
-        Collection<PseudoConnectorProvider> pseudoProviders =
-            getServicesFromTracker(pseudoConnectorProviderTracker, PseudoConnectorProvider.class);
-        for (PseudoConnectorProvider p : pseudoProviders) {
+        Collection<VirtualConnectorProvider> virtualProviders =
+            getServicesFromTracker(virtualConnectorProviderTracker, VirtualConnectorProvider.class);
+        for (VirtualConnectorProvider p : virtualProviders) {
             registerConnectorFactoryService(p, newProvider);
         }
     }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.pseudo;
+package org.openengsb.core.services.internal.virtual;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,13 +27,13 @@ import java.util.Map;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.common.PseudoConnector;
+import org.openengsb.core.common.VirtualConnector;
 
 /**
  * Representation of a connector that forwards all method-calls to a remote connector. Communication is done using a
  * port-implementation (like jms+json)
  */
-public class ProxyConnector extends PseudoConnector {
+public class ProxyConnector extends VirtualConnector {
 
     private String portId;
     private String destination;

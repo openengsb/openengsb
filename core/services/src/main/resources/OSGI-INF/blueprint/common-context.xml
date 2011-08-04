@@ -102,9 +102,9 @@
 
   <service id="proxyConnectorProvider">
     <interfaces>
-      <value>org.openengsb.core.api.PseudoConnectorProvider</value>
+      <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.pseudo.ProxyConnectorProvider">
+    <bean class="org.openengsb.core.services.internal.virtual.ProxyConnectorProvider">
       <property name="id" value="external-connector-proxy" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
@@ -112,9 +112,9 @@
 
   <service id="compositeConnectorProvider">
     <interfaces>
-      <value>org.openengsb.core.api.PseudoConnectorProvider</value>
+      <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.pseudo.CompositeConnectorProvider">
+    <bean class="org.openengsb.core.services.internal.virtual.CompositeConnectorProvider">
       <property name="id" value="composite-connector" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
