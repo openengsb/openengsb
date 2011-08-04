@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
@@ -45,15 +46,17 @@ public class VirtualConnectorManager {
     private static class Registration {
 
         protected Registration(VirtualConnectorProvider virtualConnector, DomainProvider domainProvider,
-                ServiceRegistration factoryService) {
+                ServiceRegistration factoryService, ServiceRegistration connectorProvider) {
             this.virtualConnector = virtualConnector;
             this.domainProvider = domainProvider;
             this.factoryService = factoryService;
+            this.connectorProvider = connectorProvider;
         }
 
         private VirtualConnectorProvider virtualConnector;
         private DomainProvider domainProvider;
         private ServiceRegistration factoryService;
+        private ServiceRegistration connectorProvider;
     }
 
     private Collection<Registration> registeredFactories = Sets.newHashSet();
@@ -80,10 +83,7 @@ public class VirtualConnectorManager {
                 public void removedService(ServiceReference reference, Object service) {
                     VirtualConnectorProvider provider = (VirtualConnectorProvider) service;
                     Iterator<Registration> factoryServices = getFactoriesForVirtualConnectorForRemoval(provider);
-                    while (factoryServices.hasNext()) {
-                        Registration r = factoryServices.next();
-                        r.factoryService.unregister();
-                    }
+                    unregisterAllRegistrations(factoryServices);
                 }
 
                 @Override
@@ -105,10 +105,7 @@ public class VirtualConnectorManager {
                 public void removedService(ServiceReference reference, Object service) {
                     Iterator<Registration> factoryServices =
                         getFactoriesForDomainProviderForRemoval((DomainProvider) service);
-                    while (factoryServices.hasNext()) {
-                        Registration r = factoryServices.next();
-                        r.factoryService.unregister();
-                    }
+                    unregisterAllRegistrations(factoryServices);
                 }
 
                 @Override
@@ -141,18 +138,6 @@ public class VirtualConnectorManager {
     public void stop() {
         virtualConnectorProviderTracker.close();
         domainProviderTracker.close();
-    }
-
-    protected void registerConnectorFactoryService(VirtualConnectorProvider virtualConnectorProvider,
-            DomainProvider p) {
-        ConnectorInstanceFactory factory = virtualConnectorProvider.createFactory(p);
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(org.openengsb.core.api.Constants.DOMAIN_KEY, p.getId());
-
-        properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, virtualConnectorProvider.getId());
-        ServiceRegistration serviceRegistration =
-            bundleContext.registerService(ConnectorInstanceFactory.class.getName(), factory, properties);
-        registeredFactories.add(new Registration(virtualConnectorProvider, p, serviceRegistration));
     }
 
     protected static <T> Collection<T> getServicesFromTracker(ServiceTracker tracker, Class<T> serviceClass) {
@@ -192,9 +177,20 @@ public class VirtualConnectorManager {
         VirtualConnectorProvider virtualConnectorProvider =
             (VirtualConnectorProvider) bundleContext.getService(reference);
         for (DomainProvider p : getServicesFromTracker(domainProviderTracker, DomainProvider.class)) {
-            registerConnectorFactoryService(virtualConnectorProvider, p);
-            // TODO create ConnectorProvider for every registered domainProvider
+            ServiceRegistration factoryService = registerConnectorFactoryService(virtualConnectorProvider, p);
+            ServiceRegistration providerService = registerConnectorProviderService(virtualConnectorProvider, p);
+            registeredFactories.add(new Registration(virtualConnectorProvider, p, factoryService, providerService));
         }
+    }
+
+    private ServiceRegistration registerConnectorProviderService(VirtualConnectorProvider virtualConnectorProvider,
+            DomainProvider p) {
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(org.openengsb.core.api.Constants.DOMAIN_KEY, p.getId());
+        properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, virtualConnectorProvider.getId());
+        return bundleContext.registerService(ConnectorProvider.class.getCanonicalName(), virtualConnectorProvider,
+            properties);
+
     }
 
     private void createNewFactoryForDomainProvider(DomainProvider newProvider) {
@@ -202,6 +198,26 @@ public class VirtualConnectorManager {
             getServicesFromTracker(virtualConnectorProviderTracker, VirtualConnectorProvider.class);
         for (VirtualConnectorProvider p : virtualProviders) {
             registerConnectorFactoryService(p, newProvider);
+            ServiceRegistration factoryService = registerConnectorFactoryService(p, newProvider);
+            ServiceRegistration providerService = registerConnectorProviderService(p, newProvider);
+            registeredFactories.add(new Registration(p, newProvider, factoryService, providerService));
+        }
+    }
+
+    protected ServiceRegistration registerConnectorFactoryService(VirtualConnectorProvider virtualConnectorProvider,
+            DomainProvider p) {
+        ConnectorInstanceFactory factory = virtualConnectorProvider.createFactory(p);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(org.openengsb.core.api.Constants.DOMAIN_KEY, p.getId());
+        properties.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, virtualConnectorProvider.getId());
+        return bundleContext.registerService(ConnectorInstanceFactory.class.getName(), factory, properties);
+    }
+
+    private void unregisterAllRegistrations(Iterator<Registration> factoryServices) {
+        while (factoryServices.hasNext()) {
+            Registration r = factoryServices.next();
+            r.factoryService.unregister();
+            r.connectorProvider.unregister();
         }
     }
 

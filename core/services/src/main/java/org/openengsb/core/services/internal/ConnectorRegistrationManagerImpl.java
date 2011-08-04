@@ -191,7 +191,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         String connectorType = id.getConnectorType();
         Filter connectorFilter =
             serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
+                String.format("(&(%s=%s)(%s=%s))", Constants.DOMAIN_KEY, id.getDomainType(), Constants.CONNECTOR_KEY,
+                    connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
