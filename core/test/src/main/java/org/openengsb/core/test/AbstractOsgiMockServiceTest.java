@@ -144,21 +144,6 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
          * register a new service. This step involves creating mock-objects for ServiceRegistration and
          * ServiceReference.
          */
-        when(bundleContext.registerService(anyString(), any(), any(Dictionary.class))).thenAnswer(
-            new Answer<ServiceRegistration>() {
-                @Override
-                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
-                    String clazz = (String) invocation.getArguments()[0];
-                    final Object service = invocation.getArguments()[1];
-                    @SuppressWarnings("unchecked")
-                    Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
-                    return registerNewServiceInBundleContext(new String[]{ clazz }, service, dict);
-                }
-            });
-        /*
-         * register a new service. This step involves creating mock-objects for ServiceRegistration and
-         * ServiceReference.
-         */
         when(bundleContext.registerService(any(String[].class), any(), any(Dictionary.class))).thenAnswer(
             new Answer<ServiceRegistration>() {
                 @Override
@@ -167,7 +152,18 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                     final Object service = invocation.getArguments()[1];
                     @SuppressWarnings("unchecked")
                     Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
-                    return registerNewServiceInBundleContext(clazzes, service, dict);
+                    return registerServiceInBundlecontext(clazzes, service, dict);
+                }
+            });
+        when(bundleContext.registerService(anyString(), any(), any(Dictionary.class))).thenAnswer(
+            new Answer<ServiceRegistration>() {
+                @Override
+                public ServiceRegistration answer(InvocationOnMock invocation) throws Throwable {
+                    String clazz = (String) invocation.getArguments()[0];
+                    final Object service = invocation.getArguments()[1];
+                    @SuppressWarnings("unchecked")
+                    Dictionary<String, Object> dict = (Dictionary<String, Object>) invocation.getArguments()[2];
+                    return registerServiceInBundlecontext(new String[]{ clazz }, service, dict);
                 }
             });
 
@@ -377,7 +373,7 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         return connectorProvider;
     }
 
-    private ServiceRegistration registerNewServiceInBundleContext(String[] clazzes, final Object service,
+    private ServiceRegistration registerServiceInBundlecontext(String[] clazzes, final Object service,
             Dictionary<String, Object> dict) {
         final ServiceReference serviceReference = registerService(service, dict, clazzes);
         ServiceRegistration result = mock(ServiceRegistration.class);
