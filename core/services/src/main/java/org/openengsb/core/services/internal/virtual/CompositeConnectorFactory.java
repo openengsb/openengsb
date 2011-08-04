@@ -20,11 +20,23 @@ package org.openengsb.core.services.internal.virtual;
 import java.util.Collections;
 import java.util.Map;
 
+import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.VirtualConnectorFactory;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 public class CompositeConnectorFactory extends VirtualConnectorFactory<CompositeConnector> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompositeConnectorFactory.class);
 
     protected CompositeConnectorFactory(DomainProvider domainProvider) {
         super(domainProvider);
@@ -32,8 +44,17 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
 
     @Override
     protected void updateHandlerAttributes(CompositeConnector handler, Map<String, String> attributes) {
-        // TODO set service-list from attributes
-        // TODO set composite-handler form attributes
+        OsgiUtilsService serviceUtils = OpenEngSBCoreServices.getServiceUtilsService();
+        String strategyFilter = createStrategyFilterString(attributes.get("compositeStrategy"));
+        Filter filter = serviceUtils.makeFilter(CompositeConnectorStrategy.class, strategyFilter);
+        CompositeConnectorStrategy strategy =
+            serviceUtils.getOsgiServiceProxy(filter, CompositeConnectorStrategy.class);
+        handler.setQueryString(attributes.get("queryString"));
+        handler.setCompositeHandler(strategy);
+    }
+
+    public String createStrategyFilterString(String attribute) {
+        return String.format("(composite.strategy.name=%s)", attribute);
     }
 
     @Override
@@ -43,8 +64,24 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
 
     @Override
     public Map<String, String> getValidationErrors(Map<String, String> attributes) {
+        Map<String, String> result = Maps.newHashMap();
+        String queryString = attributes.get("compositeStrategy");
+
+        if (queryString.contains(")")) {
+            result.put("compositeStrategy", "character \')\' not allowed in the strategy name");
+        }
+
+        String filterString = createStrategyFilterString(queryString);
+        try {
+            FrameworkUtil.createFilter(filterString);
+        } catch (InvalidSyntaxException e) {
+            result.put("compositeStrategy", "supplied name cannot be used to form a valid osgi-query: " + filterString
+                    + "\n" + e.getMessage());
+            LOGGER.error("invalid strategy-parameter supplied", e);
+        }
+
+        return result;
         // TODO OPENENGSB-1290: implement some validation
-        return Collections.emptyMap();
     }
 
     @Override
