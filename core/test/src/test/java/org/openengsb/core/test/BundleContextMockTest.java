@@ -20,6 +20,8 @@ package org.openengsb.core.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
@@ -29,16 +31,38 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class BundleContextMockTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void registerAndRetrieveService() throws Exception {
-        bundleContext.registerService(Collection.class.getName(), new HashSet<Object>(),
-            new Hashtable<String, Object>());
+        mockService(Collection.class, "foo");
+        // bundleContext.registerService(Collection.class.getName(), new HashSet<Object>(),
+        // new Hashtable<String, Object>());
         ServiceReference[] serviceReferences2 = bundleContext.getServiceReferences(Collection.class.getName(), null);
         assertThat(serviceReferences2, not(nullValue()));
         assertThat(serviceReferences2.length, is(1));
+    }
+
+    @Test
+    public void createServiceTrackerAndCreateService_shouldBeInTracker() throws Exception {
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, Collection.class.getName(), null);
+        serviceTracker.open();
+        mockService(Collection.class, "foo");
+        assertNotNull(serviceTracker.getService());
+    }
+
+    @Test
+    public void createServiceTrackerAndUnregisterService_shouldNotBeInTracker() throws Exception {
+        ServiceRegistration serviceRegistration =
+            bundleContext.registerService(Collection.class.getName(), new HashSet<Object>(),
+                new Hashtable<String, Object>());
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, Collection.class.getName(), null);
+        serviceTracker.open();
+        serviceRegistration.unregister();
+        assertNull(serviceTracker.getService());
     }
 
     @Override

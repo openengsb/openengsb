@@ -29,12 +29,11 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.EnumerationUtils;
@@ -46,7 +45,6 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.LocalizableString;
@@ -55,6 +53,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -79,6 +79,9 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      */
     private Map<ServiceReference, Dictionary<String, Object>> serviceReferences =
         new HashMap<ServiceReference, Dictionary<String, Object>>();
+
+    private Map<ServiceListener, Filter> listeners = new HashMap<ServiceListener, Filter>();
+
     /**
      * This map keeps track of service-references and their corresponding service-object
      */
@@ -166,6 +169,19 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                     return registerServiceInBundlecontext(new String[]{ clazz }, service, dict);
                 }
             });
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                ServiceListener listener = (ServiceListener) invocation.getArguments()[0];
+                String filter = (String) invocation.getArguments()[1];
+                if (filter == null) {
+                    listeners.put(listener, null);
+                } else {
+                    listeners.put(listener, FrameworkUtil.createFilter(filter));
+                }
+                return null;
+            }
+        }).when(bundleContext).addServiceListener(any(ServiceListener.class), anyString());
 
         bundle = mock(Bundle.class);
         when(bundle.getBundleContext()).thenReturn(bundleContext);
@@ -201,21 +217,18 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      * registers the service with the given properties under the given interfaces
      */
     protected void registerService(Object service, Dictionary<String, Object> props, Class<?>... interfazes) {
-        Set<String> objectClasses = new HashSet<String>();
-        for (Class<?> interfaze : interfazes) {
-            objectClasses.add(interfaze.getCanonicalName());
+        String[] interfaceNames = new String[interfazes.length];
+        for (int i = 0; i < interfazes.length; i++) {
+            interfaceNames[i] = interfazes[i].getCanonicalName();
         }
-        objectClasses.add(OpenEngSBService.class.getCanonicalName());
-        props.put(Constants.OBJECTCLASS, objectClasses.toArray(new String[objectClasses.size()]));
-        putService(service, props);
+        registerService(service, props, interfaceNames);
     }
 
     /**
      * registers the service with the given properties under the given interfaces
      */
     protected ServiceReference registerService(Object service, Dictionary<String, Object> props, String... interfazes) {
-        props.put(Constants.OBJECTCLASS, interfazes);
-        return putService(service, props);
+        return registerServiceInBundlecontext(interfazes, service, props).getReference();
     }
 
     /**
@@ -373,7 +386,8 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
 
     private ServiceRegistration registerServiceInBundlecontext(String[] clazzes, final Object service,
             Dictionary<String, Object> dict) {
-        final ServiceReference serviceReference = registerService(service, dict, clazzes);
+        dict.put(Constants.OBJECTCLASS, clazzes);
+        final ServiceReference serviceReference = putService(service, dict);
         ServiceRegistration result = mock(ServiceRegistration.class);
 
         // unregistering removes the service from both maps
@@ -381,7 +395,8 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 services.remove(serviceReference);
-                serviceReferences.remove(serviceReference);
+                Dictionary<String, Object> props = serviceReferences.remove(serviceReference);
+                updateServiceListeners(ServiceEvent.UNREGISTERING, serviceReference, props);
                 return null;
             }
         }).when(result).unregister();
@@ -405,7 +420,18 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         }).when(result).setProperties(any(Dictionary.class));
 
         when(result.getReference()).thenReturn(serviceReference);
+        updateServiceListeners(ServiceEvent.REGISTERED, serviceReference, dict);
         return result;
+    }
+
+    public void updateServiceListeners(int eventType, final ServiceReference serviceReference,
+            Dictionary<String, Object> dict) {
+        for (Entry<ServiceListener, Filter> entry : listeners.entrySet()) {
+            Filter filter = entry.getValue();
+            if (filter == null || filter.match(dict)) {
+                entry.getKey().serviceChanged(new ServiceEvent(eventType, serviceReference));
+            }
+        }
     }
 
 }
