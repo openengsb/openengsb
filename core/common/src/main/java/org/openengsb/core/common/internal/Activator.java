@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.common.internal;
 
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
+    private VirtualConnectorManager virtualConnectorManager;
+
     @Override
     public void start(BundleContext context) throws Exception {
         DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
         osgiServiceUtils.setBundleContext(context);
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-
-        VirtualConnectorManager virtualConnectorManager = new VirtualConnectorManager();
-        virtualConnectorManager.setBundleContext(context);
-        virtualConnectorManager.setUtilsService(osgiServiceUtils);
-        virtualConnectorManager.init();
+        virtualConnectorManager = new VirtualConnectorManager(context, osgiServiceUtils);
+        virtualConnectorManager.start();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // do nothing
+        virtualConnectorManager.stop();
     }
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.common.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,11 +62,17 @@ public class VirtualConnectorManager {
 
     private ServiceTracker domainProviderTracker;
 
-    private BundleContext bundleContext;
+    private final BundleContext bundleContext;
 
-    private OsgiUtilsService utilsService;
+    private final OsgiUtilsService utilsService;
 
-    public void init() {
+    public VirtualConnectorManager(BundleContext bundleContext, OsgiUtilsService utilsService) {
+        this.bundleContext = bundleContext;
+        this.utilsService = utilsService;
+        init();
+    }
+
+    private void init() {
         Filter virtualConnectorFilter = utilsService.makeFilterForClass(VirtualConnectorProvider.class);
         virtualConnectorProviderTracker =
             new ServiceTracker(bundleContext, virtualConnectorFilter, new ServiceTrackerCustomizer() {
@@ -92,8 +98,6 @@ public class VirtualConnectorManager {
                 }
 
             });
-        virtualConnectorProviderTracker.open();
-
         Filter domainProviderFilter = utilsService.makeFilterForClass(DomainProvider.class);
         domainProviderTracker =
             new ServiceTracker(bundleContext, domainProviderFilter, new ServiceTrackerCustomizer() {
@@ -120,6 +124,11 @@ public class VirtualConnectorManager {
                 }
 
             });
+
+    }
+
+    public void start() {
+        virtualConnectorProviderTracker.open();
         domainProviderTracker.open();
         Object[] services = domainProviderTracker.getServices();
         if (services != null) {
@@ -127,6 +136,11 @@ public class VirtualConnectorManager {
                 createNewFactoryForDomainProvider((DomainProvider) service);
             }
         }
+    }
+
+    public void stop() {
+        virtualConnectorProviderTracker.close();
+        domainProviderTracker.close();
     }
 
     protected void registerConnectorFactoryService(VirtualConnectorProvider virtualConnectorProvider,
@@ -189,14 +203,6 @@ public class VirtualConnectorManager {
         for (VirtualConnectorProvider p : virtualProviders) {
             registerConnectorFactoryService(p, newProvider);
         }
-    }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
-    public void setUtilsService(OsgiUtilsService utilsService) {
-        this.utilsService = utilsService;
     }
 
 }
