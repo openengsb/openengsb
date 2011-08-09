@@ -19,8 +19,8 @@ package org.openengsb.core.security.internal;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.composite.AbstractDelegateStrategy;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
