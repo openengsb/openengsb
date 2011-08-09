@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +40,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
+
 public class DefaultOsgiUtilsService implements OsgiUtilsService {
 
     /**
@@ -47,7 +51,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
      * indefinitely {@link ServiceTracker#waitForService(long)} A timeout < 0 means that the service tracker will not
      * wait for the service at all. If the service is not available immediately an
      * {@link OsgiServiceNotAvailableException} is thrown.
-     *
+     * 
      */
     private final class ServiceTrackerInvocationHandler implements InvocationHandler {
         private ServiceTracker tracker;
@@ -181,7 +185,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOsgiServiceProxy(final Filter filter, Class<T> targetClass, final long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new ServiceTrackerInvocationHandler(filter, timeout));
     }
 
@@ -204,7 +208,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOsgiServiceProxy(Class<T> targetClass, long timeout) {
-        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[] { targetClass },
+        return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), new Class<?>[]{ targetClass },
             new ServiceTrackerInvocationHandler(targetClass, timeout));
     }
 
@@ -315,7 +319,7 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
     /**
      * tries to retrieve the service from the given service-tracker for the amount of milliseconds provided by the given
      * timeout.
-     *
+     * 
      * @throws OsgiServiceNotAvailableException if the service could not be found within the given timeout
      */
     private Object waitForServiceFromTracker(ServiceTracker tracker, long timeout)
@@ -396,6 +400,22 @@ public class DefaultOsgiUtilsService implements OsgiUtilsService {
             throw new OsgiServiceNotAvailableException("service retrieved from the bundlecontext was null");
         }
         return service;
+    }
+
+    @Override
+    public <T> Iterator<T> getServiceIterator(Iterable<ServiceReference> references, Class<T> serviceClass) {
+        return Iterators.transform(references.iterator(), new Function<ServiceReference, T>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public T apply(ServiceReference input) {
+                return (T) bundleContext.getService(input);
+            }
+        });
+    }
+
+    @Override
+    public Iterator<Object> getServiceIterator(Iterable<ServiceReference> references) {
+        return getServiceIterator(references, Object.class);
     }
 
     /**
