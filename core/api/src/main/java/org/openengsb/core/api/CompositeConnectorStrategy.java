@@ -22,10 +22,29 @@ import java.util.List;
 
 import org.osgi.framework.ServiceReference;
 
+/**
+ * implements a Strategy used for handling invocations on composite connectors. The implementation decides which
+ * services are invoked and how it is done (sequential, concurrent, ...). When implementing a strategy the developer
+ * must also think of a way for providing a suitable result.
+ *
+ * In order for the strategy to be usable it must be registered as an OSGi-service. The registered service must have the
+ * "strategy-name" property in order to be discoverable.
+ */
 public interface CompositeConnectorStrategy {
 
+    /**
+     * handles an invocation for a composite connector. The list of services is provided as {@link ServiceReference}s so
+     * that the implementation can reason on the services properties. Utility-methods in {@link OsgiUtilsService} can be
+     * used to resolve the service to its object.
+     *
+     */
     Object invoke(List<ServiceReference> services, Method method, Object... args) throws Throwable;
 
+    /**
+     * returns true if the specified domain represented by the class is supported by this strategy. Strategies that
+     * support any domain may just return true here. Implementations of domain specific strategies should behave
+     * accordingly.
+     */
     boolean supports(Class<?> domainClass);
 
 }

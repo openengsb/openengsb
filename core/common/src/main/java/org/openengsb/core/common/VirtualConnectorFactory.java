@@ -25,6 +25,12 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 
+/**
+ * Abstract baseclass for {@link ConnectorInstanceFactory}s that are used for {@link VirtualConnector}s. When such a
+ * factory creates a connector,an {@link java.lang.reflect.InvocationHandler} in the form of a {@link VirtualConnector}
+ * is created and used in a proxy that is then returned as the resulting connector instance (which is registered as a
+ * service).
+ */
 public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnector>
         implements ConnectorInstanceFactory {
 
@@ -45,6 +51,9 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
         return newProxyInstance;
     }
 
+    /**
+     * creates a new {@link VirtualConnector} used as {@link InvocationHandler} for the proxy.
+     */
     protected abstract VirtualType createNewHandler(String id);
 
     @Override

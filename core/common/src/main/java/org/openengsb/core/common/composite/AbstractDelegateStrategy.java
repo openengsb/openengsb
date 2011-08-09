@@ -22,6 +22,10 @@ import java.util.List;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Abstract utility class that can be used to delegate the invocation to a delegate implementation of the Domain
+ * interface
+ */
 public abstract class AbstractDelegateStrategy implements CompositeConnectorStrategy {
 
     @Override

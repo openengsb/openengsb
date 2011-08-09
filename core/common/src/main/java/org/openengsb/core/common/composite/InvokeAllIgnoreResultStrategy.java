@@ -26,6 +26,11 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Simple and generic {@link CompositeConnectorStrategy} that invokes all services that are passed to it sequentially.
+ * The result is always null. As soon as the first invocation throws an Exception it is re-thrown and no more services
+ * are invoked.
+ */
 public class InvokeAllIgnoreResultStrategy implements CompositeConnectorStrategy {
 
     @Override

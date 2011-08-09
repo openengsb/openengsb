@@ -17,8 +17,16 @@
 
 package org.openengsb.core.api;
 
+/**
+ * Provides the same metadata as a {@link ConnectorProvider}, but in addition can create
+ * {@link ConnectorInstanceFactory}s to create {@link ConnectorProvider}s and {@link ConnectorInstanceFactory}s for each
+ * combination of Domain and virtual connector.
+ */
 public interface VirtualConnectorProvider extends ConnectorProvider {
 
+    /**
+     * creates a new {@link ConnectorInstanceFactory} for the Virtual Connector supporting a specific Domain.
+     */
     ConnectorInstanceFactory createFactory(DomainProvider provider);
 
 }

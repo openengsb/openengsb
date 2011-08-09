@@ -36,6 +36,12 @@ import org.openengsb.core.api.OpenEngSBService;
  * specific language governing permissions and limitations under the License.
  */
 
+/**
+ * Serves as baseclass for virtual connectors. Virtual connectors are proxies that delegate the invocation to other
+ * connectors in some way (e.g. connectors running on other machines). These connectors are just
+ * {@link InvocationHandler}s that are used by {@link VirtualConnectorFactory}s to create proxies that are registered as
+ * services, to make the virtualisation transparent.
+ */
 public abstract class VirtualConnector extends AbstractOpenEngSBService implements InvocationHandler {
 
     /**
@@ -57,6 +63,9 @@ public abstract class VirtualConnector extends AbstractOpenEngSBService implemen
         return doInvoke(proxy, method, args);
     }
 
+    /**
+     * @see InvocationHandler#invoke(Object, Method, Object[])
+     */
     protected abstract Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable;
 
 }

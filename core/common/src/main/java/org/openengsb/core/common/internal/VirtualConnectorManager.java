@@ -41,6 +41,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 
+/**
+ * This class is used to automatically register {@link ConnectorProvider}s for Virtual connectors. With every
+ * {@link VirtualConnectorProvider} or {@link DomainProvider} registered or removed the {@link ConnectorProvider}s for
+ * the virtual connectors are managed accordingly.
+ */
 public class VirtualConnectorManager {
 
     private static class Registration {
