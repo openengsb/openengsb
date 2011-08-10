@@ -16,6 +16,7 @@
  */
 package org.openengsb.core.common;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -30,7 +31,11 @@ public abstract class AbstractDelegateStrategy implements CompositeConnectorStra
 
     @Override
     public Object invoke(List<ServiceReference> services, Method method, Object... args) throws Throwable {
-        return method.invoke(createDelegate(services), args);
+        try {
+            return method.invoke(createDelegate(services), args);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
     }
 
     protected abstract Object createDelegate(List<ServiceReference> services);

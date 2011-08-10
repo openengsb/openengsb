@@ -42,6 +42,7 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -53,22 +54,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class CompositeAuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
     private AuthenticationProvider authenticationManager;
-
-    @Test
-    public void testAuthenticateBundle() throws Exception {
-        Authentication authenticatedToken =
-            authenticationManager.authenticate(new BundleAuthenticationToken("mybundle", "mykey"));
-        assertThat(authenticatedToken.isAuthenticated(), is(true));
-        assertThat(authenticatedToken.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl(
-            "ROLE_ADMIN")));
-    }
-
-    @Test
-    public void testAuthenticateUser() throws Exception {
-        Authentication authenticatedToken =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("testuser", "password"));
-        assertThat(authenticatedToken.isAuthenticated(), is(true));
-    }
 
     @Before
     public void setUp() {
@@ -94,6 +79,29 @@ public class CompositeAuthenticationProviderTest extends AbstractOsgiMockService
             (AuthenticationProvider) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ AuthenticationProvider.class, }, compositeConnector);
         authenticationManager = newProxyInstance;
+    }
+
+    @Test
+    public void testAuthenticateBundle_shouldReturnAuthenticatedToken() throws Exception {
+        Authentication authenticatedToken =
+            authenticationManager.authenticate(new BundleAuthenticationToken("mybundle", "mykey"));
+        assertThat(authenticatedToken.isAuthenticated(), is(true));
+        assertThat(authenticatedToken.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl(
+            "ROLE_ADMIN")));
+    }
+
+    @Test
+    public void testAuthenticateUser_shouldReturnAuthenticatedToken() throws Exception {
+        Authentication authenticatedToken =
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("testuser", "password"));
+        assertThat(authenticatedToken.isAuthenticated(), is(true));
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void testAuthenticateUserWithWrongPassword_shouldThrowException() throws Exception {
+        Authentication authenticatedToken =
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("testuser", "password2"));
+        assertThat(authenticatedToken.isAuthenticated(), is(true));
     }
 
     @Override
