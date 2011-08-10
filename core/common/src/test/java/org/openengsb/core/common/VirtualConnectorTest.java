@@ -53,12 +53,10 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
 
         public DummyVirtualConnector(String instanceId) {
             super(instanceId);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         protected Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-            // TODO Auto-generated method stub
             return null;
         }
 
