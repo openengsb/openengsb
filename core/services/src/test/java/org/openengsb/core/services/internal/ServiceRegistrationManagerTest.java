@@ -180,20 +180,6 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 
-    // private void registerMockedDomainProvider() {
-    // DomainProvider domainProvider = mock(DomainProvider.class);
-    // when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-    // @Override
-    // public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
-    // return NullDomain.class;
-    // }
-    // });
-    // when(domain
-    // Hashtable<String, Object> domainProviderProps = new Hashtable<String, Object>();
-    // domainProviderProps.put(Constants.DOMAIN_KEY, "test");
-    // registerService(domainProvider, domainProviderProps, DomainProvider.class);
-    // }
-
     @Override
     protected void setBundleContext(BundleContext bundleContext) {
         serviceUtils = new DefaultOsgiUtilsService();
