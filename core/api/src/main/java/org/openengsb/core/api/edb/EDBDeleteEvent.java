@@ -18,7 +18,7 @@
 package org.openengsb.core.api.edb;
 
 /**
- * Represents a delete Event. Try to delete an OpenEngSBModel object in the EDB with the given oid.
+ * Represents a delete Event. Try to delete an OpenEngSBModel object in the EDB with the given model id.
  */
 public class EDBDeleteEvent extends EDBEvent {
     

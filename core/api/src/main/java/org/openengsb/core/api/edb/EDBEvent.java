@@ -20,34 +20,35 @@ package org.openengsb.core.api.edb;
 import org.openengsb.core.api.Event;
 
 /**
- * Interface for easier maintaining of the Events in the DomainEventsProxyFacory
+ * Interface for easier maintaining of the Events in the DomainEventsProxyFacory. Saves the domain id, connector id and
+ * instance id so that the EDB is able to save this detail information.
  */
 public abstract class EDBEvent extends Event {
-    
+
     private String domainId;
     private String connectorId;
     private String instanceId;
-    
+
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
-    
+
     public String getDomainId() {
         return domainId;
     }
-    
+
     public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
     }
-    
+
     public String getConnectorId() {
         return connectorId;
     }
-    
+
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
     }
-    
+
     public String getInstanceId() {
         return instanceId;
     }

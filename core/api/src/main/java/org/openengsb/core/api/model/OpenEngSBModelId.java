@@ -22,6 +22,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This annotation shall be used to define an id for a domain model. Only works on domain models which have been proxied
+ * through the EKB. This annotation should mark the setter method of the field which shall be the id of the domain
+ * model. If a domain model has a id, the saving name of a domain model in the EDB is well defined, if not the model
+ * will be saved with a random name. If using a not EKB proxied, the id can be set with an OpenEngSBModelEntry with the
+ * key "edbId".
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface OpenEngSBModelId {

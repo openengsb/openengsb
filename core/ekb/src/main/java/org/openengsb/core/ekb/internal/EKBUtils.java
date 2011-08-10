@@ -30,6 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+/**
+ * A class which contains common used functionalities in the EKB bundle.
+ */
 public final class EKBUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(EKBUtils.class);
 

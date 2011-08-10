@@ -20,7 +20,7 @@ package org.openengsb.core.api.edb;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Represents a update Event. Try to update an OpenEngSBModel object in the EDB under the oid.
+ * Represents a update Event. Try to update an OpenEngSBModel object in the EDB.
  */
 public class EDBUpdateEvent extends EDBEvent {
 

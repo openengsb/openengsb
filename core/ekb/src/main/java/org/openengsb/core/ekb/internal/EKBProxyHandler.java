@@ -31,7 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simulates an implementation for a model interface. This class is only able to handle getters and setters of models.
+ * Simulates an implementation for a model interface. This class is only able to handle getters and setters, toString
+ * and getOpenEngSBModelEntries of domain models.
  */
 public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
 

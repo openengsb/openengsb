@@ -20,9 +20,7 @@ package org.openengsb.core.api.edb;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Represents a create Event. Try to insert an OpenEngSBModel object into the EDB. The oid defines under which
- * name the model should be saved. Because this name should be unique, it is recommended to use a connector name + id
- * for the name.
+ * Represents a create Event. Try to insert an OpenEngSBModel object into the EDB.
  */
 public class EDBCreateEvent extends EDBEvent {
 

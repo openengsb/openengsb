@@ -29,6 +29,9 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
+/**
+ * Base class for implementations of connector services. It also contains the method for sending EDB events to the EDB.
+ */
 public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngSBService implements Connector {
 
     protected String domainId;

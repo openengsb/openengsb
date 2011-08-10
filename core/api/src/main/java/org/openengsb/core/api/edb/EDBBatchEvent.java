@@ -22,6 +22,9 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
+/**
+ * Represents a batch possibility to send a list of update, delete and create commands.
+ */
 public class EDBBatchEvent extends EDBEvent {
     private List <OpenEngSBModel> creates;
     private List <OpenEngSBModel> updates;
