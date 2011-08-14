@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.core</groupId>
@@ -43,8 +44,10 @@
   <description>
     OpenEngSB Common Core Utility classes, abstract classes to be extended by Domains and Connectors
     (Domains, DomainEvents, DomainProviders, ServiceManagers). The abstract and utility classes should
-    help a great deal during developing for the OpenEngSB. Though non of the classes in this package are
-    required and can be easily worked-around.
+    help a great deal
+    during developing for the OpenEngSB. Though non of the classes in this package are
+    required and can be easily
+    worked-around.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -138,6 +141,11 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils-core</artifactId>
+      <version>1.8.3</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
