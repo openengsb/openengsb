@@ -96,7 +96,6 @@
 	    <!-- We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
 		 Additional domains can be installed any time. -->
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

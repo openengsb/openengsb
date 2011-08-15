@@ -115,6 +115,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "aconnector");
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, "mydomain");
         registerService(factory, props, ConnectorInstanceFactory.class);
 
         createDomainProviderMock(NullDomain.class, "mydomain");

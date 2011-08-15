@@ -54,6 +54,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(domainMock);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
+        props.put("domain", "a");
         registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -83,6 +84,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
+        props.put("domain", "a");
         registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {

@@ -73,7 +73,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorProvider provider = createConnectorProviderMock("testconnector", "testdomain");
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
-        factoryMock = createFactoryMock("testconnector", "testdomain");
+        factoryMock = createFactoryMock("testconnector", NullDomainImpl.class, "testdomain");
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }

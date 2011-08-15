@@ -189,13 +189,10 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
         String connectorType = id.getConnectorType();
-        if (connectorType.equals(Constants.EXTERNAL_CONNECTOR_PROXY)) {
-            DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-            return ProxyServiceFactory.getInstance(domainProvider);
-        }
         Filter connectorFilter =
             serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
+                String.format("(&(%s=%s)(%s=%s))", Constants.DOMAIN_KEY, id.getDomainType(), Constants.CONNECTOR_KEY,
+                    connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;
