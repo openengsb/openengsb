@@ -16,4 +16,8 @@
 #
 
 Import-Package: sun.reflect, *
+
+# The JMS ports integration calls real endpoints and services dynamically.
+# Therefore it requires to access classes from otehr packages dynamically.
 DynamicImport-Package: *
+

@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
+# This import is required since the workflow needs to access and wrap classes
+# from various different bundles. Since we have no loadtime weaving available
+# right now this have to be done manually
 DynamicImport-Package: *
 
 Import-Package: org.drools; bundle-symbolic-name="org.drools.core",\

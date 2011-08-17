@@ -25,4 +25,7 @@ org.drools.event; bundle-symbolic-name="org.drools.core",\
 org.drools.rule, org.drools.compiler,\
 *
 
+# The UI admin needs to represent various services which needs to be imported
+# dynamically.
 DynamicImport-Package: *
+

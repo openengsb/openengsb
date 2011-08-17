@@ -17,6 +17,7 @@
 
 Import-Package: sun.reflect,javax.servlet;version="2.5",javax.servlet*;version="2.5", *
 
-# This import is required since the WS package relies heavily on reflection and loading of calling classes at runtime
+# This import is required since the WS package relies heavily on reflection and 
+# loading of calling classes at runtime
 DynamicImport-Package: *
 

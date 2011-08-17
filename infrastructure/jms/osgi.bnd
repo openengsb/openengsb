@@ -16,5 +16,8 @@
 #
 
 Import-Package: sun.reflect, *
+
+# The JMS infrastructure creates an external package requiring to relay
+# on those packages dynamically.
 DynamicImport-Package: *
 
