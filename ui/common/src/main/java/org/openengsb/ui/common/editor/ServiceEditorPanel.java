@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,12 +52,14 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.validation.FormValidator;
 import org.osgi.framework.Constants;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
  * Creates a panel containing a service-editor, for usage in forms.
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
@@ -124,7 +125,7 @@ public class ServiceEditorPanel extends Panel {
     private final List<AttributeDefinition> attributes;
     private Model<Boolean> validatingModel;
     private WebMarkupContainer propertiesContainer;
-    private ListView<Map.Entry<String, Object>> propertiesList;
+    private ListView<MapEntry<String, Object>> propertiesList;
     private final Form<?> parentForm;
     private static final List<String> LOCKED_PROPERTIES = Arrays.asList(org.openengsb.core.api.Constants.ID_KEY,
         org.openengsb.core.api.Constants.CONNECTOR_KEY, org.openengsb.core.api.Constants.DOMAIN_KEY,
@@ -139,6 +140,19 @@ public class ServiceEditorPanel extends Panel {
     }
 
     public void reloadList(Map<String, Object> properties) {
+        List<MapEntry<String, Object>> entryList = transformToEntryList(properties);
+
+        Collections.sort(entryList, new Comparator<MapEntry<String, Object>>() {
+            @Override
+            public int compare(MapEntry<String, Object> o1, MapEntry<String, Object> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+
+        propertiesList.setList(entryList);
+    }
+
+    public List<MapEntry<String, Object>> transformToEntryList(Map<String, Object> properties) {
         Set<Entry<String, Object>> entrySet = properties.entrySet();
         Collection<Entry<String, Object>> filtered =
             Collections2.filter(entrySet, new Predicate<Entry<String, Object>>() {
@@ -147,15 +161,17 @@ public class ServiceEditorPanel extends Panel {
                     return !LOCKED_PROPERTIES.contains(input.getKey());
                 }
             });
-        List<Entry<String, Object>> entryList = new LinkedList<Map.Entry<String, Object>>(filtered);
-        Collections.sort(entryList, new Comparator<Map.Entry<String, Object>>() {
-            @Override
-            public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
+        Collection<MapEntry<String, Object>> transformed =
+            Collections2.transform(filtered, new EntryConverterFunction<String, Object>());
+        List<MapEntry<String, Object>> entryList = Lists.newArrayList(transformed);
+        return entryList;
+    }
 
-        propertiesList.setList(entryList);
+    private class EntryConverterFunction<K, V> implements Function<Map.Entry<K, V>, MapEntry<K, V>> {
+        @Override
+        public MapEntry<K, V> apply(Entry<K, V> input) {
+            return new MapEntry<K, V>(input);
+        }
     }
 
     private void initPanel(List<AttributeDefinition> attributes, Map<String, String> attributeMap,
@@ -167,11 +183,11 @@ public class ServiceEditorPanel extends Panel {
         CheckBox checkbox = new CheckBox("validate", validatingModel);
         add(checkbox);
 
-        propertiesList = new ListView<Map.Entry<String, Object>>("properties") {
+        propertiesList = new ListView<MapEntry<String, Object>>("properties") {
             @Override
-            protected void populateItem(final ListItem<Map.Entry<String, Object>> item) {
+            protected void populateItem(final ListItem<MapEntry<String, Object>> item) {
                 item.setOutputMarkupId(true);
-                final Entry<String, Object> modelObject = item.getModelObject();
+                final MapEntry<String, Object> modelObject = item.getModelObject();
                 IModel<String> keyModel = new PropertyModel<String>(modelObject, "key");
                 item.add(new Label("key", keyModel));
 
