@@ -181,7 +181,8 @@ This project includes:
   OpenEngSB :: Core :: API under Apache 2
   OpenEngSB :: Core :: Common under Apache 2
   OpenEngSB :: Core :: Console under Apache 2
-  OpenEngSB :: Core :: Enterprise Database under Apache 2
+  OpenEngSB :: Core :: Engineering Database under Apache 2
+  OpenEngSB :: Core :: Engineering Knowledge Base under Apache 2
   OpenEngSB :: Core :: Parent under Apache 2
   OpenEngSB :: Core :: Persistence Layer under Apache 2
   OpenEngSB :: Core :: Security under Apache 2
