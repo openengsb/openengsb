@@ -143,9 +143,9 @@
 
   <feature name="openengsb-ekb" version="${project.version}" description="OpenEngSB Engineering Knowledge Base">
     <details>
-      Feature adding the EKB functionality to the OpenEngSB. With the EKB it is possible to retrieve models from the 
-      EDB. Together with the EDB feature, the versioning and retrieving of versioned models is completely integrated
-      into the OpenEngSB.
+      Feature adding the Engineering Knowledge Base functionality to the OpenEngSB. With the EKB it is possible to 
+      retrieve models from the Engineering Database. Together with the EDB feature, the versioning and retrieving 
+      of versioned models is completely integrated into the OpenEngSB.
     </details>
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
