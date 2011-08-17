@@ -122,9 +122,9 @@ public interface EngineeringDatabaseService {
     List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
     
     /**
-     * processes an edb create event
+     * processes an edb insert event
      */
-    void processEDBCreateEvent(EDBCreateEvent event) throws EDBException;
+    void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
     
     /**
      * processes an edb delete event

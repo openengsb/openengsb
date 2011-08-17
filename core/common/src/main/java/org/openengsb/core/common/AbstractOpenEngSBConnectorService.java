@@ -21,11 +21,11 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
@@ -50,7 +50,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         throws EDBException {
         switch (type) {
             case INSERT:
-                EDBCreateEvent create = new EDBCreateEvent(model);
+                EDBInsertEvent create = new EDBInsertEvent(model);
                 enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
@@ -74,9 +74,9 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         enrichEDBEvent(batchEvent);
     }
 
-    public void addCreateModelToBatch(OpenEngSBModel model) {
+    public void addInsertModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelCreate(model);
+        batchEvent.addModelInsert(model);
     }
 
     public void addDeleteModelToBatch(String modelId) {

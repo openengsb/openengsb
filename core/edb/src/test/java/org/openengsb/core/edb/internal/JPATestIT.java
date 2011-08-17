@@ -34,9 +34,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
@@ -430,12 +430,12 @@ public class JPATestIT {
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
         TestModel model = new TestModel();
         model.setEdbId("createevent/1");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
+        db.processEDBInsertEvent(event);
     }
 
     @Test
@@ -443,11 +443,11 @@ public class JPATestIT {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("createevent/2");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
 
         EDBObject obj = db.getObject("testdomain/testconnector/createevent/2");
 
@@ -463,11 +463,11 @@ public class JPATestIT {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("batchevent/1");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
         
         EDBObject obj = db.getObject("testdomain/testconnector/batchevent/1");
         
@@ -484,7 +484,7 @@ public class JPATestIT {
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
         
-        e.addModelCreate(model2);
+        e.addModelInsert(model2);
         
         db.processEDBBatchEvent(e);
 
@@ -519,11 +519,11 @@ public class JPATestIT {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/2");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
 
         EDBObject obj = db.getObject("testdomain/testconnector/updateevent/2");
 
@@ -554,11 +554,11 @@ public class JPATestIT {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/3");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
 
         EDBObject obj = db.getObject("testdomain/testconnector/updateevent/3");
 
@@ -590,11 +590,11 @@ public class JPATestIT {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("updateevent/4");
-        EDBCreateEvent event = new EDBCreateEvent(model);
+        EDBInsertEvent event = new EDBInsertEvent(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
-        db.processEDBCreateEvent(event);
+        db.processEDBInsertEvent(event);
 
         model.setName("blab");
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));

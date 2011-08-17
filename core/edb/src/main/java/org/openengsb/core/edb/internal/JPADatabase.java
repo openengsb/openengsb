@@ -36,10 +36,10 @@ import javax.persistence.PersistenceContext;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
@@ -485,7 +485,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     }
 
     @Override
-    public void processEDBCreateEvent(EDBCreateEvent event) throws EDBException {
+    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
         LOGGER.debug("received create event");
         String oid = createOID(event.getModel(), event);
 
@@ -537,7 +537,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         LOGGER.debug("received batch event");
 
         List<String> deletions = checkDeletions(event.getDeletions(), event);
-        List<EDBObject> inserts = checkCreations(event.getCreations(), event);
+        List<EDBObject> inserts = checkCreations(event.getInserts(), event);
         List<EDBObject> updates = checkUpdates(event.getUpdates(), event);
 
         JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());

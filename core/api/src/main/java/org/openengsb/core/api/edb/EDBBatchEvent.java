@@ -23,21 +23,21 @@ import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Represents a batch possibility to send a list of update, delete and create commands.
+ * Represents a batch possibility to send a list of insert, delete and create commands.
  */
 public class EDBBatchEvent extends EDBEvent {
-    private List <OpenEngSBModel> creates;
+    private List <OpenEngSBModel> inserts;
     private List <OpenEngSBModel> updates;
     private List<String> deletes;
     
     public EDBBatchEvent() {
-        creates = new ArrayList<OpenEngSBModel>();
+        inserts = new ArrayList<OpenEngSBModel>();
         updates = new ArrayList<OpenEngSBModel>();
         deletes = new ArrayList<String>();
     }
     
-    public void addModelCreate(OpenEngSBModel model) {
-        creates.add(model);
+    public void addModelInsert(OpenEngSBModel model) {
+        inserts.add(model);
     }
     
     public void addModelUpdate(OpenEngSBModel model) {
@@ -48,8 +48,8 @@ public class EDBBatchEvent extends EDBEvent {
         deletes.add(oid);
     }
     
-    public List<OpenEngSBModel> getCreations() {
-        return creates;
+    public List<OpenEngSBModel> getInserts() {
+        return inserts;
     }
     
     public List<OpenEngSBModel> getUpdates() {

@@ -22,10 +22,10 @@ import java.lang.reflect.Method;
 
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.workflow.WorkflowException;
@@ -56,8 +56,8 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
         if (EDBEvent.class.isAssignableFrom(event.getClass())) {
             LOGGER.info("Forwarding event to edb service");
             try {
-                if (event instanceof EDBCreateEvent) {
-                    edbService.processEDBCreateEvent((EDBCreateEvent) event);
+                if (event instanceof EDBInsertEvent) {
+                    edbService.processEDBInsertEvent((EDBInsertEvent) event);
                 } else if (event instanceof EDBDeleteEvent) {
                     edbService.processEDBDeleteEvent((EDBDeleteEvent) event);
                 } else if (event instanceof EDBUpdateEvent) {

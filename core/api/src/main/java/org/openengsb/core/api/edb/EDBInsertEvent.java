@@ -22,11 +22,11 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 /**
  * Represents a create Event. Try to insert an OpenEngSBModel object into the EDB.
  */
-public class EDBCreateEvent extends EDBEvent {
+public class EDBInsertEvent extends EDBEvent {
 
     private OpenEngSBModel model;
 
-    public EDBCreateEvent(OpenEngSBModel model) {
+    public EDBInsertEvent(OpenEngSBModel model) {
         this.model = model;
     }
 

@@ -18,8 +18,8 @@
 package org.openengsb.core.api;
 
 import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBCreateEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 
 /**
@@ -31,11 +31,11 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
  */
 public interface DomainEvents {
 
-    void raiseEvent(EDBCreateEvent e);
+    void raiseEvent(EDBInsertEvent e);
 
     void raiseEvent(EDBDeleteEvent e);
 
     void raiseEvent(EDBUpdateEvent e);
-    
+
     void raiseEvent(EDBBatchEvent e);
 }
