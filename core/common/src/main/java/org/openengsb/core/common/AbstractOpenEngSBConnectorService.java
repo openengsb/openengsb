@@ -46,7 +46,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         super(instanceId);
     }
 
-    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, String modelId, DomainEvents events)
+    public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events)
         throws EDBException {
         switch (type) {
             case INSERT:
@@ -55,7 +55,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(modelId);
+                EDBDeleteEvent delete = new EDBDeleteEvent(model);
                 enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
@@ -79,9 +79,9 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         batchEvent.addModelInsert(model);
     }
 
-    public void addDeleteModelToBatch(String modelId) {
+    public void addDeleteModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelDelete(modelId);
+        batchEvent.addModelDelete(model);
     }
 
     public void addUpdateModelToBatch(OpenEngSBModel model) {

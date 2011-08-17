@@ -510,7 +510,9 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        EDBDeleteEvent event = new EDBDeleteEvent("deleteevent/1");
+        TestModel model = new TestModel();
+        model.setEdbId("deleteevent/1");
+        EDBDeleteEvent event = new EDBDeleteEvent(model);
         db.processEDBDeleteEvent(event);
     }
 

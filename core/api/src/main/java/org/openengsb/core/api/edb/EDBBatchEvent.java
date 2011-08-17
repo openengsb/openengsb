@@ -30,12 +30,12 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 public class EDBBatchEvent extends EDBEvent {
     private List<OpenEngSBModel> inserts;
     private List<OpenEngSBModel> updates;
-    private List<String> deletes;
+    private List<OpenEngSBModel> deletes;
 
     public EDBBatchEvent() {
         inserts = new ArrayList<OpenEngSBModel>();
         updates = new ArrayList<OpenEngSBModel>();
-        deletes = new ArrayList<String>();
+        deletes = new ArrayList<OpenEngSBModel>();
     }
 
     public void addModelInsert(OpenEngSBModel model) {
@@ -46,8 +46,8 @@ public class EDBBatchEvent extends EDBEvent {
         updates.add(model);
     }
 
-    public void addModelDelete(String oid) {
-        deletes.add(oid);
+    public void addModelDelete(OpenEngSBModel model) {
+        deletes.add(model);
     }
 
     public List<OpenEngSBModel> getInserts() {
@@ -58,7 +58,7 @@ public class EDBBatchEvent extends EDBEvent {
         return updates;
     }
 
-    public List<String> getDeletions() {
+    public List<OpenEngSBModel> getDeletions() {
         return deletes;
     }
 

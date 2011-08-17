@@ -504,7 +504,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         LOGGER.debug("received delete event");
 
-        String oid = createOIDPrefix(event) + event.getModelId();
+        String oid = createOID(event.getModel(), event);
 
         if (!checkIfActiveOidExisting(oid)) {
             throw new EDBException("the object under given oid is not existing or already deleted");
@@ -569,10 +569,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return objects;
     }
 
-    private List<String> checkDeletions(List<String> deletions, EDBEvent event) throws EDBException {
+    private List<String> checkDeletions(List<OpenEngSBModel> deletions, EDBEvent event) throws EDBException {
         List<String> oids = new ArrayList<String>();
-        for (String modelId : deletions) {
-            String oid = createOIDPrefix(event) + modelId;
+        for (OpenEngSBModel model : deletions) {
+            String oid = createOID(model, event);
             if (!checkIfActiveOidExisting(oid)) {
                 throw new EDBException("the object under given oid is not existing or already deleted");
             } else {
