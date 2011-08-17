@@ -18,17 +18,31 @@
 package org.openengsb.core.api;
 
 /**
- * Base interface for connector implementations, it makes the transparent setting of domainId and connectorId in 
- * background possible. Important for enhancing of EDB events so that the EDB knows from where the change came. 
- * See AbstractOpenEngSBConnectorService
+ * Base interface for connector implementations, it makes the transparent setting of domainId and connectorId in
+ * background possible. Important for enhancing of EDB events so that the EDB knows from where the change came. See
+ * AbstractOpenEngSBConnectorService
  */
 public interface Connector extends Domain {
 
+    /**
+     * sets the domain id of the domain used by the connector. Mainly used by the ConnectorRegistrationManagerImpl class
+     * when a new connector is registered
+     */
     void setDomainId(String domainId);
 
+    /**
+     * returns the defined id of the used domain by the connector
+     */
     String getDomainId();
 
+    /**
+     * sets the connector id of the used connector. Mainly used by the ConnectorRegistrationManagerImpl class when a new
+     * connector is registered
+     */
     void setConnectorId(String connectorId);
 
+    /**
+     * returns the defined id of the used connector
+     */
     String getConnectorId();
 }

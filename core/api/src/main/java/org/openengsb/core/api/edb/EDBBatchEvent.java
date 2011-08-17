@@ -23,39 +23,41 @@ import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Represents a batch possibility to send a list of insert, delete and create commands.
+ * Represents a batch possibility to send a list of insert, delete and create commands. The reason for this batch event
+ * is that it make it possible to do several inserts, updates and deletes in one commit of the EDB. If you use the other
+ * three events, every event will be handled in an own EDB commit.
  */
 public class EDBBatchEvent extends EDBEvent {
-    private List <OpenEngSBModel> inserts;
-    private List <OpenEngSBModel> updates;
+    private List<OpenEngSBModel> inserts;
+    private List<OpenEngSBModel> updates;
     private List<String> deletes;
-    
+
     public EDBBatchEvent() {
         inserts = new ArrayList<OpenEngSBModel>();
         updates = new ArrayList<OpenEngSBModel>();
         deletes = new ArrayList<String>();
     }
-    
+
     public void addModelInsert(OpenEngSBModel model) {
         inserts.add(model);
     }
-    
+
     public void addModelUpdate(OpenEngSBModel model) {
         updates.add(model);
     }
-    
+
     public void addModelDelete(String oid) {
         deletes.add(oid);
     }
-    
+
     public List<OpenEngSBModel> getInserts() {
         return inserts;
     }
-    
+
     public List<OpenEngSBModel> getUpdates() {
         return updates;
     }
-    
+
     public List<String> getDeletions() {
         return deletes;
     }
