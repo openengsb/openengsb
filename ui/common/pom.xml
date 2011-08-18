@@ -84,6 +84,34 @@
         </includes>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <!--<directory>src/main/resources</directory> -->
+        <filtering>false</filtering>
+        <directory>${basedir}/src/main/java</directory>
+        <includes>
+          <include>**/**.html</include>
+          <include>**/**.properties</include>
+          <include>**/**.css</include>
+          <include>**/**.js</include>
+          <include>**/**.png</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/**.*</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.info</include>
+        </includes>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
