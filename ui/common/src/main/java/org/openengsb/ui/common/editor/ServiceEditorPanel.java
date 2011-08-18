@@ -162,15 +162,22 @@ public class ServiceEditorPanel extends Panel {
                 }
             });
         Collection<MapEntry<String, Object>> transformed =
-            Collections2.transform(filtered, new EntryConverterFunction<String, Object>());
+            Collections2.transform(filtered, new EntryConverterFunction<String, Object>(properties));
         List<MapEntry<String, Object>> entryList = Lists.newArrayList(transformed);
         return entryList;
     }
 
     private class EntryConverterFunction<K, V> implements Function<Map.Entry<K, V>, MapEntry<K, V>> {
+
+        private Map<K, V> originalMap;
+
+        protected EntryConverterFunction(Map<K, V> originalMap) {
+            this.originalMap = originalMap;
+        }
+
         @Override
         public MapEntry<K, V> apply(Entry<K, V> input) {
-            return new MapEntry<K, V>(input);
+            return new MapEntry<K, V>(originalMap, input);
         }
     }
 
