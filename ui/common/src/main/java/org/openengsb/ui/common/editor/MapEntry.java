@@ -18,21 +18,20 @@
 package org.openengsb.ui.common.editor;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Map.Entry;
 
 @SuppressWarnings("serial")
 public class MapEntry<K, V> implements Entry<K, V>, Serializable {
 
+    private Map<K, V> originalMap;
     private K key;
     private V value;
 
-    public MapEntry(Entry<K, V> original) {
-        this(original.getKey(), original.getValue());
-    }
-
-    protected MapEntry(K key, V value) {
-        this.key = key;
-        this.value = value;
+    public MapEntry(Map<K, V> originalMap, Entry<K, V> originalEntry) {
+        this.originalMap = originalMap;
+        this.key = originalEntry.getKey();
+        this.value = originalEntry.getValue();
     }
 
     @Override
@@ -47,9 +46,8 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable {
 
     @Override
     public V setValue(V value) {
-        V old = this.value;
         this.value = value;
-        return old;
+        return originalMap.put(key, value);
     }
 
 }
