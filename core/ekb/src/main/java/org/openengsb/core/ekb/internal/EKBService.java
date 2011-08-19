@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.ekb.EKBProxyable;
 import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -51,13 +50,6 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
         return (T) createModelObject(model, entries);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends EKBProxyable> T createEKBProxyableObject(Class<T> proxyable) {
-        LOGGER.debug("createEKBProxyableObject for proxyable interface {} called", proxyable.getName());
-        return (T) createModelObject(proxyable);
     }
 
     private Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) {
@@ -90,19 +82,19 @@ public class EKBService implements EngineeringKnowledgeBaseService {
 
     @SuppressWarnings("unchecked")
     private <T extends OpenEngSBModel> T convertEDBObjectToModel(Class<T> model, EDBObject object) {
-        return (T) convertEDBObjectToModel(model, object, "");
+        return (T) convertEDBObjectToUncheckedModel(model, object);
     }
 
-    private Object convertEDBObjectToModel(Class<?> model, EDBObject object, String propertyPrefix) {
+    private Object convertEDBObjectToUncheckedModel(Class<?> model, EDBObject object) {
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
 
         for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
-            Method setterMethod = propertyDescriptor.getWriteMethod();
             if (propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
-            Object value = getValueForProperty(propertyDescriptor, object, propertyPrefix);
+            Method setterMethod = propertyDescriptor.getWriteMethod();
+            Object value = getValueForProperty(propertyDescriptor, object);
             if (value != null) {
                 EKBUtils.invokeSetterMethod(setterMethod, instance, value);
                 nothingSet = false;
@@ -115,31 +107,24 @@ public class EKBService implements EngineeringKnowledgeBaseService {
             return instance;
         }
     }
-    
-    private Object getValueForProperty(PropertyDescriptor propertyDescriptor, EDBObject object, String propertyPrefix) {
+
+    private Object getValueForProperty(PropertyDescriptor propertyDescriptor, EDBObject object) {
         Method setterMethod = propertyDescriptor.getWriteMethod();
-        String propertyName = propertyPrefix + propertyDescriptor.getName();
+        String propertyName = propertyDescriptor.getName();
         Object value = object.get(propertyName);
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
-        if (object.containsKey(propertyName) || object.containsKey(propertyName + "0")) {
-            // value might be enum or a simple list
+        if (object.containsKey(propertyName + "0")) {
+            Class<?> clazz = getGenericParameterClass(setterMethod);
+            value = getListValue(clazz, propertyName, object);
+        } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
+            value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
+        } else if (object.containsKey(propertyName)) {
             if (parameterType.isEnum()) {
                 value = getEnumValue(parameterType, value);
-            } else if (List.class.isAssignableFrom(parameterType)) {
-                Class<?> clazz = getGenericParameterClass(setterMethod);
-                value = getListValue(clazz, propertyName, object);
-            }
-        } else if (parameterType.isInterface()) {
-            // value might be a complex type or a list of complex types
-            if (List.class.isAssignableFrom(parameterType)) {
-                Class<?> clazz = getGenericParameterClass(setterMethod);
-                value = getListValue(clazz, propertyName, object);
-            } else {
-                value = convertEDBObjectToModel(parameterType, object, propertyName + ".");
             }
         }
-        
+
         return value;
     }
 
@@ -155,15 +140,16 @@ public class EKBService implements EngineeringKnowledgeBaseService {
         for (int i = 0;; i++) {
             Object obj;
 
-            if (type.isInterface() && !List.class.isAssignableFrom(type)) {
-                obj = convertEDBObjectToModel(type, object, propertyName + i + ".");
+            if (!object.containsKey(propertyName + i)) {
+                break;
+            }
+
+            if (OpenEngSBModel.class.isAssignableFrom(type)) {
+                obj = convertEDBObjectToUncheckedModel(type, edbService.getObject(object.getString(propertyName + i)));
             } else {
                 obj = object.get(propertyName + i);
             }
-
-            if (obj == null) {
-                break;
-            }
+            
             temp.add(obj);
         }
         return temp;

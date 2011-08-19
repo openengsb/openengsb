@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -134,10 +135,17 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
             Class<?> clasz = entry.getType();
             if (clasz.isEnum() && entry.getValue() != null) {
                 entries.add(new OpenEngSBModelEntry(entry.getKey(), entry.getValue().toString(), String.class));
-            } else if (List.class.isAssignableFrom(clasz)) {
-                entries.addAll(createListElements((List<?>) entry.getValue(), entry.getKey()));
-            } else if (clasz.isInterface() && entry.getValue() != null) {
-                entries.addAll(createSubmodelElements(clasz, entry.getValue(), entry.getKey() + "."));
+            } else if (List.class.isAssignableFrom(clasz) && entry.getValue() != null) {
+                List<?> list = (List<?>) entry.getValue();
+                if (list.size() == 0) {
+                    continue;
+                }
+                Class<?> clazz = list.get(0).getClass();
+                if (OpenEngSBModel.class.isAssignableFrom(clazz)) {
+                    entries.add(entry);
+                } else {
+                    entries.addAll(createListElements((List<?>) entry.getValue(), entry.getKey()));
+                }
             } else {
                 entries.add(entry);
             }
@@ -150,23 +158,8 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
         if (list == null) {
             return entries;
         }
-        Class<?> clazz = list.get(0).getClass();
         for (int i = 0; i < list.size(); i++) {
-            if (clazz.isInterface() || clazz.getName().contains("$Proxy")) {
-                entries.addAll(createSubmodelElements(clazz, list.get(i), propertyName + i + "."));
-            } else {
-                entries.add(new OpenEngSBModelEntry(propertyName + i, list.get(i), list.get(i).getClass()));
-            }
-        }
-        return entries;
-    }
-
-    private List<OpenEngSBModelEntry> createSubmodelElements(Class<?> clazz, Object object, String propertyPrefix) {
-        List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-        for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(clazz)) {
-            String propertyName = propertyPrefix + propertyDescriptor.getName();
-            Object obj = EKBUtils.invokeGetterMethod(propertyDescriptor.getReadMethod(), object);
-            entries.add(new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
+            entries.add(new OpenEngSBModelEntry(propertyName + i, list.get(i), list.get(i).getClass()));
         }
         return entries;
     }

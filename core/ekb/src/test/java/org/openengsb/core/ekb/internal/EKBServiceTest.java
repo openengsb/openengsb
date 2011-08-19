@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -54,14 +55,26 @@ public class EKBServiceTest {
         edbObject.put("list0", "blub");
         edbObject.put("list1", "blab");
         edbObject.put("list2", "blob");
-        edbObject.put("sub.id", "testid");
-        edbObject.put("sub.value", "testvalue");
-        edbObject.put("subs0.id", "AAAAA");
-        edbObject.put("subs0.value", "BBBBB");
-        edbObject.put("subs1.id", "CCCCC");
-        edbObject.put("subs1.value", "DDDDD");
+        edbObject.put("sub", "suboid1");
+        edbObject.put("subs0", "suboid2");
+        edbObject.put("subs1", "suboid3");
+
+        EDBObject subObject1 = new EDBObject("suboid1");
+        subObject1.put("id", "testid");
+        subObject1.put("value", "testvalue");
+
+        EDBObject subObject2 = new EDBObject("suboid2");
+        subObject2.put("id", "AAAAA");
+        subObject2.put("value", "BBBBB");
+
+        EDBObject subObject3 = new EDBObject("suboid3");
+        subObject3.put("id", "CCCCC");
+        subObject3.put("value", "DDDDD");
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
+        when(edbService.getObject("suboid1")).thenReturn(subObject1);
+        when(edbService.getObject("suboid2")).thenReturn(subObject2);
+        when(edbService.getObject("suboid3")).thenReturn(subObject3);
 
         this.service.setEdbService(edbService);
     }
@@ -179,8 +192,8 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 6 because the model define 6 simple fields
-        assertThat(entries.size(), is(6));
+        // 8 because the model define 8 fields
+        assertThat(entries.size(), is(8));
     }
 
     @Test
@@ -197,7 +210,7 @@ public class EKBServiceTest {
         }
         assertThat(tailEntry, is(true));
     }
-    
+
     @Test
     public void testFunctionalityOfRemovingTailInformation_shouldWork() {
         TestModel model = service.createEmptyModelObject(TestModel.class);
@@ -210,17 +223,17 @@ public class EKBServiceTest {
                 tailEntry = true;
             }
         }
-        
+
         model.removeOpenEngSBModelEntry("tailentry");
-        
+
         boolean tailAway = true;
-        
+
         for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
             if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
                 tailEntry = false;
             }
         }
-        
+
         assertThat(tailEntry, is(true));
         assertThat(tailAway, is(true));
     }
@@ -258,20 +271,22 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        boolean subValue1 = false;
-        boolean subValue2 = false;
+        SubModel sub = model.getSub();
+
+        boolean subValue = false;
 
         for (OpenEngSBModelEntry entry : entries) {
-            if (entry.getKey().equals("sub.id") && entry.getValue().equals("testid")) {
-                subValue1 = true;
-            }
-            if (entry.getKey().equals("sub.value") && entry.getValue().equals("testvalue")) {
-                subValue2 = true;
+            if (entry.getKey().equals("sub")) {
+                SubModel s = (SubModel) entry.getValue();
+                if (s.getId().equals(sub.getId()) && s.getValue().equals(sub.getValue())) {
+                    subValue = true;
+                }
             }
         }
 
-        assertThat(subValue1, is(true));
-        assertThat(subValue2, is(true));
+        assertThat(subValue, is(true));
+        assertThat(sub.getId(), is("testid"));
+        assertThat(sub.getValue(), is("testvalue"));
     }
 
     @Test
@@ -280,30 +295,25 @@ public class EKBServiceTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        boolean subValue1 = false;
-        boolean subValue2 = false;
-        boolean subValue3 = false;
-        boolean subValue4 = false;
+        SubModel subModel1 = null;
+        SubModel subModel2 = null;
 
         for (OpenEngSBModelEntry entry : entries) {
-            if (entry.getKey().equals("subs0.id") && entry.getValue().equals("AAAAA")) {
-                subValue1 = true;
-            }
-            if (entry.getKey().equals("subs0.value") && entry.getValue().equals("BBBBB")) {
-                subValue2 = true;
-            }
-            if (entry.getKey().equals("subs1.id") && entry.getValue().equals("CCCCC")) {
-                subValue3 = true;
-            }
-            if (entry.getKey().equals("subs1.value") && entry.getValue().equals("DDDDD")) {
-                subValue4 = true;
+            if (entry.getKey().equals("subs")) {
+                @SuppressWarnings("unchecked")
+                List<SubModel> subModels = (List<SubModel>) entry.getValue();
+                subModel1 = subModels.get(0);
+                subModel2 = subModels.get(1);
             }
         }
 
-        assertThat(subValue1, is(true));
-        assertThat(subValue2, is(true));
-        assertThat(subValue3, is(true));
-        assertThat(subValue4, is(true));
+        assertThat(subModel1, notNullValue());
+        assertThat(subModel2, notNullValue());
+
+        assertThat(subModel1.getId(), is("AAAAA"));
+        assertThat(subModel1.getValue(), is("BBBBB"));
+        assertThat(subModel2.getId(), is("CCCCC"));
+        assertThat(subModel2.getValue(), is("DDDDD"));
     }
 
     @Test
@@ -474,33 +484,5 @@ public class EKBServiceTest {
 
         assertThat(testExists, is(true));
         assertThat(testValue, nullValue());
-    }
-
-    @Test
-    public void testCreateProxyableObject_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-
-        SubModel sub = service.createEKBProxyableObject(SubModel.class);
-        sub.setId("testid");
-        sub.setValue("testvalue");
-
-        model.setSub(sub);
-
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-
-        boolean subValue1 = false;
-        boolean subValue2 = false;
-
-        for (OpenEngSBModelEntry entry : entries) {
-            if (entry.getKey().equals("sub.id") && entry.getValue().equals("testid")) {
-                subValue1 = true;
-            }
-            if (entry.getKey().equals("sub.value") && entry.getValue().equals("testvalue")) {
-                subValue2 = true;
-            }
-        }
-
-        assertThat(subValue1, is(true));
-        assertThat(subValue2, is(true));
     }
 }

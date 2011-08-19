@@ -33,11 +33,6 @@ public interface EngineeringKnowledgeBaseService {
      * Creates a proxy for the model interface which simulates an implementation of the interface.
      */
     <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries);
-    
-    /**
-     * Creates a proxy for a ekb proxyable object. Needed for submodel objects.
-     */
-    <T extends EKBProxyable> T createEKBProxyableObject(Class<T> proxyable);
 
     /**
      * Loads the most actual tool data from the given oid

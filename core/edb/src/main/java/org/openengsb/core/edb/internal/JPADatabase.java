@@ -18,6 +18,7 @@
 package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -383,25 +383,182 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return getStateOfLastCommitMatching(query);
     }
 
-    private Integer getVersionOfOid(String oid) throws EDBException {
-        return dao.getVersionOfOid(oid);
+    @Override
+    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
+        LOGGER.debug("received insert event");
+
+        makeEDBActions(Arrays.asList(event.getModel()), null, null, event);
+
+        LOGGER.debug("successfully inserted model");
     }
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-        dao = new DefaultJPADao(entityManager);
+    @Override
+    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
+        LOGGER.debug("received delete event");
+
+        makeEDBActions(null, null, Arrays.asList(event.getModel()), event);
+
+        LOGGER.debug("successfully deleted model");
     }
 
-    private EDBObject convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
+    @Override
+    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        LOGGER.debug("received update event");
+
+        makeEDBActions(null, Arrays.asList(event.getModel()), null, event);
+
+        LOGGER.debug("successfully updated model");
+    }
+
+    @Override
+    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
+        LOGGER.debug("received batch event");
+
+        makeEDBActions(event.getInserts(), event.getUpdates(), event.getDeletions(), event);
+
+        LOGGER.debug("successfully run through the edb batch event");
+    }
+
+    private void makeEDBActions(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes, EDBEvent event) throws EDBException {
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+
+        if (inserts != null) {
+            for (EDBObject object : checkInserts(inserts, event)) {
+                commit.add(object);
+            }
+        }
+        if (deletes != null) {
+            for (String oid : checkDeletions(deletes, event)) {
+                commit.delete(oid);
+            }
+        }
+        if (updates != null) {
+            for (EDBObject object : checkUpdates(updates, event)) {
+                commit.add(object);
+            }
+        }
+
+        this.commit(commit);
+    }
+
+    private List<EDBObject> checkInserts(List<OpenEngSBModel> inserts, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : inserts) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            if (checkIfActiveOidExisting(oid)) {
+                throw new EDBException("object under the given oid is already existing");
+            } else {
+                objects.addAll(convertModelToEDBObject(model, oid, event, 1));
+            }
+        }
+        return objects;
+    }
+
+    private List<String> checkDeletions(List<OpenEngSBModel> deletions, EDBEvent event) throws EDBException {
+        List<String> oids = new ArrayList<String>();
+        for (OpenEngSBModel model : deletions) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            if (!checkIfActiveOidExisting(oid)) {
+                throw new EDBException("the object under given oid is not existing or already deleted");
+            } else {
+                oids.add(oid);
+            }
+        }
+        return oids;
+    }
+
+    private List<EDBObject> checkUpdates(List<OpenEngSBModel> updates, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : updates) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
+            modelVersion++;
+            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(ModelConverterUtils.MODELVERSION, modelVersion,
+                Integer.class));
+            objects.addAll(convertModelToEDBObject(model, oid, event, modelVersion));
+        }
+        return objects;
+    }
+
+    private Integer investigateVersionAndCheckForConflict(OpenEngSBModel model, String oid) throws EDBException {
+        Integer modelVersion = ModelConverterUtils.getModelVersion(model);
+
+        if (modelVersion != null) {
+            Integer currentVersion = getVersionOfOid(oid);
+            if (!modelVersion.equals(currentVersion)) {
+                try {
+                    checkForConflict(model, oid);
+                } catch (EDBException e) {
+                    LOGGER.info("conflict detected, user get informed");
+                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
+                            + oid + " saved.");
+                }
+                modelVersion = currentVersion;
+            }
+        } else {
+            modelVersion = getVersionOfOid(oid);
+        }
+
+        return modelVersion;
+    }
+
+    private List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        convertSubModel(model, event, objects, oid, version);
+        return objects;
+    }
+
+    private String convertSubModel(OpenEngSBModel model, EDBEvent event, List<EDBObject> objects) {
+        return convertSubModel(model, event, objects, null, null);
+    }
+
+    private String convertSubModel(OpenEngSBModel model, EDBEvent event, List<EDBObject> objects, String oid,
+            Integer version) {
+        Integer modelVersion;
+        if (oid == null) {
+            oid = ModelConverterUtils.createOID(model, event);
+        }
+        if (version == null) {
+            if (checkIfActiveOidExisting(oid)) {
+                modelVersion = investigateVersionAndCheckForConflict(model, oid);
+            } else {
+                modelVersion = 1;
+            }
+        } else {
+            modelVersion = version;
+        }
+
         EDBObject object = new EDBObject(oid);
+
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
-            object.put(entry.getKey(), entry.getValue());
+            if (OpenEngSBModel.class.isAssignableFrom(entry.getType())) {
+                if (entry.getValue() == null) {
+                    continue;
+                }
+                String subOid = convertSubModel((OpenEngSBModel) entry.getValue(), event, objects);
+                object.put(entry.getKey(), subOid);
+            } else if (List.class.isAssignableFrom(entry.getType())) {
+                @SuppressWarnings("unchecked")
+                List<OpenEngSBModel> subList = (List<OpenEngSBModel>) entry.getValue();
+                if (subList == null) {
+                    continue;
+                }
+                for (int i = 0; i < subList.size(); i++) {
+                    String subOid = convertSubModel((OpenEngSBModel) subList.get(i), event, objects);
+                    object.put(entry.getKey() + i, subOid);
+                }
+            } else {
+                object.put(entry.getKey(), entry.getValue());
+            }
         }
         object.put("domainId", event.getDomainId());
         object.put("connectorId", event.getConnectorId());
         object.put("instanceId", event.getInstanceId());
-        object.put("edbVersion", version);
-        return object;
+        object.put(ModelConverterUtils.MODELVERSION, modelVersion);
+
+        objects.add(object);
+        return oid;
     }
 
     private String getAuthenticatedUser() {
@@ -432,16 +589,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return false;
     }
 
-    private Integer getModelVersion(OpenEngSBModel model) {
-        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
-            if (entry.getKey().equals("edbVersion")) {
-                return (Integer) entry.getValue();
-            }
-        }
-
-        return null;
-    }
-
     /**
      * simple check mechanism if there is a conflict between a model which should be saved and the existing model under
      * the given oid, based on the values which are in the edb.
@@ -456,164 +603,12 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         }
     }
 
-    private String createOID(OpenEngSBModel model, EDBEvent event) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(createOIDPrefix(event));
-        String modelId = getOpenEngSBModelId(model);
-        if (modelId != null) {
-            builder.append(modelId);
-        } else {
-            builder.append(UUID.randomUUID().toString());
-        }
-
-        return builder.toString();
+    private Integer getVersionOfOid(String oid) throws EDBException {
+        return dao.getVersionOfOid(oid);
     }
 
-    private String createOIDPrefix(EDBEvent event) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(event.getDomainId()).append("/").append(event.getConnectorId()).append("/");
-        return builder.toString();
-    }
-
-    private String getOpenEngSBModelId(OpenEngSBModel model) {
-        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
-            if (entry.getKey().equals("edbId")) {
-                return (String) entry.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
-        LOGGER.debug("received create event");
-        String oid = createOID(event.getModel(), event);
-
-        if (checkIfActiveOidExisting(oid)) {
-            throw new EDBException("object under the given oid is already existing");
-        }
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-        commit.add(convertModelToEDBObject(event.getModel(), oid, event, 1));
-        this.commit(commit);
-
-        LOGGER.debug("created object with name {}", oid);
-    }
-
-    @Override
-    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        LOGGER.debug("received delete event");
-
-        String oid = createOID(event.getModel(), event);
-
-        if (!checkIfActiveOidExisting(oid)) {
-            throw new EDBException("the object under given oid is not existing or already deleted");
-        }
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-        commit.delete(oid);
-
-        this.commit(commit);
-
-        LOGGER.debug("deleted object with name {}", oid);
-    }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        LOGGER.debug("received update event");
-
-        String oid = createOID(event.getModel(), event);
-        Integer modelVersion = investigateVersionAndCheckForConflict(event.getModel(), oid);
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-        commit.add(convertModelToEDBObject(event.getModel(), oid, event, modelVersion + 1));
-        this.commit(commit);
-
-        LOGGER.debug("updated object with name {}", oid);
-    }
-
-    @Override
-    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        LOGGER.debug("received batch event");
-
-        List<String> deletions = checkDeletions(event.getDeletions(), event);
-        List<EDBObject> inserts = checkCreations(event.getInserts(), event);
-        List<EDBObject> updates = checkUpdates(event.getUpdates(), event);
-
-        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
-
-        for (EDBObject object : inserts) {
-            commit.add(object);
-        }
-        for (String oid : deletions) {
-            commit.delete(oid);
-        }
-        for (EDBObject object : updates) {
-            commit.add(object);
-        }
-        this.commit(commit);
-
-        LOGGER.debug("successfully run through the edb batch event");
-    }
-
-    private List<EDBObject> checkCreations(List<OpenEngSBModel> creations, EDBEvent event) throws EDBException {
-        List<EDBObject> objects = new ArrayList<EDBObject>();
-        for (OpenEngSBModel model : creations) {
-            String oid = createOID(model, event);
-            if (checkIfActiveOidExisting(oid)) {
-                throw new EDBException("object under the given oid is already existing");
-            } else {
-                objects.add(convertModelToEDBObject(model, oid, event, 1));
-            }
-        }
-        return objects;
-    }
-
-    private List<String> checkDeletions(List<OpenEngSBModel> deletions, EDBEvent event) throws EDBException {
-        List<String> oids = new ArrayList<String>();
-        for (OpenEngSBModel model : deletions) {
-            String oid = createOID(model, event);
-            if (!checkIfActiveOidExisting(oid)) {
-                throw new EDBException("the object under given oid is not existing or already deleted");
-            } else {
-                oids.add(oid);
-            }
-        }
-        return oids;
-    }
-
-    private List<EDBObject> checkUpdates(List<OpenEngSBModel> updates, EDBEvent event) throws EDBException {
-        List<EDBObject> objects = new ArrayList<EDBObject>();
-        for (OpenEngSBModel model : updates) {
-            String oid = createOID(model, event);
-            Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
-            modelVersion++;
-            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", modelVersion, Integer.class));
-            objects.add(convertModelToEDBObject(model, oid, event, modelVersion));
-        }
-        return objects;
-    }
-
-    private Integer investigateVersionAndCheckForConflict(OpenEngSBModel model, String oid) throws EDBException {
-        Integer modelVersion = getModelVersion(model);
-
-        if (modelVersion != null) {
-            Integer currentVersion = getVersionOfOid(oid);
-            if (!modelVersion.equals(currentVersion)) {
-                try {
-                    checkForConflict(model, oid);
-                } catch (EDBException e) {
-                    LOGGER.info("conflict detected, user get informed");
-                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
-                            + oid + " saved.");
-                }
-
-                modelVersion = currentVersion;
-            }
-        } else {
-            modelVersion = getVersionOfOid(oid);
-        }
-
-        return modelVersion;
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        dao = new DefaultJPADao(entityManager);
     }
 }

@@ -25,11 +25,11 @@ import java.util.Map;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
-public class TestModel implements OpenEngSBModel {
+public class SubModel implements OpenEngSBModel {
     
     private Map<String, OpenEngSBModelEntry> entries;
     
-    public TestModel() {
+    public SubModel() {
         entries = new HashMap<String, OpenEngSBModelEntry>();
     }
     
@@ -47,23 +47,6 @@ public class TestModel implements OpenEngSBModel {
     
     public String getEdbId() {
         return (String) entries.get("edbId").getValue();
-    }
-    
-    public void setSubModel(SubModel subModel) {
-        entries.put("subModel", new OpenEngSBModelEntry("subModel", subModel, SubModel.class));
-    }
-    
-    public SubModel getSubModel() {
-        return (SubModel) entries.get("subModel").getValue();
-    }
-    
-    public void setSubs(List<SubModel> subs) {
-        entries.put("subs", new OpenEngSBModelEntry("subs", subs, subs.getClass()));
-    }
-    
-    @SuppressWarnings("unchecked")
-    public List<SubModel> getSubs() {
-        return (List<SubModel>) entries.get("subs").getValue();
     }
 
     @Override
@@ -83,5 +66,4 @@ public class TestModel implements OpenEngSBModel {
     public void removeOpenEngSBModelEntry(String key) {
         entries.remove(key);
     }
-
 }
