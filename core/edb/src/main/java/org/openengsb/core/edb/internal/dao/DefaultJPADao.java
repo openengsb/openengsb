@@ -115,6 +115,11 @@ public class DefaultJPADao implements JPADao {
             throw new EDBException("the given oid was never saved in the database", e);
         }
     }
+    
+    @Override
+    public JPAObject getJPAObject(String oid) throws EDBException {
+        return getJPAObject(oid, getNewestJPAObjectTimestamp(oid).longValue());
+    }
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -371,5 +376,4 @@ public class DefaultJPADao implements JPADao {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 }
