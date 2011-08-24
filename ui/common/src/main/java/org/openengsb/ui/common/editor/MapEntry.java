@@ -15,18 +15,39 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.context;
+package org.openengsb.ui.common.editor;
 
-public interface ContextConnectorService {
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Map.Entry;
 
-    /**
-     * assigns the given serviceId the current contexts defaultConnector for the given domain
-     */
-    void registerDefaultConnector(String domainName, String serviceId);
+@SuppressWarnings("serial")
+public class MapEntry<K, V> implements Entry<K, V>, Serializable {
 
-    /**
-     * returns the serviceId of the default-connector for the given domain
-     */
-    String getDefaultConnectorServiceId(String domainName);
+    private Map<K, V> originalMap;
+    private K key;
+    private V value;
+
+    public MapEntry(Map<K, V> originalMap, Entry<K, V> originalEntry) {
+        this.originalMap = originalMap;
+        this.key = originalEntry.getKey();
+        this.value = originalEntry.getValue();
+    }
+
+    @Override
+    public K getKey() {
+        return key;
+    }
+
+    @Override
+    public V getValue() {
+        return value;
+    }
+
+    @Override
+    public V setValue(V value) {
+        this.value = value;
+        return originalMap.put(key, value);
+    }
 
 }
