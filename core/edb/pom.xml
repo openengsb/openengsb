@@ -142,7 +142,7 @@
       <groupId>com.mysema.querydsl</groupId>
       <artifactId>querydsl-apt</artifactId>
       <scope>provided</scope>
-     </dependency>    
+    </dependency>    
     
     <dependency>
       <groupId>com.mysema.querydsl</groupId>

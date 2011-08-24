@@ -67,7 +67,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>19</version>
+    <version>21-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb</groupId>

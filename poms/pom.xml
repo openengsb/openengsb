@@ -248,8 +248,8 @@
     <aries.jpa.version>0.3</aries.jpa.version>
     <aries.jndi.version>0.3</aries.jndi.version>
     <aries.transaction.version>0.3</aries.transaction.version>
-    <querydsl.version>2.2.0</querydsl.version>
-    <querydsl.wrapped.version>${querydsl.version}.w1-SNAPSHOT</querydsl.wrapped.version>
+    <querydsl.version>2.2.1</querydsl.version>
+    <querydsl.wrapped.version>${querydsl.version}.w1</querydsl.wrapped.version>
   </properties>
 
   <modules>
@@ -279,6 +279,11 @@
         <groupId>com.mysema.querydsl</groupId>
         <artifactId>querydsl-jpa</artifactId>
         <version>${querydsl.version}</version>
+      </dependency>
+      <dependency>
+	    <groupId>com.mysema.querydsl</groupId>
+        <artifactId>com.mysema.querydsl</artifactId>
+        <version>${querydsl.wrapped.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
