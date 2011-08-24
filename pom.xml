@@ -318,11 +318,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository> <!-- Additional Repository for Mysema (Querydsl)-->
-      <id>mysema</id>
-      <name>mysema</name>
-      <url>http://source.mysema.com/maven2/releases</url>
-    </repository>
   </repositories>
 
 </project>
