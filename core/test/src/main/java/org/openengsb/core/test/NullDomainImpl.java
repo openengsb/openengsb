@@ -64,4 +64,22 @@ public class NullDomainImpl implements NullDomain {
         this.state = state;
     }
 
+    @Override
+    public void setDomainId(String domainId) {
+    }
+
+    @Override
+    public String getDomainId() {
+        return null;
+    }
+
+    @Override
+    public void setConnectorId(String connectorId) {
+    }
+
+    @Override
+    public String getConnectorId() {
+        return null;
+    }
+
 }

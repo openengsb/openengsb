@@ -151,11 +151,21 @@
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
   </feature>
 
-  <feature name="openengsb-edb" version="${project.version}" description="OpenEngSB Enterprise Database">
+  <feature name="openengsb-ekb" version="${project.version}" description="OpenEngSB Engineering Knowledge Base">
+    <details>
+      Feature adding the Engineering Knowledge Base functionality to the OpenEngSB. With the EKB it is possible to 
+      retrieve models from the Engineering Database. Together with the EDB feature, the versioning and retrieving 
+      of versioned models is completely integrated into the OpenEngSB.
+    </details>
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
+  </feature>
+
+  <feature name="openengsb-edb" version="${project.version}" description="OpenEngSB Engineering Database">
     <details>
       Feature adding an additional database layer helping to storing objects versioned. That way automatically model
-      version can be done. The idea is to use this feature together with EKB to finally retrieved versioned models
-      directly integrated into the OpenEngSB.
+      version can be done. The idea is to use this feature together with Engineering Knowledge Base to finally retrieved 
+      versioned models directly integrated into the OpenEngSB.
     </details>
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jpa</feature>

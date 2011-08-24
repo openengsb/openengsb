@@ -47,6 +47,7 @@
     <property name="domainEventInterface">
       <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
     </property>
+    <property name="edbService" ref="edbService" />
     <property name="workflowService" ref="workflowService" />
   </bean>
 
@@ -57,6 +58,7 @@
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
+  <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
   <reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 </blueprint>

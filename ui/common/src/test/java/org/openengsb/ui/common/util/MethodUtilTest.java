@@ -82,7 +82,24 @@ public class MethodUtilTest {
 
         @Override
         public Object nullMethod(Object o, String b) {
-            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setDomainId(String domainId) {            
+        }
+
+        @Override
+        public String getDomainId() {
+            return null;
+        }
+
+        @Override
+        public void setConnectorId(String connectorId) {
+        }
+
+        @Override
+        public String getConnectorId() {
             return null;
         }
     }
@@ -118,7 +135,24 @@ public class MethodUtilTest {
 
         @Override
         public Object nullMethod(Object o, String b) {
-            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setDomainId(String domainId) {
+        }
+
+        @Override
+        public String getDomainId() {
+            return null;
+        }
+
+        @Override
+        public void setConnectorId(String connectorId) {
+        }
+
+        @Override
+        public String getConnectorId() {
             return null;
         }
     }

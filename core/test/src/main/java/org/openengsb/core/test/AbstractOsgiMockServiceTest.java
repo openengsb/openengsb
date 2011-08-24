@@ -41,6 +41,7 @@ import org.junit.Before;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Domain;
@@ -303,17 +304,17 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
     /**
      * creates a mock of {@link ConnectorInstanceFactory} for the given connectorType and domains.
      *
-     * Only {@link ConnectorInstanceFactory#createNewInstance(String)} is mocked to return a {@link Domain}-mock that
+     * Only {@link ConnectorInstanceFactory#createNewInstance(String)} is mocked to return a {@link Connector}-mock that
      * contains the given String as id.
      *
      * Also the factory is registered as a service with the required properties
      */
     protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
-        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Connector>() {
             @Override
-            public Domain answer(InvocationOnMock invocation) throws Throwable {
-                Domain result = mock(Domain.class);
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
+                Connector result = mock(Connector.class);
                 String id = (String) invocation.getArguments()[0];
                 when(result.getInstanceId()).thenReturn(id);
                 return result;
