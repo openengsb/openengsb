@@ -79,7 +79,9 @@
 [submodule "features/connector/gcontacts"]
 	path = features/connector/gcontacts
 	url = git://github.com/openengsb/openengsb-connector-gcontacts
-
 [submodule "features/connector/github"]
 	path = features/connector/github
 	url = git://github.com/openengsb/openengsb-connector-github.git
+[submodule "features/connector/notificationsample"]
+	path = features/connector/notificationsample
+	url = git://github.com/openengsb/openengsb-connector-notificationsample.git

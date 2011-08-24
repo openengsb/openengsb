@@ -34,8 +34,8 @@
 
   <section>
     <title>Functional Interface</title>
-    <para><link xlink:href="${github}/domain/deploy/src/main/java/org/openengsb/domain/deploy/DeployDomain.java">Link</link>
-      to the Java Domain Interface on Github.  This interface also contains information about events raised by this domain.</para>
+    <para><link xlink:href="${github.base}openengsb-domain-deploy${github.master.path}src/main/java/org/openengsb/domain/deploy/DeployDomain.java">Link</link>
+      to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
   </section>
 
   <section>
