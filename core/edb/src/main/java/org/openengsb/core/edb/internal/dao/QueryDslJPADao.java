@@ -61,7 +61,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
-        LOGGER.debug("Loading JPAHead for timestamp " + timestamp);
+        LOGGER.debug("Loading JPAHead for timestamp {}", timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAHead head = QJPAHead.jPAHead;
         List<JPAHead> resultList = query.from(head).where(head.timestamp.eq(timestamp)).list(head);
@@ -75,7 +75,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
-        LOGGER.debug("Loading newest Timestamp for object with the id " + oid);
+        LOGGER.debug("Loading newest Timestamp for object with the id {}", oid);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         return query.from(object).where(object.oid.eq(oid)).uniqueResult(object.timestamp.max());
@@ -83,7 +83,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPAObject> getJPAObjectHistory(String oid) throws EDBException {
-        LOGGER.debug("Loading the history for the object " + oid);
+        LOGGER.debug("Loading the history for the object {}", oid);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         return query.from(object).where(object.oid.eq(oid)).list(object);
@@ -91,7 +91,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException {
-        LOGGER.debug("Loading the history for the object " + oid + " from " + from + " to " + to);
+        LOGGER.debug("Loading the history for the object {} from {} to {}", from, to);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         return query.from(object).where(object.oid.eq(oid).and(object.timestamp.between(from, to))).list(object);
@@ -99,7 +99,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public JPAObject getJPAObject(String oid) throws EDBException {
-        LOGGER.debug("Loading newest object " + oid);
+        LOGGER.debug("Loading newest object {}", oid);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         JPAObject result =
@@ -117,7 +117,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
-        LOGGER.debug("Loading object " + oid + " for the time " + timestamp);
+        LOGGER.debug("Loading object {} for the time {}", oid, timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         JPASubQuery sub = new JPASubQuery().from(object)
@@ -139,7 +139,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
-        LOGGER.debug("Loading all commits which involve object " + oid + " from " + from + " to " + to);
+        LOGGER.debug("Loading all commits which involve object {} from {} to {}", new Object[]{ oid, from, to });
         JPQLQuery query = new JPAQuery(entityManager);
         QJPACommit commit = QJPACommit.jPACommit;
         QJPAObject object = QJPAObject.jPAObject;
@@ -159,7 +159,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
-        LOGGER.debug("Load all objects with the given oid " + oid + " which are younger than " + timestamp);
+        LOGGER.debug("Load all objects with the given oid {} which are younger than {}", oid, timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         return query.from(object).where(object.oid.eq(oid).and(object.timestamp.gt(timestamp))).list(object);
@@ -167,7 +167,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
-        LOGGER.debug("Load the commit for the timestamp " + timestamp);
+        LOGGER.debug("Load the commit for the timestamp {}", timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPACommit commit = QJPACommit.jPACommit;
         return query.from(commit).where(commit.timestamp.eq(timestamp)).list(commit);
@@ -175,7 +175,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPACommit> getCommits(Map<String, Object> param) throws EDBException {
-        LOGGER.debug("Get commits which are given to a param map with " + param.size() + " elements");
+        LOGGER.debug("Get commits which are given to a param map with {} elements", param.size());
         JPQLQuery query = new JPAQuery(entityManager);
         QJPACommit commit = QJPACommit.jPACommit;
         return query.from(commit).where(analyzeParamMap(commit, param)).list(commit);
@@ -183,7 +183,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public JPACommit getLastCommit(Map<String, Object> param) throws EDBException {
-        LOGGER.debug("Get last commit which are given to a param map with " + param.size() + " elements");
+        LOGGER.debug("Get last commit which are given to a param map with {} elements", param.size());
         JPQLQuery query = new JPAQuery(entityManager);
         QJPACommit commit = QJPACommit.jPACommit;
         return query.from(commit).where(analyzeParamMap(commit, param)).orderBy(commit.timestamp.asc())
@@ -215,7 +215,7 @@ public class QueryDslJPADao implements JPADao {
 
     @Override
     public List<JPAObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("Query for objects which have entries where key = " + key + " and value = " + value);
+        LOGGER.debug("Query for objects which have entries where key = {} and value = {}", key, value);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         QJPAEntry entry = QJPAEntry.jPAEntry;

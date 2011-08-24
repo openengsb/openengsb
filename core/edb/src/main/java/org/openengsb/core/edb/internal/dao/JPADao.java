@@ -26,7 +26,7 @@ import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
 
 /**
- * Represents a dao interface for connection to the JPA Database
+ * Represents a dao interface for requests at the JPA Database
  */
 public interface JPADao {
 
