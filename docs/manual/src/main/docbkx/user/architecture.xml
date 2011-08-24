@@ -189,6 +189,34 @@
     to change first the datasource like descriped in the last paragraph. After that you have to write another
     bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
     commands and port it for the new database and replace the standard EngineeringDatabaseService.</para>
+
+    <para>Last but not least a few words about the working with the EDB. If you have models that shall be versioned
+    by the EDB, the easiest way is to build this models as interfaces and let them extend the interface OpenEngSBModel.
+    Such an interface can only contain getter and setter methods, since this interfaces can now be proxied through the
+    EngineeringKnowledgeBase (EKB). As soon as you have done this, you are able to send such models with an event from
+    a connector (Method for that is called "sendEDBEvent" and is accessable from every connector that AbstractOpenEngSBConnectorService
+    extends, which shall be done by all connector implementations.</para>
+
+    <para>If your domain model requires sub models (like location for a contact), you have also to make this sub model an interface and let
+    it extend OpenEngSBModel interface. In that way, the EDB is able to save all sub models if you save the root model. It is even possible
+    to give a model a list of submodels, the EDB is able to handle that too and you have nothing else to do.</para>
+  </section>
+
+  <section xml:id="architecture.concept.ekb">
+  <title>EKB (Engineering Knowledge Base)</title>
+  <para>The Engineering Knowledge Base (as it is now) is the partner of the EDB. The EKB enables two important features:load models from the EDB and
+  generate proxies for domain models.</para>
+
+  <para>The first feature importance is quite clear. The EKB enables to load the models which are collected by the EDB. It's main work for that
+  feature is to retrieve the model in a rare form from the EDB (in a only EDB readable format) and convert this rare form to the domain model
+  the user requested.
+  </para>
+
+  <para>The second feature makes it possible to simulate implementations of domain models. Like already mentioned in the EDB part, every domain
+  model only consists of getter and setter pairs and extends the OpenEngSBModel interface. If you let the EKB proxy such models, your work you
+  have to do to communicate with the EDB and versionize models is minimized. Also the EKB proxies does the whole converting work from the models
+  to EDB readable format for you.
+  </para>
   </section>
 
 </chapter>

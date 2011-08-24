@@ -25,7 +25,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 import org.openengsb.core.api.edb.EDBObject;
 
@@ -36,8 +35,6 @@ import org.openengsb.core.api.edb.EDBObject;
 public class JPAHead {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAObject> objects;
-    @Version
-    private Integer versionNumber;
     @Column(name = "TIME")
     private Long timestamp;
 
@@ -114,9 +111,5 @@ public class JPAHead {
 
     public Long getTimestamp() {
         return timestamp;
-    }
-
-    public int getVersionNumber() {
-        return versionNumber;
     }
 }

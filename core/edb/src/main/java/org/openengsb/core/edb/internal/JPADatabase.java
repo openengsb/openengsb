@@ -18,6 +18,7 @@
 package org.openengsb.core.edb.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,16 +33,25 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBDeleteEvent;
+import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabaseService {
+public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
     private EntityTransaction utx;
     @PersistenceContext(name = "openengsb-edb")
@@ -61,14 +71,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         LOGGER.debug("starting to open EDB for testing via JPA");
         Properties props = new Properties();
         emf = Persistence.createEntityManagerFactory("edb-test", props);
-        entityManager = emf.createEntityManager();
+        setEntityManager(emf.createEntityManager());
         utx = entityManager.getTransaction();
-        dao = new DefaultJPADao(entityManager);
         LOGGER.debug("starting of EDB successful");
 
         Number max = dao.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
-            LOGGER.debug("loading JPA Head with timestamp " + max.longValue());
+            LOGGER.debug("loading JPA Head with timestamp {}", max.longValue());
             head = loadHead(max.longValue());
         }
     }
@@ -84,9 +93,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
     }
 
     @Override
-    public JPACommit createCommit(String committer, String role) {
-        LOGGER.debug("creating commit for committer " + committer + " with role " + role);
-        return new JPACommit(committer, role);
+    public JPACommit createCommit(String committer, String contextId) {
+        LOGGER.debug("creating commit for committer {} with contextId {}", committer, contextId);
+        return new JPACommit(committer, contextId);
     }
 
     @Override
@@ -169,7 +178,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
                 utx.rollback();
                 break;
             default:
-                LOGGER.warn("unknown Transaction action: " + action.toString());
+                LOGGER.warn("unknown Transaction action: {}", action.toString());
                 break;
         }
     }
@@ -187,22 +196,22 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         if (number.longValue() <= 0) {
             throw new EDBException("the given oid " + oid + " was never commited to the database");
         }
-        LOGGER.debug("loading JPAObject with the oid " + oid + " and the timestamp " + number.longValue());
+        LOGGER.debug("loading JPAObject with the oid {} and the timestamp {}", oid, number.longValue());
         JPAObject temp = dao.getJPAObject(oid, number.longValue());
         return temp.getObject();
     }
 
     @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
-        LOGGER.debug("loading history of JPAObject with the oid " + oid);
+        LOGGER.debug("loading history of JPAObject with the oid {}", oid);
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid);
         return generateEDBObjectList(jpa);
     }
 
     @Override
     public List<EDBObject> getHistory(String oid, Long from, Long to) throws EDBException {
-        LOGGER.debug("loading JPAObject with the oid " + oid + " from"
-                + " the timestamp " + from + " to the timestamp " + to);
+        LOGGER.debug("loading JPAObject with the oid {} from "
+                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid, from, to);
         return generateEDBObjectList(jpa);
     }
@@ -220,8 +229,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBLogEntry> getLog(String oid, Long from, Long to) throws EDBException {
-        LOGGER.debug("loading the log of JPAObject with the oid " + oid + " from"
-                + " the timestamp " + from + " to the timestamp " + to);
+        LOGGER.debug("loading the log of JPAObject with the oid {} from "
+                + "the timestamp {} to the timestamp {}", new Object[]{ oid, from, to });
         List<EDBObject> history = getHistory(oid, from, to);
         List<JPACommit> commits = dao.getJPACommit(oid, from, to);
         if (history.size() != commits.size()) {
@@ -239,7 +248,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
      * loads the JPAHead with the given timestamp
      */
     private JPAHead loadHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the JPAHead with the timestamp " + timestamp);
+        LOGGER.debug("load the JPAHead with the timestamp {}", timestamp);
         return dao.getJPAHead(timestamp);
     }
 
@@ -250,7 +259,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> getHead(long timestamp) throws EDBException {
-        LOGGER.debug("load the elements of the JPAHead with the timestamp " + timestamp);
+        LOGGER.debug("load the elements of the JPAHead with the timestamp {}", timestamp);
         JPAHead head = loadHead(timestamp);
         if (head != null) {
             return head.getEDBObjects();
@@ -260,7 +269,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
 
     @Override
     public List<EDBObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("query for objects with key = " + key + " and value = " + value);
+        LOGGER.debug("query for objects with key = {} and value = {}", key, value);
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put(key, value);
         return query(queryMap);
@@ -372,6 +381,230 @@ public class JPADatabase implements org.openengsb.core.api.edb.EnterpriseDatabas
         Map<String, Object> query = new HashMap<String, Object>();
         query.put(key, value);
         return getStateOfLastCommitMatching(query);
+    }
+
+    @Override
+    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
+        LOGGER.debug("received insert event");
+
+        makeEDBActions(Arrays.asList(event.getModel()), null, null, event);
+
+        LOGGER.debug("successfully inserted model");
+    }
+
+    @Override
+    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
+        LOGGER.debug("received delete event");
+
+        makeEDBActions(null, null, Arrays.asList(event.getModel()), event);
+
+        LOGGER.debug("successfully deleted model");
+    }
+
+    @Override
+    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
+        LOGGER.debug("received update event");
+
+        makeEDBActions(null, Arrays.asList(event.getModel()), null, event);
+
+        LOGGER.debug("successfully updated model");
+    }
+
+    @Override
+    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
+        LOGGER.debug("received batch event");
+
+        makeEDBActions(event.getInserts(), event.getUpdates(), event.getDeletions(), event);
+
+        LOGGER.debug("successfully run through the edb batch event");
+    }
+
+    private void makeEDBActions(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes, EDBEvent event) throws EDBException {
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+
+        if (inserts != null) {
+            for (EDBObject object : checkInserts(inserts, event)) {
+                commit.add(object);
+            }
+        }
+        if (deletes != null) {
+            for (String oid : checkDeletions(deletes, event)) {
+                commit.delete(oid);
+            }
+        }
+        if (updates != null) {
+            for (EDBObject object : checkUpdates(updates, event)) {
+                commit.add(object);
+            }
+        }
+
+        this.commit(commit);
+    }
+
+    private List<EDBObject> checkInserts(List<OpenEngSBModel> inserts, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : inserts) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            if (checkIfActiveOidExisting(oid)) {
+                throw new EDBException("object under the given oid is already existing");
+            } else {
+                objects.addAll(convertModelToEDBObject(model, oid, event, 1));
+            }
+        }
+        return objects;
+    }
+
+    private List<String> checkDeletions(List<OpenEngSBModel> deletions, EDBEvent event) throws EDBException {
+        List<String> oids = new ArrayList<String>();
+        for (OpenEngSBModel model : deletions) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            if (!checkIfActiveOidExisting(oid)) {
+                throw new EDBException("the object under given oid is not existing or already deleted");
+            } else {
+                oids.add(oid);
+            }
+        }
+        return oids;
+    }
+
+    private List<EDBObject> checkUpdates(List<OpenEngSBModel> updates, EDBEvent event) throws EDBException {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : updates) {
+            String oid = ModelConverterUtils.createOID(model, event);
+            Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
+            modelVersion++;
+            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(ModelConverterUtils.MODELVERSION, modelVersion,
+                Integer.class));
+            objects.addAll(convertModelToEDBObject(model, oid, event, modelVersion));
+        }
+        return objects;
+    }
+
+    private Integer investigateVersionAndCheckForConflict(OpenEngSBModel model, String oid) throws EDBException {
+        Integer modelVersion = ModelConverterUtils.getModelVersion(model);
+
+        if (modelVersion != null) {
+            Integer currentVersion = getVersionOfOid(oid);
+            if (!modelVersion.equals(currentVersion)) {
+                try {
+                    checkForConflict(model, oid);
+                } catch (EDBException e) {
+                    LOGGER.info("conflict detected, user get informed");
+                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
+                            + oid + " saved.");
+                }
+                modelVersion = currentVersion;
+            }
+        } else {
+            modelVersion = getVersionOfOid(oid);
+        }
+
+        return modelVersion;
+    }
+
+    private List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        convertSubModel(model, event, objects, oid, version);
+        return objects;
+    }
+
+    private String convertSubModel(OpenEngSBModel model, EDBEvent event, List<EDBObject> objects) {
+        return convertSubModel(model, event, objects, null, null);
+    }
+
+    private String convertSubModel(OpenEngSBModel model, EDBEvent event, List<EDBObject> objects, String oid,
+            Integer version) {
+        Integer modelVersion;
+        if (oid == null) {
+            oid = ModelConverterUtils.createOID(model, event);
+        }
+        if (version == null) {
+            if (checkIfActiveOidExisting(oid)) {
+                modelVersion = investigateVersionAndCheckForConflict(model, oid);
+            } else {
+                modelVersion = 1;
+            }
+        } else {
+            modelVersion = version;
+        }
+
+        EDBObject object = new EDBObject(oid);
+
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (OpenEngSBModel.class.isAssignableFrom(entry.getType())) {
+                if (entry.getValue() == null) {
+                    continue;
+                }
+                String subOid = convertSubModel((OpenEngSBModel) entry.getValue(), event, objects);
+                object.put(entry.getKey(), subOid);
+            } else if (List.class.isAssignableFrom(entry.getType())) {
+                @SuppressWarnings("unchecked")
+                List<OpenEngSBModel> subList = (List<OpenEngSBModel>) entry.getValue();
+                if (subList == null) {
+                    continue;
+                }
+                for (int i = 0; i < subList.size(); i++) {
+                    String subOid = convertSubModel((OpenEngSBModel) subList.get(i), event, objects);
+                    object.put(entry.getKey() + i, subOid);
+                }
+            } else {
+                object.put(entry.getKey(), entry.getValue());
+            }
+        }
+        object.put("domainId", event.getDomainId());
+        object.put("connectorId", event.getConnectorId());
+        object.put("instanceId", event.getInstanceId());
+        object.put(ModelConverterUtils.MODELVERSION, modelVersion);
+
+        objects.add(object);
+        return oid;
+    }
+
+    private String getAuthenticatedUser() {
+        // if JPADatabase is called via integration tests
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return "testuser";
+        }
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private String getActualContextId() {
+        // if JPADatabase is called via integration tests
+        if (ContextHolder.get() == null) {
+            return "testcontext";
+        }
+        return ContextHolder.get().getCurrentContextId();
+    }
+
+    private boolean checkIfActiveOidExisting(String oid) {
+        try {
+            EDBObject obj = getObject(oid);
+            if (!obj.isDeleted()) {
+                return true;
+            }
+        } catch (EDBException e) {
+            // nothing to do here
+        }
+        return false;
+    }
+
+    /**
+     * simple check mechanism if there is a conflict between a model which should be saved and the existing model under
+     * the given oid, based on the values which are in the edb.
+     */
+    private void checkForConflict(OpenEngSBModel model, String oid) throws EDBException {
+        EDBObject object = getObject(oid);
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            Object value = object.get(entry.getKey());
+            if (value == null || !value.equals(entry.getValue())) {
+                throw new EDBException();
+            }
+        }
+    }
+
+    private Integer getVersionOfOid(String oid) throws EDBException {
+        return dao.getVersionOfOid(oid);
     }
 
     public void setEntityManager(EntityManager entityManager) {

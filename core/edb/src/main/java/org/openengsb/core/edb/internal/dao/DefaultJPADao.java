@@ -264,7 +264,7 @@ public class DefaultJPADao implements JPADao {
         Predicate[] predicates = analyzeParamMap(criteriaBuilder, f, param);
 
         select.where(criteriaBuilder.and(predicates));
-
+        
         TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
@@ -306,8 +306,8 @@ public class DefaultJPADao implements JPADao {
                 predicates.add(criteriaBuilder.equal(from.get("timestamp"), value));
             } else if (key.equals("committer")) {
                 predicates.add(criteriaBuilder.equal(from.get("committer"), value));
-            } else if (key.equals("role")) {
-                predicates.add(criteriaBuilder.equal(from.get("role"), value));
+            } else if (key.equals("context")) {
+                predicates.add(criteriaBuilder.equal(from.get("context"), value));
             }
         }
         Predicate[] temp = new Predicate[predicates.size()];
@@ -347,8 +347,29 @@ public class DefaultJPADao implements JPADao {
         TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
+    
+    @Override
+    public Integer getVersionOfOid(String oid) throws EDBException {
+        LOGGER.debug("loading version of model under the oid {}", oid);
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
+        Expression<Long> maxExpression = criteriaBuilder.count(from.get("oid"));
+        CriteriaQuery<Long> select = query.select(maxExpression);
+        select.where(criteriaBuilder.equal(from.get("oid"), oid));
+
+        TypedQuery<Long> typedQuery = entityManager.createQuery(select);
+        try {
+            return (int) typedQuery.getSingleResult().longValue();
+        } catch (NoResultException ex) {
+            LOGGER.debug("no model under the oid {}. Returning 0", oid);
+            return 0;
+        }
+    }
 
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
 }

@@ -127,6 +127,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.core.api");
         importantBundles.add("org.openengsb.core.common");
+        importantBundles.add("org.openengsb.core.edb");
+        importantBundles.add("org.openengsb.core.ekb");
         importantBundles.add("org.openengsb.core.service");
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
@@ -260,10 +262,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                    .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
+                    .versionAsInProject(), "openengsb-edb", "openengsb-ekb",
+                "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
-                    "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," 
+                + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
                     + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
             waitForFrameworkStartup(),

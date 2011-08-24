@@ -20,7 +20,7 @@ package org.openengsb.connector.example;
 import java.util.Map;
 
 import org.openengsb.connector.example.internal.LogService;
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.domain.example.ExampleDomainEvents;
 
@@ -29,7 +29,7 @@ public class LogServiceInstanceFactory extends AbstractConnectorInstanceFactory<
     private ExampleDomainEvents domainEventInterface;
 
     @Override
-    public Domain createNewInstance(String id) {
+    public Connector createNewInstance(String id) {
         return new LogService(id, domainEventInterface);
     }
 

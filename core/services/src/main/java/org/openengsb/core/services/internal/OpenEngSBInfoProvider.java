@@ -17,7 +17,6 @@
 
 package org.openengsb.core.services.internal;
 
-
 import java.util.Properties;
 
 import org.apache.karaf.shell.commands.info.InfoProvider;

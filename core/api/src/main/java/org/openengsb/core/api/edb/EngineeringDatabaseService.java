@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the connection to the enterprise database.
+ * Defines the connection to the engineering database.
  */
-public interface EnterpriseDatabaseService {
+public interface EngineeringDatabaseService {
     /**
      * Create a commit which is ready to be filled with updates.
      */
@@ -120,4 +120,24 @@ public interface EnterpriseDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
+    
+    /**
+     * processes an edb insert event
+     */
+    void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
+    
+    /**
+     * processes an edb delete event
+     */
+    void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
+    
+    /**
+     * processes an edb update event
+     */
+    void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
+    
+    /**
+     * processes an edb batch event
+     */
+    void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
 }

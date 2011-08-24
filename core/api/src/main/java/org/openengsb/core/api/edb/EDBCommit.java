@@ -63,9 +63,9 @@ public interface EDBCommit {
     Long getTimestamp();
 
     /**
-     * Get the commit's role.
+     * Get the commit's context id.
      */
-    String getRole();
+    String getContextId();
 
     /**
      * returns if this commit was already committed
