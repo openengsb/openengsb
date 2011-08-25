@@ -45,8 +45,8 @@ import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
+import org.openengsb.core.edb.internal.dao.QueryDslJPADao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -193,13 +193,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        Number number = dao.getNewestJPAObjectTimestamp(oid);
-        if (number.longValue() <= 0) {
-            throw new EDBException("the given oid " + oid + " was never commited to the database");
-        }
-        LOGGER.debug("loading JPAObject with the oid {} and the timestamp {}", oid, number.longValue());
-        JPAObject temp = dao.getJPAObject(oid, number.longValue());
-        return temp.getObject();
+        return dao.getJPAObject(oid).getObject();
     }
 
     @Override
@@ -610,6 +604,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
-        dao = new DefaultJPADao(entityManager);
+        dao = new QueryDslJPADao(entityManager);
     }
 }

@@ -169,6 +169,7 @@
     </details>
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
+    <bundle>mvn:com.mysema.querydsl/com.mysema.querydsl/${querydsl.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
   </feature>
 

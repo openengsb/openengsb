@@ -26,7 +26,7 @@ import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
 
 /**
- * Represents a dao interface for connection to the JPA Database
+ * Represents a dao interface for requests at the JPA Database
  */
 public interface JPADao {
 
@@ -54,6 +54,11 @@ public interface JPADao {
      * Returns the history (between from and to) of a given object.
      */
     List<JPAObject> getJPAObjectHistory(String oid, long from, long to) throws EDBException;
+    
+    /**
+     * Returns the newest JPAObject
+     */
+    JPAObject getJPAObject(String oid) throws EDBException;
 
     /**
      * Returns a JPAObject with the given timestamp
