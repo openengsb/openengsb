@@ -118,6 +118,9 @@
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
+    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
+    <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
@@ -149,27 +152,6 @@
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
-  </feature>
-
-  <feature name="openengsb-ekb" version="${project.version}" description="OpenEngSB Engineering Knowledge Base">
-    <details>
-      Feature adding the Engineering Knowledge Base functionality to the OpenEngSB. With the EKB it is possible to 
-      retrieve models from the Engineering Database. Together with the EDB feature, the versioning and retrieving 
-      of versioned models is completely integrated into the OpenEngSB.
-    </details>
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
-  </feature>
-
-  <feature name="openengsb-edb" version="${project.version}" description="OpenEngSB Engineering Database">
-    <details>
-      Feature adding an additional database layer helping to storing objects versioned. That way automatically model
-      version can be done. The idea is to use this feature together with Engineering Knowledge Base to finally retrieved 
-      versioned models directly integrated into the OpenEngSB.
-    </details>
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
-    <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
