@@ -136,11 +136,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             entityManager.persist(commit);
             entityManager.persist(nextHead);
 
-            LOGGER.debug("persisting the elements of the new JPAHead");
-            for (JPAObject o : nextHead.getJPAObjects()) {
-                entityManager.persist(o);
-            }
-
             LOGGER.debug("setting the deleted elements as deleted");
             for (String id : commit.getDeletions()) {
                 EDBObject o = new EDBObject(id);

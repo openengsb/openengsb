@@ -34,6 +34,7 @@
       <property name="openjpa.Log" value="commons"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
     </properties>
   </persistence-unit>
 
@@ -49,7 +50,7 @@
       <property name="openjpa.Log" value="commons"/>
       <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
-      <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
+      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
     </properties>
