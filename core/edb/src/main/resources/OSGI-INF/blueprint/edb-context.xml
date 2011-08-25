@@ -23,7 +23,7 @@
   xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
   xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0">
 
-  <bean id="edbServiceProvider" class="org.openengsb.core.edb.internal.JPADatabase">
+  <bean id="edbServiceProvider" class="org.openengsb.core.edb.internal.JPADatabase" init-method="initiate">
     <tx:transaction method="*" value="Required" />
     <jpa:context property="entityManager" unitname="edb" />
   </bean>
