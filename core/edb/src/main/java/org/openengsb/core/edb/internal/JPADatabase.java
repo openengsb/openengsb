@@ -73,8 +73,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         emf = Persistence.createEntityManagerFactory("edb-test", props);
         setEntityManager(emf.createEntityManager());
         utx = entityManager.getTransaction();
+        initiate();
         LOGGER.debug("starting of EDB successful");
-
+    }
+    
+    public void initiate() throws EDBException {
         Number max = dao.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
             LOGGER.debug("loading JPA Head with timestamp {}", max.longValue());

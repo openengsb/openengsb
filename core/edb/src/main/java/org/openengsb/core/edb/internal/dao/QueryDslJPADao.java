@@ -34,6 +34,7 @@ import org.openengsb.core.edb.internal.QJPAObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.jpa.impl.JPASubQuery;
@@ -41,7 +42,7 @@ import com.mysema.query.types.Predicate;
 
 public class QueryDslJPADao implements JPADao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJPADao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryDslJPADao.class);
     private EntityManager entityManager;
 
     public QueryDslJPADao() {
@@ -56,7 +57,15 @@ public class QueryDslJPADao implements JPADao {
         LOGGER.debug("getting newest jpa head timestamp");
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAHead head = QJPAHead.jPAHead;
-        return query.from(head).uniqueResult(head.timestamp.max());
+        try {
+            return query.from(head).uniqueResult(head.timestamp.max());
+        } catch (NonUniqueResultException e) {
+            System.out.println("error1");
+            return 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     @Override
