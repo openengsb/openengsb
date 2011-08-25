@@ -76,7 +76,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiate();
         LOGGER.debug("starting of EDB successful");
     }
-    
+
     public void initiate() throws EDBException {
         Number max = dao.getNewestJPAHeadNumber();
         if (max != null && max.longValue() > 0) {
@@ -106,7 +106,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-
+        if (head == null) {
+            initiate();
+        }
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
 
@@ -253,7 +255,10 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public List<EDBObject> getHead() throws EDBException {
-        return head.getEDBObjects();
+        if (head == null) {
+            initiate();
+        }
+        return head != null ? head.getEDBObjects() : new ArrayList<EDBObject>();
     }
 
     @Override
