@@ -110,6 +110,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         JPAHead nextHead;
         if (head != null) {
             LOGGER.debug("adding a new JPAHead");
+            head = entityManager.merge(head);
             nextHead = new JPAHead(head, timestamp);
         } else {
             LOGGER.debug("creating the first JPAHead");
