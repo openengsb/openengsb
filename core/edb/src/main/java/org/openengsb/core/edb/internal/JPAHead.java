@@ -20,30 +20,15 @@ package org.openengsb.core.edb.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-
 import org.openengsb.core.api.edb.EDBObject;
 
 /**
  * A JPA Head contains all JPAObjects which are bound to a specific timestamp.
  */
-@Entity
 public class JPAHead {
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAObject> objects;
-    @Column(name = "TIME")
     private Long timestamp;
 
-    private List<EDBObject> loaded;
-
-    /**
-     * the empty constructor is only for the jpa enhancer. Do not use it in real code.
-     */
-    @Deprecated
     public JPAHead() {
     }
 
@@ -52,61 +37,28 @@ public class JPAHead {
         objects = new ArrayList<JPAObject>();
     }
 
-    public JPAHead(JPAHead cp, Long timestamp) {
-        this.timestamp = timestamp;
-        List<JPAObject> list = cp.getJPAObjects();
-
-        if (list != null) {
-            objects = new ArrayList<JPAObject>(list);
-        } else {
-            objects = new ArrayList<JPAObject>();
-        }
-    }
-
     public int count() {
         return objects.size();
     }
 
     public List<EDBObject> getEDBObjects() {
-        if (loaded == null) {
-            loaded = new ArrayList<EDBObject>();
-            for (JPAObject o : objects) {
-                loaded.add(o.getObject());
-            }
+        List<EDBObject> loaded = new ArrayList<EDBObject>();
+        for (JPAObject o : objects) {
+            loaded.add(o.getObject());
         }
         return loaded;
+    }
+    
+    public void setJPAObjects(List<JPAObject> objects) {
+        this.objects = objects;
     }
 
     public List<JPAObject> getJPAObjects() {
         return objects;
     }
-
-    public void delete(String oid) {
-        loaded = null;
-        for (int i = 0; i < objects.size(); ++i) {
-            JPAObject o = objects.get(i);
-            if (oid.equals(o.getOID())) {
-                objects.remove(i);
-                return;
-            }
-        }
-    }
-
-    public void replace(String oid, JPAObject obj) {
-        loaded = null;
-        for (int i = 0; i < objects.size(); ++i) {
-            JPAObject o = objects.get(i);
-            if (oid.equals(o.getOID())) {
-                objects.remove(i);
-                break;
-            }
-        }
-        objects.add(obj);
-    }
-
-    public void replace(String oid, EDBObject obj) {
-        loaded = null;
-        this.replace(oid, new JPAObject(obj));
+    
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Long getTimestamp() {

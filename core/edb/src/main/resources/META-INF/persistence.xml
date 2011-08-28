@@ -25,7 +25,6 @@
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
     <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAHead</class>
     <class>org.openengsb.core.edb.internal.JPAObject</class>
     <class>org.openengsb.core.edb.internal.JPAEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -41,7 +40,6 @@
   <persistence-unit name="edb-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAHead</class>
     <class>org.openengsb.core.edb.internal.JPAObject</class>
     <class>org.openengsb.core.edb.internal.JPAEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
