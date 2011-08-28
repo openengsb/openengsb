@@ -28,19 +28,7 @@ import org.openengsb.core.api.edb.EDBObject;
 public class JPAHead {
     private List<JPAObject> objects;
     private Long timestamp;
-
-    public JPAHead() {
-    }
-
-    public JPAHead(Long timestamp) {
-        this.timestamp = timestamp;
-        objects = new ArrayList<JPAObject>();
-    }
-
-    public int count() {
-        return objects.size();
-    }
-
+    
     public List<EDBObject> getEDBObjects() {
         List<EDBObject> loaded = new ArrayList<EDBObject>();
         for (JPAObject o : objects) {
@@ -60,7 +48,7 @@ public class JPAHead {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-
+    
     public Long getTimestamp() {
         return timestamp;
     }
