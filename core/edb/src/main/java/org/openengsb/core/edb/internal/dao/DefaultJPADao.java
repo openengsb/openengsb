@@ -87,7 +87,9 @@ public class DefaultJPADao implements JPADao {
         Predicate subPredicate2 = criteriaBuilder.equal(maxTime.get("oid"), from.get("oid"));
         subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2));
 
-        query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
+        Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), subquery);
+        Predicate predicate2 = criteriaBuilder.notEqual(from.get("isDeleted"), true);
+        query.where(criteriaBuilder.and(predicate1, predicate2));
 
         TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
         List<JPAObject> resultList = typedQuery.getResultList();
@@ -96,28 +98,6 @@ public class DefaultJPADao implements JPADao {
         head.setJPAObjects(resultList);
         head.setTimestamp(timestamp);
         return head;
-    }
-
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
-        LOGGER.debug("Loading newest Timestamp for object with the id " + oid);
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
-        Root from = query.from(JPAObject.class);
-
-        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
-        query.where(predicate);
-
-        Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
-        CriteriaQuery<Number> select = query.select(maxExpression);
-
-        TypedQuery<Number> typedQuery = entityManager.createQuery(select);
-        try {
-            return typedQuery.getSingleResult();
-        } catch (NoResultException e) {
-            throw new EDBException("the given oid was never saved in the database", e);
-        }
     }
 
     @Override
@@ -158,6 +138,7 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
         LOGGER.debug("Loading object " + oid + " for the time " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -166,8 +147,19 @@ public class DefaultJPADao implements JPADao {
 
         CriteriaQuery<JPAObject> select = query.select(from);
 
-        Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), timestamp);
-        Predicate predicate2 = criteriaBuilder.equal(from.get("oid"), oid);
+        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
+        query.where(predicate);
+
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPAObject.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        Predicate subPredicate1 = criteriaBuilder.equal(from.get("oid"), oid);
+        Predicate subPredicate2 = criteriaBuilder.le(maxTime.get("timestamp"), timestamp);
+        subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2));
+
+        Predicate predicate2 =
+            criteriaBuilder.equal(from.get("timestamp"), subquery);
+        Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
         query.where(criteriaBuilder.and(predicate1, predicate2));
 
         TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
@@ -180,6 +172,12 @@ public class DefaultJPADao implements JPADao {
         }
 
         return resultList.get(0);
+    }
+    
+    @Override
+    public JPAObject getJPAObject(String oid) throws EDBException {
+        LOGGER.debug("Loading newest object " + oid);
+        return getJPAObject(oid, System.currentTimeMillis());
     }
 
     @Override

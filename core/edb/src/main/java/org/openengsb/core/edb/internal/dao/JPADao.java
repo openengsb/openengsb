@@ -41,11 +41,6 @@ public interface JPADao {
     JPAHead getJPAHead(long timestamp) throws EDBException;
 
     /**
-     * Returns the most actual JPAObject timestamp.
-     */
-    Number getNewestJPAObjectTimestamp(String oid) throws EDBException;
-
-    /**
      * Returns the history (all objects) of a given object.
      */
     List<JPAObject> getJPAObjectHistory(String oid) throws EDBException;
@@ -59,6 +54,11 @@ public interface JPADao {
      * Returns a JPAObject with the given timestamp
      */
     JPAObject getJPAObject(String oid, long timestamp) throws EDBException;
+    
+    /**
+     * Returns the newest JPAObject with the given oid
+     */
+    JPAObject getJPAObject(String oid) throws EDBException;
 
     /**
      * Returns all commits which are involved with the given oid which are between from and to

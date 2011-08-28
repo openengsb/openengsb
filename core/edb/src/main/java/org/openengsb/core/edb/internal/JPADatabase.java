@@ -159,12 +159,8 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        Number number = dao.getNewestJPAObjectTimestamp(oid);
-        if (number.longValue() <= 0) {
-            throw new EDBException("the given oid " + oid + " was never commited to the database");
-        }
-        LOGGER.debug("loading JPAObject with the oid {} and the timestamp {}", oid, number.longValue());
-        JPAObject temp = dao.getJPAObject(oid, number.longValue());
+        LOGGER.debug("loading newest JPAObject with the oid {}", oid);
+        JPAObject temp = dao.getJPAObject(oid);
         return temp.getObject();
     }
 
