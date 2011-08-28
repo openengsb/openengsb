@@ -31,11 +31,6 @@ import org.openengsb.core.edb.internal.JPAObject;
 public interface JPADao {
 
     /**
-     * Returns the most actual JPAHead Number.
-     */
-    Number getNewestJPAHeadNumber() throws EDBException;
-
-    /**
      * Loads the JPAHead with the given timestamp.
      */
     JPAHead getJPAHead(long timestamp) throws EDBException;
