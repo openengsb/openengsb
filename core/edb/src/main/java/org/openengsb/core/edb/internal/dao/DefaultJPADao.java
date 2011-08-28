@@ -70,28 +70,32 @@ public class DefaultJPADao implements JPADao {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
-        LOGGER.debug("Loading JPAHead for timestamp " + timestamp);
+        LOGGER.debug("Loading head for timestamp " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAHead> query = criteriaBuilder.createQuery(JPAHead.class);
-        Root<JPAHead> from = query.from(JPAHead.class);
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
 
-        CriteriaQuery<JPAHead> select = query.select(from);
+        CriteriaQuery<JPAObject> select = query.select(from);
 
-        Predicate predicate = criteriaBuilder.equal(from.get("timestamp"), timestamp);
-        query.where(predicate);
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPAObject.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        Predicate subPredicate1 = criteriaBuilder.le(maxTime.get("timestamp"), timestamp);
+        Predicate subPredicate2 = criteriaBuilder.equal(maxTime.get("oid"), from.get("oid"));
+        subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2));
 
-        TypedQuery<JPAHead> typedQuery = entityManager.createQuery(select);
-        List<JPAHead> resultList = typedQuery.getResultList();
+        query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
 
-        if (resultList == null || resultList.get(0) == null) {
-            throw new EDBException("Head not found for timestamp " + timestamp);
-        } else if (resultList.size() != 1) {
-            throw new EDBException("Multiple heads found for the timestamp " + timestamp);
-        }
-
-        return resultList.get(0);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+        List<JPAObject> resultList = typedQuery.getResultList();
+        
+        JPAHead head = new JPAHead();
+        head.setJPAObjects(resultList);
+        head.setTimestamp(timestamp);
+        return head;
     }
 
     @Override

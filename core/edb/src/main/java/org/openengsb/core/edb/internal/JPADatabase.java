@@ -57,12 +57,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @PersistenceContext(name = "openengsb-edb")
     private EntityManagerFactory emf;
     private EntityManager entityManager;
-    private JPAHead head;
     private JPADao dao;
-
-    public JPADatabase() {
-        head = null;
-    }
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -73,16 +68,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         emf = Persistence.createEntityManagerFactory("edb-test", props);
         setEntityManager(emf.createEntityManager());
         utx = entityManager.getTransaction();
-        initiate();
         LOGGER.debug("starting of EDB successful");
-    }
-
-    public void initiate() throws EDBException {
-        Number max = dao.getNewestJPAHeadNumber();
-        if (max != null && max.longValue() > 0) {
-            LOGGER.debug("loading JPA Head with timestamp {}", max.longValue());
-            head = loadHead(max.longValue());
-        }
     }
 
     /**
@@ -106,37 +92,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-        if (head == null) {
-            initiate();
-        }
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
-
-        JPAHead nextHead;
-        if (head != null) {
-            LOGGER.debug("adding a new JPAHead");
-            head = entityManager.merge(head);
-            nextHead = new JPAHead(head, timestamp);
-        } else {
-            LOGGER.debug("creating the first JPAHead");
-            nextHead = new JPAHead(timestamp);
-        }
-
-        for (String del : commit.getDeletions()) {
-            nextHead.delete(del);
-        }
         for (EDBObject update : commit.getObjects()) {
-            String oid = update.getOID();
             update.updateTimestamp(timestamp);
-            nextHead.replace(oid, update);
+            entityManager.persist(new JPAObject(update));
         }
 
         try {
             performUtxAction(UTXACTION.BEGIN);
             commit.setCommitted(true);
-            LOGGER.debug("persisting JPACommit and the new JPAHead");
+            LOGGER.debug("persisting JPACommit");
             entityManager.persist(commit);
-            entityManager.persist(nextHead);
 
             LOGGER.debug("setting the deleted elements as deleted");
             for (String id : commit.getDeletions()) {
@@ -148,7 +115,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             }
 
             performUtxAction(UTXACTION.COMMIT);
-            head = nextHead;
         } catch (Exception ex) {
             try {
                 performUtxAction(UTXACTION.ROLLBACK);
@@ -255,10 +221,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public List<EDBObject> getHead() throws EDBException {
-        if (head == null) {
-            initiate();
-        }
-        return head != null ? head.getEDBObjects() : new ArrayList<EDBObject>();
+        return dao.getJPAHead(System.currentTimeMillis()).getEDBObjects();
     }
 
     @Override
