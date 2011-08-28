@@ -32,7 +32,6 @@
     <properties>
       <property name="openjpa.Log" value="commons"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
-      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
       <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/>
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
