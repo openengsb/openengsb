@@ -20,12 +20,9 @@ package org.openengsb.core.edb.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -251,36 +248,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
         try {
-            Set<JPAObject> result = new HashSet<JPAObject>();
-
-            for (Entry<String, Object> entry : queryMap.entrySet()) {
-                analyzeEntry(entry, result);
-
-                if (result.size() == 0) {
-                    LOGGER.debug("there are no objects which have all values from the map");
-                    return new ArrayList<EDBObject>();
-                }
-            }
-            return generateEDBObjectList(new ArrayList<JPAObject>(result));
+            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap)));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
-        }
-    }
-
-    private void analyzeEntry(Entry<String, Object> entry, Set<JPAObject> set) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
-
-        List<JPAObject> temp = dao.query(key, value);
-
-        if (temp.size() == 0) {
-            set = new HashSet<JPAObject>();
-            return;
-        }
-        if (set.size() == 0) {
-            set.addAll(temp);
-        } else {
-            set.retainAll(temp);
         }
     }
 

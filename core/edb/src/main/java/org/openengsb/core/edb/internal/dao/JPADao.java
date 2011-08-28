@@ -94,11 +94,11 @@ public interface JPADao {
      * like getCommits, but it returns only the newest commit
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
-
+    
     /**
-     * Returns a list of JPAObjects which have all a JPAEntry with the given key and value.
+     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values.
      */
-    List<JPAObject> query(String key, Object value) throws EDBException;
+    List<JPAObject> query(Map<String, Object> values) throws EDBException;
     
     /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.
