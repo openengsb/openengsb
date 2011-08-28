@@ -179,6 +179,34 @@ public class DefaultJPADao implements JPADao {
         LOGGER.debug("Loading newest object " + oid);
         return getJPAObject(oid, System.currentTimeMillis());
     }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public List<JPAObject> getJPAObjects(List<String> oid) throws EDBException {
+        LOGGER.debug("Loading newest object " + oid);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
+
+        CriteriaQuery<JPAObject> select = query.select(from);
+
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPAObject.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        subquery.where(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")));
+
+        Predicate predicate1 = criteriaBuilder.in(from.get("oid")).value(oid);
+        Predicate predicate2 =
+            criteriaBuilder.equal(from.get("timestamp"), subquery);
+
+        query.where(criteriaBuilder.and(predicate1, predicate2));
+
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+
+        List<JPAObject> resultList = typedQuery.getResultList();
+
+        return resultList;
+    }
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })

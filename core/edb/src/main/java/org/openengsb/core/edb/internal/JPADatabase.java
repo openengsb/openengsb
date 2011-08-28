@@ -165,6 +165,16 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     }
 
     @Override
+    public List<EDBObject> getObjects(List<String> oids) throws EDBException {
+        List<JPAObject> objects = dao.getJPAObjects(oids);
+        List<EDBObject> result = new ArrayList<EDBObject>();
+        for (JPAObject object : objects) {
+            result.add(object.getObject());
+        }
+        return result;
+    }
+
+    @Override
     public List<EDBObject> getHistory(String oid) throws EDBException {
         LOGGER.debug("loading history of JPAObject with the oid {}", oid);
         List<JPAObject> jpa = dao.getJPAObjectHistory(oid);

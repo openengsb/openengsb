@@ -59,6 +59,11 @@ public interface JPADao {
      * Returns the newest JPAObject with the given oid
      */
     JPAObject getJPAObject(String oid) throws EDBException;
+    
+    /**
+     * Returns the newest JPAObjects with the given oids
+     */
+    List<JPAObject> getJPAObjects(List<String> oids) throws EDBException;
 
     /**
      * Returns all commits which are involved with the given oid which are between from and to
