@@ -54,6 +54,7 @@
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+      <property name="openjpa.ConnectionRetainMode" value="always"/>
     </properties>
   </persistence-unit>
 </persistence>
