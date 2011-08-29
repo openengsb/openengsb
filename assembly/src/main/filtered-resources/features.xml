@@ -37,6 +37,10 @@
       backend.id=persistenceService
       configuration.id=RULE
     </config>
+	<config name="org.openengsb.persistence.config-global">
+      backend.id=global-persistence
+      configuration.id=GLOBAL
+    </config>
     <config name="org.openengsb.persistence.config-flow">
       backend.id=persistenceService
       configuration.id=FLOW

@@ -106,5 +106,14 @@
       </argument>
     </bean>
   </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="global-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService">
+    	<property name="storageFolderPath" value="$[karaf.data]/openengsb/config/rulebase/globals" />	
+    </bean>
+  </service>
 
 </blueprint>
