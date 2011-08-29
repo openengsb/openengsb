@@ -193,35 +193,30 @@ public class DefaultJPADao implements JPADao {
         TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
-
-    @Override
-    public List<JPAObject> getDeletedJPAObjects() throws EDBException {
-        LOGGER.debug("Load all deleted JPAObjects");
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-        Root<JPAObject> from = query.from(JPAObject.class);
-        query.select(from);
-        query.where(criteriaBuilder.equal(from.get("isDeleted"), Boolean.TRUE));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
-        return typedQuery.getResultList();
-    }
-
-    @Override
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
-        LOGGER.debug("Load all objects with the given oid " + oid + " which are younger than " + timestamp);
+    @Override
+    public List<String> getResurrectedOIDs() throws EDBException {
+        LOGGER.debug("get resurrected JPA objects");
+        
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
         Root from = query.from(JPAObject.class);
-
-        query.select(from);
-        Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
-        Predicate predicate2 = criteriaBuilder.gt(from.get("timestamp"), timestamp);
-
-        query.where(criteriaBuilder.and(predicate1, predicate2));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
+        query.select(from.get("oid"));
+        
+        Subquery<JPAObject> sub = query.subquery(JPAObject.class);
+        Root f = sub.from(JPAObject.class);
+        sub.select(f);
+        Predicate subPredicate1 = criteriaBuilder.equal(from.get("oid"), f.get("oid"));
+        Predicate subPredicate2 = criteriaBuilder.equal(f.get("isDeleted"), Boolean.TRUE);
+        Predicate subPredicate3 = criteriaBuilder.gt(from.get("timestamp"), f.get("timestamp"));
+        sub.where(criteriaBuilder.and(subPredicate1, subPredicate2, subPredicate3));
+        
+        Predicate predicate1 = criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE);
+        Predicate predicate2 = criteriaBuilder.exists(sub);    
+        query.where(predicate1, predicate2);
+        
+        TypedQuery<String> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 

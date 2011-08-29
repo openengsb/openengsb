@@ -64,16 +64,11 @@ public interface JPADao {
      * Returns all commits which are involved with the given oid which are between from and to
      */
     List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException;
-
+    
     /**
-     * Returns a list with all ever deleted JPAObjects
+     * Returns a list of oids from the JPAObjects which has been resurrected
      */
-    List<JPAObject> getDeletedJPAObjects() throws EDBException;
-
-    /**
-     * Returns all JPAObjects with the given id which are younger than the given timestamp
-     */
-    List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException;
+    List<String> getResurrectedOIDs() throws EDBException;
 
     /**
      * Loads a JPACommit with the given timestamp

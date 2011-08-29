@@ -301,15 +301,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public List<String> getResurrectedOIDs() throws EDBException {
-        List<JPAObject> objects = dao.getDeletedJPAObjects();
-        List<String> result = new ArrayList<String>();
-        for (JPAObject o : objects) {
-            List<JPAObject> temp = dao.getJPAObjectVersionsYoungerThanTimestamp(o.getOID(), o.getTimestamp());
-            if (temp.size() != 0) {
-                result.add(o.getOID());
-            }
-        }
-        return result;
+        return dao.getResurrectedOIDs();
     }
 
     @Override
