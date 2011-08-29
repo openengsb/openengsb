@@ -35,6 +35,7 @@ import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService;
+import org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
@@ -68,9 +69,15 @@ public final class PersistenceTestUtil {
 
         GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
         FileUtils.deleteQuietly(new File("target/test/globals"));
-        globalBackend.setStorageFile("target/test/globals");
+        globalBackend.setStorageFilePath("target/test/globals");
         ConfigPersistenceService globalService = new DefaultConfigPersistenceService(globalBackend);
         manager.setGlobalPersistence(globalService);
+
+        ImportDeclarationPersistenceBackendService importBackend = new ImportDeclarationPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/imports"));
+        importBackend.setStorageFilePath("target/test/imports");
+        ConfigPersistenceService importService = new DefaultConfigPersistenceService(importBackend);
+        manager.setImportPersistence(importService);
 
         manager.init();
         return manager;
