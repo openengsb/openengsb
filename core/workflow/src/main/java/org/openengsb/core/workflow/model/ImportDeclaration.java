@@ -22,8 +22,7 @@ import java.util.Map;
 
 public class ImportDeclaration {
 
-    private static final String META_IMPORT = "import";
-    private static final String META_IMPORT_CLASS = "class";
+    public static final String META_IMPORT_CLASS = "class";
 
     private String className;
 
@@ -44,7 +43,6 @@ public class ImportDeclaration {
 
     public Map<String, String> toMetadata() {
         Map<String, String> ret = new HashMap<String, String>();
-        ret.put(META_IMPORT, META_IMPORT);
         if (this.getClassName() != null) {
             ret.put(META_IMPORT_CLASS, this.getClassName());
         }

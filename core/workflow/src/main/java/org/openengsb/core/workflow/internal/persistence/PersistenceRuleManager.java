@@ -33,7 +33,6 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
-import org.openengsb.core.workflow.model.ImportConfiguration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.openengsb.core.workflow.model.RuleBaseElement;
 import org.openengsb.core.workflow.model.RuleConfiguration;
@@ -42,11 +41,16 @@ public class PersistenceRuleManager extends AbstractRuleManager {
 
     private ConfigPersistenceService persistenceService;
     private ConfigPersistenceService globalPersistence;
+    private ConfigPersistenceService importPersistence;
 
     @Override
     public void init() throws RuleBaseException {
         if (globalPersistence == null) {
             globalPersistence = OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_RULE_GLOBAL);
+        }
+
+        if (importPersistence == null) {
+            importPersistence = OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_RULE_IMPORT);
         }
 
         if (persistenceService == null) {
@@ -169,10 +173,10 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void addImport(String className) throws RuleBaseException {
         ImportDeclaration imp = new ImportDeclaration(className);
         Map<String, String> metaData = imp.toMetadata();
-        ImportConfiguration cnf = new ImportConfiguration(metaData, imp);
+        ConfigItem<ImportDeclaration> cnf = new ConfigItem<ImportDeclaration>(metaData, imp);
         try {
-            if (persistenceService.load(metaData).isEmpty()) {
-                persistenceService.persist(cnf);
+            if (importPersistence.load(metaData).isEmpty()) {
+                importPersistence.persist(cnf);
             }
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
@@ -185,7 +189,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         try {
             ImportDeclaration imp = new ImportDeclaration(className);
             Map<String, String> metaData = imp.toMetadata();
-            persistenceService.remove(metaData);
+            importPersistence.remove(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -196,14 +200,14 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public Collection<String> listImports() {
         ImportDeclaration imp = new ImportDeclaration();
         Map<String, String> metaData = imp.toMetadata();
-        List<ImportConfiguration> queryResult;
+        List<ConfigItem<ImportDeclaration>> queryResult;
         try {
-            queryResult = persistenceService.load(metaData);
+            queryResult = importPersistence.load(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
         Collection<String> result = new HashSet<String>();
-        for (ImportConfiguration i : queryResult) {
+        for (ConfigItem<ImportDeclaration> i : queryResult) {
             result.add(i.getContent().getClassName());
         }
         return result;
@@ -267,5 +271,9 @@ public class PersistenceRuleManager extends AbstractRuleManager {
 
     public void setGlobalPersistence(ConfigPersistenceService globalPersistence) {
         this.globalPersistence = globalPersistence;
+    }
+
+    public void setImportPersistence(ConfigPersistenceService importPersistence) {
+        this.importPersistence = importPersistence;
     }
 }

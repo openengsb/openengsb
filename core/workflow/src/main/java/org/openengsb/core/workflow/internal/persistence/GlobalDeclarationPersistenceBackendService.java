@@ -45,7 +45,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalDeclarationPersistenceBackendService.class);
     private static final String SEPARATOR = " ";
 
-    public void setStorageFile(String storageFilePath) {
+    public void setStorageFilePath(String storageFilePath) {
         this.storageFile = new File(storageFilePath);
     }
 
@@ -110,9 +110,8 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     private Map<String, String> readStorageFile() throws PersistenceException {
         LOGGER.debug("try to read " + storageFile);
         Map<String, String> ret = new HashMap<String, String>();
-        String[] splitLine;
-
         List<String> lines;
+
         if (storageFile.exists()) {
             try {
                 lines = FileUtils.readLines(storageFile);
@@ -120,9 +119,9 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
                 LOGGER.error(String.format("Error reading " + storageFile));
                 throw new PersistenceException(e);
             }
-            for (String line : lines) {                
+            for (String line : lines) {
                 if (!line.equals("")) {
-                    splitLine = line.split(SEPARATOR);
+                    String[] splitLine = line.split(SEPARATOR);
                     ret.put(splitLine[1], splitLine[0]);
                 }
             }
