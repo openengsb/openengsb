@@ -74,8 +74,9 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
-        // TODO Auto-generated method stub
-
+        // not implemented since we don't use the usermanager that way.
+        // rethink this after OPENENGSB-200 is fixed
+        throw new UnsupportedOperationException("Not implemented, use updateUser()");
     }
 
     @Override
