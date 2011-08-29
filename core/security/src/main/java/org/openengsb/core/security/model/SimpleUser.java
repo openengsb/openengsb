@@ -20,11 +20,12 @@ package org.openengsb.core.security.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.apache.openjpa.persistence.PersistentCollection;
 import org.openengsb.core.common.util.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -38,9 +39,14 @@ import com.google.common.collect.Collections2;
 public class SimpleUser {
 
     @Id
+    @Column(name = "USER", length = 100)
     private String username;
+
+    @Column(name = "PASSWORD", length = 100)
     private String password;
-    @PersistentCollection
+
+    @Column(name = "ROLES")
+    @ElementCollection
     private Collection<String> roles;
 
     public SimpleUser(String username) {
