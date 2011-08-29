@@ -25,7 +25,6 @@
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
     <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAHead</class>
     <class>org.openengsb.core.edb.internal.JPAObject</class>
     <class>org.openengsb.core.edb.internal.JPAEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -33,15 +32,15 @@
     <properties>
       <property name="openjpa.Log" value="commons"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
-      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
-      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
+      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/>
+      <property name="openjpa.DataCache" value="true"/>
+      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
     </properties>
   </persistence-unit>
 
   <persistence-unit name="edb-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAHead</class>
     <class>org.openengsb.core.edb.internal.JPAObject</class>
     <class>org.openengsb.core.edb.internal.JPAEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -53,6 +52,9 @@
       <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+      <property name="openjpa.DataCache" value="true"/>
+      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+      <property name="openjpa.ConnectionRetainMode" value="always"/>
     </properties>
   </persistence-unit>
 </persistence>
