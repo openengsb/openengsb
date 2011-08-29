@@ -34,6 +34,7 @@ import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
+import org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
@@ -59,10 +60,18 @@ public final class PersistenceTestUtil {
     @SuppressWarnings("rawtypes")
     private static RuleManager getRuleManagerWithPersistence(PersistenceService persistence) {
         PersistenceRuleManager manager = new PersistenceRuleManager();
+
         CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
         backend.setPersistenceService(persistence);
         ConfigPersistenceService configService = new DefaultConfigPersistenceService(backend);
         manager.setPersistenceService(configService);
+
+        GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/globals"));
+        globalBackend.setStorageFile("target/test/globals");
+        ConfigPersistenceService globalService = new DefaultConfigPersistenceService(globalBackend);
+        manager.setGlobalPersistence(globalService);
+
         manager.init();
         return manager;
     }

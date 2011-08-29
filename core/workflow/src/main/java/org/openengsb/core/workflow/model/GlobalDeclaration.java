@@ -22,8 +22,7 @@ import java.util.Map;
 
 public class GlobalDeclaration {
 
-    private static final String META_GLOBAL = "global";
-    private static final String META_GLOBAL_VARIABLE = "variable";
+    public static final String META_GLOBAL_VARIABLE = "variable";
 
     private String className;
     private String variableName;
@@ -58,11 +57,9 @@ public class GlobalDeclaration {
 
     public Map<String, String> toMetadata() {
         Map<String, String> ret = new HashMap<String, String>();
-        ret.put(META_GLOBAL, META_GLOBAL);
         if (this.getVariableName() != null) {
             ret.put(META_GLOBAL_VARIABLE, this.getVariableName());
         }
         return ret;
     }
-
 }

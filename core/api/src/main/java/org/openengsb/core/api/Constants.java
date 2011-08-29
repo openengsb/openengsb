@@ -41,9 +41,9 @@ public final class Constants {
     public static final String CONFIG_CONNECTOR = "CONNECTOR";
 
     /**
-     * represents the id of the ConfigPersistenceService the RuleManager uses.
+     * represents the id of the ConfigPersistenceService the RuleManager uses for GlobalDeclarations.
      */
-    public static final String CONFIG_RULE = "RULE";
+    public static final String CONFIG_RULE_GLOBAL = "GLOBAL";
 
     /**
      * represents the property-key for type of connector in osgi-service-properties
