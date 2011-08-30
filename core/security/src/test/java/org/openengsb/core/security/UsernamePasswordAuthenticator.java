@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.domain.authentication;
+package org.openengsb.core.security;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.math.NumberRange;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.model.Authentication;
@@ -25,39 +24,30 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
-public class OnetimePasswordAuthenticator extends AbstractOpenEngSBService implements AuthenticationDomain {
+import com.google.common.base.Preconditions;
 
-    private static final Integer MAXCODE = 1000000;
+public class UsernamePasswordAuthenticator extends AbstractOpenEngSBService implements AuthenticationDomain {
 
     private UserDataManager userManager;
 
     @Override
     public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
-        Integer code = (Integer) credentials;
-        Integer baseCode = (Integer) userManager.getUserCredentials(username, "basecode");
-        Integer counter = (Integer) userManager.getUserCredentials(username, "counter");
-        Integer expectedCode = (baseCode * counter) % MAXCODE;
-        if (ObjectUtils.notEqual(code, expectedCode)) {
-            throw new AuthenticationException("wrong auth-code");
+        Preconditions.checkArgument(credentials instanceof String);
+        Object actual = userManager.getUserCredentials(username, "password");
+        if (ObjectUtils.notEqual(credentials, actual)) {
+            throw new AuthenticationException("Bad credentials");
         }
-        userManager.setUserCredentials(username, "counter", counter + 1);
         return new Authentication(username);
     }
 
     @Override
-    public boolean supports(Object credentials) {
-        Integer code;
-        try {
-            code = (Integer) credentials;
-        } catch (ClassCastException e) {
-            return false;
-        }
-        return new NumberRange(0, MAXCODE).containsInteger(code);
+    public boolean supports(Object request) {
+        return request.getClass().equals(String.class);
     }
 
     @Override
     public AliveState getAliveState() {
-        return userManager != null ? AliveState.ONLINE : AliveState.OFFLINE;
+        return AliveState.ONLINE;
     }
 
     public void setUserManager(UserDataManager userManager) {

@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.domain.usermanagement;
+package org.openengsb.core.security;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +50,7 @@ import com.google.common.collect.ImmutableMap;
 public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
 
     private AuthorizationDomain accessControl;
+    private AuthorizationDomain servicePermissionAccessConnector;
 
     @Before
     public void setUp() throws Exception {
@@ -59,17 +62,18 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         userManager.storeUserPermission("admin", "admin", new HashMap<String, String>());
 
         userManager.createUser("testuser");
-        ImmutableMap<String, String> permission =
-            ImmutableMap.of("serviceId", "fooService", "contextId", "foo", "class", ServicePermission.class.getName());
-        userManager.storeUserPermission("testuser", "service", permission);
+//        ImmutableMap<String, String> permission =
+//            ImmutableMap.of("serviceId", "fooService", "contextId", "foo", "class", ServicePermission.class.getName());
+//        userManager.storeUserPermission("testuser", "service", permission);
 
         AdminAccessConnector adminAccessConnector = new AdminAccessConnector();
         adminAccessConnector.setUserManager(userManager);
 
         registerServiceAtLocation(adminAccessConnector, "access/admin", AuthorizationDomain.class);
 
-        ServicePermissionAccessConnector servicePermissionAccessConnector = new ServicePermissionAccessConnector();
-        servicePermissionAccessConnector.setUserManager(userManager);
+        servicePermissionAccessConnector = mock(AuthorizationDomain.class);
+        when(servicePermissionAccessConnector.checkAccess(anyString(), any(MethodInvocation.class))).thenReturn(
+            Access.ABSTAINED);
         registerServiceAtLocation(servicePermissionAccessConnector, "access/service", AuthorizationDomain.class);
         CompositeConnectorStrategy strategy = new AccessControlDecisionStrategy();
 
@@ -101,6 +105,7 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         when(service.getInstanceId()).thenReturn("fooService");
         MethodInvocation invocation = mock(MethodInvocation.class);
         when(invocation.getThis()).thenReturn(service);
+        when(servicePermissionAccessConnector.checkAccess("testuser", invocation)).thenReturn(Access.GRANTED);
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
 

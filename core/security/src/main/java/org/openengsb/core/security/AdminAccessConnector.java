@@ -14,44 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.domain.authentication;
+package org.openengsb.core.security;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.domain.authentication.AuthenticationException;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 
-import com.google.common.base.Preconditions;
-
-public class UsernamePasswordAuthenticator extends AbstractOpenEngSBService implements AuthenticationDomain {
+public class AdminAccessConnector extends AbstractOpenEngSBService implements AuthorizationDomain {
 
     private UserDataManager userManager;
 
     @Override
-    public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
-        Preconditions.checkArgument(credentials instanceof String);
-        Object actual = userManager.getUserCredentials(username, "password");
-        if (ObjectUtils.notEqual(credentials, actual)) {
-            throw new AuthenticationException("Bad credentials");
+    public Access checkAccess(String username, MethodInvocation action) {
+        if (!userManager.getUserPermissions(username, "admin").isEmpty()) {
+            return Access.GRANTED;
         }
-        return new Authentication(username);
+        return Access.ABSTAINED;
     }
 
-    @Override
-    public boolean supports(Object request) {
-        return request.getClass().equals(String.class);
+    public void setUserManager(UserDataManager userManager) {
+        this.userManager = userManager;
     }
 
     @Override
     public AliveState getAliveState() {
         return AliveState.ONLINE;
-    }
-
-    public void setUserManager(UserDataManager userManager) {
-        this.userManager = userManager;
     }
 
 }
