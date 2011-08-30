@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.core.security.virtual;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

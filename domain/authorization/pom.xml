@@ -73,11 +73,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-services</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <scope>provided</scope>
     </dependency>

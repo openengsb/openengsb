@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.core.security.virtual;
 
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
@@ -24,27 +24,25 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
 
-public class CompositeConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
+public class ProxyConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
 
     @Override
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
-
-        builder.id("connector-composition");
-        builder.name("composite.name", "[proxy-name]");
-        builder.description("composite.description");
-
-        builder.attribute(builder.newAttribute().id("queryString").name("composite.queryString.id")
-            .description("composite.queryString.description").build());
-        builder.attribute(builder.newAttribute().id("compositeStrategy").name("composite.strategy.id")
-            .description("composite.strategy.description").build());
-
+        builder.id("external-connector-proxy");
+        builder.name("proxy.name", "[proxy-name]");
+        builder.description("proxy.description");
+        builder.attribute(builder.newAttribute().id("portId").name("proxy.port.id")
+            .description("proxy.port.description").build());
+        builder.attribute(builder.newAttribute().id("destination").name("proxy.destination.name")
+            .description("proxy.destination.description").build());
+        builder.attribute(builder.newAttribute().id("serviceId").name("proxy.serviceId.name")
+            .description("proxy.serviceId.description").build());
         return builder.build();
     }
 
     @Override
     public ConnectorInstanceFactory createFactory(DomainProvider provider) {
-        return new CompositeConnectorFactory(provider);
+        return new ProxyServiceFactory(provider);
     }
-
 }

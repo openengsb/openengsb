@@ -48,7 +48,7 @@ import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.internal.Activator;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.services.internal.virtual.ProxyConnectorProvider;
+import org.openengsb.core.security.virtual.ProxyConnectorProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;

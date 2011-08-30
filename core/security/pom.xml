@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.openengsb.core</groupId>
@@ -40,7 +41,8 @@
 
   <description>
     Project providing general capabilities for the Usermanagement directly in the OpenEngSB. This
-    is relevant for the WEB-UI and for the internal right management of the different services.
+    is relevant
+    for the WEB-UI and for the internal right management of the different services.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -123,6 +125,17 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-authentication</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-authorization</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

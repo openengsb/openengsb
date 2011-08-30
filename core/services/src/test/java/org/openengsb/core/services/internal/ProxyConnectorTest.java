@@ -33,7 +33,7 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.openengsb.core.services.internal.virtual.ProxyConnector;
+import org.openengsb.core.security.virtual.ProxyConnector;
 
 public class ProxyConnectorTest {
 

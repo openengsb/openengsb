@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal.virtual;
+package org.openengsb.core.common.virtual;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
