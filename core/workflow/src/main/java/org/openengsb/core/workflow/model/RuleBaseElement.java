@@ -25,10 +25,9 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
 public class RuleBaseElement {
 
-    private static final String META_RULE = "rule";
-    private static final String META_RULE_TYPE = "type";
-    private static final String META_RULE_NAME = "name";
-    private static final String META_RULE_PACKAGE = "package";
+    public static final String META_RULE_TYPE = "type";
+    public static final String META_RULE_NAME = "name";
+    public static final String META_RULE_PACKAGE = "package";
 
     private String code;
     private RuleBaseElementType type;
@@ -92,7 +91,6 @@ public class RuleBaseElement {
 
     public Map<String, String> toMetadata() {
         Map<String, String> ret = new HashMap<String, String>();
-        ret.put(META_RULE, META_RULE);
         if (this.getName() != null) {
             ret.put(META_RULE_NAME, this.getName());
         }

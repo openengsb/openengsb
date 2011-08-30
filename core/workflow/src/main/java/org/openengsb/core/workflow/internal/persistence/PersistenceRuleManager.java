@@ -35,11 +35,10 @@ import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.openengsb.core.workflow.model.RuleBaseElement;
-import org.openengsb.core.workflow.model.RuleConfiguration;
 
 public class PersistenceRuleManager extends AbstractRuleManager {
 
-    private ConfigPersistenceService persistenceService;
+    private ConfigPersistenceService ruleService;
     private ConfigPersistenceService globalPersistence;
     private ConfigPersistenceService importPersistence;
 
@@ -53,22 +52,18 @@ public class PersistenceRuleManager extends AbstractRuleManager {
             importPersistence = OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_RULE_IMPORT);
         }
 
-        if (persistenceService == null) {
-            /*
-             * Temporary use persistenceService until file-persistence is ready
-             */
-            persistenceService =
-                            OpenEngSBCoreServices.getConfigPersistenceService("RULE");
-
+        if (ruleService == null) {
+            ruleService = OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_RULE_RULEBASE);
         }
+
         super.init();
     }
 
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
         try {
-            List<RuleConfiguration> existingRules =
-                persistenceService.load(new RuleBaseElement(name).toMetadata());
+            List<ConfigItem<RuleBaseElement>> existingRules =
+                ruleService.load(new RuleBaseElement(name).toMetadata());
             if (!existingRules.isEmpty()) {
                 throw new RuleBaseException("rule already exists");
             }
@@ -78,10 +73,10 @@ public class PersistenceRuleManager extends AbstractRuleManager {
 
         RuleBaseElement objectToPersist = new RuleBaseElement(name, code);
         Map<String, String> metaData = objectToPersist.toMetadata();
-        RuleConfiguration conf = new RuleConfiguration(metaData, objectToPersist);
+        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, objectToPersist);
 
         try {
-            persistenceService.persist(conf);
+            ruleService.persist(conf);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -89,7 +84,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
             builder.reloadPackage(name.getPackageName());
         } catch (RuleBaseException e) {
             try {
-                persistenceService.remove(metaData);
+                ruleService.remove(metaData);
                 throw e;
             } catch (PersistenceException e1) {
                 throw new RuleBaseException("could not remove previously added rule, that broke the rulebase", e1);
@@ -100,8 +95,8 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     @Override
     public String get(RuleBaseElementId name) {
         try {
-            List<RuleConfiguration> existingRules =
-                persistenceService.load(new RuleBaseElement(name).toMetadata());
+            List<ConfigItem<RuleBaseElement>> existingRules =
+                ruleService.load(new RuleBaseElement(name).toMetadata());
             if (existingRules.isEmpty()) {
                 return null;
             } else {
@@ -117,10 +112,10 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         RuleBaseElement newBean = new RuleBaseElement(name, newCode);
 
         Map<String, String> metaData = newBean.toMetadata();
-        RuleConfiguration conf = new RuleConfiguration(metaData, newBean);
+        ConfigItem<RuleBaseElement> conf = new ConfigItem<RuleBaseElement>(metaData, newBean);
 
         try {
-            persistenceService.persist(conf);
+            ruleService.persist(conf);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -131,7 +126,7 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     public void delete(RuleBaseElementId name) throws RuleBaseException {
         try {
             Map<String, String> metaData = new RuleBaseElement(name).toMetadata();
-            persistenceService.remove(metaData);
+            ruleService.remove(metaData);
         } catch (PersistenceException e) {
             throw new RuleBaseException(e);
         }
@@ -155,15 +150,15 @@ public class PersistenceRuleManager extends AbstractRuleManager {
     }
 
     private Collection<RuleBaseElementId> listByExample(RuleBaseElementId example) {
-        List<RuleConfiguration> queryResult;
+        List<ConfigItem<RuleBaseElement>> queryResult;
         try {
-            queryResult = persistenceService.load(new RuleBaseElement(example).toMetadata());
+            queryResult = ruleService.load(new RuleBaseElement(example).toMetadata());
         } catch (PersistenceException e) {
             throw new RuleBaseException("error reading rule from persistence", e);
         }
 
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (RuleConfiguration element : queryResult) {
+        for (ConfigItem<RuleBaseElement> element : queryResult) {
             result.add(element.getContent().generateId());
         }
         return result;
@@ -265,8 +260,8 @@ public class PersistenceRuleManager extends AbstractRuleManager {
         return globals;
     }
 
-    public void setPersistenceService(ConfigPersistenceService persistenceService) {
-        this.persistenceService = persistenceService;
+    public void setRuleService(ConfigPersistenceService ruleService) {
+        this.ruleService = ruleService;
     }
 
     public void setGlobalPersistence(ConfigPersistenceService globalPersistence) {

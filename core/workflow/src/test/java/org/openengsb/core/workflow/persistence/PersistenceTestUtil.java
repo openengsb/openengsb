@@ -31,12 +31,12 @@ import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
-import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.internal.persistence.RuleBaseElementPersistenceBackendService;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.osgi.framework.Bundle;
@@ -58,14 +58,8 @@ public final class PersistenceTestUtil {
         return getRuleManagerWithPersistence(persistence);
     }
 
-    @SuppressWarnings("rawtypes")
     private static RuleManager getRuleManagerWithPersistence(PersistenceService persistence) {
         PersistenceRuleManager manager = new PersistenceRuleManager();
-
-        CorePersistenceServiceBackend backend = new CorePersistenceServiceBackend();
-        backend.setPersistenceService(persistence);
-        ConfigPersistenceService configService = new DefaultConfigPersistenceService(backend);
-        manager.setPersistenceService(configService);
 
         GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
         FileUtils.deleteQuietly(new File("target/test/globals"));
@@ -78,6 +72,18 @@ public final class PersistenceTestUtil {
         importBackend.setStorageFilePath("target/test/imports");
         ConfigPersistenceService importService = new DefaultConfigPersistenceService(importBackend);
         manager.setImportPersistence(importService);
+
+        RuleBaseElementPersistenceBackendService ruleBackend = new RuleBaseElementPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/flows/"));
+        ruleBackend.setStorageFolderPath("target/test/flows/");
+        try {
+            ruleBackend.init();
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        ConfigPersistenceService ruleService = new DefaultConfigPersistenceService(ruleBackend);
+        manager.setRuleService(ruleService);
 
         manager.init();
         return manager;
