@@ -84,24 +84,6 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
-
-        @Override
-        public void setDomainId(String domainId) {            
-        }
-
-        @Override
-        public String getDomainId() {
-            return null;
-        }
-
-        @Override
-        public void setConnectorId(String connectorId) {
-        }
-
-        @Override
-        public String getConnectorId() {
-            return null;
-        }
     }
 
     public interface TestInterface2 extends Domain {
@@ -135,24 +117,6 @@ public class MethodUtilTest {
 
         @Override
         public Object nullMethod(Object o, String b) {
-            return null;
-        }
-
-        @Override
-        public void setDomainId(String domainId) {
-        }
-
-        @Override
-        public String getDomainId() {
-            return null;
-        }
-
-        @Override
-        public void setConnectorId(String connectorId) {
-        }
-
-        @Override
-        public String getConnectorId() {
             return null;
         }
     }

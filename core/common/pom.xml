@@ -92,7 +92,7 @@
               and loading of calling classes at runtime
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
+            <Bundle-Activator>org.openengsb.core.common.internal.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

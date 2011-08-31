@@ -18,8 +18,9 @@
 package org.openengsb.core.test;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Connector;
 
-public class NullDomainImpl implements NullDomain {
+public class NullDomainImpl implements NullDomain, Connector {
 
     private AliveState state = AliveState.OFFLINE;
 

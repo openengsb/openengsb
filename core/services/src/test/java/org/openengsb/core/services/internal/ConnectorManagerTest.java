@@ -274,6 +274,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR_KEY, "testc");
+        factoryProps.put(Constants.DOMAIN_KEY, "test");
         registerService(factory, factoryProps, ConnectorInstanceFactory.class);
     }
 

@@ -309,12 +309,14 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
      *
      * Also the factory is registered as a service with the required properties
      */
-    protected ConnectorInstanceFactory createFactoryMock(String connector, String... domains) throws Exception {
+    protected ConnectorInstanceFactory createFactoryMock(String connector,
+            final Class<? extends Connector> connectorClass,
+            String... domains) throws Exception {
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
         when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Connector>() {
             @Override
             public Connector answer(InvocationOnMock invocation) throws Throwable {
-                Connector result = mock(Connector.class);
+                Connector result = mock(connectorClass);
                 String id = (String) invocation.getArguments()[0];
                 when(result.getInstanceId()).thenReturn(id);
                 return result;

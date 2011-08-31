@@ -14,25 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.common;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
-public class Activator implements BundleActivator {
+import org.openengsb.core.api.CompositeConnectorStrategy;
+import org.osgi.framework.ServiceReference;
+
+/**
+ * Abstract utility class that can be used to delegate the invocation to a delegate implementation of the Domain
+ * interface
+ */
+public abstract class AbstractDelegateStrategy implements CompositeConnectorStrategy {
 
     @Override
-    public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(context);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
+    public Object invoke(List<ServiceReference> services, Method method, Object... args) throws Throwable {
+        try {
+            return method.invoke(createDelegate(services), args);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
     }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        // do nothing
-    }
+    protected abstract Object createDelegate(List<ServiceReference> services);
 
 }

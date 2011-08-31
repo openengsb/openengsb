@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.api;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Raises;
+/**
+ * Provides the same metadata as a {@link ConnectorProvider}, but in addition can create
+ * {@link ConnectorInstanceFactory}s to create {@link ConnectorProvider}s and {@link ConnectorInstanceFactory}s for each
+ * combination of Domain and virtual connector.
+ */
+public interface VirtualConnectorProvider extends ConnectorProvider {
 
-public interface NullDomain extends Domain {
+    /**
+     * creates a new {@link ConnectorInstanceFactory} for the Virtual Connector supporting a specific Domain.
+     */
+    ConnectorInstanceFactory createFactory(DomainProvider provider);
 
-    @Raises(NullEvent.class)
-    void nullMethod();
-
-    Object nullMethod(Object o);
-
-    Object nullMethod(Object o, String b);
 }

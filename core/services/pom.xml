@@ -98,7 +98,6 @@
               Additional domains can be installed any time.
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
