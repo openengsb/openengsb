@@ -17,27 +17,34 @@
 
 package org.openengsb.core.common.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+/**
+ * contains util-methods that help with creating spring {@link User} objects
+ */
 public final class Users {
 
+    /**
+     * create a user with the given authorities
+     */
     public static User create(String username, String password, Collection<GrantedAuthority> authorities) {
         return new User(username, password, true, true, true, true, authorities);
     }
 
+    /**
+     * create a user with the given authorities
+     */
     public static User create(String username, String password, GrantedAuthority... authorities) {
-        return create(username, password, Arrays.asList(authorities));
-    }
-
-    public static User create(String username, String password) {
-        List<GrantedAuthority> emptyList = Collections.emptyList();
-        return create(username, password, emptyList);
+        if (authorities == null) {
+            return create(username, password, new ArrayList<GrantedAuthority>());
+        } else {
+            return create(username, password, Arrays.asList(authorities));
+        }
     }
 
     private Users() {
