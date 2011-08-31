@@ -23,10 +23,10 @@ import java.util.List;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.auditing.AuditingDomain;
 
-public class MemoryAuditingServiceImpl extends AbstractOpenEngSBService implements AuditingDomain {
+public class MemoryAuditingServiceImpl extends AbstractOpenEngSBConnectorService implements AuditingDomain {
 
     private final List<Event> events = Collections.synchronizedList(new ArrayList<Event>());
 

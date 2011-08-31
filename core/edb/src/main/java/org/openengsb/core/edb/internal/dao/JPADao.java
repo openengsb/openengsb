@@ -31,19 +31,9 @@ import org.openengsb.core.edb.internal.JPAObject;
 public interface JPADao {
 
     /**
-     * Returns the most actual JPAHead Number.
-     */
-    Number getNewestJPAHeadNumber() throws EDBException;
-
-    /**
      * Loads the JPAHead with the given timestamp.
      */
     JPAHead getJPAHead(long timestamp) throws EDBException;
-
-    /**
-     * Returns the most actual JPAObject timestamp.
-     */
-    Number getNewestJPAObjectTimestamp(String oid) throws EDBException;
 
     /**
      * Returns the history (all objects) of a given object.
@@ -59,21 +49,26 @@ public interface JPADao {
      * Returns a JPAObject with the given timestamp
      */
     JPAObject getJPAObject(String oid, long timestamp) throws EDBException;
+    
+    /**
+     * Returns the newest JPAObject with the given oid
+     */
+    JPAObject getJPAObject(String oid) throws EDBException;
+    
+    /**
+     * Returns the newest JPAObjects with the given oids
+     */
+    List<JPAObject> getJPAObjects(List<String> oids) throws EDBException;
 
     /**
      * Returns all commits which are involved with the given oid which are between from and to
      */
     List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException;
-
+    
     /**
-     * Returns a list with all ever deleted JPAObjects
+     * Returns a list of oids from the JPAObjects which has been resurrected
      */
-    List<JPAObject> getDeletedJPAObjects() throws EDBException;
-
-    /**
-     * Returns all JPAObjects with the given id which are younger than the given timestamp
-     */
-    List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException;
+    List<String> getResurrectedOIDs() throws EDBException;
 
     /**
      * Loads a JPACommit with the given timestamp
@@ -89,9 +84,14 @@ public interface JPADao {
      * like getCommits, but it returns only the newest commit
      */
     JPACommit getLastCommit(Map<String, Object> param) throws EDBException;
-
+    
     /**
-     * Returns a list of JPAObjects which have all a JPAEntry with the given key and value.
+     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values.
      */
-    List<JPAObject> query(String key, Object value) throws EDBException;
+    List<JPAObject> query(Map<String, Object> values) throws EDBException;
+    
+    /**
+     * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.
+     */
+    Integer getVersionOfOid(String oid) throws EDBException;
 }

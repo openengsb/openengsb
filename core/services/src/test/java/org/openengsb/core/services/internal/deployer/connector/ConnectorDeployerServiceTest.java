@@ -73,6 +73,7 @@ import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -91,7 +92,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    private NullDomain createdService;
+    private NullDomainImpl createdService;
     private ConnectorManager serviceManager;
     private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
     private String testConnectorData = "attribute.a-key=a-value";
@@ -112,11 +113,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.setServiceManager(serviceManager);
 
         factory = mock(ConnectorInstanceFactory.class);
-        createdService = mock(NullDomain.class);
+        createdService = mock(NullDomainImpl.class);
         when(factory.createNewInstance(anyString())).thenReturn(createdService);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(org.openengsb.core.api.Constants.CONNECTOR_KEY, "aconnector");
+        props.put(org.openengsb.core.api.Constants.DOMAIN_KEY, "mydomain");
         registerService(factory, props, ConnectorInstanceFactory.class);
 
         createDomainProviderMock(NullDomain.class, "mydomain");

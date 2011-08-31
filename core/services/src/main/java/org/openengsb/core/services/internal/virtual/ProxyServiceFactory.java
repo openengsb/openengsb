@@ -15,40 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.services.internal.virtual;
 
-import java.lang.reflect.Proxy;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.VirtualConnectorFactory;
+import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 
-public class ProxyServiceFactory implements ConnectorInstanceFactory {
+public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector> {
 
-    private DomainProvider domainProvider;
-    private Map<Domain, ProxyConnector> handlers = new HashMap<Domain, ProxyConnector>();
     private OutgoingPortUtilService callRouter = new DefaultOutgoingPortUtilService();
 
-    private static Map<String, ProxyServiceFactory> instances = new HashMap<String, ProxyServiceFactory>();
-
-    public static ConnectorInstanceFactory getInstance(DomainProvider domainProvider) {
-        if (!instances.containsKey(domainProvider.getId())) {
-            instances.put(domainProvider.getId(), new ProxyServiceFactory(domainProvider));
-        }
-        return instances.get(domainProvider.getId());
-    }
-
     protected ProxyServiceFactory(DomainProvider domainProvider) {
-        this.domainProvider = domainProvider;
+        super(domainProvider);
     }
 
-    private void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
+    @Override
+    public void updateHandlerAttributes(ProxyConnector handler, Map<String, String> attributes) {
         handler.setPortId(attributes.get("portId"));
         String destination = attributes.get("destination");
         handler.setDestination(destination);
@@ -57,22 +46,17 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Connector instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    protected ProxyConnector createNewHandler(String id) {
         ProxyConnector handler = new ProxyConnector(id);
         updateInstanceCallRouter();
         handler.setOutgoingPortUtilService(callRouter);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), },
-                handler);
-        handlers.put(newProxyInstance, handler);
-        return newProxyInstance;
+        return handler;
     }
 
     private void updateInstanceCallRouter() {
@@ -98,7 +82,7 @@ public class ProxyServiceFactory implements ConnectorInstanceFactory {
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }

@@ -21,12 +21,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Representation of a unique identification of context instances.
  * 
  * A context instance is identified by a String-identifier
  * 
  */
+@XmlRootElement
 public class ContextId {
     
     public static final String META_KEY_ID = "id";

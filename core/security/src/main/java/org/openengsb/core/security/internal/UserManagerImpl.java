@@ -77,8 +77,9 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
-        // TODO Auto-generated method stub
-
+        // not implemented since we don't use the usermanager that way.
+        // rethink this after OPENENGSB-200 is fixed
+        throw new UnsupportedOperationException("Not implemented, use updateUser()");
     }
 
     @Override
@@ -88,7 +89,7 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public List<String> getUsernameList() {
-        TypedQuery<String> createQuery = entityManager.createQuery("SELECT u.username FROM SimpleUser u", String.class);
+        TypedQuery<String> createQuery = entityManager.createQuery("SELECT u.username FROM UserImpl u", String.class);
         return createQuery.getResultList();
     }
 

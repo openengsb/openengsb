@@ -1,4 +1,3 @@
-package org.openengsb.core.console;
 /**
  * Licensed to the Austrian Association for Software Tool Integration (AASTI)
  * under one or more contributor license agreements. See the NOTICE file
@@ -16,16 +15,32 @@ package org.openengsb.core.console;
  * limitations under the License.
  */
 
+package org.openengsb.core.services.internal;
 
-import org.apache.felix.gogo.commands.Command;
-import org.apache.karaf.shell.console.OsgiCommandSupport;
+import java.util.Properties;
 
-@Command(scope = "openengsb", name = "info", description = "Prints out current project version")
-public class OpenEngSBCommand extends OsgiCommandSupport {
+import org.apache.karaf.shell.commands.info.InfoProvider;
+
+public class OpenEngSBInfoProvider implements InfoProvider {
+
+    private String name;
+    private Properties properties;
 
     @Override
-    protected Object doExecute() throws Exception {
-        System.out.println(getBundleContext().getBundle().getVersion().toString());
-        return null;
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 }

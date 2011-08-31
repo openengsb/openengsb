@@ -31,11 +31,6 @@
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
-  <bean class="org.openengsb.core.security.internal.UserDataInitializerBean" init-method="init">
-    <property name="userManager" ref="userManager" />
-    <property name="roleManager" ref="roleManager" />
-  </bean>
-
   <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
   <service interface="org.openengsb.core.api.security.RoleManager" ref="roleManager" />
 

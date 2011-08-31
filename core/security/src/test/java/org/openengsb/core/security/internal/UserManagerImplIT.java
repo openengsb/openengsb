@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.usermanagement;
+package org.openengsb.core.security.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -26,22 +26,25 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.openengsb.core.api.security.RoleManager;
+import org.junit.rules.TemporaryFolder;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.internal.UserDataInitializerBean;
-import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.OpenEngSBGrantedAuthority;
 import org.openengsb.core.security.model.PermissionAuthority;
@@ -49,6 +52,7 @@ import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
 import org.openengsb.core.security.model.UserImpl;
+import org.openengsb.core.security.usermanagement.AbstractJPATest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,6 +62,11 @@ import com.google.common.collect.Sets;
 
 public class UserManagerImplIT extends AbstractJPATest {
 
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
+
+    private EntityManager entityManager;
+
     private UserManager userManager;
 
     private UserImpl testUser2;
@@ -65,7 +74,6 @@ public class UserManagerImplIT extends AbstractJPATest {
 
     @Before
     public void setUp() throws Exception {
-        setupPersistence();
         setupUserManager();
         testUser2 = new UserImpl("testUser2", "testPass");
         entityManager.persist(testUser2);
@@ -136,13 +144,13 @@ public class UserManagerImplIT extends AbstractJPATest {
     @Test
     public void testInitMethodCreateNewUserIfNoUserIsPresent() throws Exception {
         entityManager.getTransaction().begin();
-        entityManager.createQuery("DELETE FROM SimpleUser").executeUpdate();
+        entityManager.createQuery("DELETE FROM UserImpl").executeUpdate();
         entityManager.getTransaction().commit();
-        UserDataInitializerBean userDataInitializerBean = new UserDataInitializerBean();
-        userDataInitializerBean.setUserManager(userManager);
-        RoleManager roleManager = mock(RoleManager.class);
-        userDataInitializerBean.setRoleManager(roleManager);
-        userDataInitializerBean.doInit();
+        OsgiUtilsService mock2 = mock(OsgiUtilsService.class);
+        when(mock2.getService(UserManager.class)).thenReturn(userManager);
+        when(mock2.getOsgiServiceProxy(OsgiUtilsService.class)).thenReturn(mock2);
+        OpenEngSBCoreServices.setOsgiServiceUtils(mock2);
+        new UserDataInitializer().run();
         UserDetails loadUserByUsername = userManager.loadUserByUsername("admin");
         assertThat(loadUserByUsername.getPassword(), is("password"));
     }

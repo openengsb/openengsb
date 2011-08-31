@@ -23,13 +23,13 @@
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
-    <class>org.openengsb.core.security.model.SimpleUser</class>
+    <class>org.openengsb.core.security.model.UserImpl</class>
     <class>org.openengsb.core.security.model.RoleImpl</class>
     <class>org.openengsb.core.security.model.AbstractPermission</class>
     <class>org.openengsb.core.security.model.ServicePermission</class>
 
     <properties>
-      <property name="openjpa.Log" value="commons" />
+      <property name="openjpa.Log" value="slf4j" />
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />

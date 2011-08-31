@@ -35,7 +35,7 @@
 
   <section>
     <title>Functional Interface</title>
-    <para><link xlink:href="${github}/domain/build/src/main/java/org/openengsb/domain/build/BuildDomain.java">Link</link>
+    <para><link xlink:href="${github.build}openengsb-domain-build${github.master.path}src/main/java/org/openengsb/domain/build/BuildDomain.java">Link</link>
       to the Java Domain Interface on Github.  This interface also contains information about events raised by this domain.</para>
   </section>
 

@@ -22,8 +22,20 @@
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
     <command name="openengsb/info">
-      <action class="org.openengsb.core.console.OpenEngSBCommand"/>
+      <action class="org.openengsb.core.console.OpenEngSBInfo">
+        <property name="infoProviders" ref="infoProviders"/>
+        <property name="versionNumber" value="${openengsb.version.number}"/>
+        <property name="nameAdjective" value="${openengsb.version.name.adjective}"/>
+        <property name="nameNoun" value="${openengsb.version.name.noun}"/>
+        <property name="droolsVersion" value="${drools.version}"/>
+      </action>
+    </command>
+    <command name="openengsb/domains">
+      <action class="org.openengsb.core.console.DomainInfoCommand"/>
     </command>
   </command-bundle>
 
+  <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"
+                  availability="optional">
+  </reference-list>
 </blueprint>

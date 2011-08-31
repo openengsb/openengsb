@@ -79,6 +79,9 @@
               org.springframework.aop,
               org.springframework.aop.framework, *
             </Import-Package>
+            <!--
+              Workflows need to access used classes in a dynamic way.
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

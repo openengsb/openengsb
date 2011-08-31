@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -61,7 +62,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     private BundleContext bundleContext;
 
     private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
-    private Map<ConnectorId, Domain> instances = new HashMap<ConnectorId, Domain>();
+    private Map<ConnectorId, Connector> instances = new HashMap<ConnectorId, Connector>();
 
     @Override
     public String getInstanceId() {
@@ -101,6 +102,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     public void remove(ConnectorId id) {
         registrations.get(id).unregister();
         registrations.remove(id);
+        // FIXME: [OPENENGSB-1809] clean way to shutdown the container
+        instances.remove(id);
     }
 
     private void createService(ConnectorId id, ConnectorDescription description)
@@ -120,7 +123,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
 
-        Domain serviceInstance = factory.createNewInstance(id.toString());
+        Connector serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
         finishCreatingInstance(id, description, domainProvider, factory);
@@ -128,8 +131,14 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
             DomainProvider domainProvider, ConnectorInstanceFactory factory) {
-        Domain serviceInstance = factory.createNewInstance(id.toString());
+        Connector serviceInstance = factory.createNewInstance(id.toString());
+        if (serviceInstance == null) {
+            throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
+        }
         factory.applyAttributes(serviceInstance, description.getAttributes());
+        
+        serviceInstance.setDomainId(id.getDomainType());
+        serviceInstance.setConnectorId(id.getConnectorType());
 
         String[] clazzes = new String[]{
             OpenEngSBService.class.getName(),
@@ -201,13 +210,10 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
         String connectorType = id.getConnectorType();
-        if (connectorType.equals(Constants.EXTERNAL_CONNECTOR_PROXY)) {
-            DomainProvider domainProvider = getDomainProvider(id.getDomainType());
-            return ProxyServiceFactory.getInstance(domainProvider);
-        }
         Filter connectorFilter =
             serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                String.format("(%s=%s)", Constants.CONNECTOR_KEY, connectorType));
+                String.format("(&(%s=%s)(%s=%s))", Constants.DOMAIN_KEY, id.getDomainType(), Constants.CONNECTOR_KEY,
+                    connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);
         return service;

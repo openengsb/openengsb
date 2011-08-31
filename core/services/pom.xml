@@ -75,6 +75,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.info</include>
+          <include>OSGI-INF/blueprint/common-context.xml</include>
         </includes>
       </resource>
     </resources>
@@ -92,10 +93,11 @@
               org.springframework.aop.framework,
               org.apache.felix.fileinstall;version="[3,4)", *
             </Import-Package>
-	    <!-- We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
-		 Additional domains can be installed any time. -->
+            <!--
+              We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
+              Additional domains can be installed any time.
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.openengsb.core.common.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -137,6 +139,11 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.fileinstall</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.commands</artifactId>
     </dependency>
   </dependencies>
 
