@@ -32,7 +32,7 @@ import org.openengsb.core.api.security.model.Role;
 import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.google.common.base.Predicate;
@@ -75,7 +75,7 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void addRoleToUser(String username, String rolename) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         RoleImpl role = entityManager.find(RoleImpl.class, rolename);
         user.addRole(role);
         entityManager.merge(user);
@@ -83,7 +83,7 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void removeRoleFromuser(String username, final String rolename) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         Iterables.removeIf(user.getRoles(), new Predicate<Role>() {
             @Override
             public boolean apply(Role input) {
@@ -109,7 +109,7 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void addPermissionToUser(String username, Permission... permission) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         CollectionUtils.addAll(user.getPermissions(), permission);
         entityManager.merge(user);
     }
@@ -125,7 +125,7 @@ public class RoleManagerImpl implements RoleManager {
 
     @Override
     public void removePermissionsFromUser(String username, Permission... permissions) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         for (Permission p : permissions) {
             user.getPermissions().remove(p);
         }

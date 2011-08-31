@@ -48,7 +48,7 @@ import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,16 +60,16 @@ public class UserManagerImplIT extends AbstractJPATest {
 
     private UserManager userManager;
 
-    private SimpleUser testUser2;
-    private SimpleUser testUser3;
+    private UserImpl testUser2;
+    private UserImpl testUser3;
 
     @Before
     public void setUp() throws Exception {
         setupPersistence();
         setupUserManager();
-        testUser2 = new SimpleUser("testUser2", "testPass");
+        testUser2 = new UserImpl("testUser2", "testPass");
         entityManager.persist(testUser2);
-        testUser3 = new SimpleUser("testUser3", "testPass");
+        testUser3 = new UserImpl("testUser3", "testPass");
         entityManager.persist(testUser3);
     }
 
@@ -125,7 +125,7 @@ public class UserManagerImplIT extends AbstractJPATest {
     @Test
     public void deleteUser_ShouldWork() throws Exception {
         userManager.deleteUser("testUser3");
-        assertNull(entityManager.find(SimpleUser.class, "testUser3"));
+        assertNull(entityManager.find(UserImpl.class, "testUser3"));
     }
 
     @Test(expected = UsernameNotFoundException.class)
@@ -229,9 +229,9 @@ public class UserManagerImplIT extends AbstractJPATest {
         UserDetails user2 = Users.create("xx2", "password", Sets.newHashSet(roleAuthority2, roleAuthority3));
         userManager.createUser(user2);
 
-        TypedQuery<SimpleUser> query =
+        TypedQuery<UserImpl> query =
             entityManager.createQuery("SELECT r FROM SimpleUser r WHERE (SELECT COUNT(p) FROM r.roles p) > 0 ",
-                SimpleUser.class);
+                UserImpl.class);
         assertThat(query.getResultList().size(), is(2));
 
         TypedQuery<RoleImpl> query2 = entityManager.createQuery("SELECT r FROM RoleImpl R", RoleImpl.class);

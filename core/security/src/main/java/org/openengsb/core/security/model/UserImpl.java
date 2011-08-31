@@ -33,7 +33,7 @@ import com.google.common.collect.Iterables;
 
 @Table(name = "SIMPLEUSER")
 @Entity
-public class SimpleUser {
+public class UserImpl {
 
     @Id
     private String username;
@@ -43,16 +43,16 @@ public class SimpleUser {
     @OneToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
 
-    public SimpleUser(String username) {
+    public UserImpl(String username) {
         this.username = username;
     }
 
-    public SimpleUser(String username, String password) {
+    public UserImpl(String username, String password) {
         this(username);
         this.password = password;
     }
 
-    public SimpleUser() {
+    public UserImpl() {
     }
 
     public String getUsername() {

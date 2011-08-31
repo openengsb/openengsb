@@ -53,7 +53,7 @@ public class RoleImpl implements Role, Serializable {
     @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
     @ManyToMany(mappedBy = "roles")
-    private Collection<SimpleUser> members = new HashSet<SimpleUser>();
+    private Collection<UserImpl> members = new HashSet<UserImpl>();
 
     public RoleImpl() {
     }
@@ -75,13 +75,13 @@ public class RoleImpl implements Role, Serializable {
     }
 
     private void updateUserRoleRelation(Collection<? extends Role> roles) {
-        Iterable<SimpleUser> outdatedMembers = Iterables.filter(members, new Predicate<SimpleUser>() {
+        Iterable<UserImpl> outdatedMembers = Iterables.filter(members, new Predicate<UserImpl>() {
             @Override
-            public boolean apply(SimpleUser input) {
+            public boolean apply(UserImpl input) {
                 return !input.getRoles().contains(this);
             }
         });
-        for (SimpleUser r : outdatedMembers) {
+        for (UserImpl r : outdatedMembers) {
             r.addRole(this);
         }
     }
@@ -103,11 +103,11 @@ public class RoleImpl implements Role, Serializable {
         this.permissions = permissions;
     }
 
-    public Collection<SimpleUser> getMembers() {
+    public Collection<UserImpl> getMembers() {
         return members;
     }
 
-    public void setMembers(Collection<SimpleUser> members) {
+    public void setMembers(Collection<UserImpl> members) {
         this.members = members;
     }
 
@@ -123,14 +123,14 @@ public class RoleImpl implements Role, Serializable {
         return result;
     }
 
-    public void addMember(SimpleUser member) {
+    public void addMember(UserImpl member) {
         members.add(member);
         if (!member.getRoles().contains(this)) {
             member.addRole(this);
         }
     }
 
-    public void removeMember(SimpleUser member) {
+    public void removeMember(UserImpl member) {
         members.add(member);
         if (member.getRoles().contains(this)) {
             member.removeRole(this);

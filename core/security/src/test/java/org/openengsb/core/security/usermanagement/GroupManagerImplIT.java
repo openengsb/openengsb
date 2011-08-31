@@ -39,7 +39,7 @@ import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.ServicePermission;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class GroupManagerImplIT extends AbstractJPATest {
@@ -47,16 +47,16 @@ public class GroupManagerImplIT extends AbstractJPATest {
     private UserManager userManager;
     private RoleManager groupManager;
 
-    private SimpleUser testUser2;
-    private SimpleUser testUser3;
+    private UserImpl testUser2;
+    private UserImpl testUser3;
 
     @Before
     public void setUp() throws Exception {
         setupPersistence();
         setupUserManager();
-        testUser2 = new SimpleUser("testUser2", "testPass");
+        testUser2 = new UserImpl("testUser2", "testPass");
         entityManager.persist(testUser2);
-        testUser3 = new SimpleUser("testUser3", "testPass");
+        testUser3 = new UserImpl("testUser3", "testPass");
         entityManager.persist(testUser3);
     }
 
@@ -118,7 +118,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
         AbstractPermission permission = new ServicePermission("asdf");
         userManager.createUser(Users.create("user", "password"));
         groupManager.addPermissionToUser("user", permission);
-        SimpleUser user = entityManager.find(SimpleUser.class, "user");
+        UserImpl user = entityManager.find(UserImpl.class, "user");
         assertThat(user.getPermissions(), hasItem(permission));
     }
 
@@ -128,7 +128,7 @@ public class GroupManagerImplIT extends AbstractJPATest {
         userManager.createUser(Users.create("user", "password"));
         groupManager.addPermissionToUser("user", permission);
         groupManager.removePermissionsFromUser("user", permission);
-        SimpleUser user = entityManager.find(SimpleUser.class, "user");
+        UserImpl user = entityManager.find(UserImpl.class, "user");
         assertThat(user.getPermissions(), not(hasItem(permission)));
     }
 

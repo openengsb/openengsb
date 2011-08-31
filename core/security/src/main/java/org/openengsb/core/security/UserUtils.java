@@ -25,7 +25,7 @@ import org.openengsb.core.security.model.AbstractPermission;
 import org.openengsb.core.security.model.PermissionAuthority;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,7 +35,7 @@ import com.google.common.collect.Collections2;
 
 public final class UserUtils {
 
-    public static UserDetails toSpringUser(SimpleUser user) {
+    public static UserDetails toSpringUser(UserImpl user) {
         if (user.getRoles() == null) {
             return Users.create(user.getUsername(), user.getPassword());
         }
@@ -46,8 +46,8 @@ public final class UserUtils {
         return Users.create(user.getUsername(), user.getPassword(), new ArrayList<GrantedAuthority>(authorities));
     }
 
-    public static SimpleUser toSimpleUser(UserDetails user) {
-        SimpleUser simpleUser = new SimpleUser(user.getUsername(), user.getPassword());
+    public static UserImpl toSimpleUser(UserDetails user) {
+        UserImpl simpleUser = new UserImpl(user.getUsername(), user.getPassword());
         simpleUser.setRoles(getRolesFromSpringUser(user.getAuthorities()));
         simpleUser.setPermissions(getPermissionsFromSpringUser(user.getAuthorities()));
         return simpleUser;
