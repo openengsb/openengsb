@@ -24,7 +24,7 @@ import javax.persistence.TypedQuery;
 
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -40,7 +40,7 @@ public class UserManagerImpl implements UserManager {
         if (userExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
-        entityManager.persist(new SimpleUser(user));
+        entityManager.persist(new UserImpl(user));
     }
 
     @Override
@@ -48,15 +48,15 @@ public class UserManagerImpl implements UserManager {
         if (!userExists(user.getUsername())) {
             throw new UsernameNotFoundException("User with username: " + user.getUsername() + " does not exists");
         }
-        SimpleUser simpleUser = entityManager.find(SimpleUser.class, user.getUsername());
+        UserImpl simpleUser = entityManager.find(UserImpl.class, user.getUsername());
         simpleUser.setPassword(user.getPassword());
-        simpleUser.setRoles(SimpleUser.convertAuthorityList(user.getAuthorities()));
+        simpleUser.setRoles(UserImpl.convertAuthorityList(user.getAuthorities()));
         entityManager.merge(simpleUser);
     }
 
     @Override
     public void deleteUser(String username) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         if (user == null) {
             throw new UsernameNotFoundException("User with username: " + username + " does not exists");
         }
@@ -65,7 +65,7 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        SimpleUser user = entityManager.find(SimpleUser.class, username);
+        UserImpl user = entityManager.find(UserImpl.class, username);
         if (user == null) {
             throw new UsernameNotFoundException("user with name: " + username + " does not exist");
         }
@@ -81,12 +81,12 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public boolean userExists(String username) {
-        return entityManager.find(SimpleUser.class, username) != null;
+        return entityManager.find(UserImpl.class, username) != null;
     }
 
     @Override
     public List<String> getUsernameList() {
-        TypedQuery<String> createQuery = entityManager.createQuery("SELECT u.username FROM SimpleUser u", String.class);
+        TypedQuery<String> createQuery = entityManager.createQuery("SELECT u.username FROM UserImpl u", String.class);
         return createQuery.getResultList();
     }
 

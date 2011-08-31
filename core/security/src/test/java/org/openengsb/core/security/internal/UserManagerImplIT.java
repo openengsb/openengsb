@@ -45,7 +45,7 @@ import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.model.SimpleUser;
+import org.openengsb.core.security.model.UserImpl;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,16 +60,16 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
 
     private UserManager userManager;
 
-    private SimpleUser testUser2;
-    private SimpleUser testUser3;
+    private UserImpl testUser2;
+    private UserImpl testUser3;
 
     @Before
     public void setUp() throws Exception {
         setupPersistence();
         setupUserManager();
-        testUser2 = new SimpleUser("testUser2", "testPass");
+        testUser2 = new UserImpl("testUser2", "testPass");
         entityManager.persist(testUser2);
-        testUser3 = new SimpleUser("testUser3", "testPass");
+        testUser3 = new UserImpl("testUser3", "testPass");
         entityManager.persist(testUser3);
     }
 
@@ -146,7 +146,7 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
     @Test
     public void deleteUser_ShouldWork() throws Exception {
         userManager.deleteUser("testUser3");
-        assertNull(entityManager.find(SimpleUser.class, "testUser3"));
+        assertNull(entityManager.find(UserImpl.class, "testUser3"));
     }
 
     @Test(expected = UsernameNotFoundException.class)
@@ -157,7 +157,7 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
     @Test
     public void testInitMethodCreateNewUserIfNoUserIsPresent() throws Exception {
         entityManager.getTransaction().begin();
-        entityManager.createQuery("DELETE FROM SimpleUser").executeUpdate();
+        entityManager.createQuery("DELETE FROM UserImpl").executeUpdate();
         entityManager.getTransaction().commit();
         OsgiUtilsService mock2 = mock(OsgiUtilsService.class);
         when(mock2.getService(UserManager.class)).thenReturn(userManager);

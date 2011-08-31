@@ -22,7 +22,7 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>org.openengsb.core.security.model.SimpleUser</class>
+    <class>org.openengsb.core.security.model.UserImpl</class>
     <properties>
       <property name="openjpa.Log" value="commons" />
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />

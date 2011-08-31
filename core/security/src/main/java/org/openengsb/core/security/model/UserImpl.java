@@ -34,12 +34,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
-@Table(name = "SIMPLEUSER")
+@Table(name = "USER")
 @Entity
-public class SimpleUser {
+public class UserImpl {
 
     @Id
-    @Column(name = "USER", length = 100)
+    @Column(name = "USERNAME", length = 100)
     private String username;
 
     @Column(name = "PASSWORD", length = 100)
@@ -49,23 +49,23 @@ public class SimpleUser {
     @ElementCollection
     private Collection<String> roles;
 
-    public SimpleUser(String username) {
+    public UserImpl(String username) {
         this.username = username;
     }
 
-    public SimpleUser(String username, String password, Collection<String> roles) {
+    public UserImpl(String username, String password, Collection<String> roles) {
         this.username = username;
         this.password = password;
     }
 
-    public SimpleUser(String username, String password) {
+    public UserImpl(String username, String password) {
         this(username, password, null);
     }
 
-    public SimpleUser() {
+    public UserImpl() {
     }
 
-    public SimpleUser(UserDetails user) {
+    public UserImpl(UserDetails user) {
         this(user.getUsername(), user.getPassword());
         roles = convertAuthorityList(user.getAuthorities());
     }
