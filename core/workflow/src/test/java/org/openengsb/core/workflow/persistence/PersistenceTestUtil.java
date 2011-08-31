@@ -25,13 +25,18 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
+import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
+import org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService;
+import org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.internal.persistence.RuleBaseElementPersistenceBackendService;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
 import org.osgi.framework.Bundle;
@@ -43,22 +48,43 @@ public final class PersistenceTestUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);
 
     public static RuleManager getRuleManagerWithMockedPersistence() throws Exception {
-        PersistenceRuleManager manager = new PersistenceRuleManager();
-        DummyPersistence persistenceMock = new DummyPersistence();
-        manager.setPersistence(persistenceMock);
-        manager.init();
-        return manager;
-    }
-
-    public static RuleManager getRuleManager() throws Exception {
-        return getRuleManagerWithMockedPersistence();
+        DummyPersistence persistence = new DummyPersistence();
+        return getRuleManagerWithPersistence(persistence);
     }
 
     public static RuleManager getRuleManagerWithPersistenceService() throws PersistenceException, IOException,
         RuleBaseException {
-        PersistenceRuleManager manager = new PersistenceRuleManager();
         NeodatisPersistenceService persistence = createPersistence();
-        manager.setPersistence(persistence);
+        return getRuleManagerWithPersistence(persistence);
+    }
+
+    private static RuleManager getRuleManagerWithPersistence(PersistenceService persistence) {
+        PersistenceRuleManager manager = new PersistenceRuleManager();
+
+        GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/globals"));
+        globalBackend.setStorageFilePath("target/test/globals");
+        ConfigPersistenceService globalService = new DefaultConfigPersistenceService(globalBackend);
+        manager.setGlobalPersistence(globalService);
+
+        ImportDeclarationPersistenceBackendService importBackend = new ImportDeclarationPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/imports"));
+        importBackend.setStorageFilePath("target/test/imports");
+        ConfigPersistenceService importService = new DefaultConfigPersistenceService(importBackend);
+        manager.setImportPersistence(importService);
+
+        RuleBaseElementPersistenceBackendService ruleBackend = new RuleBaseElementPersistenceBackendService();
+        FileUtils.deleteQuietly(new File("target/test/flows/"));
+        ruleBackend.setStorageFolderPath("target/test/flows/");
+        try {
+            ruleBackend.init();
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        ConfigPersistenceService ruleService = new DefaultConfigPersistenceService(ruleBackend);
+        manager.setRuleService(ruleService);
+
         manager.init();
         return manager;
     }

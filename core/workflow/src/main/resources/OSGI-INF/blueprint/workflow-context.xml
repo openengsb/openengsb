@@ -21,11 +21,7 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
-    init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
+  <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager" init-method="init" />
 
   <service interface="org.openengsb.core.api.workflow.RuleManager">
     <ref component-id="ruleManager" />
@@ -108,6 +104,24 @@
       <argument>
         <bean class="org.openengsb.core.workflow.internal.persistence.WorkflowRepresentationConverter"></bean>
       </argument>
+    </bean>
+  </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="global-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService">
+    	<property name="storageFolderPath" value="$[karaf.data]/openengsb/config/rulebase/globals" />	
+    </bean>
+  </service>
+  
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="import-persistence" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService">
+		<property name="storageFolderPath" value="$[karaf.data]/openengsb/config/rulebase/imports" />	
     </bean>
   </service>
 
