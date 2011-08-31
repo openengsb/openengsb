@@ -29,7 +29,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 /**
  * if the user-database is empty, default-users are inserted
  */
-class UserDataInitializer implements Runnable {
+public class UserDataInitializer implements Runnable {
     @Override
     public void run() {
         UserManager userManager = OpenEngSBCoreServices.getServiceUtilsService().getService(UserManager.class);
