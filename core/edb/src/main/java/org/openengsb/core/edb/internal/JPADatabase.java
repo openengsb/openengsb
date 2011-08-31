@@ -89,6 +89,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
+
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
         for (EDBObject update : commit.getObjects()) {
