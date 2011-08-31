@@ -36,7 +36,7 @@ import org.openengsb.core.api.edb.EDBObject;
  * the JPAObject can be converted to an EDBObject.
  */
 public class JPAObject {
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAEntry> entries;
     @Column(name = "TIME")
     private Long timestamp;

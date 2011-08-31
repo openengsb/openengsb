@@ -38,6 +38,11 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
+    
+    /**
+     * Retrieve the current state of the objects with the specified OIDs. 
+     */
+    List<EDBObject> getObjects(List<String> oids) throws EDBException;
 
     /**
      * Retrieve the current state - a list of all EDBObjects currently available.

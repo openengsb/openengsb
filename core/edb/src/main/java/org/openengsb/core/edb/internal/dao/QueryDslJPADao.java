@@ -29,12 +29,10 @@ import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
 import org.openengsb.core.edb.internal.QJPACommit;
 import org.openengsb.core.edb.internal.QJPAEntry;
-import org.openengsb.core.edb.internal.QJPAHead;
 import org.openengsb.core.edb.internal.QJPAObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.jpa.impl.JPASubQuery;
@@ -45,49 +43,32 @@ public class QueryDslJPADao implements JPADao {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryDslJPADao.class);
     private EntityManager entityManager;
 
-    public QueryDslJPADao() {
-    }
-
     public QueryDslJPADao(EntityManager entityManager) {
         this.entityManager = entityManager;
-    }
-
-    @Override
-    public Number getNewestJPAHeadNumber() throws EDBException {
-        LOGGER.debug("getting newest jpa head timestamp");
-        JPQLQuery query = new JPAQuery(entityManager);
-        QJPAHead head = QJPAHead.jPAHead;
-        try {
-            return query.from(head).uniqueResult(head.timestamp.max());
-        } catch (NonUniqueResultException e) {
-            System.out.println("error1");
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
 
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
         LOGGER.debug("Loading JPAHead for timestamp {}", timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
-        QJPAHead head = QJPAHead.jPAHead;
-        List<JPAHead> resultList = query.from(head).where(head.timestamp.eq(timestamp)).list(head);
-        if (resultList == null || resultList.get(0) == null) {
-            throw new EDBException("Head not found for timestamp " + timestamp);
-        } else if (resultList.size() != 1) {
-            throw new EDBException("Multiple heads found for the timestamp " + timestamp);
-        }
-        return resultList.get(0);
-    }
-
-    @Override
-    public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
-        LOGGER.debug("Loading newest Timestamp for object with the id {}", oid);
-        JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
-        return query.from(object).where(object.oid.eq(oid)).uniqueResult(object.timestamp.max());
+        QJPAObject subObject = QJPAObject.jPAObject;
+
+        JPASubQuery sub = new JPASubQuery().from(subObject)
+            .where(subObject.oid.eq(object.oid).and(subObject.timestamp.loe(timestamp)));
+
+        List<JPAObject> result =
+            query
+                .from(object)
+                .where(
+                    object.isDeleted.isFalse().and(
+                        object.timestamp.eq(sub
+                            .unique(object.timestamp.max())))).list(object);
+
+        JPAHead head = new JPAHead();
+        head.setJPAObjects(result);
+        head.setTimestamp(timestamp);
+        return head;
     }
 
     @Override
@@ -103,7 +84,8 @@ public class QueryDslJPADao implements JPADao {
         LOGGER.debug("Loading the history for the object {} from {} to {}", from, to);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
-        return query.from(object).where(object.oid.eq(oid).and(object.timestamp.between(from, to))).list(object);
+        return query.from(object).where(object.oid.eq(oid).and(object.timestamp.between(from, to)))
+            .orderBy(object.timestamp.asc()).list(object);
     }
 
     @Override
@@ -112,15 +94,26 @@ public class QueryDslJPADao implements JPADao {
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
         JPAObject result =
-            query
-                .from(object)
-                .where(
-                    object.oid.eq(oid).and(
-                        object.timestamp.eq(new JPASubQuery().from(object).where(object.oid.eq(oid))
-                            .unique(object.timestamp.max())))).uniqueResult(object);
+            query.from(object).where(object.oid.eq(oid)).orderBy(object.timestamp.desc()).limit(1).uniqueResult(object);
         if (result == null) {
             throw new EDBException("the given oid " + oid + " was never commited to the database");
         }
+        return result;
+    }
+
+    @Override
+    public List<JPAObject> getJPAObjects(List<String> oids) throws EDBException {
+        JPQLQuery query = new JPAQuery(entityManager);
+        QJPAObject object = QJPAObject.jPAObject;
+        QJPAObject subObject = new QJPAObject("subObject");
+        JPASubQuery sub = new JPASubQuery().from(subObject).where(subObject.oid.eq(object.oid));
+        List<JPAObject> result =
+            query
+                .from(object)
+                .where(
+                    object.oid.in(oids).and(object.isDeleted.isFalse())
+                        .and(object.timestamp.eq(sub.unique(object.timestamp.max())))).list(object);
+
         return result;
     }
 
@@ -129,15 +122,9 @@ public class QueryDslJPADao implements JPADao {
         LOGGER.debug("Loading object {} for the time {}", oid, timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
-        JPASubQuery sub = new JPASubQuery().from(object)
-            .where(object.oid.eq(oid).and(object.timestamp.loe(timestamp)));
         List<JPAObject> resultList =
-            query
-                .from(object)
-                .where(
-                    object.oid.eq(oid).and(
-                        object.timestamp.eq(
-                            sub.unique(object.timestamp.max())))).list(object);
+            query.from(object).where(object.oid.eq(oid).and(object.timestamp.loe(timestamp)))
+                .orderBy(object.timestamp.desc()).limit(1).list(object);
         if (resultList.size() < 1) {
             throw new EDBException("Failed to query existing object");
         } else if (resultList.size() > 1) {
@@ -159,27 +146,11 @@ public class QueryDslJPADao implements JPADao {
     }
 
     @Override
-    public List<JPAObject> getDeletedJPAObjects() throws EDBException {
-        LOGGER.debug("Load all deleted JPAObjects");
-        JPQLQuery query = new JPAQuery(entityManager);
-        QJPAObject object = QJPAObject.jPAObject;
-        return query.from(object).where(object.isDeleted.eq(true)).list(object);
-    }
-
-    @Override
-    public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
-        LOGGER.debug("Load all objects with the given oid {} which are younger than {}", oid, timestamp);
-        JPQLQuery query = new JPAQuery(entityManager);
-        QJPAObject object = QJPAObject.jPAObject;
-        return query.from(object).where(object.oid.eq(oid).and(object.timestamp.gt(timestamp))).list(object);
-    }
-
-    @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
         LOGGER.debug("Load the commit for the timestamp {}", timestamp);
         JPQLQuery query = new JPAQuery(entityManager);
         QJPACommit commit = QJPACommit.jPACommit;
-        return query.from(commit).where(commit.timestamp.eq(timestamp)).list(commit);
+        return query.from(commit).where(commit.timestamp.loe(timestamp)).limit(1).list(commit);
     }
 
     @Override
@@ -223,17 +194,37 @@ public class QueryDslJPADao implements JPADao {
     }
 
     @Override
-    public List<JPAObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("Query for objects which have entries where key = {} and value = {}", key, value);
+    public List<String> getResurrectedOIDs() throws EDBException {
+        LOGGER.debug("get resurrected JPA objects");
         JPQLQuery query = new JPAQuery(entityManager);
         QJPAObject object = QJPAObject.jPAObject;
-        QJPAEntry entry = QJPAEntry.jPAEntry;
-        List<JPAObject> objects =
-            query.from(object)
-                .innerJoin(object.entries, entry)
-                .where(entry.key.eq(key).and(entry.value.eq(value.toString()))).orderBy(object.timestamp.asc())
-                .list(object);
-        return objects;
+        QJPAObject subObject = new QJPAObject("subObject");
+
+        JPASubQuery sub =
+            new JPASubQuery().from(subObject).where(
+                subObject.oid.eq(object.oid).and(
+                    subObject.isDeleted.isTrue().and(object.timestamp.gt(subObject.timestamp))));
+
+        List<String> resultList =
+            query.from(object).where(object.isDeleted.isFalse().and(sub.exists())).list(object.oid);
+        return resultList;
+    }
+
+    @Override
+    public List<JPAObject> query(Map<String, Object> values) throws EDBException {
+        JPQLQuery query = new JPAQuery(entityManager);
+        QJPAObject object = QJPAObject.jPAObject;
+
+        query.from(object);
+        int i = 0;
+        for (Map.Entry<String, Object> value : values.entrySet()) {
+            QJPAEntry entry = new QJPAEntry("join" + i);
+            query.join(object.entries, entry);
+            query.where(entry.key.eq(value.getKey()).and(entry.value.eq(value.getValue().toString())));
+            i++;
+        }
+        List<JPAObject> result = query.orderBy(object.timestamp.desc()).list(object);
+        return result;
     }
 
     @Override

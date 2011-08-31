@@ -335,6 +335,7 @@ public class JPATestIT {
             // });
             // assertTrue("There's one object in HEAD with Cat:Dog,Lock:/Smith|Key/", list.size() == 1);
         } catch (EDBException ex) {
+            ex.printStackTrace();
             fail("DB error: " + ex.toString());
         }
     }

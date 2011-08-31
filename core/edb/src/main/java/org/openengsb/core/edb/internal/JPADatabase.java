@@ -20,12 +20,9 @@ package org.openengsb.core.edb.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -57,12 +54,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @PersistenceContext(name = "openengsb-edb")
     private EntityManagerFactory emf;
     private EntityManager entityManager;
-    private JPAHead head;
     private JPADao dao;
-
-    public JPADatabase() {
-        head = null;
-    }
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -73,16 +65,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         emf = Persistence.createEntityManagerFactory("edb-test", props);
         setEntityManager(emf.createEntityManager());
         utx = entityManager.getTransaction();
-        initiate();
         LOGGER.debug("starting of EDB successful");
-    }
-    
-    public void initiate() throws EDBException {
-        Number max = dao.getNewestJPAHeadNumber();
-        if (max != null && max.longValue() > 0) {
-            LOGGER.debug("loading JPA Head with timestamp {}", max.longValue());
-            head = loadHead(max.longValue());
-        }
     }
 
     /**
@@ -94,6 +77,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         entityManager = null;
         emf = null;
     }
+    
 
     @Override
     public JPACommit createCommit(String committer, String contextId) {
@@ -106,39 +90,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         if (commit.isCommitted()) {
             throw new EDBException("EDBCommit was already commitet!");
         }
-
         long timestamp = System.currentTimeMillis();
         commit.setTimestamp(timestamp);
-
-        JPAHead nextHead;
-        if (head != null) {
-            LOGGER.debug("adding a new JPAHead");
-            nextHead = new JPAHead(head, timestamp);
-        } else {
-            LOGGER.debug("creating the first JPAHead");
-            nextHead = new JPAHead(timestamp);
-        }
-
-        for (String del : commit.getDeletions()) {
-            nextHead.delete(del);
-        }
         for (EDBObject update : commit.getObjects()) {
-            String oid = update.getOID();
             update.updateTimestamp(timestamp);
-            nextHead.replace(oid, update);
+            entityManager.persist(new JPAObject(update));
         }
 
         try {
             performUtxAction(UTXACTION.BEGIN);
             commit.setCommitted(true);
-            LOGGER.debug("persisting JPACommit and the new JPAHead");
+            LOGGER.debug("persisting JPACommit");
             entityManager.persist(commit);
-            entityManager.persist(nextHead);
-
-            LOGGER.debug("persisting the elements of the new JPAHead");
-            for (JPAObject o : nextHead.getJPAObjects()) {
-                entityManager.persist(o);
-            }
 
             LOGGER.debug("setting the deleted elements as deleted");
             for (String id : commit.getDeletions()) {
@@ -150,7 +113,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             }
 
             performUtxAction(UTXACTION.COMMIT);
-            head = nextHead;
         } catch (Exception ex) {
             try {
                 performUtxAction(UTXACTION.ROLLBACK);
@@ -195,7 +157,19 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public EDBObject getObject(String oid) throws EDBException {
-        return dao.getJPAObject(oid).getObject();
+        LOGGER.debug("loading newest JPAObject with the oid {}", oid);
+        JPAObject temp = dao.getJPAObject(oid);
+        return temp.getObject();
+    }
+
+    @Override
+    public List<EDBObject> getObjects(List<String> oids) throws EDBException {
+        List<JPAObject> objects = dao.getJPAObjects(oids);
+        List<EDBObject> result = new ArrayList<EDBObject>();
+        for (JPAObject object : objects) {
+            result.add(object.getObject());
+        }
+        return result;
     }
 
     @Override
@@ -251,7 +225,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public List<EDBObject> getHead() throws EDBException {
-        return head.getEDBObjects();
+        return dao.getJPAHead(System.currentTimeMillis()).getEDBObjects();
     }
 
     @Override
@@ -275,36 +249,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public List<EDBObject> query(Map<String, Object> queryMap) throws EDBException {
         try {
-            Set<JPAObject> result = new HashSet<JPAObject>();
-
-            for (Entry<String, Object> entry : queryMap.entrySet()) {
-                analyzeEntry(entry, result);
-
-                if (result.size() == 0) {
-                    LOGGER.debug("there are no objects which have all values from the map");
-                    return new ArrayList<EDBObject>();
-                }
-            }
-            return generateEDBObjectList(new ArrayList<JPAObject>(result));
+            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap)));
         } catch (Exception ex) {
             throw new EDBException("failed to query for objects with the given map", ex);
-        }
-    }
-
-    private void analyzeEntry(Entry<String, Object> entry, Set<JPAObject> set) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
-
-        List<JPAObject> temp = dao.query(key, value);
-
-        if (temp.size() == 0) {
-            set = new HashSet<JPAObject>();
-            return;
-        }
-        if (set.size() == 0) {
-            set.addAll(temp);
-        } else {
-            set.retainAll(temp);
         }
     }
 
@@ -355,15 +302,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
 
     @Override
     public List<String> getResurrectedOIDs() throws EDBException {
-        List<JPAObject> objects = dao.getDeletedJPAObjects();
-        List<String> result = new ArrayList<String>();
-        for (JPAObject o : objects) {
-            List<JPAObject> temp = dao.getJPAObjectVersionsYoungerThanTimestamp(o.getOID(), o.getTimestamp());
-            if (temp.size() != 0) {
-                result.add(o.getOID());
-            }
-        }
-        return result;
+        return dao.getResurrectedOIDs();
     }
 
     @Override
