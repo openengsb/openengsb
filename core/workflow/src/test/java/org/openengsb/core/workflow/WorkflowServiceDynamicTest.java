@@ -87,6 +87,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
     @After
     public void tearDown() throws Exception {
+        PersistenceTestUtil.cleanup();
     }
 
     @Test
@@ -148,7 +149,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManagerWithMockedPersistence();
+        manager = PersistenceTestUtil.getRuleManager();
         mockDomain("deploy");
         mockDomain("build");
         mockDomain("test");

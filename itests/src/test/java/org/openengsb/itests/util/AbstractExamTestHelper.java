@@ -77,7 +77,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     private boolean isBeforeExecuted = false;
 
     public enum SetupType {
-            BLUEPRINT, SPRING, START_ONLY
+        BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -107,8 +107,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         registerConfigPersistence("contextFilePersistenceService", "CONTEXT");
         registerConfigPersistence("workflow-persistence", "WORKFLOW");
         registerConfigPersistence("persistenceService", "CONNECTOR");
-        registerConfigPersistence("persistenceService", "RULE");
-        
+        registerConfigPersistence("rule-persistence", "RULE");
+        registerConfigPersistence("global-persistence", "GLOBAL");
+        registerConfigPersistence("import-persistence", "IMPORT");
         waitForBundle("org.openengsb.ui.admin", SetupType.SPRING);
     }
 
@@ -265,8 +266,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," 
-                + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom,"
+                    + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
                     + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
             waitForFrameworkStartup(),

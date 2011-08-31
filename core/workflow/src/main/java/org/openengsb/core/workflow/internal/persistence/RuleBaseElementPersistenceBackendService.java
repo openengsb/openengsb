@@ -23,6 +23,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
@@ -38,9 +41,10 @@ import com.google.common.base.Preconditions;
 public class RuleBaseElementPersistenceBackendService implements ConfigPersistenceBackendService<RuleBaseElement> {
 
     private File storageFolder;
+    private URLCodec encoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleBaseElementPersistenceBackendService.class);
-    protected static final String SEPARATOR = "-";
+    protected static final String SEPARATOR = ",";
 
     @Override
     public List<ConfigItem<RuleBaseElement>> load(Map<String, String> metadata) throws PersistenceException,
@@ -83,13 +87,15 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
     }
 
     private File getPathForMetaData(Map<String, String> metaData) throws PersistenceException {
-        String type = metaData.get(RuleBaseElement.META_RULE_TYPE);
-        String name = metaData.get(RuleBaseElement.META_RULE_NAME);
-        String pack = metaData.get(RuleBaseElement.META_RULE_PACKAGE);
-
-        if (type.contains(SEPARATOR) || name.contains(SEPARATOR) || pack.contains(SEPARATOR)) {
-            throw new PersistenceException(String.format("Can't persist %s %s %s because the metadata contains %s",
-                type, name, pack, SEPARATOR));
+        String type;
+        String name;
+        String pack;
+        try {
+            type = encoder.encode(metaData.get(RuleBaseElement.META_RULE_TYPE));
+            name = encoder.encode(metaData.get(RuleBaseElement.META_RULE_NAME));
+            pack = encoder.encode(metaData.get(RuleBaseElement.META_RULE_PACKAGE));
+        } catch (EncoderException e) {
+            throw new PersistenceException(e);
         }
 
         String filename = String.format("%s%s%s%s%s", type, SEPARATOR, name, SEPARATOR, pack);
@@ -102,11 +108,14 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
 
         RuleBaseElement element = new RuleBaseElement();
         element.setType(RuleBaseElementType.valueOf(parts[0]));
-        element.setName(parts[1]);
-        element.setPackageName(parts[2]);
+
         try {
+            element.setName(encoder.decode(parts[1]));
+            element.setPackageName(encoder.decode(parts[2]));
             element.setCode(FileUtils.readFileToString(file));
         } catch (IOException e) {
+            throw new PersistenceException(e);
+        } catch (DecoderException e) {
             throw new PersistenceException(e);
         }
         return new ConfigItem<RuleBaseElement>(element.toMetadata(), element);
@@ -137,6 +146,7 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
     }
 
     public void init() throws PersistenceException {
+        encoder = new URLCodec();
         if (!storageFolder.exists()) {
             try {
                 FileUtils.forceMkdir(storageFolder);

@@ -53,7 +53,7 @@ public final class Constants {
     /**
      * represents the id of the ConfigPersistenceService the RuleManager uses for ImportDeclarations.
      */
-    public static final String CONFIG_RULE_RULEBASE = "RULE";
+    public static final String CONFIG_RULE_RULEBASE = "RULEBASE";
 
     /**
      * represents the property-key for type of connector in osgi-service-properties

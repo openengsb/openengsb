@@ -19,19 +19,27 @@ package org.openengsb.core.workflow.internal.persistence;
 import java.io.File;
 import java.util.Map;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.openengsb.core.workflow.model.RuleBaseElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleBaseFileNameFilter implements IOFileFilter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleBaseFileNameFilter.class);
 
     private String type;
     private String name;
     private String pack;
+    private URLCodec decoder;
 
     public RuleBaseFileNameFilter(Map<String, String> metaData) {
         type = metaData.get(RuleBaseElement.META_RULE_TYPE);
         name = metaData.get(RuleBaseElement.META_RULE_NAME);
         pack = metaData.get(RuleBaseElement.META_RULE_PACKAGE);
+        decoder = new URLCodec();
     }
 
     @Override
@@ -43,18 +51,22 @@ public class RuleBaseFileNameFilter implements IOFileFilter {
             return false;
         }
 
-        if (!(type == null || parts[0].equals(type))) {
+        try {
+            if (!(type == null || parts[0].equals(type))) {
+                return false;
+            }
+
+            if (!(name == null || decoder.decode(parts[1]).equals(name))) {
+                return false;
+            }
+
+            if (!(pack == null || decoder.decode(parts[2]).equals(pack))) {
+                return false;
+            }
+        } catch (DecoderException e) {
+            LOGGER.warn(e.getMessage());
             return false;
         }
-
-        if (!(name == null || parts[1].equals(name))) {
-            return false;
-        }
-
-        if (!(pack == null || parts[2].equals(pack))) {
-            return false;
-        }
-
         return true;
 
     }

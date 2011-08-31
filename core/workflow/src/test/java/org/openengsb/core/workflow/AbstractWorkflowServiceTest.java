@@ -19,11 +19,9 @@ package org.openengsb.core.workflow;
 
 import static org.mockito.Mockito.mock;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -59,7 +57,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        cleanup();
+        PersistenceTestUtil.cleanup();
     }
 
     @Before
@@ -91,7 +89,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManagerWithMockedPersistence();
+        manager = PersistenceTestUtil.getRuleManager();
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
@@ -125,14 +123,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
 
     @After
     public void tearDown() throws Exception {
-        cleanup();
-    }
-
-    private static void cleanup() {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
+        PersistenceTestUtil.cleanup();
     }
 
     @Override

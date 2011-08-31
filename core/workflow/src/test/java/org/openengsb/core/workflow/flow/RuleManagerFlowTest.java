@@ -64,14 +64,11 @@ public class RuleManagerFlowTest {
     @After
     @Before
     public void deleteData() throws Exception {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
+        PersistenceTestUtil.cleanup();
     }
 
     protected RuleManager getRuleBaseSource() throws Exception {
-        RuleManager source = PersistenceTestUtil.getRuleManagerWithMockedPersistence();
+        RuleManager source = PersistenceTestUtil.getRuleManager();
         return source;
     }
 
