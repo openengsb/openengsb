@@ -262,8 +262,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 .versionAsInProject()),
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                    .versionAsInProject(), "openengsb-edb", "openengsb-ekb",
-                "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
+                    .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," 
                 + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
