@@ -26,10 +26,6 @@
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
-  <bean class="org.openengsb.core.security.internal.UserDataInitializerBean" init-method="init">
-    <property name="userManager" ref="userManager" />
-  </bean>
-
   <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">

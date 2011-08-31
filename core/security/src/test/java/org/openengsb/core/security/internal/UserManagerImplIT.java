@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.usermanagement;
+package org.openengsb.core.security.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
@@ -39,11 +41,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.internal.UserDataInitializerBean;
-import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.security.model.SimpleUser;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.security.core.userdetails.User;
@@ -160,9 +162,11 @@ public class UserManagerImplIT extends AbstractOpenEngSBTest {
         entityManager.getTransaction().begin();
         entityManager.createQuery("DELETE FROM SimpleUser").executeUpdate();
         entityManager.getTransaction().commit();
-        UserDataInitializerBean userDataInitializerBean = new UserDataInitializerBean();
-        userDataInitializerBean.setUserManager(userManager);
-        userDataInitializerBean.doInit();
+        OsgiUtilsService mock2 = mock(OsgiUtilsService.class);
+        when(mock2.getService(UserManager.class)).thenReturn(userManager);
+        when(mock2.getOsgiServiceProxy(OsgiUtilsService.class)).thenReturn(mock2);
+        OpenEngSBCoreServices.setOsgiServiceUtils(mock2);
+        new UserDataInitializer().run();
         UserDetails loadUserByUsername = userManager.loadUserByUsername("admin");
         assertThat(loadUserByUsername.getPassword(), is("password"));
     }
