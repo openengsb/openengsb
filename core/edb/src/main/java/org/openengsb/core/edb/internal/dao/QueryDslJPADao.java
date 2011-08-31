@@ -58,12 +58,11 @@ public class QueryDslJPADao implements JPADao {
             .where(subObject.oid.eq(object.oid).and(subObject.timestamp.loe(timestamp)));
 
         List<JPAObject> result =
-            query
-                .from(object)
-                .where(
-                    object.isDeleted.isFalse().and(
-                        object.timestamp.eq(sub
-                            .unique(object.timestamp.max())))).list(object);
+            query.from(object)
+                 .where(
+                     object.isDeleted.isFalse().and(
+                         object.timestamp.eq(sub
+                             .unique(object.timestamp.max())))).list(object);
 
         JPAHead head = new JPAHead();
         head.setJPAObjects(result);
