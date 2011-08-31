@@ -53,7 +53,8 @@ public final class UserUtils {
         return simpleUser;
     }
 
-    public static Collection<AbstractPermission> getPermissionsFromSpringUser(Collection<GrantedAuthority> authorities) {
+    public static Collection<AbstractPermission> getPermissionsFromSpringUser(
+            Collection<GrantedAuthority> authorities) {
         Collection<PermissionAuthority> permissionAuthorities =
             filterCollectionByType(authorities, PermissionAuthority.class);
         Collection<AbstractPermission> permissions =

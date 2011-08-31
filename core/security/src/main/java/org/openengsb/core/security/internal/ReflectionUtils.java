@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * specific language governing permissions and limitations under the License.
  */
 
-public class ReflectionUtils {
+public final class ReflectionUtils {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
 
     public static List<Method> getAllMethodDeclarations(MethodInvocation invocation) {
         Class<?> clazz = invocation.getThis().getClass();
@@ -67,6 +67,9 @@ public class ReflectionUtils {
             }
         }
         return result;
+    }
+
+    private ReflectionUtils() {
     }
 
 }

@@ -64,18 +64,23 @@ public class PermissionAuthority implements OpenEngSBGrantedAuthority {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         PermissionAuthority other = (PermissionAuthority) obj;
         if (permission == null) {
-            if (other.permission != null)
+            if (other.permission != null) {
                 return false;
-        } else if (!permission.equals(other.permission))
+            }
+        } else if (!permission.equals(other.permission)) {
             return false;
+        }
         return true;
     }
 
