@@ -54,7 +54,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -78,21 +77,24 @@ import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    @SpringBean
+    @PaxWicketBean
     private WiringService wiringService;
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
-    @SpringBean
+    @PaxWicketBean
     private ConnectorManager serviceManager;
 
     private DropDownChoice<MethodId> methodList;
@@ -280,7 +282,7 @@ public class TestClient extends BasePage {
         AjaxButton globalsButton = new AjaxButton("globalsButton", organize) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                setResponsePage(new OrganizeGlobalsPage());
+                setResponsePage(OrganizeGlobalsPage.class);
             }
         };
         globalsButton.setOutputMarkupId(true);
@@ -290,7 +292,7 @@ public class TestClient extends BasePage {
         AjaxButton importsButton = new AjaxButton("importsButton", organize) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                setResponsePage(new OrganizeImportsPage());
+                setResponsePage(OrganizeImportsPage.class);
             }
         };
         importsButton.setOutputMarkupId(true);
@@ -314,7 +316,7 @@ public class TestClient extends BasePage {
                     }
                 });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
-                        .getDescription())));
+                    .getDescription())));
 
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
 
@@ -323,7 +325,7 @@ public class TestClient extends BasePage {
                         @Override
                         protected List<? extends ConnectorProvider> load() {
                             return serviceUtils.listServices(ConnectorProvider.class,
-                                    String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
+                                String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
                         }
                     };
                 item.add(new ListView<ConnectorProvider>("services", connectorProviderModel) {
@@ -339,7 +341,7 @@ public class TestClient extends BasePage {
                         });
                         item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
                         item.add(new Label("service.description", new LocalizableStringModel(this, desc
-                                .getDescription())));
+                            .getDescription())));
                     }
                 });
             }
@@ -405,7 +407,7 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         String providerName = provider.getName().getString(getSession().getLocale());
         DefaultMutableTreeNode providerNode =
-                new DefaultMutableTreeNode(providerName);
+            new DefaultMutableTreeNode(providerName);
         node.add(providerNode);
 
         // add domain entry to call via domain endpoint factory

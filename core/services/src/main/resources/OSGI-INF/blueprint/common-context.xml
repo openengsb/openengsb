@@ -23,8 +23,8 @@
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
     <!-- Allows us to use system properties as variables in this configuration file -->
-  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]"/>
-  
+  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
+
   <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl" />
 
   <service ref="contextService">
@@ -38,12 +38,12 @@
     <interfaces>
       <value>org.openengsb.core.api.ConnectorManager</value>
     </interfaces>
-    <ref component-id="connectorManager"/>
+    <ref component-id="connectorManager" />
   </service>
 
   <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
-      <property name="registrationManager" ref="registrationManager" />
-    </bean>
+    <property name="registrationManager" ref="registrationManager" />
+  </bean>
 
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -59,7 +59,7 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-  
+
   <service interface="org.openengsb.core.api.remote.OutgoingPortUtilService">
     <bean class="org.openengsb.core.services.internal.DefaultOutgoingPortUtilService" />
   </service>
@@ -85,10 +85,10 @@
       <entry key="backend.id" value="contextFilePersistenceService" />
     </service-properties>
     <bean class="org.openengsb.core.services.internal.ContextFilePersistenceService">
-    	<property name="storageFolderPath" value="$[karaf.data]/openengsb/config" />	
+      <property name="storageFolderPath" value="$[karaf.data]/openengsb/config" />
     </bean>
   </service>
-  
+
   <service interface="org.openengsb.core.api.workflow.WorkflowEditorService">
     <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl" />
   </service>
@@ -100,16 +100,31 @@
     </bean>
   </service>
 
-  <service id="proxyConnectorProvider" interface="org.openengsb.core.api.ConnectorProvider">
-    <service-properties>
-      <entry key="connector">
-        <value>external-connector-proxy</value>
-      </entry>
-    </service-properties>
-    <bean class="org.openengsb.core.services.internal.ProxyConnectorProvider">
+  <service id="proxyConnectorProvider">
+    <interfaces>
+      <value>org.openengsb.core.api.VirtualConnectorProvider</value>
+    </interfaces>
+    <bean class="org.openengsb.core.services.internal.virtual.ProxyConnectorProvider">
       <property name="id" value="external-connector-proxy" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
+  </service>
+
+  <service id="compositeConnectorProvider">
+    <interfaces>
+      <value>org.openengsb.core.api.VirtualConnectorProvider</value>
+    </interfaces>
+    <bean class="org.openengsb.core.services.internal.virtual.CompositeConnectorProvider">
+      <property name="id" value="composite-connector" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+  </service>
+
+  <service id="invokeAllStrategy" interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="invoke-all-ignore-result" />
+    </service-properties>
+    <bean class="org.openengsb.core.services.internal.virtual.InvokeAllIgnoreResultStrategy" />
   </service>
 
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
@@ -127,7 +142,20 @@
       <property name="contextCurrentService" ref="contextService" />
     </bean>
   </service>
-  
+
+  <bean id="openengsbInfo" class="org.openengsb.core.services.internal.OpenEngSBInfoProvider">
+    <property name="name" value="OpenEngSB" />
+    <property name="properties">
+      <props>
+        <prop key="OpenEngSB Version Number" value="${openengsb.version.number}" />
+        <prop key="OpenEngSB Version Name" value="${openengsb.version.name.adjective} ${openengsb.version.name.noun}" />
+        <prop key="Drools Version" value="${drools.version}" />
+      </props>
+    </property>
+  </bean>
+
+  <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
+
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />

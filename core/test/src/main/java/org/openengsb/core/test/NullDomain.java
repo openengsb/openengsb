@@ -26,6 +26,6 @@ public interface NullDomain extends Domain {
     void nullMethod();
 
     Object nullMethod(Object o);
-    
+
     Object nullMethod(Object o, String b);
 }

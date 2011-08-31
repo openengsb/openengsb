@@ -88,6 +88,9 @@
               org.springframework.aop,
               org.springframework.aop.framework, *
             </Import-Package>
+            <!--
+              Workflows need to access used classes in a dynamic way.
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
@@ -100,6 +103,14 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
     <dependency>
       <groupId>org.codehaus.janino</groupId>
@@ -125,6 +136,11 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-persistence</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>
@@ -132,6 +148,11 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-example</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

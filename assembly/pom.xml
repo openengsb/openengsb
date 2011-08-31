@@ -75,12 +75,6 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-karaf</artifactId>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
       <groupId>org.apache.karaf.assemblies.features</groupId>
       <artifactId>enterprise</artifactId>
       <type>xml</type>
@@ -214,23 +208,18 @@
               <descriptors>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
-                <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
                 <!-- Missing Karaf Features -->
                 <feature>config</feature>
-                <feature>ssh</feature>
                 <feature>management</feature>
-                <feature>obr</feature>
                 <feature>wrapper</feature>
-                <feature>war</feature>
-                <!-- ActiveMq Features -->
-                <feature>activemq-blueprint</feature>
-                <!-- CXF Features -->
+                <!-- OpenEngSB Remoting -->
+                <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>
                 <feature>openengsb-ports-rs</feature>
-                <!-- OpenEngSB Features -->
+                <!-- OpenEngSB Administration -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->
                 <feature>openengsb-domain-auditing</feature>

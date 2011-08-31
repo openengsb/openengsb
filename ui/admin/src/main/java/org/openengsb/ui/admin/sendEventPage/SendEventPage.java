@@ -43,7 +43,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -58,25 +57,28 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.openengsb.ui.admin.util.ValueConverter;
 import org.openengsb.ui.common.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.util.MethodUtil;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "events")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
-    @SpringBean
+    @PaxWicketBean
     private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
-    @SpringBean
+    @PaxWicketBean
     private RuleManager ruleManager;
 
-    @SpringBean
+    @PaxWicketBean
     private AuditingDomain auditing;
 
     private RepeatingView fieldList;

@@ -19,10 +19,13 @@ package org.openengsb.core.api.model;
 
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * General model describing the configuration required for flow.
  */
 // TODO: [OPENENGSB-1253] Design Flow Configuration object
+@XmlRootElement
 public class FlowConfiguration extends ConfigItem<String> {
 
     public static final String TYPE_ID = "FLOW";

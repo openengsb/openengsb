@@ -53,7 +53,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Constants;
@@ -66,24 +65,27 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_ADMIN")
+@PaxWicketMountPoint(mountPoint = "wiring")
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
-    @SpringBean
+    @PaxWicketBean
     private WiringService wiringService;
 
-    @SpringBean
+    @PaxWicketBean
     private OsgiUtilsService serviceUtils;
 
-    @SpringBean
+    @PaxWicketBean
     private ConnectorManager serviceManager;
 
-    @SpringBean
+    @PaxWicketBean
     private RuleManager ruleManager;
 
     private DropDownChoice<Class<? extends Domain>> domains;
@@ -368,8 +370,11 @@ public class WiringPage extends BasePage {
                 DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Domain endpoints");
                 if (domainType != null) {
                     for (Domain d : wiringService.getDomainEndpoints(domainType, "*")) {
-                        DefaultMutableTreeNode child = new DefaultMutableTreeNode(d.getInstanceId());
-                        rootNode.add(child);
+                        String id = d.getInstanceId();
+                        if (id != null) {
+                            DefaultMutableTreeNode child = new DefaultMutableTreeNode(id);
+                            rootNode.add(child);
+                        }
                     }
                 }
                 return new DefaultTreeModel(rootNode);

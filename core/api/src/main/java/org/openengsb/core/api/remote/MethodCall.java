@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
  * method and so called {@link #metaData}. Since the target system often requires additional information for calling
@@ -33,6 +35,7 @@ import java.util.Map;
  * identify the right method.
  */
 @SuppressWarnings("serial")
+@XmlRootElement
 public class MethodCall implements Serializable {
 
     private String methodName;

@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
@@ -175,7 +176,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     public void testUpdateServiceWithInvalidAttributes_shouldLeaveServiceUnchanged() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("all", "because I don't like you");
-        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
+        when(factory.getValidationErrors(any(Connector.class), anyMap())).thenReturn(errorMessages);
 
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new Hashtable<String, Object>();
@@ -213,7 +214,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     public void testForceUpdateServiceWithInvalidAttributes_shouldUpdateService() throws Exception {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("all", "because I don't like you");
-        when(factory.getValidationErrors(any(Domain.class), anyMap())).thenReturn(errorMessages);
+        when(factory.getValidationErrors(any(Connector.class), anyMap())).thenReturn(errorMessages);
 
         Map<String, String> attributes = new HashMap<String, String>();
         Map<String, Object> properties = new Hashtable<String, Object>();
@@ -273,6 +274,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         when(factory.createNewInstance(anyString())).thenReturn(new NullDomainImpl());
         Hashtable<String, Object> factoryProps = new Hashtable<String, Object>();
         factoryProps.put(Constants.CONNECTOR_KEY, "testc");
+        factoryProps.put(Constants.DOMAIN_KEY, "test");
         registerService(factory, factoryProps, ConnectorInstanceFactory.class);
     }
 

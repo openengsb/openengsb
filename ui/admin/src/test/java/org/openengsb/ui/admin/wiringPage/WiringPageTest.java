@@ -44,7 +44,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -54,6 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
@@ -64,13 +64,14 @@ import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.wiringPage.WiringPage.CheckedTree;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class WiringPageTest extends AbstractUITest {
 
-    public interface TestDomainInterface extends Domain {
+    public interface TestDomainInterface extends Connector {
     }
 
-    public interface AnotherTestDomainInterface extends Domain {
+    public interface AnotherTestDomainInterface extends Connector {
     }
 
     private RuleManager ruleManager;
@@ -101,8 +102,8 @@ public class WiringPageTest extends AbstractUITest {
             (ContextCurrentService) context.getBean(mock(ContextCurrentService.class).getClass().getName());
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(WiringPage.class);
     }
 
@@ -401,9 +402,9 @@ public class WiringPageTest extends AbstractUITest {
         createDomainProviderMock(AnotherTestDomainInterface.class, "anotherTestDomain");
         createConnectorProviderMock("testconnector", "testdomain");
         ConnectorInstanceFactory factory = mock(ConnectorInstanceFactory.class);
-        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Domain>() {
+        when(factory.createNewInstance(anyString())).thenAnswer(new Answer<Connector>() {
             @Override
-            public Domain answer(InvocationOnMock invocation) throws Throwable {
+            public Connector answer(InvocationOnMock invocation) throws Throwable {
                 TestDomainInterface newMock = mock(TestDomainInterface.class);
                 when(newMock.getInstanceId()).thenReturn((String) invocation.getArguments()[0]);
                 return newMock;

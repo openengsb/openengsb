@@ -18,7 +18,7 @@
 package org.openengsb.connector.example.internal;
 
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -26,7 +26,7 @@ import org.openengsb.domain.example.event.LogEvent.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
+public class LogService extends AbstractOpenEngSBConnectorService implements ExampleDomain {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
 

@@ -46,7 +46,7 @@
           For the formerly created Wicket project org.apache.wicket should be added to the module section.</para>
       </listitem>
       <listitem>
-        <para>Now create a pom.xml file and a osgi.bnd file in the newly created project folder.</para>
+        <para>Now create a pom.xml file in the newly created project folder.</para>
       </listitem>
       <listitem>
         <para>The pom.xml contains the basic project information. As parent for the project the wrapped/pom.xml should
@@ -85,23 +85,40 @@ OPENENGSB LICENSE
 
 </project>]]></programlisting></para>
       </listitem>
-      <listitem><para>The osgi.bnd file contains the OSGi specific statements for the maven-bundle-plugin. While the
+      <listitem>
+        <para>Now add the OSGi specific statements for the maven-bundle-plugin. While the
           default export and import are already handled in the root pom project specific settings have to be
           configured here. For example all packages within the bundle-namespace are always exported. This is for most
           scenarios sufficient. In addition all dependencies found are automatically imported as required. This is
           generally not desired. Instead the parts of the library which have to be imported should be defined
-          separately. The following listing gives a short example how such a osgi.bnl file can look like. For a
+          separately. The following listing gives a short example how this OSGI specific part can look like. For a
           full list of possible commands see the <link
             xlink:href="http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html">maven-bundle-plugin
             documentation</link>.
-          <programlisting language="xml">#
-# OPENENGSB LICENSE
-#
-Embed-Dependency: *;scope=compile|runtime;type=!pom;inline=true
-
-Import-Package: sun.misc;resolution:=optional,\
-javax.servlet;version="[2.5.0, 3.0.0)",\
-*;resolution:=optional</programlisting></para>
+          <programlisting language="xml">
+            <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <build>
+              ...
+               <plugins>
+                ...
+                <plugin>
+                  <groupId>org.apache.felix</groupId>
+                  <artifactId>maven-bundle-plugin</artifactId>
+                  <extensions>true</extensions>
+                  <configuration>
+                    <instructions>
+                      <Import-Package>sun.misc;resolution:=optional,
+                          javax.servlet;version="[2.5.0, 3.0.0)",
+                          *;resolution:=optional
+                      </Import-Package>
+                    </instructions>
+                  </configuration>
+                </plugin>
+              </plugins>
+            </build>
+            </project>]]>
+          </programlisting>
+        </para>
       </listitem>
     </orderedlist>
   </section>

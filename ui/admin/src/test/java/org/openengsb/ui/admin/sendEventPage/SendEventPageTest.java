@@ -33,7 +33,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +46,7 @@ import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.admin.AbstractUITest;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class SendEventPageTest extends AbstractUITest {
 
@@ -61,7 +61,7 @@ public class SendEventPageTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void setup() {
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, false));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);

@@ -66,14 +66,12 @@
           <include>**/**.properties</include>
           <include>**/**.css</include>
           <include>**/**.js</include>
+          <include>**/**.png</include>
         </includes>
       </resource>
       <resource>
         <filtering>false</filtering>
         <directory>${basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/**.*</include>
-        </includes>
       </resource>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
@@ -83,6 +81,23 @@
         </includes>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/test/java</directory>
+        <includes>
+          <include>**/**.html</include>
+          <include>**/**.properties</include>
+          <include>**/**.css</include>
+          <include>**/**.js</include>
+          <include>**/**.png</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/test/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -96,6 +111,15 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+		  <instructions>
+            <Import-Package>org.ops4j.pax.wicket.util.proxy,
+              net.sf.cglib.core;version="[2,3)",
+              net.sf.cglib.proxy;version="[2,3)",
+              net.sf.cglib.reflect;version="[2,3)", *
+            </Import-Package>
+		  </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -128,6 +152,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
 
     <!-- OpenEngSB Dependencies -->
     <dependency>
@@ -151,6 +179,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--  Pax Wicket Dependencies -->
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.wicket</groupId>
+      <artifactId>pax-wicket-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -160,7 +200,6 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -174,18 +213,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-ioc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-jmx</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>

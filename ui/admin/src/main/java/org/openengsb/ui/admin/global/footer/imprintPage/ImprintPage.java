@@ -19,7 +19,9 @@ package org.openengsb.ui.admin.global.footer.imprintPage;
 
 import org.apache.wicket.PageParameters;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
+@PaxWicketMountPoint(mountPoint = "imprint")
 public class ImprintPage extends BasePage {
     public ImprintPage() {
 

@@ -17,11 +17,8 @@
 
 package org.openengsb.core.edb.internal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Version;
 
 /**
  * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as it wants. So to say the JPAEntries
@@ -29,14 +26,9 @@ import javax.persistence.Version;
  */
 @Entity
 public class JPAEntry {
-    // Have to be named explicitly here because it is needed for a jpa criteria query
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    @Version
-    private Integer versionNumber;
-
+    @Column(name = "KEY")
     private String key;
+    @Column(name = "VALUE")
     private String value;
 
     public JPAEntry() {
@@ -59,13 +51,5 @@ public class JPAEntry {
 
     public String getValue() {
         return value;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public int getVersionNumber() {
-        return versionNumber;
     }
 }

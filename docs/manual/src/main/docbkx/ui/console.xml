@@ -50,6 +50,10 @@
             <command>openengsb:info</command>
             - prints out the current project version
           </para>
+          <para>
+            <command>openengsb:domains</command>
+            - prints out all available domains
+          </para>
         </listitem>
       </itemizedlist>
     </para>

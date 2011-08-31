@@ -24,19 +24,28 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class MethodUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
+
+    private static EngineeringKnowledgeBaseService ekbService;
+    private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -84,7 +93,16 @@ public final class MethodUtil {
 
     public static Object buildBean(Class<?> beanClass, Map<String, String> values) {
         try {
-            Object obj = beanClass.newInstance();
+            Object obj = null;
+
+            if (beanClass.isInterface()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends OpenEngSBModel> model = (Class<? extends OpenEngSBModel>) beanClass;
+                obj = ekbService.createEmptyModelObject(model);
+            } else {
+                obj = beanClass.newInstance();
+            }
+
             BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -92,7 +110,6 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-
                 String value = values.get(propertyDescriptor.getName());
                 Object ob = convertToCorrectClass(propertyDescriptor.getPropertyType(), value);
                 propertyDescriptor.getWriteMethod().invoke(obj, ob);
@@ -104,7 +121,7 @@ public final class MethodUtil {
     }
 
     public enum TestEnum {
-        a, b, c
+            a, b, c
     }
 
     public static Object convertToCorrectClass(Class<?> type, Object value) {
@@ -118,6 +135,16 @@ public final class MethodUtil {
                     return object;
                 }
             }
+        }
+        if (type.equals(Date.class) && String.class.isInstance(value)) {
+            try {
+                return dateFormatter.parse((String) value);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (type.equals(Boolean.class) && String.class.isInstance(value)) {
+            return Boolean.parseBoolean((String) value);
         }
         if (String.class.isInstance(value)) {
             Constructor<?> constructor = getStringOnlyConstructor(type);
@@ -149,6 +176,8 @@ public final class MethodUtil {
         }
     }
 
-    private MethodUtil() {
+    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
+        MethodUtil.ekbService = ekbService;
     }
+
 }

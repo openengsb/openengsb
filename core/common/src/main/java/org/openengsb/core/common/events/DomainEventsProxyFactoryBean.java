@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 import org.openengsb.core.api.DomainEvents;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.workflow.WorkflowService;
 
 public class DomainEventsProxyFactoryBean {
@@ -28,15 +29,21 @@ public class DomainEventsProxyFactoryBean {
     private Class<? extends DomainEvents> domainEventInterface;
 
     private WorkflowService workflowService;
+    private EngineeringDatabaseService edbService;
 
     private ForwardHandler makeHandler() {
         ForwardHandler handler = new ForwardHandler();
         handler.setWorkflowService(workflowService);
+        handler.setEdbService(edbService);
         return handler;
     }
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+    
+    public void setEdbService(EngineeringDatabaseService edbService) {
+        this.edbService = edbService;
     }
 
     public void setDomainEventInterface(Class<? extends DomainEvents> domainEventInterface) {

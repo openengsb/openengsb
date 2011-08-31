@@ -35,8 +35,6 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-
 public class ContextServiceImpl implements ContextCurrentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextServiceImpl.class);
@@ -56,19 +54,6 @@ public class ContextServiceImpl implements ContextCurrentService {
     }
 
     @Override
-    public String getThreadLocalContext() {
-        return ContextHolder.get().getCurrentContextId();
-    }
-
-    @Override
-    public void setThreadLocalContext(String contextId) {
-        ContextHolder.get().setCurrentContextId(contextId);
-        Context context = getContextById(contextId);
-        Preconditions.checkArgument(context != null, "No context exists for given context id");
-        ContextHolder.get().setCurrentContextId(contextId);
-    }
-
-    @Override
     public void createContext(String contextId) {
         LOGGER.debug("Creating context %s", contextId);
         ContextConfiguration contextConfiguration =
@@ -79,6 +64,16 @@ public class ContextServiceImpl implements ContextCurrentService {
             LOGGER.error("Error storing context " + contextId + ": Invalid configuration", e);
         } catch (PersistenceException e) {
             LOGGER.error("Error storing context " + contextId + ": Persistence error", e);
+        }
+    }
+
+    @Override
+    public void deleteContext(String contextId) {
+        LOGGER.debug("deleting context {}", contextId);
+        try {
+            getConfigPersistenceService().remove(new ContextId(contextId).toMetaData());
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
         }
     }
 

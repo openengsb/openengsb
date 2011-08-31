@@ -37,13 +37,12 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.AbstractRepeater;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -54,6 +53,7 @@ import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
+import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public class EditorPageTest extends AbstractUITest {
 
@@ -73,9 +73,9 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorProvider provider = createConnectorProviderMock("testconnector", "testdomain");
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
-        factoryMock = createFactoryMock("testconnector", "testdomain");
+        factoryMock = createFactoryMock("testconnector", NullDomainImpl.class, "testdomain");
         tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, false));
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent("editor:form:submitButton", "onclick");
         Map<String, String> ref = new HashMap<String, String>();
         ref.put("a", "a_default");
-        verify(factoryMock).applyAttributes(any(Domain.class), eq(ref));
+        verify(factoryMock).applyAttributes(any(Connector.class), eq(ref));
         serviceUtils.getService(NullDomain.class, 100L);
     }
 

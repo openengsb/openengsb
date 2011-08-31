@@ -28,14 +28,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.edb.internal.JPACommit;
-import org.openengsb.core.edb.internal.JPAEntry;
 import org.openengsb.core.edb.internal.JPAHead;
 import org.openengsb.core.edb.internal.JPAObject;
 import org.slf4j.Logger;
@@ -52,68 +50,34 @@ public class DefaultJPADao implements JPADao {
         this.entityManager = entityManager;
     }
 
-    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getNewestJPAHeadNumber() throws EDBException {
-        LOGGER.debug("getting newest jpa head timestamp");
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
-        Root from = query.from(JPAHead.class);
-        Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
-        CriteriaQuery<Number> select = query.select(maxExpression);
-
-        TypedQuery<Number> typedQuery = entityManager.createQuery(select);
-        try {
-            return typedQuery.getSingleResult();
-        } catch (NoResultException ex) {
-            throw new EDBException("there was no commit so far", ex);
-        }
-    }
-
     @Override
     public JPAHead getJPAHead(long timestamp) throws EDBException {
-        LOGGER.debug("Loading JPAHead for timestamp " + timestamp);
+        LOGGER.debug("Loading head for timestamp " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAHead> query = criteriaBuilder.createQuery(JPAHead.class);
-        Root<JPAHead> from = query.from(JPAHead.class);
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
 
-        CriteriaQuery<JPAHead> select = query.select(from);
+        query.select(from);
 
-        Predicate predicate = criteriaBuilder.equal(from.get("timestamp"), timestamp);
-        query.where(predicate);
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPAObject.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        Predicate subPredicate1 = criteriaBuilder.le(maxTime.get("timestamp"), timestamp);
+        Predicate subPredicate2 = criteriaBuilder.equal(maxTime.get("oid"), from.get("oid"));
+        subquery.where(criteriaBuilder.and(subPredicate1, subPredicate2));
 
-        TypedQuery<JPAHead> typedQuery = entityManager.createQuery(select);
-        List<JPAHead> resultList = typedQuery.getResultList();
+        Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), subquery);
+        Predicate predicate2 = criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE);
+        query.where(criteriaBuilder.and(predicate1, predicate2));
 
-        if (resultList == null || resultList.get(0) == null) {
-            throw new EDBException("Head not found for timestamp " + timestamp);
-        } else if (resultList.size() != 1) {
-            throw new EDBException("Multiple heads found for the timestamp " + timestamp);
-        }
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
+        List<JPAObject> resultList = typedQuery.getResultList();
 
-        return resultList.get(0);
-    }
-
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Number getNewestJPAObjectTimestamp(String oid) throws EDBException {
-        LOGGER.debug("Loading newest Timestamp for object with the id " + oid);
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Number> query = criteriaBuilder.createQuery(Number.class);
-        Root from = query.from(JPAObject.class);
-
-        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
-        query.where(predicate);
-
-        Expression<Number> maxExpression = criteriaBuilder.max(from.get("timestamp"));
-        CriteriaQuery<Number> select = query.select(maxExpression);
-
-        TypedQuery<Number> typedQuery = entityManager.createQuery(select);
-        try {
-            return typedQuery.getSingleResult();
-        } catch (NoResultException e) {
-            throw new EDBException("the given oid was never saved in the database", e);
-        }
+        JPAHead head = new JPAHead();
+        head.setJPAObjects(resultList);
+        head.setTimestamp(timestamp);
+        return head;
     }
 
     @Override
@@ -123,13 +87,11 @@ public class DefaultJPADao implements JPADao {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root from = query.from(JPAObject.class);
+        query.select(from);
+        query.where(criteriaBuilder.equal(from.get("oid"), oid));
+        query.orderBy(criteriaBuilder.asc(from.get("timestamp")));
 
-        Predicate predicate = criteriaBuilder.equal(from.get("oid"), oid);
-        query.where(predicate);
-
-        CriteriaQuery<JPAObject> select = query.select(from);
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 
@@ -140,33 +102,33 @@ public class DefaultJPADao implements JPADao {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
         Root f = query.from(JPAObject.class);
+        query.select(f);
 
         Predicate predicate1 = criteriaBuilder.equal(f.get("oid"), oid);
         Predicate predicate2 = criteriaBuilder.between(f.get("timestamp"), from, to);
         query.where(criteriaBuilder.and(predicate1, predicate2));
+        query.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        CriteriaQuery<JPAObject> select = query.select(f);
-
-        select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 
     @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public JPAObject getJPAObject(String oid, long timestamp) throws EDBException {
         LOGGER.debug("Loading object " + oid + " for the time " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-        Root<JPAObject> from = query.from(JPAObject.class);
+        Root from = query.from(JPAObject.class);
 
-        CriteriaQuery<JPAObject> select = query.select(from);
+        query.select(from);
 
-        Predicate predicate1 = criteriaBuilder.equal(from.get("timestamp"), timestamp);
-        Predicate predicate2 = criteriaBuilder.equal(from.get("oid"), oid);
+        Predicate predicate1 = criteriaBuilder.equal(from.get("oid"), oid);
+        Predicate predicate2 = criteriaBuilder.le(from.get("timestamp"), timestamp);
         query.where(criteriaBuilder.and(predicate1, predicate2));
+        query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
 
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query).setMaxResults(1);
         List<JPAObject> resultList = typedQuery.getResultList();
 
         if (resultList.size() < 1) {
@@ -179,14 +141,44 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
+    public JPAObject getJPAObject(String oid) throws EDBException {
+        LOGGER.debug("Loading newest object " + oid);
+        return getJPAObject(oid, System.currentTimeMillis());
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public List<JPAObject> getJPAObjects(List<String> oid) throws EDBException {
+        LOGGER.debug("Loading newest object " + oid);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
+
+        query.select(from);
+
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPAObject.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        subquery.where(criteriaBuilder.equal(from.get("oid"), maxTime.get("oid")));
+
+        Predicate predicate1 = criteriaBuilder.in(from.get("oid")).value(oid);
+        Predicate predicate2 = criteriaBuilder.equal(from.get("timestamp"), subquery);
+
+        query.where(criteriaBuilder.and(predicate1, predicate2));
+
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
+        List<JPAObject> resultList = typedQuery.getResultList();
+        return resultList;
+    }
+
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JPACommit> getJPACommit(String oid, long from, long to) throws EDBException {
         LOGGER.debug("Loading all commits which involve object " + oid + " from " + from + " to " + to);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
         Root<JPACommit> f = query.from(JPACommit.class);
-
-        CriteriaQuery<JPACommit> select = query.select(f);
+        query.select(f);
 
         Subquery<JPAObject> subquery = query.subquery(JPAObject.class);
         Root fromJPAObject = subquery.from(JPAObject.class);
@@ -194,61 +186,57 @@ public class DefaultJPADao implements JPADao {
         Predicate predicate1 = criteriaBuilder.equal(fromJPAObject.get("oid"), oid);
         Predicate predicate2 = criteriaBuilder.between(fromJPAObject.get("timestamp"), from, to);
         subquery.where(criteriaBuilder.and(predicate1, predicate2));
-        select.where(criteriaBuilder.in(f.get("timestamp")).value(subquery));
 
-        select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
+        query.where(criteriaBuilder.in(f.get("timestamp")).value(subquery));
+        query.orderBy(criteriaBuilder.asc(f.get("timestamp")));
 
-        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
-        LOGGER.debug(typedQuery.toString());
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
-
-    @Override
-    public List<JPAObject> getDeletedJPAObjects() throws EDBException {
-        LOGGER.debug("Load all deleted JPAObjects");
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-        Root<JPAObject> f = query.from(JPAObject.class);
-
-        CriteriaQuery<JPAObject> select = query.select(f);
-
-        select.where(criteriaBuilder.equal(f.get("isDeleted"), Boolean.TRUE));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
-        return typedQuery.getResultList();
-    }
-
-    @Override
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public List<JPAObject> getJPAObjectVersionsYoungerThanTimestamp(String oid, long timestamp) throws EDBException {
-        LOGGER.debug("Load all objects with the given oid " + oid + " which are younger than " + timestamp);
+    @Override
+    public List<String> getResurrectedOIDs() throws EDBException {
+        LOGGER.debug("get resurrected JPA objects");
+        
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-        Root f = query.from(JPAObject.class);
-
-        CriteriaQuery<JPAObject> select = query.select(f);
-
-        Predicate predicate1 = criteriaBuilder.equal(f.get("oid"), oid);
-        Predicate predicate2 = criteriaBuilder.gt(f.get("timestamp"), timestamp);
-
-        select.where(criteriaBuilder.and(predicate1, predicate2));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
+        CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
+        Root from = query.from(JPAObject.class);
+        query.select(from.get("oid"));
+        
+        Subquery<JPAObject> sub = query.subquery(JPAObject.class);
+        Root f = sub.from(JPAObject.class);
+        sub.select(f);
+        Predicate subPredicate1 = criteriaBuilder.equal(from.get("oid"), f.get("oid"));
+        Predicate subPredicate2 = criteriaBuilder.equal(f.get("isDeleted"), Boolean.TRUE);
+        Predicate subPredicate3 = criteriaBuilder.gt(from.get("timestamp"), f.get("timestamp"));
+        sub.where(criteriaBuilder.and(subPredicate1, subPredicate2, subPredicate3));
+        
+        Predicate predicate1 = criteriaBuilder.notEqual(from.get("isDeleted"), Boolean.TRUE);
+        Predicate predicate2 = criteriaBuilder.exists(sub);    
+        query.where(predicate1, predicate2);
+        
+        TypedQuery<String> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public List<JPACommit> getJPACommit(long timestamp) throws EDBException {
         LOGGER.debug("Load the commit for the timestamp " + timestamp);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
-        Root<JPACommit> f = query.from(JPACommit.class);
+        Root<JPACommit> from = query.from(JPACommit.class);
+        query.select(from);
 
-        CriteriaQuery<JPACommit> select = query.select(f);
+        Subquery<Number> subquery = query.subquery(Number.class);
+        Root maxTime = subquery.from(JPACommit.class);
+        subquery.select(criteriaBuilder.max(maxTime.get("timestamp")));
+        subquery.where(criteriaBuilder.le(maxTime.get("timestamp"), timestamp));
 
-        select.where(criteriaBuilder.equal(f.get("timestamp"), timestamp));
+        query.where(criteriaBuilder.equal(from.get("timestamp"), subquery));
 
-        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 
@@ -257,15 +245,13 @@ public class DefaultJPADao implements JPADao {
         LOGGER.debug("Get commits which are given to a param map with " + param.size() + " elements");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
-        Root<JPACommit> f = query.from(JPACommit.class);
+        Root<JPACommit> from = query.from(JPACommit.class);
 
-        CriteriaQuery<JPACommit> select = query.select(f);
+        query.select(from);
+        Predicate[] predicates = analyzeParamMap(criteriaBuilder, from, param);
+        query.where(criteriaBuilder.and(predicates));
 
-        Predicate[] predicates = analyzeParamMap(criteriaBuilder, f, param);
-
-        select.where(criteriaBuilder.and(predicates));
-
-        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
 
@@ -274,17 +260,14 @@ public class DefaultJPADao implements JPADao {
         LOGGER.debug("Get last commit which are given to a param map with " + param.size() + " elements");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPACommit> query = criteriaBuilder.createQuery(JPACommit.class);
-        Root<JPACommit> f = query.from(JPACommit.class);
+        Root<JPACommit> from = query.from(JPACommit.class);
 
-        CriteriaQuery<JPACommit> select = query.select(f);
+        query.select(from);
+        Predicate[] predicates = analyzeParamMap(criteriaBuilder, from, param);
+        query.where(criteriaBuilder.and(predicates));
+        query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
 
-        Predicate[] predicates = analyzeParamMap(criteriaBuilder, f, param);
-
-        select.where(criteriaBuilder.and(predicates));
-
-        select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
-
-        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(select);
+        TypedQuery<JPACommit> typedQuery = entityManager.createQuery(query).setMaxResults(1);
         try {
             return typedQuery.getSingleResult();
         } catch (NoResultException ex) {
@@ -295,19 +278,19 @@ public class DefaultJPADao implements JPADao {
     /**
      * Analyzes the map and filters the values which are used for query
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Predicate[] analyzeParamMap(CriteriaBuilder criteriaBuilder, Root from, Map<String, Object> param) {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
-        for (Map.Entry<String, Object> q : param.entrySet()) {
-            String key = q.getKey();
-            Object value = q.getValue();
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (key.equals("timestamp")) {
-                predicates.add(criteriaBuilder.equal(from.get("timestamp"), value));
+                predicates.add(criteriaBuilder.le(from.get("timestamp"), (Long) value));
             } else if (key.equals("committer")) {
                 predicates.add(criteriaBuilder.equal(from.get("committer"), value));
-            } else if (key.equals("role")) {
-                predicates.add(criteriaBuilder.equal(from.get("role"), value));
+            } else if (key.equals("context")) {
+                predicates.add(criteriaBuilder.equal(from.get("context"), value));
             }
         }
         Predicate[] temp = new Predicate[predicates.size()];
@@ -319,33 +302,45 @@ public class DefaultJPADao implements JPADao {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<JPAObject> query(String key, Object value) throws EDBException {
-        LOGGER.debug("Query for objects which have entries where key = " + key + " and value = " + value);
+    public List<JPAObject> query(Map<String, Object> values) throws EDBException {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
-        Root<JPAObject> f = query.from(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
 
-        CriteriaQuery<JPAObject> select = query.select(f);
+        List<Predicate> predicates = new ArrayList<Predicate>();
+        for (Map.Entry<String, Object> value : values.entrySet()) {
+            Join<?, ?> join = from.join("entries");
 
-        Subquery subquery = query.subquery(JPAEntry.class);
-        Root fromKeyValuePair = subquery.from(JPAEntry.class);
-        subquery.select(fromKeyValuePair);
+            Predicate predicate1 = criteriaBuilder.equal(join.get("key"), value.getKey());
+            Predicate predicate2 = criteriaBuilder.equal(join.get("value"), value.getValue());
 
-        Join j = f.join("entries");
-        Path<Object> path = j.get("id");
+            predicates.add(criteriaBuilder.and(predicate1, predicate2));
+        }
+        query.where(predicates.toArray(new Predicate[1]));
+        query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
+        List<JPAObject> result = typedQuery.getResultList();
+        return result;
+    }
 
-        Predicate predicate1 = criteriaBuilder.equal(fromKeyValuePair.get("key"), key);
-        Predicate predicate2 = criteriaBuilder.equal(fromKeyValuePair.get("value"), value);
-        Predicate predicate3 = criteriaBuilder.in(fromKeyValuePair.get("id")).value(path);
-        subquery.where(criteriaBuilder.and(predicate1, predicate2, predicate3));
+    @Override
+    public Integer getVersionOfOid(String oid) throws EDBException {
+        LOGGER.debug("loading version of model under the oid {}", oid);
 
-        select.where(criteriaBuilder.exists(subquery));
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
+        Expression<Long> maxExpression = criteriaBuilder.count(from.get("oid"));
+        query.select(maxExpression);
+        query.where(criteriaBuilder.equal(from.get("oid"), oid));
 
-        select.orderBy(criteriaBuilder.asc(f.get("timestamp")));
-
-        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(select);
-        return typedQuery.getResultList();
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        try {
+            return (int) typedQuery.getSingleResult().longValue();
+        } catch (NoResultException ex) {
+            LOGGER.debug("no model under the oid {}. Returning 0", oid);
+            return 0;
+        }
     }
 
     public void setEntityManager(EntityManager entityManager) {

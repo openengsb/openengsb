@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import javax.sql.DataSource;
-
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
@@ -50,7 +48,6 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -71,8 +68,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
      * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file.
      */
 
+    private static final long DEFAULT_TIMEOUT = 40000;
     private static final int DEBUG_PORT = 5005;
     protected static final int WEBUI_PORT = 8091;
+    protected static final int RMI_REGISTRY_PORT = 1100;
+    protected static final int RMI_SERVER_PORT = 44445;
 
     private boolean isBeforeExecuted = false;
 
@@ -128,6 +128,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         importantBundles.add("org.openengsb.infrastucture.jpa");
         importantBundles.add("org.openengsb.core.api");
         importantBundles.add("org.openengsb.core.common");
+        importantBundles.add("org.openengsb.core.edb");
+        importantBundles.add("org.openengsb.core.ekb");
         importantBundles.add("org.openengsb.core.service");
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
@@ -200,6 +202,11 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         tracker.close();
     }
 
+    @Override
+    protected <T> T getOsgiService(Class<T> type) {
+        return getOsgiService(type, null, DEFAULT_TIMEOUT);
+    }
+
     @BeforeClass
     public static void beforeClass() throws IOException {
         try {
@@ -258,12 +265,13 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                         .versionAsInProject()),
             scanFeatures(
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                    .versionAsInProject(), "openengsb-infrastructure-jpa", "activemq-blueprint",
-                "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
+                    .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," +
-                    "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
-            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), waitForFrameworkStartup(),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," 
+                + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
+            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
+                    + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
+            waitForFrameworkStartup(),
             vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
             vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
             vmOption("-Dkaraf.base=" + targetpath + "/karaf.base"),

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
+  xmlns:osgix="http://www.springframework.org/schema/osgi-compendium" xmlns:wicket="http://www.ops4j.org/schema/wicket"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd
+        http://www.ops4j.org/schema/wicket http://www.ops4j.org/schema/wicket/wicket.xsd">
+
+  <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
+    <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
+    <prop key="openengsb.version.name.adjective">OpenEngSB</prop>
+    <prop key="openengsb.version.name.noun">Release</prop>
+  </osgix:cm-properties>
+
+  <context:property-placeholder properties-ref="settings" />
+
+  <bean id="openengsbVersion" class="org.openengsb.ui.admin.model.OpenEngSBVersion">
+    <property name="versionNumber" value="${openengsb.version.number}" />
+    <property name="nameAdjective" value="${openengsb.version.name.adjective}" />
+    <property name="nameNoun" value="${openengsb.version.name.noun}" />
+  </bean>
+
+  <osgi:reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
+  <osgi:reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
+  <osgi:reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
+  <osgi:reference id="ruleManager" interface="org.openengsb.core.api.workflow.RuleManager" />
+  <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" filter="(location.root=auditing)" />
+  <osgi:reference id="osgiUtilsService" interface="org.openengsb.core.api.OsgiUtilsService" />
+  <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
+  <osgi:reference id="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService" />
+  <osgi:reference id="workflowEditorService" interface="org.openengsb.core.api.workflow.WorkflowEditorService" />
+  <osgi:reference id="wiringService" interface="org.openengsb.core.api.WiringService" />
+  <osgi:reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
+  <osgi:list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator" />
+
+  <bean id="openengsbAppFactory" class="org.openengsb.ui.admin.WicketApplicationFactory" />
+
+  <wicket:application id="openengsbApplication" homepageClass="org.openengsb.ui.admin.index.Index"
+    mountPoint="openengsb" applicationName="openengsb" applicationFactory="openengsbAppFactory">
+    <wicket:context-param>
+      <wicket:param-name>configuration</wicket:param-name>
+      <wicket:param-value>deployment</wicket:param-value>
+    </wicket:context-param>
+  </wicket:application>
+
+  <wicket:filter id="contextIdFilter" filterClass="org.openengsb.ui.common.util.ContextIdFilter" priority="1"
+    applicationName="openengsb" />
+
+  <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
+
+  <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
+    lazy-init="false">
+    <constructor-arg name="bundleContext" ref="bundleContext" />
+    <constructor-arg name="applicationName" value="openengsb" />
+    <constructor-arg name="priority" value="2" />
+    <property name="securityFilterChain" ref="springSecurityFilterChain" />
+  </bean>
+
+</beans>

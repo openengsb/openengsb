@@ -19,12 +19,15 @@ package org.openengsb.core.api.model;
 
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.openengsb.core.api.context.Context;
 
 /**
  * Specific configuration model for the configuration to get up an context.
  */
 // TODO: [OPENENGSB-1252] Design context object
+@XmlRootElement
 public class ContextConfiguration extends ConfigItem<Map<String, String>> {
 
     public static final String TYPE_ID = "CONTEXT";

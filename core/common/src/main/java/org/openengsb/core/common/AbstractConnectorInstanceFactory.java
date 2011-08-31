@@ -20,8 +20,8 @@ package org.openengsb.core.common;
 import java.util.Collections;
 import java.util.Map;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.Domain;
 
 /**
  * Abstract baseclass that may help when implementing {@link ConnectorInstanceFactory}s
@@ -29,12 +29,12 @@ import org.openengsb.core.api.Domain;
  * It takes care of the type-conversion and implements validation-functions that do not do anything. If validation is
  * required these methods should be overridden.
  */
-public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Domain> implements
+public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Connector> implements
         ConnectorInstanceFactory {
-
+    
     @SuppressWarnings("unchecked")
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Connector instance, Map<String, String> attributes) {
         doApplyAttributes((ConnectorType) instance, attributes);
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Dom
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
         return getValidationErrorsInternally((ConnectorType) instance, attributes);
     }
 
@@ -59,5 +59,4 @@ public abstract class AbstractConnectorInstanceFactory<ConnectorType extends Dom
         // do nothing. override to add validation
         return Collections.emptyMap();
     }
-
 }

@@ -61,8 +61,10 @@
     <xi:include href="howto/howtoLogging.xml" />
     <xi:include href="howto/howtoContextEditor.xml" />
     <xi:include href="howto/howtoCreateConnector.xml" />
+    
     <xi:include href="howto/howtoCreateClientProject.xml" />
     <xi:include href="howto/howtoInteractRemotely.xml" />
+    <xi:include href="howto/howtoCombineServices.xml" />
     <xi:include href="howto/howtoIntegrateServices.xml" />
   </part>
 
@@ -83,6 +85,7 @@
     <xi:include href="user/security.xml"/>
     <xi:include href="user/workflows.xml"/>
     <xi:include href="user/taskbox.xml"/>
+    <xi:include href="user/remote.xml" />
     <xi:include href="user/plugins.xml" />
     <xi:include href="user/deployers.xml" />
     <xi:include href="user/clients.xml" />

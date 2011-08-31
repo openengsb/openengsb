@@ -22,26 +22,26 @@ import java.util.List;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
  * time. In order for this page to work, a spring-bean of the class
- *
+ * 
  * @link{org.openengsb.core.common.context.ContextCurrentService must be available
  */
-public class OpenEngSBPage extends WebPage {
+public abstract class OpenEngSBPage extends WebPage {
 
     public static final String CONTEXT_PARAM = "context";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
-    @SpringBean
-    protected ContextCurrentService contextService;
+    @PaxWicketBean
+    private ContextCurrentService contextService;
 
     public OpenEngSBPage() {
         initContextForCurrentThread();
@@ -70,21 +70,19 @@ public class OpenEngSBPage extends WebPage {
         if (sessionContextId == null) {
             sessionContextId = "foo";
         }
-        try {
-            if (contextService != null) {
-                contextService.setThreadLocalContext(sessionContextId);
-            }
-        } catch (IllegalArgumentException e) {
+        if (getAvailableContexts().contains(sessionContextId)) {
+            ContextHolder.get().setCurrentContextId(sessionContextId);
+        } else {
             LOGGER.debug("initialize default-values in contexts");
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
-            contextService.setThreadLocalContext(sessionContextId);
+            ContextHolder.get().setCurrentContextId(sessionContextId);
         }
     }
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

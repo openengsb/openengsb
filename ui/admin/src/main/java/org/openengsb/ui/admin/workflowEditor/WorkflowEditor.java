@@ -41,7 +41,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -59,10 +58,13 @@ import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.workflowEditor.action.ActionLinks;
 import org.openengsb.ui.admin.workflowEditor.action.EditAction;
 import org.openengsb.ui.admin.workflowEditor.event.EventLinks;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "workflows")
 public class WorkflowEditor extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowEditor.class);
@@ -73,16 +75,16 @@ public class WorkflowEditor extends BasePage {
 
     private String name = "";
 
-    @SpringBean
+    @PaxWicketBean
     private WorkflowEditorService workflowEditorService;
 
-    @SpringBean
+    @PaxWicketBean
     RuleManager ruleManager;
 
-    @SpringBean
+    @PaxWicketBean
     WorkflowConverter workflowConverter;
 
-    @SpringBean
+    @PaxWicketBean
     List<WorkflowValidator> validators;
 
     public WorkflowEditor() {
@@ -211,7 +213,7 @@ public class WorkflowEditor extends BasePage {
                     LOGGER.info("Removing workflow " + workflowEditorService.getCurrentWorkflow().getName());
                     workflowEditorService.removeCurrentWorkflow();
                     setResponsePage(WorkflowEditor.class);
-                    
+
                 } catch (PersistenceException e) {
                     error(e);
                     LOGGER.error("Removing Workflow failed: " + e.getMessage());

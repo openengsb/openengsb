@@ -27,7 +27,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 import org.openengsb.core.api.edb.EDBObject;
 
@@ -37,7 +36,7 @@ import org.openengsb.core.api.edb.EDBObject;
  * the JPAObject can be converted to an EDBObject.
  */
 public class JPAObject {
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAEntry> entries;
     @Column(name = "TIME")
     private Long timestamp;
@@ -45,8 +44,6 @@ public class JPAObject {
     private Boolean isDeleted;
     @Column(name = "OID")
     private String oid;
-    @Version
-    private Integer versionNumber;
 
     public JPAObject() {
         isDeleted = false;
@@ -100,9 +97,4 @@ public class JPAObject {
     public List<JPAEntry> getPairs() {
         return entries;
     }
-
-    public int getVersionNumber() {
-        return versionNumber;
-    }
-
 }
