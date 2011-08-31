@@ -274,6 +274,7 @@
       <timezone>+1</timezone>
       <roles>
         <role>Commiter</role>
+        <role>PMC</role>
       </roles>
     </developer>
     <developer>
