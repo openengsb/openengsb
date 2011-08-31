@@ -137,7 +137,6 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        // TODO Auto-generated method stub
         return true;
     }
 

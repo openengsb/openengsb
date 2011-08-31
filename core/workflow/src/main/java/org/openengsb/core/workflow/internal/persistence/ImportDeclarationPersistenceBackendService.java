@@ -86,7 +86,6 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
 
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
-        // TODO Auto-generated method stub
         return true;
     }
 

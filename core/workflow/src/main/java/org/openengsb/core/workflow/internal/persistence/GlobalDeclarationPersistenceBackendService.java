@@ -104,7 +104,6 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     @Override
     public boolean supports(Class<? extends ConfigItem<?>> configItemType) {
         return true;
-        // return GlobalDeclaration.class.isAssignableFrom(configItemType);
     }
 
     private Map<String, String> readStorageFile() throws PersistenceException {
