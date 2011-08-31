@@ -24,7 +24,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * Represents a delete Event. Try to delete an OpenEngSBModel object from the EDB.
  */
 public class EDBDeleteEvent extends EDBEvent {
-    
+
     private OpenEngSBModel model;
 
     public EDBDeleteEvent(OpenEngSBModel model) {
@@ -36,3 +36,4 @@ public class EDBDeleteEvent extends EDBEvent {
     }
 
 }
+
