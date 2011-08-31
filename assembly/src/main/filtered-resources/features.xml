@@ -116,24 +116,8 @@
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
     <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
-    <!-- OpenEngSB Core Features -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
-    <!-- OpenEngSB Feature Implementations -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
-    <!-- OpenEngSB Console -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-console/${project.version}</bundle>
-  </feature>
 
-  <feature name="openengsb-infrastructure-jpa" version="${project.version}" description="OpenEngSB JPA Infrastructure">
-    <details>
-      This feature contains all require references to start an JPA environment as reuqired for the OpenEngSB Context. While
-      this feature had been designed for the EDB it is also usable by other OpenEngSB core features and extended features
-      if needed.
-    </details>
+    <!-- JPA Infrastructure -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
     <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
@@ -149,27 +133,19 @@
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
-  </feature>
 
-  <feature name="openengsb-ekb" version="${project.version}" description="OpenEngSB Engineering Knowledge Base">
-    <details>
-      Feature adding the Engineering Knowledge Base functionality to the OpenEngSB. With the EKB it is possible to 
-      retrieve models from the Engineering Database. Together with the EDB feature, the versioning and retrieving 
-      of versioned models is completely integrated into the OpenEngSB.
-    </details>
-    <feature version="${project.version}">openengsb-core</feature>
-    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
-  </feature>
-
-  <feature name="openengsb-edb" version="${project.version}" description="OpenEngSB Engineering Database">
-    <details>
-      Feature adding an additional database layer helping to storing objects versioned. That way automatically model
-      version can be done. The idea is to use this feature together with Engineering Knowledge Base to finally retrieved 
-      versioned models directly integrated into the OpenEngSB.
-    </details>
-    <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
+    <!-- OpenEngSB Core Features -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
+    <!-- OpenEngSB Feature Implementations -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+    <!-- OpenEngSB Console -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-console/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
@@ -178,7 +154,6 @@
       else automatically, but rather provides the infrastructure only.
     </details>
     <feature version="${project.version}">openengsb-core</feature>
-    <feature version="${project.version}">openengsb-infrastructure-jpa</feature>
     <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
