@@ -26,6 +26,9 @@ import org.openengsb.core.common.util.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
+/**
+ * if the user-database is empty, default-users are inserted
+ */
 class UserDataInitializer implements Runnable {
     @Override
     public void run() {
