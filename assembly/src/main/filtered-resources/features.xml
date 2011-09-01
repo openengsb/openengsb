@@ -193,7 +193,6 @@
       openwire=6549
       stomp=6550
     </config>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
   </feature>
@@ -236,7 +235,6 @@
     <details>
       Based on the CXF infrastructure this feature integrates web services into the OpenEngSB Ports Remoting Infrastructure.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-ws/${project.version}</bundle>
   </feature>
@@ -245,7 +243,6 @@
     <details>
       Based on the CXF infrastructure this feature integrates rest services into the OpenEngSB Ports Remoting Infrastructure.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
   </feature>
 
