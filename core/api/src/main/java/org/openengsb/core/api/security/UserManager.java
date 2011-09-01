@@ -23,6 +23,9 @@ import org.springframework.security.provisioning.UserDetailsManager;
 
 public interface UserManager extends UserDetailsManager {
 
+    /**
+     * returns a list of the names of all users registered
+     */
     List<String> getUsernameList();
 
 }
