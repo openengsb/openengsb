@@ -52,7 +52,7 @@ public class RoleImpl implements Role, Serializable {
     private Collection<RoleImpl> nestedRoles = new HashSet<RoleImpl>();
     @ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
     private Collection<AbstractPermission> permissions = new HashSet<AbstractPermission>();
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(cascade = { CascadeType.PERSIST }, mappedBy = "roles")
     private Collection<UserImpl> members = new HashSet<UserImpl>();
 
     public RoleImpl() {

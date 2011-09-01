@@ -20,9 +20,11 @@ package org.openengsb.core.security.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
+import org.openengsb.core.security.model.AllPermission;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
@@ -33,17 +35,19 @@ public class UserDataInitializer implements Runnable {
     @Override
     public void run() {
         UserManager userManager = OpenEngSBCoreServices.getServiceUtilsService().getService(UserManager.class);
+        RoleManager roleManager = OpenEngSBCoreServices.getServiceUtilsService().getService(RoleManager.class);
         if (!userManager.getUsernameList().isEmpty()) {
             return;
         }
-        List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-        auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-        auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-        userManager.createUser(Users.create("admin", "password", auth));
+        roleManager.createRole("ROLE_ADMIN", new AllPermission());
+        roleManager.createRole("ROLE_USER");
+        userManager.createUser(Users.create("admin", "password"));
 
-        List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-        userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-        userManager.createUser(Users.create("user", "password", userAuth));
+        roleManager.addRoleToUser("admin", "ROLE_ADMIN");
+        roleManager.addRoleToUser("admin", "ROLE_USER");
+
+        userManager.createUser(Users.create("user", "password"));
+        roleManager.addRoleToUser("user", "ROLE_USER");
 
     }
 }
