@@ -27,8 +27,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
@@ -39,10 +37,6 @@ import com.google.common.collect.Iterables;
 /**
  * model-class that is used to store roles in JPA-backends
  */
-@NamedQueries({
-    @NamedQuery(name = "listAllRoles", query = "SELECT r FROM RoleImpl r"),
-    @NamedQuery(name = "listUsersWithRole",
-        query = "SELECT u.username FROM RoleImpl r JOIN r.members u WHERE r.name = :groupname")})
 @Entity
 public class RoleImpl implements Role, Serializable {
 

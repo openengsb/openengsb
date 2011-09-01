@@ -17,16 +17,11 @@
 
 package org.openengsb.core.security.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openengsb.core.api.security.RoleManager;
 import org.openengsb.core.api.security.UserManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.model.AllPermission;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 /**
  * if the user-database is empty, default-users are inserted

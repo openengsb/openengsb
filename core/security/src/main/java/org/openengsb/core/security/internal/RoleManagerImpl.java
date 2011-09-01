@@ -17,6 +17,7 @@
 package org.openengsb.core.security.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,30 +31,48 @@ import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
 import org.openengsb.core.security.model.AbstractPermission;
+import org.openengsb.core.security.model.QRoleImpl;
+import org.openengsb.core.security.model.QUserImpl;
 import org.openengsb.core.security.model.RoleAuthority;
 import org.openengsb.core.security.model.RoleImpl;
 import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.mysema.query.jpa.impl.JPAQuery;
 
 public class RoleManagerImpl implements RoleManager {
 
     private EntityManager entityManager;
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Role> findAllRoles() {
-        Query query = entityManager.createNamedQuery("listAllRoles");
-        return query.getResultList();
+        JPAQuery query = new JPAQuery(entityManager);
+
+        query.from(QRoleImpl.roleImpl).list(QRoleImpl.roleImpl);
+        List<RoleImpl> result = query.list(QRoleImpl.roleImpl);
+
+        return Lists.transform(result, new Function<RoleImpl, Role>() {
+            @Override
+            public Role apply(RoleImpl input) {
+                return input;
+            }
+        });
     }
 
     @Override
     public Collection<String> findAllUsersWithRole(String roleName) {
-        TypedQuery<String> query = entityManager.createNamedQuery("listUsersWithRole", String.class);
-        query.setParameter("groupname", roleName);
-        return query.getResultList();
+        JPAQuery query = new JPAQuery(entityManager);
+        QRoleImpl role = QRoleImpl.roleImpl;
+        QUserImpl user = QUserImpl.userImpl;
+        return query.from(role)
+            .where(role.name.eq(roleName))
+            .join(role.members, user)
+            .list(user.username);
     }
 
     @Override

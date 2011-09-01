@@ -41,7 +41,8 @@
 
   <description>
     Project providing general capabilities for the Usermanagement directly in the OpenEngSB. This
-    is relevant for the WEB-UI and for the internal right management of the different services.
+    is relevant
+    for the WEB-UI and for the internal right management of the different services.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -117,6 +118,21 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.mysema.maven</groupId>
+        <artifactId>maven-apt-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/java</outputDirectory>
+              <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -172,6 +188,19 @@
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.serp</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Query DSL -->
+    <dependency>
+      <groupId>com.mysema.querydsl</groupId>
+      <artifactId>querydsl-apt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mysema.querydsl</groupId>
+      <artifactId>querydsl-jpa</artifactId>
       <scope>provided</scope>
     </dependency>
 
