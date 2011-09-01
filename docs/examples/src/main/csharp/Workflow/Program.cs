@@ -46,34 +46,40 @@ namespace Workflow
 			string queueId = Guid.NewGuid().ToString();
 			// This message which should be send to the server
 			string requestMessage = ""
+				// general metda-data first; then the real call definition
 				+ "{"
 				// the call ID; this will also be the queue a response will be sent. Be careful to make it unqiue
-				+ "    \"callId\": \"" + queueId + "\","
+               + "    \"callId\": \"" + queueId + "\","
 				// if the server should answer or not
-				+ "    \"answer\": true,"
+               + "    \"answer\": true,"
+				// the internal definition of the method call
+               + "    \"methodCall\": {"
 				// of which type the sent data is; this have to be the required java types
-				+ "    \"classes\": ["
-				+ "        \"java.lang.String\","
-				+ "        \"org.openengsb.core.api.workflow.model.ProcessBag\""
-				+ "    ],"
+               + "         \"classes\": ["
+               + "             \"java.lang.String\","
+               + "             \"org.openengsb.core.api.workflow.model.ProcessBag\""
+               + "         ],"
 				// the method which should be executed
-				+ "    \"methodName\": \"executeWorkflow\","
-				// the "header-data" of the message; this is not the header of JMS to use eg stomp too
-				+ "    \"metaData\": {"
+               + "         \"methodName\": \"executeWorkflow\","
+				// the "header-data" of the message; this is not the header of JMS to use; eg stomp uses the same one
+               + "         \"metaData\": {"
 				// the ID of the internal service to be called
-				+ "        \"serviceId\": \"workflowService\","
+				// alternatively a OSGi filter could be defined to call a service. For example instead of the serviceId definition you can use:
+				//  \"serviceFilter\": \"(objectClass=org.openengsb.core.api.workflow.WorkflowService)\","
+               + "             \"serviceId\": \"workflowService\","
 				// the context in which the service should be called
-				+ "        \"contextId\": \"foo\""
-				+ "    },"
+               + "             \"contextId\": \"foo\""
+               + "         },"
 				// the arguments with which the workflowService method should be called
-				+ "    \"args\": ["
+               + "         \"args\": ["
 				// the name of the workflow to be executed
-				+ "        \"simpleFlow\","
+               + "             \"simpleFlow\","
 				// the params which should be put into the prcoess bag initially
-				+ "        {"
-				+ "        }"
-				+ "    ]"
-				+ "}";
+               + "             {"
+               + "             }"
+               + "         ]"
+               + "     }"
+               + "}";
 			
 			// the OpenEngSB connection URL
 			Uri connecturi = new Uri("activemq:tcp://localhost:6549");

@@ -102,14 +102,14 @@ namespace Connector
 						Console.WriteLine("Received message with ID:   " + message.NMSMessageId);
 						Console.WriteLine("Received message with text: " + message.Text);
 						JavaScriptSerializer ser = new JavaScriptSerializer();
-						Request requestMapping = (Request) ser.Deserialize(message.Text, typeof(Request));
-						if(requestMapping.methodName == "getAliveState")
+						MethodCallRequest requestMapping = (MethodCallRequest) ser.Deserialize(message.Text, typeof(MethodCallRequest));
+						if(requestMapping.methodCall.methodName == "getAliveState")
 						{
 							IDestination outgoingDestination = session.GetDestination("queue://"+requestMapping.callId);
 							Console.WriteLine("Using outgoing destination: " + outgoingDestination);
 							using (IMessageProducer producer = session.CreateProducer(outgoingDestination))
 							{
-								Response responseMapping = ProduceAnswerMapping(ser, requestMapping);
+								MethodResultMessage responseMapping = ProduceAnswerMapping(ser, requestMapping);
 								String answer = ser.Serialize(responseMapping);
 								Console.WriteLine("Created answer text: " + answer);
 								// Send a message
@@ -129,14 +129,15 @@ namespace Connector
 			}
 		}
 
-		static Response ProduceAnswerMapping(JavaScriptSerializer ser, Request requestMapping)
+		static MethodResultMessage ProduceAnswerMapping(JavaScriptSerializer ser, MethodCallRequest requestMapping)
 		{
-			Response responseMapping = new Response();
-			responseMapping.type = Response.ReturnType.Object;
+			MethodResultMessage responseMapping = new MethodResultMessage();
+			responseMapping.result = new MethodResult();
+			responseMapping.result.type = MethodResult.ReturnType.Object;
 			responseMapping.callId = requestMapping.callId;
-			responseMapping.metaData = requestMapping.metaData;
-			responseMapping.className = "org.openengsb.core.api.AliveState";
-			responseMapping.arg = AliveState.ONLINE;
+			responseMapping.result.metaData = requestMapping.methodCall.metaData;
+			responseMapping.result.className = "org.openengsb.core.api.AliveState";
+			responseMapping.result.arg = AliveState.ONLINE;
 			return responseMapping;
 		}
 	}

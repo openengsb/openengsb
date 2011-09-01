@@ -17,7 +17,6 @@
     limitations under the License.
 
 -->
-
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectGuid>{F7BD77D2-B671-4F9A-8B36-474A5A409E57}</ProjectGuid>
@@ -79,10 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliveState.cs" />
+    <Compile Include="MethodResult.cs" />
+    <Compile Include="MethodCall.cs" />
+    <Compile Include="MethodCallRequest.cs" />
+    <Compile Include="MethodResultMessage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="Response.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nmsprovider-activemq.config">

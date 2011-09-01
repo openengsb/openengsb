@@ -16,23 +16,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace Connector
 {
-	/// <summary>
-	/// Defines the request object send from the OpenEngSB to the Consumer
-	/// </summary>
-	public class Request
+	public class MethodCallRequest
 	{
-		public string methodName{ get; set; }
-		public object[] args{ get; set; }
-		public IDictionary<string, string> metaData { get; set; }
-		public string callId { get; set; }
-		public bool answer { get; set; }
-		public IList<string> classes { get; set; }
+		public MethodCall methodCall {get;set;}
+		public string callId {get;set;}
+		public bool answer{get;set;}
+		public string destination{get;set;}
 		
-		public Request()
+		public MethodCallRequest()
 		{
 			
 		}

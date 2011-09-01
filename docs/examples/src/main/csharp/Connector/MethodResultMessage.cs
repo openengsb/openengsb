@@ -16,26 +16,15 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace Connector
 {
-	/// <summary>
-	/// Defines the response object which have to be sent to the OpenEngSB
-	/// </summary>
-	public class Response
+	public class MethodResultMessage
 	{
-		public enum ReturnType {
-			Void, Object, Exception,
-		}
-
-		public ReturnType type { get; set; }
-		public object arg { get; set; }
-		public IDictionary<string, string> metaData { get; set; }
-		public string callId { get; set; }
-		public string className { get; set; }
+		public MethodResult result {get;set;}
+		public string callId {get;set;}
 		
-		public Response()
+		public MethodResultMessage()
 		{
 			
 		}
