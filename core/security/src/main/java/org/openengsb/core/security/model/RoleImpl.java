@@ -36,6 +36,9 @@ import org.openengsb.core.api.security.model.Role;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+/**
+ * model-class that is used to store roles in JPA-backends
+ */
 @NamedQueries({
     @NamedQuery(name = "listAllRoles", query = "SELECT r FROM RoleImpl r"),
     @NamedQuery(name = "listUsersWithRole",

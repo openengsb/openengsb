@@ -31,7 +31,10 @@ import javax.persistence.Table;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-@Table(name = "SIMPLEUSER")
+/**
+ * model-class that is used to store users using JPA-backend
+ */
+@Table(name = "USER")
 @Entity
 public class UserImpl {
 
