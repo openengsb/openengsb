@@ -153,7 +153,6 @@
       This feature allone provides ActiveMQ support in the OpenEngSB. Still, it does not provide queues or anything 
       else automatically, but rather provides the infrastructure only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
@@ -179,7 +178,6 @@
    <details>
       This feature provides activemq support including the queue configurations for the OpenEngSB.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
@@ -202,7 +200,6 @@
       The OpenEngSB CXF Infrastructure contains all references unique for CXF and which are required to get CXF up
       and running. This provides only the base CXF environment but does not integrate it into the OpenEngSB.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.apache.ws.commons.axiom/axiom-api/${axiom.version}</bundle>
     <bundle>mvn:org.apache.ws.commons.axiom/axiom-impl/${axiom.version}</bundle>
     <bundle>mvn:org.apache.abdera/abdera-core/${abdera.version}</bundle>
@@ -250,7 +247,6 @@
     <details>
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
@@ -260,7 +256,6 @@
       Based on the OpenEngSB UI Core this feature setup a complete administration UI to control and configure
       the OpenEngSB according to the needs of a project.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
@@ -271,7 +266,6 @@
     <details>
       This feature contains the general domain description of the OpenEngSB Auditing Domain.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
   </feature>
 
@@ -281,7 +275,6 @@
       replaced by any other implementation but at least one implementation instance of this domain is required by the
       OpenEngSB to run.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
   </feature>
@@ -292,7 +285,6 @@
       presenting possiblities how to use it. This domain has no real usage in production, but is rather for
       presentation only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
   </feature>
 
@@ -301,7 +293,6 @@
       Connector implementing the sample domain. Typically there is no need to overwrite this connector. There is either no
       need to use this connector in any production environment. It is really for presentation use only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-example</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
   </feature>
