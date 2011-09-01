@@ -24,7 +24,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PopupSettings;
 import org.apache.wicket.model.IModel;
@@ -47,22 +46,9 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("serial")
 public class OAuthField extends AbstractField<String> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthField.class);
-
-    public String getResult()
-    {
-        return result;
-    }
-
-    public void setResult(String result)
-    {
-        this.result = result;
-    }
-
     private String result;
-    BookmarkablePageLink<OAuthData> oldPageLink;
-    Link<OAuthData> pageLink;
+    private Link<OAuthData> pageLink;    
 
     public OAuthField(String id, IModel<String> model, AttributeDefinition attribute,
             IValidator<String> fieldValidationValidator) {
@@ -114,5 +100,13 @@ public class OAuthField extends AbstractField<String> {
         container.setHelpComponents(list);
         container.setMainComponent(tokenResult);
         return container;
+    }
+    
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

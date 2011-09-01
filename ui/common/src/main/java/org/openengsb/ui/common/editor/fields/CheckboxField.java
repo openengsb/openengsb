@@ -34,8 +34,8 @@ public class CheckboxField extends AbstractField<Boolean> {
 
     @Override
     protected ModelFascade<Boolean> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-    	CheckBox check = new CheckBox("field", new BoolToStringModel(model));
-    	ModelFascade<Boolean> retVal = new ModelFascade<Boolean>();
+        CheckBox check = new CheckBox("field", new BoolToStringModel(model));
+        ModelFascade<Boolean> retVal = new ModelFascade<Boolean>();
         retVal.setMainComponent(check);
         return retVal;
     }

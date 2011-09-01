@@ -37,7 +37,7 @@ public class InputField extends AbstractField<String> {
 
     @Override
     protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-    	TextField<String> text = new TextField<String>("field", model);
+        TextField<String> text = new TextField<String>("field", model);
         ModelFascade<String> retVal = new ModelFascade<String>();
         retVal.setMainComponent(text);
         return retVal;

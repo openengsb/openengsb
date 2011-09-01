@@ -24,31 +24,25 @@ import org.openengsb.core.api.OAuthData;
  * The wicket {@link IModel} storing {@link OAuthData} in a reusable object.
  */
 public class OAuthPageModel implements IModel<OAuthData> {
-
     private static final long serialVersionUID = -4841795218087845120L;
-
     private IModel<OAuthData> oAuthContainingModel;
 
-    public OAuthPageModel(IModel<OAuthData> oAuthContainingModel)
-    {
+    public OAuthPageModel(IModel<OAuthData> oAuthContainingModel) {
         this.oAuthContainingModel = oAuthContainingModel;
     }
 
     @Override
-    public OAuthData getObject()
-    {
+    public OAuthData getObject() {
         return oAuthContainingModel.getObject();
     }
 
     @Override
-    public void setObject(OAuthData object)
-    {
+    public void setObject(OAuthData object) {
         oAuthContainingModel.setObject(object);
     }
 
     @Override
-    public void detach()
-    {
+    public void detach() {
         oAuthContainingModel.detach();
     }
 

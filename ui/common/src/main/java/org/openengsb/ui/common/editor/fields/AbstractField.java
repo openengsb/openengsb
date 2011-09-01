@@ -37,34 +37,46 @@ import org.openengsb.ui.common.model.LocalizableStringModel;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {
+    private IModel<String> model;
+    private AttributeDefinition attribute;
+    private IValidator<T> validator;
+    private boolean editable;
 
-	//rbair: TODO use onInitialize, not the constructor
-	//the refactor the whole mess
     public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator,
             boolean editable) {
         super(id);
+        this.model = model;
+        this.attribute = attribute;
+        this.validator = validator;
+        this.editable = editable;
+    }
+
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
         ModelFascade<T> component = createFormComponent(attribute, model);
-        
+
         List<Component> helpComponents = component.getHelpComponents();
         if (helpComponents != null) {
-        	for (Component child : helpComponents) {
-        		add(child);
-        	}
-        }        
+            for (Component child : helpComponents) {
+                add(child);
+            }
+        }
         FormComponent<T> mainComponent = component.getMainComponent();
         mainComponent.setOutputMarkupId(true);
         mainComponent.setMarkupId(attribute.getId());
-        //editable is always set to true
+        // editable is always set to true
         mainComponent.setEnabled(editable);
         if (validator != null) {
-        	mainComponent.add(validator);
+            mainComponent.add(validator);
         }
         mainComponent.setRequired(attribute.isRequired());
         mainComponent.setLabel(new LocalizableStringModel(this, attribute.getName()));
-        add(new SimpleFormComponentLabel("name", mainComponent).add(new SimpleAttributeModifier("for", attribute.getId())));
+        add(new SimpleFormComponentLabel("name", mainComponent).add(new SimpleAttributeModifier("for", attribute
+            .getId())));
         add(mainComponent);
-        
-        addTooltip(attribute); 
+
+        addTooltip(attribute);
     }
 
     public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator) {
@@ -82,5 +94,5 @@ public abstract class AbstractField<T> extends Panel {
         add(tooltip);
     }
 
-    protected abstract ModelFascade createFormComponent(AttributeDefinition attribute, IModel<String> model);
+    protected abstract ModelFascade<T> createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }

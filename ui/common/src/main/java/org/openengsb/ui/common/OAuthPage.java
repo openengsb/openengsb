@@ -33,27 +33,12 @@ import org.openengsb.core.api.OAuthData;
 import org.openengsb.core.api.OAuthValidation;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 
-public class OAuthPage extends WebPage
-{
+public class OAuthPage extends WebPage {
 
-    public OAuthPage(OAuthData pageData) throws MalformedURLException, Exception {
-        add(new PopupCloseLink("close"));
-
-        final Request request = getRequest();
-        String currentURL = null;
-        String redirectURL = null;
-        final HttpServletRequest hsr;
-        if (request instanceof WebRequest) {
-            hsr = ((WebRequest) request).getHttpServletRequest();
-            currentURL = hsr.getRequestURL().toString();
-            redirectURL = currentURL + getRequestCycle().urlFor(getPageMap(), OAuthPage.class, null).toString();
-
-            final String queryString = hsr.getQueryString();
-
-            if (queryString != null) {
-                currentURL += "?" + queryString;
-            }
-        }
+    public OAuthPage(OAuthData pageData) throws MalformedURLException {
+        add(new PopupCloseLink<String>("close"));
+        String currentURL = buildCurrentURL(getRequest());
+        String redirectURL = buildRedirectURL(currentURL);
 
         StringBuffer link = new StringBuffer();
         link.append(pageData.getFirstCallLink());
@@ -62,22 +47,10 @@ public class OAuthPage extends WebPage
         throw new RedirectToUrlException(link.toString());
     }
 
-    public OAuthPage(PageParameters pp) throws Exception
-    {
-        final Request request = getRequest();
-        final HttpServletRequest hsr;
-        String currentURL = null;
-        String redirectURL = null;
-        if (request instanceof WebRequest) {
-            hsr = ((WebRequest) request).getHttpServletRequest();
-            currentURL = hsr.getRequestURL().toString();
-            redirectURL = currentURL + getRequestCycle().urlFor(getPageMap(), OAuthPage.class, null).toString();
-            final String queryString = hsr.getQueryString();
-
-            if (queryString != null) {
-                currentURL += "?" + queryString;
-            }
-        }
+    public OAuthPage(PageParameters pp) throws Exception {
+        Request request = getRequest();
+        String currentURL = buildCurrentURL(request);
+        String redirectURL = buildRedirectURL(currentURL);
 
         // get redirectURL parameter
         int paramLoc = currentURL.lastIndexOf("&");
@@ -90,14 +63,35 @@ public class OAuthPage extends WebPage
         OAuthData test = OAuthPageFactory.getOAuthObject(getSession().getId());
 
         OAuthValidation oAuth = new OAuthValidation();
-        String nextURL = test.getSecondCallLink() +
-                "&" + test.getRedirectParameterName() + "=" + redirectURL +
-                "&" + receivedParamName + "=" + request.getParameter("code");
-        String accessToken = oAuth.performOAuthValidation(new URL(nextURL));
+        StringBuilder nextURL = new StringBuilder();
+        nextURL.append(test.getSecondCallLink()).append("&").append(test.getRedirectParameterName());
+        nextURL.append("=").append(redirectURL).append("&").append(receivedParamName).append("=");
+        nextURL.append(request.getParameter("code"));
+        String accessToken = oAuth.performOAuthValidation(new URL(nextURL.toString()));
         test.setOutParameter(accessToken);
 
         OAuthPageFactory.putOAuthObject(getSession().getId(), test);
         add(new Label("oAuthResultLabel", "oAuth authentication successful."));
-        add(new PopupCloseLink("close"));
+        add(new PopupCloseLink<String>("close"));
+    }
+
+    private String buildCurrentURL(Request request) {
+        if (request instanceof WebRequest) {
+            HttpServletRequest hsr = ((WebRequest) request).getHttpServletRequest();
+            String currentURL = hsr.getRequestURL().toString();
+            String queryString = hsr.getQueryString();
+            if (queryString != null) {
+                currentURL += "?" + queryString;
+            }
+            return currentURL;
+        }
+        return null;
+    }
+
+    private String buildRedirectURL(String currentURL) {
+        if (currentURL == null) {
+            return currentURL;
+        }
+        return currentURL + getRequestCycle().urlFor(getPageMap(), OAuthPage.class, null).toString();
     }
 }

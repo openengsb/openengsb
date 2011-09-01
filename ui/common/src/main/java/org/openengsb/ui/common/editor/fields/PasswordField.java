@@ -33,7 +33,7 @@ public class PasswordField extends AbstractField<String> {
 
     @Override
     protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-    	PasswordTextField field = new PasswordTextField("field", model);
+        PasswordTextField field = new PasswordTextField("field", model);
         field.setResetPassword(false);
         ModelFascade<String> retVal = new ModelFascade<String>();
         retVal.setMainComponent(field);

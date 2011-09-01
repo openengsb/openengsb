@@ -26,7 +26,10 @@ import org.openengsb.core.api.OAuthData;
  * build a "bridge" to handle such cases. This class is static and used to transfer such objects between various threads
  * and objects.
  */
-public class OAuthPageFactory {
+public final class OAuthPageFactory {
+
+    private OAuthPageFactory() {
+    }
 
     static Hashtable<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
 
