@@ -30,6 +30,9 @@
         <property name="droolsVersion" value="${drools.version}"/>
       </action>
     </command>
+    <command name="openengsb/domains">
+      <action class="org.openengsb.core.console.DomainInfoCommand"/>
+    </command>
   </command-bundle>
 
   <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"

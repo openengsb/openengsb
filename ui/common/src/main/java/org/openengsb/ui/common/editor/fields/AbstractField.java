@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -84,7 +85,7 @@ public abstract class AbstractField<T> extends Panel {
     }
 
     private void addTooltip(AttributeDefinition attribute) {
-        Image tooltip = new Image("tooltip");
+        Image tooltip = new Image("tooltip", new ResourceReference(AbstractField.class, "balloon.png"));
         if (attribute.hasDescription()) {
             tooltip.add(new AttributeModifier("title", true, new LocalizableStringModel(this, attribute
                 .getDescription())));

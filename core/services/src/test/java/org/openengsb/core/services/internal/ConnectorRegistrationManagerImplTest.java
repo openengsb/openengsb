@@ -28,6 +28,7 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -50,10 +51,11 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         connectorRegistrationManagerImpl.setBundleContext(bundleContextMock);
         connectorRegistrationManagerImpl.setServiceUtils(defaultOsgiUtilsService);
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
-        Domain domainMock = mock(Domain.class);
-        when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(domainMock);
+        Connector connectorMock = mock(Connector.class);
+        when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(connectorMock);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
+        props.put("domain", "a");
         registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -83,6 +85,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("connector", "a");
+        props.put("domain", "a");
         registerService(connectorInstanceFactoryMock, props, ConnectorInstanceFactory.class);
         DomainProvider domainProviderMock = mock(DomainProvider.class);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {

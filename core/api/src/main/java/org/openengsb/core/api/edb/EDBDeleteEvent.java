@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.context;
+package org.openengsb.core.api.edb;
 
-public interface ContextConnectorService {
+import org.openengsb.core.api.model.OpenEngSBModel;
 
-    /**
-     * assigns the given serviceId the current contexts defaultConnector for the given domain
-     */
-    void registerDefaultConnector(String domainName, String serviceId);
 
-    /**
-     * returns the serviceId of the default-connector for the given domain
-     */
-    String getDefaultConnectorServiceId(String domainName);
+/**
+ * Represents a delete Event. Try to delete an OpenEngSBModel object from the EDB.
+ */
+public class EDBDeleteEvent extends EDBEvent {
+
+    private OpenEngSBModel model;
+
+    public EDBDeleteEvent(OpenEngSBModel model) {
+        this.model = model;
+    }
+
+    public OpenEngSBModel getModel() {
+        return model;
+    }
 
 }
+

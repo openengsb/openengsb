@@ -33,13 +33,14 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
+import org.openengsb.core.services.internal.virtual.ProxyConnector;
 
 public class ProxyConnectorTest {
 
     @Test
     public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
         OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector();
+        ProxyConnector proxy = new ProxyConnector("foo");
         proxy.setOutgoingPortUtilService(router);
         String id = "id";
         String test = "test";
@@ -69,7 +70,7 @@ public class ProxyConnectorTest {
     @Test
     public void callInvokeWithException_ShouldThrowException() {
         OutgoingPortUtilService router = mock(OutgoingPortUtilService.class);
-        ProxyConnector proxy = new ProxyConnector();
+        ProxyConnector proxy = new ProxyConnector("foo");
         proxy.setOutgoingPortUtilService(router);
         String message = "Message";
         MethodResult result = new MethodResult(message, ReturnType.Exception);

@@ -40,9 +40,9 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorProvider;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
@@ -73,7 +73,7 @@ public class EditorPageTest extends AbstractUITest {
         ConnectorProvider provider = createConnectorProviderMock("testconnector", "testdomain");
         when(provider.getDescriptor()).thenReturn(d);
         createDomainProviderMock(NullDomain.class, "testdomain");
-        factoryMock = createFactoryMock("testconnector", "testdomain");
+        factoryMock = createFactoryMock("testconnector", NullDomainImpl.class, "testdomain");
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
@@ -140,7 +140,7 @@ public class EditorPageTest extends AbstractUITest {
         tester.executeAjaxEvent("editor:form:submitButton", "onclick");
         Map<String, String> ref = new HashMap<String, String>();
         ref.put("a", "a_default");
-        verify(factoryMock).applyAttributes(any(Domain.class), eq(ref));
+        verify(factoryMock).applyAttributes(any(Connector.class), eq(ref));
         serviceUtils.getService(NullDomain.class, 100L);
     }
 

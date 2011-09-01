@@ -127,6 +127,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.core.api");
         importantBundles.add("org.openengsb.core.common");
+        importantBundles.add("org.openengsb.core.edb");
+        importantBundles.add("org.openengsb.core.ekb");
         importantBundles.add("org.openengsb.core.service");
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
@@ -273,5 +275,4 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                 .versionAsInProject()), felix());
     }
-
 }

@@ -92,6 +92,9 @@
               org.springframework.aop.framework,
               *
             </Import-Package>
+            <!--
+              Good question; I dont think this is required but have to be revaluated
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

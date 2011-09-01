@@ -25,7 +25,7 @@ If you like to inlcude all connectors/domains too run "ect/scripts/submodulePull
 
 Scripts
 -------
-Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your effort.
+Scripts which help you to create projects, run the workspace and so on are stored in a separated script folder (etc/scripts). Its not required to use them but they may help you with your effort.
 
 Full Tests
 ----------

@@ -17,10 +17,10 @@
 
 package org.openengsb.ui.admin.testClient;
 
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.ui.admin.testClient.TestClientTest.UpdateEnum;
 
-public interface TestInterface extends Domain {
+public interface TestInterface extends Connector {
 
     void update(String id, String name);
 

@@ -15,24 +15,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.api.edb;
 
-import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-public class Activator implements BundleActivator {
-
-    @Override
-    public void start(BundleContext context) throws Exception {
-        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
-        osgiServiceUtils.setBundleContext(context);
-        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        // do nothing
-    }
-
+/**
+ * little enum for easier maintaining sending EDB CUD events
+ */
+public enum EDBEventType {
+    INSERT,
+    UPDATE,
+    DELETE
 }

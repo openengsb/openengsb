@@ -215,7 +215,7 @@
     <neethi.version>3.0.0</neethi.version>
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
-    <javax.mail.version>1.4.1_4</javax.mail.version>
+    <javax.mail.version>1.4.3</javax.mail.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <quartz.version>1.5.2</quartz.version>
     <rome.version>0.5</rome.version>
@@ -282,6 +282,11 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons.lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons.logging.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-pool</groupId>
@@ -453,8 +458,8 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
         <version>${javax.mail.version}</version>
       </dependency>
       <dependency>

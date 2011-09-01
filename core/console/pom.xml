@@ -51,6 +51,14 @@
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.commands</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
