@@ -275,6 +275,7 @@
       replaced by any other implementation but at least one implementation instance of this domain is required by the
       OpenEngSB to run.
     </details>
+	<feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
   </feature>
