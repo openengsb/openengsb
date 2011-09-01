@@ -99,6 +99,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         }
         isBeforeExecuted = true;
 
+        File configDir = new File(System.getProperty("karaf.data", "karaf.data"), "openengsb/config");
+        configDir.mkdirs();
+
         List<String> importantBundles = getImportantBundleSymbolicNames();
         for (String bundle : importantBundles) {
             waitForBundle(bundle, SetupType.BLUEPRINT);
@@ -267,8 +270,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
                     .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
             workingDirectory(getWorkingDirectory()),
-            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom," 
-                + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom,"
+                    + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
             vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
                     + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
             waitForFrameworkStartup(),
