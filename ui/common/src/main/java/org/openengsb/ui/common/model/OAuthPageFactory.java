@@ -18,6 +18,7 @@
 package org.openengsb.ui.common.model;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.openengsb.core.api.OAuthData;
 
@@ -31,7 +32,7 @@ public final class OAuthPageFactory {
     private OAuthPageFactory() {
     }
 
-    static Hashtable<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
+    private static Map<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
 
     public static OAuthData getOAuthObject(String sessionID) {
         OAuthData tmp = oAuthObjects.get(sessionID);

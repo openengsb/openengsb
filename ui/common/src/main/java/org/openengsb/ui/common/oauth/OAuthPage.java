@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common;
+package org.openengsb.ui.common.oauth;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,7 +42,7 @@ public class OAuthPage extends WebPage {
 
         StringBuffer link = new StringBuffer();
         link.append(pageData.getFirstCallLink());
-        link.append("&").append(pageData.getRedirectParameterName() + "=" + redirectURL);
+        link.append("&").append(pageData.getRedirectParameterName()).append("=").append(redirectURL);
         OAuthPageFactory.putOAuthObject(getSession().getId(), pageData);
         throw new RedirectToUrlException(link.toString());
     }
@@ -64,6 +64,7 @@ public class OAuthPage extends WebPage {
 
         OAuthValidation oAuth = new OAuthValidation();
         StringBuilder nextURL = new StringBuilder();
+
         nextURL.append(test.getSecondCallLink()).append("&").append(test.getRedirectParameterName());
         nextURL.append("=").append(redirectURL).append("&").append(receivedParamName).append("=");
         nextURL.append(request.getParameter("code"));

@@ -33,10 +33,10 @@ import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.OAuthData;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.ui.common.OAuthPage;
 import org.openengsb.ui.common.editor.ModelFascade;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 import org.openengsb.ui.common.model.OAuthPageModel;
+import org.openengsb.ui.common.oauth.OAuthPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -30,14 +31,14 @@ import javax.net.ssl.HttpsURLConnection;
  * server.
  */
 public class OAuthValidation {
-    Hashtable<String, String> params = new Hashtable<String, String>();
+    private Map<String, String> params;
 
     public OAuthValidation(Hashtable<String, String> parameters) {
         params = parameters;
     }
 
     public OAuthValidation() {
-
+        params = new Hashtable<String, String>();
     }
 
     public void addParameter(String key, String val) {
