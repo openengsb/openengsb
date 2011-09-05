@@ -35,7 +35,7 @@ import org.openengsb.core.api.security.model.Permission;
  *
  * It gives each permission a unique id, and a context. The context-attribute restricts the scope of the permission to a
  * single context. If it is null, the permission applies to all contexts.
- * 
+ *
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

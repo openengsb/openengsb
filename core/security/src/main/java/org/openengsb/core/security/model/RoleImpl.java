@@ -97,6 +97,7 @@ public class RoleImpl implements Role, Serializable {
         this.name = name;
     }
 
+    @Override
     public Collection<AbstractPermission> getPermissions() {
         return permissions;
     }

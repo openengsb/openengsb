@@ -20,10 +20,25 @@ import java.util.Collection;
 
 public interface Role {
 
+    /**
+     * return the name of the role. This might be used by access-control mechanism relying on roles to be strings.
+     */
     String getName();
 
+    /**
+     * returns the roles that are directly implied by this role. This method is NOT transitive.
+     */
     Collection<? extends Role> getNestedRoles();
 
+    /**
+     * returns all permission granted by this role. This does not include permissions granted by nested roles.
+     */
+    Collection<? extends Permission> getPermissions();
+
+    /**
+     * returns all permission granted by this role including permissions granted by nested roles. This method is
+     * transitive.
+     */
     Collection<? extends Permission> getAllPermissions();
 
 }
