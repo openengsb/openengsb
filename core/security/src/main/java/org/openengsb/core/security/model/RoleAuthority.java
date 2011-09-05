@@ -22,6 +22,11 @@ import java.util.Collection;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
 
+/**
+ *
+ * wraps a {@link Role} in a spring-security-compatible {@link org.springframework.security.core.GrantedAuthority}
+ *
+ */
 public class RoleAuthority implements OpenEngSBGrantedAuthority {
 
     private static final long serialVersionUID = 5228017671125937885L;

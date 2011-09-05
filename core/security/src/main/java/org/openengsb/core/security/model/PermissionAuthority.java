@@ -23,6 +23,9 @@ import org.openengsb.core.api.security.model.Permission;
 
 import com.google.common.collect.Lists;
 
+/**
+ * wraps a {@link Permission} in a spring-security-compatible {@link org.springframework.security.core.GrantedAuthority}
+ */
 public class PermissionAuthority implements OpenEngSBGrantedAuthority {
 
     private static final long serialVersionUID = -8184393786529026862L;

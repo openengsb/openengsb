@@ -30,6 +30,13 @@ import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.model.Permission;
 
+/**
+ * serves as abstract base for all {@link Permission}s that are to be saved to the database via JPA.
+ *
+ * It gives each permission a unique id, and a context. The context-attribute restricts the scope of the permission to a
+ * single context. If it is null, the permission applies to all contexts.
+ * 
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractPermission implements Permission {

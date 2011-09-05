@@ -22,8 +22,17 @@ import java.util.Collection;
 import org.openengsb.core.api.security.model.Permission;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * serves as a bridge between openengsb's {@link Permission}s and spring-security's {@link GrantedAuthority}s
+ *
+ * A simple implementation is {@link PermissionAuthority} class, which wraps a single {@link Permission} into a
+ * {@link GrantedAuthority}
+ */
 public interface OpenEngSBGrantedAuthority extends GrantedAuthority {
 
+    /**
+     * return all permission of the wrapped OpenEngSB authority
+     */
     Collection<? extends Permission> getPermissions();
 
 }
