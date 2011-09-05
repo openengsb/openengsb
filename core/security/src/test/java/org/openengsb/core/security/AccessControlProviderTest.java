@@ -45,8 +45,6 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.BundleContext;
 
-import com.google.common.collect.ImmutableMap;
-
 public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
 
     private AuthorizationDomain accessControl;
@@ -62,9 +60,9 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         userManager.storeUserPermission("admin", "admin", new HashMap<String, String>());
 
         userManager.createUser("testuser");
-//        ImmutableMap<String, String> permission =
-//            ImmutableMap.of("serviceId", "fooService", "contextId", "foo", "class", ServicePermission.class.getName());
-//        userManager.storeUserPermission("testuser", "service", permission);
+        // ImmutableMap<String, String> permission =
+        // ImmutableMap.of("serviceId", "fooService", "contextId", "foo", "class", ServicePermission.class.getName());
+        // userManager.storeUserPermission("testuser", "service", permission);
 
         AdminAccessConnector adminAccessConnector = new AdminAccessConnector();
         adminAccessConnector.setUserManager(userManager);

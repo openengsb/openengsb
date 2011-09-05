@@ -46,8 +46,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
         }
 
         @Override
-        public Authentication authenticate(String username, Object credentials)
-                throws AuthenticationException {
+        public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
             Iterator<AuthenticationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
                     AuthenticationDomain.class);

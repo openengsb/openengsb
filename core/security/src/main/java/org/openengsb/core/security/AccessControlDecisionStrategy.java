@@ -33,7 +33,8 @@ public class AccessControlDecisionStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessControlDecisionStrategy.class);
 
-    private static class CompositeAccessControlProvider extends AbstractOpenEngSBService implements AuthorizationDomain {
+    private static class CompositeAccessControlProvider extends AbstractOpenEngSBService
+            implements AuthorizationDomain {
         private List<ServiceReference> providers;
 
         public CompositeAccessControlProvider(List<ServiceReference> providers) {
