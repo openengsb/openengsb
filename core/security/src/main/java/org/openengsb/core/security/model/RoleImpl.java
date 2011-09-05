@@ -20,6 +20,7 @@ package org.openengsb.core.security.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -30,6 +31,8 @@ import javax.persistence.ManyToMany;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -41,6 +44,8 @@ import com.google.common.collect.Iterables;
 public class RoleImpl implements Role, Serializable {
 
     private static final long serialVersionUID = 807120463662044757L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoleImpl.class);
 
     @Id
     private String name;
@@ -113,7 +118,8 @@ public class RoleImpl implements Role, Serializable {
         Collection<Permission> result = new ArrayList<Permission>(permissions);
         for (Role role : nestedRoles) {
             if (role == this) {
-                throw new IllegalStateException("cyclic dependency detected");
+                LOGGER.warn("cyclic dependency detected");
+                return Collections.emptyList();
             }
             result.addAll(role.getAllPermissions());
         }
