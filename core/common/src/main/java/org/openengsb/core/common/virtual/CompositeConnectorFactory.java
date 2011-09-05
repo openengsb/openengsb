@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.api.CompositeConnectorStrategy;
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -85,7 +85,7 @@ public class CompositeConnectorFactory extends VirtualConnectorFactory<Composite
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }

@@ -219,8 +219,6 @@
                 <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>
                 <feature>openengsb-ports-rs</feature>
-                <!-- OpenEngSB Semantic Features -->
-                <feature>openengsb-edb</feature>
                 <!-- OpenEngSB Administration -->
                 <feature>openengsb-ui-admin</feature>
                 <!-- OpenEngSB Domains -->

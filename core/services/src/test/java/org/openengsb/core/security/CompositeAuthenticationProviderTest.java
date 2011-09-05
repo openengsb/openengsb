@@ -32,10 +32,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.model.User;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnector;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.AuthenticationProviderStrategy;
 import org.openengsb.core.security.internal.SystemUserAuthenticationProvider;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -62,7 +62,7 @@ public class CompositeAuthenticationProviderTest extends AbstractOsgiMockService
         when(userDetails.loadUserByUsername(anyString())).thenAnswer(new Answer<UserDetails>() {
             @Override
             public UserDetails answer(InvocationOnMock invocation) throws Throwable {
-                return new User((String) invocation.getArguments()[0], "password");
+                return Users.create((String) invocation.getArguments()[0], "password");
             }
         });
         daoProvider.setUserDetailsService(userDetails);

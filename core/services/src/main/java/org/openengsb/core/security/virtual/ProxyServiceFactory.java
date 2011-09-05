@@ -20,7 +20,7 @@ package org.openengsb.core.security.virtual;
 import java.util.Collections;
 import java.util.Map;
 
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
@@ -46,7 +46,7 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Connector instance, Map<String, String> attributes) {
         ProxyConnector handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }
@@ -82,7 +82,7 @@ public class ProxyServiceFactory extends VirtualConnectorFactory<ProxyConnector>
     }
 
     @Override
-    public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+    public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
         // TODO OPENENGSB-1290: implement some validation
         return Collections.emptyMap();
     }

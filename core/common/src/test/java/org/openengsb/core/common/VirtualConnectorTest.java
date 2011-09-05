@@ -31,8 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
@@ -78,7 +78,7 @@ public class VirtualConnectorTest extends AbstractOsgiMockServiceTest {
         }
 
         @Override
-        public Map<String, String> getValidationErrors(Domain instance, Map<String, String> attributes) {
+        public Map<String, String> getValidationErrors(Connector instance, Map<String, String> attributes) {
             return Collections.emptyMap();
         }
 

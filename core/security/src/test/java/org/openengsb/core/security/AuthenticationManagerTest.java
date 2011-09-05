@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.SystemUserAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -73,7 +73,7 @@ public class AuthenticationManagerTest {
         when(userDetails.loadUserByUsername(anyString())).thenAnswer(new Answer<UserDetails>() {
             @Override
             public UserDetails answer(InvocationOnMock invocation) throws Throwable {
-                return new User((String) invocation.getArguments()[0], "password");
+                return Users.create((String) invocation.getArguments()[0], "password");
             }
         });
         daoProvider.setUserDetailsService(userDetails);

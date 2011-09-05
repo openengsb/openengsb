@@ -43,10 +43,12 @@
     <property name="domainEventInterface">
         <value>${package}.${domainInterface}Events</value>
       </property>
+    <property name="edbService" ref="edbService" />
     <property name="workflowService" ref="workflowService" />
   </bean>
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
+  <reference id="edbService" interface="org.openengsb.core.api.edb.EnterpriseDatabaseService" />
 
 </blueprint>

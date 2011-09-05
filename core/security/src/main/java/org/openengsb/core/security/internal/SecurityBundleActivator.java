@@ -17,19 +17,26 @@
 
 package org.openengsb.core.security.internal;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityBundleActivator implements BundleActivator {
 
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    
     @Override
     public void start(BundleContext context) throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        executor.submit(new UserDataInitializer());
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        executor.shutdownNow();
     }
 
 }

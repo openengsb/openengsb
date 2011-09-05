@@ -20,6 +20,7 @@ package org.openengsb.ui.admin.userService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,16 +46,26 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ComputationException;
+import com.google.common.collect.Lists;
 
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserService extends BasePage {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     UserInput input = new UserInput();
     RequiredTextField<String> usernameField;
@@ -129,24 +140,31 @@ public class UserService extends BasePage {
         resetButton.setDefaultFormProcessing(false);
         userForm.add(resetButton);
 
-        IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
+        final IModel<List<UserDetails>> userList = new LoadableDetachableModel<List<UserDetails>>() {
             private static final long serialVersionUID = 2579825372351310299L;
 
             @Override
-            protected List<User> load() {
+            protected List<UserDetails> load() {
+                List<String> usernameList = userManager.getUsernameList();
                 try {
-                    return userManager.getAllUser();
-                } catch (UserManagementException e) {
+                    return Lists.transform(usernameList, new Function<String, UserDetails>() {
+                        @Override
+                        public UserDetails apply(String input) {
+                            return userManager.loadUserByUsername(input);
+                        };
+                    });
+                } catch (ComputationException e) {
+                    LOGGER.error("error while getting user-list", e);
                     error(new StringResourceModel("userManagementExceptionError", null).getString());
+                    return Collections.emptyList();
                 }
-                return new ArrayList<User>();
             }
         };
-        ListView<User> users = new ListView<User>("users", userList) {
+        ListView<UserDetails> users = new ListView<UserDetails>("users", userList) {
             private static final long serialVersionUID = 7628860457238288128L;
 
             @Override
-            protected void populateItem(final ListItem<User> userListItem) {
+            protected void populateItem(final ListItem<UserDetails> userListItem) {
                 userListItem.add(new Label("user.name", userListItem.getModelObject().getUsername()));
                 userListItem.add(new AjaxLink<User>("user.delete") {
                     private static final long serialVersionUID = 2004369349622394213L;
@@ -155,7 +173,7 @@ public class UserService extends BasePage {
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         try {
                             userManager.deleteUser(userListItem.getModelObject().getUsername());
-                            getList().remove(userListItem.getModelObject());
+                            userList.detach();
                             ajaxRequestTarget.addComponent(usermanagementContainer);
                         } catch (UserManagementException e) {
                             error(new StringResourceModel("userManagementExceptionError", this, null).getString());
@@ -194,7 +212,7 @@ public class UserService extends BasePage {
             } else {
                 try {
                     List<GrantedAuthority> authorities = authoritiesFromCommaSeparatedList(input.getRoles());
-                    User user = new User(input.getUsername(), input.getPassword(), authorities);
+                    User user = Users.create(input.getUsername(), input.getPassword(), authorities);
                     if (editMode) {
                         userManager.updateUser(user);
                     } else {

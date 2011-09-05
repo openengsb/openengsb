@@ -15,18 +15,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.context;
+package org.openengsb.core.api.edb;
 
-public interface ContextConnectorService {
-
-    /**
-     * assigns the given serviceId the current contexts defaultConnector for the given domain
-     */
-    void registerDefaultConnector(String domainName, String serviceId);
-
-    /**
-     * returns the serviceId of the default-connector for the given domain
-     */
-    String getDefaultConnectorServiceId(String domainName);
-
+/**
+ * little enum for easier maintaining sending EDB CUD events
+ */
+public enum EDBEventType {
+    INSERT,
+    UPDATE,
+    DELETE
 }

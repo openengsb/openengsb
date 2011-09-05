@@ -40,11 +40,15 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.security.CipherUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstracts the general concepts required for remote tests
  */
 public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     protected static final String METHOD_CALL_STRING = ""
             + "{"
@@ -166,6 +170,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         // FIXME do this properly when OPENENGSB-1597 is resolved
         File file = new File(System.getProperty("karaf.home"), "/etc/keys/public.key.data");
         while (!file.exists()) {
+            LOGGER.warn("waiting for public key to be generated in " + file);
             Thread.sleep(1000);
         }
         byte[] keyData;
@@ -184,8 +189,12 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     }
 
     protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws DecryptionException {
-        result = decryptResult(sessionKey, result);
+        try {
+            result = decryptResult(sessionKey, result);
+        } catch (DecryptionException e) {
+            LOGGER.error("decryption failed.");
+            LOGGER.error(result);
+        }
         assertThat(result, containsString("The answer to life the universe and everything"));
     }
-
 }

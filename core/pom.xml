@@ -62,6 +62,7 @@
     <module>security</module>
     <module>edb</module>
     <module>console</module>
+    <module>ekb</module>
   </modules>
 
 </project>

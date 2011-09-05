@@ -21,6 +21,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -42,11 +43,11 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    public Connector createNewInstance(String id) {
         VirtualType handler = createNewHandler(id);
-        Domain newProxyInstance =
-            (Domain) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class<?>[]{ domainProvider.getDomainInterface(), }, handler);
+        Connector newProxyInstance =
+            (Connector) Proxy.newProxyInstance(this.getClass().getClassLoader(),
+                new Class<?>[]{ domainProvider.getDomainInterface(), Connector.class }, handler);
         handlers.put(newProxyInstance, handler);
         return newProxyInstance;
     }
@@ -57,7 +58,7 @@ public abstract class VirtualConnectorFactory<VirtualType extends VirtualConnect
     protected abstract VirtualType createNewHandler(String id);
 
     @Override
-    public void applyAttributes(Domain instance, Map<String, String> attributes) {
+    public void applyAttributes(Connector instance, Map<String, String> attributes) {
         VirtualType handler = handlers.get(instance);
         updateHandlerAttributes(handler, attributes);
     }

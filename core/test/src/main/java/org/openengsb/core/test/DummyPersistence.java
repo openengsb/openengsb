@@ -65,10 +65,12 @@ public class DummyPersistence implements PersistenceService {
 
     private Set<Object> getTable(Object example) {
         final Class<? extends Object> class1 = example.getClass();
-        if (!data.containsKey(class1)) {
-            data.put(class1, new HashSet<Object>());
+        synchronized (data) {
+            if (!data.containsKey(class1)) {
+                data.put(class1, new HashSet<Object>());
+            }
+            return data.get(class1);
         }
-        return data.get(class1);
     }
 
     @Override

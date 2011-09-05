@@ -17,8 +17,10 @@
 
 package org.openengsb.ui.admin.userService;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,8 +28,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -39,7 +44,7 @@ import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.test.LocalisedTest;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
@@ -48,6 +53,10 @@ import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.google.common.collect.Lists;
 
 public class UserServiceTest extends LocalisedTest {
 
@@ -92,8 +101,45 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("roles", "admin,user");
         formTester.submit();
         tester.assertNoErrorMessage();
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
+        verify(userManager, times(1)).createUser(Users.create("user1", "password"));
 
+    }
+
+    @Test
+    public void createAndDeleteUser_ShouldWork() {
+        final User testUser = Users.create("user", "password");
+        final List<String> userList = Lists.newArrayList("user");
+
+        when(userManager.getUsernameList()).thenAnswer(new Answer<List<String>>() {
+            @Override
+            public List<String> answer(InvocationOnMock invocation) throws Throwable {
+                return new ArrayList<String>(userList);
+            }
+        });
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                userList.remove("user");
+                return null;
+            }
+        }).when(userManager).deleteUser("user");
+        when(userManager.loadUserByUsername("user")).thenAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                if (userList.contains("user")) {
+                    return testUser;
+                }
+                throw new UsernameNotFoundException("user not found");
+            }
+        });
+
+        tester.startPage(UserService.class);
+        AjaxLink<?> link =
+            (AjaxLink<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users:0:user.delete");
+        tester.executeAjaxEvent(link, "onclick");
+        ListView<?> userListView =
+            (ListView<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users");
+        assertThat(userListView.size(), is(0));
     }
 
     @Test
@@ -106,14 +152,15 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertNoErrorMessage();
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
+        verify(userManager, times(1)).createUser(Users.create("user1", "password"));
 
     }
 
     @Test
     public void testErrorMessage_shouldReturnUserExists() {
         tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
+        doThrow(new UserExistsException("user exists")).when(userManager).createUser(
+            Users.create("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
@@ -121,20 +168,19 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ localization("userExistError") });
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
+        verify(userManager, times(1)).createUser(Users.create("user1", "password"));
 
     }
 
     @Test
     public void testShowCreatedUser_ShouldShowAdmin() {
-        when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
+        when(userManager.getUsernameList()).thenAnswer(new Answer<List<String>>() {
             @Override
-            public List<User> answer(InvocationOnMock invocationOnMock) {
-                List<User> users = new ArrayList<User>();
-                users.add(new User("admin", "password"));
-                return users;
+            public List<String> answer(InvocationOnMock invocationOnMock) {
+                return Arrays.asList("admin");
             }
         });
+        when(userManager.loadUserByUsername("admin")).thenReturn(Users.create("admin", "password"));
         tester.startPage(UserService.class);
         tester.assertContains(localization("existingUser.title"));
         tester.assertContains("admin");
@@ -144,28 +190,29 @@ public class UserServiceTest extends LocalisedTest {
     @Test
     public void testErrorMessage_ShouldReturnWrongSecondPassword() {
         tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
+        doThrow(new UserManagementException("user exists")).when(userManager).createUser(
+            Users.create("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ localization("passwordError") });
-        verify(userManager, times(0)).createUser(new User("user1", "password"));
+        verify(userManager, times(0)).createUser(Users.create("user1", "password"));
     }
 
     @Test
     public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
         tester.startPage(UserService.class);
-        doThrow(new UserManagementException("database error")).when(userManager).createUser(
-            new User("user1", "password"));
+        doThrow(new UserExistsException(localization("userManagementExceptionError"))).when(userManager).createUser(
+            Users.create("user1", "password"));
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization("userManagementExceptionError") });
+        tester.assertErrorMessages(new String[]{ localization("userExistError") });
     }
 
     @Test

@@ -15,22 +15,39 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.ui.admin.model;
 
-import org.springframework.security.core.AuthenticationException;
+import java.io.Serializable;
 
-@SuppressWarnings("serial")
-public class UserNotFoundException extends AuthenticationException {
+public class UsernamePassword implements Serializable {
 
-    public UserNotFoundException(String msg, Throwable t) {
-        super(msg, t);
+    private static final long serialVersionUID = -7157011393650851906L;
+
+    private String username;
+    private String password;
+
+    public UsernamePassword(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public UserNotFoundException(String msg) {
-        super(msg);
+    public UsernamePassword() {
     }
 
-    public UserNotFoundException(String msg, Object extraInformation) {
-        super(msg, extraInformation);
+    public String getUsername() {
+        return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }

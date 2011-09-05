@@ -88,6 +88,9 @@
               org.springframework.aop,
               org.springframework.aop.framework, *
             </Import-Package>
+            <!--
+              Workflows need to access used classes in a dynamic way.
+            -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
@@ -129,6 +132,11 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-services</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-persistence</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

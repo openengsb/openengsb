@@ -24,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,10 +34,10 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
@@ -90,7 +91,11 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         ConnectorId connectorId = ConnectorId.generate("test", "testc");
         registrationManager.updateRegistration(connectorId, connectorDescription);
 
-        NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
+        Object service2 = serviceUtils.getService("(foo=bar)", 100L);
+        for (Class<?> c : service2.getClass().getInterfaces()) {
+            System.out.println(c);
+        }
+        NullDomain service = (NullDomain) service2;
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 
@@ -158,7 +163,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
         serviceUtils.getService("(foo=bar)", 100L);
         Filter filter = serviceUtils.makeFilter(ConnectorInstanceFactory.class, "(connector=testc)");
         ConnectorInstanceFactory factory = (ConnectorInstanceFactory) serviceUtils.getService(filter);
-        verify(factory).applyAttributes(any(Domain.class), eq(newAttrs));
+        verify(factory).applyAttributes(any(Connector.class), eq(newAttrs));
     }
 
     @Test
@@ -176,7 +181,7 @@ public class ServiceRegistrationManagerTest extends AbstractOsgiMockServiceTest 
 
         NullDomain service = (NullDomain) serviceUtils.getService("(foo=bar)", 100L);
         service.nullMethod();
-        verify(callrouter).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
+        verify(callrouter, times(3)).sendMethodCallWithResult(eq("jms+json"), eq("localhost"), any(MethodCall.class));
         assertThat(service.getInstanceId(), is(connectorId.toString()));
     }
 
