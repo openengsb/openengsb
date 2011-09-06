@@ -63,7 +63,7 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
         Preconditions.checkNotNull(config.getMetaData(), "Invalid metadata");
 
         String contextFileName = getFileNameForMetaData(config.getMetaData());
-        File contextPersistenceFile = new File(this.storageFolder, contextFileName);
+        File contextPersistenceFile = new File(storageFolder, contextFileName);
         try {
             FileUtils.touch(contextPersistenceFile);
         } catch (IOException e) {
@@ -76,7 +76,7 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
     @Override
     public void remove(Map<String, String> metadata) throws PersistenceException {
         String contextFileName = getFileNameForMetaData(metadata);
-        File contextPersistenceFile = new File(this.storageFolder, contextFileName);
+        File contextPersistenceFile = new File(storageFolder, contextFileName);
         Boolean fileSuccessFullyDeleted = FileUtils.deleteQuietly(contextPersistenceFile);
         if (!fileSuccessFullyDeleted) {
             throw new PersistenceException(String.format("Could not delete context configuration file %s",
@@ -126,7 +126,10 @@ public class ContextFilePersistenceService implements ConfigPersistenceBackendSe
     }
     
     public void setStorageFolderPath(String storageFolderPath) {
-        this.storageFolder = new File(storageFolderPath);
+        storageFolder = new File(storageFolderPath);
+        if (!storageFolder.exists()) {
+            storageFolder.mkdirs();
+        }
     }
 
 }
