@@ -53,7 +53,7 @@
 
   <modules>
     <module>memoryauditing</module>
-    <module>usernamepassword-authenticator</module>
+    <module>usernamepassword</module>
   </modules>
 
 </project>

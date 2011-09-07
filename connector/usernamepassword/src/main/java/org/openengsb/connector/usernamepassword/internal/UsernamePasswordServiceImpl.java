@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.usernamepasswordauthenticator.internal;
+package org.openengsb.connector.usernamepassword.internal;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.model.Authentication;
@@ -23,26 +23,16 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
-public class UsernamePasswordAuthenticatorServiceImpl extends AbstractOpenEngSBConnectorService implements
+public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorService implements
         AuthenticationDomain {
 
-    private String attr;
-
-    public UsernamePasswordAuthenticatorServiceImpl() {
-    }
-
-    void setAttr(String attr) {
-        this.attr = attr;
-    }
-
-    public String getAttr() {
-        return attr;
+    public UsernamePasswordServiceImpl() {
     }
 
     @Override
     public AliveState getAliveState() {
         // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
+        return null;
     }
 
     @Override
@@ -57,27 +47,4 @@ public class UsernamePasswordAuthenticatorServiceImpl extends AbstractOpenEngSBC
         return false;
     }
 
-    @Override
-    public void setDomainId(String domainId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getDomainId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setConnectorId(String connectorId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getConnectorId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

@@ -15,29 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.usernamepasswordauthenticator.internal;
+package org.openengsb.connector.usernamepassword.internal;
 
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
+public class UsernamePasswordServiceInstanceFactory extends
+        AbstractConnectorInstanceFactory<UsernamePasswordServiceImpl> {
 
-public class UsernamePasswordAuthenticatorServiceInstanceFactory extends AbstractConnectorInstanceFactory<UsernamePasswordAuthenticatorServiceImpl> {
-
-    public UsernamePasswordAuthenticatorServiceInstanceFactory() {
+    public UsernamePasswordServiceInstanceFactory() {
     }
 
     @Override
-    public void doApplyAttributes(UsernamePasswordAuthenticatorServiceImpl instance, Map<String, String> attributes) {
-        if (attributes.containsKey("attr")) {
-            instance.setAttr(attributes.get("attr"));
-        }
+    public void doApplyAttributes(UsernamePasswordServiceImpl instance, Map<String, String> attributes) {
     }
 
     @Override
     public Connector createNewInstance(String id) {
-        UsernamePasswordAuthenticatorServiceImpl service = new UsernamePasswordAuthenticatorServiceImpl();
+        UsernamePasswordServiceImpl service = new UsernamePasswordServiceImpl();
         return service;
     }
 

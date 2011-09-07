@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.usernamepasswordauthenticator.internal;
+package org.openengsb.connector.usernamepassword.internal;
 
 
-import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
 
-public class UsernamePasswordAuthenticatorConnectorProvider extends AbstractConnectorProvider {
+public class UsernamePasswordConnectorProvider extends AbstractConnectorProvider {
 
     @Override
     public ServiceDescriptor getDescriptor() {
