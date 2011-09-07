@@ -136,6 +136,11 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-persistence</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <scope>test</scope>
     </dependency>

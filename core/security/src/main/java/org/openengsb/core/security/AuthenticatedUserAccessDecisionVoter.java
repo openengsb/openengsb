@@ -29,12 +29,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.security.AuthorizedRoles;
-import org.openengsb.core.api.security.model.ServiceAuthorizedList;
-import org.openengsb.core.api.security.model.User;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -42,31 +37,24 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
 
 public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticatedUserAccessDecisionVoter.class);
 
-    private PersistenceService persistence;
-    private PersistenceManager persistenceManager;
-    private BundleContext bundleContext;
-
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
         MethodInvocation invocation = (MethodInvocation) object;
-        LOGGER.info("intercepted call: {} on Object {} of type {}", new Object[] {invocation.getMethod().getName(),
-            invocation.getThis(), invocation.getThis().getClass()});
+        LOGGER.info("intercepted call: {} on Object {} of type {}", new Object[]{ invocation.getMethod().getName(),
+            invocation.getThis(), invocation.getThis().getClass() });
         OpenEngSBService service = (OpenEngSBService) invocation.getThis();
         String instanceId = service.getInstanceId();
 
-        List<ServiceAuthorizedList> query = persistence.query(new ServiceAuthorizedList(instanceId));
         Collection<GrantedAuthority> allowedAuthorities = new HashSet<GrantedAuthority>();
         allowedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
         allowedAuthorities.addAll(retrieveAnnotations(invocation));
 
-        for (ServiceAuthorizedList l : query) {
-            allowedAuthorities.addAll(l.getAuthorities());
-        }
         if (allowedAuthorities.isEmpty()) {
             return ACCESS_DENIED;
         }
@@ -97,7 +85,9 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         for (Class<?> interfaze : getAllInterfaces(invocation.getThis().getClass())) {
             try {
                 Method method = interfaze.getMethod(methodName, arguments);
-                addRolesFromMethodAnnotation(result, method);
+                if (addRolesFromMethodAnnotation(result, method)) {
+                    break;
+                }
             } catch (SecurityException e) {
                 // This exception should not happen and points to a real problem somewhere
                 LOGGER.error("error while looping through interfaces: ", e);
@@ -114,9 +104,13 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         return ClassUtils.getAllInterfaces(clazz);
     }
 
-    private void addRolesFromMethodAnnotation(List<GrantedAuthority> result, Method method) {
+    private boolean addRolesFromMethodAnnotation(List<GrantedAuthority> result, Method method) {
         AuthorizedRoles annotation = method.getAnnotation(AuthorizedRoles.class);
+        if (annotation == null) {
+            return false;
+        }
         result.addAll(getRolesFromAnnotation(annotation));
+        return true;
     }
 
     private Set<GrantedAuthority> getRolesFromAnnotation(AuthorizedRoles annotation) {
@@ -152,23 +146,6 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
     @Override
     public boolean supports(ConfigAttribute attribute) {
         return false;
-    }
-
-    public void init() {
-        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-    }
-
-    public void setPersistence(PersistenceService persistence) {
-        this.persistence = persistence;
-    }
-
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-
     }
 
 }

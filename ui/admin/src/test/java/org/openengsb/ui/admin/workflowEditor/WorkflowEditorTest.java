@@ -17,10 +17,9 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
-
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;

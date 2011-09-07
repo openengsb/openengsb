@@ -17,113 +17,80 @@
 
 package org.openengsb.core.security.internal;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.UserNotFoundException;
-import org.openengsb.core.api.security.model.User;
-import org.osgi.framework.BundleContext;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserManagerImpl implements UserManager {
 
-    private PersistenceService persistence;
-    private PersistenceManager persistenceManager;
-    private BundleContext bundleContext;
+    private EntityManager entityManager;
 
     public UserManagerImpl() {
     }
 
     @Override
-    public void createUser(User user) {
-        if (userNameExists(user.getUsername())) {
+    public void createUser(UserDetails user) {
+        if (userExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
-        try {
-            persistence.create(user);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
+        entityManager.persist(new UserImpl(user));
     }
 
     @Override
-    public void updateUser(User user) {
-        User oldUser = new User(user.getUsername());
-        if (!userNameExists(oldUser.getUsername())) {
-            throw new UserNotFoundException("User with username: " + oldUser.getUsername() + " does not exists");
+    public void updateUser(UserDetails user) {
+        if (!userExists(user.getUsername())) {
+            throw new UsernameNotFoundException("User with username: " + user.getUsername() + " does not exists");
         }
-        try {
-            persistence.update(oldUser, user);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
+        UserImpl simpleUser = entityManager.find(UserImpl.class, user.getUsername());
+        simpleUser.setPassword(user.getPassword());
+        simpleUser.setRoles(UserImpl.convertAuthorityList(user.getAuthorities()));
+        entityManager.merge(simpleUser);
     }
 
     @Override
     public void deleteUser(String username) {
-        if (!userNameExists(username)) {
-            throw new UserNotFoundException("User with username: " + username + " does not exists");
+        UserImpl user = entityManager.find(UserImpl.class, username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User with username: " + username + " does not exists");
         }
-        UserDetails toBeDeleted = new User(username);
-        try {
-            persistence.delete(toBeDeleted);
-        } catch (PersistenceException e) {
-            throw new UserManagementException(e);
-        }
-    }
-
-    private boolean userNameExists(String username) {
-        List<User> list = persistence.query(new User(username));
-        return list.size() > 0;
-    }
-
-
-    @Override
-    public User loadUserByUsername(String username) {
-        List<User> list = persistence.query(new User(username));
-        if (list.size() > 0) {
-            return list.get(0);
-        } else {
-            throw new UserNotFoundException("user with name: " + username + " does not exist");
-        }
+        entityManager.remove(user);
     }
 
     @Override
-    public List<User> getAllUser() {
-        return persistence.query(new User(null));
-    }
-
-    public void setPersistenceManager(PersistenceManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    public void init() {
-        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-        try {
-            loadUserByUsername(null);
-        } catch (UserNotFoundException ex) {
-            //create dummy admin user
-            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-            createUser(new User("admin", "password", auth));
-
-            List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-            userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            createUser(new User("user", "password", userAuth));
+    public UserDetails loadUserByUsername(String username) {
+        UserImpl user = entityManager.find(UserImpl.class, username);
+        if (user == null) {
+            throw new UsernameNotFoundException("user with name: " + username + " does not exist");
         }
+        return user.toSpringUser();
     }
 
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+        // not implemented since we don't use the usermanager that way.
+        // rethink this after OPENENGSB-200 is fixed
+        throw new UnsupportedOperationException("Not implemented, use updateUser()");
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        return entityManager.find(UserImpl.class, username) != null;
+    }
+
+    @Override
+    public List<String> getUsernameList() {
+        TypedQuery<String> createQuery = entityManager.createQuery("SELECT u.username FROM UserImpl u", String.class);
+        return createQuery.getResultList();
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

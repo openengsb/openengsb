@@ -19,39 +19,10 @@ package org.openengsb.core.api.security;
 
 import java.util.List;
 
-import org.openengsb.core.api.security.model.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.UserDetailsManager;
 
-public interface UserManager extends UserDetailsService {
+public interface UserManager extends UserDetailsManager {
 
-    /**
-     * create a user and save it to the persistence,
-     * @throws UserManagementException if a persistence error occurred
-     */
-    void createUser(User user);
-
-    /**
-     * update the specified user in the persistence,
-     * the user is identified by its name, so the name can not be changed
-     * @throws UserManagementException if a persistence error occurred
-     */
-    void updateUser(User user);
-
-    /**
-     * delete a user, specified by its username from the persistence
-     * @throws UserManagementException if a persistence error occurred
-     */
-    void deleteUser(String username);
-
-    /**
-     * get one single user from the persistence,
-     */
-    User loadUserByUsername(String username);
-
-    /**
-     * returns a list of all existing users
-     * @throws UserManagementException if a persistence error occurred
-     */
-    List<User> getAllUser();
+    List<String> getUsernameList();
 
 }
