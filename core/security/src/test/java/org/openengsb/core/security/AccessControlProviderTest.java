@@ -30,6 +30,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.CompositeConnectorStrategy;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
@@ -87,8 +88,7 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         ConnectorInstanceFactory factory = new CompositeConnectorProvider().createFactory(provider);
         accessControl = (AuthorizationDomain) factory.createNewInstance("authProvider");
 
-        factory.applyAttributes(accessControl, attributes);
-
+        factory.applyAttributes((Connector) accessControl, attributes);
     }
 
     @Test

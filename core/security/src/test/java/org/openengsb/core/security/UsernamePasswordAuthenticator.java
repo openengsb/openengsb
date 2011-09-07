@@ -20,13 +20,13 @@ import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.model.Authentication;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
 import com.google.common.base.Preconditions;
 
-public class UsernamePasswordAuthenticator extends AbstractOpenEngSBService implements AuthenticationDomain {
+public class UsernamePasswordAuthenticator extends AbstractOpenEngSBConnectorService implements AuthenticationDomain {
 
     private UserDataManager userManager;
 

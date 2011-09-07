@@ -19,7 +19,7 @@ package org.openengsb.connector.usernamepasswordauthenticator.internal;
 
 import java.util.Map;
 
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 
@@ -36,7 +36,7 @@ public class UsernamePasswordAuthenticatorServiceInstanceFactory extends Abstrac
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    public Connector createNewInstance(String id) {
         UsernamePasswordAuthenticatorServiceImpl service = new UsernamePasswordAuthenticatorServiceImpl();
         return service;
     }

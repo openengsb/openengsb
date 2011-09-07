@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.CompositeConnectorStrategy;
+import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -42,8 +43,8 @@ import org.osgi.framework.BundleContext;
 
 public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
-    private AuthenticationDomain passwordAuthenticator;
-    private AuthenticationDomain onetimeAuthenticator;
+    private UsernamePasswordAuthenticator passwordAuthenticator;
+    private OnetimePasswordAuthenticator onetimeAuthenticator;
     private AuthenticationDomain authManager;
 
     @Before
@@ -81,7 +82,7 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         attributes.put("compositeStrategy", "authManagerStrategy");
         attributes.put("queryString", "(location.foo=authenticator/*)");
 
-        factory.applyAttributes(authManager, attributes);
+        factory.applyAttributes((Connector) authManager, attributes);
     }
 
     @Test

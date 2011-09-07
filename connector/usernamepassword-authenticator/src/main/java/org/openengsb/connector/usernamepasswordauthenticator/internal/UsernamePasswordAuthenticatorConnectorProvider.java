@@ -23,14 +23,12 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
 
-import org.openengsb.domain.authentication.AuthenticationDomain;
-
 public class UsernamePasswordAuthenticatorConnectorProvider extends AbstractConnectorProvider {
 
     @Override
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
-        builder.id(this.id);
+        builder.id(id);
         builder.name("UsernamePasswordAuthenticator.name").description("UsernamePasswordAuthenticator.description");
         builder.attribute(builder.newAttribute().id("attr").name("UsernamePasswordAuthenticator.attr")
                 .description("UsernamePasswordAuthenticator.attr.description").defaultValue("${connectorName.atr.defaultValue}")
@@ -39,10 +37,10 @@ public class UsernamePasswordAuthenticatorConnectorProvider extends AbstractConn
         return builder.build();
     }
 
-   private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
-            String descriptionId) {
-    return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
-            .build();
-
-    }
+    // private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
+    // String descriptionId) {
+    // return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
+    // .build();
+    //
+    // }
 }

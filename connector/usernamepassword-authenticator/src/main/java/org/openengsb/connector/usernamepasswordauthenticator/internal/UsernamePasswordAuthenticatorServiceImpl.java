@@ -17,15 +17,14 @@
 
 package org.openengsb.connector.usernamepasswordauthenticator.internal;
 
-import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.api.AliveState;
-
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
-public class UsernamePasswordAuthenticatorServiceImpl extends AbstractOpenEngSBService implements AuthenticationDomain {
+public class UsernamePasswordAuthenticatorServiceImpl extends AbstractOpenEngSBConnectorService implements
+        AuthenticationDomain {
 
     private String attr;
 
@@ -56,5 +55,29 @@ public class UsernamePasswordAuthenticatorServiceImpl extends AbstractOpenEngSBS
     public boolean supports(Object credentials) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void setDomainId(String domainId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getDomainId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setConnectorId(String connectorId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getConnectorId() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
