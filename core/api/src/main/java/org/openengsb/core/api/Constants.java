@@ -51,7 +51,7 @@ public final class Constants {
     public static final String CONFIG_RULE_IMPORT = "IMPORT";
 
     /**
-     * represents the id of the ConfigPersistenceService the RuleManager uses for ImportDeclarations.
+     * represents the id of the ConfigPersistenceService the RuleManager uses for RuleBaseElements.
      */
     public static final String CONFIG_RULE_RULEBASE = "RULEBASE";
 

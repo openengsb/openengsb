@@ -21,7 +21,8 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -34,20 +35,17 @@ public abstract class AbstractRuleManagerTest {
     protected StatefulKnowledgeSession session;
     protected RuleListener listener;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        PersistenceTestUtil.cleanup();
-    }
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
-        ruleManager = PersistenceTestUtil.getRuleManager();
+        ruleManager = PersistenceTestUtil.getRuleManager(tempFolder);
         rulebase = ruleManager.getRulebase();
     }
 
     @After
     public void tearDown() throws Exception {
-        PersistenceTestUtil.cleanup();
         if (session != null) {
             session.dispose();
         }

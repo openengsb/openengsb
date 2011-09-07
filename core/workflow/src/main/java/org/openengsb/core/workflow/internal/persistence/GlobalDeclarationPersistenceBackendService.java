@@ -63,8 +63,8 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
                 ret = loadAllGlobals();
             }
         } else {
-            LOGGER.debug(String.format(
-                "Can't load configuration, because %s doesn't exist. Returning default empty list!", storageFile));
+            LOGGER.debug(
+                "Can't load configuration, because \"{}\" doesn't exist. Returning default empty list!", storageFile);
             ret = new ArrayList<ConfigItem<GlobalDeclaration>>();
         }
         return ret;
@@ -74,7 +74,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     @Override
     public void persist(ConfigItem<GlobalDeclaration> config) throws PersistenceException,
         InvalidConfigurationException {
-        LOGGER.debug(String.format("persisting global %s", config.getContent().getVariableName()));
+        LOGGER.debug("persisting global \"{}\"", config.getContent().getVariableName());
         Preconditions.checkArgument(supports((Class<? extends ConfigItem<?>>) config.getClass()),
             "Argument type not supported");
 
@@ -93,8 +93,8 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
         Map<String, String> globals = readStorageFile();
         String variableName = metadata.remove(metadata.get(GlobalDeclaration.META_GLOBAL_VARIABLE));
         if (!globals.containsKey(variableName)) {
-            LOGGER.warn(String.format("Couldn't remove global %s, because it does not exist in %s", variableName,
-                storageFile));
+            LOGGER.warn("Couldn't remove global \"{}\", because it does not exist in \"{}\"", variableName,
+                storageFile);
         } else {
             globals.remove(variableName);
             writeStorageFile(globals);
@@ -107,7 +107,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private Map<String, String> readStorageFile() throws PersistenceException {
-        LOGGER.debug("try to read " + storageFile);
+        LOGGER.debug("try to read \"{}\"", storageFile);
         Map<String, String> ret = new HashMap<String, String>();
         List<String> lines;
 
@@ -115,7 +115,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
             try {
                 lines = FileUtils.readLines(storageFile);
             } catch (IOException e) {
-                LOGGER.error(String.format("Error reading " + storageFile));
+                LOGGER.error("Error reading \"{}\"", storageFile);
                 throw new PersistenceException(e);
             }
             for (String line : lines) {
@@ -129,7 +129,7 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private List<ConfigItem<GlobalDeclaration>> loadSingleGlobal(String variableName) throws PersistenceException {
-        LOGGER.debug("Load single global " + variableName);
+        LOGGER.debug("Load single global \"{}\"", variableName);
         List<ConfigItem<GlobalDeclaration>> ret = new ArrayList<ConfigItem<GlobalDeclaration>>();
         Map<String, String> globals = readStorageFile();
 
@@ -156,13 +156,13 @@ public class GlobalDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private void writeStorageFile(Map<String, String> globals) throws PersistenceException {
-        LOGGER.debug(String.format("write globals to %s", storageFile));
+        LOGGER.debug("write globals to \"{}\"", storageFile);
         OutputStream os = null;
         try {
             os = FileUtils.openOutputStream(storageFile);
             for (Entry<String, String> entry : globals.entrySet()) {
                 IOUtils.write(
-                    String.format("%s%s%s%s", entry.getValue(), SEPARATOR, entry.getKey(), IOUtils.LINE_SEPARATOR), os);
+                    entry.getValue() + SEPARATOR + entry.getKey() + IOUtils.LINE_SEPARATOR, os);
             }
         } catch (IOException ex) {
             throw new PersistenceException(ex);

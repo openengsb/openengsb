@@ -64,7 +64,7 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
     @SuppressWarnings("unchecked")
     @Override
     public void persist(ConfigItem<RuleBaseElement> config) throws PersistenceException, InvalidConfigurationException {
-        LOGGER.debug(String.format("persisting  %s", config.getContent().getType().toString()));
+        LOGGER.debug("persisting \"{}\"", config.getContent().getType().toString());
 
         Map<String, String> metaData = config.getMetaData();
 
@@ -98,12 +98,12 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
             throw new PersistenceException(e);
         }
 
-        String filename = String.format("%s%s%s%s%s", type, SEPARATOR, name, SEPARATOR, pack);
+        String filename = type + SEPARATOR + name + SEPARATOR + pack;
         return new File(storageFolder, filename);
     }
 
     private ConfigItem<RuleBaseElement> readConfigFile(File file) throws PersistenceException {
-        LOGGER.debug(String.format("reading configfile %s", file));
+        LOGGER.debug("reading configfile \"{}\"", file);
         String[] parts = file.getName().split(SEPARATOR);
 
         RuleBaseElement element = new RuleBaseElement();
@@ -130,7 +130,7 @@ public class RuleBaseElementPersistenceBackendService implements ConfigPersisten
 
         for (File file : files) {
             if (!file.delete()) {
-                LOGGER.warn(String.format("%s couldn't be deleted!", file));
+                LOGGER.warn("\"{}\" couldn't be deleted!", file);
             }
         }
     }

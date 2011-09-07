@@ -38,7 +38,7 @@
       configuration.id=RULE
     </config>
 	<config name="org.openengsb.persistence.config-rulebase">
-      backend.id=persistenceService
+      backend.id=rule-persistence
       configuration.id=RULEBASE
     </config>
 	<config name="org.openengsb.persistence.config-global">

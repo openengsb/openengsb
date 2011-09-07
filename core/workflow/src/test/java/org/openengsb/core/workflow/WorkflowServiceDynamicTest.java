@@ -25,9 +25,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -43,6 +44,9 @@ import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private Event sampleEvent = new Event("42");
 
@@ -83,11 +87,6 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
     private void mockDomain(String name) throws RuleBaseException {
         manager.removeGlobal(name);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        PersistenceTestUtil.cleanup();
     }
 
     @Test
@@ -149,7 +148,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
+        manager = PersistenceTestUtil.getRuleManager(tempFolder);
         mockDomain("deploy");
         mockDomain("build");
         mockDomain("test");

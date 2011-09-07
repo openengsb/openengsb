@@ -131,7 +131,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
-        assertThat(latch.await(20, TimeUnit.SECONDS), is(true));
+        assertThat(latch.await(60, TimeUnit.SECONDS), is(true));
 
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
@@ -153,7 +153,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
 
-        assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
+        assertThat(latch.await(60, TimeUnit.SECONDS), is(true));
 
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);

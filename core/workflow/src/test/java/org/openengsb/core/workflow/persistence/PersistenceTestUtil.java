@@ -17,10 +17,7 @@
 
 package org.openengsb.core.workflow.persistence;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -36,21 +33,21 @@ public final class PersistenceTestUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTestUtil.class);
 
-    public static RuleManager getRuleManager() {
+    public static RuleManager getRuleManager(TemporaryFolder tempFolder) throws Exception {
         PersistenceRuleManager manager = new PersistenceRuleManager();
 
         GlobalDeclarationPersistenceBackendService globalBackend = new GlobalDeclarationPersistenceBackendService();
-        globalBackend.setStorageFilePath("target/test/globals");
+        globalBackend.setStorageFilePath(tempFolder.newFile("globals").getPath());
         ConfigPersistenceService globalService = new DefaultConfigPersistenceService(globalBackend);
         manager.setGlobalPersistence(globalService);
 
         ImportDeclarationPersistenceBackendService importBackend = new ImportDeclarationPersistenceBackendService();
-        importBackend.setStorageFilePath("target/test/imports");
+        importBackend.setStorageFilePath(tempFolder.newFile("imports").getPath());
         ConfigPersistenceService importService = new DefaultConfigPersistenceService(importBackend);
         manager.setImportPersistence(importService);
 
         RuleBaseElementPersistenceBackendService ruleBackend = new RuleBaseElementPersistenceBackendService();
-        ruleBackend.setStorageFolderPath("target/test/flows/");
+        ruleBackend.setStorageFolderPath(tempFolder.newFolder("flows").getPath());
         try {
             ruleBackend.init();
         } catch (PersistenceException e) {
@@ -61,12 +58,6 @@ public final class PersistenceTestUtil {
 
         manager.init();
         return manager;
-    }
-
-    public static void cleanup() throws IOException {
-        FileUtils.deleteQuietly(new File("target/test/globals"));
-        FileUtils.deleteQuietly(new File("target/test/imports"));
-        FileUtils.deleteQuietly(new File("target/test/flows/"));
     }
 
     private PersistenceTestUtil() {

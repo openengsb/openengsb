@@ -52,8 +52,8 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
                 ret = loadSingleImport(metadata.get(ImportDeclaration.META_IMPORT_CLASS));
             }
         } else {
-            LOGGER.debug(String.format(
-                "Can't load configuration, because %s doesn't exist. Returning default empty list!", storageFile));
+            LOGGER.debug(
+                "Can't load configuration, because \"{}\" doesn't exist. Returning default empty list!", storageFile);
             ret = new ArrayList<ConfigItem<ImportDeclaration>>();
         }
         return ret;
@@ -63,7 +63,7 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
     @Override
     public void persist(ConfigItem<ImportDeclaration> config) throws PersistenceException,
         InvalidConfigurationException {
-        LOGGER.debug(String.format("persisting import  %s", config.getContent().getClassName()));
+        LOGGER.debug("persisting import \"{}\"", config.getContent().getClassName());
         Preconditions.checkArgument(supports((Class<? extends ConfigItem<?>>) config.getClass()),
             "Argument type not supported");
         List<String> imports = readStorageFile();
@@ -90,13 +90,13 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private List<String> readStorageFile() throws PersistenceException {
-        LOGGER.debug("try to read " + storageFile);
+        LOGGER.debug("try to read \"{}\"", storageFile);
 
         if (storageFile.exists()) {
             try {
                 return FileUtils.readLines(storageFile);
             } catch (IOException e) {
-                LOGGER.error(String.format("Error reading " + storageFile));
+                LOGGER.error("Error reading \"{}\"", storageFile);
                 throw new PersistenceException(e);
             }
         }
@@ -104,7 +104,7 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private List<ConfigItem<ImportDeclaration>> loadSingleImport(String clazz) throws PersistenceException {
-        LOGGER.debug("Load single import " + clazz);
+        LOGGER.debug("Load single import \"{}\"", clazz);
         List<ConfigItem<ImportDeclaration>> ret = new ArrayList<ConfigItem<ImportDeclaration>>();
         List<String> imports = readStorageFile();
 
@@ -130,7 +130,7 @@ public class ImportDeclarationPersistenceBackendService implements ConfigPersist
     }
 
     private void writeStorageFile(List<String> imports) throws PersistenceException {
-        LOGGER.debug(String.format("write imports to %s", storageFile));
+        LOGGER.debug("write imports to \"{}\"", storageFile);
         try {
             FileUtils.writeLines(storageFile, imports);
         } catch (IOException e) {
