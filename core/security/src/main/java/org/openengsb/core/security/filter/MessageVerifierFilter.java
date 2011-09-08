@@ -38,9 +38,9 @@ import com.google.common.collect.MapMaker;
 /**
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
  * verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -53,6 +53,8 @@ import com.google.common.collect.MapMaker;
 public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequest, SecureResponse> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageVerifierFilter.class);
+
+    private static final String DISABLE_VERIFICATION = "org.openengsb.security.noverify";
 
     private FilterAction next;
 
@@ -87,6 +89,9 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     }
 
     private void verify(SecureRequest request) throws MessageVerificationFailedException {
+        if (Boolean.getBoolean(DISABLE_VERIFICATION)) {
+            return;
+        }
         LOGGER.trace("checking age of message");
         checkOverallAgeOfRequest(request);
         LOGGER.trace("checking for replay");
