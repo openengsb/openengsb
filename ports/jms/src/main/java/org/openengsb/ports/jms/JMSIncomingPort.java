@@ -38,6 +38,8 @@ public class JMSIncomingPort {
 
     private static final String RECEIVE = "receive";
 
+    private static final String DISABLE_ENCRYPTION = "org.openengsb.jms.noencrypt";
+
     private JMSTemplateFactory factory;
 
     private ConnectionFactory connectionFactory;
@@ -45,6 +47,11 @@ public class JMSIncomingPort {
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
     private FilterChain filterChain;
+
+    /*
+     * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
+     */
+    private FilterChain unsecureFilterChain;
 
     public void start() {
         simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
@@ -64,7 +71,7 @@ public class JMSIncomingPort {
                     String result;
                     try {
                         LOGGER.debug("starting filterchain for incoming message");
-                        result = (String) filterChain.filter(textContent, metadata);
+                        result = (String) getFilterChainToUse().filter(textContent, metadata);
                     } catch (Exception e) {
                         LOGGER.error("an error occured when processing the filterchain", e);
                         String callId = (String) metadata.get("callId");
@@ -82,6 +89,7 @@ public class JMSIncomingPort {
                     }
                 }
             }
+
         });
         simpleMessageListenerContainer.start();
     }
@@ -100,6 +108,16 @@ public class JMSIncomingPort {
         }
     }
 
+    /*
+     * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
+     */
+    private FilterChain getFilterChainToUse() {
+        if (Boolean.getBoolean(DISABLE_ENCRYPTION)) {
+            return unsecureFilterChain;
+        }
+        return filterChain;
+    }
+
     public void setFactory(JMSTemplateFactory factory) {
         this.factory = factory;
     }
@@ -110,6 +128,10 @@ public class JMSIncomingPort {
 
     public void setFilterChain(FilterChain filterChain) {
         this.filterChain = filterChain;
+    }
+
+    public void setUnsecureFilterChain(FilterChain unsecureFilterChain) {
+        this.unsecureFilterChain = unsecureFilterChain;
     }
 
 }
