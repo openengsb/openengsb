@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.context.ContextCurrentService;
@@ -62,13 +60,11 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
     private WorkflowService workflowService;
     private RuleManager ruleManager;
 
-    @Before
+    //@Before
     public void setUp() throws Exception {
-        super.beforeClass();
         // FIXME OPENENGSB-1680
         // The setup method of the superclass should be called but isn't (most likely a pax exam bug),
         // so let's call it manually
-        super.before();
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {
@@ -80,13 +76,14 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
         taskboxService = getOsgiService(TaskboxService.class);
     }
 
-    @After
+    //@After
     public void tearDown() throws Exception {
         webClient.closeAllWindows();
     }
 
     @Test
     public void testIfTaskOverviewInteractionWorks() throws Exception {
+        setUp();
         addWorkflow();
         loginAsAdmin();
 
@@ -130,7 +127,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
                 taskTwoRow = table.getRow(3);
                 isRight =
                     taskOneRow.asText().contains("step2") && taskOneRow.asText().contains("taskdescription")
-                            && taskTwoRow.asText().contains("step1") && (table.getRowCount() == 4);
+                            && taskTwoRow.asText().contains("step1") && table.getRowCount() == 4;
                 if (!isRight) {
                     Thread.sleep(3000);
                 }
@@ -157,7 +154,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
                 table = taskOverviewPage.getFirstByXPath("//table");
                 taskOneRow = table.getRow(2);
                 isRight =
-                    taskOneRow.asText().contains("step1") && (table.getRowCount() == 3);
+                    taskOneRow.asText().contains("step1") && table.getRowCount() == 3;
                 if (!isRight) {
                     Thread.sleep(3000);
                 }
@@ -171,6 +168,7 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
 
         assertEquals(rowTwoText, taskOneRow.asText());
         assertEquals(1, taskboxService.getOpenTasks().size());
+        tearDown();
     }
 
     private void addWorkflow() throws IOException, RuleBaseException {

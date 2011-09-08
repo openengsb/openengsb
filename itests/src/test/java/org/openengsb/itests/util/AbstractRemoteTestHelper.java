@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
@@ -32,13 +31,6 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementType;
  * Abstracts the general concepts required for remote tests
  */
 public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
-
-    protected RuleManager ruleManager;
-
-    @Before
-    public void setUp() throws Exception {
-        ruleManager = getOsgiService(RuleManager.class);
-    }
 
     protected String getRequest(String messageId) {
         return ""
@@ -110,6 +102,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
     }
 
     protected void addWorkflow(String workflow) throws IOException, RuleBaseException {
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
         if (ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, workflow)) == null) {
             InputStream is =
                 getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + workflow + ".rf");

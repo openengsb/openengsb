@@ -38,7 +38,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -55,11 +54,11 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        super.beforeClass();
-        // FIXME OPENENGSB-1680
-        // The setup method of the superclass should be called but isn't (most likely a pax exam bug),
-        // so let's call it manually
-        super.before();
+//        super.beforeClass();
+//        // FIXME OPENENGSB-1680
+//        // The setup method of the superclass should be called but isn't (most likely a pax exam bug),
+//        // so let's call it manually
+//        super.before();
 
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains("it-taskbox")) {
@@ -72,8 +71,8 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws WorkflowException, IOException,
-        RuleBaseException {
+    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws Exception {
+        setUp();
         addWorkflow("TaskDemoWorkflow");
 
         ProcessBag processBag = new ProcessBag();
@@ -102,7 +101,8 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException, IOException, RuleBaseException {
+    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws Exception {
+        setUp();
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
@@ -119,7 +119,8 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException {
+    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws Exception {
+        setUp();
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
@@ -148,8 +149,8 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws WorkflowException, IOException,
-        RuleBaseException, InterruptedException {
+    public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws Exception {
+        setUp();
         addWorkflow("HIDemoWorkflow");
 
         workflowService.startFlow("HIDemoWorkflow");

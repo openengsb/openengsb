@@ -70,11 +70,13 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Test
     public void testCreateAndQuery() throws Exception {
+        setUp();
         PersistenceTestObject test = new PersistenceTestObject("test", 1);
         persistence.create(test);
         List<PersistenceTestObject> result = persistence.query(new PersistenceTestObject("test", null));
         assertThat(result.size(), is(1));
         assertThat(result.get(0), is(test));
+        tearDown();
     }
 
     @Test
@@ -122,6 +124,7 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Test
     public void testUpdateAndQuery() throws Exception {
+        setUp();
         element.setString("foo");
 
         persistence.update(persistence.query(wildcard).get(0), element);
@@ -129,13 +132,16 @@ public class PersistenceIT extends AbstractExamTestHelper {
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getString(), is("foo"));
+        tearDown();
     }
 
     @Test
     public void testDelete() throws Exception {
+        setUp();
         persistence.delete(element);
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.isEmpty(), is(true));
+        tearDown();
     }
 
 }

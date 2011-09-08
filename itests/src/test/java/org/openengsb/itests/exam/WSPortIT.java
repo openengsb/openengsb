@@ -21,14 +21,16 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.scanFeatures;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,28 +42,25 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
+import org.apache.karaf.features.FeaturesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.w3c.dom.Document;
 
 @RunWith(JUnit4TestRunner.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
-    @Configuration
-    public final Option[] configureWs() {
-        return options(scanFeatures(
-            maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                .versionAsInProject(), "openengsb-ports-ws"));
-    }
+    @Inject
+    private FeaturesService featuresService;
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
+        installPortsWsFeature();
+
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "ws-json", 60000);
         assertNotNull(serviceWithId);
@@ -69,6 +68,8 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
+        installPortsWsFeature();
+
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         DOMSource request = convertMessageToDomSource();
 
@@ -80,6 +81,8 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
+        installPortsWsFeature();
+
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         DOMSource request = convertAuditingRequestToDomSource();
 
@@ -90,10 +93,44 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         assertThat(message, not(containsString("Exception")));
     }
 
+    private void installPortsWsFeature() throws Exception {
+        if (!featuresService.isInstalled(featuresService.getFeature("openengsb-ports-ws"))) {
+            featuresService.installFeature("openengsb-ports-ws");
+            URL url;
+            InputStream is = null;
+            DataInputStream dis;
+            String line;
+            long counter = 0;
+            while (counter < 11) {
+                counter++;
+                Thread.sleep(1000);
+                try {
+                    url = new URL("http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl");
+                    is = url.openStream(); // throws an IOException
+                    dis = new DataInputStream(new BufferedInputStream(is));
+                    while ((line = dis.readLine()) != null) {
+                        return;
+                    }
+                } catch (Exception mue) {
+                    // nevermind...
+                } finally {
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (IOException ioe) {
+                        // nothing to see here
+                    }
+                }
+            }
+            throw new IllegalStateException("Webservices couldnt be installed correctly.");
+        }
+    }
+
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL("http://localhost:8091/ws/receiver/?wsdl"), serviceName);
+        Service service = Service.create(new URL("http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl"), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;

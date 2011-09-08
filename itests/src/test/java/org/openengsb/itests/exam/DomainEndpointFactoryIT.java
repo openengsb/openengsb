@@ -132,12 +132,6 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testServiceDoesNotExist() throws Exception {
-        assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class),
-            is(false));
-    }
-
-    @Test
     public void testServiceDoesExist() throws Exception {
         ExampleDomain service = new DummyService("test");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
@@ -149,4 +143,3 @@ public class DomainEndpointFactoryIT extends AbstractExamTestHelper {
         assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class), is(true));
     }
 }
-
