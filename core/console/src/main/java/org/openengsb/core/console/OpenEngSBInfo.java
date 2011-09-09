@@ -17,12 +17,8 @@
 
 package org.openengsb.core.console;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.commands.info.InfoProvider;
@@ -33,8 +29,6 @@ import org.osgi.framework.Bundle;
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
 public class OpenEngSBInfo extends OsgiCommandSupport {
 
-    private NumberFormat fmtI = new DecimalFormat("###,###", new DecimalFormatSymbols(Locale.ENGLISH));
-    private NumberFormat fmtD = new DecimalFormat("###,##0.000", new DecimalFormatSymbols(Locale.ENGLISH));
     private String versionNumber;
     private String nameAdjective;
     private String nameNoun;

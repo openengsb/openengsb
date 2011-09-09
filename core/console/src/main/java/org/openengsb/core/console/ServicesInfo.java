@@ -17,18 +17,8 @@
 
 package org.openengsb.core.console;
 
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.RuntimeMXBean;
-import java.lang.management.ThreadMXBean;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.commands.info.InfoProvider;
@@ -39,8 +29,6 @@ import org.osgi.framework.Bundle;
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
 public class ServicesInfo extends OsgiCommandSupport {
 
-    private NumberFormat fmtI = new DecimalFormat("###,###", new DecimalFormatSymbols(Locale.ENGLISH));
-    private NumberFormat fmtD = new DecimalFormat("###,##0.000", new DecimalFormatSymbols(Locale.ENGLISH));
     private String versionNumber;
     private String nameAdjective;
     private String nameNoun;
@@ -50,12 +38,6 @@ public class ServicesInfo extends OsgiCommandSupport {
 
     protected Object doExecute() throws Exception {
         int maxNameLen;
-
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-        ThreadMXBean threads = ManagementFactory.getThreadMXBean();
-        MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
-        ClassLoadingMXBean cl = ManagementFactory.getClassLoadingMXBean();
 
         maxNameLen = 25;
         //
