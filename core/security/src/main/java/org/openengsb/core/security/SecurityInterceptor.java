@@ -17,24 +17,42 @@
 
 package org.openengsb.core.security;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-public class SecurityInterceptor extends MethodSecurityInterceptor {
+public class SecurityInterceptor implements MethodInterceptor {
+
+    private AuthorizationDomain authorizer;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityInterceptor.class);
 
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
-        LOGGER.info("intercepting method {}", mi.getMethod());
+        LOGGER.debug("intercepting method {}", mi.getMethod());
         if (ArrayUtils.contains(Object.class.getMethods(), mi.getMethod())) {
             LOGGER.info("is Object-method; skipping");
             return mi.proceed();
         }
-        return super.invoke(mi);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Access decisionResult = authorizer.checkAccess(username, mi);
+        if (decisionResult != Access.GRANTED) {
+            LOGGER.warn("Access denied because resul was {}", decisionResult);
+            throw new AccessDeniedException();
+        }
+        LOGGER.debug("Access was granted");
+        return mi.proceed();
+    }
+
+    public void setAuthorizer(AuthorizationDomain authorizer) {
+        this.authorizer = authorizer;
     }
 
 }

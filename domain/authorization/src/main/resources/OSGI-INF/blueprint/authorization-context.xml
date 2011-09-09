@@ -19,11 +19,15 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
   <service interface="org.openengsb.core.api.DomainProvider">
+    <service-properties>
+      <entry key="domain" value="authorization" />
+    </service-properties>
     <bean class="org.openengsb.domain.authorization.AuthorizationDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
+      <property name="id" value="authorization" />
     </bean>
   </service>
 
@@ -41,12 +45,13 @@
 
   <bean id="domainEventsProxyFactory" class="org.openengsb.core.common.events.DomainEventsProxyFactoryBean">
     <property name="domainEventInterface">
-        <value>org.openengsb.domain.authorization.AuthorizationDomainEvents</value>
-      </property>
+      <value>org.openengsb.domain.authorization.AuthorizationDomainEvents</value>
+    </property>
     <property name="workflowService" ref="workflowService" />
+    <property name="edbService" ref="edbService" />
   </bean>
 
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
-
+  <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
 </blueprint>

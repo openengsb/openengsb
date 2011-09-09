@@ -27,7 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SecurityBundleActivator implements BundleActivator {
 
     private ExecutorService executor = Executors.newCachedThreadPool();
-    
+
     @Override
     public void start(BundleContext context) throws Exception {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);

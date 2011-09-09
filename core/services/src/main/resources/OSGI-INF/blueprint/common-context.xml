@@ -114,7 +114,7 @@
     <interfaces>
       <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.virtual.CompositeConnectorProvider">
+    <bean class="org.openengsb.core.common.virtual.CompositeConnectorProvider">
       <property name="id" value="composite-connector" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
@@ -124,7 +124,7 @@
     <service-properties>
       <entry key="composite.strategy.name" value="invoke-all-ignore-result" />
     </service-properties>
-    <bean class="org.openengsb.core.services.internal.virtual.InvokeAllIgnoreResultStrategy" />
+    <bean class="org.openengsb.core.common.virtual.InvokeAllIgnoreResultStrategy" />
   </service>
 
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">

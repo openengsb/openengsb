@@ -86,7 +86,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
         ConnectorFile configFile = oldConfigs.get(artifact);
-
+        configFile.update(artifact);
         Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
@@ -98,6 +98,9 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         try {
             serviceManager.create(configFile.getConnectorId(),
                 new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
+        } catch (Exception e) {
+            LOGGER.error("error creating connector", e);
+            throw e;
         } finally {
             logout();
         }

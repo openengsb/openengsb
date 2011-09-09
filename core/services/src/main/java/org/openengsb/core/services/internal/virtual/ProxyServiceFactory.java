@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.virtual;
+package org.openengsb.core.services.internal.virtual;
 
 import java.util.Collections;
 import java.util.Map;

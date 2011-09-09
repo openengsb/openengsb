@@ -1,0 +1,3 @@
+property.location.root=authentication-root
+attribute.queryString=(&(location.root=authentication/*)(objectClass=org.openengsb.domain.authentication.AuthenticationDomain))
+attribute.compositeStrategy=authentication.provider

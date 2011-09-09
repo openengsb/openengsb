@@ -22,18 +22,18 @@ import java.util.List;
 import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractDelegateStrategy;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AccessControlDecisionStrategy extends AbstractDelegateStrategy {
+public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrategy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessControlDecisionStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AffirmativeBasedAuthorizationStrategy.class);
 
-    private static class CompositeAccessControlProvider extends AbstractOpenEngSBService
+    private static class CompositeAccessControlProvider extends AbstractOpenEngSBConnectorService
             implements AuthorizationDomain {
         private List<ServiceReference> providers;
 

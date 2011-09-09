@@ -26,19 +26,18 @@
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
-  <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
+<!--   <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" /> -->
 
-  <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-    <property name="userDetailsService" ref="userManager" />
-  </bean>
-  <service interface="org.springframework.security.authentication.AuthenticationProvider" ref="userAuthenticationProvider" />
+<!--   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"> -->
+<!--     <property name="userDetailsService" ref="userManager" /> -->
+<!--   </bean> -->
+<!--   <service interface="org.springframework.security.authentication.AuthenticationProvider" ref="userAuthenticationProvider" /> -->
 
   <bean id="bundleAuthenticationProvider" class="org.openengsb.core.security.internal.SystemUserAuthenticationProvider" />
 
   <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
     <property name="providers">
       <list>
-        <ref component-id="userAuthenticationProvider" />
         <ref component-id="bundleAuthenticationProvider" />
       </list>
     </property>
@@ -47,22 +46,25 @@
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
     <bean class="org.openengsb.core.security.SecurityInterceptor">
-      <property name="securityMetadataSource">
-        <bean class="org.openengsb.core.security.internal.MetadataSource" />
-      </property>
-      <property name="rejectPublicInvocations" value="true" />
-      <property name="authenticationManager" ref="authenticationManager" />
-      <property name="accessDecisionManager">
-        <bean class="org.springframework.security.access.vote.AffirmativeBased">
-          <property name="decisionVoters">
-            <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" />
-              <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
-            </list>
-          </property>
-        </bean>
-      </property>
+      <property name="authorizer" ref="authorizer" />
     </bean>
   </service>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authorization.affirmativebased" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.AffirmativeBasedAuthorizationStrategy" />
+  </service>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authentication.provider" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.AuthenticationProviderStrategy" />
+  </service>
+
+  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=root-authorizer)"
+    activation="lazy" />
 
 </blueprint>

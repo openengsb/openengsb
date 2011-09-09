@@ -22,7 +22,7 @@ import java.util.List;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractDelegateStrategy;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
@@ -37,7 +37,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationProviderStrategy.class);
 
-    private static class CompositeAuthenticationProvider extends AbstractOpenEngSBService implements
+    private static class CompositeAuthenticationProvider extends AbstractOpenEngSBConnectorService implements
             AuthenticationDomain {
         private List<ServiceReference> providers;
 

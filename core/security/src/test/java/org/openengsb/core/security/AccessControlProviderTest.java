@@ -74,7 +74,7 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         when(servicePermissionAccessConnector.checkAccess(anyString(), any(MethodInvocation.class))).thenReturn(
             Access.ABSTAINED);
         registerServiceAtLocation(servicePermissionAccessConnector, "access/service", AuthorizationDomain.class);
-        CompositeConnectorStrategy strategy = new AccessControlDecisionStrategy();
+        CompositeConnectorStrategy strategy = new AffirmativeBasedAuthorizationStrategy();
 
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("composite.strategy.name", "accessControlStrategy");
