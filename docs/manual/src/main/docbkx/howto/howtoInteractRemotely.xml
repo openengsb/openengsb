@@ -71,10 +71,45 @@
           <caption>Create Proxy</caption>
         </mediaobject>
         <para>After saving the proxy you should be able to test it via the TestClient page. Following is an example of
-          a call:</para>
-        <code>{"classes":["java.lang.String", "java.lang.Integer","org.openengsb.core.ports.jms.JMSPortTest$TestClass"], 
-          "methodName":"method","args":["123",5,{"test":"test"}], "metaData":{"test":"test"}}
-        </code>
+                    an unsecure call:</para>
+                <programlisting><![CDATA[{
+  "authenticationData": {
+    "className":"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo",
+    "data": {
+      "username":"admin",
+      "password":"password"
+    }
+  },
+  "timestamp":42,
+  "message": {
+    "callId":"xyz",
+    "answer":true,
+    "methodCall": {
+      "classes": [
+        "java.lang.String",
+        "org.openengsb.core.api.workflow.model.ProcessBag"
+      ],
+      "methodName": "executeWorkflow",
+      "metaData": {
+        "serviceFilter": "(objectClass=org.openengsb.core.api.workflow.WorkflowService)",
+        "contextId": "foo"
+      },
+      "args": [
+        "simpleFlow",
+        {
+        }
+      ]
+    }
+  }
+}]]></programlisting>
+        <para>
+          IF you would like to use security instead you should prefer the following call:
+          <programlisting><![CDATA[{
+{
+  "encryptedContent":"encodedMessage", // Base 64 and encryped string of the message above
+  "encryptedKey":"encodedKey" // The encoded key
+}]]></programlisting>
+        </para>
         <mediaobject>
           <imageobject>
             <imagedata id="call-proxy" fileref="graphics/call-proxy.png"
@@ -87,12 +122,15 @@
           return argument of the method, arg where you simply serialise the Return Object, so it can be deserialised into the correct 
           object later and className which gives the exact class that has to be used for deserialisation. The request contains a 
           parameter callId which is the name of the queue the answer has to be sent to.</para>
-        <code>{"type":"Object","className":"org.openengsb.core.ports.jms.JMSPortTest$TestClass",
-          "metaData":{"test":"test"},"arg":{"test":"test"}}</code>
+        <programlisting>{"type":"Object","className":"org.openengsb.core.ports.jms.JMSPortTest$TestClass",
+          "metaData":{"test":"test"},"arg":{"test":"test"}}</programlisting>
         <para>Whenever a call to this proxy is then made a new JMS message will be sent to the "receive" queue on the 
           destination you entered. The exact make up of the message was already described. When implementing an external connector
           it is best to test the call you want to receive first via the TestClient, so you get the exact message that you will
           have to work with.</para>
+        <para>Please always keep in mind security. By default security is turned on. If you want to turn it off please
+          take a look into the <code>etc/system.properties</code> file. While using no security for testing is very
+          interesting we would not advise you to send unencrypted messages in a production environment.</para>
       </section>
     </section>
 
