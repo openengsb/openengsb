@@ -57,6 +57,9 @@
     <property name="filterChain">
       <bean factory-ref="incomingFilterChainFactory" factory-method="create" />
     </property>
+    <property name="unsecureFilterChain">
+      <bean factory-ref="unsecureIncomingFilterChainFactory" factory-method="create" />
+    </property>
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -74,6 +77,17 @@
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
+        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="unsecureIncomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
+    <property name="inputType" value="java.lang.String" />
+    <property name="outputType" value="java.lang.String" />
+    <property name="filters">
+      <list>
+        <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
         <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
       </list>
     </property>

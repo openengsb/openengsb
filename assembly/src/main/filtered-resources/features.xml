@@ -176,7 +176,6 @@
       anything
       else automatically, but rather provides the infrastructure only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
     <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
@@ -203,7 +202,6 @@
     <details>
       This feature provides activemq support including the queue configurations for the OpenEngSB.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
     <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
   </feature>
@@ -218,7 +216,6 @@
       openwire=6549
       stomp=6550
     </config>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
   </feature>
@@ -229,7 +226,6 @@
       up
       and running. This provides only the base CXF environment but does not integrate it into the OpenEngSB.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.apache.ws.commons.axiom/axiom-api/${axiom.version}</bundle>
     <bundle>mvn:org.apache.ws.commons.axiom/axiom-impl/${axiom.version}</bundle>
     <bundle>mvn:org.apache.abdera/abdera-core/${abdera.version}</bundle>
@@ -264,7 +260,6 @@
       Based on the CXF infrastructure this feature integrates web services into the OpenEngSB Ports Remoting
       Infrastructure.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
     <bundle>mvn:org.openengsb.ports/openengsb-ports-ws/${project.version}</bundle>
   </feature>
@@ -274,7 +269,6 @@
       Based on the CXF infrastructure this feature integrates rest services into the OpenEngSB Ports Remoting
       Infrastructure.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
   </feature>
 
@@ -283,7 +277,6 @@
       The core implementation, providing visual references and other common UI utils are provided by this
       feature.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
     <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
   </feature>
@@ -294,7 +287,6 @@
       the
       OpenEngSB according to the needs of a project.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
@@ -305,7 +297,6 @@
     <details>
       This feature contains the general domain description of the OpenEngSB Auditing Domain.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
   </feature>
 
@@ -317,7 +308,7 @@
       by the
       OpenEngSB to run.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
+	<feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
   </feature>
@@ -329,7 +320,6 @@
       presentation
       only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
   </feature>
 
@@ -339,7 +329,6 @@
       either no
       need to use this connector in any production environment. It is really for presentation use only.
     </details>
-    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-example</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
   </feature>

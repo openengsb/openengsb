@@ -87,6 +87,7 @@ public class WorkflowEditor extends BasePage {
     @PaxWicketBean
     List<WorkflowValidator> validators;
 
+    @SuppressWarnings("unchecked")
     public WorkflowEditor() {
         createFeedbackPanel();
         try {
@@ -207,6 +208,8 @@ public class WorkflowEditor extends BasePage {
 
     private Form<Object> createRemoveWorkflowForm() {
         Form<Object> removeForm = new Form<Object>("workflowRemoveForm") {
+            private static final long serialVersionUID = 2916102299731955162L;
+
             @Override
             protected void onSubmit() {
                 try {

@@ -18,13 +18,10 @@
 package test;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.PublicKey;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.crypto.SecretKey;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -36,10 +33,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
@@ -49,11 +43,9 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.model.AuthenticationInfo;
-import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
-import org.openengsb.core.security.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +56,8 @@ import com.google.common.collect.ImmutableMap;
  * example+example+testlog.connector to the openengsb/config-directory + copy openengsb/etc/keys/public.key.data to
  * src/main/resources
  */
-public final class SecureSampleApp {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleApp.class);
+public final class AuthenticatingSampleApp {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticatingSampleApp.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -88,47 +80,23 @@ public final class SecureSampleApp {
     private static MethodResult call(MethodCall call, AuthenticationInfo authenticationInfo) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
-        SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
-        String requestString = marshalRequest(methodCallRequest, sessionKey, authenticationInfo);
+        String requestString = marshalSecureRequest(methodCallRequest, authenticationInfo);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());
-        return convertStringToResult(resultString, sessionKey);
+        return convertStringToResult(resultString);
     }
 
-    private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey,
-            AuthenticationInfo authenticationInfo) throws IOException, EncryptionException {
-        byte[] requestString = marshalSecureRequest(methodCallRequest, authenticationInfo);
-        EncryptedMessage encryptedMessage = encryptMessage(sessionKey, requestString);
-        return MAPPER.writeValueAsString(encryptedMessage);
-    }
-
-    private static EncryptedMessage encryptMessage(SecretKey sessionKey, byte[] requestString) throws IOException,
-        EncryptionException {
-        PublicKey publicKey = readPublicKey();
-        byte[] encryptedContent = CipherUtils.encrypt(requestString, sessionKey);
-        byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
-        EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
-        return encryptedMessage;
-    }
-
-    private static PublicKey readPublicKey() throws IOException {
-        InputStream publicKeyResource = ClassLoader.getSystemResourceAsStream("public.key.data");
-        byte[] publicKeyData = IOUtils.toByteArray(publicKeyResource);
-        PublicKey publicKey = CipherUtils.deserializePublicKey(publicKeyData, "RSA");
-        return publicKey;
-    }
-
-    private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
+    private static String marshalSecureRequest(MethodCallRequest methodCallRequest,
             AuthenticationInfo authenticationInfo)
         throws IOException, JsonGenerationException, JsonMappingException {
         BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
         SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
-        return MAPPER.writeValueAsBytes(secureRequest);
+        return MAPPER.writeValueAsString(secureRequest);
     }
 
-    private static MethodResult convertStringToResult(String resultString, SecretKey sessionKey) throws IOException,
+    private static MethodResult convertStringToResult(String resultString) throws IOException,
         ClassNotFoundException, DecryptionException {
-        SecureResponse resultMessage = decryptResponse(resultString, sessionKey);
+        SecureResponse resultMessage = MAPPER.readValue(resultString, SecureResponse.class);
         return convertResult(resultMessage);
     }
 
@@ -138,19 +106,6 @@ public final class SecureSampleApp {
         Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
         result.setArg(resultValue);
         return result;
-    }
-
-    private static SecureResponse decryptResponse(String resultString, SecretKey sessionKey)
-        throws DecryptionException, IOException, JsonParseException, JsonMappingException {
-        byte[] decryptedContent;
-        try {
-            decryptedContent = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
-        } catch (DecryptionException e) {
-            System.err.println(resultString);
-            throw e;
-        }
-        SecureResponse resultMessage = MAPPER.readValue(decryptedContent, SecureResponse.class);
-        return resultMessage;
     }
 
     private static void sendMessage(String requestString) throws JMSException {
@@ -207,6 +162,6 @@ public final class SecureSampleApp {
         stop();
     }
 
-    private SecureSampleApp() {
+    private AuthenticatingSampleApp() {
     }
 }
