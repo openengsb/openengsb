@@ -17,6 +17,7 @@
 
 package org.openengsb.core.services.internal;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,11 +26,15 @@ import java.util.Map;
 
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.remote.CustomJsonMarshaller;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+
+import com.google.common.base.Throwables;
 
 public class RequestHandlerImpl implements RequestHandler {
 
@@ -41,11 +46,47 @@ public class RequestHandlerImpl implements RequestHandler {
             ContextHolder.get().setCurrentContextId(contextId);
         }
         Object service = retrieveOpenEngSBService(call);
-        Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(call));
+        Object[] args = retrieveArguments(call, method);
         MethodResult methodResult = invokeMethod(service, method, args);
         methodResult.setMetaData(call.getMetaData());
         return methodResult;
+    }
+
+    private Object[] retrieveArguments(MethodCall call, Method method) {
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        Object[] originalArgs = call.getArgs();
+        for (int i = 0; i < originalArgs.length; i++) {
+            Annotation[] currentArgAnnotations = parameterAnnotations[i];
+            Class<? extends CustomJsonMarshaller<?>> transformationAnnotation =
+                searchForTransformationAnnotation(currentArgAnnotations);
+            if (transformationAnnotation == null) {
+                continue;
+            }
+            CustomJsonMarshaller<?> transformationInstance = createTransformationInstance(transformationAnnotation);
+            originalArgs[i] = transformationInstance.transformArg(originalArgs[i]);
+        }
+        return originalArgs;
+    }
+
+    private CustomJsonMarshaller<?> createTransformationInstance(
+            Class<? extends CustomJsonMarshaller<?>> transformationAnnotation) {
+        try {
+            return transformationAnnotation.newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException("It's not possible to create transformation because of "
+                    + Throwables.getStackTraceAsString(e));
+        }
+    }
+
+    private Class<? extends CustomJsonMarshaller<?>> searchForTransformationAnnotation(
+            Annotation[] currentArgAnnotations) {
+        for (Annotation annotation : currentArgAnnotations) {
+            if (annotation instanceof UseCustomJasonMarshaller) {
+                return ((UseCustomJasonMarshaller) annotation).value();
+            }
+        }
+        return null;
     }
 
     private Object retrieveOpenEngSBService(MethodCall call) {

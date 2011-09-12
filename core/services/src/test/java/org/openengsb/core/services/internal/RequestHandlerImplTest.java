@@ -33,14 +33,17 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.remote.CustomJsonMarshaller;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
@@ -52,6 +55,16 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         Integer test(Integer arg);
     }
 
+    public static class CustomMarshaller implements CustomJsonMarshaller<Integer> {
+
+        @Override
+        public Integer transformArg(Object arg) {
+            Preconditions.checkArgument(arg instanceof Integer);
+            return (Integer) arg + 1;
+        }
+
+    }
+
     @Before
     public void setup() throws Exception {
         requestHandler = new RequestHandlerImpl();
@@ -59,6 +72,12 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
 
     private TestInterface mockServiceWithProps(Map<String, Object> propData) {
         TestInterface mockService = mock(TestInterface.class);
+        Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
+        registerService(mockService, props, TestInterface.class);
+        return mockService;
+    }
+
+    private TestInterface registerServiceWithProps(TestInterface mockService, Map<String, Object> propData) {
         Dictionary<String, Object> props = new Hashtable<String, Object>(propData);
         registerService(mockService, props, TestInterface.class);
         return mockService;
@@ -107,6 +126,26 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
         verify(mockService).test(42);
         assertThat(result.getClassName(), is(Integer.class.getName()));
         assertThat((Integer) result.getArg(), is(21));
+    }
+
+    @Test
+    public void testCallByFilterAndServiceIdWithCustomMarshaller_shouldCallService() throws Exception {
+        Map<String, Object> propData =
+            ImmutableMap.of("testprop", (Object) new String[]{ "blub", "bleh", }, "id", "xxx");
+        TestInterface realObject = new TestInterface() {
+            @Override
+            public Integer test(@UseCustomJasonMarshaller(CustomMarshaller.class) Integer arg) {
+                return arg;
+            }
+        };
+        registerServiceWithProps(realObject, propData);
+
+        Map<String, String> metaData = ImmutableMap.of("serviceFilter", "(testprop=blub)", "serviceId", "xxx");
+        MethodCall c = new MethodCall("test", new Object[]{ 42 }, metaData);
+        MethodResult result = requestHandler.handleCall(c);
+
+        assertThat(result.getClassName(), is(Integer.class.getName()));
+        assertThat((Integer) result.getArg(), is(43));
     }
 
     @Test
