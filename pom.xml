@@ -58,7 +58,7 @@
     <github.base>https://github.com/openengsb/</github.base>
     <github.master.path>/tree/master/</github.master.path>
     <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
-    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot>
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
@@ -633,6 +633,11 @@
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>openengsb-domain-authentication</artifactId>
+        <version>1.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-usernamepassword</artifactId>
         <version>1.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>

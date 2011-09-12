@@ -18,33 +18,22 @@
 package org.openengsb.ui.admin;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.common.util.Users;
+import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
+import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.test.UserManagerStub;
 import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-import org.springframework.security.core.userdetails.User;
 
 public abstract class AbstractLoginTest extends AbstractUITest {
 
-    private UserManager userManager;
+    private UserDataManager userManager;
 
     @Before
-    public void setup() {
+    public void setupLogin() throws Exception {
         mockAuthentication();
         ApplicationLifecycleListener listener = mock(ApplicationLifecycleListener.class);
         tester = new WicketTester(new WicketApplication(listener) {
@@ -55,33 +44,15 @@ public abstract class AbstractLoginTest extends AbstractUITest {
         });
     }
 
-    private void mockAuthentication() {
-        ProviderManager authManager = new ProviderManager();
-        List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        userManager = mock(UserManager.class);
-        provider.setUserDetailsService(userManager);
-        providers.add(provider);
-        authManager.setProviders(providers);
+    private void mockAuthentication() throws UserNotFoundException {
+        userManager = new UserManagerStub();
+        userManager.createUser("test");
+        userManager.setUserCredentials("test", "password", "password");
 
-        final User user =
-            Users.create("test", "password", Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
-        when(userManager.loadUserByUsername("test")).thenAnswer(new Answer<User>() {
-            @Override
-            public User answer(InvocationOnMock invocationOnMock) {
-                return user;
-            }
-        });
-        ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-        final User admin = Users.create("admin", "password", grantedAuthorities);
-        when(userManager.loadUserByUsername("admin")).thenAnswer(new Answer<User>() {
-            @Override
-            public User answer(InvocationOnMock invocationOnMock) {
-                return admin;
-            }
-        });
-        context.putBean("authenticationManager", authManager);
+        userManager.createUser("admin");
+        userManager.setUserCredentials("admin", "password", "password");
+        UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
+        authConnector.setUserManager(userManager);
+        context.putBean("authenticationManager", authConnector);
     }
 }

@@ -22,6 +22,8 @@ import org.openengsb.core.api.security.model.Permission;
 
 public interface UserDataManager {
 
+    Collection<String> getUserList();
+
     void createUser(String username) throws UserExistsException;
 
     void deleteUser(String username) throws UserNotFoundException;

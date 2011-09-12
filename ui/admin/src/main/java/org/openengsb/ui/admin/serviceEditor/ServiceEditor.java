@@ -33,9 +33,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.validation.FormValidator;
+import org.openengsb.ui.common.SecurityAttribute;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
+@SecurityAttribute("SERVICE_EDITOR")
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
 

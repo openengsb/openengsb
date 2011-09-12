@@ -17,14 +17,13 @@
 
 package org.openengsb.domain.authorization;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.Domain;
 
 public interface AuthorizationDomain extends Domain {
 
     public enum Access {
-            GRANTED, DENIED, ABSTAINED,
+        GRANTED, DENIED, ABSTAINED,
     }
 
-    Access checkAccess(String user, MethodInvocation action);
+    Access checkAccess(String user, Object object);
 }

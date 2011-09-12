@@ -103,4 +103,9 @@ public class UserManagerStub implements UserDataManager {
 
     }
 
+    @Override
+    public Collection<String> getUserList() {
+        return credentialsData.keySet();
+    }
+
 }

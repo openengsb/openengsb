@@ -38,7 +38,8 @@ public class ServicePermissionAccessConnector extends AbstractOpenEngSBService i
     private UserDataManager userManager;
 
     @Override
-    public Access checkAccess(String user, final MethodInvocation action) {
+    public Access checkAccess(String user, Object object) {
+        final MethodInvocation action = (MethodInvocation) object;
         Collection<Permission> permissions;
         try {
             permissions = userManager.getUserPermissions(user, "service");

@@ -32,11 +32,13 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.ui.common.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SecurityAttribute("SERVICE_USER")
 @SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
 

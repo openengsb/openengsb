@@ -16,7 +16,6 @@
  */
 package org.openengsb.core.security;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
@@ -32,7 +31,7 @@ public class AdminAccessConnector extends AbstractOpenEngSBService implements Au
     private UserDataManager userManager;
 
     @Override
-    public Access checkAccess(String username, MethodInvocation action) {
+    public Access checkAccess(String username, Object action) {
         try {
             if (!userManager.getUserPermissions(username, "admin").isEmpty()) {
                 return Access.GRANTED;

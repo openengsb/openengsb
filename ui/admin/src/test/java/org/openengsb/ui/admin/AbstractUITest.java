@@ -17,12 +17,13 @@
 
 package org.openengsb.ui.admin;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.mockito.Mockito;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
@@ -59,6 +60,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected ConnectorManager serviceManager;
     protected ConnectorRegistrationManager registrationManager;
     protected WiringService wiringService;
+    protected ContextCurrentService contextCurrentService;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -66,7 +68,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context = new ApplicationContextMock();
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
-        context.putBean(Mockito.mock(ContextCurrentService.class));
+        contextCurrentService = mock(ContextCurrentService.class);
+        context.putBean(contextCurrentService);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean(OpenEngSBCoreServices.getWiringService());
         OsgiUtilsService serviceUtilsService =

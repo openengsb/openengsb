@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
@@ -46,6 +47,12 @@ public class UserDataManagerImpl implements UserDataManager {
     private EntityManager entityManager;
 
     public UserDataManagerImpl() {
+    }
+
+    @Override
+    public Collection<String> getUserList() {
+        TypedQuery<String> query = entityManager.createQuery("SELECT u.username from userdata u", String.class);
+        return query.getResultList();
     }
 
     @Override

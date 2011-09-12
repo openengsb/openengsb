@@ -19,7 +19,6 @@ package org.openengsb.core.security;
 import java.util.Iterator;
 import java.util.List;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
@@ -42,7 +41,7 @@ public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrat
         }
 
         @Override
-        public Access checkAccess(final String user, final MethodInvocation action) {
+        public Access checkAccess(final String user, Object action) {
             Iterator<AuthorizationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
                     AuthorizationDomain.class);

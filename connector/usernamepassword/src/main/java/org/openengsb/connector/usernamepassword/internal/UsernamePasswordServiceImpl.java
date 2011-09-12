@@ -17,34 +17,53 @@
 
 package org.openengsb.connector.usernamepassword.internal;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
+import org.openengsb.core.common.SpringSecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 
 public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorService implements
         AuthenticationDomain {
 
+    private UserDataManager userManager;
+
     public UsernamePasswordServiceImpl() {
     }
 
     @Override
     public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return null;
+        return AliveState.ONLINE;
     }
 
     @Override
     public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
-        // TODO Auto-generated method stub
-        return null;
+        String actualPassword;
+        try {
+            actualPassword = userManager.getUserCredentials(username, "password");
+        } catch (UserNotFoundException e) {
+            throw new AuthenticationException(e);
+        }
+        if (ObjectUtils.notEqual(credentials, actualPassword)) {
+            throw new AuthenticationException("wrong password");
+        }
+        Authentication authentication = new Authentication(username);
+        SpringSecurityContext.getInstance().setAuthentication(authentication);
+        return authentication;
+
     }
 
     @Override
     public boolean supports(Object credentials) {
-        // TODO Auto-generated method stub
-        return false;
+        return credentials instanceof String;
+    }
+
+    public void setUserManager(UserDataManager userManager) {
+        this.userManager = userManager;
     }
 
 }

@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openengsb.ui</groupId>
@@ -117,7 +118,8 @@
         <configuration>
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
-              org.drools.event; bundle-symbolic-name="org.drools.core",
+              org.drools.event;
+              bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
               org.springframework.security.web.authentication,
               org.springframework.security.authentication,
@@ -167,6 +169,16 @@
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-auditing</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-authentication</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-usernamepassword</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
