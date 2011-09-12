@@ -20,6 +20,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.math.NumberRange;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -34,13 +35,21 @@ public class OnetimePasswordAuthenticator extends AbstractOpenEngSBService imple
     @Override
     public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
         Integer code = (Integer) credentials;
-        Integer baseCode = (Integer) userManager.getUserCredentials(username, "basecode");
-        Integer counter = (Integer) userManager.getUserCredentials(username, "counter");
-        Integer expectedCode = (baseCode * counter) % MAXCODE;
-        if (ObjectUtils.notEqual(code, expectedCode)) {
-            throw new AuthenticationException("wrong auth-code");
+        String baseCodeString;
+        String counterString;
+        try {
+            baseCodeString = userManager.getUserCredentials(username, "onetime-basecode");
+            counterString = userManager.getUserCredentials(username, "onetime-counter");
+            Integer baseCode = Integer.parseInt(baseCodeString);
+            Integer counter = Integer.parseInt(counterString);
+            Integer expectedCode = (baseCode * counter) % MAXCODE;
+            if (ObjectUtils.notEqual(code, expectedCode)) {
+                throw new AuthenticationException("wrong auth-code");
+            }
+            userManager.setUserCredentials(username, "counter", Integer.toString(counter + 1));
+        } catch (UserNotFoundException e) {
+            throw new AuthenticationException(e);
         }
-        userManager.setUserCredentials(username, "counter", counter + 1);
         return new Authentication(username);
     }
 

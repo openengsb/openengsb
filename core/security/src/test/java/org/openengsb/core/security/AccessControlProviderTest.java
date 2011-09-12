@@ -37,6 +37,7 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
@@ -58,7 +59,8 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         UserDataManager userManager = new UserManagerStub();
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
-        userManager.storeUserPermission("admin", "admin", new HashMap<String, String>());
+        Permission permission = mock(Permission.class);
+        userManager.storeUserPermission("admin", permission);
 
         userManager.createUser("testuser");
         // ImmutableMap<String, String> permission =

@@ -17,115 +17,49 @@
 
 package org.openengsb.core.security;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.util.Users;
-import org.openengsb.core.security.internal.MetadataSource;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
-import org.springframework.security.access.method.MethodSecurityMetadataSource;
-import org.springframework.security.access.vote.AffirmativeBased;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     private static final String DEFAULT_USER = "foo";
-    private MethodSecurityInterceptor interceptor;
-    private ProviderManager authenticationManager;
+    private SecurityInterceptor interceptor;
     private DummyService service;
     private DummyService service2;
+    private AuthorizationDomain authorizer;
 
     @Before
     public void setUp() throws Exception {
-        authenticationManager = initAuthenticationManager();
-        interceptor = new MethodSecurityInterceptor();
-        MethodSecurityMetadataSource metadataSource = new MetadataSource();
-        interceptor.setSecurityMetadataSource(metadataSource);
-        interceptor.setRejectPublicInvocations(true);
-        interceptor.setAuthenticationManager(authenticationManager);
+        interceptor = new SecurityInterceptor();
+        authorizer = mock(AuthorizationDomain.class);
+        when(authorizer.checkAccess(eq("admin"), any(MethodInvocation.class))).thenReturn(Access.GRANTED);
 
-        final AffirmativeBased accessDecisionManager = new AffirmativeBased();
-        accessDecisionManager.setDecisionVoters(makeVoterList());
-        interceptor.setAccessDecisionManager(accessDecisionManager);
+        interceptor.setAuthorizer(authorizer);
+
         service = (DummyService) secure(new DummyServiceImpl("42"));
         service2 = (DummyService) secure(new DummyServiceImpl("21"));
-    }
-
-    private List<AccessDecisionVoter> makeVoterList() {
-        List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
-        result.add(makeVoter());
-        return result;
-    }
-
-    private AccessDecisionVoter makeVoter() {
-        AuthenticatedUserAccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
-        return voter;
-    }
-
-    private ProviderManager initAuthenticationManager() throws PersistenceException {
-        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
-
-        final UserDetailsService userDetailsService = createUserDetailsService();
-        p.setUserDetailsService(userDetailsService);
-
-        ProviderManager authenticationManager = new ProviderManager();
-        authenticationManager.setProviders(Arrays.asList(new Object[]{ p }));
-        return authenticationManager;
-    }
-
-    private UserDetailsService createUserDetailsService() throws PersistenceException {
-        UserDetailsService userDetailsService = mock(UserDetailsService.class);
-        UserDetails user =
-            Users.create(DEFAULT_USER, "password",
-                Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_USER")));
-        when(userDetailsService.loadUserByUsername(DEFAULT_USER)).thenReturn(user);
-
-        List<GrantedAuthority> adminAuthorities =
-            Arrays.asList((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN"));
-        User admin = Users.create("admin", "adminpw", adminAuthorities);
-        when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
-        return userDetailsService;
     }
 
     private Object secure(Object o) {
         ProxyFactory factory = new ProxyFactory(o);
         factory.addAdvice(interceptor);
         return factory.getProxy();
-    }
-
-    @Test
-    public void testAuthenticate() {
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
-        assertThat(authentication.isAuthenticated(), is(true));
-    }
-
-    @Test(expected = BadCredentialsException.class)
-    public void testFalseAuthenticate() {
-        authenticate(DEFAULT_USER, "wrong");
     }
 
     @Test(expected = AccessDeniedException.class)
@@ -141,16 +75,9 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
-    @Test
-    public void testAccessAnnotatedMethod() throws Exception {
-        authenticate(DEFAULT_USER, "password");
-        service2.publicTest();
-    }
-
     private void authenticate(String user, String password) {
         Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
+            new UsernamePasswordAuthenticationToken(user, password, new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
 }

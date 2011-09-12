@@ -28,6 +28,7 @@ import org.openengsb.core.security.model.UserImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+@Deprecated
 public class UserManagerImpl implements UserManager {
 
     private EntityManager entityManager;

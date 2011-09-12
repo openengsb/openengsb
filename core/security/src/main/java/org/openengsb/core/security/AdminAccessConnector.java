@@ -19,17 +19,27 @@ package org.openengsb.core.security;
 import org.aopalliance.intercept.MethodInvocation;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdminAccessConnector extends AbstractOpenEngSBService implements AuthorizationDomain {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminAccessConnector.class);
 
     private UserDataManager userManager;
 
     @Override
     public Access checkAccess(String username, MethodInvocation action) {
-        if (!userManager.getUserPermissions(username, "admin").isEmpty()) {
-            return Access.GRANTED;
+        try {
+            if (!userManager.getUserPermissions(username, "admin").isEmpty()) {
+                return Access.GRANTED;
+            }
+        } catch (UserNotFoundException e) {
+            LOGGER.warn("user for access control decision was not found", e);
+            // just let it abstain
         }
         return Access.ABSTAINED;
     }

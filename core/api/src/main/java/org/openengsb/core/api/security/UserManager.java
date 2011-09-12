@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.springframework.security.provisioning.UserDetailsManager;
 
+@Deprecated
 public interface UserManager extends UserDetailsManager {
 
     List<String> getUsernameList();

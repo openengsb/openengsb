@@ -23,6 +23,9 @@
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>org.openengsb.core.security.model.UserImpl</class>
+    <class>org.openengsb.core.security.model.UserData</class>
+    <class>org.openengsb.core.security.model.PermissionData</class>
+
     <properties>
       <property name="openjpa.Log" value="slf4j" />
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />

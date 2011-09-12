@@ -17,7 +17,6 @@
 package org.openengsb.domain.usermanagement;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ObjectUtils;
@@ -25,13 +24,13 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.common.util.CollectionUtils2;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 
 public class ServicePermissionAccessConnector extends AbstractOpenEngSBService implements AuthorizationDomain {
@@ -40,14 +39,15 @@ public class ServicePermissionAccessConnector extends AbstractOpenEngSBService i
 
     @Override
     public Access checkAccess(String user, final MethodInvocation action) {
-        Collection<Map<String, String>> permissions = userManager.getUserPermissions(user, "service");
+        Collection<Permission> permissions;
+        try {
+            permissions = userManager.getUserPermissions(user, "service");
+        } catch (UserNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+
         Collection<ServicePermission> permissionObjects =
-            Collections2.transform(permissions, new Function<Map<String, String>, ServicePermission>() {
-                @Override
-                public ServicePermission apply(Map<String, String> input) {
-                    return BeanUtils2.buildBeanFromAttributeMap(ServicePermission.class, input);
-                }
-            });
+            CollectionUtils2.filterCollectionByClass(permissions, ServicePermission.class);
 
         boolean grant = Iterators.any(permissionObjects.iterator(), new Predicate<ServicePermission>() {
             @Override

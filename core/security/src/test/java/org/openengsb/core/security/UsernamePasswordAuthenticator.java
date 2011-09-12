@@ -19,6 +19,7 @@ package org.openengsb.core.security;
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -33,7 +34,12 @@ public class UsernamePasswordAuthenticator extends AbstractOpenEngSBConnectorSer
     @Override
     public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
         Preconditions.checkArgument(credentials instanceof String);
-        Object actual = userManager.getUserCredentials(username, "password");
+        Object actual;
+        try {
+            actual = userManager.getUserCredentials(username, "password");
+        } catch (UserNotFoundException e) {
+            throw new AuthenticationException(e);
+        }
         if (ObjectUtils.notEqual(credentials, actual)) {
             throw new AuthenticationException("Bad credentials");
         }

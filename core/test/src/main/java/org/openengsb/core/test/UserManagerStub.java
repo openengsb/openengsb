@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.model.Permission;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -29,41 +30,77 @@ import com.google.common.collect.Sets;
 
 public class UserManagerStub implements UserDataManager {
 
-    private Map<String, Map<String, Object>> credentialsData = Maps.newHashMap();
-    private Map<String, Map<String, Collection<Map<String, String>>>> permissionData = Maps.newHashMap();
+    private Map<String, Map<String, String>> credentialsData = Maps.newHashMap();
+    private Map<String, Map<String, Collection<Permission>>> permissionData = Maps.newHashMap();
 
     @Override
     public void createUser(String username) {
-        credentialsData.put(username, new HashMap<String, Object>());
+        credentialsData.put(username, new HashMap<String, String>());
         permissionData.put(username, makePermissionData());
     }
 
     @Override
-    public Object getUserCredentials(String username, String key) {
+    public void deleteUser(String username) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getUserCredentials(String username, String key) {
         return credentialsData.get(username).get(key);
     }
 
-    @Override
-    public void setUserCredentials(String username, String key, Object value) {
-        credentialsData.get(username).put(key, value);
-    }
-
-    @Override
-    public Collection<Map<String, String>> getUserPermissions(String username, String type) {
-        return permissionData.get(username).get(type);
-    }
-
-    @Override
-    public void storeUserPermission(String username, String type, Map<String, String> permission) {
-        permissionData.get(username).get(type).add(permission);
-    }
-
-    private <T> Map<String, Collection<Map<String, String>>> makePermissionData() {
-        return new MapMaker().makeComputingMap(new Function<String, Collection<Map<String, String>>>() {
+    private <T> Map<String, Collection<Permission>> makePermissionData() {
+        return new MapMaker().makeComputingMap(new Function<String, Collection<Permission>>() {
             @Override
-            public Collection<Map<String, String>> apply(String input) {
+            public Collection<Permission> apply(String input) {
                 return Sets.newHashSet();
             }
         });
     }
+
+    @Override
+    public void setUserCredentials(String username, String type, String value) {
+        credentialsData.get(username).put(type, value);
+    }
+
+    @Override
+    public void removeUserCredentials(String username, String type) {
+        credentialsData.get(username).remove(type);
+    }
+
+    @Override
+    public String[] getUserAttribute(String username, String attributename) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setUserAttribute(String username, String attributename, String... value) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeUserAttribute(String username, String attributename) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Collection<Permission> getUserPermissions(String username, String type) {
+        return permissionData.get(username).get(type);
+    }
+
+    @Override
+    public void storeUserPermission(String username, Permission permission) {
+        permissionData.get(username).get(permission.getClass().getName()).add(permission);
+    }
+
+    @Override
+    public void removeUserPermissoin(String username, Permission permission) {
+        permissionData.get(username).get(permission.getClass().getName()).remove(permission);
+
+    }
+
 }

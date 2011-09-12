@@ -105,7 +105,6 @@ public final class MethodUtil {
             Object obj = null;
 
             if (beanClass.isInterface()) {
-                @SuppressWarnings("unchecked")
                 Class<? extends OpenEngSBModel> model = (Class<? extends OpenEngSBModel>) beanClass;
                 obj = ekbService.createEmptyModelObject(model);
             } else {

@@ -17,18 +17,31 @@
 package org.openengsb.core.api.security;
 
 import java.util.Collection;
-import java.util.Map;
+
+import org.openengsb.core.api.security.model.Permission;
 
 public interface UserDataManager {
 
-    void createUser(String username);
+    void createUser(String username) throws UserExistsException;
 
-    Object getUserCredentials(String username, String key);
+    void deleteUser(String username) throws UserNotFoundException;
 
-    void setUserCredentials(String username, String key, Object value);
+    String getUserCredentials(String username, String key) throws UserNotFoundException;
 
-    Collection<Map<String, String>> getUserPermissions(String username, String type);
+    void setUserCredentials(String username, String type, String value) throws UserNotFoundException;
 
-    void storeUserPermission(String username, String type, Map<String, String> permission);
+    void removeUserCredentials(String username, String type) throws UserNotFoundException;
+
+    String[] getUserAttribute(String username, String attributename) throws UserNotFoundException;
+
+    void setUserAttribute(String username, String attributename, String... value) throws UserNotFoundException;
+
+    void removeUserAttribute(String username, String attributename) throws UserNotFoundException;
+
+    Collection<Permission> getUserPermissions(String username, String type) throws UserNotFoundException;
+
+    void storeUserPermission(String username, Permission permission) throws UserNotFoundException;
+
+    void removeUserPermissoin(String username, Permission permission) throws UserNotFoundException;
 
 }
