@@ -178,7 +178,7 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.storeUserPermission("admin2", permission);
-        userManager.removeUserPermissoin("admin2", permission);
+        userManager.removeUserPermission("admin2", permission);
         Collection<Permission> userPermissions =
             userManager.getUserPermissions("admin2", TestPermission.class.getName());
         assertThat(userPermissions, not(hasItem(equalTo(permission))));

@@ -98,7 +98,7 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public void removeUserPermissoin(String username, Permission permission) {
+    public void removeUserPermission(String username, Permission permission) {
         permissionData.get(username).get(permission.getClass().getName()).remove(permission);
 
     }

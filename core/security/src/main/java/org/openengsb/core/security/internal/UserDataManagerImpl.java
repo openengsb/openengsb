@@ -128,7 +128,7 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public void removeUserPermissoin(String username, final Permission permission) throws UserNotFoundException {
+    public void removeUserPermission(String username, final Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Map<String, PermissionData> permissions = user.getPermissions();
         Entry<String, PermissionData> entry =

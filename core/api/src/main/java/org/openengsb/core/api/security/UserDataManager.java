@@ -42,6 +42,6 @@ public interface UserDataManager {
 
     void storeUserPermission(String username, Permission permission) throws UserNotFoundException;
 
-    void removeUserPermissoin(String username, Permission permission) throws UserNotFoundException;
+    void removeUserPermission(String username, Permission permission) throws UserNotFoundException;
 
 }
