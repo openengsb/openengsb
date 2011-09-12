@@ -20,6 +20,7 @@ package org.openengsb.core.security.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.InvocationHandler;
@@ -163,13 +164,24 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
     }
 
     @Test
-    public void testStoreUserPermission() throws Exception {
+    public void testStoreUserPermission_shouldBeStored() throws Exception {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.storeUserPermission("admin2", permission);
         Collection<Permission> userPermissions =
             userManager.getUserPermissions("admin2", TestPermission.class.getName());
         assertThat(userPermissions, hasItem(equalTo(permission)));
+    }
+
+    @Test
+    public void testStoreUserPermissionAndDeleteAgain_shouldBeDeleted() throws Exception {
+        userManager.createUser("admin2");
+        Permission permission = new TestPermission(Access.GRANTED);
+        userManager.storeUserPermission("admin2", permission);
+        userManager.removeUserPermissoin("admin2", permission);
+        Collection<Permission> userPermissions =
+            userManager.getUserPermissions("admin2", TestPermission.class.getName());
+        assertThat(userPermissions, not(hasItem(equalTo(permission))));
     }
 
 }

@@ -30,12 +30,18 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtils2;
 import org.openengsb.core.security.model.PermissionData;
 import org.openengsb.core.security.model.UserData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ComputationException;
+import com.google.common.collect.Iterators;
 
 public class UserDataManagerImpl implements UserDataManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerImpl.class);
 
     private EntityManager entityManager;
 
@@ -78,19 +84,19 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public String[] getUserAttribute(String username, String attributename) {
         // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
     public void setUserAttribute(String username, String attributename, String... value) {
         // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
     public void removeUserAttribute(String username, String attributename) {
         // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
@@ -122,9 +128,21 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public void removeUserPermissoin(String username, Permission permission) {
-        // TODO Auto-generated method stub
-
+    public void removeUserPermissoin(String username, final Permission permission) throws UserNotFoundException {
+        UserData user = doFindUser(username);
+        Map<String, PermissionData> permissions = user.getPermissions();
+        Entry<String, PermissionData> entry =
+            Iterators.find(permissions.entrySet().iterator(), new Predicate<Entry<String, PermissionData>>() {
+                @Override
+                public boolean apply(Entry<String, PermissionData> input) {
+                    return input.getValue().getAttributes().equals(permission.toAttributes());
+                }
+            });
+        if (entry == null) {
+            LOGGER.warn("user does not have permission, " + permission);
+            return;
+        }
+        permissions.remove(entry.getKey());
     }
 
     public void setEntityManager(EntityManager entityManager) {
