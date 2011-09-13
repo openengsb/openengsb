@@ -27,6 +27,7 @@ import java.util.Map;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
+import org.openengsb.core.api.remote.CustomMarshallerRealTypeAccess;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
@@ -137,11 +138,38 @@ public class RequestHandlerImpl implements RequestHandler {
     private Method findMethod(Object service, String methodName, Class<?>[] argTypes) {
         Method method;
         try {
-            method = service.getClass().getMethod(methodName, argTypes);
+            Class<?> serviceClass = retrieveRealServiceClass(service);
+            if (serviceClass.isInstance(CustomMarshallerRealTypeAccess.class)) {
+                serviceClass = ((CustomMarshallerRealTypeAccess) service).getRealUnproxiedType();
+            }
+            method = serviceClass.getMethod(methodName, argTypes);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
         return method;
+    }
+
+    /**
+     * TODO: OPENENGSB-1976
+     *
+     * This is a workaround for the mess with Aries JPA proxies.
+     */
+    private Class<?> retrieveRealServiceClass(Object service) {
+        Class<?> serviceClass = service.getClass();
+        Method realTypeMethod = null;
+        try {
+            realTypeMethod = serviceClass.getMethod("getRealUnproxiedType");
+        } catch (NoSuchMethodException e) {
+            // no problem this method does not have to exist
+        }
+        if (realTypeMethod != null) {
+            try {
+                serviceClass = (Class<?>) realTypeMethod.invoke(service);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return serviceClass;
     }
 
     private Class<?>[] getArgTypes(MethodCall args) {

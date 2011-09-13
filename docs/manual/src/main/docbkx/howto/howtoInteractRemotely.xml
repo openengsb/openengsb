@@ -227,10 +227,13 @@
   <section>
     <title>Internal Specialities</title>
     <para>Basically there is nothing special to do to get up a service. Still, since java has no static type information
-    there is no possibility to marshal things like a <code>java.util.List</code> of options. The fix we've introduced
-    for this problem is to annotate parameters and define a custom marshaller. Therefore create a class with a default
-    constructor extending CustomJsonMarshaller. Then annotate the parameter of the implementations you're using with the
-    UseCustomJasonMarshaller annotation adding the Marshaller class. That's it. The framework will automatically create
-    the mapper and call the transform method for you.</para>
+      there is no possibility to marshal things like a <code>java.util.List</code> of options. The fix we've introduced
+      for this problem is to annotate parameters and define a custom marshaller. Therefore create a class with a default
+      constructor extending CustomJsonMarshaller. Then annotate the parameter of the implementations you're using with
+      the UseCustomJasonMarshaller annotation adding the Marshaller class. That's it. The framework will automatically
+      create the mapper and call the transform method for you. </para>
+    <para> Since there is an issue right now with Aries Proxies hiding parameter annotations the
+      CustomMarshallerRealTypeAccess interface provides a workaround for the problem. In case this interface is found
+      the class provided by it is used for searching. Otherwise the class directly is scanned.</para>
   </section>
 </chapter>

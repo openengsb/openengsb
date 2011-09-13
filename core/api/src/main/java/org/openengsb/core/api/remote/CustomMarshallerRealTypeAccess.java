@@ -17,21 +17,15 @@
 
 package org.openengsb.core.api.remote;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Annotation defining which {@link CustomJsonMarshaller} to use for argument.
+ * This interface is a workaround to get to the parameter annotations of the real class hidden by aries. It's such a
+ * pain, but till OPENENGSB-1976 is fixed we've to deal with this.
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface UseCustomJasonMarshaller {
+public interface CustomMarshallerRealTypeAccess {
 
     /**
-     * Nothing more required than to define which class to use to execute the marshaling.
+     * Returns the real, internal type of the class to be analysed.
      */
-    Class<? extends CustomJsonMarshaller<?>> value();
+    public Class<?> getRealUnproxiedType();
 
 }
