@@ -21,31 +21,34 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-
-import javax.inject.Inject;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.karaf.features.FeaturesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
+import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 @RunWith(JUnit4TestRunner.class)
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
-    @Inject
-    private FeaturesService featuresService;
+    @Configuration
+    public Option[] additionalConfiguration() throws Exception {
+        return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms"));
+    }
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        if (!featuresService.isInstalled(featuresService.getFeature("openengsb-ports-ws"))) {
-            featuresService.installFeature("openengsb-ports-jms");
-        }
-
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
@@ -53,10 +56,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
-        if (!featuresService.isInstalled(featuresService.getFeature("openengsb-ports-ws"))) {
-            featuresService.installFeature("openengsb-ports-jms");
-        }
-
         addWorkflow("simpleFlow");
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
@@ -69,10 +68,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflowWithFilterMethodCall_ShouldReturn42() throws Exception {
-        if (!featuresService.isInstalled(featuresService.getFeature("openengsb-ports-ws"))) {
-            featuresService.installFeature("openengsb-ports-jms");
-        }
-
         addWorkflow("simpleFlow");
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
@@ -86,10 +81,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
-        if (!featuresService.isInstalled(featuresService.getFeature("openengsb-ports-ws"))) {
-            featuresService.installFeature("openengsb-ports-jms");
-        }
-
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);

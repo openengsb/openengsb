@@ -24,14 +24,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 @RunWith(JUnit4TestRunner.class)
-public class CleanOpenEngSBAssertsIT extends AbstractExamTestHelper {
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class CleanOpenEngSBAssertsIT extends AbstractPreConfiguredExamTestHelper {
+
     @Test
     public void testServiceDoesNotExist() throws Exception {
         assertThat(OpenEngSBCoreServices.getWiringService().isConnectorCurrentlyPresent(ExampleDomain.class),
             is(false));
     }
+
 }

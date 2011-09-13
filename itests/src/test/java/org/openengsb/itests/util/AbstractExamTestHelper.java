@@ -19,9 +19,15 @@ package org.openengsb.itests.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -29,15 +35,16 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption;
+import org.apache.commons.lang.ObjectUtils;
+import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -57,10 +64,13 @@ public abstract class AbstractExamTestHelper {
 
     /*
      * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
-     * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file.
+     * file should only contain simple properties. You can use debug=true and loglevel=INFO in this file. Additional
+     * possible properties are debugport=5005 and hold=true. The debugport option specifies the port where the container
+     * is reachable and the hold option if the container should wait for a debugger to be attached or not.
      */
 
     private static final int DEBUG_PORT = 5005;
+    private static final String LOG_LEVEL = "WARN";
     protected static final String WEBUI_PORT = "8091";
     protected static final String RMI_REGISTRY_PORT = "1100";
     protected static final String RMI_SERVER_PORT = "44445";
@@ -106,6 +116,7 @@ public abstract class AbstractExamTestHelper {
             // This is buggy, as the service reference may change i think
             Object svc = type.cast(tracker.waitForService(timeout));
             if (svc == null) {
+                @SuppressWarnings("rawtypes")
                 Dictionary dic = bundleContext.getBundle().getHeaders();
                 System.err.println("Test bundle headers: " + explode(dic));
 
@@ -127,9 +138,7 @@ public abstract class AbstractExamTestHelper {
         }
     }
 
-    /*
-     * Explode the dictionary into a ,-delimited list of key=value pairs
-     */
+    @SuppressWarnings("rawtypes")
     private static String explode(Dictionary dictionary) {
         Enumeration keys = dictionary.keys();
         StringBuffer result = new StringBuffer();
@@ -155,7 +164,6 @@ public abstract class AbstractExamTestHelper {
         }
         return result;
     }
-
 
     protected BundleContext getBundleContext() {
         return bundleContext;
@@ -200,15 +208,52 @@ public abstract class AbstractExamTestHelper {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    @Configuration
-    public static Option[] configuration() throws Exception {
-        return new Option[]{
-            KarafDistributionOption.karafDistributionConfiguration("mvn:org.openengsb/openengsb/1.2.2-SNAPSHOT/zip",
-                "openengsb", "2.2.2"),
-            KarafDistributionOption.editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
-            KarafDistributionOption.editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
-            KarafDistributionOption.editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
-            mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all").versionAsInProject())};
+    public static Option[] baseConfiguration() throws Exception {
+        String loglevel = LOG_LEVEL;
+        String debugPort = Integer.toString(DEBUG_PORT);
+        boolean hold = true;
+        boolean debug = false;
+        InputStream paxLocalStream = ClassLoader.getSystemResourceAsStream("itests.local.properties");
+        if (paxLocalStream != null) {
+            Properties properties = new Properties();
+            properties.load(paxLocalStream);
+            loglevel = (String) ObjectUtils.defaultIfNull(properties.getProperty("loglevel"), loglevel);
+            debugPort = (String) ObjectUtils.defaultIfNull(properties.getProperty("debugport"), debugPort);
+            debug = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("debug"));
+            hold = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
+        }
+        LogLevel realLogLevel = transformLogLevel(loglevel);
+        Option[] mainOptions = new Option[]{
+            karafDistributionConfiguration().frameworkUrl(
+                "mvn:org.openengsb/openengsb/1.2.2-SNAPSHOT/zip"),
+            logLevel(realLogLevel),
+            editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
+            editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
+            editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
+            mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
+                .versionAsInProject()) };
+        if (debug) {
+            return combine(mainOptions, debugConfiguration(debugPort, hold));
+        }
+        return mainOptions;
     }
 
+    private static LogLevel transformLogLevel(String logLevel) {
+        if (logLevel.equals("ERROR")) {
+            return LogLevel.ERROR;
+        }
+        if (logLevel.equals("WARN")) {
+            return LogLevel.WARN;
+        }
+        if (logLevel.equals("INFO")) {
+            return LogLevel.INFO;
+        }
+        if (logLevel.equals("DEBUG")) {
+            return LogLevel.DEBUG;
+        }
+        if (logLevel.equals("TRACE")) {
+            return LogLevel.TRACE;
+        }
+        return LogLevel.WARN;
+    }
 }

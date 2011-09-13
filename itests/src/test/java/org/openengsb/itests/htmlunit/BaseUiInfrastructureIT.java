@@ -24,10 +24,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -35,17 +39,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 @RunWith(JUnit4TestRunner.class)
-public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/LoginPage/";
 
-    //@Before
+    @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
     }
 
-    //@After
+    @After
     public void tearDown() throws Exception {
         webClient.closeAllWindows();
         FileUtils.deleteDirectory(new File(getWorkingDirectory()));
@@ -53,7 +58,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testIfAlMainNavigationLinksWork() throws Exception {
-        setUp();
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -65,7 +69,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(testClient.asText().contains("Current Project"));
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
         assertTrue(sendEventpage.asText().contains("Current Project"));
-        HtmlPage servicePage = testClient.getAnchorByText("Services").click();
+        testClient.getAnchorByText("Services").click();
         webClient.waitForBackgroundJavaScript(1000);
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
@@ -73,12 +77,10 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(taskOverviewPage.asText().contains("Task-Overview"));
         HtmlPage workflowEditorpage = testClient.getAnchorByText("Workflow Editor").click();
         assertTrue(workflowEditorpage.asText().contains("Workflow Editor"));
-        tearDown();
     }
 
     @Test
     public void testUserLoginWithLimitedAccess() throws Exception {
-        setUp();
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -87,12 +89,10 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage indexPage = loginButton.click();
         assertTrue(indexPage.asText().contains("This page represents"));
         assertFalse(indexPage.asText().contains("User Management"));
-        tearDown();
     }
 
     @Test
     public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
-        setUp();
         HtmlPage page = webClient.getPage("http://localhost:" + WEBUI_PORT + "/openengsb/");
         page = page.getAnchorByText("Login").click();
 
@@ -127,7 +127,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage userIndexPage = loginButton.click();
         assertTrue(userIndexPage.asText().contains("This page represents"));
         assertFalse(userIndexPage.asText().contains("User Management"));
-        tearDown();
     }
 
 }

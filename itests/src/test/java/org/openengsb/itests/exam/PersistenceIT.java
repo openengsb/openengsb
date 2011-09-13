@@ -37,13 +37,15 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 @RunWith(JUnit4TestRunner.class)
-public class PersistenceIT extends AbstractExamTestHelper {
+// This one will run each test in it's own container (slower speed)
+// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
 
     private PersistenceService persistence;
     private PersistenceTestObject element;
@@ -70,13 +72,11 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Test
     public void testCreateAndQuery() throws Exception {
-        setUp();
         PersistenceTestObject test = new PersistenceTestObject("test", 1);
         persistence.create(test);
         List<PersistenceTestObject> result = persistence.query(new PersistenceTestObject("test", null));
         assertThat(result.size(), is(1));
         assertThat(result.get(0), is(test));
-        tearDown();
     }
 
     @Test
@@ -124,7 +124,6 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Test
     public void testUpdateAndQuery() throws Exception {
-        setUp();
         element.setString("foo");
 
         persistence.update(persistence.query(wildcard).get(0), element);
@@ -132,16 +131,13 @@ public class PersistenceIT extends AbstractExamTestHelper {
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.size(), is(1));
         assertThat(result.get(0).getString(), is("foo"));
-        tearDown();
     }
 
     @Test
     public void testDelete() throws Exception {
-        setUp();
         persistence.delete(element);
         List<PersistenceTestObject> result = persistence.query(wildcard);
         assertThat(result.isEmpty(), is(true));
-        tearDown();
     }
 
 }
