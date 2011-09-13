@@ -27,16 +27,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.api.security.model.ServiceAuthorizedList;
-import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.api.security.model.Role;
+import org.openengsb.core.common.util.Users;
 import org.openengsb.core.security.internal.MetadataSource;
-import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.core.test.DummyPersistenceManager;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.security.model.AbstractPermission;
+import org.openengsb.core.security.model.AllPermission;
+import org.openengsb.core.security.model.PermissionAuthority;
+import org.openengsb.core.security.model.RoleAuthority;
+import org.openengsb.core.security.model.RoleImpl;
+import org.openengsb.core.security.model.ServicePermission;
+import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
@@ -49,23 +52,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public class MethodInterceptorTest {
+import com.google.common.collect.Sets;
+
+public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     private static final String DEFAULT_USER = "foo";
     private MethodSecurityInterceptor interceptor;
     private ProviderManager authenticationManager;
-    private PersistenceService persistence;
     private DummyService service;
     private DummyService service2;
-    private DummyPersistenceManager persistenceManager;
-    private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {
-        initPersistence();
         authenticationManager = initAuthenticationManager();
         interceptor = new MethodSecurityInterceptor();
         MethodSecurityMetadataSource metadataSource = new MetadataSource();
@@ -80,44 +83,17 @@ public class MethodInterceptorTest {
         service2 = (DummyService) secure(new DummyServiceImpl("21"));
     }
 
-    private void initPersistence() throws PersistenceException {
-        persistenceManager = new DummyPersistenceManager();
-        bundleContextMock = mock(BundleContext.class);
-        Bundle bundleMock = mock(Bundle.class);
-        when(bundleContextMock.getBundle()).thenReturn(bundleMock);
-        persistence = persistenceManager.getPersistenceForBundle(bundleMock);
-
-        List<GrantedAuthority> authorities =
-            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_USER") });
-        persistence.create(new ServiceAuthorizedList("42", authorities));
-
-        User user = new User(DEFAULT_USER, "password", authorities);
-        persistence.create(user);
-
-        List<GrantedAuthority> adminAuthorities =
-            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_ADMIN") });
-        User admin = new User("admin", "adminpw", adminAuthorities);
-        persistence.create(admin);
-    }
-
     private List<AccessDecisionVoter> makeVoterList() {
         List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
-        result.add(makeVoter());
+        result.add(new AuthorizedRoleAnnotationVoter());
+        result.add(new OpenEngSBAccessDecisionVoter());
         return result;
-    }
-
-    private AccessDecisionVoter makeVoter() {
-        AuthenticatedUserAccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
-        voter.setPersistenceManager(persistenceManager);
-        voter.setBundleContext(bundleContextMock);
-        voter.init();
-        return voter;
     }
 
     private ProviderManager initAuthenticationManager() throws PersistenceException {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
 
-        final UserManagerImpl userDetailsService = createUserDetailsService();
+        final UserDetailsService userDetailsService = createUserDetailsService();
         p.setUserDetailsService(userDetailsService);
 
         ProviderManager authenticationManager = new ProviderManager();
@@ -125,11 +101,27 @@ public class MethodInterceptorTest {
         return authenticationManager;
     }
 
-    private UserManagerImpl createUserDetailsService() throws PersistenceException {
-        final UserManagerImpl userDetailsService = new UserManagerImpl();
-        userDetailsService.setPersistenceManager(persistenceManager);
-        userDetailsService.setBundleContext(bundleContextMock);
-        userDetailsService.init();
+    private UserDetailsService createUserDetailsService() throws PersistenceException {
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
+        UserDetails user =
+            Users.create(DEFAULT_USER, "password",
+                Arrays.asList((GrantedAuthority) new RoleAuthority(new RoleImpl("ROLE_USER"))));
+        when(userDetailsService.loadUserByUsername(DEFAULT_USER)).thenReturn(user);
+
+        Role adminRole = new RoleImpl("ROLE_ADMIN", Arrays.asList((AbstractPermission) new AllPermission()));
+        List<GrantedAuthority> adminAuthorities = Arrays.asList((GrantedAuthority) new RoleAuthority(adminRole));
+        User admin = Users.create("admin", "adminpw", adminAuthorities);
+        when(userDetailsService.loadUserByUsername("admin")).thenReturn(admin);
+
+        AbstractPermission servicePermission = new ServicePermission("42");
+        UserDetails testuser = Users.create("serviceuser", "password", new PermissionAuthority(servicePermission));
+        when(userDetailsService.loadUserByUsername("serviceuser")).thenReturn(testuser);
+
+        RoleImpl role = new RoleImpl("serviceUsers", Sets.newHashSet(servicePermission));
+
+        UserDetails roleUser = Users.create("roleuser", "password", new RoleAuthority(role));
+        when(userDetailsService.loadUserByUsername("roleuser")).thenReturn(roleUser);
+
         return userDetailsService;
     }
 
@@ -151,13 +143,7 @@ public class MethodInterceptorTest {
         authenticate(DEFAULT_USER, "wrong");
     }
 
-    @Test
-    public void testInvokeMethod() throws Exception {
-        authenticate(DEFAULT_USER, "password");
-        // just invoke the method, and avoid failing
-        service.getTheAnswerToLifeTheUniverseAndEverything();
-    }
-
+    @Ignore("implement proper permissions first")
     @Test(expected = AccessDeniedException.class)
     public void testInvokeMethodOnWrongServiceInstance() throws Exception {
         authenticate(DEFAULT_USER, "password");
@@ -175,6 +161,30 @@ public class MethodInterceptorTest {
     public void testAccessAnnotatedMethod() throws Exception {
         authenticate(DEFAULT_USER, "password");
         service2.publicTest();
+    }
+
+    @Test
+    public void testServicePermission_shouldGrantAccess() throws Exception {
+        authenticate("serviceuser", "password");
+        service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testServicePermission_shouldDenyAccess() throws Exception {
+        authenticate("serviceuser", "password");
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test
+    public void testRolePermission_shouldGrantAccess() throws Exception {
+        authenticate("roleuser", "password");
+        service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testRolePermission_shouldDenyAccess() throws Exception {
+        authenticate("roleuser", "password");
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     private void authenticate(String user, String password) {

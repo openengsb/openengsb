@@ -25,6 +25,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -50,6 +51,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         ConnectorRegistrationManagerImpl connectorRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
         connectorRegistrationManagerImpl.setBundleContext(bundleContextMock);
         connectorRegistrationManagerImpl.setServiceUtils(defaultOsgiUtilsService);
+        connectorRegistrationManagerImpl.setInterceptor(mock(MethodInterceptor.class));
         ConnectorInstanceFactory connectorInstanceFactoryMock = mock(ConnectorInstanceFactory.class);
         Connector connectorMock = mock(Connector.class);
         when(connectorInstanceFactoryMock.createNewInstance(anyString())).thenReturn(connectorMock);

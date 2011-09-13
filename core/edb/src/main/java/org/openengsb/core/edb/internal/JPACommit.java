@@ -120,18 +120,18 @@ public class JPACommit implements EDBCommit {
     public void add(EDBObject obj) throws EDBException {
         if (!objects.contains(obj)) {
             objects.add(obj);
-            LOGGER.debug("Added object " + obj.getOID() + " to the commit");
+            LOGGER.debug("Added object {} to the commit", obj.getOID());
         }
     }
 
     @Override
     public void delete(String oid) throws EDBException {
         if (deletions.contains(oid)) {
-            LOGGER.debug("could not delete object " + oid + " because it was never added");
+            LOGGER.debug("could not delete object {} because it was never added", oid);
             return;
         }
         deletions.add(oid);
-        LOGGER.debug("deleted object " + oid + " from the commit");
+        LOGGER.debug("deleted object {} from the commit", oid);
     }
 
     private void fillOIDs() {

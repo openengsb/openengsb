@@ -48,6 +48,7 @@
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="serviceUtils" ref="serviceUtils" />
+    <property name="interceptor" ref="securityInterceptor" />
   </bean>
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
@@ -159,5 +160,6 @@
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" filter="(name=securityInterceptor)" />
 
 </blueprint>

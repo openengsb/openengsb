@@ -14,40 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.core.api.security.model;
 
 import java.util.Collection;
 
-import org.springframework.security.core.GrantedAuthority;
+public interface Role {
 
-public class ServiceAuthorizedList {
-    private String serviceId;
-    private Collection<GrantedAuthority> authorities;
+    /**
+     * return the name of the role. This might be used by access-control mechanism relying on roles to be strings.
+     */
+    String getName();
 
-    public ServiceAuthorizedList(String serviceId, Collection<GrantedAuthority> authorities) {
-        this.serviceId = serviceId;
-        this.authorities = authorities;
-    }
+    /**
+     * returns the roles that are directly implied by this role. This method is NOT transitive.
+     */
+    Collection<? extends Role> getNestedRoles();
 
-    public ServiceAuthorizedList(String serviceId) {
-        this.serviceId = serviceId;
-    }
+    /**
+     * returns all permission granted by this role. This does not include permissions granted by nested roles.
+     */
+    Collection<? extends Permission> getPermissions();
 
-    public String getServiceId() {
-        return this.serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public Collection<GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-
-    public void setAuthorities(Collection<GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
+    /**
+     * returns all permission granted by this role including permissions granted by nested roles. This method is
+     * transitive.
+     */
+    Collection<? extends Permission> getAllPermissions();
 
 }

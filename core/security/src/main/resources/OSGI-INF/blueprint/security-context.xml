@@ -17,18 +17,22 @@
     limitations under the License.
 
 -->
-
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0" xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="openengsb-security" />
+  </bean>
 
-  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl" init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
+  <bean id="roleManager" class="org.openengsb.core.security.internal.RoleManagerImpl">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
   <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
+  <service interface="org.openengsb.core.api.security.RoleManager" ref="roleManager" />
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userManager" />
@@ -48,6 +52,9 @@
   <service interface="org.springframework.security.authentication.AuthenticationManager" ref="authenticationManager" />
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
+    <service-properties>
+      <entry key="name" value="securityInterceptor" />
+    </service-properties>
     <bean class="org.openengsb.core.security.SecurityInterceptor">
       <property name="securityMetadataSource">
         <bean class="org.openengsb.core.security.internal.MetadataSource" />
@@ -58,10 +65,9 @@
         <bean class="org.springframework.security.access.vote.AffirmativeBased">
           <property name="decisionVoters">
             <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" init-method="init">
-                <property name="persistenceManager" ref="persistenceManager" />
-                <property name="bundleContext" ref="blueprintBundleContext" />
-              </bean>
+              <bean class="org.openengsb.core.security.OpenEngSBAccessDecisionVoter" />
+              <bean class="org.openengsb.core.security.AuthorizedRoleAnnotationVoter" />
+              <bean class="org.openengsb.core.security.PublicAnnotationVoter" />
               <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
             </list>
           </property>

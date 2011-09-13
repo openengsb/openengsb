@@ -43,7 +43,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/login/";
-    private final long WAITING_FOR_WICKET = 3000L;
+    private final long WAITING_FOR_WICKET = 15000L;
 
     @Before
     public void setUp() throws Exception {

@@ -54,7 +54,7 @@ public class Diff implements EDBDiff {
         }
 
         createObjectDiffs();
-        LOGGER.debug("Diff created. Difference count = " + diff.size());
+        LOGGER.debug("Diff created. Difference count = {}", diff.size());
     }
 
     /**
@@ -113,7 +113,7 @@ public class Diff implements EDBDiff {
                 return obj;
             }
         }
-        LOGGER.debug(oid + " wasn't found in the list of end state objects");
+        LOGGER.debug("{} wasn't found in the list of end state objects", oid);
         return null;
     }
 
