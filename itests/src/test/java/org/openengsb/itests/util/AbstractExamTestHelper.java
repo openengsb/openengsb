@@ -223,15 +223,16 @@ public abstract class AbstractExamTestHelper {
             hold = ObjectUtils.equals(Boolean.TRUE.toString(), properties.getProperty("hold"));
         }
         LogLevel realLogLevel = transformLogLevel(loglevel);
-        Option[] mainOptions = new Option[]{
-            karafDistributionConfiguration().frameworkUrl(
-                "mvn:org.openengsb/openengsb/1.2.2-SNAPSHOT/zip"),
-            logLevel(realLogLevel),
-            editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
-            editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
-            editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
-            mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
-                .versionAsInProject()) };
+        Option[] mainOptions =
+            new Option[]{
+                karafDistributionConfiguration().frameworkUrl(
+                    maven().groupId("org.openengsb").artifactId("openengsb").type("zip").versionAsInProject()),
+                logLevel(realLogLevel),
+                editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
+                editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
+                editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
+                mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
+                    .versionAsInProject()) };
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
         }
