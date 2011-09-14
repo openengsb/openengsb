@@ -96,8 +96,7 @@ public final class AttributeEditorUtil {
         } else if (attribute.isOAuth()) {
             return new OAuthField(id, model, attribute, validator);
         } else {
-            InputField inputField = new InputField(id, model, attribute, validator, editable);
-            return inputField;
+            return new InputField(id, model, attribute, validator, editable);
         }
     }
 

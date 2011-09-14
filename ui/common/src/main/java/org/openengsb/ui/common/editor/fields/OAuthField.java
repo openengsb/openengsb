@@ -20,25 +20,23 @@ package org.openengsb.ui.common.editor.fields;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
-import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.Request;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PopupSettings;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 import org.apache.wicket.validation.IValidator;
-import org.openengsb.core.api.OAuthData;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.ui.common.editor.ModelFascade;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 import org.openengsb.ui.common.model.OAuthPageModel;
-import org.openengsb.ui.common.oauth.OAuthPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is quite a special field which provides an easy and direct way for components to register oauth components such
@@ -46,10 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("serial")
 public class OAuthField extends AbstractField<String> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OAuthField.class);
-    private String result;
-    private Link<OAuthData> pageLink;    
-
+    
     public OAuthField(String id, IModel<String> model, AttributeDefinition attribute,
             IValidator<String> fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
@@ -57,56 +52,43 @@ public class OAuthField extends AbstractField<String> {
 
     @Override
     protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, final IModel<String> model) {
-        ModelFascade<String> container = new ModelFascade<String>();
         PopupSettings popupSettings =
             new PopupSettings("popuppagemap").setHeight(300).setWidth(600).setLeft(50).setTop(50);
-        pageLink =
-            new Link<OAuthData>("popupLink1", new OAuthPageModel(
+
+        Link<OAuthData> pageLink =
+            new Link<OAuthData>("popupLink", new OAuthPageModel(
                 new Model<OAuthData>(attribute.getOAuthConfiguration()))) {
                 @Override
                 public void onClick() {
-                    try {
-                        OAuthData tmp = getModelObject();
-                        pageLink.setResponsePage(new OAuthPage(tmp));
-                    } catch (Exception e) {
-                        LOGGER.error("Cant forward to OAuthPage", e);
-                        error(new StringResourceModel("oauth.forward.error", model));
-                    }
+                    OAuthData oauth = getModelObject();
+                    String redirectURL = buildRedirectURL(getRequest());
+                    oauth.setRedirectURL(redirectURL);
+                    String link = oauth.generateFirstCallLink();
+                    OAuthPageFactory.putOAuthObject(getSession().getId(), oauth);
+
+                    getRequestCycle().setRequestTarget(new RedirectRequestTarget(link));
                 }
             };
         pageLink.setPopupSettings(popupSettings);
         final TextField<String> tokenResult = new TextField<String>("field", model);
         tokenResult.setRequired(true);
         tokenResult.setOutputMarkupId(true);
-        tokenResult.add(new AbstractAjaxTimerBehavior(Duration.milliseconds(1000)) {
 
-            @Override
-            protected void onTimer(AjaxRequestTarget target) {
-                OAuthData tmp = OAuthPageFactory.getOAuthObject(getSession().getId());
-                if (tmp != null) {
-                    if (tmp.getOutParameter() != null && !tmp.getOutParameter().equals("")) {
-                        tokenResult.setModelValue(new String[]{ tmp.getOutParameter() });
-                        OAuthPageFactory.removeOAuthObject(getSession().getId());
-                        target.addComponent(tokenResult);
-                        stop();
-                    }
-                }
-
-            }
-
-        });
         List<Component> list = new ArrayList<Component>();
         list.add(pageLink);
+        ModelFascade<String> container = new ModelFascade<String>();
         container.setHelpComponents(list);
         container.setMainComponent(tokenResult);
         return container;
     }
-    
-    public String getResult() {
-        return result;
-    }
 
-    public void setResult(String result) {
-        this.result = result;
+    private String buildRedirectURL(Request request) {
+        if (request instanceof WebRequest) {
+            HttpServletRequest hsr = ((WebRequest) request).getHttpServletRequest();
+            String currentURL = hsr.getRequestURL().toString();
+            currentURL += "oauth";
+            return currentURL;
+        }
+        return null;
     }
 }
