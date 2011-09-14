@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!-- Licensed to the Austrian Association for Software Tool Integration (AASTI) under one or more contributor license agreements. 
+  See the NOTICE file distributed with this work for additional information regarding copyright ownership. The AASTI licenses 
+  this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
+  law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+  OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and 
+  limitations under the License. -->
 
-  Licensed to the Austrian Association for Software Tool Integration (AASTI)
-  under one or more contributor license agreements. See the NOTICE file
-  distributed with this work for additional information regarding copyright
-  ownership. The AASTI licenses this file to you under the Apache License,
-  Version 2.0 (the "License"); you may not use this file except in compliance
-  with the License. You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
--->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -71,101 +61,32 @@
   </build>
 
   <dependencies>
-    <!-- To enable correct logging behaviour -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
+      <groupId>org.openengsb.labs.paxexam.karaf</groupId>
+      <artifactId>paxexam-karaf-container</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.bundlerepository</artifactId>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit4</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.main</artifactId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>org.apache.karaf.features.core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jms</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <!-- Blueprint Dependency -->
-    <dependency>
-      <groupId>org.apache.aries.blueprint</groupId>
-      <artifactId>org.apache.aries.blueprint</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.aries.proxy</groupId>
-      <artifactId>org.apache.aries.proxy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.aries</groupId>
-      <artifactId>org.apache.aries.util</artifactId>
-    </dependency>
-
-    <!-- Feature File Dependencies -->
-    <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
-      <artifactId>standard</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.assemblies.features</groupId>
-      <artifactId>enterprise</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb</artifactId>
-      <type>xml</type>
-      <classifier>features-itests</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!-- Internal Dependencies -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-api</artifactId>
@@ -215,16 +136,9 @@
       <scope>test</scope>
     </dependency>
 
-
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.karaf.tooling</groupId>
-      <artifactId>org.apache.karaf.tooling.testing</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -245,32 +159,21 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Test Dependencies -->
+    <!-- Distribution dependency -->
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.karaf.shell</groupId>
+          <artifactId>org.apache.karaf.shell.dev</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-container-default</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
 
 </project>

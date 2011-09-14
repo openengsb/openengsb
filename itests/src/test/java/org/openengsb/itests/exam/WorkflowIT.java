@@ -27,13 +27,15 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
-public class WorkflowIT extends AbstractExamTestHelper {
+// This one will run each test in it's own container (slower speed)
+// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
         private boolean wasCalled = false;
