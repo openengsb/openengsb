@@ -24,10 +24,10 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.openengsb.core.api.OAuthData;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
+import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.core.api.validation.FieldValidator;
 import org.openengsb.core.api.validation.SingleAttributeValidationResult;
 import org.openengsb.core.api.validation.ValidationResultImpl;
