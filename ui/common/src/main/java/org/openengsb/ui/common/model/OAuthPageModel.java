@@ -18,7 +18,7 @@
 package org.openengsb.ui.common.model;
 
 import org.apache.wicket.model.IModel;
-import org.openengsb.core.api.OAuthData;
+import org.openengsb.core.api.oauth.OAuthData;
 
 /**
  * The wicket {@link IModel} storing {@link OAuthData} in a reusable object.

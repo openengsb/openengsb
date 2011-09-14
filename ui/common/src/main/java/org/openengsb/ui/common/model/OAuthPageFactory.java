@@ -20,7 +20,7 @@ package org.openengsb.ui.common.model;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.openengsb.core.api.OAuthData;
+import org.openengsb.core.api.oauth.OAuthData;
 
 /**
  * The problem with oauth is that the callback come in on a different place than the original call. Therfore we have to
@@ -28,15 +28,13 @@ import org.openengsb.core.api.OAuthData;
  * and objects.
  */
 public final class OAuthPageFactory {
+    private static Map<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
 
     private OAuthPageFactory() {
     }
 
-    private static Map<String, OAuthData> oAuthObjects = new Hashtable<String, OAuthData>();
-
     public static OAuthData getOAuthObject(String sessionID) {
-        OAuthData tmp = oAuthObjects.get(sessionID);
-        return tmp;
+        return oAuthObjects.get(sessionID);
     }
 
     public static void removeOAuthObject(String sessionID) {
