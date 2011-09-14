@@ -57,7 +57,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
     }
 
     @Test
-    public void testIfAlMainNavigationLinksWork() throws Exception {
+    public void testIfAllMainNavigationLinksWork() throws Exception {
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
