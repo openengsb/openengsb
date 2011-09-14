@@ -32,7 +32,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.ui.common.SecurityAttribute;
+import org.openengsb.core.api.security.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;

@@ -14,27 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.security;
 
-package org.openengsb.core.test;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.ResourceBundle;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface SecurityAttribute {
 
-public class LocalisedTest extends AbstractOpenEngSBTest {
+    String value();
 
-    private final ResourceBundle resources;
-
-    public LocalisedTest() {
-        String name = this.getClass().getName();
-        resources = ResourceBundle.getBundle(name.substring(0, name.length() - 4));
-    }
-
-    protected String localization(String resourceName) {
-        if (resources != null) {
-            return resources.getString(resourceName);
-        } else {
-            return null;
-        }
-
-    }
+    String action() default "RENDER";
 
 }

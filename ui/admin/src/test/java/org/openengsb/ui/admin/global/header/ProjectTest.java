@@ -45,7 +45,7 @@ public class ProjectTest extends AbstractLoginTest {
 
         // Maybe there is a more elegant way to do this...
         AuthenticatedWebSession session = AuthenticatedWebSession.get();
-        session.signIn("", "password");
+        session.signIn("test", "password");
 
         when(contextCurrentService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
 

@@ -19,6 +19,8 @@ package org.openengsb.ui.common;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SpringSecurityContext;
@@ -26,6 +28,8 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
@@ -36,16 +40,39 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     @Override
     public boolean isActionAuthorized(Component arg0, Action arg1) {
-        return true;
+        SecurityAttribute[] attributes = getSecurityAttributes(arg0.getClass());
+        if (attributes == null) {
+            return true;
+        }
+        Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        String user = authentication.getUsername();
+        return authorizer.checkAccess(user,
+            ImmutableMap.of("securityAttributes", attributes, "component", arg0, "action", arg1)) == Access.GRANTED;
+    }
+
+    private SecurityAttribute[] getSecurityAttributes(Class<? extends Component> componentClass) {
+        SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
+        if (annotation != null) {
+            return new SecurityAttribute[]{ annotation };
+        }
+        SecurityAttributes annotation2 = componentClass.getAnnotation(SecurityAttributes.class);
+        if (annotation2 != null) {
+            return annotation2.value();
+        }
+        return null;
     }
 
     @Override
     public <T extends Component> boolean isInstantiationAuthorized(Class<T> componentClass) {
         SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
         if (annotation == null) {
+            LOGGER.debug("security-attribute-annotation NOT present on {}", componentClass);
             return true;
         }
-        LOGGER.debug("security-attribute-annotation present");
+        LOGGER.trace("security-attribute-annotation present on {}", componentClass);
         Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
         if (authentication == null) {
             return false;

@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;

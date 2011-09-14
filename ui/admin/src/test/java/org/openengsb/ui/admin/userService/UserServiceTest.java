@@ -20,43 +20,46 @@ package org.openengsb.ui.admin.userService;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+
+import java.util.ResourceBundle;
 
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.test.LocalisedTest;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
-import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
 
-public class UserServiceTest extends LocalisedTest {
+public class UserServiceTest extends AbstractUITest {
 
-    private WicketTester tester;
-
-    private ApplicationContextMock context;
-    private BundleContext bundleContext;
     private UserDataManager userManager;
+
+    private final ResourceBundle resources;
+
+    public UserServiceTest() {
+        String name = this.getClass().getName();
+        resources = ResourceBundle.getBundle(name.substring(0, name.length() - 4));
+    }
+
+    protected String localization(String resourceName) {
+        if (resources != null) {
+            return resources.getString(resourceName);
+        } else {
+            return null;
+        }
+
+    }
 
     @Before
     public void setup() {
-        tester = new WicketTester();
-        context = new ApplicationContextMock();
-        context.putBean(mock(ContextCurrentService.class));
-        bundleContext = mock(BundleContext.class);
-        context.putBean(bundleContext);
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
-        userManager = new UserManagerStub();
-        context.putBean("userManager", userManager);
         setupTesterWithSpringMockContext();
+        userManager = new UserManagerStub();
+        context.putBean(userManager);
+        userManager.createUser("test42");
     }
 
     @Test
@@ -88,12 +91,14 @@ public class UserServiceTest extends LocalisedTest {
     @Test
     public void createAndDeleteUser_ShouldWork() {
         tester.startPage(UserService.class);
+        tester.debugComponentTrees();
         AjaxLink<?> link =
             (AjaxLink<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users:0:user.delete");
         tester.executeAjaxEvent(link, "onclick");
         ListView<?> userListView =
             (ListView<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users");
         assertThat(userListView.size(), is(0));
+
     }
 
     @Test
@@ -140,19 +145,6 @@ public class UserServiceTest extends LocalisedTest {
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ localization("passwordError") });
-    }
-
-    @Test
-    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
-        tester.startPage(UserService.class);
-        userManager.createUser("user1");
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-        formTester.setValue("username", "user1");
-        formTester.setValue("password", "password");
-        formTester.setValue("roles", "admin,user");
-        formTester.setValue("passwordVerification", "password");
-        formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization("userExistError") });
     }
 
     @Test

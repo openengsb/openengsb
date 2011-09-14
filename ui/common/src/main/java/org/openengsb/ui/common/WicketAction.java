@@ -16,13 +16,18 @@
  */
 package org.openengsb.ui.common;
 
+import java.util.Map;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 
+import com.google.common.collect.Maps;
+
 public class WicketAction {
 
-    private Component component;
+    private Map<String, Action> attachedMetaData = Maps.newTreeMap();
     private Action action;
+    private Component component;
 
     public WicketAction() {
     }
@@ -46,6 +51,14 @@ public class WicketAction {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public Map<String, Action> getAttachedMetaData() {
+        return attachedMetaData;
+    }
+
+    public void setAttachedMetaData(Map<String, Action> attachedMetaData) {
+        this.attachedMetaData = attachedMetaData;
     }
 
 }

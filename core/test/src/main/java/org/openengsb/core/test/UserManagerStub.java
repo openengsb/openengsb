@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.model.Permission;
 
 import com.google.common.base.Function;
@@ -35,14 +36,17 @@ public class UserManagerStub implements UserDataManager {
 
     @Override
     public void createUser(String username) {
+        if (credentialsData.containsKey(username)) {
+            throw new UserExistsException("user exists");
+        }
         credentialsData.put(username, new HashMap<String, String>());
         permissionData.put(username, makePermissionData());
     }
 
     @Override
     public void deleteUser(String username) {
-        // TODO Auto-generated method stub
-
+        credentialsData.remove(username);
+        permissionData.remove(username);
     }
 
     @Override

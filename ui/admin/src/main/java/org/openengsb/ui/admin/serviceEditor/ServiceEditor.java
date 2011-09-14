@@ -32,8 +32,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
-import org.openengsb.ui.common.SecurityAttribute;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 

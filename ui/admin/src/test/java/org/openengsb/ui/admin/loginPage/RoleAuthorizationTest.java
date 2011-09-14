@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import org.apache.wicket.Component;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
+import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.ui.admin.AbstractLoginTest;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.testClient.TestClient;
@@ -34,6 +35,10 @@ import org.openengsb.ui.admin.userService.UserService;
  * This class tests the ui for visible components depending on the logged in user roles
  */
 public class RoleAuthorizationTest extends AbstractLoginTest {
+
+    public void setUp() throws Exception {
+        userManager.storeUserPermission("admin", new WicketPermission("DEBUG", "RENDER"));
+    }
 
     @Test
     public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {

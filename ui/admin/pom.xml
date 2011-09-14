@@ -176,8 +176,18 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-authorization</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>openengsb-connector-usernamepassword</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-wicketacl</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -14,17 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.ui.common;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.openengsb.connector.wicketacl.internal;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface SecurityAttribute {
+import java.util.Map;
 
-    String value();
+import org.openengsb.core.api.Connector;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
+
+public class WicketAclServiceInstanceFactory extends
+        AbstractConnectorInstanceFactory<WicketAclServiceImpl> {
+
+    public WicketAclServiceInstanceFactory() {
+    }
+
+    @Override
+    public void doApplyAttributes(WicketAclServiceImpl instance, Map<String, String> attributes) {
+    }
+
+    @Override
+    public Connector createNewInstance(String id) {
+        WicketAclServiceImpl service = new WicketAclServiceImpl();
+        return service;
+    }
 
 }

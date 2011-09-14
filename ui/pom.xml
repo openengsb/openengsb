@@ -55,6 +55,7 @@
   <modules>
     <module>common</module>
     <module>admin</module>
+    <module>wicketacl</module>
   </modules>
 
 </project>

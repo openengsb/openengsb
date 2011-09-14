@@ -64,6 +64,8 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -75,14 +77,13 @@ import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
-import org.openengsb.ui.common.SecurityAttribute;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("SERVICE_EDITOR")
+@SecurityAttributes({ @SecurityAttribute("DEBUG"), @SecurityAttribute("SERVICE_EDITOR") })
 @PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 

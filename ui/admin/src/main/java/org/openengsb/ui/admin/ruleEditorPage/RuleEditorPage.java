@@ -18,11 +18,11 @@
 package org.openengsb.ui.admin.ruleEditorPage;
 
 import org.apache.wicket.PageParameters;
+import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
-import org.openengsb.ui.common.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 

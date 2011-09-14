@@ -54,6 +54,7 @@
   <modules>
     <module>memoryauditing</module>
     <module>usernamepassword</module>
+    <module>serviceacl</module>
   </modules>
 
 </project>

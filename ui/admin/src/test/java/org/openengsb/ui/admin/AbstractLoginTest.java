@@ -22,15 +22,24 @@ import static org.mockito.Mockito.mock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
+import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
+import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorInstanceFactory;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
+import com.google.common.collect.ImmutableMap;
+
 public abstract class AbstractLoginTest extends AbstractUITest {
 
-    private UserDataManager userManager;
+    protected UserDataManager userManager;
 
     @Before
     public void setupLogin() throws Exception {
@@ -49,10 +58,24 @@ public abstract class AbstractLoginTest extends AbstractUITest {
         userManager.createUser("test");
         userManager.setUserCredentials("test", "password", "password");
 
+        userManager.createUser("user");
+        userManager.setUserCredentials("user", "password", "password");
+
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
         UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticationManager", authConnector);
+
+        WicketAclServiceImpl wicketAclServiceImpl = new WicketAclServiceImpl();
+        wicketAclServiceImpl.setUserManager(userManager);
+
+        DomainProvider authDomainProvider = createDomainProviderMock(AuthorizationDomain.class, "authorization");
+        ConnectorInstanceFactory cFactory = new CompositeConnectorProvider().createFactory(authDomainProvider);
+        Connector instance = cFactory.createNewInstance("auth-admin");
+        cFactory.applyAttributes(instance,
+            ImmutableMap.of("compositeStrategy", "", "queryString", "location.root=authorization/*"));
+        registerServiceAtLocation(wicketAclServiceImpl, "authorization", "root", AuthorizationDomain.class,
+            Domain.class);
     }
 }
