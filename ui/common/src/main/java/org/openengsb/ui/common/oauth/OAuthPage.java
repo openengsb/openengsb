@@ -17,82 +17,69 @@
 
 package org.openengsb.ui.common.oauth;
 
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.RedirectToUrlException;
-import org.apache.wicket.Request;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.PopupCloseLink;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.openengsb.core.api.OAuthData;
-import org.openengsb.core.api.OAuthValidation;
+import org.apache.wicket.model.StringResourceModel;
+import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.ui.common.model.OAuthPageFactory;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
+@AuthorizeInstantiation("ROLE_USER")
+@PaxWicketMountPoint(mountPoint = "oauth")
 public class OAuthPage extends WebPage {
 
-    public OAuthPage(OAuthData pageData) throws MalformedURLException {
+    public OAuthPage() {
+        String notStarted = new StringResourceModel("oAuth.notStarted", this, null).getString();
         add(new PopupCloseLink<String>("close"));
-        String currentURL = buildCurrentURL(getRequest());
-        String redirectURL = buildRedirectURL(currentURL);
-
-        StringBuffer link = new StringBuffer();
-        link.append(pageData.getFirstCallLink());
-        link.append("&").append(pageData.getRedirectParameterName()).append("=").append(redirectURL);
-        OAuthPageFactory.putOAuthObject(getSession().getId(), pageData);
-        throw new RedirectToUrlException(link.toString());
+        add(new Label("oAuthResultLabel", notStarted));
     }
 
     public OAuthPage(PageParameters pp) throws Exception {
-        Request request = getRequest();
-        String currentURL = buildCurrentURL(request);
-        String redirectURL = buildRedirectURL(currentURL);
+        OAuthData oauth = OAuthPageFactory.getOAuthObject(getSession().getId());
+        if (oauth != null) {
+            String intermediate = oauth.getIntermediateParameterName();
+            if (pp.containsKey(intermediate)) {
+                String code = pp.getString(intermediate);
+                OAuthData data = OAuthPageFactory.getOAuthObject(getSession().getId());
+                data.addEntryToSecondParams(intermediate, code);
 
-        // get redirectURL parameter
-        int paramLoc = currentURL.lastIndexOf("&");
-        if (paramLoc == -1) {
-            paramLoc = currentURL.indexOf("?");
+                String accessToken = performOAuthValidation(new URL(data.generateSecondCallLink()));
+                OAuthPageFactory.removeOAuthObject(getSession().getId());
+
+                String successful = new StringResourceModel("oAuth.Successful", this, null).getString();
+                add(new Label("oAuthResultLabel", successful + accessToken));
+                add(new PopupCloseLink<String>("close"));
+                return;
+            }
         }
-        String receivedParam = currentURL.substring(paramLoc + 1);
-        String receivedParamName = receivedParam.substring(0, receivedParam.indexOf("="));
-
-        OAuthData test = OAuthPageFactory.getOAuthObject(getSession().getId());
-
-        OAuthValidation oAuth = new OAuthValidation();
-        StringBuilder nextURL = new StringBuilder();
-
-        nextURL.append(test.getSecondCallLink()).append("&").append(test.getRedirectParameterName());
-        nextURL.append("=").append(redirectURL).append("&").append(receivedParamName).append("=");
-        nextURL.append(request.getParameter("code"));
-        String accessToken = oAuth.performOAuthValidation(new URL(nextURL.toString()));
-        test.setOutParameter(accessToken);
-
-        OAuthPageFactory.putOAuthObject(getSession().getId(), test);
-        add(new Label("oAuthResultLabel", "oAuth authentication successful."));
+        String failed = new StringResourceModel("oAuth.Failed", this, null).getString();
+        add(new Label("oAuthResultLabel", failed));
         add(new PopupCloseLink<String>("close"));
     }
 
-    private String buildCurrentURL(Request request) {
-        if (request instanceof WebRequest) {
-            HttpServletRequest hsr = ((WebRequest) request).getHttpServletRequest();
-            String currentURL = hsr.getRequestURL().toString();
-            String queryString = hsr.getQueryString();
-            if (queryString != null) {
-                currentURL += "?" + queryString;
-            }
-            return currentURL;
+    private String performOAuthValidation(URL url) throws Exception {
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuffer output = new StringBuffer();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            output.append(inputLine);
         }
-        return null;
-    }
-
-    private String buildRedirectURL(String currentURL) {
-        if (currentURL == null) {
-            return currentURL;
+        in.close();
+        String[] result = output.toString().split("=");
+        if (result.length > 1) {
+            return result[1];
+        } else {
+            return result[0];
         }
-        return currentURL + getRequestCycle().urlFor(getPageMap(), OAuthPage.class, null).toString();
     }
 }
