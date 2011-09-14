@@ -28,8 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -37,7 +39,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 @RunWith(JUnit4TestRunner.class)
-public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper {
 
     private WebClient webClient;
     private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/LoginPage/";
@@ -66,9 +69,8 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(testClient.asText().contains("Current Project"));
         HtmlPage sendEventpage = testClient.getAnchorByText("Send Event Page").click();
         assertTrue(sendEventpage.asText().contains("Current Project"));
-        HtmlPage servicePage = testClient.getAnchorByText("Services").click();
+        testClient.getAnchorByText("Services").click();
         webClient.waitForBackgroundJavaScript(1000);
-//        assertTrue(servicePage.asText().contains("Services with state = Connecting"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
         HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();

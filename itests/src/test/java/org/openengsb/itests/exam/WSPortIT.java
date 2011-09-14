@@ -21,9 +21,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.scanFeatures;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -45,19 +44,21 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
+import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.w3c.dom.Document;
 
 @RunWith(JUnit4TestRunner.class)
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Configuration
-    public final Option[] configureWs() {
-        return options(scanFeatures(
-            maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-                .versionAsInProject(), "openengsb-ports-ws"));
+    public Option[] additionalConfiguration() throws Exception {
+        return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-ws"));
     }
 
     @Test
@@ -93,7 +94,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL("http://localhost:8091/ws/receiver/?wsdl"), serviceName);
+        Service service = Service.create(new URL("http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl"), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;
