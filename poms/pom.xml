@@ -97,7 +97,7 @@
     <jasper.version>6.0.24</jasper.version>
     <jsp.version>6.1.14</jsp.version>
     <spring.osgi.version>1.2.1</spring.osgi.version>
-    <spring.version>3.0.5.RELEASE</spring.version>
+    <spring.version>3.0.6.RELEASE</spring.version>
     <spring.security.version>3.0.5.RELEASE</spring.security.version>
     <transaction.version>1.1.0</transaction.version>
     <smx.transaction.version>1.2.0</smx.transaction.version>
@@ -286,21 +286,6 @@
         <version>${activemq.version}</version>
         <classifier>features</classifier>
         <type>xml</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.blueprint</groupId>
-        <artifactId>org.apache.aries.blueprint</artifactId>
-        <version>${aries.blueprint.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.proxy</groupId>
-        <artifactId>org.apache.aries.proxy</artifactId>
-        <version>${aries.proxy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries</groupId>
-        <artifactId>org.apache.aries.util</artifactId>
-        <version>${aries.util.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
