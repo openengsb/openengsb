@@ -1,4 +1,62 @@
-openengsb-1.2.1.RELEASE 2011-07-14
+openengsb-framework-1.2.2.RELEASE 2011-09-15
+--------------------------------------------
+
+This release of OpenEngSB is based off of the 1.2.x series branch, representing an update to OpenEngSB Framework 1.2.0.RELEASE. In sum 38
+issues had been fixed. Among them it contains bug fixes identified in the prior release, and introduces improvements including; It includes
+the introduction of paxexam fixing all integration test problems. In addition it is possible now to delete the context and show additional
+information in the karaf shell. The homepage and documentation had been enhanced at various places. Finally there had been upgrades to
+karaf and openengsb-root and pax-exam.
+
+** Bug
+    * [OPENENGSB-1570] - taskboxService.getTaskPanel throws wicket rendering error, when used in subproject at version: 1.2.0.RC1
+    * [OPENENGSB-1680] - Superclass setup-method is not called before subclass setup-methods
+    * [OPENENGSB-1848] - Karaf seems to start fine, but doesnt load any bundles
+    * [OPENENGSB-1859] - Connecotr & Domain links in documentation do not work
+    * [OPENENGSB-1868] - Unused interface ContextConnectorService
+    * [OPENENGSB-1875] - Icons are not shown correctly
+    * [OPENENGSB-1879] - Choosing WiringPage auditing connector on wiring page throws ClassCastException
+    * [OPENENGSB-1881] - Update service page throws a WicketNotSerializableException:
+    * [OPENENGSB-1911] - Possible concurrent modification exception in DummyPersistence
+    * [OPENENGSB-1912] - Clash between lib and framework exporting both xml.stream
+    * [OPENENGSB-1918] - Remove developer and contributor from openengsb-root to openengsb
+    * [OPENENGSB-1928] - license-mapping.xml lists antlr as Apache licensed
+    * [OPENENGSB-1949] - Referencing openengsb-core in port features fails terrible at installing them one after the other
+    * [OPENENGSB-1950] - OpenEngSB csharp examples are out-of-sync with master
+    * [OPENENGSB-1952] - Refreshing openengsb-core does not work
+    * [OPENENGSB-1960] - Not a directory bug thrown in ContextFilePersistenceService
+    * [OPENENGSB-1974] - openengsb-1.2.x branch points to nonexistent features/connector/maven commit
+
+** Improvement
+    * [OPENENGSB-1358] - Document features.xml
+    * [OPENENGSB-1571] - Increase default memory used during windows bootup
+    * [OPENENGSB-1916] - Add description and details section to features.xml
+    * [OPENENGSB-1921] - Use same mail dependency as karaf
+    * [OPENENGSB-1929] - OpenEngSB window shows karaf instead of OpenEngSB
+
+** Library Upgrade
+    * [OPENENGSB-1235] - Upgrade to pax-exam 2.3.0.M1
+    * [OPENENGSB-1926] - Upgrade to openengsb-root-20
+    * [OPENENGSB-1946] - Upgrade to karaf-2.2.3
+    * [OPENENGSB-1979] - Upgrade to paxexam-karaf-0.1.0
+
+** New Feature
+    * [OPENENGSB-1795] - add method to delete context
+    * [OPENENGSB-1853] - Show openengsb system information if info is issued in karaf shell
+
+** Task
+    * [OPENENGSB-1693] - add an explanation for every bundle which uses Dynamic Import
+    * [OPENENGSB-1757] - Release framework-1.2.2
+    * [OPENENGSB-1915] - Replace tabs with spaces in features.xml
+    * [OPENENGSB-1930] - Define TestResources for wicket projects (admin & ui common)
+    * [OPENENGSB-1941] - Add intellij idea to sponsers page
+    * [OPENENGSB-1944] - Update Felix as PMC
+    * [OPENENGSB-1951] - Check if tcp://xyz:asf?blub also works in json-jms definitions
+    * [OPENENGSB-1961] - Add oxygenxml to sponsors page
+    * [OPENENGSB-1968] - Use org.openengsb.labs.paxexam.karaf for integration testing
+    * [OPENENGSB-1970] - correct scm-property in all framework-poms
+
+
+openengsb-framework-1.2.1.RELEASE 2011-07-14
 --------------------------------------------
 
 This release of Apache Karaf is based off of the 2.2.x series branch, representing an update to Apache Karaf 1.2.0.RELEASE. It contains
@@ -50,7 +108,7 @@ small dependency upgrades to karaf and openengsb-root.
     * [OPENENGSB-1786] - Move workflow tests from itest project into workflow project
 
 
-openengsb-1.2.0.RELEASE 2011-06-22
+openengsb-framework-1.2.0.RELEASE 2011-06-22
 --------------------------------------------
 
 After five milestone and three RC releases the OpenEngSB team finally decides that openengsb-1.2.0.RELEASE is ready for
@@ -76,7 +134,7 @@ approach in 1.2.x.
     * [OPENENGSB-1744] - Upgrade maven connector reference to openengsb-connector-maven-1.2.3
 
 
-openengsb-1.2.0.RC3 2011-06-18
+openengsb-framework-1.2.0.RC3 2011-06-18
 --------------------------------------------
 
 This release is the third release candidate of the 1.2.0.RELEASE, based on the 1.2.x branch. One of the most important
@@ -140,7 +198,7 @@ also upgraded 17 libraries including CXF (2.4.1), OpenEngSB Root (18) and JGit (
     * [OPENENGSB-1697] - Switch back to Apache Felix
 
 
-openengsb-1.2.0.RC2 2011-05-16
+openengsb-framework-1.2.0.RC2 2011-05-16
 --------------------------------------------
 
 Upgrade karaf to 2.2.1, fix various bugs in json, remoting, classloading, jms integration tests and increase 
@@ -214,7 +272,7 @@ documentation and examples.
     * [OPENENGSB-1532] - Integrate OpenEngSB with http://www.ohloh.net/
 
 
-openengsb-1.2.0.RC1 2011-04-26
+openengsb-framework-1.2.0.RC1 2011-04-26
 --------------------------------------------
 
 Stabilized openengsb-1.2.0.M5 version prepared for first final release of openengsb-1.2.0.RELEASE
@@ -251,7 +309,8 @@ Stabilized openengsb-1.2.0.M5 version prepared for first final release of openen
     * [OPENENGSB-960] - Document support strategy on hp
     * [OPENENGSB-1349] - release openengsb-1.2.0.RC1
 
-openengsb-1.2.0.M5 2011-04-21
+
+openengsb-framework-1.2.0.M5 2011-04-21
 --------------------------------------------
 
 This milestone release contains various improvements and bugfixes. In addition there where many complete 
@@ -410,7 +469,8 @@ enhancing the documentation and including new howtos.
     * [OPENENGSB-1325] - Remove submodules wrapped from openengsb
     * [OPENENGSB-1337] - Add bundles to download page
 
-openengsb-1.2.0.M4 2011-03-23
+
+openengsb-framework-1.2.0.M4 2011-03-23
 --------------------------------------------
 
 This milestone release contains various improvements and bugfixes. In addition the features packaing and the 
@@ -479,7 +539,8 @@ been adapted.
     * [OPENENGSB-1140] - Add Felix Mayerhuber as contributor
     * [OPENENGSB-1151] - remove no longer required update-version-info.sh script
 
-openengsb-1.2.0.M3 2011-03-09
+
+openengsb-framework-1.2.0.M3 2011-03-09
 --------------------------------------------
 
 This milestone release contains many improvements in the manual and on the hompage and an upgrade and some upgrades to 
@@ -602,7 +663,7 @@ mostly where this release affects you.
     * [OPENENGSB-1093] - Upgrade openengsb-wrapped-bundle to openengsb-root-10
 
 
-openengsb-1.2.0.M2 2011-02-23
+openengsb-framework-1.2.0.M2 2011-02-23
 --------------------------------------------
 
 Alhough a milestone release it only contains small changes with an upgrade to karaf-2.1.4, upgrade to equinox instead 
@@ -653,7 +714,7 @@ of felix and some minor enhancements and bugfixes.
     * [OPENENGSB-975] - Identify PAX as optional in Contribution how-to
 
 
-openengsb-1.2.0.M1 2011-02-09
+openengsb-framework-1.2.0.M1 2011-02-09
 --------------------------------------------
 
 Besides many bugfixes and minor improvements this release contains 9 dependency upgrades, the extraction of the 
