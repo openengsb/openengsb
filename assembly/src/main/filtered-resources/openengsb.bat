@@ -16,6 +16,12 @@
 @REM limitations under the License.
 @REM
 
+@REM Configure Environment
+SET JAVA_MIN_MEM=${java.min.mem}
+SET JAVA_MAX_MEM=${java.max.mem}
+SET JAVA_PERM_MEM=${java.min.perm}
+SET JAVA_MAX_PERM_MEM=${java.max.perm}
+
 cd /d %~dp0%
 karaf.bat
 
