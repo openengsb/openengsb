@@ -214,7 +214,12 @@ public class AttributeDefinition implements Serializable {
                 "boolean and options are incompatible");
             Preconditions.checkState(!(attr.isPassword && !attr.options.isEmpty()),
                 "password and options are incompatible");
-            Preconditions.checkState(!(attr.isPassword && attr.isBoolean), "password and boolean are incompatible");
+            Preconditions.checkState(!(attr.isPassword && attr.isBoolean),
+                "password and boolean are incompatible");
+            Preconditions.checkState(!(attr.isPassword && attr.isOAuth),
+                "password and oauth are incompatible");
+            Preconditions.checkState(!(attr.isBoolean && attr.isOAuth),
+                "boolean and oauth are incompatible");
             return attr;
         }
 
