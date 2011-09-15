@@ -18,15 +18,15 @@
 package org.openengsb.connector.wicketacl.internal;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.CollectionUtils2;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 
 public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService implements
@@ -56,24 +57,21 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
 
     @Override
     public Access checkAccess(String user, Object object) {
-        if (!(object instanceof Map)) {
+        if (!(object instanceof GenericControlledObject)) {
             return Access.ABSTAINED;
         }
-        @SuppressWarnings("unchecked")
-        Map<String, Object> actionData = (Map<String, Object>) object;
-        SecurityAttribute[] securityAttributes = (SecurityAttribute[]) actionData.get("securityAnnotations");
-
-        if (hasAccess(user, securityAttributes)) {
+        GenericControlledObject actionData = (GenericControlledObject) object;
+        if (actionData.getSecurityAttributes() == null) {
+            return Access.ABSTAINED;
+        }
+        if (hasAccess(user, actionData)) {
             return Access.GRANTED;
         }
 
         return Access.ABSTAINED;
     }
 
-    private boolean hasAccess(String user, SecurityAttribute[] securityAttributes) {
-        if (securityAttributes == null) {
-            return false;
-        }
+    private boolean hasAccess(String user, GenericControlledObject actionData) {
         Collection<WicketPermission> filtered;
         try {
             filtered = getWicketPermissions(user);
@@ -81,20 +79,21 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
             LOGGER.warn("user not found", e);
             return false;
         }
-        for (final SecurityAttribute a : securityAttributes) {
+
+        for (final SecurityAttributeEntry a : getRelevantSecurityAttributes(actionData)) {
             boolean allowed = Iterators.any(filtered.iterator(), new Predicate<WicketPermission>() {
                 @Override
                 public boolean apply(WicketPermission input) {
-                    if (ObjectUtils.notEqual(a.value(), input.getComponentName())) {
+                    if (ObjectUtils.notEqual(a.getComponentName(), input.getComponentName())) {
                         return false;
                     }
-                    if (a.action() == null || input.getAction() == null) {
+                    if (a.getAction() == null || input.getAction() == null) {
                         return true;
                     }
                     if (input.getAction().equals("ENABLE")) {
                         return true;
                     }
-                    return input.getAction().equals(a.action());
+                    return input.getAction().equals(a.getAction());
                 }
             });
             if (allowed) {
@@ -102,6 +101,28 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
             }
         }
         return false;
+    }
+
+    private Collection<SecurityAttributeEntry> getRelevantSecurityAttributes(GenericControlledObject actionData) {
+        Collection<SecurityAttributeEntry> allAttributes = actionData.getSecurityAttributes();
+        if (actionData.getAction() == null) {
+            return allAttributes;
+        }
+        if (actionData.getAction() == "RENDER") {
+            return allAttributes;
+//            Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
+//                @Override
+//                public boolean apply(SecurityAttributeEntry input) {
+//                    return !"ENABLE".equals(input.getAction());
+//                }
+//            });
+        }
+        return Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
+            @Override
+            public boolean apply(SecurityAttributeEntry input) {
+                return !"RENDER".equals(input.getAction());
+            }
+        });
     }
 
     public Collection<WicketPermission> getWicketPermissions(String user) throws UserNotFoundException {

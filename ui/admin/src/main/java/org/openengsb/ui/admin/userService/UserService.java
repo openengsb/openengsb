@@ -51,7 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.User;
 
-@SecurityAttribute("USER_ADMIN")
+@SecurityAttribute(value = "USER_ADMIN", action = "RENDER")
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserService extends BasePage {
 

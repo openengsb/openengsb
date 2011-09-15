@@ -52,4 +52,9 @@ public class WicketPermission extends GenericPermission {
         this.action = action;
     }
 
+    @Override
+    public String toString() {
+        return String.format("P %s:%s", componentName, action);
+    }
+
 }

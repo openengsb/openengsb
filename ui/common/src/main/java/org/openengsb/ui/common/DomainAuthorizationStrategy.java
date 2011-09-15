@@ -16,12 +16,19 @@
  */
 package org.openengsb.ui.common;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SpringSecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -30,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.MapMaker;
 
 public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
@@ -38,10 +47,19 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     private AuthorizationDomain authorizer = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(
         AuthorizationDomain.class, "authorization");
 
+    private static Map<Component, Collection<SecurityAttributeEntry>> runtimeAttributes = new MapMaker().softKeys()
+        .makeMap();
+
     @Override
     public boolean isActionAuthorized(Component arg0, Action arg1) {
-        SecurityAttribute[] attributes = getSecurityAttributes(arg0.getClass());
-        if (attributes == null) {
+        List<SecurityAttributeEntry> attributeList = Lists.newArrayList();
+        if (hasSecurityAnnotation(arg0.getClass())) {
+            attributeList.addAll(getSecurityAttributes(arg0.getClass()));
+        }
+        if (runtimeAttributes.containsKey(arg0)) {
+            attributeList.addAll(runtimeAttributes.get(arg0));
+        }
+        if (attributeList.isEmpty()) {
             return true;
         }
         Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
@@ -49,36 +67,60 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
             return false;
         }
         String user = authentication.getUsername();
-        return authorizer.checkAccess(user,
-            ImmutableMap.of("securityAttributes", attributes, "component", arg0, "action", arg1)) == Access.GRANTED;
-    }
+        GenericControlledObject secureAction =
+            new GenericControlledObject(attributeList, arg1.getName(), ImmutableMap.of("component", (Object) arg0));
 
-    private SecurityAttribute[] getSecurityAttributes(Class<? extends Component> componentClass) {
-        SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
-        if (annotation != null) {
-            return new SecurityAttribute[]{ annotation };
-        }
-        SecurityAttributes annotation2 = componentClass.getAnnotation(SecurityAttributes.class);
-        if (annotation2 != null) {
-            return annotation2.value();
-        }
-        return null;
+        return authorizer.checkAccess(user, secureAction) == Access.GRANTED;
     }
 
     @Override
     public <T extends Component> boolean isInstantiationAuthorized(Class<T> componentClass) {
-        SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
-        if (annotation == null) {
-            LOGGER.debug("security-attribute-annotation NOT present on {}", componentClass);
+        if (!hasSecurityAnnotation(componentClass)) {
             return true;
         }
-        LOGGER.trace("security-attribute-annotation present on {}", componentClass);
         Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
         if (authentication == null) {
             return false;
         }
         String user = authentication.getUsername();
-        return authorizer.checkAccess(user, componentClass) == Access.GRANTED;
+
+        LOGGER.trace("security-attribute-annotation present on {}", componentClass);
+
+        return authorizer.checkAccess(user, new GenericControlledObject(getSecurityAttributes(componentClass))) == Access.GRANTED;
+    }
+
+    private boolean hasSecurityAnnotation(Class<? extends Component> class1) {
+        return class1.isAnnotationPresent(SecurityAttribute.class)
+                || class1.isAnnotationPresent(SecurityAttributes.class);
+    }
+
+    private Collection<SecurityAttributeEntry> getSecurityAttributes(Class<? extends Component> componentClass) {
+        SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
+        if (annotation != null) {
+            return Arrays.asList(convertAnnotationToEntry(annotation));
+        }
+        SecurityAttributes annotation2 = componentClass.getAnnotation(SecurityAttributes.class);
+        if (annotation2 != null) {
+            Collection<SecurityAttributeEntry> result = Lists.newArrayList();
+            for (SecurityAttribute a : annotation2.value()) {
+                result.add(convertAnnotationToEntry(a));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    private SecurityAttributeEntry convertAnnotationToEntry(SecurityAttribute annotation) {
+        return new SecurityAttributeEntry(annotation.value(), annotation.action());
+    }
+
+    public static final void registerComponent(Component component, SecurityAttributeEntry... securityAttributes) {
+        registerComponent(component, Arrays.asList(securityAttributes));
+    }
+
+    public static final void
+        registerComponent(Component component, Collection<SecurityAttributeEntry> securityAttributes) {
+        runtimeAttributes.put(component, securityAttributes);
     }
 
     public void setAuthorizer(AuthorizationDomain authorizer) {
