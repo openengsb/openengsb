@@ -33,6 +33,11 @@ import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
+/**
+ * This WebPage is a help page to enable the possibility of OAuth authorization. When a OAuth authorization begins, the
+ * redirect url has to be set to this page. It handles the authorization process and prints the result token of the
+ * authorization to the page. The user has to copy&paste this token to the service properties.
+ */
 @AuthorizeInstantiation("ROLE_USER")
 @PaxWicketMountPoint(mountPoint = "oauth")
 public class OAuthPage extends WebPage {

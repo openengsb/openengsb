@@ -28,7 +28,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")
@@ -39,7 +39,7 @@ public class DropdownField extends AbstractField<String> {
     }
 
     @Override
-    protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         final Map<String, LocalizableStringModel> labels = new HashMap<String, LocalizableStringModel>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {
@@ -60,7 +60,7 @@ public class DropdownField extends AbstractField<String> {
 
                 });
         choice.setNullValid(!attribute.isRequired());
-        ModelFascade<String> retVal = new ModelFascade<String>();
+        ModelFacade<String> retVal = new ModelFacade<String>();
         retVal.setMainComponent(choice);
         return retVal;
     }

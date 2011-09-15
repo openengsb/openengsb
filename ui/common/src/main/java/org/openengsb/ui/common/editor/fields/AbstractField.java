@@ -30,7 +30,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 /**
@@ -55,7 +55,7 @@ public abstract class AbstractField<T> extends Panel {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        ModelFascade<T> component = createFormComponent(attribute, model);
+        ModelFacade<T> component = createFormComponent(attribute, model);
 
         List<Component> helpComponents = component.getHelpComponents();
         if (helpComponents != null) {
@@ -95,5 +95,5 @@ public abstract class AbstractField<T> extends Panel {
         add(tooltip);
     }
 
-    protected abstract ModelFascade<T> createFormComponent(AttributeDefinition attribute, IModel<String> model);
+    protected abstract ModelFacade<T> createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }

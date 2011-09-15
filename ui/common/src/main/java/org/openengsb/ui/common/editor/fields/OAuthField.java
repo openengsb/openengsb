@@ -34,7 +34,7 @@ import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.oauth.OAuthData;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 import org.openengsb.ui.common.model.OAuthPageFactory;
 import org.openengsb.ui.common.model.OAuthPageModel;
 
@@ -51,7 +51,7 @@ public class OAuthField extends AbstractField<String> {
     }
 
     @Override
-    protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, final IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, final IModel<String> model) {
         PopupSettings popupSettings =
             new PopupSettings("popuppagemap").setHeight(300).setWidth(600).setLeft(50).setTop(50);
 
@@ -76,7 +76,7 @@ public class OAuthField extends AbstractField<String> {
 
         List<Component> list = new ArrayList<Component>();
         list.add(pageLink);
-        ModelFascade<String> container = new ModelFascade<String>();
+        ModelFacade<String> container = new ModelFacade<String>();
         container.setHelpComponents(list);
         container.setMainComponent(tokenResult);
         return container;

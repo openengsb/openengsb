@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 import org.openengsb.ui.common.model.BoolToStringModel;
 
 @SuppressWarnings("serial")
@@ -33,9 +33,9 @@ public class CheckboxField extends AbstractField<Boolean> {
     }
 
     @Override
-    protected ModelFascade<Boolean> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<Boolean> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         CheckBox check = new CheckBox("field", new BoolToStringModel(model));
-        ModelFascade<Boolean> retVal = new ModelFascade<Boolean>();
+        ModelFacade<Boolean> retVal = new ModelFacade<Boolean>();
         retVal.setMainComponent(check);
         return retVal;
     }

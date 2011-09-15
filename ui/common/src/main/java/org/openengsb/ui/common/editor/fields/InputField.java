@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 
 @SuppressWarnings("serial")
 public class InputField extends AbstractField<String> {
@@ -36,9 +36,9 @@ public class InputField extends AbstractField<String> {
     }
 
     @Override
-    protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         TextField<String> text = new TextField<String>("field", model);
-        ModelFascade<String> retVal = new ModelFascade<String>();
+        ModelFacade<String> retVal = new ModelFacade<String>();
         retVal.setMainComponent(text);
         return retVal;
     }

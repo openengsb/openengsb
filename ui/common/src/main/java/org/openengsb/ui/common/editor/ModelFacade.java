@@ -22,7 +22,13 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-public class ModelFascade<T> {
+/**
+ * With this class, a field has the possibility to show more than one component if it needs more. The OauthField
+ * for example needs a link in addition to the text field and it's label. The main component defines which
+ * value will be the result of the model (e.g. the string of a text field). All help components will be added to
+ * the field left to the main component.
+ */
+public class ModelFacade<T> {
     private FormComponent<T> mainComponent;
     private List<Component> helpComponents;
 

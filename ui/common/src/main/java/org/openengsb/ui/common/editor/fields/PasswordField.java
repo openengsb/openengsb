@@ -21,7 +21,7 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.ui.common.editor.ModelFascade;
+import org.openengsb.ui.common.editor.ModelFacade;
 
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField<String> {
@@ -32,10 +32,10 @@ public class PasswordField extends AbstractField<String> {
     }
 
     @Override
-    protected ModelFascade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         PasswordTextField field = new PasswordTextField("field", model);
         field.setResetPassword(false);
-        ModelFascade<String> retVal = new ModelFascade<String>();
+        ModelFacade<String> retVal = new ModelFacade<String>();
         retVal.setMainComponent(field);
         return retVal;
     }
