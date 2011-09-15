@@ -639,8 +639,8 @@
     </artifact>
     <artifact>
         <groupId>org.antlr</groupId>
-        <artifactId>antlr-runtime</artifactId>    <!-- TODO: check license-->
-        <license>Apache License, Version 2.0</license>
+        <artifactId>antlr-runtime</artifactId>
+        <license>BSD License</license>
     </artifact>
     <artifact>
         <groupId>org.apache.geronimo.specs</groupId>
