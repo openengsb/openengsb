@@ -22,6 +22,9 @@ SET JAVA_MAX_MEM=${java.max.mem}
 SET JAVA_PERM_MEM=${java.min.perm}
 SET JAVA_MAX_PERM_MEM=${java.max.perm}
 
+@REM Configure Window Title
+SET KARAF_TITLE=OpenEngSB
+
 cd /d %~dp0%
 karaf.bat
 
