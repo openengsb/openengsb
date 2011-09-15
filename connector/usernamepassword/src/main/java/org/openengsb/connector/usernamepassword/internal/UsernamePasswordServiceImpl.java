@@ -35,6 +35,10 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
     public UsernamePasswordServiceImpl() {
     }
 
+    public UsernamePasswordServiceImpl(UserDataManager userManager) {
+        this.userManager = userManager;
+    }
+
     @Override
     public AliveState getAliveState() {
         return AliveState.ONLINE;

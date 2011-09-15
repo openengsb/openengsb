@@ -20,10 +20,13 @@ package org.openengsb.connector.usernamepassword.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 public class UsernamePasswordServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<UsernamePasswordServiceImpl> {
+
+    private UserDataManager userManager;
 
     public UsernamePasswordServiceInstanceFactory() {
     }
@@ -34,8 +37,11 @@ public class UsernamePasswordServiceInstanceFactory extends
 
     @Override
     public Connector createNewInstance(String id) {
-        UsernamePasswordServiceImpl service = new UsernamePasswordServiceImpl();
-        return service;
+        return new UsernamePasswordServiceImpl(userManager);
+    }
+
+    public void setUserManager(UserDataManager userManager) {
+        this.userManager = userManager;
     }
 
 }

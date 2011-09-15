@@ -35,6 +35,7 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.security.AdminAccessConnector;
@@ -51,7 +52,7 @@ import com.google.common.collect.ImmutableMap;
 public abstract class AbstractLoginTest extends AbstractUITest {
 
     protected UserDataManager userManager;
-    
+
     @Rule
     public MethodRule dedicatedThread = new DedicatedThread();
 
@@ -67,7 +68,7 @@ public abstract class AbstractLoginTest extends AbstractUITest {
         });
     }
 
-    private void mockAuthentication() throws UserNotFoundException {
+    private void mockAuthentication() throws UserNotFoundException, UserExistsException {
         userManager = new UserManagerStub();
         userManager.createUser("test");
         userManager.setUserCredentials("test", "password", "password");

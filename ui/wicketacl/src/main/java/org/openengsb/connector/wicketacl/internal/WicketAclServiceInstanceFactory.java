@@ -20,10 +20,13 @@ package org.openengsb.connector.wicketacl.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 public class WicketAclServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<WicketAclServiceImpl> {
+
+    private UserDataManager userManager;
 
     public WicketAclServiceInstanceFactory() {
     }
@@ -34,8 +37,11 @@ public class WicketAclServiceInstanceFactory extends
 
     @Override
     public Connector createNewInstance(String id) {
-        WicketAclServiceImpl service = new WicketAclServiceImpl();
-        return service;
+        return new WicketAclServiceImpl(userManager);
+    }
+
+    public void setUserManager(UserDataManager userManager) {
+        this.userManager = userManager;
     }
 
 }

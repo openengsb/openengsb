@@ -23,7 +23,7 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 /**
  * serves as a container for a {@link MethodCallRequest} and adds attributes relevant for security. Namely
  * verification-information handled by {@link AbstractSecureMessage} and authenticationInformation.
- *
+ * 
  */
 public class SecureRequest extends AbstractSecureMessage<MethodCallRequest> {
 
@@ -48,8 +48,8 @@ public class SecureRequest extends AbstractSecureMessage<MethodCallRequest> {
         return authenticationData;
     }
 
-    public AuthenticationInfo retrieveAuthenticationInfo() {
-        return authenticationData.toObject(AuthenticationInfo.class);
+    public Authentication retrieveAuthenticationInfo() {
+        return authenticationData.toObject(Authentication.class);
     }
 
     protected SecureRequest() {

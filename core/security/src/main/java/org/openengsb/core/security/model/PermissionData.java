@@ -34,6 +34,8 @@ public class PermissionData {
     @GeneratedValue
     private Integer id;
 
+    private String type;
+
     @MapKey
     private Map<String, String> attributes = Maps.newHashMap();
 
@@ -43,6 +45,14 @@ public class PermissionData {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<String, String> getAttributes() {

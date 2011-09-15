@@ -17,33 +17,43 @@
 
 package org.openengsb.core.security.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openengsb.core.api.security.UserManager;
+import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.Users;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.openengsb.core.security.model.RootPermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * if the user-database is empty, default-users are inserted
  */
 public class UserDataInitializer implements Runnable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDataInitializer.class);
+
     @Override
     public void run() {
-        UserManager userManager = OpenEngSBCoreServices.getServiceUtilsService().getService(UserManager.class);
-        if (!userManager.getUsernameList().isEmpty()) {
+        UserDataManager userManager = OpenEngSBCoreServices.getServiceUtilsService().getService(UserDataManager.class);
+        if (!userManager.getUserList().isEmpty()) {
             return;
         }
-        List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-        auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-        auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-        userManager.createUser(Users.create("admin", "password", auth));
+        try {
+            userManager.createUser("admin");
+            userManager.createUser("user");
+        } catch (UserExistsException e) {
+            LOGGER.error("this should not happen... I just checked whether the userbase is empty", e);
+            return;
+        }
+        try {
+            userManager.setUserCredentials("admin", "password", "password");
+            userManager.setUserCredentials("user", "password", "password");
 
-        List<GrantedAuthority> userAuth = new ArrayList<GrantedAuthority>();
-        userAuth.add(new GrantedAuthorityImpl("ROLE_USER"));
-        userManager.createUser(Users.create("user", "password", userAuth));
-
+            userManager.storeUserPermission("admin", new RootPermission());
+            String userCredentials = userManager.getUserCredentials("admin", "password");
+            LOGGER.debug(userCredentials);
+        } catch (UserNotFoundException e) {
+            LOGGER.error("this should not happen... I just created the user", e);
+        }
     }
 }

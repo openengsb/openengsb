@@ -37,10 +37,10 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
+import org.openengsb.core.security.model.RootPermission;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -59,23 +59,19 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         UserDataManager userManager = new UserManagerStub();
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
-        Permission permission = mock(Permission.class);
-        userManager.storeUserPermission("admin", permission);
+        userManager.storeUserPermission("admin", new RootPermission());
 
         userManager.createUser("testuser");
-        // ImmutableMap<String, String> permission =
-        // ImmutableMap.of("serviceId", "fooService", "contextId", "foo", "class", ServicePermission.class.getName());
-        // userManager.storeUserPermission("testuser", "service", permission);
 
         AdminAccessConnector adminAccessConnector = new AdminAccessConnector();
         adminAccessConnector.setUserManager(userManager);
 
-        registerServiceAtLocation(adminAccessConnector, "access/admin", AuthorizationDomain.class);
+        registerServiceAtLocation(adminAccessConnector, "authorization/admin", AuthorizationDomain.class);
 
         servicePermissionAccessConnector = mock(AuthorizationDomain.class);
         when(servicePermissionAccessConnector.checkAccess(anyString(), any(MethodInvocation.class))).thenReturn(
             Access.ABSTAINED);
-        registerServiceAtLocation(servicePermissionAccessConnector, "access/service", AuthorizationDomain.class);
+        registerServiceAtLocation(servicePermissionAccessConnector, "authorization/service", AuthorizationDomain.class);
         CompositeConnectorStrategy strategy = new AffirmativeBasedAuthorizationStrategy();
 
         Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -84,7 +80,7 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
 
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("compositeStrategy", "accessControlStrategy");
-        attributes.put("queryString", "(location.foo=access/*)");
+        attributes.put("queryString", "(location.foo=authorization/*)");
 
         DomainProvider provider = createDomainProviderMock(AuthorizationDomain.class, "accessControl");
         ConnectorInstanceFactory factory = new CompositeConnectorProvider().createFactory(provider);

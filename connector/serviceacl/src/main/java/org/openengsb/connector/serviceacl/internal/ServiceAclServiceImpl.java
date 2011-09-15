@@ -18,13 +18,20 @@
 package org.openengsb.connector.serviceacl.internal;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 
 public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService implements
         AuthorizationDomain {
 
+    private UserDataManager userManager;
+
     public ServiceAclServiceImpl() {
+    }
+
+    public ServiceAclServiceImpl(UserDataManager userManager) {
+        this.userManager = userManager;
     }
 
     @Override
@@ -34,8 +41,8 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
 
     @Override
     public Access checkAccess(String user, Object object) {
-        // TODO implement
-        return Access.GRANTED;
+        userManager.getUserList();
+        return Access.ABSTAINED;
     }
 
 }

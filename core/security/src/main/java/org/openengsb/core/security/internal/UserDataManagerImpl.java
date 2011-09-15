@@ -18,17 +18,19 @@
 package org.openengsb.core.security.internal;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.security.model.CredentialData;
 import org.openengsb.core.security.model.PermissionData;
 import org.openengsb.core.security.model.UserData;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ComputationException;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Sets;
 
 public class UserDataManagerImpl implements UserDataManager {
 
@@ -51,7 +54,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Collection<String> getUserList() {
-        TypedQuery<String> query = entityManager.createQuery("SELECT u.username from userdata u", String.class);
+        TypedQuery<String> query = entityManager.createQuery("SELECT u.username from UserData u", String.class);
         return query.getResultList();
     }
 
@@ -59,6 +62,8 @@ public class UserDataManagerImpl implements UserDataManager {
     public void createUser(String username) throws UserExistsException {
         UserData newUser = new UserData();
         newUser.setUsername(username);
+        newUser.setAttributes(new HashMap<String, String>());
+        newUser.setPermissions(new HashSet<PermissionData>());
         entityManager.persist(newUser);
     }
 
@@ -69,15 +74,28 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public String getUserCredentials(String username, String key) throws UserNotFoundException {
+    public String getUserCredentials(String username, final String key) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        return found.getCredentials().get(key);
+        Collection<CredentialData> credentials = found.getCredentials();
+        CredentialData entry = Iterators.find(credentials.iterator(), new Predicate<CredentialData>() {
+            @Override
+            public boolean apply(CredentialData input) {
+                return ObjectUtils.equals(key, input.getKey());
+            }
+        });
+        return entry.getValue();
     }
 
     @Override
     public void setUserCredentials(String username, String type, String value) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        found.getCredentials().put(type, value);
+        // Map<String, String> credentials = found.getCredentials();
+        // if (credentials == null) {
+        // credentials = Maps.newHashMap();
+        // found.setCredentials(credentials);
+        // }
+        found.getCredentials().add(new CredentialData(type, value));
+        // credentials.put(type, value);
         entityManager.merge(found);
     }
 
@@ -109,13 +127,12 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public Collection<Permission> getUserPermissions(String username, String type) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Map<String, PermissionData> data = user.getPermissions();
-        return Collections2.transform(data.entrySet(), new Function<Entry<String, PermissionData>, Permission>() {
-            public Permission apply(Entry<String, PermissionData> input) {
+        Collection<PermissionData> data = user.getPermissions();
+        return Collections2.transform(data, new Function<PermissionData, Permission>() {
+            public Permission apply(PermissionData input) {
                 try {
-                    Class<?> permType = Class.forName(input.getKey());
-                    return (Permission) BeanUtils2
-                        .buildBeanFromAttributeMap(permType, input.getValue().getAttributes());
+                    Class<?> permType = Class.forName(input.getType());
+                    return (Permission) BeanUtils2.buildBeanFromAttributeMap(permType, input.getAttributes());
                 } catch (ClassNotFoundException e) {
                     throw new ComputationException(e);
                 }
@@ -128,8 +145,14 @@ public class UserDataManagerImpl implements UserDataManager {
         UserData user = doFindUser(username);
         PermissionData permissionData = new PermissionData();
         String type = permission.getClass().getName();
+        permissionData.setType(type);
         permissionData.setAttributes(permission.toAttributes());
-        user.getPermissions().put(type, permissionData);
+        Collection<PermissionData> permissions = user.getPermissions();
+        if (permissions == null) {
+            permissions = Sets.newHashSet();
+            user.setPermissions(permissions);
+        }
+        permissions.add(permissionData);
         entityManager.merge(permissionData);
         entityManager.merge(user);
     }
@@ -137,19 +160,20 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public void removeUserPermission(String username, final Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Map<String, PermissionData> permissions = user.getPermissions();
-        Entry<String, PermissionData> entry =
-            Iterators.find(permissions.entrySet().iterator(), new Predicate<Entry<String, PermissionData>>() {
-                @Override
-                public boolean apply(Entry<String, PermissionData> input) {
-                    return input.getValue().getAttributes().equals(permission.toAttributes());
-                }
-            });
+        Collection<PermissionData> permissions = user.getPermissions();
+        PermissionData entry = Iterators.find(permissions.iterator(), new Predicate<PermissionData>() {
+            @Override
+            public boolean apply(PermissionData input) {
+                return input.getAttributes().equals(permission.toAttributes());
+            }
+        });
         if (entry == null) {
             LOGGER.warn("user does not have permission, " + permission);
             return;
         }
-        permissions.remove(entry.getKey());
+        permissions.remove(entry);
+        entityManager.remove(entry);
+        entityManager.merge(user);
     }
 
     public void setEntityManager(EntityManager entityManager) {

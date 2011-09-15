@@ -47,6 +47,10 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
     public WicketAclServiceImpl() {
     }
 
+    public WicketAclServiceImpl(UserDataManager userManager) {
+        this.userManager = userManager;
+    }
+
     @Override
     public AliveState getAliveState() {
         if (userManager == null) {
@@ -110,12 +114,12 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
         }
         if (actionData.getAction() == "RENDER") {
             return allAttributes;
-//            Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
-//                @Override
-//                public boolean apply(SecurityAttributeEntry input) {
-//                    return !"ENABLE".equals(input.getAction());
-//                }
-//            });
+            // Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
+            // @Override
+            // public boolean apply(SecurityAttributeEntry input) {
+            // return !"ENABLE".equals(input.getAction());
+            // }
+            // });
         }
         return Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
             @Override

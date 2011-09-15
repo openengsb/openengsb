@@ -55,7 +55,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         setupTesterWithSpringMockContext();
         userManager = new UserManagerStub();
         context.putBean(userManager);
@@ -115,7 +115,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testErrorMessage_shouldReturnUserExists() {
+    public void testErrorMessage_shouldReturnUserExists() throws Exception {
         tester.startPage(UserService.class);
         userManager.createUser("user1");
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
@@ -136,7 +136,7 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
         userManager.createUser("user1");
         tester.startPage(UserService.class);
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");

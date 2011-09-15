@@ -21,23 +21,23 @@ import java.util.Map;
 
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.openengsb.core.api.security.model.AuthenticationInfo;
+import org.openengsb.core.api.remote.FilterException;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the
- * {@link AuthenticationInfo} and tries to authenticate. If authentication was succesful, the filter-chain will proceed.
- * The result of the next filter is just passed through.
- *
+ * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the {@link AuthenticationInfo}
+ * and tries to authenticate. If authentication was succesful, the filter-chain will proceed. The result of the next
+ * filter is just passed through.
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -52,22 +52,23 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageAuthenticatorFilter.class);
 
     private FilterAction next;
-    private AuthenticationManager authenticationManager;
+    private AuthenticationDomain authenticationManager;
 
-    public MessageAuthenticatorFilter(AuthenticationManager authenticationManager) {
+    public MessageAuthenticatorFilter(AuthenticationDomain authenticationManager) {
         super(SecureRequest.class, SecureResponse.class);
         this.authenticationManager = authenticationManager;
     }
 
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
-        AuthenticationInfo authenticationInfo = input.retrieveAuthenticationInfo();
-        LOGGER.debug("recieved authentication info: " + authenticationInfo);
-        Authentication authentication = authenticationInfo.toSpringSecurityAuthentication();
-        LOGGER.debug("trying to authenticate using spring-security authentication-manager");
-        Authentication authenticated = authenticationManager.authenticate(authentication);
-        LOGGER.debug("authenticated: {}", authenticated.isAuthenticated());
-        SecurityContextHolder.getContext().setAuthentication(authenticated);
+        Authentication authentication = input.retrieveAuthenticationInfo();
+        LOGGER.debug("recieved authentication info: " + authentication);
+        try {
+            authenticationManager.authenticate(authentication.getUsername(), authentication.getCredentials());
+        } catch (AuthenticationException e) {
+            throw new FilterException(e);
+        }
+        LOGGER.debug("authenticated");
         return (SecureResponse) next.filter(input, metaData);
     }
 

@@ -55,6 +55,7 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.PrivateKeySource;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -72,13 +73,11 @@ import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
@@ -124,11 +123,11 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String AUTH_DATA = ""
             + "{"
-            + "  \"className\":\"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo\","
+            + "  \"className\":\"org.openengsb.core.api.security.model.Authentication\","
             + "  \"data\":"
             + "  {"
             + "    \"username\":\"user\","
-            + "    \"password\":\"password\""
+            + "    \"credentials\":\"password\""
             + "  }"
             + "}";
 
@@ -182,9 +181,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     public void setup() {
         setupKeys();
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.isAuthenticated()).thenReturn(true);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         String num = UUID.randomUUID().toString();
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
         jmsTemplate = new JmsTemplate(connectionFactory);
@@ -244,7 +240,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 60000)
     public void sendEncryptedMethodCall_shouldSendEncryptedResult() throws Exception {
         FilterChain secureChain = createSecureFilterChain();
         incomingPort.setFilterChain(secureChain);
@@ -269,18 +265,16 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(realResultArg, equalTo((Object) new TestClass("test")));
     }
 
-    private FilterChain createSecureFilterChain() {
+    private FilterChain createSecureFilterChain() throws Exception {
         DefaultSecureMethodCallFilterFactory secureFilterChainFactory = new DefaultSecureMethodCallFilterFactory();
-        AuthenticationManager authenticationManager = mock(AuthenticationManager.class);
-        when(authenticationManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
+        AuthenticationDomain authenticationManager = mock(AuthenticationDomain.class);
+        when(authenticationManager.authenticate(anyString(), any())).thenAnswer(new Answer<Authentication>() {
             @Override
             public Authentication answer(InvocationOnMock invocation) throws Throwable {
-                UsernamePasswordAuthenticationToken token =
-                    (UsernamePasswordAuthenticationToken) invocation.getArguments()[0];
-                if (token.getPrincipal().equals("user") && token.getCredentials().equals("password")) {
-                    Authentication authMock = mock(Authentication.class);
-                    when(authMock.isAuthenticated()).thenReturn(true);
-                    return authMock;
+                String user = (String) invocation.getArguments()[0];
+                Object credentials = invocation.getArguments()[1];
+                if ("user".equals(user) && credentials.equals("password")) {
+                    return new Authentication(user, credentials.toString());
                 }
                 throw new BadCredentialsException("username and password did not match");
             }

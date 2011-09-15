@@ -23,15 +23,15 @@ import java.util.concurrent.Callable;
  * wraps a {@link Callable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
  *
  */
-class ContextAwareCallable extends ContextAware implements Callable<Object> {
-    private Callable<Object> original;
+class ContextAwareCallable<V> extends ContextAware implements Callable<V> {
+    private Callable<V> original;
 
-    public ContextAwareCallable(Callable<Object> original) {
+    public ContextAwareCallable(Callable<V> original) {
         this.original = original;
     }
 
     @Override
-    public Object call() throws Exception {
+    public V call() throws Exception {
         applyContext();
         return original.call();
     }

@@ -77,7 +77,7 @@
           <instructions>
             <Import-Package>
               ${openengsb.imports},
-              org.openengsb.domain.authentication.*;version="${openengsb.domain.range}",
+              org.openengsb.domain.authentication.*;version="${project.version}",
               *
             </Import-Package>
           </instructions>

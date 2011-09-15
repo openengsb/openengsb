@@ -168,6 +168,10 @@
     <bundle>mvn:org.openengsb.domain/openengsb-domain-authorization/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-usernamepassword/${project.version}
     </bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-serviceacl/${project.version}
+    </bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-wicketacl/${project.version}
+    </bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
@@ -308,7 +312,7 @@
       by the
       OpenEngSB to run.
     </details>
-	<feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
   </feature>

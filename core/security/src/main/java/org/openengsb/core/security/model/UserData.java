@@ -16,14 +16,17 @@
  */
 package org.openengsb.core.security.model;
 
+import java.util.Collection;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 @Entity
 @Table(name = "USERDATA")
@@ -32,14 +35,17 @@ public class UserData {
     @Id
     private String username;
 
-    @MapKey
-    private Map<String, String> credentials = Maps.newHashMap();
+    // @MapKey
+    // private Map<String, String> credentials;
 
-    @MapKey(name = "type")
-    private Map<String, PermissionData> permissions = Maps.newHashMap();
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<CredentialData> credentials = Sets.newHashSet();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<PermissionData> permissions;
 
     @MapKey
-    private Map<String, String> attributes = Maps.newHashMap();
+    private Map<String, String> attributes;
 
     public UserData() {
     }
@@ -56,19 +62,19 @@ public class UserData {
         this.username = username;
     }
 
-    public Map<String, String> getCredentials() {
+    public Collection<CredentialData> getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(Map<String, String> credentials) {
+    public void setCredentials(Collection<CredentialData> credentials) {
         this.credentials = credentials;
     }
 
-    public Map<String, PermissionData> getPermissions() {
+    public Collection<PermissionData> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Map<String, PermissionData> permissions) {
+    public void setPermissions(Collection<PermissionData> permissions) {
         this.permissions = permissions;
     }
 
@@ -78,6 +84,11 @@ public class UserData {
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", username, credentials.isEmpty() ? "none" : "****");
     }
 
 }

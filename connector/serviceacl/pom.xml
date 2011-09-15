@@ -90,7 +90,7 @@
           <instructions>
             <Import-Package>
               ${openengsb.imports},
-              org.openengsb.domain.authorization.*;version="${openengsb.domain.range}",
+              org.openengsb.domain.authorization.*;version="${project.version}",
               *
             </Import-Package>
           </instructions>

@@ -35,7 +35,7 @@ public class UserManagerStub implements UserDataManager {
     private Map<String, Map<String, Collection<Permission>>> permissionData = Maps.newHashMap();
 
     @Override
-    public void createUser(String username) {
+    public void createUser(String username) throws UserExistsException {
         if (credentialsData.containsKey(username)) {
             throw new UserExistsException("user exists");
         }

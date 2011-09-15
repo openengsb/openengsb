@@ -75,18 +75,12 @@ import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 
 import com.google.common.collect.ImmutableMap;
 
 public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     private ConnectorDeployerService connectorDeployerService;
-    private AuthenticationManager authManagerMock;
-    private Authentication authMock;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -100,14 +94,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
-        authManagerMock = mock(AuthenticationManager.class);
-        authMock = mock(Authentication.class);
-        when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
 
         createServiceManagerMock();
         setupPersistence();
 
-        connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setServiceManager(serviceManager);
 
         factory = mock(ConnectorInstanceFactory.class);
@@ -411,20 +401,6 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
-    public void testFailingAuthentication_shouldFail() throws Exception {
-        AuthenticationException authenticationExceptionMock = mock(AuthenticationException.class);
-        when(authManagerMock.authenticate(any(Authentication.class))).thenThrow(authenticationExceptionMock);
-        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
-        try {
-            connectorDeployerService.install(connectorFile);
-            fail("authentication should have failed");
-        } catch (AuthenticationException e) {
-            assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
-        }
-    }
-
-    @Test
     public void updateFailure_shouldCreateBackupFile() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
@@ -437,7 +413,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         serviceManager.update(id, newDesc);
         FileUtils.writeLines(connectorFile,
-                Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+            Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
         try {
             connectorDeployerService.update(connectorFile);
             fail("update should have failed, because of a merge-conflict");

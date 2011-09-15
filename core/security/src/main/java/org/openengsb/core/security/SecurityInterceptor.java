@@ -20,6 +20,7 @@ package org.openengsb.core.security;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.core.api.security.BundleAuthenticationToken;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
@@ -41,6 +42,9 @@ public class SecurityInterceptor implements MethodInterceptor {
             return mi.proceed();
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof BundleAuthenticationToken) {
+            return mi.proceed();
+        }
         String username = authentication.getName();
         Access decisionResult = authorizer.checkAccess(username, mi);
         if (decisionResult != Access.GRANTED) {

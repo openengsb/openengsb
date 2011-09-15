@@ -17,20 +17,23 @@
 
 package org.openengsb.core.api.security;
 
-import org.springframework.security.core.AuthenticationException;
+public class UserExistsException extends OpenEngSBSecurityException {
 
-@SuppressWarnings("serial")
-public class UserExistsException extends AuthenticationException {
+    private static final long serialVersionUID = 3741302495780303378L;
 
-    public UserExistsException(String msg, Throwable t) {
-        super(msg, t);
+    public UserExistsException() {
     }
 
-    public UserExistsException(String msg) {
-        super(msg);
+    public UserExistsException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public UserExistsException(String msg, Object extraInformation) {
-        super(msg, extraInformation);
+    public UserExistsException(String message) {
+        super(message);
     }
+
+    public UserExistsException(Throwable cause) {
+        super(cause);
+    }
+
 }

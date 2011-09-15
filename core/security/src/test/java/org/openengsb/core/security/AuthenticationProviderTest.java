@@ -55,8 +55,8 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         userManager.createUser("testuser");
         userManager.setUserCredentials("testuser", "password", "password");
 
-        userManager.setUserCredentials("testuser", "basecode", "90489");
-        userManager.setUserCredentials("testuser", "counter", "2");
+        userManager.setUserCredentials("testuser", "onetime-basecode", "90489");
+        userManager.setUserCredentials("testuser", "onetime-counter", "2");
 
         UsernamePasswordAuthenticator authenticator1 = new UsernamePasswordAuthenticator();
         authenticator1.setUserManager(userManager);

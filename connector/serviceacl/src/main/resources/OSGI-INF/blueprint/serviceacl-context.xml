@@ -18,7 +18,9 @@
       <entry key="domain" value="authorization" />
       <entry key="connector" value="serviceacl" />
     </service-properties>
-    <bean class="org.openengsb.connector.serviceacl.internal.ServiceAclServiceInstanceFactory" />
+    <bean class="org.openengsb.connector.serviceacl.internal.ServiceAclServiceInstanceFactory">
+      <property name="userManager" ref="userManager" />
+    </bean>
   </service>
 
   <service>
@@ -34,5 +36,7 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+
+  <reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
 
 </blueprint>

@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
-
-import java.util.Collection;
+package org.openengsb.core.api.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 
 /**
  * used internally to authenticate external bundles as actors bundles may perform administrative tasks, and are trusted
  * to handle this securely. When passed to the AuthenticationManager, authentication takes place.
- *
+ * 
  * SystemUserAuthenticationProvider takes care of authenticating such a token.
+ * 
  * @see org.openengsb.core.security.internal.SystemUserAuthenticationProvider
  */
 public class BundleAuthenticationToken extends AbstractAuthenticationToken {
 
-    private static final long serialVersionUID = 7968314028088833529L;
+    private static final long serialVersionUID = -7398391691027175944L;
 
     private String principal;
     private String apiKey;
@@ -40,19 +38,6 @@ public class BundleAuthenticationToken extends AbstractAuthenticationToken {
         super(null);
         this.principal = bundle;
         this.apiKey = apiKey;
-    }
-
-    public BundleAuthenticationToken(String bundle, String apiKey, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.principal = bundle;
-        this.apiKey = apiKey;
-    }
-
-    public BundleAuthenticationToken(BundleAuthenticationToken original,
-            Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.principal = original.principal;
-        this.apiKey = original.apiKey;
         super.setAuthenticated(true);
     }
 

@@ -48,11 +48,10 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.security.model.AuthenticationInfo;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.openengsb.core.security.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +84,7 @@ public final class SecureSampleApp {
         producer = session.createProducer(destination);
     }
 
-    private static MethodResult call(MethodCall call, AuthenticationInfo authenticationInfo) throws IOException,
+    private static MethodResult call(MethodCall call, Authentication authenticationInfo) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
@@ -96,7 +95,7 @@ public final class SecureSampleApp {
     }
 
     private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey,
-            AuthenticationInfo authenticationInfo) throws IOException, EncryptionException {
+            Authentication authenticationInfo) throws IOException, EncryptionException {
         byte[] requestString = marshalSecureRequest(methodCallRequest, authenticationInfo);
         EncryptedMessage encryptedMessage = encryptMessage(sessionKey, requestString);
         return MAPPER.writeValueAsString(encryptedMessage);
@@ -119,7 +118,7 @@ public final class SecureSampleApp {
     }
 
     private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
-            AuthenticationInfo authenticationInfo)
+            Authentication authenticationInfo)
         throws IOException, JsonGenerationException, JsonMappingException {
         BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
         SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
@@ -201,7 +200,7 @@ public final class SecureSampleApp {
             new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of("serviceId",
                 "example+example+testlog", "contextId", "foo"));
         LOGGER.info("calling method");
-        MethodResult methodResult = call(methodCall, new UsernamePasswordAuthenticationInfo("admin", "password"));
+        MethodResult methodResult = call(methodCall, new Authentication("admin", "password"));
         System.out.println(methodResult);
 
         stop();

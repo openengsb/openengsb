@@ -20,8 +20,14 @@ package org.openengsb.core.api.security.model;
 public class Authentication {
 
     protected String username;
+    private String credentials;
 
     public Authentication() {
+    }
+
+    public Authentication(String username, String credentials) {
+        this.username = username;
+        this.credentials = credentials;
     }
 
     public Authentication(String username) {
@@ -34,6 +40,14 @@ public class Authentication {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(String credentials) {
+        this.credentials = credentials;
     }
 
 }

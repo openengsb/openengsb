@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -48,17 +49,15 @@ import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.security.PrivateKeySource;
-import org.openengsb.core.api.security.model.AuthenticationInfo;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 
 public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEngSBTest {
 
@@ -81,7 +80,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     protected FilterAction secureRequestHandler;
     protected RequestHandler requestHandler;
     protected PublicKey serverPublicKey;
-    protected AuthenticationManager authManager;
+    protected AuthenticationDomain authManager;
     protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
 
     @Before
@@ -92,10 +91,8 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
         serverPublicKey = fileKeySource.getPublicKey();
         privateKeySource = fileKeySource;
         requestHandler = mock(RequestHandler.class);
-        authManager = mock(AuthenticationManager.class);
-        Authentication mockedGoodAuthentication = mock(Authentication.class);
-        when(mockedGoodAuthentication.isAuthenticated()).thenReturn(true);
-        when(authManager.authenticate(any(Authentication.class))).thenReturn(mockedGoodAuthentication);
+        authManager = mock(AuthenticationDomain.class);
+
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
@@ -130,10 +127,10 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     }
 
     protected SecureRequest prepareSecureRequest() {
-        return prepareSecureRequest(new UsernamePasswordAuthenticationInfo("test", "password"));
+        return prepareSecureRequest(new Authentication("test", "password"));
     }
 
-    private SecureRequest prepareSecureRequest(AuthenticationInfo token) {
+    private SecureRequest prepareSecureRequest(Authentication token) {
         MethodCall methodCall = new MethodCall("doSomething", new Object[]{ METHOD_ARG, });
         MethodCallRequest request = new MethodCallRequest(methodCall, "c42");
         SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
@@ -142,13 +139,13 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
 
     @Test
     public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
-        when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
+        when(authManager.authenticate(anyString(), any())).thenThrow(new AuthenticationException("bad"));
         SecureRequest secureRequest = prepareSecureRequest();
         try {
             processRequest(secureRequest);
             fail("Expected exception");
-        } catch (BadCredentialsException e) {
-            // expected, because thrown earlier
+        } catch (FilterException e) {
+            assertThat(e.getCause(), is(AuthenticationException.class));
         }
         verify(requestHandler, never()).handleCall(any(MethodCall.class));
     }

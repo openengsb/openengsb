@@ -18,7 +18,9 @@
       <entry key="domain" value="authorization" />
       <entry key="connector" value="wicketacl" />
     </service-properties>
-    <bean class="org.openengsb.connector.wicketacl.internal.WicketAclServiceInstanceFactory" />
+    <bean class="org.openengsb.connector.wicketacl.internal.WicketAclServiceInstanceFactory">
+      <property name="userManager" ref="userManager" />
+    </bean>
   </service>
 
   <service>
@@ -34,5 +36,7 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+
+  <reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
 
 </blueprint>
