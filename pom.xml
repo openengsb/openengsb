@@ -27,9 +27,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
     <karaf.version>2.2.2</karaf.version>
-    <aries.blueprint.version>0.3.1</aries.blueprint.version>
-    <aries.proxy.version>0.3</aries.proxy.version>
-    <aries.util.version>0.3</aries.util.version>
     <!-- Current Branch Version Information -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Qualified</openengsb.version.name.adjective>
@@ -218,106 +215,7 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  <profile><id>172f9e77-4ef6-4de4-9b8a-45110b93e9f7</id><build><plugins><plugin>
-      <inherited>false</inherited>
-      <groupId>com.mycila.maven-license-plugin</groupId>
-      <artifactId>maven-license-plugin</artifactId>
-      <version>1.9.0</version>
-      <configuration>
-        <!-- header is added dynamically -->
-        <failIfMissing>true</failIfMissing>
-        <aggregate>true</aggregate>
-        <strictCheck>true</strictCheck>
-        <excludes>
-          <!-- openengs-maven-plugin test resources -->
-          <exclude>src/main/resources/license/header.txt</exclude>
-          <eclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
-          <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
-          <!-- #################################### -->
-          <exclude>docs/examples/**/*.config</exclude>
-          <exclude>etc/eclipse/checkstyle.xml</exclude>
-          <exclude>license.txt</exclude>
-          <exclude>**/*.vm</exclude>
-          <exclude>**/license.txt</exclude>
-          <exclude>runner/**</exclude>
-          <exclude>assembly/runner/**</exclude>
-          <exclude>features/**</exclude>
-          <exclude>NOTICE</exclude>
-          <exclude>**/*.3pm</exclude>
-          <exclude>**/*.dll</exclude>
-          <exclude>**/*.pdb</exclude>
-          <exclude>**/*.pdf</exclude>
-          <exclude>**/LICENSE</exclude>
-          <exclude>**/*checkstyle.xml</exclude>
-          <exclude>**/*.log.*</exclude>
-          <exclude>**/*.log</exclude>
-          <exclude>**/*.packlist</exclude>
-          <exclude>**/*.pod</exclude>
-          <exclude>**/imports</exclude>
-          <exclude>**/globals</exclude>
-          <exclude>**/.keep</exclude>
-          <exclude>**/EngSB.sln</exclude>
-          <exclude>**/nb-configuration.xml</exclude>
-          <exclude>**/*.checkstyle</exclude>
-          <exclude>**/*.rf</exclude>
-        </excludes>
-        <mapping>
-          <bnd>SCRIPT_STYLE</bnd>
-          <drl>SCRIPT_STYLE</drl>
-          <index>SCRIPT_STYLE</index>
-          <gitignore>SCRIPT_STYLE</gitignore>
-          <cfg>SCRIPT_STYLE</cfg>
-          <wsdl>XML_STYLE</wsdl>
-          <csproj>XML_STYLE</csproj>
-          <rf>XML_STYLE</rf>
-          <composite>SCRIPT_STYLE</composite>
-          <config>XML_STYLE</config>
-          <script>DOUBLESLASH_STYLE</script>
-          <rule>SCRIPT_STYLE</rule>
-        </mapping>
-      <header>/tmp/b1d53c04-1ccc-478e-9dee-036e90112a524848223582034397741.txt</header></configuration>
-      <executions>
-        <execution>
-          <id>check-headers</id>
-          <phase>validate</phase>
-          <goals>
-            <!-- the goal (check/format) is added dynamically -->
-          <goal>check</goal></goals>
-        </execution>
-      </executions>
-    </plugin><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-checkstyle-plugin</artifactId>
-      <version>${maven.plugin.checkstyle.version}</version>
-      <configuration>
-        <!-- the config location is added dynamically by the mojo -->
-        <consoleOutput>true</consoleOutput>
-        <enableRulesSummary>true</enableRulesSummary>
-        <failsOnError>true</failsOnError>
-        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-      <configLocation>file:/tmp/8f430ae6-f790-41be-80f3-653d2353e0162936504710744409453.xml</configLocation></configuration>
-      <executions>
-        <execution>
-          <id>check</id>
-          <phase>verify</phase>
-          <goals>
-            <goal>checkstyle</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin><plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-surefire-plugin</artifactId>
-      <configuration>
-        <excludes>
-          <exclude>*</exclude>
-        </excludes>
-        <includes>
-          <include>**/*Test.java</include>
-          <include>**/*IT.java</include>
-        </includes>
-      </configuration>
-    </plugin></plugins><resources/></build><modules/></profile></profiles>
+  </profiles>
 
   <developers>
     <developer>

@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.htmlunit;
 
+import static java.lang.String.format;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -30,8 +31,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -39,15 +42,26 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 @RunWith(JUnit4TestRunner.class)
-public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper {
 
     private WebClient webClient;
-    private final String loginPageEntryUrl = "http://localhost:" + WEBUI_PORT + "/openengsb/login/";
-    private final long WAITING_FOR_WICKET = 3000L;
+    private static final String LOGIN_PAGE_URL = "http://localhost:" + WEBUI_PORT + "/openengsb/login/";
+    private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
     @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
+        Integer localCounter = MAX_SLEEP_TIME_IN_SECONDS;
+        while (localCounter != 0) {
+            if (isUrlReachable(LOGIN_PAGE_URL)) {
+                return;
+            }
+            Thread.sleep(1000);
+            localCounter--;
+        }
+        throw new IllegalStateException(format("Couldn't reach page %s within %s seconds", LOGIN_PAGE_URL,
+            MAX_SLEEP_TIME_IN_SECONDS));
     }
 
     @After
@@ -58,8 +72,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testIfAllMainNavigationLinksWork() throws Exception {
-        Thread.sleep(WAITING_FOR_WICKET);
-        final HtmlPage page = webClient.getPage(loginPageEntryUrl);
+        final HtmlPage page = webClient.getPage(LOGIN_PAGE_URL);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");
@@ -83,8 +96,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testUserLoginWithLimitedAccess() throws Exception {
-        Thread.sleep(WAITING_FOR_WICKET);
-        final HtmlPage page = webClient.getPage(loginPageEntryUrl);
+        final HtmlPage page = webClient.getPage(LOGIN_PAGE_URL);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("user");
@@ -96,7 +108,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
-        Thread.sleep(WAITING_FOR_WICKET);
         HtmlPage page = webClient.getPage("http://localhost:" + WEBUI_PORT + "/openengsb/");
         page = page.getAnchorByText("Login").click();
 

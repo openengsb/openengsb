@@ -37,8 +37,10 @@ import org.openengsb.core.api.workflow.TaskboxService;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -49,7 +51,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
 @RunWith(JUnit4TestRunner.class)
-public class TaskboxUiIT extends AbstractExamTestHelper {
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     private static final String CONTEXT = "it-taskbox";
     private static final String WORKFLOW = "HIDemoWorkflow";
@@ -64,11 +67,6 @@ public class TaskboxUiIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        super.beforeClass();
-        // FIXME OPENENGSB-1680
-        // The setup method of the superclass should be called but isn't (most likely a pax exam bug),
-        // so let's call it manually
-        super.before();
         webClient = new WebClient();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         if (!contextService.getAvailableContexts().contains(CONTEXT)) {

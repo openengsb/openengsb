@@ -15,18 +15,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.remote;
+package org.openengsb.itests.util;
+
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
 
 /**
- * This interface is a workaround to get to the parameter annotations of the real class hidden by aries. It's such a
- * pain, but till OPENENGSB-1976 is fixed we've to deal with this.
+ * This additional layer is required since the Configuration annotation is differently handled in exam 2.x. To avoid any
+ * ambitious behavior tests which need to modify the base options should rather direclty extend the
+ * {@link AbstractExamTestHelper} class instead of this one.
  */
-public interface CustomMarshallerRealTypeAccess {
+public abstract class AbstractPreConfiguredExamTestHelper extends AbstractExamTestHelper {
 
-    /**
-     * Returns the real, internal type of the class to be analysed.
-     */
-    Class<?> getRealUnproxiedType();
+    @Configuration
+    public static Option[] configuration() throws Exception {
+        return baseConfiguration();
+    }
 
 }
-
