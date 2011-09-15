@@ -31,6 +31,11 @@
         <license>BSD License</license>
     </artifact>
     <artifact>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <license>BSD License</license>
+    </artifact>
+    <artifact>
         <groupId>asm</groupId>
         <artifactId>asm</artifactId>
         <license>Apache License, Version 2.0</license>
