@@ -25,12 +25,12 @@
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2.RELEASE</version>
   </parent>
 
   <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-examples</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2.RELEASE</version>
   <name>OpenEngSB :: Documentation :: Examples</name>
   <packaging>pom</packaging>
 

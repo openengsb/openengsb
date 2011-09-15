@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.ui</groupId>
     <artifactId>openengsb-ui-parent</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2.RELEASE</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
   <artifactId>openengsb-ui-admin</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2.RELEASE</version>
 
   <name>OpenEngSB :: User Interface :: Administration</name>
 

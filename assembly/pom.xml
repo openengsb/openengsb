@@ -32,7 +32,7 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2.RELEASE</version>
     <relativePath>../poms/</relativePath>
   </parent>
 
