@@ -30,100 +30,134 @@
     <title>Using JMS proxying</title>
     <para>The current JMS Connector allows for internal method calls being redirected via JMS as well as internal
       services being called.</para>
-    <para>For resources regarding JMS please take a look at the according <link xlink:href="http://en.wikipedia.org/wiki/Java_Message_Service">Wikipedia Page</link> and for specific language bindings take a look at <link xlink:href="http://activemq.apache.org/connectivity.html">ActiveMQ</link></para>
+    <para>For resources regarding JMS please take a look at the according <link
+        xlink:href="http://en.wikipedia.org/wiki/Java_Message_Service">Wikipedia Page</link> and for specific language
+      bindings take a look at <link xlink:href="http://activemq.apache.org/connectivity.html">ActiveMQ</link></para>
     <section>
       <title>Proxying internal Connector calls</title>
-      <para>Whenever now a method is sent through the JMS Port the call is marshalled and sent via JMS to a queue named "receive"". 
-        The marshalling is done via JSON. The mapping has the parameters methodName, args, classes, metadata and potentially answer 
-        and callId. methodName gives the name of the method to call. Args are the serialised parameters of the method. classes are 
-        the types of the arguments. This way it is easy to unmarshall the args into the appropriate classes. metadata is a simple Map
-        which stores key value pairs. answer can simply be yes or no and denotes if the methodcall wants an answer to the call. callId
-        gives the return queue the caller will listen to for an answer.
-      </para>
-      <para>An answer can have the type, arg, className and metaData properties. type can be Object, Exception or Void. arg is the serialised
-        form of the return argument. className is the runtime class of the arg for deserialisation. metadata is a simple key value store.
-      </para>
+      <para>Whenever now a method is sent through the JMS Port the call is marshalled and sent via JMS to a queue named
+        "receive"". The marshalling is done via JSON. The mapping has the parameters methodName, args, classes, metadata
+        and potentially answer and callId. methodName gives the name of the method to call. Args are the serialised
+        parameters of the method. classes are the types of the arguments. This way it is easy to unmarshall the args
+        into the appropriate classes. metadata is a simple Map which stores key value pairs. answer can simply be yes or
+        no and denotes if the methodcall wants an answer to the call. callId gives the return queue the caller will
+        listen to for an answer. </para>
+      <para>An answer can have the type, arg, className and metaData properties. type can be Object, Exception or Void.
+        arg is the serialised form of the return argument. className is the runtime class of the arg for
+        deserialisation. metadata is a simple key value store. </para>
       <section>
         <title>HowTo call an external service via proxies</title>
-        <para>This section will give a short introduction how to instantiate a proxy and call an external connector</para>
-        <para>First you have to go to the TestClient to instantiate a new Proxy. Select the Domain you want to have proxied
-          and click New Proxy for that Domain.</para>
+        <para>This section will give a short introduction how to instantiate a proxy and call an external
+          connector</para>
+        <para>First you have to go to the TestClient to instantiate a new Proxy. Select the Domain you want to have
+          proxied and click New Proxy for that Domain.</para>
         <mediaobject>
           <imageobject>
-            <imagedata id="testclient" fileref="graphics/testclient.png"
-              format="png" width="300" align="center" />
+            <imagedata id="testclient" fileref="graphics/testclient.png" format="png" width="300" align="center"/>
           </imageobject>
           <caption>Testclient new proxy link</caption>
         </mediaobject>
         <para>Then you have to set the correct values for the proxy properties. The Service Id is a unique value that
           identifies the proxy in the OPENENGSB system. The Port Id defines to Port to be used for sending the request.
-          "jms-json" is a currently supported Port that sends the request via a json encoded JMS message. The destination
-          describes the endpoint the message should be sent to. When using jms-json the domain and port of the JMS provider
-          have to be set. When calling a remote connector the unique id of the remote service or connector has to be provided. 
-          This way the remote service can identify, load and call a certain service.
-          If the call is not intended to go to another OPENENGSB, or the external service needs no identification of the service
-          to call the remote service id can be ommited.</para>
+          "jms-json" is a currently supported Port that sends the request via a json encoded JMS message. The
+          destination describes the endpoint the message should be sent to. When using jms-json the domain and port of
+          the JMS provider have to be set. When calling a remote connector the unique id of the remote service or
+          connector has to be provided. This way the remote service can identify, load and call a certain service. If
+          the call is not intended to go to another OPENENGSB, or the external service needs no identification of the
+          service to call the remote service id can be ommited.</para>
         <mediaobject>
           <imageobject>
-            <imagedata id="create-proxy" fileref="graphics/create-proxy.png"
-              format="png" width="400" align="center" />
+            <imagedata id="create-proxy" fileref="graphics/create-proxy.png" format="png" width="400" align="center"/>
           </imageobject>
           <caption>Create Proxy</caption>
         </mediaobject>
         <para>After saving the proxy you should be able to test it via the TestClient page. Following is an example of
-          a call:</para>
-        <code>{"classes":["java.lang.String", "java.lang.Integer","org.openengsb.core.ports.jms.JMSPortTest$TestClass"], 
-          "methodName":"method","args":["123",5,{"test":"test"}], "metaData":{"test":"test"}}
-        </code>
+          an unsecure call:</para>
+        <programlisting><![CDATA[{
+  "authenticationData": {
+    "className":"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo",
+    "data": {
+      "username":"admin",
+      "password":"password"
+    }
+  },
+  "timestamp":42,
+  "message": {
+    "callId":"xyz",
+    "answer":true,
+    "methodCall": {
+      "classes": [
+        "java.lang.String",
+        "org.openengsb.core.api.workflow.model.ProcessBag"
+      ],
+      "methodName": "executeWorkflow",
+      "metaData": {
+        "serviceFilter": "(objectClass=org.openengsb.core.api.workflow.WorkflowService)",
+        "contextId": "foo"
+      },
+      "args": [
+        "simpleFlow",
+        {
+        }
+      ]
+    }
+  }
+}]]></programlisting>
+        <para> IF you would like to use security instead you should prefer the following call: <programlisting><![CDATA[{
+{
+  "encryptedContent":"encodedMessage", // Base 64 and encryped string of the message above
+  "encryptedKey":"encodedKey" // The encoded key
+}]]></programlisting>
+        </para>
         <mediaobject>
           <imageobject>
-            <imagedata id="call-proxy" fileref="graphics/call-proxy.png"
-              format="png" width="400" align="center" />
+            <imagedata id="call-proxy" fileref="graphics/call-proxy.png" format="png" width="400" align="center"/>
           </imageobject>
           <caption>Test a proxy</caption>
         </mediaobject>
-        <para>When proxying connector calls you have to provide an answer to every call, as the system blocks until it gets an answer.
-          You have to send a JSON message containing a type string parameter, which can be Object, Exception or Void depending on the 
-          return argument of the method, arg where you simply serialise the Return Object, so it can be deserialised into the correct 
-          object later and className which gives the exact class that has to be used for deserialisation. The request contains a 
-          parameter callId which is the name of the queue the answer has to be sent to.</para>
-        <code>{"type":"Object","className":"org.openengsb.core.ports.jms.JMSPortTest$TestClass",
-          "metaData":{"test":"test"},"arg":{"test":"test"}}</code>
-        <para>Whenever a call to this proxy is then made a new JMS message will be sent to the "receive" queue on the 
-          destination you entered. The exact make up of the message was already described. When implementing an external connector
-          it is best to test the call you want to receive first via the TestClient, so you get the exact message that you will
-          have to work with.</para>
+        <para>When proxying connector calls you have to provide an answer to every call, as the system blocks until it
+          gets an answer. You have to send a JSON message containing a type string parameter, which can be Object,
+          Exception or Void depending on the return argument of the method, arg where you simply serialise the Return
+          Object, so it can be deserialised into the correct object later and className which gives the exact class that
+          has to be used for deserialisation. The request contains a parameter callId which is the name of the queue the
+          answer has to be sent to.</para>
+        <programlisting>{"type":"Object","className":"org.openengsb.core.ports.jms.JMSPortTest$TestClass",
+          "metaData":{"test":"test"},"arg":{"test":"test"}}</programlisting>
+        <para>Whenever a call to this proxy is then made a new JMS message will be sent to the "receive" queue on the
+          destination you entered. The exact make up of the message was already described. When implementing an external
+          connector it is best to test the call you want to receive first via the TestClient, so you get the exact
+          message that you will have to work with.</para>
+        <para>Please always keep in mind security. By default security is turned on. If you want to turn it off please
+          take a look into the <code>etc/system.properties</code> file. While using no security for testing is very
+          interesting we would not advise you to send unencrypted messages in a production environment.</para>
       </section>
     </section>
 
     <section>
       <title>Calling internal Services</title>
-      <para>To call an internal Service send a methodcall as described before to the "receive" queue on the server you want to call.
-        The service works exactly as defined before. There currently are two ways of specifying which service to
-        address.
-          <itemizedlist>
-            <listitem>
-              serviceId: This will call the service that was exported with the specified "id"-property. It behaves like
-              the following Filter in OSGi-syntax: <code>(id=&lt;serviceId&gt;)</code>
-            </listitem>
-            <listitem>
-              serviceFilter: This way you can specify any filter in OSGi-syntax to adress the service, so it is
-              not necessary to bind the client to a specific id, but to other properties as well (e.g. <code>location.root</code>,
-              <code>location.&lt;context&gt;</code>, <code>objectClass</code>, ...)
-            </listitem>
-          </itemizedlist>
-        You can also use both attributes (serviceId and serviceFilter). It will create a filter matching both
-        constraints.
-      </para>
+      <para>To call an internal Service send a methodcall as described before to the "receive" queue on the server you
+        want to call. The service works exactly as defined before. There currently are two ways of specifying which
+        service to address. <itemizedlist>
+          <listitem> serviceId: This will call the service that was exported with the specified "id"-property. It
+            behaves like the following Filter in OSGi-syntax: <code>(id=&lt;serviceId&gt;)</code>
+          </listitem>
+          <listitem> serviceFilter: This way you can specify any filter in OSGi-syntax to adress the service, so it is
+            not necessary to bind the client to a specific id, but to other properties as well (e.g.
+              <code>location.root</code>, <code>location.&lt;context&gt;</code>, <code>objectClass</code>, ...)
+          </listitem>
+        </itemizedlist> You can also use both attributes (serviceId and serviceFilter). It will create a filter matching
+        both constraints. </para>
 
       <para>Example: if you want to execute a workflow via the WorkflowService send</para>
-      <code>{"callId":"12345","answer":true,"classes":["java.lang.String", "org.openengsb.core.api.workflow.model.ProcessBag"],
-        "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService", "contextId":"foo"},"args":["simpleFlow", {}]}</code>
-      <para>Please be aware that the flow the above method tries to call (simpleFlow) is not available by default on the OpenEngSB.
-        To make sure that there's a flow you can call install the flow in the OpenEngSB. Therefore start the OpenEngSB and go to the
-        <link xlink:href="http://localhost:8090/openengsb/SendEventPage/">SendEventPage</link>. There choose to create a new process and 
-        press new. Now enter simpleFlow as processname and past the following process:
-       <programlisting><![CDATA[<process xs:schemaLocation="http://drools.org/drools-5.0/process 
+      <code>{"callId":"12345","answer":true,"classes":["java.lang.String",
+        "org.openengsb.core.api.workflow.model.ProcessBag"],
+        "methodName":"executeWorkflow","metaData":{"serviceId":"workflowService",
+        "contextId":"foo"},"args":["simpleFlow", {}]}</code>
+      <para>Please be aware that the flow the above method tries to call (simpleFlow) is not available by default on the
+        OpenEngSB. To make sure that there's a flow you can call install the flow in the OpenEngSB. Therefore start the
+        OpenEngSB and go to the <link xlink:href="http://localhost:8090/openengsb/SendEventPage/">SendEventPage</link>.
+        There choose to create a new process and press new. Now enter simpleFlow as processname and past the following
+        process: <programlisting><![CDATA[<process xs:schemaLocation="http://drools.org/drools-5.0/process 
   drools-processes-5.0.xsd" type="RuleFlow" name="simpleFlow" id="simpleFlow" 
   package-name="org.openengsb" xmlns="http://drools.org/drools-5.0/process" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
@@ -149,42 +183,57 @@
   <connection from="3" to="2"/>
   <connection from="1" to="3"/>
  </connections>
-</process>]]></programlisting>
-    After pressing save you can access the process via the message shown above.
-    </para>
-    <para>to the receive queue on the OPENENGSB JMS Port which is started by default on Port 6549. Make sure that classes and args
-        has the same number of arguments. If you just want an object to be instantiated, but have no corresponding values that should
-        be set for the object simply add {} (as in the example above) which will instantiate the object but recognize, that no values
-        have to be set on the object. {"name" : "SomeName"} would on the other hand call the setName method with SomeName.</para>
-    <para>The response to the above message will be returned on a queue you've pasted via the callId field.</para>
+</process>]]></programlisting> After pressing save you can access the process via the message shown above. </para>
+      <para>to the receive queue on the OPENENGSB JMS Port which is started by default on Port 6549. Make sure that
+        classes and args has the same number of arguments. If you just want an object to be instantiated, but have no
+        corresponding values that should be set for the object simply add {} (as in the example above) which will
+        instantiate the object but recognize, that no values have to be set on the object. {"name" : "SomeName"} would
+        on the other hand call the setName method with SomeName.</para>
+      <para>The response to the above message will be returned on a queue you've pasted via the callId field.</para>
     </section>
     <section>
       <title>Examples</title>
-    <para>
-    We provide examples in different languages how to connect to the OpenEngSB. The examples are grouped according to language
-    and the documentation to the different examples are directly done in the code of the examples. We try to keep those examples
-    as good as possible up-to-date, but do not gurantee that they all work as expected since we can't add them to our integration
-    tests. If you want to provide examples in different languages you're always welcomed to provide them.
-    </para>
+      <para> We provide examples in different languages how to connect to the OpenEngSB. The examples are grouped
+        according to language and the documentation to the different examples are directly done in the code of the
+        examples. We try to keep those examples as good as possible up-to-date, but do not gurantee that they all work
+        as expected since we can't add them to our integration tests. If you want to provide examples in different
+        languages you're always welcomed to provide them. </para>
       <section>
         <title>Connect With Python</title>
-        <para>To test the OPENENGSB JMS implementation with Python please follow the
-          <link xlink:href="${github}/docs/examples/src/main/python/PythonClient.txt">instructions</link>
+        <para>To test the OPENENGSB JMS implementation with Python please follow the <link
+            xlink:href="${github}/docs/examples/src/main/python/PythonClient.txt">instructions</link>
         </para>
         <para>The example can be downloaded <link xlink:href="${repos.example}-python.zip">here</link></para>
       </section>
       <section xml:id="developer.plugins.csharp">
         <title>Connect With CSharp</title>
-        <para>The CSharp connector is written on basis of the Apache ActiveMQ JMS connector. There an EngSB.sln file. This project
-          file has been developed with SharpDevelop 4, but is also tested with VisualStudio 2008 CSharp Express Edition 
-          with the .Net Framework 4.</para>
+        <para>The CSharp connector is written on basis of the Apache ActiveMQ JMS connector. There an EngSB.sln file.
+          This project file has been developed with SharpDevelop 4, but is also tested with VisualStudio 2008 CSharp
+          Express Edition with the .Net Framework 4.</para>
         <para>The example can be downloaded <link xlink:href="${repos.example}-csharp.zip">here</link></para>
       </section>
       <section xml:id="developer.plugins.perl">
         <title>Connect With Perl</title>
-        <para>As shown in this example you can connect to the OpenEngSB in a similar way as with Python or CSharp.</para>
+        <para>As shown in this example you can connect to the OpenEngSB in a similar way as with Python or
+          CSharp.</para>
         <para>The example can be downloaded <link xlink:href="${repos.example}-perl.zip">here</link></para>
       </section>
     </section>
+  </section>
+  <section>
+    <title>Using WS Proxing</title>
+    <para>TBW</para>
+  </section>
+  <section>
+    <title>Internal Specialities</title>
+    <para>Basically there is nothing special to do to get up a service. Still, since java has no static type information
+      there is no possibility to marshal things like a <code>java.util.List</code> of options. The fix we've introduced
+      for this problem is to annotate parameters and define a custom marshaller. Therefore create a class with a default
+      constructor extending CustomJsonMarshaller. Then annotate the parameter of the implementations you're using with
+      the UseCustomJasonMarshaller annotation adding the Marshaller class. That's it. The framework will automatically
+      create the mapper and call the transform method for you. </para>
+    <para> Since there is an issue right now with Aries Proxies hiding parameter annotations the
+      CustomMarshallerRealTypeAccess interface provides a workaround for the problem. In case this interface is found
+      the class provided by it is used for searching. Otherwise the class directly is scanned.</para>
   </section>
 </chapter>

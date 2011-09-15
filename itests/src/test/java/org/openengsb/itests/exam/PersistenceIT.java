@@ -37,13 +37,15 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 @RunWith(JUnit4TestRunner.class)
-public class PersistenceIT extends AbstractExamTestHelper {
+// This one will run each test in it's own container (slower speed)
+// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
 
     private PersistenceService persistence;
     private PersistenceTestObject element;

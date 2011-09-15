@@ -27,6 +27,11 @@ source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../
 
+## always clean assembly, because it does not get repacked properly on install
+cd assembly
+mvn clean
+cd ..
+
 mvn install -Dmaven.test.skip=true
 ./etc/scripts/exec.sh
 

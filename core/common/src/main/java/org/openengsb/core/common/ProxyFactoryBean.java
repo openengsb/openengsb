@@ -67,15 +67,13 @@ public class ProxyFactoryBean {
 
         for (int i = 0; i < proxyInterfaces.size(); i++) {
             Class<?> loadedClass = null;
-            int j = 0;
             for (ClassLoader loader : loaders) {
-                j++;
                 try {
                     loadedClass = loader.loadClass(proxyInterfaces.get(i));
                     LOGGER.info("found class using Classloader: {} - {}", i, loader.getClass());
                     break;
                 } catch (ClassNotFoundException e) {
-                    // ignore throw new RuntimeException(e);
+                    // ignore
                 }
             }
             if (loadedClass == null) {

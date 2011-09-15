@@ -31,6 +31,13 @@ public class DestinationUrlTest {
         assertThat(destinationUrl.getJmsDestination(), Matchers.equalTo("queue"));
     }
 
+    @Test
+    public void testCreateDestinationUrlWithValidParamsAndPort_shouldCreateValidDestination() throws Exception {
+        DestinationUrl destinationUrl = DestinationUrl.createDestinationUrl("tcp://host:8080?queue");
+        assertThat(destinationUrl.getHost(), Matchers.equalTo("tcp://host:8080"));
+        assertThat(destinationUrl.getJmsDestination(), Matchers.equalTo("queue"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidPattern_shouldThrowError() throws Exception {
         DestinationUrl.createDestinationUrl("blub");
