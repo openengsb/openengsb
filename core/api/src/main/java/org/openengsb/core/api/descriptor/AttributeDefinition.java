@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -172,8 +173,12 @@ public class AttributeDefinition implements Serializable {
             return this;
         }
 
-        public Builder oAuthConfiguration(OAuthData conf) {
-            attr.oAuthConfiguration = conf;
+        public Builder oAuthConfiguration(Map<String, String> firstURLParameters,
+                Map<String, String> secondURLParameters, String firstURL, String secondURL,
+                String redirectParameterName, String intermediateParameterName) {
+            attr.oAuthConfiguration =
+                new OAuthData(firstURLParameters, secondURLParameters, firstURL, secondURL, redirectParameterName,
+                    intermediateParameterName);
             return this;
         }
 

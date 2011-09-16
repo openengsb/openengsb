@@ -33,6 +33,13 @@ public class OAuthData implements Serializable {
     private String redirectParameterName;
     private String intermediateName;
 
+    /**
+     * firstURLParameters - the parameters which should be extended via ?key=value to the first URL secondURLParameters
+     * - the parameters which should be extended via ?key=value to the second URL firstURL - the URL where the request
+     * for the code have to be sent to. The code is needed in the second URL call secondURL - the URL to send the
+     * request to get a user token redirectParameterName - the name of the parameter to redirect the code or token to
+     * intermediateParameterName - the name of the code value in the result of the first URL
+     */
     public OAuthData(Map<String, String> firstURLParameters, Map<String, String> secondURLParameters,
             String firstURL, String secondURL, String redirectParameterName, String intermediateParameterName) {
         this.firstURLParameters = firstURLParameters;
@@ -47,29 +54,33 @@ public class OAuthData implements Serializable {
         firstURLParameters.put(redirectParameterName, redirectUrl);
         secondURLParameters.put(redirectParameterName, redirectUrl);
     }
-    
+
     public void addEntryToFirstParams(String key, String value) {
         firstURLParameters.put(key, value);
     }
-    
+
     public void addEntryToSecondParams(String key, String value) {
         secondURLParameters.put(key, value);
     }
-    
+
     public String getIntermediateParameterName() {
         return intermediateName;
     }
 
     public String generateFirstCallLink() {
         StringBuilder builder = new StringBuilder();
-        builder.append(firstURL).append("?");
+        if (!firstURL.endsWith("?")) {
+            builder.append(firstURL).append("?");
+        }
         builder.append(generateParamString(firstURLParameters));
         return builder.toString();
     }
-    
+
     public String generateSecondCallLink() {
         StringBuilder builder = new StringBuilder();
-        builder.append(secondURL).append("?");
+        if (!secondURL.endsWith("?")) {
+            builder.append(secondURL).append("?");
+        }
         builder.append(generateParamString(secondURLParameters));
         return builder.toString();
     }
