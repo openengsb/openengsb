@@ -83,7 +83,7 @@ public abstract class AbstractLoginTest extends AbstractUITest {
 
         UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
-        context.putBean("authenticationManager", authConnector);
+        context.putBean("authenticator", authConnector);
 
         WicketAclServiceImpl wicketAclServiceImpl = new WicketAclServiceImpl();
         wicketAclServiceImpl.setUserManager(userManager);
@@ -104,6 +104,6 @@ public abstract class AbstractLoginTest extends AbstractUITest {
 
         cFactory.applyAttributes(instance,
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
-        registerServiceAtLocation(instance, "authorization", "root", AuthorizationDomain.class, Domain.class);
+        registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
     }
 }

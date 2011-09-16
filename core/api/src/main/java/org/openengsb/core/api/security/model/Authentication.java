@@ -17,6 +17,7 @@
 
 package org.openengsb.core.api.security.model;
 
+
 public class Authentication {
 
     protected String username;

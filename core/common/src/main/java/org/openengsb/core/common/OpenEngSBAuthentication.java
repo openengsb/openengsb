@@ -14,12 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.api.security;
+package org.openengsb.core.common;
 
 import org.openengsb.core.api.security.model.Authentication;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-public interface SecurityContext {
-    Authentication getAuthentication();
+class OpenEngSBAuthentication extends AbstractAuthenticationToken {
 
-    void setAuthentication(Authentication auth);
+    private static final long serialVersionUID = -3293065282606838713L;
+
+    private Authentication authentication;
+
+    public OpenEngSBAuthentication(Authentication authentication) {
+        super(null);
+        this.authentication = authentication;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return authentication.getCredentials();
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return authentication.getUsername();
+    }
+
+    public Authentication getAuthentication() {
+        return authentication;
+    }
+
 }

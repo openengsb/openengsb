@@ -210,7 +210,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.install(connectorFile);
 
         ServiceReference reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "")[0];
-        String ranking = (String) reference.getProperty(Constants.SERVICE_RANKING);
+        Integer ranking = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
         assertThat(new Long(ranking), new LessThan<Long>(0L));
     }
 

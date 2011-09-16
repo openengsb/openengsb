@@ -35,6 +35,7 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -45,7 +46,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainAuthorizationStrategy.class);
 
     private AuthorizationDomain authorizer = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(
-        AuthorizationDomain.class, "authorization");
+        AuthorizationDomain.class, "authorization-root");
 
     private static Map<Component, Collection<SecurityAttributeEntry>> runtimeAttributes = new MapMaker().softKeys()
         .makeMap();
@@ -62,7 +63,9 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (attributeList.isEmpty()) {
             return true;
         }
-        Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
+
+        Authentication authentication =
+            getAuthenticatedUser();
         if (authentication == null) {
             return false;
         }
@@ -78,7 +81,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (!hasSecurityAnnotation(componentClass)) {
             return true;
         }
-        Authentication authentication = SpringSecurityContext.getInstance().getAuthentication();
+        Authentication authentication = getAuthenticatedUser();
         if (authentication == null) {
             return false;
         }
@@ -87,6 +90,10 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         LOGGER.trace("security-attribute-annotation present on {}", componentClass);
 
         return authorizer.checkAccess(user, new GenericControlledObject(getSecurityAttributes(componentClass))) == Access.GRANTED;
+    }
+
+    private static Authentication getAuthenticatedUser() {
+        return SpringSecurityContext.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
     private boolean hasSecurityAnnotation(Class<? extends Component> class1) {

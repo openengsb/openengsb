@@ -26,6 +26,7 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.SpringSecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorService implements
         AuthenticationDomain {
@@ -56,7 +57,7 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
             throw new AuthenticationException("wrong password");
         }
         Authentication authentication = new Authentication(username);
-        SpringSecurityContext.getInstance().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContext.wrapToken(authentication));
         return authentication;
 
     }

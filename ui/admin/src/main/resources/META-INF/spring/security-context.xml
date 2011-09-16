@@ -24,4 +24,20 @@
   http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd">
 
 
+  <http create-session="never" auto-config="true">
+<!--     <remember-me /> -->
+    <intercept-url pattern="/**" />
+  </http>
+
+  <authentication-manager alias="authenticationManager">
+    <authentication-provider ref="authenticationProvider" />
+  </authentication-manager>
+
+  <beans:bean id="authenticationProvider" class="org.openengsb.ui.admin.UIAuthenticationProvider">
+    <beans:property name="authenticator" ref="authenticator" />
+  </beans:bean>
+
+  <osgi:reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
+
 </beans:beans>

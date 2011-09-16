@@ -25,8 +25,8 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 @SuppressWarnings("serial")
 public class AdminWebSession extends OpenEngSBWebSession {
 
-    @PaxWicketBean(name = "authenticationManager")
-    private AuthenticationDomain authenticationManager;
+    @PaxWicketBean(name = "authenticator")
+    private AuthenticationDomain authenticator;
 
     public AdminWebSession(Request request) {
         super(request);
@@ -36,7 +36,7 @@ public class AdminWebSession extends OpenEngSBWebSession {
 
     @Override
     protected AuthenticationDomain getAuthenticationManager() {
-        return authenticationManager;
+        return authenticator;
     }
 
 }
