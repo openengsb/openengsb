@@ -27,9 +27,7 @@ public final class App {
     }
 
     /**
-     * Make checkstyle happy
-     * 
-     * @param args
+     * make checkstyle happy
      */
     public static void main(String[] args) {
         System.out.println("Hello World!");
