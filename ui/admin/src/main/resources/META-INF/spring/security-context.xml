@@ -25,7 +25,6 @@
 
 
   <http create-session="never" auto-config="true">
-<!--     <remember-me /> -->
     <intercept-url pattern="/**" />
   </http>
 

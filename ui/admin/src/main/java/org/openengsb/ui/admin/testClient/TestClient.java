@@ -236,27 +236,26 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                // if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
-                // editButton.setEnabled(false);
-                // deleteButton.setEnabled(false);
-                // submitButton.setEnabled(false);
-                // target.addComponent(editButton);
-                // target.addComponent(deleteButton);
-                // target.addComponent(submitButton);
-                // return;
-                // }
-                call.setService((ServiceId) mnode.getUserObject());
-                populateMethodList();
+                try {
+                    argumentList.removeAll();
+                    target.addComponent(argumentListContainer);                    
+                    ServiceId service = (ServiceId) mnode.getUserObject();
+                    LOGGER.info("clicked on node {} of type {}", node, node.getClass());
+                    call.setService(service);
+                    populateMethodList();
+                    updateModifyButtons(service);
+                } catch (ClassCastException ex) {
+                    LOGGER.info("clicked on not ServiceId node");
+                    methodList.setChoices(new ArrayList<MethodId>());
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    submitButton.setEnabled(false);
+                }
                 target.addComponent(methodList);
-                argumentList.removeAll();
-                target.addComponent(argumentListContainer);
-                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
-
-                updateModifyButtons((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
                 target.addComponent(deleteButton);
                 target.addComponent(submitButton);
-                target.addComponent(feedbackPanel);
+                target.addComponent(feedbackPanel);                
             }
         };
         serviceList.setOutputMarkupId(true);

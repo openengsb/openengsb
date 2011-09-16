@@ -77,12 +77,12 @@
   </bean>
 
   <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
-    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="authenticationManager" ref="authenticator" />
     <property name="requestHandler" ref="requestHandler" />
   </bean>
 
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
-  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="httpService" interface="org.osgi.service.http.HttpService" />
 
 </blueprint>
