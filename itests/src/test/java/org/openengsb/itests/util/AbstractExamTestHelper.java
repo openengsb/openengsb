@@ -265,35 +265,6 @@ public abstract class AbstractExamTestHelper {
         if (debug) {
             return combine(mainOptions, debugConfiguration(debugPort, hold));
         }
-//<<<<<<< HEAD
-//        String targetpath = new File("target").getAbsolutePath();
-//        FileUtils.deleteDirectory(new File(targetpath, "karaf.data"));
-//        return combine(
-//            baseOptions,
-//            Helper.loadKarafStandardFeatures("config", "management"),
-//            Helper.setLogLevel(loglevel),
-//            mavenBundle(maven().groupId("org.apache.aries").artifactId("org.apache.aries.util")
-//                .versionAsInProject()),
-//            mavenBundle(maven().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy")
-//                .versionAsInProject()),
-//            mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
-//                .versionAsInProject()),
-//            scanFeatures(
-//                maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features-itests")
-//                    .versionAsInProject(), "openengsb-connector-memoryauditing", "openengsb-ui-admin"),
-//            workingDirectory(getWorkingDirectory()),
-//            vmOption("-Dorg.osgi.framework.system.packages.extra=com.sun.org.apache.xerces.internal.dom,"
-//                    + "com.sun.org.apache.xerces.internal.jaxp,org.apache.karaf.branding,sun.reflect"),
-//            vmOption("-Dorg.osgi.service.http.port=" + WEBUI_PORT), vmOption("-DrmiRegistryPort="
-//                    + RMI_REGISTRY_PORT), vmOption("-DrmiServerPort=" + RMI_SERVER_PORT),
-//            waitForFrameworkStartup(),
-//            vmOption("-Dkaraf.data=" + targetpath + "/karaf.data"),
-//            vmOption("-Dkaraf.home=" + targetpath + "/karaf.home"),
-//            vmOption("-Dkaraf.base=" + targetpath + "/karaf.base"),
-//            mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
-//                .versionAsInProject()), felix());
-//    }
-//=======
         return mainOptions;
     }
 
@@ -315,5 +286,4 @@ public abstract class AbstractExamTestHelper {
         }
         return LogLevel.WARN;
     }
-//>>>>>>> origin/master
 }
