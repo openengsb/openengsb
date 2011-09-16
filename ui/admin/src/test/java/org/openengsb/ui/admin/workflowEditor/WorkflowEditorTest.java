@@ -17,7 +17,6 @@
 
 package org.openengsb.ui.admin.workflowEditor;
 
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertNull;
@@ -310,6 +309,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         tester.assertErrorMessages(errors);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void removeWorkflow_shouldRemoveWorkflowFromService() throws PersistenceException {
         service.createWorkflow("Workflow");
@@ -318,6 +318,7 @@ public class WorkflowEditorTest extends AbstractUITest {
         createForm.submit();
         assertNull(service.getCurrentWorkflow());
         assertThat(service.getWorkflowNames().size(), equalTo(0));
+        @SuppressWarnings("rawtypes")
         ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
         verify(workflowPersistence).remove(captor.capture());
         assertThat((String) captor.getValue().get("name"), equalTo("Workflow"));

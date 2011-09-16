@@ -34,12 +34,14 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Constants;
 
 @RunWith(JUnit4TestRunner.class)
-public class OsgiServiceUtilIT extends AbstractExamTestHelper {
+// This one will run each test in it's own container (slower speed)
+// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testOsgiServiceUtilMethods() throws Exception {
@@ -59,7 +61,7 @@ public class OsgiServiceUtilIT extends AbstractExamTestHelper {
             getServiceUtils().getOsgiServiceProxy(
                 getServiceUtils().makeFilter(ConnectorProvider.class,
                     String.format("(%s=example)", org.openengsb.core.api.Constants.CONNECTOR_KEY)),
-                    ConnectorProvider.class);
+                ConnectorProvider.class);
         assertThat(proxy.getId(), is("example"));
     }
 

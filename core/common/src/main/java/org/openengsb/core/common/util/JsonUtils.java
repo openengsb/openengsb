@@ -38,7 +38,7 @@ public final class JsonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static Object convertArgument(String className, Object arg) {
+    private static Object convertArgument(String className, Object arg) {
         try {
             Class<?> type = JsonUtils.class.getClassLoader().loadClass(className);
             return MAPPER.convertValue(arg, type);
