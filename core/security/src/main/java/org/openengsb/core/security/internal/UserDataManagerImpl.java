@@ -24,7 +24,6 @@ import java.util.HashSet;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
@@ -76,26 +75,13 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public String getUserCredentials(String username, final String key) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        Collection<CredentialData> credentials = found.getCredentials();
-        CredentialData entry = Iterators.find(credentials.iterator(), new Predicate<CredentialData>() {
-            @Override
-            public boolean apply(CredentialData input) {
-                return ObjectUtils.equals(key, input.getKey());
-            }
-        });
-        return entry.getValue();
+        return found.getCredentials().get(key).getValue();
     }
 
     @Override
     public void setUserCredentials(String username, String type, String value) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        // Map<String, String> credentials = found.getCredentials();
-        // if (credentials == null) {
-        // credentials = Maps.newHashMap();
-        // found.setCredentials(credentials);
-        // }
-        found.getCredentials().add(new CredentialData(type, value));
-        // credentials.put(type, value);
+        found.getCredentials().put(type, new CredentialData(type, value));
         entityManager.merge(found);
     }
 

@@ -26,7 +26,7 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 
 @Entity
 @Table(name = "USERDATA")
@@ -35,11 +35,9 @@ public class UserData {
     @Id
     private String username;
 
-    // @MapKey
-    // private Map<String, String> credentials;
-
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<CredentialData> credentials = Sets.newHashSet();
+    @MapKey(name = "key")
+    private Map<String, CredentialData> credentials = Maps.newHashMap();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<PermissionData> permissions;
@@ -62,11 +60,11 @@ public class UserData {
         this.username = username;
     }
 
-    public Collection<CredentialData> getCredentials() {
+    public Map<String, CredentialData> getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(Collection<CredentialData> credentials) {
+    public void setCredentials(Map<String, CredentialData> credentials) {
         this.credentials = credentials;
     }
 
@@ -88,7 +86,7 @@ public class UserData {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", username, credentials.isEmpty() ? "none" : "****");
+        return String.format("%s:%s:(%s permissions)", username, credentials.isEmpty() ? "none" : "****", permissions.size());
     }
 
 }
