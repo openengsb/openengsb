@@ -149,11 +149,11 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
 
         String authInfo = ""
                 + "{"
-                + "  \"className\":\"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo\","
+                + "  \"className\":\"org.openengsb.core.api.security.model.Authentication\","
                 + "  \"data\":"
                 + "  {"
                 + "    \"username\":\"" + username + "\","
-                + "    \"password\":\"" + password + "\""
+                + "    \"credentials\":\"" + password + "\""
                 + "  }"
                 + "}";
 
