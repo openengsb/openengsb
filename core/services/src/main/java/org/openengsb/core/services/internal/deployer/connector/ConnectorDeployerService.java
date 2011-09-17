@@ -90,7 +90,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
         Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
-            properties.put(Constants.SERVICE_RANKING, "-1");
+            properties.put(Constants.SERVICE_RANKING, -1);
         }
         LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
