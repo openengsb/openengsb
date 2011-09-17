@@ -41,6 +41,7 @@
   <section>
     <title>Connectors</title>  
     <xi:include href="email.xml" />
+    <xi:include href="facebook.xml" />
   </section>
 
 </chapter>
