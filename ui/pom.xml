@@ -24,13 +24,13 @@
     <relativePath>../poms/bundle/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>openengsb-bundle-settings</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
   <artifactId>openengsb-ui-parent</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: User Interface :: Parent</name>
 
