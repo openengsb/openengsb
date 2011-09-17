@@ -58,7 +58,7 @@
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
-  
+
   <build>
     <resources>
       <resource>
@@ -89,17 +89,17 @@
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
       <scope>provided</scope>
-	</dependency>
+    </dependency>
     <dependency>
       <groupId>org.apache.aries.transaction</groupId>
       <artifactId>org.apache.aries.transaction.blueprint</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.apache.geronimo.components</groupId>
       <artifactId>geronimo-transaction</artifactId>
       <scope>provided</scope>
-    </dependency>
+    </dependency>-->
   </dependencies>
 
 </project>

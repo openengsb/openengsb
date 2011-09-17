@@ -119,11 +119,9 @@
 
     <!-- JPA Infrastructure -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.apache.geronimo.components/geronimo-transaction/${geronimo.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
