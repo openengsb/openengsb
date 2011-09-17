@@ -241,7 +241,7 @@
     <openjpa.version>2.1.1</openjpa.version>
     <scripting.version>1.5.0</scripting.version>
     <xbean.blueprint.version>3.7</xbean.blueprint.version>
-    <h2.version>1.3.154</h2.version>
+    <h2.version>1.3.160</h2.version>
     <aries.jpa.version>0.3</aries.jpa.version>
     <aries.jndi.version>0.3</aries.jndi.version>
     <aries.transaction.version>0.3</aries.transaction.version>
