@@ -122,7 +122,7 @@
     <commons.net.version>20030805.205232</commons.net.version>
     <commons.discovery.version>0.2</commons.discovery.version>
     <commons.vfs.version>20050307052300</commons.vfs.version>
-    <commons.codec.version>1.4</commons.codec.version>
+    <commons.codec.version>1.5</commons.codec.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <asm.version>3.3_2</asm.version>
     <wsdl4j.version>1.6.2_3</wsdl4j.version>
