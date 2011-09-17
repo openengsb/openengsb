@@ -38,7 +38,7 @@
       You have to configurate your facebook connector with the details of your application. Steps:
     </para>
 
-    <orderedlist numeration="roman">
+    <orderedlist numeration="arabic">
       <listitem>
         <para>create an application on facebook. HOWTO:http://developers.facebook.com/docs/guides/canvas/.</para>
       </listitem>
@@ -57,7 +57,7 @@
       This action requires two steps by the user:
     </para>
 
-    <orderedlist numeration="roman">
+    <orderedlist numeration="arabic">
       <listitem>
         <para>insert the id of your facebook account. You find the id in the URL of your facebook account (e.g. http://www.facebook.com/profile.php?id=testuser, your id would be testuser).</para>
       </listitem>
