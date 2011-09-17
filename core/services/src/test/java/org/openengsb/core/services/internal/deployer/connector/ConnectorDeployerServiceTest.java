@@ -417,11 +417,11 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testUpdateAttributeViaFileTwice_shouldUpdateTwice() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
-        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=43", "attribute.x=y"));
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=42", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
         connectorDeployerService.update(connectorFile);
-        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=43)"), nullValue());
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
     }
 
