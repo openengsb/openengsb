@@ -32,6 +32,7 @@ import org.openengsb.ui.common.editor.fields.AbstractField;
 import org.openengsb.ui.common.editor.fields.CheckboxField;
 import org.openengsb.ui.common.editor.fields.DropdownField;
 import org.openengsb.ui.common.editor.fields.InputField;
+import org.openengsb.ui.common.editor.fields.OAuthField;
 import org.openengsb.ui.common.editor.fields.PasswordField;
 import org.openengsb.ui.common.model.MapModel;
 import org.openengsb.ui.common.util.MethodUtil;
@@ -40,12 +41,13 @@ import org.openengsb.ui.common.util.MethodUtil;
  * common utility-functions for creating Forms to edit properties of beans.
  */
 public final class AttributeEditorUtil {
+
     private AttributeEditorUtil() {
     }
 
     /**
      * creates a RepeatingView providing a suitable editor field for every property.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
@@ -55,7 +57,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
@@ -91,9 +93,10 @@ public final class AttributeEditorUtil {
             return new DropdownField(id, model, attribute, validator);
         } else if (attribute.isPassword()) {
             return new PasswordField(id, model, attribute, validator);
+        } else if (attribute.isOAuth()) {
+            return new OAuthField(id, model, attribute, validator);
         } else {
-            InputField inputField = new InputField(id, model, attribute, validator, editable);
-            return inputField;
+            return new InputField(id, model, attribute, validator, editable);
         }
     }
 

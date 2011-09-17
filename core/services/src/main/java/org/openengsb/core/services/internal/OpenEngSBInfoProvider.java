@@ -21,6 +21,9 @@ import java.util.Properties;
 
 import org.apache.karaf.shell.commands.info.InfoProvider;
 
+/**
+ * Showing base OpenEngSB information in Karaf info command
+ */
 public class OpenEngSBInfoProvider implements InfoProvider {
 
     private String name;
@@ -44,3 +47,4 @@ public class OpenEngSBInfoProvider implements InfoProvider {
         this.properties = properties;
     }
 }
+

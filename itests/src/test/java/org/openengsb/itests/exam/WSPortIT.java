@@ -145,20 +145,21 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     }
 
     private DOMSource convertMessageToDomSource(String messageToTransport) throws Exception {
-        String message =
-            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-                    "xmlns:ws=\"http://ws.ports.openengsb.org/\" >" +
-                    "<soapenv:Header/>" +
-                    "<soapenv:Body>" +
-                    "<ws:receive>" +
-                    "<arg0>" + messageToTransport + "</arg0>" +
-                    "</ws:receive>" +
-                    "</soapenv:Body>" +
-                    "</soapenv:Envelope>";
+        StringBuilder message = new StringBuilder();
+        message.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        message.append("xmlns:ws=\"http://ws.ports.openengsb.org/\" >");
+        message.append("<soapenv:Header/>");
+        message.append("<soapenv:Body>");
+        message.append("<ws:receive>");
+        message.append("<arg0>" + messageToTransport + "</arg0>");
+        message.append("</ws:receive>");
+        message.append("</soapenv:Body>");
+        message.append("</soapenv:Envelope>");
+        
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder db = factory.newDocumentBuilder();
-        Document requestDoc = db.parse(new ByteArrayInputStream(message.getBytes()));
+        Document requestDoc = db.parse(new ByteArrayInputStream(message.toString().getBytes()));
         DOMSource request = new DOMSource(requestDoc);
         return request;
     }

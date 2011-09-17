@@ -21,12 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
+import org.openengsb.core.api.oauth.OAuthData;
 import org.openengsb.core.api.validation.FieldValidator;
 import org.openengsb.core.api.validation.SingleAttributeValidationResult;
 import org.openengsb.core.api.validation.ValidationResultImpl;
@@ -64,7 +66,9 @@ public class AttributeDefinition implements Serializable {
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
     private boolean isPassword;
+    private boolean isOAuth;
     private FieldValidator validator = new AllValidValidator();
+    private OAuthData oAuthConfiguration = null;
 
     /**
      * Returns the attribute identifier.
@@ -114,8 +118,16 @@ public class AttributeDefinition implements Serializable {
         return isPassword;
     }
 
+    public boolean isOAuth() {
+        return isOAuth;
+    }
+
+    public OAuthData getOAuthConfiguration() {
+        return oAuthConfiguration;
+    }
+
     public FieldValidator getValidator() {
-        return this.validator;
+        return validator;
     }
 
     public static Builder builder(StringLocalizer strings) {
@@ -161,6 +173,15 @@ public class AttributeDefinition implements Serializable {
             return this;
         }
 
+        public Builder oAuthConfiguration(Map<String, String> firstURLParameters,
+                Map<String, String> secondURLParameters, String firstURL, String secondURL,
+                String redirectParameterName, String intermediateParameterName) {
+            attr.oAuthConfiguration =
+                new OAuthData(firstURLParameters, secondURLParameters, firstURL, secondURL, redirectParameterName,
+                    intermediateParameterName);
+            return this;
+        }
+
         public Builder asBoolean() {
             attr.isBoolean = true;
             return this;
@@ -168,6 +189,11 @@ public class AttributeDefinition implements Serializable {
 
         public Builder asPassword() {
             attr.isPassword = true;
+            return this;
+        }
+
+        public Builder asOAuth() {
+            attr.isOAuth = true;
             return this;
         }
 
@@ -190,10 +216,15 @@ public class AttributeDefinition implements Serializable {
                 checkNotEmpty(o.getValue(), "option has empty value");
             }
             Preconditions.checkState(!(attr.isBoolean && !attr.options.isEmpty()),
-                    "boolean and options are incompatible");
+                "boolean and options are incompatible");
             Preconditions.checkState(!(attr.isPassword && !attr.options.isEmpty()),
-                    "password and options are incompatible");
-            Preconditions.checkState(!(attr.isPassword && attr.isBoolean), "password and boolean are incompatible");
+                "password and options are incompatible");
+            Preconditions.checkState(!(attr.isPassword && attr.isBoolean),
+                "password and boolean are incompatible");
+            Preconditions.checkState(!(attr.isPassword && attr.isOAuth),
+                "password and oauth are incompatible");
+            Preconditions.checkState(!(attr.isBoolean && attr.isOAuth),
+                "boolean and oauth are incompatible");
             return attr;
         }
 
