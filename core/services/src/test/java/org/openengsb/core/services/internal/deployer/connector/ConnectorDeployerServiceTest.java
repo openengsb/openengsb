@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
@@ -179,6 +180,20 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
         OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=bar)", 100L);
+    }
+
+    @Test
+    public void testConnectorFileWithRanking_shouldBeInstalledWithNumericRanking() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils
+            .writeStringToFile(connectorFile, testConnectorData + "\nproperty.service.ranking=2\nproperty.bla=foo");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+
+        ServiceReference serviceReference = bundleContext.getServiceReferences(null, "(bla=foo)")[0];
+        Integer ranking = (Integer) serviceReference.getProperty(Constants.SERVICE_RANKING);
+        assertThat(ranking, notNullValue());
     }
 
     @Test
