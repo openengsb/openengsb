@@ -22,7 +22,7 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.Level;
+import org.openengsb.domain.example.event.LogEvent.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,25 +44,25 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     @Override
     public String doSomething(String message) {
         message = prefix + ": " + message;
-        Level level = Level.INFO;
+        LogLevel level = LogLevel.INFO;
         if ("DEBUG".equals(outputMode)) {
             LOGGER.debug(message);
-            level = Level.DEBUG;
+            level = LogLevel.DEBUG;
         } else if ("INFO".equals(outputMode)) {
             LOGGER.info(message);
-            level = Level.INFO;
+            level = LogLevel.INFO;
         } else if ("WARN".equals(outputMode)) {
             LOGGER.warn(message);
-            level = Level.WARN;
+            level = LogLevel.WARN;
         } else if ("ERROR".equals(outputMode)) {
             LOGGER.error(message);
-            level = Level.ERROR;
+            level = LogLevel.ERROR;
         }
         raiseEvent(message, level);
         return "LogServiceCalled with: " + message;
     }
 
-    private void raiseEvent(String message, Level level) {
+    private void raiseEvent(String message, LogLevel level) {
         LogEvent event = new LogEvent();
         event.setMessage(message);
         event.setLevel(level);
