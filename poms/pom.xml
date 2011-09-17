@@ -145,8 +145,7 @@
     <felix.version>3.0.2</felix.version>
     <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
-    <jsch.version>0.1.42</jsch.version>
-    <jsch.wrapped.version>${jsch.version}.w1</jsch.wrapped.version>
+    <jsch.wrapped.version>0.1.44_2</jsch.wrapped.version>
     <jzlib.version>1.0.7</jzlib.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
     <mysql.version>5.1.13</mysql.version>
