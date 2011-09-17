@@ -257,11 +257,6 @@
                   <type>xml</type>
                   <classifier>features</classifier>
                 </artifact>
-                <artifact>
-                  <file>target/classes/features-itests.xml</file>
-                  <type>xml</type>
-                  <classifier>features-itests</classifier>
-                </artifact>
               </artifacts>
             </configuration>
           </execution>
