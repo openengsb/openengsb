@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
@@ -220,8 +221,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         connectorDeployerService.install(connectorFile);
 
         ServiceReference reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "")[0];
-        String ranking = (String) reference.getProperty(Constants.SERVICE_RANKING);
-        assertThat(new Long(ranking), new LessThan<Long>(0L));
+        Integer ranking = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
+        assertThat(ranking, lessThan(0));
     }
 
     @Test
@@ -437,7 +438,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         serviceManager.update(id, newDesc);
         FileUtils.writeLines(connectorFile,
-                Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
+            Arrays.asList("property.foo=bar", "attribute.x=new-value-value"));
         try {
             connectorDeployerService.update(connectorFile);
             fail("update should have failed, because of a merge-conflict");
