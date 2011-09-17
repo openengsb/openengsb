@@ -110,7 +110,7 @@
     <el.version>2.1.0</el.version>
     <wicket.version>1.4.17</wicket.version>
     <pax.wicket.version>0.7.2</pax.wicket.version>
-    <jackson.version>1.8.2</jackson.version>    
+    <jackson.version>1.8.5</jackson.version>    
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
