@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<section xml:id="domains.notification.facebook" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Facebook Connector</title>
+  
+  <para>
+    The facebook connector is a notification connector based on plain communication with facebook.
+    If you send a message via this connector, the message will be shown on the newsboard of the
+    facebook account connected through the connector.
+  </para>
+
+  <section>
+    <title>Connector Configuration</title>
+    <para>
+      You have to configurate your facebook connector with the details of your application. Steps:
+    </para>
+
+    <orderedlist numeration="roman">
+      <listitem>
+        <para>create an application on facebook. HOWTO:http://developers.facebook.com/docs/guides/canvas/.</para>
+      </listitem>
+      <listitem>
+        <para>note down the application id and the application secret of this application.</para>
+      </listitem>
+      <listitem>
+        <para>enter this values into the xml file located in the path /openengsb-connector-facebook/src/main/resources/OSGI-INF/blueprint/facebook-connector-context.xml (facebookApplicationId = application id and facebookApplicationeSecret = application secret).</para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>Create an instance of this connector</title>
+    <para>
+      This action requires two steps by the user:
+    </para>
+
+    <orderedlist numeration="roman">
+      <listitem>
+        <para>insert the id of your facebook account. You find the id in the URL of your facebook account (e.g. http://www.facebook.com/profile.php?id=testuser, your id would be testuser).</para>
+      </listitem>
+      <listitem>
+        <para>do the OAuth authentication process and copy the result from the popup to the field of the user token.</para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>External Tool Configuration</title>
+    <para>No external tool configuration is necessary.</para>
+  </section>
+
+</section>
