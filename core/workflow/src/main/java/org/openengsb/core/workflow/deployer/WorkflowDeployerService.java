@@ -56,7 +56,7 @@ public class WorkflowDeployerService extends AbstractOpenEngSBService implements
         boolean acceptedExtension = fileEnding.equals(RULE_ENDING) || fileEnding.equals(PROCESS_ENDING) || fileEnding
                 .equals(FUNCTION_ENDING);
         if (artifact.isFile() && acceptedExtension) {
-            LOGGER.info(String.format("found %s to deploy.", artifact));
+            LOGGER.info("found \"{}\" to deploy.", artifact);
             return true;
         }
         return false;
