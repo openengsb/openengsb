@@ -110,7 +110,7 @@
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle>mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/com.google.guava-all/${guava.wrapped.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${jsch.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>

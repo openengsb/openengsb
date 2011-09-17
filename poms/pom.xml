@@ -89,8 +89,8 @@
     <saaj.impl.version>1.3.2_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
-    <guava.version>r08</guava.version>
-    <guava.wrapped.version>1.0.0.${guava.version}.w1</guava.wrapped.version>
+    <guava.version>r09</guava.version>
+    <guava.wrapped.version>09_1</guava.wrapped.version>
     <tinybundle.version>1.3.0</tinybundle.version>
     <servlet.version>2.5.0</servlet.version>
     <portlet.version>1.0.0</portlet.version>
