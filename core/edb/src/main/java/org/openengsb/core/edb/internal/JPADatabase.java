@@ -284,9 +284,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public JPACommit getCommit(Long from) throws EDBException {
         List<JPACommit> commits = dao.getJPACommit(from);
-        if (commits == null) {
+        if (commits == null || commits.size() == 0) {
             throw new EDBException("there is no commit for this timestamp");
-        } else if (commits.size() != 1) {
+        } else if (commits.size() > 1) {
             throw new EDBException("there are more than one commit for one timestamp");
         }
         return commits.get(0);
