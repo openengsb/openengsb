@@ -58,7 +58,6 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
-        <module>examples</module>
         <module>manual</module>
       </modules>
     </profile>
