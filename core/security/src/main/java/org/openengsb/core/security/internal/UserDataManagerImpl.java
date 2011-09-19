@@ -17,10 +17,6 @@
 
 package org.openengsb.core.security.internal;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -29,16 +25,12 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.PermissionSet;
-import org.openengsb.core.common.util.BeanUtils2;
 import org.openengsb.core.common.util.CollectionUtils2;
-import org.openengsb.core.security.model.BeanData;
 import org.openengsb.core.security.model.EntryElement;
 import org.openengsb.core.security.model.EntryValue;
 import org.openengsb.core.security.model.PermissionData;
@@ -47,57 +39,12 @@ import org.openengsb.core.security.model.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ComputationException;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class UserDataManagerImpl implements UserDataManager {
-
-    private final class EntryElementParserFunction implements Function<EntryElement, Object> {
-        @Override
-        public Object apply(EntryElement input) {
-            Class<?> elementType = getElementType(input);
-            Constructor<?> constructor = getStringConstructor(elementType);
-            return invokeStringConstructor(input, constructor);
-        }
-
-        private Class<?> getElementType(EntryElement input) {
-            Class<?> elementType;
-            try {
-                elementType = Class.forName(input.getType());
-            } catch (ClassNotFoundException e) {
-                throw new ComputationException(e);
-            }
-            return elementType;
-        }
-
-        private Constructor<?> getStringConstructor(Class<?> elementType) {
-            Constructor<?> constructor;
-            try {
-                constructor = elementType.getConstructor(String.class);
-            } catch (NoSuchMethodException e) {
-                throw new ComputationException(e);
-            }
-            return constructor;
-        }
-
-        private Object invokeStringConstructor(EntryElement input, Constructor<?> constructor) {
-            try {
-                return constructor.newInstance(input.getValue());
-            } catch (InstantiationException e) {
-                throw new ComputationException(e);
-            } catch (IllegalAccessException e) {
-                throw new ComputationException(e);
-            } catch (InvocationTargetException e) {
-                throw new ComputationException(e.getCause());
-            }
-        }
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerImpl.class);
 
@@ -154,7 +101,7 @@ public class UserDataManagerImpl implements UserDataManager {
             return null;
         }
         List<EntryElement> value = entryValue.getValue();
-        return Lists.transform(value, new EntryElementParserFunction());
+        return EntryUtils.convertAllEntryElementsToObject(value);
     }
 
     @Override
@@ -162,20 +109,10 @@ public class UserDataManagerImpl implements UserDataManager {
         UserData user = doFindUser(username);
         EntryValue entryValue = new EntryValue();
         entryValue.setKey(attributename);
-        List<EntryElement> entryElementList = makeEntryElementList(value);
+        List<EntryElement> entryElementList = EntryUtils.makeEntryElementList(value);
         entryValue.setValue(entryElementList);
         user.getAttributes().put(attributename, entryValue);
         entityManager.merge(user);
-    }
-
-    private List<EntryElement> makeEntryElementList(Object... value) {
-        List<EntryElement> valueElements = new ArrayList<EntryElement>();
-        for (Object o : value) {
-            Class<?> type = ClassUtils.primitiveToWrapper(o.getClass());
-            EntryElement entryElement = new EntryElement(type.getName(), o.toString());
-            valueElements.add(entryElement);
-        }
-        return valueElements;
     }
 
     @Override
@@ -184,6 +121,7 @@ public class UserDataManagerImpl implements UserDataManager {
         EntryValue entryValue = user.getAttributes().get(attributename);
         if (entryValue == null) {
             // silently fail if attribute is not present
+            LOGGER.warn("user does not have attribute, " + attributename);
             return;
         }
         user.getAttributes().remove(attributename);
@@ -194,35 +132,7 @@ public class UserDataManagerImpl implements UserDataManager {
     public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionData> data = user.getPermissions();
-        return parseBeanData(data);
-    }
-
-    private <T> Collection<T> parseBeanData(Collection<? extends BeanData> data) {
-        return Collections2.transform(data, new Function<BeanData, T>() {
-            @SuppressWarnings("unchecked")
-            public T apply(BeanData input) {
-                Class<?> permType;
-                try {
-                    permType = Class.forName(input.getType());
-                } catch (ClassNotFoundException e) {
-                    throw new ComputationException(e);
-                }
-                Map<String, Object> attributeValues = parseEntryMap(input.getAttributes());
-                Object instance;
-                try {
-                    instance = permType.newInstance();
-                    BeanUtils.populate(instance, attributeValues);
-                } catch (InstantiationException e) {
-                    throw new ComputationException(e);
-                } catch (IllegalAccessException e) {
-                    throw new ComputationException(e);
-                } catch (InvocationTargetException e) {
-                    throw new ComputationException(e);
-                }
-                return (T) instance;
-
-            };
-        });
+        return EntryUtils.convertAllBeanDataToObjects(data);
     }
 
     @Override
@@ -232,33 +142,13 @@ public class UserDataManagerImpl implements UserDataManager {
         return CollectionUtils2.filterCollectionByClass(getUserPermissions(username), type);
     }
 
-    private static EntryElement transformObjectToEntryElement(Object o) {
-        return new EntryElement(o.getClass().getName(), o.toString());
-    }
-
-    private static List<EntryElement> transformAllObjects(Collection<Object> collection) {
-        List<EntryElement> result = new ArrayList<EntryElement>();
-        for (Object o : collection) {
-            result.add(transformObjectToEntryElement(o));
-        }
-        return result;
-    }
-
-    private static List<EntryElement> transformAllObjects(Object[] array) {
-        List<EntryElement> result = new ArrayList<EntryElement>();
-        for (Object o : array) {
-            result.add(transformObjectToEntryElement(o));
-        }
-        return result;
-    }
-
     @Override
     public void storeUserPermission(String username, Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
         PermissionData permissionData = new PermissionData();
         String type = permission.getClass().getName();
         permissionData.setType(type);
-        Map<String, EntryValue> entryMap = convertBeanToEntryMap(permission);
+        Map<String, EntryValue> entryMap = EntryUtils.convertBeanToEntryMap(permission);
 
         // copy the map, because JPA does not like the transformed map for some reason
         entryMap = Maps.newHashMap(entryMap);
@@ -273,46 +163,11 @@ public class UserDataManagerImpl implements UserDataManager {
         entityManager.merge(user);
     }
 
-    static Map<String, EntryValue> convertBeanToEntryMap(Permission permission) {
-        Map<String, Object> buildAttributeValueMap = BeanUtils2.buildAttributeValueMap(permission);
-        Map<String, EntryValue> entryMap =
-            Maps.transformEntries(buildAttributeValueMap, new Maps.EntryTransformer<String, Object, EntryValue>() {
-                @SuppressWarnings("unchecked")
-                @Override
-                public EntryValue transformEntry(String key, Object value) {
-                    if (value instanceof Collection) {
-                        return new EntryValue(key, transformAllObjects((Collection<Object>) value));
-                    }
-                    if (value.getClass().isArray()) {
-                        return new EntryValue(key, transformAllObjects((Object[]) value));
-                    }
-                    return new EntryValue(key, Arrays.asList(transformObjectToEntryElement(value)));
-                }
-            });
-        return entryMap;
-    }
-
-    private Map<String, Object> parseEntryMap(Map<String, EntryValue> entryMap) {
-        return Maps.transformEntries(entryMap, new Maps.EntryTransformer<String, EntryValue, Object>() {
-            @Override
-            public Object transformEntry(String key, EntryValue value) {
-                List<Object> objects = Lists.transform(value.getValue(), new EntryElementParserFunction());
-                if (objects.isEmpty()) {
-                    return null;
-                }
-                if (objects.size() == 1) {
-                    return objects.get(0);
-                }
-                return objects;
-            }
-        });
-    }
-
     @Override
     public void removeUserPermission(String username, final Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionData> permissions = user.getPermissions();
-        final Map<String, EntryValue> entryMap = convertBeanToEntryMap(permission);
+        final Map<String, EntryValue> entryMap = EntryUtils.convertBeanToEntryMap(permission);
         PermissionData entry = Iterators.find(permissions.iterator(), new Predicate<PermissionData>() {
             @Override
             public boolean apply(PermissionData input) {
@@ -332,7 +187,7 @@ public class UserDataManagerImpl implements UserDataManager {
     public Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionSetData> permissionSets = user.getPermissionSets();
-        return parseBeanData(permissionSets);
+        return EntryUtils.convertAllBeanDataToObjects(permissionSets);
     }
 
     @Override
