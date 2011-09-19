@@ -115,7 +115,7 @@
             <Bundle-Activator>org.openengsb.core.security.internal.SecurityBundleActivator</Bundle-Activator>
             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
             <!--  required for loading permissions, TODO replace by classloader delegation! -->
-            <Dynamic-ImportPackage>org.openengsb.connector.*</Dynamic-ImportPackage>
+<!--             <Dynamic-ImportPackage>org.openengsb.connector.*</Dynamic-ImportPackage> -->
           </instructions>
         </configuration>
       </plugin>

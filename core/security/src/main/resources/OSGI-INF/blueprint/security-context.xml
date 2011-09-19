@@ -51,7 +51,7 @@
   </service>
 
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=root-authorizer)"
-    activation="lazy" availability="optional"/>
+    activation="lazy" availability="optional" />
 
   <service>
     <interfaces>
@@ -72,6 +72,14 @@
     <bean class="org.openengsb.core.security.AdminAccessConnector">
       <property name="userManager" ref="userManager" />
     </bean>
+  </service>
+
+  <service interface="org.openengsb.core.api.PermissionProvider">
+    <service-properties>
+      <entry key="connector" value="root" />
+      <entry key="permissionClass" value="org.openengsb.core.security.model.RootPermission" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
   </service>
 
 </blueprint>

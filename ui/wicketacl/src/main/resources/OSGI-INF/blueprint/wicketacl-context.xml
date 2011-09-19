@@ -49,4 +49,12 @@
 
   <reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
 
+  <service interface="org.openengsb.core.api.PermissionProvider">
+    <service-properties>
+      <entry key="connector" value="wicketacl" />
+      <entry key="permissionClass" value="org.openengsb.connector.wicketacl.WicketPermission" />
+    </service-properties>
+    <bean class="org.openengsb.connector.wicketacl.internal.WicketPermissionProvider" />
+  </service>
+
 </blueprint>

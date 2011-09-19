@@ -26,11 +26,15 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ClassUtils;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.BeanUtils2;
 import org.openengsb.core.security.model.BeanData;
 import org.openengsb.core.security.model.EntryElement;
 import org.openengsb.core.security.model.EntryValue;
+import org.osgi.framework.Filter;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -158,19 +162,12 @@ final class EntryUtils {
     }
 
     static <T> T convertBeanDataToObject(BeanData input) {
-        Class<?> permType = createInstance(input.getType());
+        Class<?> permType = findPermissionClass(input.getType());
+        if (permType == null) {
+            throw new IllegalArgumentException("permission-type could not be found " + input.getType());
+        }
         Map<String, Object> attributeValues = convertEntryMapToAttributeMap(input.getAttributes());
         return createAndPopulateBean(permType, attributeValues);
-    }
-
-    private static Class<?> createInstance(String typeName) {
-        Class<?> permType;
-        try {
-            permType = Class.forName(typeName);
-        } catch (ClassNotFoundException e) {
-            throw new ComputationException(e);
-        }
-        return permType;
     }
 
     static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {
@@ -191,6 +188,14 @@ final class EntryUtils {
             throw new ComputationException(e);
         }
         return instance;
+    }
+
+    private static Class<? extends Permission> findPermissionClass(String name) {
+        OsgiUtilsService utilService = OpenEngSBCoreServices.getServiceUtilsService();
+        Filter filter = utilService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
+        PermissionProvider provider =
+            OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(filter, PermissionProvider.class);
+        return provider.getPermissionClass(name);
     }
 
     private static final class BeanDataToObjectFunction<T> implements Function<BeanData, T> {
