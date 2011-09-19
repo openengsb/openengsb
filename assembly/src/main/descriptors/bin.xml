@@ -76,12 +76,6 @@
       <fileMode>0755</fileMode>
     </fileSet>
 
-    <!-- copy lib directory -->
-    <fileSet>
-      <directory>target/dependencies/lib</directory>
-      <outputDirectory>/lib/</outputDirectory>
-    </fileSet>
-
     <!-- Copy license and other files from root -->
     <fileSet>
       <directory>${basedir}/..</directory>
