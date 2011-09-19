@@ -98,28 +98,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>pdf</classifier>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <stripVersion>true</stripVersion>
-            </configuration>
-          </execution>
-          <execution>
             <id>unpack-unix</id>
             <phase>generate-resources</phase>
             <goals>

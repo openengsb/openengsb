@@ -92,7 +92,6 @@
 
   <modules>
     <module>tooling</module>
-    <module>docs</module>
     <module>poms</module>
     <module>core</module>
     <module>infrastructure</module>
