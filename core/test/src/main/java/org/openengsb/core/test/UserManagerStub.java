@@ -22,7 +22,9 @@ import java.util.Map;
 
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.PermissionSet;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -32,7 +34,7 @@ import com.google.common.collect.Sets;
 public class UserManagerStub implements UserDataManager {
 
     private Map<String, Map<String, String>> credentialsData = Maps.newHashMap();
-    private Map<String, Map<String, Collection<Permission>>> permissionData = Maps.newHashMap();
+    private Map<String, Map<Class<?>, Collection<Permission>>> permissionData = Maps.newHashMap();
 
     @Override
     public void createUser(String username) throws UserExistsException {
@@ -54,10 +56,10 @@ public class UserManagerStub implements UserDataManager {
         return credentialsData.get(username).get(key);
     }
 
-    private <T> Map<String, Collection<Permission>> makePermissionData() {
-        return new MapMaker().makeComputingMap(new Function<String, Collection<Permission>>() {
+    private <T> Map<Class<?>, Collection<Permission>> makePermissionData() {
+        return new MapMaker().makeComputingMap(new Function<Class<?>, Collection<Permission>>() {
             @Override
-            public Collection<Permission> apply(String input) {
+            public Collection<Permission> apply(Class<?> input) {
                 return Sets.newHashSet();
             }
         });
@@ -91,9 +93,10 @@ public class UserManagerStub implements UserDataManager {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Collection<Permission> getUserPermissions(String username, String type) {
-        return permissionData.get(username).get(type);
+    public <T extends Permission> Collection<T> getUserPermissions(String username, Class<T> type) {
+        return (Collection<T>) permissionData.get(username).get(type);
     }
 
     @Override
@@ -110,6 +113,36 @@ public class UserManagerStub implements UserDataManager {
     @Override
     public Collection<String> getUserList() {
         return credentialsData.keySet();
+    }
+
+    @Override
+    public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public <T extends PermissionSet> Collection<T> getuserPermissionSets(String username, Class<T> type) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void storeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+
     }
 
 }

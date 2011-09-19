@@ -169,7 +169,7 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.storeUserPermission("admin2", permission);
         Collection<Permission> userPermissions =
-            userManager.getUserPermissions("admin2", TestPermission.class.getName());
+            userManager.getUserPermissions("admin2");
         assertThat(userPermissions, hasItem(equalTo(permission)));
     }
 
@@ -180,7 +180,7 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         userManager.storeUserPermission("admin2", permission);
         userManager.removeUserPermission("admin2", permission);
         Collection<Permission> userPermissions =
-            userManager.getUserPermissions("admin2", TestPermission.class.getName());
+            userManager.getUserPermissions("admin2");
         assertThat(userPermissions, not(hasItem(equalTo(permission))));
     }
 

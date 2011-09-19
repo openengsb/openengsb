@@ -16,14 +16,20 @@
  */
 package org.openengsb.core.security;
 
+import java.util.Collection;
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.security.model.RootPermission;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
 public class AdminAccessConnector extends AbstractOpenEngSBService implements AuthorizationDomain {
 
@@ -34,7 +40,14 @@ public class AdminAccessConnector extends AbstractOpenEngSBService implements Au
     @Override
     public Access checkAccess(String username, Object action) {
         try {
-            if (!userManager.getUserPermissions(username, RootPermission.class.getName()).isEmpty()) {
+            Collection<Permission> userPermissions = userManager.getUserPermissions(username);
+            boolean allowed = Iterators.any(userPermissions.iterator(), new Predicate<Permission>() {
+                @Override
+                public boolean apply(Permission input) {
+                    return input.getClass().equals(RootPermission.class);
+                }
+            });
+            if (allowed) {
                 return Access.GRANTED;
             }
         } catch (UserNotFoundException e) {

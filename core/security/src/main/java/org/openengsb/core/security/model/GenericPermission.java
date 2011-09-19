@@ -27,7 +27,5 @@ public class GenericPermission implements Permission {
     public Map<String, String> toAttributes() {
         return BeanUtils2.buildAttributeMap(this);
     }
-    
-    
 
 }

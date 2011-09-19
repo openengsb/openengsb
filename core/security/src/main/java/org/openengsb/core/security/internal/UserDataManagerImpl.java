@@ -20,6 +20,7 @@ package org.openengsb.core.security.internal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -28,9 +29,12 @@ import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.PermissionSet;
 import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.common.util.CollectionUtils2;
 import org.openengsb.core.security.model.CredentialData;
 import org.openengsb.core.security.model.PermissionData;
+import org.openengsb.core.security.model.PermissionSetData;
 import org.openengsb.core.security.model.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,9 +115,13 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getUserPermissions(String username, String type) throws UserNotFoundException {
+    public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionData> data = user.getPermissions();
+        return parsePermissionData(data);
+    }
+
+    private Collection<Permission> parsePermissionData(Collection<PermissionData> data) {
         return Collections2.transform(data, new Function<PermissionData, Permission>() {
             public Permission apply(PermissionData input) {
                 try {
@@ -124,6 +132,13 @@ public class UserDataManagerImpl implements UserDataManager {
                 }
             };
         });
+    }
+
+    @Override
+    public <T extends Permission> Collection<T> getUserPermissions(String username, Class<T> type)
+        throws UserNotFoundException {
+        // TODO improve performance with proper query.
+        return CollectionUtils2.filterCollectionByClass(getUserPermissions(username), type);
     }
 
     @Override
@@ -162,6 +177,45 @@ public class UserDataManagerImpl implements UserDataManager {
         entityManager.merge(user);
     }
 
+    @Override
+    public Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException {
+        UserData user = doFindUser(username);
+        Collection<PermissionSetData> permissionSets = user.getPermissionSets();
+        Collections2.transform(permissionSets, new Function<PermissionSetData, PermissionSet>() {
+            @Override
+            public PermissionSet apply(PermissionSetData input) {
+                try {
+                    Class<?> permType = Class.forName(input.getType());
+                    PermissionSet result =
+                        (PermissionSet) BeanUtils2.buildBeanFromAttributeMap(permType, input.getAttributes());
+                    result.setPermissions(parsePermissionData(input.getPermissions()));
+                    return result;
+                } catch (ClassNotFoundException e) {
+                    throw new ComputationException(e);
+                }
+            }
+        });
+
+        return null;
+    }
+
+    @Override
+    public <T extends PermissionSet> Collection<T> getuserPermissionSets(String username, Class<T> type) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void storeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -173,4 +227,5 @@ public class UserDataManagerImpl implements UserDataManager {
         }
         return found;
     }
+
 }

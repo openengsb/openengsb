@@ -25,10 +25,8 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
-import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.util.CollectionUtils2;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,11 +128,7 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
     }
 
     public Collection<WicketPermission> getWicketPermissions(String user) throws UserNotFoundException {
-        Collection<Permission> userPermissions =
-            userManager.getUserPermissions(user, WicketPermission.class.getName());
-        Collection<WicketPermission> filtered =
-            CollectionUtils2.filterCollectionByClass(userPermissions, WicketPermission.class);
-        return filtered;
+        return userManager.getUserPermissions(user, WicketPermission.class);
     }
 
     public void setUserManager(UserDataManager userManager) {

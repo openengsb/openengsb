@@ -19,6 +19,7 @@ package org.openengsb.core.api.security;
 import java.util.Collection;
 
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.model.PermissionSet;
 
 public interface UserDataManager {
 
@@ -40,10 +41,21 @@ public interface UserDataManager {
 
     void removeUserAttribute(String username, String attributename) throws UserNotFoundException;
 
-    Collection<Permission> getUserPermissions(String username, String type) throws UserNotFoundException;
+    Collection<Permission> getUserPermissions(String username) throws UserNotFoundException;
+
+    <T extends Permission> Collection<T> getUserPermissions(String username, Class<T> type)
+        throws UserNotFoundException;
 
     void storeUserPermission(String username, Permission permission) throws UserNotFoundException;
 
     void removeUserPermission(String username, Permission permission) throws UserNotFoundException;
+
+    Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException;
+
+    <T extends PermissionSet> Collection<T> getuserPermissionSets(String username, Class<T> type) throws UserNotFoundException;
+
+    void storeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException;
+
+    void removeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException;
 
 }
