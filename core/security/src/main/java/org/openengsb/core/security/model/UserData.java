@@ -20,9 +20,14 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -36,9 +41,11 @@ public class UserData {
     @Id
     private String username;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @MapKey(name = "key")
-    private Map<String, CredentialData> credentials = Maps.newHashMap();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "USER_CREDENTIALS")
+    @MapKeyColumn(name = "USER_CREDENTIAL_KEY")
+    @Column(name = "USER_CREDENTIAL_VALUE")
+    private Map<String, String> credentials = Maps.newHashMap();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<PermissionData> permissions;
@@ -48,7 +55,6 @@ public class UserData {
 
     @OneToMany(cascade = CascadeType.ALL)
     @MapKey(name = "key")
-    // @CollectionTable(name = "USER_ATTRIBUTES")
     private Map<String, EntryValue> attributes = Maps.newHashMap();
 
     public UserData() {
@@ -66,11 +72,11 @@ public class UserData {
         this.username = username;
     }
 
-    public Map<String, CredentialData> getCredentials() {
+    public Map<String, String> getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(Map<String, CredentialData> credentials) {
+    public void setCredentials(Map<String, String> credentials) {
         this.credentials = credentials;
     }
 

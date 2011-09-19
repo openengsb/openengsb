@@ -35,7 +35,6 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.PermissionSet;
 import org.openengsb.core.common.util.BeanUtils2;
 import org.openengsb.core.common.util.CollectionUtils2;
-import org.openengsb.core.security.model.CredentialData;
 import org.openengsb.core.security.model.EntryElement;
 import org.openengsb.core.security.model.EntryValue;
 import org.openengsb.core.security.model.PermissionData;
@@ -125,13 +124,13 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public String getUserCredentials(String username, final String key) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        return found.getCredentials().get(key).getValue();
+        return found.getCredentials().get(key);
     }
 
     @Override
     public void setUserCredentials(String username, String type, String value) throws UserNotFoundException {
         UserData found = doFindUser(username);
-        found.getCredentials().put(type, new CredentialData(type, value));
+        found.getCredentials().put(type, value);
         entityManager.merge(found);
     }
 
