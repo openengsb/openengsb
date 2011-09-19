@@ -178,6 +178,11 @@
       <artifactId>openengsb-core-workflow</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>openengsb-ui-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!--  Pax Wicket Dependencies -->
     <dependency>
