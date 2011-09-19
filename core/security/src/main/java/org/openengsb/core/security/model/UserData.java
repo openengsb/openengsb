@@ -48,7 +48,7 @@ public class UserData {
     private Map<String, String> credentials = Maps.newHashMap();
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<PermissionData> permissions;
+    private Collection<PermissionData> permissions = Sets.newHashSet();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<PermissionSetData> permissionSets = Sets.newHashSet();

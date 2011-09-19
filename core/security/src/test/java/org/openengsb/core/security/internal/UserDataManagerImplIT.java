@@ -45,14 +45,13 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.security.model.GenericPermission;
 import org.openengsb.core.security.model.UserData;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 
 public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
 
-    public static class TestPermission extends GenericPermission {
+    public static class TestPermission implements Permission {
         private String desiredResult;
 
         public TestPermission() {
@@ -61,6 +60,11 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         public TestPermission(Access desiredResult) {
             super();
             this.desiredResult = desiredResult.name();
+        }
+
+        @Override
+        public String describe() {
+            return "for testing purposes";
         }
 
         public String getDesiredResult() {

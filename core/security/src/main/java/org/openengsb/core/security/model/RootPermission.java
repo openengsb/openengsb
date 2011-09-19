@@ -16,6 +16,11 @@
  */
 package org.openengsb.core.security.model;
 
-public class RootPermission extends GenericPermission {
+import org.openengsb.core.api.security.model.Permission;
 
+public class RootPermission implements Permission {
+    @Override
+    public String describe() {
+        return "grants ALL permissions, thus providing ROOT-access";
+    }
 }

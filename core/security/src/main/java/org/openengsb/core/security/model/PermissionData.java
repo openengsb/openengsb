@@ -16,58 +16,9 @@
  */
 package org.openengsb.core.security.model;
 
-import java.util.Map;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.Table;
-
-import com.google.common.collect.Maps;
 
 @Entity
-@Table(name = "PERMISSION")
-public class PermissionData {
-
-    @Id
-    @GeneratedValue
-    private Integer id;
-
-    private String type;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="PERMISSION_ATTRIBUTES")
-    @MapKeyColumn (name = "P_ATTRIBUTE_KEY")
-    @Column(name = "P_ATTRIBUTE_VALUE")
-    private Map<String, String> attributes = Maps.newHashMap();
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes;
-    }
+public class PermissionData extends BeanData {
 
 }

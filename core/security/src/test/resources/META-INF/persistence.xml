@@ -23,10 +23,11 @@
   <persistence-unit name="security-test" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
-    <class>org.openengsb.core.security.model.UserData</class>
-    <class>org.openengsb.core.security.model.PermissionData</class>
     <class>org.openengsb.core.security.model.EntryElement</class>
     <class>org.openengsb.core.security.model.EntryValue</class>
+    <class>org.openengsb.core.security.model.BeanData</class>
+    <class>org.openengsb.core.security.model.UserData</class>
+    <class>org.openengsb.core.security.model.PermissionData</class>
     <class>org.openengsb.core.security.model.PermissionSetData</class>
 
     <properties>

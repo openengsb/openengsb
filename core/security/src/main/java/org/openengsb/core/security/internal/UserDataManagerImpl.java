@@ -20,13 +20,16 @@ package org.openengsb.core.security.internal;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
@@ -35,6 +38,7 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.model.PermissionSet;
 import org.openengsb.core.common.util.BeanUtils2;
 import org.openengsb.core.common.util.CollectionUtils2;
+import org.openengsb.core.security.model.BeanData;
 import org.openengsb.core.security.model.EntryElement;
 import org.openengsb.core.security.model.EntryValue;
 import org.openengsb.core.security.model.PermissionData;
@@ -49,6 +53,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ComputationException;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class UserDataManagerImpl implements UserDataManager {
@@ -189,18 +194,33 @@ public class UserDataManagerImpl implements UserDataManager {
     public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionData> data = user.getPermissions();
-        return parsePermissionData(data);
+        return parseBeanData(data);
     }
 
-    private Collection<Permission> parsePermissionData(Collection<PermissionData> data) {
-        return Collections2.transform(data, new Function<PermissionData, Permission>() {
-            public Permission apply(PermissionData input) {
+    private <T> Collection<T> parseBeanData(Collection<? extends BeanData> data) {
+        return Collections2.transform(data, new Function<BeanData, T>() {
+            @SuppressWarnings("unchecked")
+            public T apply(BeanData input) {
+                Class<?> permType;
                 try {
-                    Class<?> permType = Class.forName(input.getType());
-                    return (Permission) BeanUtils2.buildBeanFromAttributeMap(permType, input.getAttributes());
+                    permType = Class.forName(input.getType());
                 } catch (ClassNotFoundException e) {
                     throw new ComputationException(e);
                 }
+                Map<String, Object> attributeValues = parseEntryMap(input.getAttributes());
+                Object instance;
+                try {
+                    instance = permType.newInstance();
+                    BeanUtils.populate(instance, attributeValues);
+                } catch (InstantiationException e) {
+                    throw new ComputationException(e);
+                } catch (IllegalAccessException e) {
+                    throw new ComputationException(e);
+                } catch (InvocationTargetException e) {
+                    throw new ComputationException(e);
+                }
+                return (T) instance;
+
             };
         });
     }
@@ -212,13 +232,37 @@ public class UserDataManagerImpl implements UserDataManager {
         return CollectionUtils2.filterCollectionByClass(getUserPermissions(username), type);
     }
 
+    private static EntryElement transformObjectToEntryElement(Object o) {
+        return new EntryElement(o.getClass().getName(), o.toString());
+    }
+
+    private static List<EntryElement> transformAllObjects(Collection<Object> collection) {
+        List<EntryElement> result = new ArrayList<EntryElement>();
+        for (Object o : collection) {
+            result.add(transformObjectToEntryElement(o));
+        }
+        return result;
+    }
+
+    private static List<EntryElement> transformAllObjects(Object[] array) {
+        List<EntryElement> result = new ArrayList<EntryElement>();
+        for (Object o : array) {
+            result.add(transformObjectToEntryElement(o));
+        }
+        return result;
+    }
+
     @Override
     public void storeUserPermission(String username, Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
         PermissionData permissionData = new PermissionData();
         String type = permission.getClass().getName();
         permissionData.setType(type);
-        permissionData.setAttributes(permission.toAttributes());
+        Map<String, EntryValue> entryMap = convertBeanToEntryMap(permission);
+
+        // copy the map, because JPA does not like the transformed map for some reason
+        entryMap = Maps.newHashMap(entryMap);
+        permissionData.setAttributes(entryMap);
         Collection<PermissionData> permissions = user.getPermissions();
         if (permissions == null) {
             permissions = Sets.newHashSet();
@@ -229,14 +273,50 @@ public class UserDataManagerImpl implements UserDataManager {
         entityManager.merge(user);
     }
 
+    static Map<String, EntryValue> convertBeanToEntryMap(Permission permission) {
+        Map<String, Object> buildAttributeValueMap = BeanUtils2.buildAttributeValueMap(permission);
+        Map<String, EntryValue> entryMap =
+            Maps.transformEntries(buildAttributeValueMap, new Maps.EntryTransformer<String, Object, EntryValue>() {
+                @SuppressWarnings("unchecked")
+                @Override
+                public EntryValue transformEntry(String key, Object value) {
+                    if (value instanceof Collection) {
+                        return new EntryValue(key, transformAllObjects((Collection<Object>) value));
+                    }
+                    if (value.getClass().isArray()) {
+                        return new EntryValue(key, transformAllObjects((Object[]) value));
+                    }
+                    return new EntryValue(key, Arrays.asList(transformObjectToEntryElement(value)));
+                }
+            });
+        return entryMap;
+    }
+
+    private Map<String, Object> parseEntryMap(Map<String, EntryValue> entryMap) {
+        return Maps.transformEntries(entryMap, new Maps.EntryTransformer<String, EntryValue, Object>() {
+            @Override
+            public Object transformEntry(String key, EntryValue value) {
+                List<Object> objects = Lists.transform(value.getValue(), new EntryElementParserFunction());
+                if (objects.isEmpty()) {
+                    return null;
+                }
+                if (objects.size() == 1) {
+                    return objects.get(0);
+                }
+                return objects;
+            }
+        });
+    }
+
     @Override
     public void removeUserPermission(String username, final Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionData> permissions = user.getPermissions();
+        final Map<String, EntryValue> entryMap = convertBeanToEntryMap(permission);
         PermissionData entry = Iterators.find(permissions.iterator(), new Predicate<PermissionData>() {
             @Override
             public boolean apply(PermissionData input) {
-                return input.getAttributes().equals(permission.toAttributes());
+                return input.getAttributes().equals(entryMap);
             }
         });
         if (entry == null) {
@@ -252,22 +332,7 @@ public class UserDataManagerImpl implements UserDataManager {
     public Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
         Collection<PermissionSetData> permissionSets = user.getPermissionSets();
-        Collections2.transform(permissionSets, new Function<PermissionSetData, PermissionSet>() {
-            @Override
-            public PermissionSet apply(PermissionSetData input) {
-                try {
-                    Class<?> permType = Class.forName(input.getType());
-                    PermissionSet result =
-                        (PermissionSet) BeanUtils2.buildBeanFromAttributeMap(permType, input.getAttributes());
-                    result.setPermissions(parsePermissionData(input.getPermissions()));
-                    return result;
-                } catch (ClassNotFoundException e) {
-                    throw new ComputationException(e);
-                }
-            }
-        });
-
-        return null;
+        return parseBeanData(permissionSets);
     }
 
     @Override

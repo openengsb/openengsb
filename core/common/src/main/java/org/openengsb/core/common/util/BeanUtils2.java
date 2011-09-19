@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Maps;
 
 public final class BeanUtils2 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils2.class);
@@ -72,6 +73,29 @@ public final class BeanUtils2 {
         }
     }
 
+    public static Map<String, Object> buildAttributeValueMap(Object bean) {
+        BeanInfo beanInfo;
+        try {
+            beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
+        } catch (IntrospectionException e1) {
+            throw new IllegalArgumentException(e1);
+        }
+        Map<String, Object> result;
+        try {
+            result = Maps.newHashMap();
+            for (PropertyDescriptor pDesc : beanInfo.getPropertyDescriptors()) {
+                String name = pDesc.getName();
+                Object propertyValue = pDesc.getReadMethod().invoke(bean);
+                result.put(name, propertyValue);
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return result;
+    }
+
     public static <T> T buildBeanFromAttributeMap(Class<T> beanClass, Map<String, String> values) {
         T bean;
         try {
@@ -88,7 +112,7 @@ public final class BeanUtils2 {
     }
 
     public enum TestEnum {
-            a, b, c
+        a, b, c
     }
 
     public static Object convertToCorrectClass(Class<?> type, Object value) {
