@@ -84,7 +84,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttributes({ @SecurityAttribute("USER"), @SecurityAttribute("SERVICE_EDITOR") })
+@SecurityAttributes({ @SecurityAttribute("SERVICE_USER"), @SecurityAttribute("SERVICE_EDITOR") })
 @PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 

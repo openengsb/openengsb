@@ -25,7 +25,6 @@ import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.api.security.model.PermissionSet;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -123,25 +122,92 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public Collection<PermissionSet> getUserPermissionSets(String username) throws UserNotFoundException {
+    public Collection<Permission> getAllUserPermissions(String username) throws UserNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <T extends PermissionSet> Collection<T> getuserPermissionSets(String username, Class<T> type) {
+    public <T extends Permission> Collection<T> getAllUserPermissions(String username, Class<T> type)
+        throws UserNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void storeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+    public void storeUserPermissionSet(String username, String permission) throws UserNotFoundException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeUserPermissionSet(String username, PermissionSet permission) throws UserNotFoundException {
+    public void removeUserPermissionSet(String username, String permission) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void createPermissionSet(String permissionSet, Permission... permission) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addSetToPermissionSet(String permissionSetParent, String permissionSet) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeSetFromPermissionSet(String permissionSetParent, String permissionSet) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Collection<String> getMemberPermissionSets(String permissionSet) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<Permission> getPermissionsFromSet(String permissionSet) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<Permission> getAllPermissionsFromSet(String permissionSet) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setPermissionSetAttribute(String permissionSet, String attributename, String value) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getPermissionSetAttribute(String permissionSet, String attributename) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<String> getUserPermissionSets(String username) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addPermissionToSet(String permissionSet, Permission... permission) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removePermissionFromSet(String permissionSet, Permission... permission) {
         // TODO Auto-generated method stub
 
     }

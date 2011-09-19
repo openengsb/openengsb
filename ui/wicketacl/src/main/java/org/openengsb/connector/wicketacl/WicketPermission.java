@@ -17,9 +17,9 @@
 
 package org.openengsb.connector.wicketacl;
 
-import org.openengsb.core.security.model.GenericPermission;
+import org.openengsb.core.api.security.model.Permission;
 
-public class WicketPermission extends GenericPermission {
+public class WicketPermission implements Permission {
 
     private String componentName;
     private String action;
@@ -50,6 +50,11 @@ public class WicketPermission extends GenericPermission {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    @Override
+    public String describe() {
+        return String.format("Permission to %s all components belonging the ui context of %s", action, componentName);
     }
 
     @Override

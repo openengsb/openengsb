@@ -40,7 +40,7 @@ public class AdminAccessConnector extends AbstractOpenEngSBService implements Au
     @Override
     public Access checkAccess(String username, Object action) {
         try {
-            Collection<Permission> userPermissions = userManager.getUserPermissions(username);
+            Collection<Permission> userPermissions = userManager.getAllUserPermissions(username);
             boolean allowed = Iterators.any(userPermissions.iterator(), new Predicate<Permission>() {
                 @Override
                 public boolean apply(Permission input) {

@@ -99,7 +99,6 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
                 return false;
             return true;
         }
-
     }
 
     @Rule
@@ -189,6 +188,47 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         Collection<Permission> userPermissions =
             userManager.getUserPermissions("admin2");
         assertThat(userPermissions, not(hasItem(equalTo(permission))));
+    }
+
+    @Test
+    public void testStoreUserPermissionSet_shouldBeStored() throws Exception {
+        userManager.createUser("admin2");
+        Permission permission = new TestPermission(Access.GRANTED);
+        userManager.createPermissionSet("ROLE_ADMIN", permission);
+        userManager.storeUserPermissionSet("admin2", "ROLE_ADMIN");
+        Collection<String> userPermissions = userManager.getUserPermissionSets("admin2");
+        assertThat(userPermissions, hasItem("ROLE_ADMIN"));
+    }
+
+    @Test
+    public void testStoreUserPermissionSet_shouldGrantAllPermissions() throws Exception {
+        userManager.createUser("admin2");
+        Permission permission = new TestPermission(Access.GRANTED);
+        userManager.createPermissionSet("ROLE_ADMIN", permission);
+        userManager.storeUserPermissionSet("admin2", "ROLE_ADMIN");
+        Collection<Permission> allUserPermissions = userManager.getAllUserPermissions("admin2");
+        assertThat(allUserPermissions, hasItem(permission));
+    }
+
+    @Test
+    public void addPermissionSetToSet_shouldBeListedAsMember() throws Exception {
+        userManager.createPermissionSet("ROLE_ADMIN");
+        userManager.createPermissionSet("ROLE_ROOT");
+        userManager.addSetToPermissionSet("ROLE_ROOT", "ROLE_ADMIN");
+        Collection<String> memberPermissionSets = userManager.getMemberPermissionSets("ROLE_ROOT");
+        assertThat(memberPermissionSets, hasItem("ROLE_ADMIN"));
+    }
+
+    @Test
+    public void addPermissionSetToSet_shouldGrantAllPermissions() throws Exception {
+        userManager.createUser("admin2");
+        Permission permission = new TestPermission(Access.GRANTED);
+        userManager.createPermissionSet("ROLE_PROJECTMEMBER", permission);
+        userManager.createPermissionSet("ROLE_MANAGER");
+        userManager.addSetToPermissionSet("ROLE_MANAGER", "ROLE_PROJECTMEMBER");
+        userManager.storeUserPermissionSet("admin2", "ROLE_MANAGER");
+        Collection<Permission> allUserPermissions = userManager.getAllUserPermissions("admin2");
+        assertThat(allUserPermissions, hasItem(permission));
     }
 
     @Test

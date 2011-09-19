@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
 
 final class EntryUtils {
 
-    static List<EntryElement> convertAllObjectsToEntryElements(Collection<Object> collection) {
+    static List<EntryElement> convertAllObjectsToEntryElements(Collection<? extends Object> collection) {
         List<EntryElement> result = new ArrayList<EntryElement>();
         for (Object o : collection) {
             result.add(transformObjectToEntryElement(o));
@@ -124,6 +124,9 @@ final class EntryUtils {
         @SuppressWarnings("unchecked")
         @Override
         public EntryValue transformEntry(String key, Object value) {
+            if (value == null) {
+                return null;
+            }
             if (value instanceof Collection) {
                 return new EntryValue(key, convertAllObjectsToEntryElements((Collection<Object>) value));
             }
@@ -138,42 +141,45 @@ final class EntryUtils {
         return Collections2.transform(data, new BeanDataToObjectFunction<T>());
     }
 
+    static <T> T convertBeanDataToObject(BeanData input) {
+        Class<?> permType = createInstance(input.getType());
+        Map<String, Object> attributeValues = convertEntryMapToAttributeMap(input.getAttributes());
+        return createAndPopulateBean(permType, attributeValues);
+    }
+
+    private static Class<?> createInstance(String typeName) {
+        Class<?> permType;
+        try {
+            permType = Class.forName(typeName);
+        } catch (ClassNotFoundException e) {
+            throw new ComputationException(e);
+        }
+        return permType;
+    }
+
+    static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {
+        return Maps.transformEntries(entryMap, new EntryValueToObjectTransformer());
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> T createAndPopulateBean(Class<?> beanType, Map<String, Object> attributeValues) {
+        T instance;
+        try {
+            instance = (T) beanType.newInstance();
+            BeanUtils.populate(instance, attributeValues);
+        } catch (InstantiationException e) {
+            throw new ComputationException(e);
+        } catch (IllegalAccessException e) {
+            throw new ComputationException(e);
+        } catch (InvocationTargetException e) {
+            throw new ComputationException(e);
+        }
+        return instance;
+    }
+
     private static final class BeanDataToObjectFunction<T> implements Function<BeanData, T> {
-
         public T apply(BeanData input) {
-            Class<?> permType = createInstance(input.getType());
-            Map<String, Object> attributeValues = parseEntryMap(input.getAttributes());
-            return createAndPopulateBean(permType, attributeValues);
-        }
-
-        @SuppressWarnings("unchecked")
-        private T createAndPopulateBean(Class<?> permType, Map<String, Object> attributeValues) {
-            Object instance;
-            try {
-                instance = permType.newInstance();
-                BeanUtils.populate(instance, attributeValues);
-            } catch (InstantiationException e) {
-                throw new ComputationException(e);
-            } catch (IllegalAccessException e) {
-                throw new ComputationException(e);
-            } catch (InvocationTargetException e) {
-                throw new ComputationException(e);
-            }
-            return (T) instance;
-        }
-
-        private Class<?> createInstance(String typeName) {
-            Class<?> permType;
-            try {
-                permType = Class.forName(typeName);
-            } catch (ClassNotFoundException e) {
-                throw new ComputationException(e);
-            }
-            return permType;
-        }
-
-        private Map<String, Object> parseEntryMap(Map<String, EntryValue> entryMap) {
-            return Maps.transformEntries(entryMap, new EntryValueToObjectTransformer());
+            return convertBeanDataToObject(input);
         }
     }
 
