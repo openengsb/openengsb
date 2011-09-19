@@ -24,11 +24,9 @@ import java.io.Serializable;
  * file, loaded via the fileadmin and mapped via the admin service.
  */
 @SuppressWarnings("serial")
-public class OpenEngSBVersion implements Serializable {
+public class OpenEngSBFallbackVersion implements Serializable {
 
     private String versionNumber;
-    private String nameAdjective;
-    private String nameNoun;
 
     public String getVersionNumber() {
         return versionNumber;
@@ -36,22 +34,6 @@ public class OpenEngSBVersion implements Serializable {
 
     public void setVersionNumber(String versionNumber) {
         this.versionNumber = versionNumber;
-    }
-
-    public String getNameAdjective() {
-        return nameAdjective;
-    }
-
-    public void setNameAdjective(String nameAdjective) {
-        this.nameAdjective = nameAdjective;
-    }
-
-    public String getNameNoun() {
-        return nameNoun;
-    }
-
-    public void setNameNoun(String nameNoun) {
-        this.nameNoun = nameNoun;
     }
 
 }

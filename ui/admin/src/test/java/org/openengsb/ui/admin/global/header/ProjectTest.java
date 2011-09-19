@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
@@ -45,7 +46,8 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.AdminWebSession;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,7 +72,9 @@ public class ProjectTest {
         contextService = mock(ContextCurrentService.class);
         appContext = new ApplicationContextMock();
         appContext.putBean(contextService);
-        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
+        appContext.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        appContext.putBean("openengsbVersionService", versionService);
         mockAuthentication();
         tester = new WicketTester(new WebApplication() {
 
