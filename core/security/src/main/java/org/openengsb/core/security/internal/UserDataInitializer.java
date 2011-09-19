@@ -17,6 +17,8 @@
 
 package org.openengsb.core.security.internal;
 
+import java.util.List;
+
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
@@ -51,7 +53,10 @@ public class UserDataInitializer implements Runnable {
 
             userManager.storeUserPermission("admin", new RootPermission());
             String userCredentials = userManager.getUserCredentials("admin", "password");
-            LOGGER.debug(userCredentials);
+            LOGGER.info(userCredentials);
+            userManager.setUserAttribute("admin", "admin", true);
+            List<Object> userAttribute = userManager.getUserAttribute("admin", "admin");
+            LOGGER.info(userAttribute.toString());
         } catch (UserNotFoundException e) {
             LOGGER.error("this should not happen... I just created the user", e);
         }

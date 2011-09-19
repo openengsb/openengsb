@@ -46,8 +46,10 @@ public class UserData {
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<PermissionSetData> permissionSets = Sets.newHashSet();
 
-    @MapKey
-    private Map<String, String> attributes;
+    @OneToMany(cascade = CascadeType.ALL)
+    @MapKey(name = "key")
+    // @CollectionTable(name = "USER_ATTRIBUTES")
+    private Map<String, EntryValue> attributes = Maps.newHashMap();
 
     public UserData() {
     }
@@ -88,11 +90,11 @@ public class UserData {
         this.permissionSets = permissionSets;
     }
 
-    public Map<String, String> getAttributes() {
+    public Map<String, EntryValue> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Map<String, String> attributes) {
+    public void setAttributes(Map<String, EntryValue> attributes) {
         this.attributes = attributes;
     }
 

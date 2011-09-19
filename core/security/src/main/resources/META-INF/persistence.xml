@@ -26,6 +26,9 @@
     <class>org.openengsb.core.security.model.UserData</class>
     <class>org.openengsb.core.security.model.PermissionData</class>
     <class>org.openengsb.core.security.model.CredentialData</class>
+    <class>org.openengsb.core.security.model.EntryElement</class>
+    <class>org.openengsb.core.security.model.EntryValue</class>
+    <class>org.openengsb.core.security.model.PermissionSetData</class>
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

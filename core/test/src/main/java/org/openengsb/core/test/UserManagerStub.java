@@ -18,6 +18,7 @@ package org.openengsb.core.test;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.security.UserDataManager;
@@ -76,13 +77,13 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public String[] getUserAttribute(String username, String attributename) {
+    public List<Object> getUserAttribute(String username, String attributename) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setUserAttribute(String username, String attributename, String... value) {
+    public void setUserAttribute(String username, String attributename, Object... value) {
         // TODO Auto-generated method stub
 
     }

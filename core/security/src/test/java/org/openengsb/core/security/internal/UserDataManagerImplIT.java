@@ -21,14 +21,17 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -184,4 +187,29 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         assertThat(userPermissions, not(hasItem(equalTo(permission))));
     }
 
+    @Test
+    public void addSingleUserAttribute_shouldContainAttribute() throws Exception {
+        userManager.createUser("admin1");
+        userManager.createUser("admin2");
+        userManager.setUserAttribute("admin1", "test", 42);
+        userManager.setUserAttribute("admin2", "test", 21);
+
+        List<Object> admin1Attribute = userManager.getUserAttribute("admin1", "test");
+        assertAttributeValue(admin1Attribute, 42);
+
+        List<Object> admin2Attribute = userManager.getUserAttribute("admin2", "test");
+        assertAttributeValue(admin2Attribute, 21);
+    }
+
+    @Test
+    public void addAndRemoveUserAttribute_shouldNotBeSetAnymore() throws Exception {
+        userManager.createUser("admin1");
+        userManager.setUserAttribute("admin1", "test", 42);
+        userManager.removeUserAttribute("admin1", "test");
+        assertThat(userManager.getUserAttribute("admin1", "test"), nullValue());
+    }
+
+    private void assertAttributeValue(List<Object> actual, Object... expected) {
+        assertThat(actual, is(Arrays.asList(expected)));
+    }
 }
