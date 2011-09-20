@@ -76,12 +76,6 @@
       <fileMode>0755</fileMode>
     </fileSet>
 
-    <!-- copy lib directory -->
-    <fileSet>
-      <directory>target/dependencies/lib</directory>
-      <outputDirectory>/lib/</outputDirectory>
-    </fileSet>
-
     <!-- Copy license and other files from root -->
     <fileSet>
       <directory>${basedir}/..</directory>
@@ -151,12 +145,6 @@
       <destName>README</destName>
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
-    </file>
-    <file>
-      <source>${basedir}/target/openengsb-docs-manual-${project.version}/manual/pdf/openengsb-manual.pdf</source>
-      <outputDirectory>/</outputDirectory>
-      <destName>openengsb-manual.pdf</destName>
-      <fileMode>0644</fileMode>
     </file>
   </files>
 

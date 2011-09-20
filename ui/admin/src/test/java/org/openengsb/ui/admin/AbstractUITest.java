@@ -17,8 +17,10 @@
 
 package org.openengsb.ui.admin;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -39,7 +41,8 @@ import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
@@ -47,7 +50,7 @@ import org.osgi.framework.BundleContext;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -67,7 +70,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         context.putBean(Mockito.mock(ContextCurrentService.class));
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        context.putBean("openengsbVersionService", versionService);
         context.putBean(OpenEngSBCoreServices.getWiringService());
         OsgiUtilsService serviceUtilsService =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);

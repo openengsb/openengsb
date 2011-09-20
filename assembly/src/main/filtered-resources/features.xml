@@ -22,7 +22,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
 
-  <feature name="openengsb-core" version="${project.version}" description="OpenEngSB Core Feature">
+  <feature name="openengsb-framework" version="${project.version}" description="OpenEngSB Core Feature">
     <details>
       This feature starts all other features required such as spring and http. In addition the services for the
       persistence backend are configured rudementary. It contains the very core of OpenEngSB features such as
@@ -30,8 +30,6 @@
     </details>
     <config name="org.openengsb.settings">
       openengsb.version.number=${openengsb.version.number}
-      openengsb.version.name.adjective=${openengsb.version.name.adjective}
-      openengsb.version.name.noun=${openengsb.version.name.noun}
     </config>
     <config name="org.openengsb.persistence.config-rule">
       backend.id=persistenceService
@@ -49,10 +47,11 @@
       backend.id=workflow-persistence
       configuration.id=WORKFLOW
     </config>
-    <feature version="[3,4)">spring</feature>
-    <feature version="[3,4)">spring-web</feature>
-    <feature version="[1.2,2)">spring-dm</feature>
-    <feature version="${karaf.version}">http</feature>
+    <!-- Well, those are comming from karaf; as long as the karaf version is right that one is right too... -->
+    <feature>spring</feature>
+    <feature>spring-web</feature>
+    <feature>spring-dm</feature>
+    <feature>http</feature>
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
@@ -67,7 +66,7 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxb-api-2.2/${jaxb.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/${saaj.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxws-api-2.2/${jaxws.api.version}</bundle>
-    <bundle start-level='10'>mvn:javax.mail/mail/${javax.mail.version}</bundle> 
+    <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle> 
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
     <bundle start-level='10'>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
     <!-- Templating -->
@@ -110,8 +109,8 @@
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle>mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/com.google.guava-all/${guava.wrapped.version}</bundle>
-    <bundle>mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${jsch.wrapped.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
@@ -119,11 +118,9 @@
 
     <!-- JPA Infrastructure -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.apache.geronimo.components/geronimo-transaction/${geronimo.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
     <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
@@ -132,20 +129,20 @@
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
-    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jpa/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
 
     <!-- OpenEngSB Core Features -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-api/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-edb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-ekb/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-services/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.workflow/${project.version}</bundle>
     <!-- OpenEngSB Console -->
-    <bundle>mvn:org.openengsb.core/openengsb-core-console/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
@@ -179,7 +176,7 @@
       This feature provides activemq support including the queue configurations for the OpenEngSB.
     </details>
     <feature version="${project.version}">openengsb-infrastructure-activemq</feature>
-    <bundle>mvn:org.openengsb.infrastructure/openengsb-infrastructure-jms/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jms/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-jms" version="${project.version}" description="OpenEngSB JMS Port Integration">
@@ -192,7 +189,7 @@
       stomp=6550
     </config>
     <feature version="${project.version}">openengsb-infrastructure-jms</feature>
-    <bundle>mvn:org.openengsb.ports/openengsb-ports-jms/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ports/org.openengsb.ports.jms/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-cxf" version="${project.version}" description="OpenEngSB CXF Infrastructure">
@@ -233,7 +230,7 @@
       Based on the CXF infrastructure this feature integrates web services into the OpenEngSB Ports Remoting Infrastructure.
     </details>
     <feature version="${project.version}">openengsb-infrastructure-cxf</feature>
-    <bundle>mvn:org.openengsb.ports/openengsb-ports-ws/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ports/org.openengsb.ports.ws/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-rs" version="${project.version}" description="OpenEngSB Rest Port Integration">
@@ -248,7 +245,8 @@
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
     <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
-    <bundle>mvn:org.openengsb.ui/openengsb-ui-common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ui/org.openengsb.ui.api/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ui/org.openengsb.ui.common/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ui-admin" version="${project.version}" description="OpenEngSB UI Administration">
@@ -259,14 +257,14 @@
     <feature version="${project.version}">openengsb-domain-auditing</feature>
     <feature version="${project.version}">openengsb-connector-example</feature>
     <feature version="${project.version}">openengsb-ui-core</feature>
-    <bundle>mvn:org.openengsb.ui/openengsb-ui-admin/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ui/org.openengsb.ui.admin/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-domain-auditing" version="${project.version}" description="OpenEngSB Auditing Domain">
     <details>
       This feature contains the general domain description of the OpenEngSB Auditing Domain.
     </details>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.auditing/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-connector-memoryauditing" version="${project.version}" description="OpenEngSB Memory Auditing Connector">
@@ -275,9 +273,9 @@
       replaced by any other implementation but at least one implementation instance of this domain is required by the
       OpenEngSB to run.
     </details>
-	<feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-framework</feature>
     <feature version="${project.version}">openengsb-domain-auditing</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.memoryauditing/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-domain-example" version="${project.version}" description="OpenEngSB Example Domain">
@@ -286,7 +284,7 @@
       presenting possiblities how to use it. This domain has no real usage in production, but is rather for
       presentation only.
     </details>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.example/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-connector-example" version="${project.version}" description="OpenEngSB Example Connector">
@@ -295,7 +293,7 @@
       need to use this connector in any production environment. It is really for presentation use only.
     </details>
     <feature version="${project.version}">openengsb-domain-example</feature>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.example/${project.version}</bundle>
   </feature>
 
 </features>

@@ -96,7 +96,8 @@ public class ServiceEditorPanel extends Panel {
             if (isArray()) {
                 return (String) getArray()[index];
             } else if (index == 0) {
-                return (String) entry.getValue();
+                Object entryValue = entry.getValue();
+                return entryValue == null ? "null" : entryValue.toString();
             } else {
                 throw new IllegalStateException("value is not an array");
             }
