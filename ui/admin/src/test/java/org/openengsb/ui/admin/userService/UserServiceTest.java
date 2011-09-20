@@ -117,22 +117,8 @@ public class UserServiceTest extends AbstractUITest {
 
         tester.executeAjaxEvent("lazy:usermanagementContainer:form:users:0:confirm:yes", "onclick");
         assertThat(userManager.getUserList(), not(hasItem("test")));
-        tester.debugComponentTrees();
     }
 
-    //
-    // @Test
-    // public void createAndDeleteUser_ShouldWork() {
-    // tester.startPage(UserListPage.class);
-    // tester.debugComponentTrees();
-    // AjaxLink<?> link =
-    // (AjaxLink<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users:0:user.delete");
-    // tester.executeAjaxEvent(link, "onclick");
-    // ListView<?> userListView =
-    // (ListView<?>) tester.getComponentFromLastRenderedPage("usermanagementContainer:users");
-    // assertThat(userListView.size(), is(0));
-    //
-    // }
     //
     // @Test
     // public void testUserCreationWithoutRoles_ShouldWork() throws Exception {
@@ -147,38 +133,36 @@ public class UserServiceTest extends AbstractUITest {
     // assertThat(userManager.getUserCredentials("user1", "password"), is("password"));
     // }
     //
-    // @Test
-    // public void testErrorMessage_shouldReturnUserExists() throws Exception {
-    // tester.startPage(UserListPage.class);
-    // userManager.createUser("user1");
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("roles", "admin,user");
-    // formTester.setValue("passwordVerification", "password");
-    // formTester.submit();
-    // tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "userExistError") });
-    // }
+    @Test
+    public void testErrorMessage_shouldReturnUserExists() throws Exception {
+        tester.startPage(UserEditPage.class);
+        userManager.createUser("user1");
+        tester.debugComponentTrees();
+        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "userExistError") });
+    }
 
     @Test
     public void testShowCreatedUser_ShouldShowAdmin() {
         tester.startPage(UserListPage.class);
-        // tester.assertContains(localization(UserListPage.class, "existingUser.title"));
         tester.assertContains("admin");
-        // tester.assertContains("delete");
     }
 
-    // @Test
-    // public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
-    // userManager.createUser("user1");
-    // tester.startPage(UserListPage.class);
-    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-    // formTester.setValue("username", "user1");
-    // formTester.setValue("password", "password");
-    // formTester.setValue("passwordVerification", "password2");
-    // formTester.submit();
-    // tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "passwordError") });
-    // }
+    @Test
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
+        userManager.createUser("user1");
+        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "user1")));
+        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password2");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "passwordError") });
+    }
 
     // @Test
     // public void testShowUserAuthorities() throws Exception {
