@@ -1,4 +1,4 @@
-package org.openengsb.ui.admin.userService;
+package org.openengsb.ui.common.panel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;

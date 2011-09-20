@@ -19,12 +19,10 @@ package org.openengsb.ui.admin;
 
 import static org.mockito.Mockito.mock;
 
-
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.MethodRule;
-import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.test.rules.DedicatedThread;
 import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;

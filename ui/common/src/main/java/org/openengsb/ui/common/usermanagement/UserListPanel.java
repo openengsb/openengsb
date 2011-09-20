@@ -1,4 +1,4 @@
-package org.openengsb.ui.admin.userService;
+package org.openengsb.ui.common.usermanagement;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.ui.common.panel.ConfirmPanel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import com.google.common.collect.Lists;

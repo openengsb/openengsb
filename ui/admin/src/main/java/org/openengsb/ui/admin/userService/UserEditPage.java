@@ -20,6 +20,7 @@ package org.openengsb.ui.admin.userService;
 import org.apache.wicket.PageParameters;
 import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @SecurityAttribute(value = "USER_ADMIN", action = "RENDER")

@@ -1,4 +1,4 @@
-package org.openengsb.ui.admin.userService;
+package org.openengsb.ui.common.usermanagement;
 
 import java.io.Serializable;
 
