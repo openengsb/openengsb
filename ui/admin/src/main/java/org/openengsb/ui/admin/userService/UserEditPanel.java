@@ -16,7 +16,7 @@ import org.openengsb.core.api.security.UserManagementException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
-public class UserEditPanel extends Panel {
+public abstract class UserEditPanel extends Panel {
 
     private static final long serialVersionUID = 5587225457795713881L;
 
@@ -45,6 +45,7 @@ public class UserEditPanel extends Panel {
             @Override
             protected void onSubmit() {
                 createUser();
+                afterSubmit();
             }
         };
         container.add(userForm);
@@ -97,6 +98,8 @@ public class UserEditPanel extends Panel {
         }
 
     }
+    
+    protected abstract void afterSubmit();
 
     class UserInput implements Serializable {
         private static final long serialVersionUID = 8089287572532176946L;

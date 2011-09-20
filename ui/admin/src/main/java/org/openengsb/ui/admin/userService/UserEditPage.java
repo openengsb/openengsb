@@ -26,14 +26,31 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserEditPage extends BasePage {
 
+    private final class EditPanel extends UserEditPanel {
+        private static final long serialVersionUID = -4646745795328499771L;
+
+        private EditPanel(String id) {
+            super(id);
+        }
+
+        public EditPanel(String id, String username) {
+            super(id, username);
+        }
+
+        @Override
+        protected void afterSubmit() {
+            setResponsePage(UserListPage.class);
+        }
+    }
+
     public UserEditPage() {
-        add(new UserEditPanel("userEditor"));
+        add(new EditPanel("userEditor"));
     }
 
     public UserEditPage(PageParameters parameters) {
         super(parameters);
         String username = parameters.getString("user");
-        add(new UserEditPanel("userEditor", username));
+        add(new EditPanel("userEditor", username));
     }
 
 }
