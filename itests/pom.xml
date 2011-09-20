@@ -164,8 +164,8 @@
 
     <!-- Distribution dependency -->
     <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>openengsb-framework</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
       <scope>test</scope>
