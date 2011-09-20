@@ -20,22 +20,23 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
+    <relativePath>../parents/shared/</relativePath>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-shared-settings</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../parents/shared</relativePath>
   </parent>
 
-  <groupId>org.openengsb.tooling</groupId>
-  <artifactId>openengsb-tooling-parent</artifactId>
-  <name>OpenEngSB :: Tooling :: Parent</name>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.loom</groupId>
+  <artifactId>openengsb-loom-parent</artifactId>
   <version>2.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: User Interface :: Parent</name>
+
   <packaging>pom</packaging>
 
-  <description>Parent project of Domain and Connector archetypes and checkstyle project</description>
+  <description>Administration Interface for the OpenEngSB</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>
@@ -50,10 +51,6 @@
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
-
-  <modules>
-    <module>archetypes</module>
-  </modules>
 
 </project>
 

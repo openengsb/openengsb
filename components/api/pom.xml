@@ -20,29 +20,35 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <relativePath>../../parents/connector</relativePath>
-    <groupId>org.openengsb.connector</groupId>
-    <artifactId>openengsb-connector-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.api</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.api</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.memoryauditing</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.api</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: MemoryAuditing</name>
+  <name>OpenEngSB :: Framework :: API</name>
 
   <packaging>bundle</packaging>
 
-  <description>Description of Connector</description>
+  <description>
+    Interfaces to be implemented by Domains, Connectors and Events which handle intatiation of Services
+    and Proxies, classes for registration of bundles and services, classes for localization, classes that
+    save connector properties (Persistence) and finally classes that enable the web application to have
+    access to OSGI bundles. This bundle contains only the model and interface descriptions of all those services.
+    In theory someone can take only a minor number of openengsb bundles, the api and create the rest of the
+    system on his own.
+  </description>
 
   <url>http://www.openengsb.org</url>
 
@@ -55,9 +61,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-connector-memoryauditing.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-connector-memoryauditing.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
   <build>
@@ -88,32 +94,33 @@
               org.aopalliance.intercept,
               org.springframework.aop,
               org.springframework.aop.framework,
-              *</Import-Package>
+              org.ops4j.pax.wicket.util.proxy; resolution:="optional",
+              net.sf.cglib.core; resolution:="optional",
+              net.sf.cglib.proxy; resolution:="optional",
+              net.sf.cglib.reflect; resolution:="optional", *
+            </Import-Package>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
- </build>
+  </build>
 
   <dependencies>
+    <!-- Drools Dependencies -->
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+      <groupId>org.drools</groupId>
+      <artifactId>knowledge-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
     </dependency>
-  </dependencies>
+   </dependencies>
 
 </project>
 

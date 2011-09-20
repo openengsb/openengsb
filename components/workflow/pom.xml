@@ -18,33 +18,33 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb.ports</groupId>
-    <artifactId>openengsb-ports-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.ports.jms</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.ports.jms</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.workflow</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.workflow</bundle.namespace>
   </properties>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.ports</groupId>
-  <artifactId>org.openengsb.ports.jms</artifactId>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.workflow</artifactId>
   <version>2.0.0-SNAPSHOT</version>
-
-  <name>OpenEngSB :: Ports :: JMS</name>
+  <name>OpenEngSB :: Framework :: Workflow Engine</name>
 
   <packaging>bundle</packaging>
 
-  <description>
-    OpenEngSB Core classes for sending message calls and receiving messages via JMS.
-    The messages can be of type Call, Return or Exception. The marshalling of the messages is done with JSON.
-  </description>
+  <description>OpenEngSB classes for Workflow, Rules and Events processing based on Drools</description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -82,9 +82,17 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, * </Import-Package>
+            <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
+              org.drools.event; bundle-symbolic-name="org.drools.core",
+              org.drools.rule, org.drools.compiler,
+              org.springframework.osgi.service.importer,
+              org.aopalliance.aop,
+              org.aopalliance.intercept,
+              org.springframework.aop,
+              org.springframework.aop.framework, *
+            </Import-Package>
             <!--
-              The JMS Ports implementation requires to directly load/marshall received classes.
+              Workflows need to access used classes in a dynamic way.
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
@@ -94,6 +102,26 @@
   </build>
 
   <dependencies>
+    <!-- Drools Dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>com.springsource.org.codehaus.janino</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- OpenEngSB Dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
@@ -111,24 +139,30 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jms</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.example</artifactId>
+      <scope>test</scope>
+    </dependency>
 
+    <dependency>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
 

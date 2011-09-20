@@ -20,29 +20,31 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/connector/pom.xml</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connector.example</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.example</bundle.namespace>
   </properties>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.memoryauditing</artifactId>
+  <artifactId>org.openengsb.connector.example</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: MemoryAuditing</name>
+  <name>OpenEngSB :: Connector :: Example</name>
 
   <packaging>bundle</packaging>
 
-  <description>Description of Connector</description>
+  <description>
+    Example Connector which implements Example Domain. It logs messages with a specific log level
+    to the OSGI logger.
+  </description>
 
   <url>http://www.openengsb.org</url>
 
@@ -55,9 +57,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-connector-memoryauditing.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-connector-memoryauditing.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
   <build>
@@ -76,7 +78,7 @@
         </includes>
       </resource>
     </resources>
-    <plugins>
+     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -88,32 +90,45 @@
               org.aopalliance.intercept,
               org.springframework.aop,
               org.springframework.aop.framework,
-              *</Import-Package>
+              *
+            </Import-Package>
+            <!--
+              Good question; I dont think this is required but have to be revaluated
+            -->
+            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
- </build>
+  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>provided</scope>
+      <version>2.0.0-SNAPSHOT</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
+      <scope>provided</scope>
+      <version>2.0.0-SNAPSHOT</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.example</artifactId>
       <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.persistence</artifactId>
+      <artifactId>org.openengsb.framework.test</artifactId>
       <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
 

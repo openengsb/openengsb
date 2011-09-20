@@ -23,7 +23,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
-  <artifactId>openengsb-ui-api</artifactId>
+  <artifactId>org.openengsb.ui.api</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: User Interface :: API</name>
@@ -46,3 +46,4 @@
   <packaging>bundle</packaging>
 
 </project>
+

@@ -20,29 +20,32 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <relativePath>../../parents/connector</relativePath>
-    <groupId>org.openengsb.connector</groupId>
-    <artifactId>openengsb-connector-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.services</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.services</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.memoryauditing</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.services</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: MemoryAuditing</name>
+  <name>OpenEngSB :: Framework :: Services</name>
 
   <packaging>bundle</packaging>
 
-  <description>Description of Connector</description>
+  <description>
+    This package contains the service implementations of the core services. All classes in this package
+    are hidden in internal and should not be directly used. It is very likely that this package is split
+    into the various sub-packages in future releases.
+  </description>
 
   <url>http://www.openengsb.org</url>
 
@@ -55,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-connector-memoryauditing.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-connector-memoryauditing.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
   <build>
@@ -73,6 +76,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.info</include>
+          <include>OSGI-INF/blueprint/common-context.xml</include>
         </includes>
       </resource>
     </resources>
@@ -88,30 +92,59 @@
               org.aopalliance.intercept,
               org.springframework.aop,
               org.springframework.aop.framework,
-              *</Import-Package>
+              org.apache.felix.fileinstall;version="[3,4)", *
+            </Import-Package>
+            <!--
+              We need this here because the ProxyServiceManager needs to see Domain-interfaces to create the proxies.
+              Additional domains can be installed any time.
+            -->
+            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
- </build>
+  </build>
 
   <dependencies>
+    <!-- Drools Dependencies -->
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.commands</artifactId>
     </dependency>
   </dependencies>
 

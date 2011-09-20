@@ -23,26 +23,29 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../../parents/connector</relativePath>
-    <groupId>org.openengsb.connector</groupId>
-    <artifactId>openengsb-connector-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.ekb</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.ekb</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.memoryauditing</artifactId>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.ekb</artifactId>
   <version>2.0.0-SNAPSHOT</version>
-
-  <name>OpenEngSB :: Connector :: MemoryAuditing</name>
+  <name>OpenEngSB :: Framework :: Engineering Knowledge Base</name>
 
   <packaging>bundle</packaging>
 
-  <description>Description of Connector</description>
+  <description>
+    OpenEngSB Engineering Knowledge Base Service. It's purpose is the querying of tool data out of the EDB and handling
+    of creating Tooldata. It builds a proxy which builds a simple implementation for every tool data by forwarding tool
+    data creating access to a proxy.
+  </description>
 
   <url>http://www.openengsb.org</url>
 
@@ -55,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-connector-memoryauditing.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-connector-memoryauditing.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
   <build>
@@ -81,39 +84,27 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
-              *</Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
- </build>
+  </build>
 
   <dependencies>
+    <!-- OpenEngSb dependencies -->
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <artifactId>org.openengsb.framework.test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
 

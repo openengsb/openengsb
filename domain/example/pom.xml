@@ -20,29 +20,31 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <relativePath>../../parents/connector</relativePath>
-    <groupId>org.openengsb.connector</groupId>
-    <artifactId>openengsb-connector-parent</artifactId>
+    <groupId>org.openengsb.domain</groupId>
+    <artifactId>openengsb-domain-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/domain/</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.domain.example</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.domain.example</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.memoryauditing</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.domain</groupId>
+  <artifactId>org.openengsb.domain.example</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: MemoryAuditing</name>
+  <name>OpenEngSB :: Domain :: Example</name>
 
   <packaging>bundle</packaging>
 
-  <description>Description of Connector</description>
+  <description>
+    Example Domain is used for logging events and is provided as an example
+    for all developers.
+  </description>
 
   <url>http://www.openengsb.org</url>
 
@@ -55,9 +57,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb-connector-memoryauditing.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb-connector-memoryauditing.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
 
   <build>
@@ -76,42 +78,20 @@
         </includes>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>org.springframework.osgi.service.importer,
-              org.aopalliance.aop,
-              org.aopalliance.intercept,
-              org.springframework.aop,
-              org.springframework.aop.framework,
-              *</Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
- </build>
+  </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.common</artifactId>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-api</artifactId>
       <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.persistence</artifactId>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
       <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

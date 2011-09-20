@@ -18,33 +18,38 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.openengsb.ports</groupId>
-    <artifactId>openengsb-ports-parent</artifactId>
+    <groupId>org.openengsb.framework</groupId>
+    <artifactId>openengsb-framework-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.ports.jms</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.ports.jms</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.framework.common</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.common</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.ports</groupId>
-  <artifactId>org.openengsb.ports.jms</artifactId>
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>org.openengsb.framework.common</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Ports :: JMS</name>
+  <name>OpenEngSB :: Framework :: Common</name>
 
   <packaging>bundle</packaging>
 
   <description>
-    OpenEngSB Core classes for sending message calls and receiving messages via JMS.
-    The messages can be of type Call, Return or Exception. The marshalling of the messages is done with JSON.
+    OpenEngSB Common Core Utility classes, abstract classes to be extended by Domains and Connectors
+    (Domains, DomainEvents, DomainProviders, ServiceManagers). The abstract and utility classes should
+    help a great deal during developing for the OpenEngSB. Though non of the classes in this package are
+    required and can be easily worked-around.
   </description>
+
   <url>http://www.openengsb.org</url>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -82,11 +87,13 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, * </Import-Package>
+            <Import-Package>sun.reflect, *</Import-Package>
             <!--
-              The JMS Ports implementation requires to directly load/marshall received classes.
+              This import is required since the WS package relies heavily on reflection 
+              and loading of calling classes at runtime
             -->
             <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.openengsb.core.common.internal.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -94,34 +101,52 @@
   </build>
 
   <dependencies>
+    <!-- Drools Dependencies -->
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.common</artifactId>
-      <scope>provided</scope>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.aop</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.expression</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.services</artifactId>
-      <scope>test</scope>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
-      <scope>provided</scope>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-jms</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
+      <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
