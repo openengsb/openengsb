@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.util;
 
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
@@ -98,6 +99,19 @@ public abstract class AbstractExamTestHelper {
             }
         }
         return null;
+    }
+
+    protected void waitForSiteToBeAvailable(String urlToWatchFor, Integer maxWaitTime) throws InterruptedException {
+        Integer localCounter = maxWaitTime;
+        while (localCounter != 0) {
+            if (isUrlReachable(urlToWatchFor)) {
+                return;
+            }
+            Thread.sleep(1000);
+            localCounter--;
+        }
+        throw new IllegalStateException(format("Couldn't reach page %s within %s seconds", urlToWatchFor,
+            maxWaitTime));
     }
 
     @SuppressWarnings("deprecation")
