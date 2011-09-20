@@ -112,7 +112,7 @@
       <entry key="backend.id" value="global-persistence" />
     </service-properties>
     <bean class="org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService">
-    	<property name="storageFilePath" value="$[karaf.data]/openengsb/config/rulebase/globals" />	
+    	<property name="storageFilePath" value="data/openengsb/config/rulebase/globals" />	
     </bean>
   </service>
   
@@ -121,7 +121,7 @@
       <entry key="backend.id" value="import-persistence" />
     </service-properties>
     <bean class="org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService">
-		<property name="storageFilePath" value="$[karaf.data]/openengsb/config/rulebase/imports" />	
+		<property name="storageFilePath" value="data/openengsb/config/rulebase/imports" />	
     </bean>
   </service>
   
@@ -130,7 +130,13 @@
       <entry key="backend.id" value="rule-persistence" />
     </service-properties>
     <bean class="org.openengsb.core.workflow.internal.persistence.RuleBaseElementPersistenceBackendService" init-method="init">
-		<property name="storageFolderPath" value="$[karaf.data]/openengsb/config/rulebase/flows" />	
+		<property name="storageFolderPath" value="data/openengsb/config/rulebase/flows" />	
+	</bean>
+  </service>
+
+  <service id="workflowDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.workflow.deployer.WorkflowDeployerService">
+      <property name="ruleManager" ref="ruleManager" />
     </bean>
   </service>
 

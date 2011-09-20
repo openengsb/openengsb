@@ -269,7 +269,7 @@ public abstract class AbstractExamTestHelper {
         Option[] mainOptions =
             new Option[]{
                 karafDistributionConfiguration().frameworkUrl(
-                    maven().groupId("org.openengsb").artifactId("openengsb").type("zip").versionAsInProject()),
+                    maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip").versionAsInProject()),
                 logLevel(realLogLevel),
                 editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
                 editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
