@@ -39,7 +39,7 @@ import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.common.DomainAuthorizationStrategy;
@@ -93,7 +93,7 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
         addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
-        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
+        addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
         addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
         addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }

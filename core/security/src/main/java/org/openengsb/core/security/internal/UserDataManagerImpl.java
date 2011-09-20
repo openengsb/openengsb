@@ -69,8 +69,14 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public void deleteUser(String username) throws UserNotFoundException {
-        UserData found = doFindUser(username);
+    public void deleteUser(String username) {
+        UserData found;
+        try {
+            found = doFindUser(username);
+        } catch (UserNotFoundException e) {
+            LOGGER.warn("user {} was to be deleted, but not found", username);
+            return;
+        }
         entityManager.remove(found);
     }
 

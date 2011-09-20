@@ -27,7 +27,7 @@ public interface UserDataManager {
 
     void createUser(String username) throws UserExistsException;
 
-    void deleteUser(String username) throws UserNotFoundException;
+    void deleteUser(String username);
 
     String getUserCredentials(String username, String key) throws UserNotFoundException;
 

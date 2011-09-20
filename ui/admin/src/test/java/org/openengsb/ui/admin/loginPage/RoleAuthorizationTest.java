@@ -31,7 +31,7 @@ import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.ui.admin.AbstractLoginTest;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.userService.UserListPage;
 
 /**
  * This class tests the ui for visible components depending on the logged in user roles
@@ -52,7 +52,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         BookmarkablePageLabelLink<?> userServiceLink =
             (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNotNull(userServiceLink);
-        assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserService.class.getCanonicalName()));
+        assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserListPage.class.getCanonicalName()));
     }
 
     @Test

@@ -24,15 +24,30 @@ import java.util.Hashtable;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
+import org.openengsb.connector.wicketacl.WicketPermission;
+import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
+import org.openengsb.core.api.CompositeConnectorStrategy;
+import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.virtual.CompositeConnectorProvider;
+import org.openengsb.core.security.AdminAccessConnector;
+import org.openengsb.core.security.AffirmativeBasedAuthorizationStrategy;
+import org.openengsb.core.security.model.RootPermission;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
@@ -40,10 +55,14 @@ import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
+import org.openengsb.core.test.UserManagerStub;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.ui.admin.model.OpenEngSBVersion;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
@@ -61,6 +80,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected ConnectorRegistrationManager registrationManager;
     protected WiringService wiringService;
     protected ContextCurrentService contextCurrentService;
+    protected UserDataManager userManager;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -93,6 +113,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
         context.putBean(serviceManager);
+        mockAuthentication();
     }
 
     @Override
@@ -106,6 +127,46 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         wiringService.setBundleContext(bundleContext);
         registerService(wiringService, "wiringService", WiringService.class);
         this.wiringService = wiringService;
+    }
+
+    protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
+        userManager = new UserManagerStub();
+        userManager.createUser("test");
+        userManager.setUserCredentials("test", "password", "password");
+        userManager.storeUserPermission("test", new WicketPermission("USER"));
+
+        userManager.createUser("user");
+        userManager.setUserCredentials("user", "password", "password");
+
+        userManager.createUser("admin");
+        userManager.setUserCredentials("admin", "password", "password");
+        userManager.storeUserPermission("admin", new RootPermission());
+
+        UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
+        authConnector.setUserManager(userManager);
+        context.putBean("authenticator", authConnector);
+
+        WicketAclServiceImpl wicketAclServiceImpl = new WicketAclServiceImpl();
+        wicketAclServiceImpl.setUserManager(userManager);
+        registerServiceAtLocation(wicketAclServiceImpl, "authorization/wicket", "root", AuthorizationDomain.class,
+            Domain.class);
+
+        AdminAccessConnector adminAccessConnector = new AdminAccessConnector();
+        adminAccessConnector.setUserManager(userManager);
+        registerServiceAtLocation(adminAccessConnector, "authorization/admin", "root", AuthorizationDomain.class,
+            Domain.class);
+
+        DomainProvider authDomainProvider = createDomainProviderMock(AuthorizationDomain.class, "authorization");
+        ConnectorInstanceFactory cFactory = new CompositeConnectorProvider().createFactory(authDomainProvider);
+        Connector instance = cFactory.createNewInstance("auth-admin");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("composite.strategy.name", "authorization");
+        registerService(new AffirmativeBasedAuthorizationStrategy(), props, CompositeConnectorStrategy.class);
+
+        cFactory.applyAttributes(instance,
+            ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
+        registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
+        context.putBean("userManager", userManager);
     }
 
 }

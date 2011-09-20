@@ -21,12 +21,20 @@ import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
 
     @Override
     public void start(BundleContext context) throws Exception {
         UserDataManager userManager = OpenEngSBCoreServices.getServiceUtilsService().getService(UserDataManager.class);
+        while (userManager.getUserList().isEmpty()) {
+            LOGGER.warn("wait for userdatainitializer to run");
+            Thread.sleep(1000);
+        }
         if (!userManager.getAllPermissionsFromSet("ROLE_USER").isEmpty()) {
             return;
         }

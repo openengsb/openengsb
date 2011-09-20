@@ -101,12 +101,12 @@ public class UserManagerStub implements UserDataManager {
 
     @Override
     public void storeUserPermission(String username, Permission permission) {
-        permissionData.get(username).get(permission.getClass().getName()).add(permission);
+        permissionData.get(username).get(permission.getClass()).add(permission);
     }
 
     @Override
     public void removeUserPermission(String username, Permission permission) {
-        permissionData.get(username).get(permission.getClass().getName()).remove(permission);
+        permissionData.get(username).get(permission.getClass()).remove(permission);
 
     }
 
