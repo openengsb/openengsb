@@ -37,7 +37,7 @@ import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest extends AbstractOpenEngSBTest {
 
-    private static interface NullDomainEvents extends DomainEvents {
+    private interface NullDomainEvents extends DomainEvents {
 
         void raiseEvent(NullEvent event);
 

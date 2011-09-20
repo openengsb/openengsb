@@ -38,9 +38,6 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
@@ -119,8 +116,7 @@ public final class SecureSampleApp {
     }
 
     private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
-            AuthenticationInfo authenticationInfo)
-        throws IOException, JsonGenerationException, JsonMappingException {
+            AuthenticationInfo authenticationInfo) throws IOException {
         BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
         SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
         return MAPPER.writeValueAsBytes(secureRequest);
@@ -141,7 +137,7 @@ public final class SecureSampleApp {
     }
 
     private static SecureResponse decryptResponse(String resultString, SecretKey sessionKey)
-        throws DecryptionException, IOException, JsonParseException, JsonMappingException {
+        throws DecryptionException, IOException {
         byte[] decryptedContent;
         try {
             decryptedContent = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
@@ -210,3 +206,4 @@ public final class SecureSampleApp {
     private SecureSampleApp() {
     }
 }
+
