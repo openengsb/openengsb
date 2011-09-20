@@ -30,37 +30,35 @@ import org.osgi.framework.Bundle;
 public class OpenEngSBInfo extends OsgiCommandSupport {
 
     private String versionNumber;
-    private String nameAdjective;
-    private String nameNoun;
     private String droolsVersion;
 
     private List<InfoProvider> infoProviders = new LinkedList<InfoProvider>();
 
+    @Override
     protected Object doExecute() throws Exception {
         int maxNameLen = 25;
 
         //
         // print OpenEngSB information
         //
-        System.out.println("OpenEngSB");
-        printValue("OpenEngSB version", maxNameLen, versionNumber);
-        printValue("OpenEngSB codename", maxNameLen, String.format("%s %s", nameAdjective, nameNoun));
+        System.out.println("OpenEngSB Framework");
+        printValue("OpenEngSB Framework Version", maxNameLen, versionNumber);
         // print loaded openengsb-bundles
         Bundle[] bundles = getBundleContext().getBundles();
         Integer count = 0;
         for (Bundle b : bundles) {
-            if (b.getSymbolicName().startsWith("org.openengsb.")) {
+            if (b.getSymbolicName().startsWith("org.openengsb.framework")) {
                 count++;
             }
         }
-        printValue("OpenEngSB bundles", maxNameLen, count.toString());
+        printValue("OpenEngSB Framework Bundles", maxNameLen, count.toString());
         System.out.println();
 
         //
         // Other infos:
         //
         System.out.println("Used libraries");
-        printValue("Karaf version", maxNameLen, System.getProperty("karaf.version"));
+        printValue("Karaf Version", maxNameLen, System.getProperty("karaf.version"));
         printValue("OSGi Framework", maxNameLen,
             bundleContext.getBundle(0).getSymbolicName() + " - " + bundleContext.getBundle(0).getVersion());
         printValue("Drools version", maxNameLen, droolsVersion);
@@ -93,14 +91,6 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
 
     public void setVersionNumber(String versionNumber) {
         this.versionNumber = versionNumber;
-    }
-
-    public void setNameAdjective(String nameAdjective) {
-        this.nameAdjective = nameAdjective;
-    }
-
-    public void setNameNoun(String nameNoun) {
-        this.nameNoun = nameNoun;
     }
 
     public void setDroolsVersion(String droolsVersion) {

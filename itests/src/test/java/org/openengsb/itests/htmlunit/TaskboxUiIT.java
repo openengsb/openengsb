@@ -59,6 +59,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
     private static final String PAGE_ENTRY_URL =
         "http://localhost:" + WEBUI_PORT + "/openengsb/tasks/?context=" + CONTEXT;
     private static final int MAX_RETRY = 5;
+    private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
 
     private WebClient webClient;
     private TaskboxService taskboxService;
@@ -76,6 +77,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class);
+        waitForSiteToBeAvailable(PAGE_ENTRY_URL, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @After
