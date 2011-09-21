@@ -35,7 +35,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>openengsb-connector-usernamepassword</artifactId>
+  <artifactId>org.openengsb.connector.usernamepassword</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: UsernamePassword</name>
@@ -90,18 +90,27 @@
   <dependencies>
     <!-- OpenEngSB Core References -->
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-api</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.test</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -109,6 +118,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-authentication</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 

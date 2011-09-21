@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <!-- Current Branch Version Information -->
+    <openengsb.version.number>${project.version}</openengsb.version.number>
+  </properties>
+
+  <parent>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-bundle-settings</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../bundle</relativePath>
+  </parent>
+
+  <groupId>org.openengsb.framework</groupId>
+  <artifactId>openengsb-framework-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>2.0.0-SNAPSHOT</version>
+  <name>OpenEngSB :: Framework :: Parent</name>
+
+  <description>
+    Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen as an extension to an
+    Enterprise Service Bus and is based on JBI (Service Mix). With this project it is tried to provide as many as
+    possible SE domains and to allow to combine the tools as easily as possible.
+  </description>
+
+  <url>http://openengsb.org</url>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb-framework</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>ChristophGr</id>
+      <name>Christoph Gritschenberger</name>
+      <email>e0525747 [at] student.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+        <role>PMC</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mhandler</id>
+      <name>Michael Handler</name>
+      <email>michael.handler [at] fullstop.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+        <role>PMC</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Turantul</id>
+      <name>Michael Heil</name>
+      <email>michael.heil [at] chello.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tobster</id>
+      <name>Tobias Hochwallner</name>
+      <email>tobster [at] gmx.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bonomat</id>
+      <name>Philipp Hoenisch</name>
+      <email>philipp.hoenisch [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>chKarner</id>
+      <name>Christoph Karner</name>
+      <email>ch.karner [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Arcticwolf</id>
+      <name>Felix Mayerhuber</name>
+      <email>felix.mayerhuber [at] gmx.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+        <role>PMC</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>flomotlik</id>
+      <name>Florian Motlik</name>
+      <email>flomotlik [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pieber</id>
+      <name>Andreas Pieber</name>
+      <email>anpieber [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+        <role>PMC</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>SoFabian</id>
+      <name>Fabian Souczek</name>
+      <email>e0728541 [at] student.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>esz</id>
+      <name>Eduard Szente</name>
+      <email>eduard.szente [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>crazymaik</id>
+      <name>Michael Zoech</name>
+      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Commiter</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Roland Bair</name>
+      <email>roland.bair [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Johannes Binder</name>
+      <email>j.binder.x [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Stefan Doesinger</name>
+      <email>stefandoesinger [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Daniel Driza</name>
+      <email>daniel.driza [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Peter Fruehwirt</name>
+      <email>peter.fruehwirt [at] qse.ifs.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Michael Gissing</name>
+      <email>michael.gissing [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Hochreiner</name>
+      <email>ch.hochreiner [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Richard Holzeis</name>
+      <email>richard_holzeis [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Petr Horinek</name>
+      <email>horinek.petr [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Leiter</name>
+      <email>openengsb [at] christophleiter.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Ioanna Lytra</name>
+      <email>jlytra [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Kristof Meixner</name>
+      <email>kristof.meixner [at] fatlenny.net</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Richard Mordinyi</name>
+      <email>richard [at] complang.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Thomas Moser</name>
+      <email>thomas.moser [at] tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Stefan Paula</name>
+      <email>stefan.paula [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Patrick Peer</name>
+      <email>e0326352 [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Michael Petritsch</name>
+      <email>michael.petritsch [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Alexander Pucher</name>
+      <email>engsb [at] alexander-pucher.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Lukas Puschmann</name>
+      <email>lukas.puschmann [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Gernot Rumpold</name>
+      <email>gernot.rumpold [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Gregor Ryba</name>
+      <email>gregor.ryba [at] infor.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Alexander Schatten</name>
+      <email>schatten [at] ifs.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Lukas Stampf</name>
+      <email>lukas.stampf [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>David Waldhans</name>
+      <email>david [at] waldhans.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Florian Waltersdorfer</name>
+      <email>ignatiomobius [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Zehetner</name>
+      <email>christoph.zehetner [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Xiaolin Zhang</name>
+      <email>e0825548 [at] student.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Peter Zimmermann</name>
+      <email>e0828244 [at] student.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+  </contributors>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.api</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.common</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.test</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.persistence</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.workflow</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.security</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.framework</groupId>
+        <artifactId>org.openengsb.framework.services</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.example</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authentication</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.authorization</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>org.openengsb.domain.auditing</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+

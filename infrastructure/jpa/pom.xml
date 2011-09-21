@@ -21,7 +21,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>..</relativePath>
     <groupId>org.openengsb.infrastructure</groupId>
     <artifactId>openengsb-infrastructure-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
@@ -34,7 +33,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.infrastructure</groupId>
-  <artifactId>openengsb-infrastructure-jpa</artifactId>
+  <artifactId>org.openengsb.infrastructure.jpa</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Infrastructure :: JPA</name>
@@ -95,11 +94,6 @@
       <artifactId>org.apache.aries.transaction.blueprint</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>
-      <groupId>org.apache.geronimo.components</groupId>
-      <artifactId>geronimo-transaction</artifactId>
-      <scope>provided</scope>
-    </dependency>-->
   </dependencies>
 
 </project>

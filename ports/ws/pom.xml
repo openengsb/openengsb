@@ -33,7 +33,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ports</groupId>
-  <artifactId>openengsb-ports-ws</artifactId>
+  <artifactId>org.openengsb.ports.ws</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Ports :: Webservices</name>
@@ -98,28 +98,28 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-api</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-security</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-bundle</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-bundle</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -133,8 +133,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
