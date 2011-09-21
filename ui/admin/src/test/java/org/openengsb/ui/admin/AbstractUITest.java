@@ -19,8 +19,10 @@ package org.openengsb.ui.admin;
 
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -57,7 +59,8 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
@@ -67,7 +70,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -90,7 +93,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         contextCurrentService = mock(ContextCurrentService.class);
         context.putBean(contextCurrentService);
-        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        context.putBean("openengsbVersionService", versionService);
         context.putBean(OpenEngSBCoreServices.getWiringService());
         OsgiUtilsService serviceUtilsService =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
@@ -113,7 +118,19 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
         context.putBean(serviceManager);
-        mockAuthentication();
+
+        userManager = new UserManagerStub();
+        userManager.createUser("test");
+        userManager.setUserCredentials("test", "password", "password");
+        userManager.storeUserPermission("test", new WicketPermission("USER"));
+
+        userManager.createUser("user");
+        userManager.setUserCredentials("user", "password", "password");
+
+        userManager.createUser("admin");
+        userManager.setUserCredentials("admin", "password", "password");
+        userManager.storeUserPermission("admin", new RootPermission());
+        context.putBean("userManager", userManager);
     }
 
     @Override
@@ -130,17 +147,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     }
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
-        userManager = new UserManagerStub();
-        userManager.createUser("test");
-        userManager.setUserCredentials("test", "password", "password");
-        userManager.storeUserPermission("test", new WicketPermission("USER"));
-
-        userManager.createUser("user");
-        userManager.setUserCredentials("user", "password", "password");
-
-        userManager.createUser("admin");
-        userManager.setUserCredentials("admin", "password", "password");
-        userManager.storeUserPermission("admin", new RootPermission());
 
         UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
@@ -166,7 +172,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         cFactory.applyAttributes(instance,
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
-        context.putBean("userManager", userManager);
     }
 
 }

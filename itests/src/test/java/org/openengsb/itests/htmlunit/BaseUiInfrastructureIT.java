@@ -18,6 +18,7 @@
 package org.openengsb.itests.htmlunit;
 
 import static java.lang.String.format;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;

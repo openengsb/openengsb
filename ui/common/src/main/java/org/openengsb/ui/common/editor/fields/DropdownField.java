@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
+import org.openengsb.ui.common.editor.ModelFacade;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")
@@ -39,7 +39,7 @@ public class DropdownField extends AbstractField<String> {
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         final Map<String, LocalizableStringModel> labels = new HashMap<String, LocalizableStringModel>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {
@@ -60,6 +60,8 @@ public class DropdownField extends AbstractField<String> {
 
                 });
         choice.setNullValid(!attribute.isRequired());
-        return choice;
+        ModelFacade<String> retVal = new ModelFacade<String>();
+        retVal.setMainComponent(choice);
+        return retVal;
     }
 }

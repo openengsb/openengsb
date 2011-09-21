@@ -31,8 +31,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -49,8 +51,9 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.admin.ruleEditorPanel.RuleEditorPanel;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -65,7 +68,9 @@ public class RuleEditorTest {
         ApplicationContextMock appContext = new ApplicationContextMock();
         ContextCurrentService contextService = mock(ContextCurrentService.class);
         appContext.putBean(contextService);
-        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
+        appContext.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        appContext.putBean("openengsbVersionService", versionService);
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
         tester.getApplication().addComponentInstantiationListener(

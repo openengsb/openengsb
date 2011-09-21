@@ -16,17 +16,23 @@
  */
 package org.openengsb.core.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.PredicateUtils;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -117,21 +123,24 @@ public class UserManagerStub implements UserDataManager {
 
     @Override
     public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<Collection<Permission>> values = permissionData.get(username).values();
+        Collection<Permission> result = new ArrayList<Permission>();
+        for (Collection<Permission> c : values) {
+            result.addAll(c);
+        }
+        return result;
     }
 
     @Override
     public Collection<Permission> getAllUserPermissions(String username) throws UserNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        return getUserPermissions(username);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Permission> Collection<T> getAllUserPermissions(String username, Class<T> type)
         throws UserNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        return (Collection<T>) Collections2.filter(getAllUserPermissions(username), Predicates.instanceOf(type));
     }
 
     @Override

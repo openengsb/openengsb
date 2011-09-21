@@ -31,6 +31,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.openengsb.core.api.model.ConnectorId;
 
 import com.google.common.base.Function;
@@ -86,6 +87,9 @@ public class ConnectorFile {
                 public Object apply(String input) {
                     if (input.contains(LIST_DELIMITER)) {
                         return splitBySeparatorAndTrimItems(input);
+                    }
+                    if (NumberUtils.isNumber(input)) {
+                        return NumberUtils.createNumber(input);
                     }
                     return input;
                 }

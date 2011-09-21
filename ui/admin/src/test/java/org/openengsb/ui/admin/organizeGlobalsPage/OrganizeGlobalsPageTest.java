@@ -25,6 +25,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -41,7 +43,8 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -56,7 +59,9 @@ public class OrganizeGlobalsPageTest {
         ApplicationContextMock appContext = new ApplicationContextMock();
         ContextCurrentService contextService = mock(ContextCurrentService.class);
         appContext.putBean(contextService);
-        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
+        appContext.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        appContext.putBean("openengsbVersionService", versionService);
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
         tester.getApplication().addComponentInstantiationListener(
@@ -71,6 +76,7 @@ public class OrganizeGlobalsPageTest {
         doThrow(new RuleBaseException()).when(ruleManager).addGlobal("test", "test");
         doThrow(new RuleBaseException()).when(ruleManager).removeGlobal("test");
         doAnswer(new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 globals.put((String) args[1], (String) args[0]);
@@ -78,8 +84,9 @@ public class OrganizeGlobalsPageTest {
             }
         })
             .when(ruleManager).addGlobal("glob4", "aaaa.bbbb.fff");
-        
+
         doAnswer(new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 globals.put((String) args[1], (String) args[0]);
@@ -87,8 +94,9 @@ public class OrganizeGlobalsPageTest {
             }
         })
             .when(ruleManager).addGlobal("glob4", "aaaa.bbbb.ffff");
-        
+
         doAnswer(new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) {
                 globals.remove("glob4");
                 return null;
@@ -138,7 +146,7 @@ public class OrganizeGlobalsPageTest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-    
+
     @Test
     public void testAddNewGlobal() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
@@ -149,7 +157,7 @@ public class OrganizeGlobalsPageTest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-    
+
     @Test
     public void testDeleteGlobal() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
@@ -160,7 +168,7 @@ public class OrganizeGlobalsPageTest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-    
+
     @Test
     public void testDeleteNotExistingGlobal() throws Exception {
         FormTester formTester = tester.newFormTester("editForm");
@@ -171,7 +179,7 @@ public class OrganizeGlobalsPageTest {
         LinkTree tree = (LinkTree) tester.getComponentFromLastRenderedPage("tree");
         assertEquals(globals.size(), tree.getModelObject().getChildCount(tree.getModelObject().getRoot()));
     }
-    
-    
+
+
 
 }

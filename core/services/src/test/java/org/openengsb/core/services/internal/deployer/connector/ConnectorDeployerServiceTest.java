@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
@@ -50,7 +52,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
-import org.mockito.internal.matchers.LessThan;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -172,6 +173,20 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     }
 
     @Test
+    public void testConnectorFileWithRanking_shouldBeInstalledWithNumericRanking() throws Exception {
+        File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
+        FileUtils
+            .writeStringToFile(connectorFile, testConnectorData + "\nproperty.service.ranking=2\nproperty.bla=foo");
+        connectorDeployerService.install(connectorFile);
+
+        OpenEngSBCoreServices.getServiceUtilsService().getService("(bla=foo)", 100L);
+
+        ServiceReference serviceReference = bundleContext.getServiceReferences(null, "(bla=foo)")[0];
+        Integer ranking = (Integer) serviceReference.getProperty(Constants.SERVICE_RANKING);
+        assertThat(ranking, notNullValue());
+    }
+
+    @Test
     public void testConnectorFileWithArraysAndTrailingSpace_shouldBeInstalled() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeStringToFile(connectorFile, testConnectorData + "\nproperty.bla=foo , bar");
@@ -211,7 +226,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
         ServiceReference reference = bundleContext.getServiceReferences(NullDomain.class.getName(), "")[0];
         Integer ranking = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
-        assertThat(new Long(ranking), new LessThan<Long>(0L));
+        assertThat(ranking, lessThan(0));
     }
 
     @Test
@@ -392,11 +407,11 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @Test
     public void testUpdateAttributeViaFileTwice_shouldUpdateTwice() throws Exception {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
-        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=y"));
-        connectorDeployerService.install(connectorFile);
+        FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=43", "attribute.x=y"));
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=42", "attribute.x=y"));
+        connectorDeployerService.install(connectorFile);
         connectorDeployerService.update(connectorFile);
-        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=bar)"), nullValue());
+        assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=43)"), nullValue());
         assertThat(bundleContext.getServiceReferences(NullDomain.class.getName(), "(foo=42)"), not(nullValue()));
     }
 

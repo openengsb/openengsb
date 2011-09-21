@@ -41,7 +41,8 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
@@ -56,7 +57,9 @@ public class OrganizeImportsPageTest {
         ApplicationContextMock appContext = new ApplicationContextMock();
         ContextCurrentService contextService = mock(ContextCurrentService.class);
         appContext.putBean(contextService);
-        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
+        appContext.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
+        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
+        appContext.putBean("openengsbVersionService", versionService);
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
         tester.getApplication().addComponentInstantiationListener(
@@ -72,6 +75,7 @@ public class OrganizeImportsPageTest {
         doThrow(new RuleBaseException()).when(ruleManager).removeImport("test");
 
         doAnswer(new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 imports.add((String) args[0]);
@@ -81,6 +85,7 @@ public class OrganizeImportsPageTest {
             .when(ruleManager).addImport("aaaa.bbbb.fff");
 
         doAnswer(new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) {
                 imports.remove(invocation.getArguments()[0]);
                 return null;

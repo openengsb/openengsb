@@ -27,7 +27,7 @@ public interface EngineeringDatabaseService {
     /**
      * Create a commit which is ready to be filled with updates.
      */
-    EDBCommit createCommit(String committer, String role);
+    EDBCommit createCommit(String committer, String context);
 
     /**
      * Commit the provided commit object and returns the corresponding time stamp for the commit.

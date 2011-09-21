@@ -19,6 +19,7 @@ package org.openengsb.ui.admin.global.header;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
@@ -34,7 +35,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
@@ -42,6 +43,7 @@ import org.openengsb.ui.admin.testClient.TestClient;
 import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.openengsb.ui.common.DomainAuthorizationStrategy;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
@@ -53,7 +55,9 @@ public class HeaderTemplate extends Panel {
     private static String menuIndex;
 
     @PaxWicketBean(name = "openengsbVersion")
-    private OpenEngSBVersion openengsbVersion;
+    private OpenEngSBFallbackVersion openengsbVersion;
+    @PaxWicketBean(name = "openengsbVersionService")
+    private List<OpenEngSBVersionService> openengsbVersionService;
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
@@ -66,13 +70,13 @@ public class HeaderTemplate extends Panel {
         add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
+                getSession().setLocale(Locale.ENGLISH);
             }
         });
         add(new Link<Object>("lang.de") {
             @Override
             public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
+                getSession().setLocale(Locale.GERMAN);
             }
         });
 
@@ -80,10 +84,13 @@ public class HeaderTemplate extends Panel {
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
         if (openengsbVersion == null) {
-            openengsbVersion = new OpenEngSBVersion();
+            openengsbVersion = new OpenEngSBFallbackVersion();
         }
-        add(new Label("version", openengsbVersion.getVersionNumber() + " \"" + openengsbVersion.getNameAdjective()
-                + " " + openengsbVersion.getNameNoun() + "\""));
+        if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
+            add(new Label("version", openengsbVersion.getVersionNumber()));
+        } else {
+            add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
+        }
     }
 
     private void initMainMenuItems() {

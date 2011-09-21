@@ -17,11 +17,11 @@
 
 package org.openengsb.ui.common.editor.fields;
 
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.ui.common.editor.ModelFacade;
 
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField<String> {
@@ -32,9 +32,11 @@ public class PasswordField extends AbstractField<String> {
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected ModelFacade<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         PasswordTextField field = new PasswordTextField("field", model);
         field.setResetPassword(false);
-        return field;
+        ModelFacade<String> retVal = new ModelFacade<String>();
+        retVal.setMainComponent(field);
+        return retVal;
     }
 }

@@ -82,7 +82,8 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
             return false;
         }
 
-        for (final SecurityAttributeEntry a : getRelevantSecurityAttributes(actionData)) {
+        Collection<SecurityAttributeEntry> relevantSecurityAttributes = getRelevantSecurityAttributes(actionData);
+        for (final SecurityAttributeEntry a : relevantSecurityAttributes) {
             boolean allowed = Iterators.any(filtered.iterator(), new Predicate<WicketPermission>() {
                 @Override
                 public boolean apply(WicketPermission input) {

@@ -35,6 +35,7 @@ public abstract class AbstractLoginTest extends AbstractUITest {
 
     @Before
     public void setupLogin() throws Exception {
+        mockAuthentication();
         ApplicationLifecycleListener listener = mock(ApplicationLifecycleListener.class);
         tester = new WicketTester(new WicketApplication(listener) {
             @Override

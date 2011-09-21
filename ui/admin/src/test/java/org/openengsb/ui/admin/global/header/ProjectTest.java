@@ -53,23 +53,6 @@ public class ProjectTest extends AbstractLoginTest {
         });
     }
 
-    // private void mockAuthentication() {
-    // final Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-    // authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-    // when(authManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
-    // @Override
-    // public Authentication answer(InvocationOnMock invocation) {
-    // Authentication auth = (Authentication) invocation.getArguments()[0];
-    // if (auth.getCredentials().equals("password")) {
-    // return new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
-    // authorities);
-    // }
-    // throw new BadCredentialsException("wrong password");
-    // }
-    // });
-    // appContext.putBean("authenticationManager", authManager);
-    // }
-
     @Test
     public void testIfLabelIsPresent() {
         String labelString =
