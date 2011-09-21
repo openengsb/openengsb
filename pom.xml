@@ -31,7 +31,7 @@
     <!-- Dependency Versions -->
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current />
+    <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
@@ -177,7 +177,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -186,7 +186,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -198,7 +198,105 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  </profiles>
+  <profile><id>ca23324e-abc5-418c-a726-07910f6146c8</id><build><plugins><plugin>
+      <inherited>false</inherited>
+      <groupId>com.mycila.maven-license-plugin</groupId>
+      <artifactId>maven-license-plugin</artifactId>
+      <version>1.9.0</version>
+      <configuration>
+        <!-- header is added dynamically -->
+        <failIfMissing>true</failIfMissing>
+        <aggregate>true</aggregate>
+        <strictCheck>true</strictCheck>
+        <excludes>
+          <!-- openengs-maven-plugin test resources -->
+          <exclude>src/main/resources/license/header.txt</exclude>
+          <eclude>src/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
+          <exclude>src/test/resources/licenseFormat/backup/Without_Header.java</exclude>
+          <!-- #################################### -->
+          <exclude>docs/examples/**/*.config</exclude>
+          <exclude>etc/eclipse/checkstyle.xml</exclude>
+          <exclude>license.txt</exclude>
+          <exclude>**/*.vm</exclude>
+          <exclude>**/license.txt</exclude>
+          <exclude>runner/**</exclude>
+          <exclude>assembly/runner/**</exclude>
+          <exclude>features/**</exclude>
+          <exclude>NOTICE</exclude>
+          <exclude>**/*.3pm</exclude>
+          <exclude>**/*.dll</exclude>
+          <exclude>**/*.pdb</exclude>
+          <exclude>**/*.pdf</exclude>
+          <exclude>**/LICENSE</exclude>
+          <exclude>**/*checkstyle.xml</exclude>
+          <exclude>**/*.log.*</exclude>
+          <exclude>**/*.log</exclude>
+          <exclude>**/*.packlist</exclude>
+          <exclude>**/*.pod</exclude>
+          <exclude>**/imports</exclude>
+          <exclude>**/globals</exclude>
+          <exclude>**/.keep</exclude>
+          <exclude>**/EngSB.sln</exclude>
+          <exclude>**/nb-configuration.xml</exclude>
+          <exclude>**/*.checkstyle</exclude>
+          <exclude>**/*.rf</exclude>
+        </excludes>
+        <mapping>
+          <bnd>SCRIPT_STYLE</bnd>
+          <drl>SCRIPT_STYLE</drl>
+          <index>SCRIPT_STYLE</index>
+          <gitignore>SCRIPT_STYLE</gitignore>
+          <cfg>SCRIPT_STYLE</cfg>
+          <wsdl>XML_STYLE</wsdl>
+          <csproj>XML_STYLE</csproj>
+          <rf>XML_STYLE</rf>
+          <composite>SCRIPT_STYLE</composite>
+          <config>XML_STYLE</config>
+          <script>DOUBLESLASH_STYLE</script>
+          <rule>SCRIPT_STYLE</rule>
+        </mapping>
+      <header>C:\Users\Lukas\13adaf91-17f4-48b0-8f34-1d8d90fa14325997585937721506327.txt</header></configuration>
+      <executions>
+        <execution>
+          <id>check-headers</id>
+          <phase>validate</phase>
+          <goals>
+            <!-- the goal (check/format) is added dynamically -->
+          <goal>check</goal></goals>
+        </execution>
+      </executions>
+    </plugin><plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <configuration>
+        <!-- the config location is added dynamically by the mojo -->
+        <consoleOutput>true</consoleOutput>
+        <enableRulesSummary>true</enableRulesSummary>
+        <failsOnError>true</failsOnError>
+        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+      <configLocation>file:/C:/Users/Lukas/f967f7a5-47a7-49d1-b909-0637ef2bf5fc8168128586047810838.xml</configLocation></configuration>
+      <executions>
+        <execution>
+          <id>check</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>checkstyle</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin><plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <excludes>
+          <exclude>*</exclude>
+        </excludes>
+        <includes>
+          <include>**/*Test.java</include>
+          <include>**/*IT.java</include>
+        </includes>
+      </configuration>
+    </plugin></plugins><resources/></build><modules/></profile></profiles>
 
 </project>
 

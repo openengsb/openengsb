@@ -19,14 +19,12 @@ package org.openengsb.core.workflow;
 
 import static org.mockito.Mockito.mock;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -50,17 +48,15 @@ import org.osgi.framework.BundleContext;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     protected WorkflowServiceImpl service;
     protected RuleManager manager;
     protected DummyService myservice;
     protected HashMap<String, Domain> domains;
     protected TaskboxService taskbox;
     protected TaskboxServiceInternal taskboxInternal;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        cleanup();
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -91,7 +87,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
+        manager = PersistenceTestUtil.getRuleManager(tempFolder);
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
@@ -121,18 +117,6 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         registerServiceAtLocation(mock2, name, Domain.class, domainClass);
         domains.put(name, mock2);
         return (T) mock2;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        cleanup();
-    }
-
-    private static void cleanup() {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
     }
 
     @Override

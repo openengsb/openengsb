@@ -37,6 +37,7 @@ public class CorePersistenceServiceBackend<E> implements ConfigPersistenceBacken
 
     private PersistenceManager persistenceManager;
     private PersistenceService persistenceService;
+
     private BundleContext bundleContext;
 
     public void init() {

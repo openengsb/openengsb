@@ -31,7 +31,9 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
@@ -43,6 +45,9 @@ import org.slf4j.LoggerFactory;
 public class RuleManagerFlowTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleManagerFlowTest.class);
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private RuleManager source;
     private KnowledgeBase rulebase;
@@ -61,17 +66,8 @@ public class RuleManagerFlowTest {
         }
     }
 
-    @After
-    @Before
-    public void deleteData() throws Exception {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
-    }
-
     protected RuleManager getRuleBaseSource() throws Exception {
-        RuleManager source = PersistenceTestUtil.getRuleManager();
+        RuleManager source = PersistenceTestUtil.getRuleManager(tempFolder);
         return source;
     }
 
