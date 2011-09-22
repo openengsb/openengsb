@@ -32,6 +32,7 @@ import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.security.internal.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

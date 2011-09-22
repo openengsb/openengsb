@@ -18,7 +18,7 @@ package org.openengsb.core.security.internal;
 
 import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.security.model.RootPermission;
+import org.openengsb.core.security.internal.model.RootPermission;
 
 public class RootPermissionProvider implements PermissionProvider {
     @Override

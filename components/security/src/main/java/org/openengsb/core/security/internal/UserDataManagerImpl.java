@@ -30,11 +30,11 @@ import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.CollectionUtils2;
-import org.openengsb.core.security.model.EntryElement;
-import org.openengsb.core.security.model.EntryValue;
-import org.openengsb.core.security.model.PermissionData;
-import org.openengsb.core.security.model.PermissionSetData;
-import org.openengsb.core.security.model.UserData;
+import org.openengsb.core.security.internal.model.EntryElement;
+import org.openengsb.core.security.internal.model.EntryValue;
+import org.openengsb.core.security.internal.model.PermissionData;
+import org.openengsb.core.security.internal.model.PermissionSetData;
+import org.openengsb.core.security.internal.model.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

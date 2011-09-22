@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import java.io.File;
 import java.io.IOException;

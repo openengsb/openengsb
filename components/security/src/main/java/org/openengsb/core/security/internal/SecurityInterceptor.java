@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.core.api.security.AccessDeniedException;
 import org.openengsb.core.api.security.BundleAuthenticationToken;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;

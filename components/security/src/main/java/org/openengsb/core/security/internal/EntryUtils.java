@@ -31,9 +31,9 @@ import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.BeanUtils2;
-import org.openengsb.core.security.model.BeanData;
-import org.openengsb.core.security.model.EntryElement;
-import org.openengsb.core.security.model.EntryValue;
+import org.openengsb.core.security.internal.model.BeanData;
+import org.openengsb.core.security.internal.model.EntryElement;
+import org.openengsb.core.security.internal.model.EntryValue;
 import org.osgi.framework.Filter;
 
 import com.google.common.base.Function;

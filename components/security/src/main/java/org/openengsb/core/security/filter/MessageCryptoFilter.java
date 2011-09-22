@@ -29,7 +29,7 @@ import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
-import org.openengsb.core.security.CipherUtils;
+import org.openengsb.core.security.internal.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

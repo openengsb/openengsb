@@ -31,7 +31,7 @@
   </service>
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
-    <bean class="org.openengsb.core.security.SecurityInterceptor">
+    <bean class="org.openengsb.core.security.internal.SecurityInterceptor">
       <property name="authorizer" ref="authorizer" />
     </bean>
   </service>
@@ -40,14 +40,14 @@
     <service-properties>
       <entry key="composite.strategy.name" value="authorization.affirmativebased" />
     </service-properties>
-    <bean class="org.openengsb.core.security.AffirmativeBasedAuthorizationStrategy" />
+    <bean class="org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy" />
   </service>
 
   <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
     <service-properties>
       <entry key="composite.strategy.name" value="authentication.provider" />
     </service-properties>
-    <bean class="org.openengsb.core.security.AuthenticationProviderStrategy" />
+    <bean class="org.openengsb.core.security.internal.AuthenticationProviderStrategy" />
   </service>
 
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=root-authorizer)"
@@ -69,7 +69,7 @@
         </array>
       </entry>
     </service-properties>
-    <bean class="org.openengsb.core.security.AdminAccessConnector">
+    <bean class="org.openengsb.core.security.internal.AdminAccessConnector">
       <property name="userManager" ref="userManager" />
     </bean>
   </service>
@@ -77,7 +77,7 @@
   <service interface="org.openengsb.core.api.PermissionProvider">
     <service-properties>
       <entry key="connector" value="root" />
-      <entry key="permissionClass" value="org.openengsb.core.security.model.RootPermission" />
+      <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
     </service-properties>
     <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
   </service>

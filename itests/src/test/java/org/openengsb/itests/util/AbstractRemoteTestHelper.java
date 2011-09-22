@@ -39,7 +39,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.security.CipherUtils;
+import org.openengsb.core.security.internal.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

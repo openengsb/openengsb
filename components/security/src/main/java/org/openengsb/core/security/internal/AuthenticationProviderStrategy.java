@@ -19,15 +19,16 @@ package org.openengsb.core.security.internal;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractDelegateStrategy;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
@@ -36,7 +37,8 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationProviderStrategy.class);
 
-    private static class CompositeAuthenticationProvider implements AuthenticationProvider {
+    private static class CompositeAuthenticationProvider extends AbstractOpenEngSBConnectorService implements
+            AuthenticationDomain {
         private List<ServiceReference> providers;
 
         public CompositeAuthenticationProvider(List<ServiceReference> providers) {
@@ -44,18 +46,18 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
         }
 
         @Override
-        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-            Iterator<AuthenticationProvider> serviceIterator =
+        public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
+            Iterator<AuthenticationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthenticationProvider.class);
+                    AuthenticationDomain.class);
             AuthenticationException lastException = null;
             LOGGER.debug("iterating {} authenticationProviderServices", providers.size());
             while (serviceIterator.hasNext()) {
-                AuthenticationProvider provider = serviceIterator.next();
-                if (provider.supports(authentication.getClass())) {
+                AuthenticationDomain provider = serviceIterator.next();
+                if (provider.supports(credentials)) {
                     LOGGER.info("attempting authentication using provider {}", provider.getClass());
                     try {
-                        return provider.authenticate(authentication);
+                        return provider.authenticate(username, credentials);
                     } catch (AuthenticationException e) {
                         lastException = e;
                     }
@@ -64,21 +66,25 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
             if (lastException == null) {
                 lastException =
-                    new ProviderNotFoundException("No AuthenticationProvider found, that supports "
-                            + authentication.getClass());
+                    new AuthenticationException("No AuthenticationProvider found, that supports " + credentials);
             }
             throw lastException;
         }
 
         @Override
-        public boolean supports(final Class<? extends Object> authentication) {
-            Iterator<AuthenticationProvider> serviceIterator =
+        public AliveState getAliveState() {
+            return AliveState.ONLINE;
+        }
+
+        @Override
+        public boolean supports(final Object credentials) {
+            Iterator<AuthenticationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
-                    AuthenticationProvider.class);
-            return Iterators.any(serviceIterator, new Predicate<AuthenticationProvider>() {
+                    AuthenticationDomain.class);
+            return Iterators.any(serviceIterator, new Predicate<AuthenticationDomain>() {
                 @Override
-                public boolean apply(AuthenticationProvider input) {
-                    return input.supports(authentication);
+                public boolean apply(AuthenticationDomain input) {
+                    return input.supports(credentials);
                 }
             });
         }
@@ -92,7 +98,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
     @Override
     public boolean supports(Class<?> domainClass) {
-        return AuthenticationProvider.class.isAssignableFrom(domainClass);
+        return AuthenticationDomain.class.isAssignableFrom(domainClass);
     }
 
 }

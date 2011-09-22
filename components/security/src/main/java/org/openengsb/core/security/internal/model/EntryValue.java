@@ -14,50 +14,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security.model;
+package org.openengsb.core.security.internal.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 @Entity
-public class EntryElement {
+public class EntryValue {
 
-    private String type;
-    private String value;
+    private String key;
 
-    public EntryElement(String type, String value) {
-        this.type = type;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<EntryElement> value;
+
+    public EntryValue() {
+    }
+
+    public EntryValue(String key, List<EntryElement> value) {
+        this.key = key;
         this.value = value;
     }
 
-    public EntryElement() {
+    public String getKey() {
+        return key;
     }
 
-    public String getType() {
-        return type;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getValue() {
+    public List<EntryElement> getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(List<EntryElement> value) {
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", value, type);
+        return key + ": " + value.toString();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -73,12 +79,12 @@ public class EntryElement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        EntryElement other = (EntryElement) obj;
-        if (type == null) {
-            if (other.type != null) {
+        EntryValue other = (EntryValue) obj;
+        if (key == null) {
+            if (other.key != null) {
                 return false;
             }
-        } else if (!type.equals(other.type)) {
+        } else if (!key.equals(other.key)) {
             return false;
         }
         if (value == null) {

@@ -53,6 +53,8 @@ import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
+import org.openengsb.core.security.internal.CipherUtils;
+import org.openengsb.core.security.internal.FileKeySource;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;

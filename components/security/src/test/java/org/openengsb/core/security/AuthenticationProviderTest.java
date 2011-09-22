@@ -35,6 +35,7 @@ import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
+import org.openengsb.core.security.internal.AuthenticationProviderStrategy;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authentication.AuthenticationDomain;

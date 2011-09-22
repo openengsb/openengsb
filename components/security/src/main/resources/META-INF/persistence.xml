@@ -23,12 +23,12 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
 
-    <class>org.openengsb.core.security.model.EntryElement</class>
-    <class>org.openengsb.core.security.model.EntryValue</class>
-    <class>org.openengsb.core.security.model.BeanData</class>
-    <class>org.openengsb.core.security.model.UserData</class>
-    <class>org.openengsb.core.security.model.PermissionData</class>
-    <class>org.openengsb.core.security.model.PermissionSetData</class>
+    <class>org.openengsb.core.security.internal.model.EntryElement</class>
+    <class>org.openengsb.core.security.internal.model.EntryValue</class>
+    <class>org.openengsb.core.security.internal.model.BeanData</class>
+    <class>org.openengsb.core.security.internal.model.UserData</class>
+    <class>org.openengsb.core.security.internal.model.PermissionData</class>
+    <class>org.openengsb.core.security.internal.model.PermissionSetData</class>
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

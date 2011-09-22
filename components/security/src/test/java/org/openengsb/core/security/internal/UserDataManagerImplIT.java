@@ -45,7 +45,7 @@ import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.security.model.UserData;
+import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 

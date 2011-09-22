@@ -21,7 +21,7 @@ import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.security.model.RootPermission;
+import org.openengsb.core.security.internal.model.RootPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

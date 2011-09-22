@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import java.util.Iterator;
 import java.util.List;

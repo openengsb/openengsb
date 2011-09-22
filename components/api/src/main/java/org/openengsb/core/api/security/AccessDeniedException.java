@@ -14,13 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security.model;
+package org.openengsb.core.api.security;
 
-import org.openengsb.core.api.security.model.Permission;
+public class AccessDeniedException extends RuntimeException {
 
-public class RootPermission implements Permission {
-    @Override
-    public String describe() {
-        return "grants ALL permissions, thus providing ROOT-access";
+    private static final long serialVersionUID = -4110570969981216915L;
+
+    public AccessDeniedException() {
+        super();
     }
+
+    public AccessDeniedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AccessDeniedException(String message) {
+        super(message);
+    }
+
+    public AccessDeniedException(Throwable cause) {
+        super(cause);
+    }
+
 }

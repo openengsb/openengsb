@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import java.util.Collection;
 
@@ -23,7 +23,7 @@ import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.security.model.RootPermission;
+import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

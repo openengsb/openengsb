@@ -39,6 +39,10 @@ public class SecurityUtils {
             SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             try {
                 return super.call();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
             } finally {
                 SecurityContextHolder.clearContext();
             }
