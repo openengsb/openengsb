@@ -20,7 +20,7 @@ This project includes:
   ActiveMQ :: KahaDB under The Apache Software License, Version 2.0
   ActiveMQ Protocol Buffers Implementation and Compiler under The Apache Software License, Version 2.0
   Annotation 1.0 under The Apache Software License, Version 2.0
-  Antlr 3 Runtime under Apache License, Version 2.0
+  Antlr 3 Runtime under BSD License
   ANTLR Grammar Tool under BSD License
   AntLR Parser Generator under BSD License
   ANTLR StringTemplate under BSD licence
@@ -44,12 +44,11 @@ This project includes:
   Apache Felix File Install under The Apache Software License, Version 2.0
   Apache Felix Framework under The Apache Software License, Version 2.0
   Apache Felix Gogo Runtime under The Apache Software License, Version 2.0
-  Apache Felix Main under The Apache Software License, Version 2.0
   Apache Felix Metatype Service under The Apache Software License, Version 2.0
-  Apache Felix Shell Service under The Apache Software License, Version 2.0
   Apache Felix Web Management Console under The Apache Software License, Version 2.0
   Apache Geronimo JAX-WS 2.2 API under The Apache Software License, Version 2.0
   Apache Geronimo JSR-317 JPA 2.0 Spec API under The Apache Software License, Version 2.0
+  Apache Geronimo JSR-330 Spec API under The Apache Software License, Version 2.0
   Apache JAMES Mime4j under Apache License, Version 2.0
   Apache Karaf :: Admin :: Command under The Apache Software License, Version 2.0
   Apache Karaf :: Admin :: Core under The Apache Software License, Version 2.0
@@ -87,7 +86,6 @@ This project includes:
   Apache Karaf :: Shell :: PackageAdmin Commands under The Apache Software License, Version 2.0
   Apache Karaf :: Shell :: SSH under The Apache Software License, Version 2.0
   Apache Karaf :: Shell :: Various Commands under The Apache Software License, Version 2.0
-  Apache Karaf :: Tooling :: Testing environment under The Apache Software License, Version 2.0
   Apache Karaf :: Util under The Apache Software License, Version 2.0
   Apache Karaf :: Web Console :: Admin Plugin under The Apache Software License, Version 2.0
   Apache Karaf :: Web Console :: Branding under The Apache Software License, Version 2.0
@@ -102,17 +100,18 @@ This project includes:
   Apache ServiceMix :: Bundles :: asm under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: cglib under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: commons-dbcp under The Apache Software License, Version 2.0
-  Apache ServiceMix :: Bundles :: junit under The Apache Software License, Version 2.0
   Apache ServiceMix :: Bundles :: serp under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
+  aQute Bundle Tool Library under All files contained in this JAR are licensed under the Apache
+         2.0 license, unless noted differently in their source (see
+         swing2swt).
   ASM Core under BSD
   AspectJ runtime under Eclipse Public License - v 1.0
   AspectJ weaver under Eclipse Public License - v 1.0
-  avalon-framework under Apache License, Version 2.0
-  BND Library under This material is licensed under the Apache Software License, Version 2.0
   com.springsource.org.codehaus.janino under BSD license
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
+  Commons Compress under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Commons Logging under The Apache Software License, Version 2.0
@@ -120,22 +119,19 @@ This project includes:
   Commons Pool under The Apache Software License, Version 2.0
   CSS Parser under GNU Lesser General Public License
   Data Mapper for Jackson under The Apache Software License, Version 2.0
-  Discovery under The Apache Software License, Version 2.0
   Drools :: Compiler under The Apache Software License, Version 2.0
   Drools :: Core under The Apache Software License, Version 2.0
+  EasyMock under MIT License
   Eclipse ECJ under Eclipse Public License v1.0
   Geronimo OSGi-enable spec bundle locator under The Apache Software License, Version 2.0
-  Geronimo TxManager :: Transaction under The Apache Software License, Version 2.0
   Guava (Google Common Libraries) under The Apache Software License, Version 2.0
   H2 Database Engine under The H2 License, Version 1.0
   Hamcrest All under BSD style
-  HOWL logger under BSD
   HtmlUnit under Apache License, Version 2.0
   HtmlUnit Core JS under Mozilla Public License version 1.1
   HttpClient under Apache License
   HttpCore under Apache License
   HttpMime under Apache License
-  J2EE Connector 1.5 under The Apache Software License, Version 2.0
   J2EE Management 1.1 under The Apache Software License, Version 2.0
   Jackson under The Apache Software License, Version 2.0
   jansi under The Apache Software License, Version 2.0
@@ -147,7 +143,6 @@ This project includes:
   JAXB XJC under CDDL 1.0 or GPL2 w/ CPE
   jBPM :: Flow under The Apache Software License, Version 2.0
   jBPM :: Flow Builder under The Apache Software License, Version 2.0
-  JCL 1.1.1 implemented over SLF4J under MIT License
   Jettison under Apache License, Version 2.0
   Jetty :: Continuation under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
@@ -165,51 +160,43 @@ This project includes:
   JUnit under Common Public License Version 1.0
   Knowledge API under The Apache Software License, Version 2.0
   kXML 2 under The BSD License
-  Logging under The Apache Software License, Version 2.0
-  logkit under Apache License, Version 2.0
   Mockito under The MIT License
   mvel under The Apache Software License, Version 2.0
   Neko HTML under The Apache Software License, Version 2.0
   NeoDatis Object Database under GNU Lesser General Public License
-  OpenEngSB :: Assembly under Apache 2
-  OpenEngSB :: Branding :: Parent under Apache 2
-  OpenEngSB :: Branding :: Shell under Apache 2
+  OpenEngSB :: Bundle Settings under Apache 2
   OpenEngSB :: Connector :: Example under Apache 2
   OpenEngSB :: Connector :: MemoryAuditing under Apache 2
   OpenEngSB :: Connector :: Parent under Apache 2
-  OpenEngSB :: Connector :: Provided under Apache 2
-  OpenEngSB :: Core :: API under Apache 2
-  OpenEngSB :: Core :: Common under Apache 2
-  OpenEngSB :: Core :: Console under Apache 2
-  OpenEngSB :: Core :: Engineering Database under Apache 2
-  OpenEngSB :: Core :: Engineering Knowledge Base under Apache 2
-  OpenEngSB :: Core :: Parent under Apache 2
-  OpenEngSB :: Core :: Persistence Layer under Apache 2
-  OpenEngSB :: Core :: Security under Apache 2
-  OpenEngSB :: Core :: Services under Apache 2
-  OpenEngSB :: Core :: Test under Apache 2
-  OpenEngSB :: Core :: Workflow Engine under Apache 2
-  OpenEngSB :: Documentation :: Examples under Apache 2
-  OpenEngSB :: Documentation :: Homepage under Apache 2
-  OpenEngSB :: Documentation :: Manual under Apache 2
-  OpenEngSB :: Documentation :: Parent under Apache 2
-  OpenEngSB :: Documentation :: Skin under Apache 2
   OpenEngSB :: Domain :: Auditing under Apache 2
   OpenEngSB :: Domain :: Example under Apache 2
   OpenEngSB :: Domain :: Parent under Apache 2
-  OpenEngSB :: Domain :: Provided under Apache 2
+  OpenEngSB :: Examples :: Java Remote Client under Apache 2
+  OpenEngSB :: Examples :: Parent under Apache 2
+  OpenEngSB :: Examples :: Remote Samples under Apache 2
+  OpenEngSB :: Framework :: API under Apache 2
+  OpenEngSB :: Framework :: Assembly under Apache 2
+  OpenEngSB :: Framework :: Common under Apache 2
+  OpenEngSB :: Framework :: Console under Apache 2
+  OpenEngSB :: Framework :: Engineering Database under Apache 2
+  OpenEngSB :: Framework :: Engineering Knowledge Base under Apache 2
+  OpenEngSB :: Framework :: Integration Tests under Apache 2
+  OpenEngSB :: Framework :: Parent under Apache 2
+  OpenEngSB :: Framework :: Persistence Layer under Apache 2
+  OpenEngSB :: Framework :: Root under Apache 2
+  OpenEngSB :: Framework :: Security under Apache 2
+  OpenEngSB :: Framework :: Services under Apache 2
+  OpenEngSB :: Framework :: Test under Apache 2
+  OpenEngSB :: Framework :: Workflow Engine under Apache 2
   OpenEngSB :: Infrastructure :: JMS under Apache 2
   OpenEngSB :: Infrastructure :: JPA under Apache 2
   OpenEngSB :: Infrastructure :: Parent under Apache 2
-  OpenEngSB :: Integration Tests under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: Guava under Apache 2
   OpenEngSB :: OSGi Wrapped Bundles :: HTML Unit Testing Framework under Apache 2
-  OpenEngSB :: Parent under Apache 2
-  OpenEngSB :: Plugin Configuration :: Bundle under Apache 2
-  OpenEngSB :: Plugin Configuration :: Parent under Apache 2
   OpenEngSB :: Ports :: JMS under Apache 2
   OpenEngSB :: Ports :: Parent under Apache 2
   OpenEngSB :: Ports :: Webservices under Apache 2
+  OpenEngSB :: Shared Settings under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Client Project :: Parent under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Client Project :: Root under Apache 2
   OpenEngSB :: Tooling :: Archetypes :: Connector under Apache 2
@@ -217,6 +204,7 @@ This project includes:
   OpenEngSB :: Tooling :: Archetypes :: Parent under Apache 2
   OpenEngSB :: Tooling :: Parent under Apache 2
   OpenEngSB :: User Interface :: Administration under Apache 2
+  OpenEngSB :: User Interface :: API under Apache 2
   OpenEngSB :: User Interface :: Common under Apache 2
   OpenEngSB :: User Interface :: Parent under Apache 2
   OpenID4Java under Apache 2
@@ -236,34 +224,31 @@ This project includes:
   OPS4J Base - Net under ALv2
   OPS4J Base - Store under ALv2
   OPS4J Pax Exam - API under Apache License, Version 2.0
-  OPS4J Pax Exam - Default Container (Pax Runner) under Apache License, Version 2.0
-  OPS4J Pax Exam - JUnit Extender API under Apache License, Version 2.0
-  OPS4J Pax Exam - JUnit Extender Implementation under Apache License, Version 2.0
-  OPS4J Pax Exam - JUnit Support under Apache License, Version 2.0
+  OPS4J Pax Exam - Driver JUnit4 under Apache License, Version 2.0
+  OPS4J Pax Exam - Extender Service under Apache License, Version 2.0
+  OPS4J Pax Exam - Injection under Apache License, Version 2.0
+  OPS4J Pax Exam - JUnit Probe Invoker under Apache License, Version 2.0
   OPS4J Pax Exam - Remote Bundle Context under Apache License, Version 2.0
   OPS4J Pax Exam - Remote Bundle Context Client under Apache License, Version 2.0
-  OPS4J Pax Exam - Runtime under Apache License, Version 2.0
-  OPS4J Pax Exam - SPI under Apache License, Version 2.0
+  OPS4J Pax Exam - TestContainer Remote under Apache License, Version 2.0
+  OPS4J Pax Exam - UI Low Level SPI under Apache License, Version 2.0
+  OPS4J Pax Exam :: Karaf :: Test Container under Apache 2
+  OPS4J Pax Exam :: Karaf :: Test Options under Apache 2
   OPS4J Pax Logging - API under ALv2
   OPS4J Pax Logging - Service under ALv2
-  OPS4J Pax Runner - Core - No JCL under ALv2
-  OPS4J Pax Swissbox :: Bnd Utils under ALv2
   OPS4J Pax Swissbox :: Extender under ALv2
   OPS4J Pax Swissbox :: Lifecycle under ALv2
   OPS4J Pax Swissbox :: Optional JCL under ALv2
   OPS4J Pax Swissbox :: OSGi Core under ALv2
-  OPS4J Pax Swissbox :: TinyBundles under ALv2
+  OPS4J Pax Tinybundles under ALv2
   OPS4J Pax Url - mvn: under ALv2
   OPS4J Pax Url - wrap: under ALv2
   OPS4J Pax Wicket :: Service under ALv2
   OPS4J Pax Wicket :: Test Helper under ALv2
   org.osgi.compendium under Apache License, Version 2.0
   org.osgi.core under Apache License, Version 2.0
-  oro under Apache License, Version 2.0
   osgi under Apache License, Version 2.0
   OSGI factory registry under The Apache Software License, Version 2.0
-  OSGi OBR Service API under The Apache Software License, Version 2.0
-  OSGi R4 Core Bundle under The Apache Software License, Version 2.0
   Rhino under Mozilla Public License
   saaj-impl under Commons Development and Distribution License, Version 1.0
   Serp under BSD

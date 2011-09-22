@@ -112,7 +112,7 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
         Configuration configuration =
             configAdmin.createFactoryConfiguration(
                 "org.openengsb.persistence.config",
-                getInstalledBundle("org.openengsb.core.services").getLocation());
+                getInstalledBundle("org.openengsb.framework.services").getLocation());
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put(Constants.BACKEND_ID, "persistenceService");
         properties.put(Constants.CONFIGURATION_ID, RuleConfiguration.TYPE_ID);

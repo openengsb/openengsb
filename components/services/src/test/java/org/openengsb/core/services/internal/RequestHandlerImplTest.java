@@ -51,7 +51,7 @@ public class RequestHandlerImplTest extends AbstractOsgiMockServiceTest {
     private DefaultOsgiUtilsService serviceUtils;
     private RequestHandler requestHandler;
 
-    public static interface TestInterface {
+    public interface TestInterface {
         Integer test(Integer arg);
     }
 

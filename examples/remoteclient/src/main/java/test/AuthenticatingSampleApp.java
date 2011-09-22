@@ -33,8 +33,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.MethodCall;
@@ -86,8 +84,7 @@ public final class AuthenticatingSampleApp {
     }
 
     private static String marshalSecureRequest(MethodCallRequest methodCallRequest,
-            Authentication authenticationInfo)
-        throws IOException, JsonGenerationException, JsonMappingException {
+            Authentication authenticationInfo) throws IOException {
         BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
         SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
         return MAPPER.writeValueAsString(secureRequest);

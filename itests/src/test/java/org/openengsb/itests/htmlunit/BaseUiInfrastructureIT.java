@@ -17,8 +17,6 @@
 
 package org.openengsb.itests.htmlunit;
 
-import static java.lang.String.format;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -53,16 +51,7 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
     @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
-        Integer localCounter = MAX_SLEEP_TIME_IN_SECONDS;
-        while (localCounter != 0) {
-            if (isUrlReachable(LOGIN_PAGE_URL)) {
-                return;
-            }
-            Thread.sleep(1000);
-            localCounter--;
-        }
-        throw new IllegalStateException(format("Couldn't reach page %s within %s seconds", LOGIN_PAGE_URL,
-            MAX_SLEEP_TIME_IN_SECONDS));
+        waitForSiteToBeAvailable(LOGIN_PAGE_URL, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @After

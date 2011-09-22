@@ -32,8 +32,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
@@ -46,18 +44,21 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * Hello world!
- *
  */
-public class PlainSampleApp {
+public final class PlainSampleApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlainSampleApp.class);
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final String URL = "tcp://127.0.0.1:6549";
 
     private static Connection connection;
     private static Session session;
     private static MessageProducer producer;
+
+    private PlainSampleApp() {
+      // required because this is a util class
+    }
 
     private static void init() throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(URL);
@@ -72,18 +73,18 @@ public class PlainSampleApp {
     private static MethodResult call(MethodCall call) throws IOException, JMSException, InterruptedException,
         ClassNotFoundException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
-        String requestString = mapper.writeValueAsString(methodCallRequest);
+        String requestString = MAPPER.writeValueAsString(methodCallRequest);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());
         return convertStringToResult(resultString);
     }
 
-    private static MethodResult convertStringToResult(String resultString) throws IOException, JsonParseException,
-        JsonMappingException, ClassNotFoundException {
-        MethodResultMessage resultMessage = mapper.readValue(resultString, MethodResultMessage.class);
+    private static MethodResult convertStringToResult(String resultString) throws IOException,
+        ClassNotFoundException {
+        MethodResultMessage resultMessage = MAPPER.readValue(resultString, MethodResultMessage.class);
         MethodResult result = resultMessage.getResult();
         Class<?> clazz = Class.forName(result.getClassName());
-        Object resultValue = mapper.convertValue(result.getArg(), clazz);
+        Object resultValue = MAPPER.convertValue(result.getArg(), clazz);
         result.setArg(resultValue);
         return result;
     }
@@ -123,6 +124,9 @@ public class PlainSampleApp {
         connection.close();
     }
 
+    /**
+     * Sample app for a plain simple communication app
+     */
     public static void main(String[] args) throws Exception {
         LOGGER.info("initializing");
         init();
@@ -137,3 +141,4 @@ public class PlainSampleApp {
         stop();
     }
 }
+

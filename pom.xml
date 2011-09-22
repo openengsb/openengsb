@@ -28,25 +28,23 @@
     <!-- maven plugin versions -->
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
-    <maven.plugin.checkstyle.version>2.7</maven.plugin.checkstyle.version>
     <!-- Dependency Versions -->
-    <checkstyleconfig>https://github.com/openengsb/openengsb-maven-plugin/raw/master/src/main/resources/checkstyle/checkstyle.xml</checkstyleconfig>
-    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot>
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current />
+    <repos.current/>
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>21-SNAPSHOT</version>
+    <version>22</version>
   </parent>
 
   <groupId>org.openengsb.framework</groupId>
   <artifactId>openengsb-framework-root</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>OpenEngSB :: Framework :: Root</name>
 
   <description>
@@ -183,7 +181,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>
@@ -192,7 +190,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype />
+        <sitesubtype/>
       </properties>
     </profile>
     <profile>

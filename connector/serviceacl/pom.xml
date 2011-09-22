@@ -25,20 +25,20 @@
     <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.openengsb.connector.serviceacl</bundle.symbolicName>
     <bundle.namespace>org.openengsb.connector.serviceacl</bundle.namespace>
-    <openengsb.domain.version>2.0.0-SNAPSHOT</openengsb.domain.version>
-    <openengsb.domain.range>2.0.0-SNAPSHOT</openengsb.domain.range>
+    <openengsb.domain.version>3.0.0-SNAPSHOT</openengsb.domain.version>
+    <openengsb.domain.range>3.0.0-SNAPSHOT</openengsb.domain.range>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>org.openengsb.connector.serviceacl</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Service ACL</name>
 
@@ -105,25 +105,25 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.security</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.authorization</artifactId>
-      <version>2.0.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 

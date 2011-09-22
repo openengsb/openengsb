@@ -39,6 +39,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -56,9 +57,17 @@ import org.w3c.dom.Document;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
+    private static final String WSDL_URL = "http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl";
+    private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
+
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-ws"));
+    }
+
+    @Before
+    public void checkIfTestsAreReady() throws Exception {
+        waitForSiteToBeAvailable(WSDL_URL, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @Test
@@ -134,7 +143,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL("http://localhost:8091/ws/receiver/?wsdl"), serviceName);
+        Service service = Service.create(new URL(WSDL_URL), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;
@@ -151,7 +160,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         message.append("</ws:receive>");
         message.append("</soapenv:Body>");
         message.append("</soapenv:Envelope>");
-        
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder db = factory.newDocumentBuilder();
