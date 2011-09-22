@@ -110,16 +110,21 @@ public class BaseUiInfrastructureIT extends AbstractPreConfiguredExamTestHelper 
 
         HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
+        form = usermanagementPage.getForms().get(1);
+        assertNotNull(form);
+        
+        HtmlSubmitInput createButton = form.getInputByValue("Create");
+        createButton.click();
 
         // get user creation form:
         form = usermanagementPage.getForms().get(1);
         assertNotNull(form);
 
-        HtmlSubmitInput createButton = form.getInputByValue("Ok");
+        HtmlSubmitInput okButton = form.getInputByValue("OK");
         form.getInputByName("username").setValueAttribute("newUser");
         form.getInputByName("password").setValueAttribute("password");
         form.getInputByName("passwordVerification").setValueAttribute("password");
-        indexPage = createButton.click();
+        indexPage = okButton.click();
 
         assertTrue(indexPage.asText().contains("newUser"));
 

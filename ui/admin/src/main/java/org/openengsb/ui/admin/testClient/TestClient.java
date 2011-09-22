@@ -84,7 +84,10 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttributes({ @SecurityAttribute("SERVICE_USER"), @SecurityAttribute("SERVICE_EDITOR") })
+@SecurityAttributes({
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER"),
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_EDITOR")
+})
 @PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 
@@ -238,7 +241,7 @@ public class TestClient extends BasePage {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
                 try {
                     argumentList.removeAll();
-                    target.addComponent(argumentListContainer);                    
+                    target.addComponent(argumentListContainer);
                     ServiceId service = (ServiceId) mnode.getUserObject();
                     LOGGER.info("clicked on node {} of type {}", node, node.getClass());
                     call.setService(service);
@@ -255,7 +258,7 @@ public class TestClient extends BasePage {
                 target.addComponent(editButton);
                 target.addComponent(deleteButton);
                 target.addComponent(submitButton);
-                target.addComponent(feedbackPanel);                
+                target.addComponent(feedbackPanel);
             }
         };
         serviceList.setOutputMarkupId(true);

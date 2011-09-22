@@ -18,40 +18,36 @@ package org.openengsb.core.api.security.model;
 
 public class SecurityAttributeEntry {
 
-    private String componentName;
-    private String action;
+    private String key;
+    private String value;
 
     public SecurityAttributeEntry() {
     }
 
-    public SecurityAttributeEntry(String componentName) {
-        this.componentName = componentName;
+    public SecurityAttributeEntry(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public SecurityAttributeEntry(String componentName, String action) {
-        this.componentName = componentName;
-        this.action = action;
+    public String getKey() {
+        return key;
     }
 
-    public String getComponentName() {
-        return componentName;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
+    public String getValue() {
+        return value;
     }
 
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return String.format("%s:%s", componentName, action);
+        return String.format("%s=%s", key, value);
     }
 
 }

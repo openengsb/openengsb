@@ -118,7 +118,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     }
 
     private SecurityAttributeEntry convertAnnotationToEntry(SecurityAttribute annotation) {
-        return new SecurityAttributeEntry(annotation.value(), annotation.action());
+        return new SecurityAttributeEntry(annotation.key(), annotation.value());
     }
 
     public static final void registerComponent(Component component, SecurityAttributeEntry... securityAttributes) {

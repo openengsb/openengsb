@@ -31,6 +31,7 @@ import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
@@ -73,7 +74,7 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
         return Access.ABSTAINED;
     }
 
-    private boolean hasAccess(String user, GenericControlledObject actionData) {
+    private boolean hasAccess(String user, final GenericControlledObject actionData) {
         Collection<WicketPermission> filtered;
         try {
             filtered = getWicketPermissions(user);
@@ -82,21 +83,21 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
             return false;
         }
 
-        Collection<SecurityAttributeEntry> relevantSecurityAttributes = getRelevantSecurityAttributes(actionData);
-        for (final SecurityAttributeEntry a : relevantSecurityAttributes) {
+        Collection<String> relevantComponentNames = getRelevantComponentNames(actionData);
+        for (final String a : relevantComponentNames) {
             boolean allowed = Iterators.any(filtered.iterator(), new Predicate<WicketPermission>() {
                 @Override
                 public boolean apply(WicketPermission input) {
-                    if (ObjectUtils.notEqual(a.getComponentName(), input.getComponentName())) {
+                    if (ObjectUtils.notEqual(a, input.getComponentName())) {
                         return false;
                     }
-                    if (a.getAction() == null || input.getAction() == null) {
+                    if (actionData.getAction() == null) {
                         return true;
                     }
-                    if (input.getAction().equals("ENABLE")) {
+                    if (input.getAction() == null || input.getAction().equals("ENABLE")) {
                         return true;
                     }
-                    return input.getAction().equals(a.getAction());
+                    return input.getAction().equals(actionData.getAction());
                 }
             });
             if (allowed) {
@@ -106,24 +107,19 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
         return false;
     }
 
-    private Collection<SecurityAttributeEntry> getRelevantSecurityAttributes(GenericControlledObject actionData) {
+    private Collection<String> getRelevantComponentNames(GenericControlledObject actionData) {
         Collection<SecurityAttributeEntry> allAttributes = actionData.getSecurityAttributes();
-        if (actionData.getAction() == null) {
-            return allAttributes;
-        }
-        if (actionData.getAction() == "RENDER") {
-            return allAttributes;
-            // Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
-            // @Override
-            // public boolean apply(SecurityAttributeEntry input) {
-            // return !"ENABLE".equals(input.getAction());
-            // }
-            // });
-        }
-        return Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
+        Collection<SecurityAttributeEntry> filtered =
+            Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {
+                @Override
+                public boolean apply(SecurityAttributeEntry input) {
+                    return ObjectUtils.equals(input.getKey(), "org.openengsb.ui.component");
+                }
+            });
+        return Collections2.transform(filtered, new Function<SecurityAttributeEntry, String>() {
             @Override
-            public boolean apply(SecurityAttributeEntry input) {
-                return !"RENDER".equals(input.getAction());
+            public String apply(SecurityAttributeEntry input) {
+                return input.getValue();
             }
         });
     }

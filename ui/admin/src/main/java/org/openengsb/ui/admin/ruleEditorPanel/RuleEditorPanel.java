@@ -38,7 +38,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
-@SecurityAttribute("WORKFLOW_ADMIN")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @SuppressWarnings("serial")
 public class RuleEditorPanel extends Panel {
 

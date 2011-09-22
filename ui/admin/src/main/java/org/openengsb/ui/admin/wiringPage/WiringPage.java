@@ -71,7 +71,7 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("WORKFLOW_ADMIN")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "wiring")
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);

@@ -42,7 +42,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("WORKFLOW_ADMIN")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "globals")
 public class OrganizeGlobalsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);

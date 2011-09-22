@@ -37,7 +37,7 @@ import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.validation.DefaultPassingFormValidator;
 
-@SecurityAttribute("SERVICE_EDITOR")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_EDITOR")
 @SuppressWarnings("serial")
 public abstract class ServiceEditor extends Panel {
 

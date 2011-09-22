@@ -22,11 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
 public @interface SecurityAttribute {
 
-    String value();
+    String key() default "name";
 
-    String action() default "RENDER";
+    String value();
 
 }

@@ -26,7 +26,7 @@ import org.openengsb.ui.admin.ruleEditorPanel.RuleManagerProvider;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-@SecurityAttribute("WORKFLOW_ADMIN")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @PaxWicketMountPoint(mountPoint = "rules")
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 

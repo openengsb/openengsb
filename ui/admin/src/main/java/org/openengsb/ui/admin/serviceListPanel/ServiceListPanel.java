@@ -38,7 +38,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("SERVICE_USER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER")
 @SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
 

@@ -62,7 +62,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("WORKFLOW_USER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_USER")
 @PaxWicketMountPoint(mountPoint = "events")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 

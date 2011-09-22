@@ -25,7 +25,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 import com.google.common.collect.ImmutableMap;
 
-@SecurityAttribute(value = "USER_ADMIN", action = "RENDER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "USER_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserListPage extends BasePage {
 

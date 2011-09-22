@@ -47,7 +47,7 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SecurityAttribute("CONNECTOR_EDITOR")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "CONNECTOR_EDITOR")
 @PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
 
