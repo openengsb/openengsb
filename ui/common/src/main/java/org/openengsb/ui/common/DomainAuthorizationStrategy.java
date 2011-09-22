@@ -19,13 +19,13 @@ package org.openengsb.ui.common;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.SecurityAttributeManager;
 import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
@@ -39,7 +39,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.MapMaker;
 
 public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
@@ -48,17 +47,15 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     private AuthorizationDomain authorizer = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(
         AuthorizationDomain.class, "authorization-root");
 
-    private static Map<Component, Collection<SecurityAttributeEntry>> runtimeAttributes = new MapMaker().softKeys()
-        .makeMap();
-
     @Override
     public boolean isActionAuthorized(Component arg0, Action arg1) {
         List<SecurityAttributeEntry> attributeList = Lists.newArrayList();
         if (hasSecurityAnnotation(arg0.getClass())) {
             attributeList.addAll(getSecurityAttributes(arg0.getClass()));
         }
-        if (runtimeAttributes.containsKey(arg0)) {
-            attributeList.addAll(runtimeAttributes.get(arg0));
+        Collection<SecurityAttributeEntry> runtimeAttributes = SecurityAttributeManager.getAttribute(arg0);
+        if (runtimeAttributes != null) {
+            attributeList.addAll(runtimeAttributes);
         }
         if (attributeList.isEmpty()) {
             return true;
@@ -125,9 +122,9 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         registerComponent(component, Arrays.asList(securityAttributes));
     }
 
-    public static final void
-        registerComponent(Component component, Collection<SecurityAttributeEntry> securityAttributes) {
-        runtimeAttributes.put(component, securityAttributes);
+    public static final void registerComponent(Component component,
+            Collection<SecurityAttributeEntry> securityAttributes) {
+        SecurityAttributeManager.storeAttribute(component, securityAttributes);
     }
 
     public void setAuthorizer(AuthorizationDomain authorizer) {

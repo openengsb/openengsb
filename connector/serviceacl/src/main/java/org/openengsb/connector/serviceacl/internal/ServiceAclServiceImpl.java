@@ -20,6 +20,7 @@ package org.openengsb.connector.serviceacl.internal;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -27,15 +28,19 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.SecurityAttributeManager;
 import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 
@@ -71,7 +76,7 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
             return Access.ABSTAINED;
         }
         if (hasServiceTypeAccess(permissions, (MethodInvocation) object)) {
-
+            return Access.GRANTED;
         }
         return Access.ABSTAINED;
     }
@@ -80,17 +85,53 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
         Class<? extends Object> serviceClass = object.getThis().getClass();
         final Collection<String> typeNames = getTypeNamesForClass(serviceClass);
         final Collection<String> operationNames = getOperationNamesForMethod(object.getMethod());
+        final Collection<String> instanceNames = getServiceInstanceNames(object.getThis());
         return Iterators.any(permissions.iterator(), new Predicate<ServicePermission>() {
             @Override
             public boolean apply(ServicePermission input) {
+                if (!validatePermission(input)) {
+                    LOGGER.error("invalid permission detected: {} - {}", input, input.describe());
+                    return false;
+                }
                 String type = input.getType();
-                if (!typeNames.contains(type)) {
+                if (type != null && !typeNames.contains(type)) {
+                    return false;
+                }
+                String instanceId = input.getInstance();
+                if (instanceId != null && !instanceNames.contains(instanceId)) {
                     return false;
                 }
                 if (input.getOperation() == null) {
                     return true;
                 }
                 return operationNames.contains(input.getOperation());
+            }
+
+            private boolean validatePermission(ServicePermission input) {
+                if (input.getType() == null && input.getInstance() == null) {
+                    return false;
+                }
+                return true;
+            }
+        });
+    }
+
+    private Collection<String> getServiceInstanceNames(Object this1) {
+        Collection<SecurityAttributeEntry> attribute = SecurityAttributeManager.getAttribute(this1);
+        if (attribute == null) {
+            return Collections.emptySet();
+        }
+        Collection<SecurityAttributeEntry> filtered =
+            Collections2.filter(attribute, new Predicate<SecurityAttributeEntry>() {
+                @Override
+                public boolean apply(SecurityAttributeEntry input) {
+                    return input.getKey().equals("name");
+                }
+            });
+        return Collections2.transform(filtered, new Function<SecurityAttributeEntry, String>() {
+            @Override
+            public String apply(SecurityAttributeEntry input) {
+                return input.getValue();
             }
         });
     }

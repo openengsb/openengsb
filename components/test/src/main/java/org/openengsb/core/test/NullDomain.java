@@ -19,13 +19,17 @@ package org.openengsb.core.test;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
+import org.openengsb.core.api.security.SecurityAttribute;
 
+@SecurityAttribute("NULL")
 public interface NullDomain extends Domain {
 
     @Raises(NullEvent.class)
     void nullMethod();
 
+    @SecurityAttribute("READ_NULL")
     Object nullMethod(Object o);
 
+    @SecurityAttribute("READ_NULL")
     Object nullMethod(Object o, String b);
 }
