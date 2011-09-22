@@ -1,4 +1,4 @@
-package org.openengsb.connector.serviceacl.internal;
+package org.openengsb.connector.serviceacl;
 
 import org.openengsb.core.api.security.model.Permission;
 
@@ -12,12 +12,10 @@ public class ServicePermission implements Permission {
     }
 
     public ServicePermission(String type) {
-        super();
         this.type = type;
     }
 
     public ServicePermission(String type, String operation) {
-        super();
         this.type = type;
         this.operation = operation;
     }

@@ -11,7 +11,7 @@ import com.google.common.collect.MapMaker;
 public final class SecurityAttributeManager {
 
     private static ConcurrentMap<Object, Collection<SecurityAttributeEntry>> runtimeAttributes = new MapMaker()
-        .softKeys().makeMap();
+        .weakKeys().makeMap();
 
     public static void storeAttribute(Object o, SecurityAttributeEntry... attributes) {
         storeAttribute(o, Arrays.asList(attributes));

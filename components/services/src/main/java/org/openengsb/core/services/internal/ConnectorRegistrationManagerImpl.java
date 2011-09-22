@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorRegistrationManager;
@@ -39,8 +41,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.ProxyFactory;
+
+import com.google.common.collect.Sets;
 
 public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorRegistrationManagerImpl.class);
 
     /*
      * These attributes may not be removed from a service.
@@ -54,11 +63,15 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         Constants.CONNECTOR_KEY,
         "location.root");
 
+    private static final Set<String> INTERCEPTOR_BLACKLIST = Sets.newHashSet("authentication", "authorization");
+
     private OsgiUtilsService serviceUtils;
     private BundleContext bundleContext;
 
     private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
     private Map<ConnectorId, Connector> instances = new HashMap<ConnectorId, Connector>();
+
+    private MethodInterceptor securityInterceptor;
 
     @Override
     public String getInstanceId() {
@@ -132,19 +145,39 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
         }
         factory.applyAttributes(serviceInstance, description.getAttributes());
-        
+
         serviceInstance.setDomainId(id.getDomainType());
         serviceInstance.setConnectorId(id.getConnectorType());
 
-        String[] clazzes = new String[]{
-            OpenEngSBService.class.getName(),
-            Domain.class.getName(),
-            domainProvider.getDomainInterface().getName(),
+        Class<?>[] clazzes = new Class<?>[]{
+            OpenEngSBService.class,
+            Domain.class,
+            domainProvider.getDomainInterface(),
         };
+        
+        String[] clazznames = new String[clazzes.length];
+        for(int i = 0; i < clazzes.length; i++){
+            clazznames[i] = clazzes[i].getName();
+        }
+        
+        Object secureInstance;
+        if (INTERCEPTOR_BLACKLIST.contains(id.getDomainType())) {
+            LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
+            secureInstance = serviceInstance;
+        } else if (securityInterceptor == null) {
+            LOGGER.warn("security interceptor is not available yet");
+            secureInstance = serviceInstance;
+        } else {
+            ProxyFactory pfactory = new ProxyFactory();
+            pfactory.setInterfaces(clazzes);
+            pfactory.setTarget(serviceInstance);
+            pfactory.addAdvice(securityInterceptor);
+            secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
+        }
 
         Map<String, Object> properties = populatePropertiesWithRequiredAttributes(description.getProperties(), id);
         ServiceRegistration serviceRegistration =
-            bundleContext.registerService(clazzes, serviceInstance, MapAsDictionary.wrap(properties));
+            bundleContext.registerService(clazznames, secureInstance, MapAsDictionary.wrap(properties));
         registrations.put(id, serviceRegistration);
         instances.put(id, serviceInstance);
     }
@@ -215,5 +248,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    public void setSecurityInterceptor(MethodInterceptor securityInterceptor) {
+        this.securityInterceptor = securityInterceptor;
     }
 }

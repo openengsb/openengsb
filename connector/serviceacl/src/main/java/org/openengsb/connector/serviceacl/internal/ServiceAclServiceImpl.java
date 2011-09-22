@@ -26,7 +26,9 @@ import java.util.Set;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ClassUtils;
+import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.Public;
 import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.security.SecurityAttributeManager;
 import org.openengsb.core.api.security.SecurityAttributes;
@@ -37,6 +39,7 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -68,6 +71,11 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
         if (!(object instanceof MethodInvocation)) {
             return Access.ABSTAINED;
         }
+        MethodInvocation methodInvocation = (MethodInvocation) object;
+        Public public1 = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), Public.class);
+        if (public1 != null) {
+            return Access.GRANTED;
+        }
         Collection<ServicePermission> permissions;
         try {
             permissions = userManager.getAllUserPermissions(user, ServicePermission.class);
@@ -75,7 +83,7 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
             LOGGER.warn("user not found in acl-connector", e);
             return Access.ABSTAINED;
         }
-        if (hasServiceTypeAccess(permissions, (MethodInvocation) object)) {
+        if (hasServiceTypeAccess(permissions, methodInvocation)) {
             return Access.GRANTED;
         }
         return Access.ABSTAINED;
@@ -141,6 +149,7 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
         result.add(method.getName());
         @SuppressWarnings("unchecked")
         List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(method.getDeclaringClass());
+        allInterfaces.add(method.getDeclaringClass());
         for (Class<?> interfaze : allInterfaces) {
             Method method2;
             try {

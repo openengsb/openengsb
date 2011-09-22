@@ -48,6 +48,7 @@
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="serviceUtils" ref="serviceUtils" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
   </bean>
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
@@ -156,6 +157,9 @@
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+  <reference id="securityInterceptor" availability="optional" interface="org.aopalliance.intercept.MethodInterceptor"
+    filter="(org.openengsb.interceptor=security)" />
+
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
 
 </blueprint>

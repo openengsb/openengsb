@@ -31,6 +31,9 @@
   </service>
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
+    <service-properties>
+      <entry key="org.openengsb.interceptor" value="security" />
+    </service-properties>
     <bean class="org.openengsb.core.security.internal.SecurityInterceptor">
       <property name="authorizer" ref="authorizer" />
     </bean>
@@ -50,7 +53,7 @@
     <bean class="org.openengsb.core.security.internal.AuthenticationProviderStrategy" />
   </service>
 
-  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=root-authorizer)"
+  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)"
     activation="lazy" availability="optional" />
 
   <service>

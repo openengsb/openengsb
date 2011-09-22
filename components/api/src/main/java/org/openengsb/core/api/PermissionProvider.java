@@ -16,12 +16,14 @@
  */
 package org.openengsb.core.api;
 
+import java.util.Collection;
+
 import org.openengsb.core.api.security.model.Permission;
 
 public interface PermissionProvider {
 
     Class<? extends Permission> getPermissionClass(String className);
 
-    Class<?>[] getSupportedPermissionClasses();
+    Collection<Class<? extends Permission>> getSupportedPermissionClasses();
 
 }

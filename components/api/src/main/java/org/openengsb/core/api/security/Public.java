@@ -14,22 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.security;
 
-package org.openengsb.domain.auditing;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.List;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
+public @interface Public {
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Event;
-import org.openengsb.core.api.security.Public;
-
-/**
- * The Auditing Domain provides means to audit certain events for later viewing.
- */
-public interface AuditingDomain extends Domain {
-
-    @Public
-    void audit(Event event);
-
-    List<Event> getAllAudits();
 }

@@ -180,7 +180,13 @@
       <groupId>org.openengsb.connector</groupId>
       <artifactId>org.openengsb.connector.serviceacl</artifactId>
       <version>3.0.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.wicketacl</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

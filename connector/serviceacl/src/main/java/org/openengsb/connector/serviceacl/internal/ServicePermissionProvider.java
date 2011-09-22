@@ -14,22 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.connector.serviceacl.internal;
 
-package org.openengsb.domain.auditing;
+import org.openengsb.connector.serviceacl.ServicePermission;
+import org.openengsb.core.api.AbstractPermissionProvider;
 
-import java.util.List;
+public class ServicePermissionProvider extends AbstractPermissionProvider {
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.Event;
-import org.openengsb.core.api.security.Public;
+    @SuppressWarnings("unchecked")
+    public ServicePermissionProvider() {
+        super(ServicePermission.class);
+    }
 
-/**
- * The Auditing Domain provides means to audit certain events for later viewing.
- */
-public interface AuditingDomain extends Domain {
-
-    @Public
-    void audit(Event event);
-
-    List<Event> getAllAudits();
 }

@@ -130,7 +130,6 @@
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)", *
             </Import-Package>
-            <Bundle-Activator>org.openengsb.ui.admin.internal.Activator</Bundle-Activator>
             <!-- for testclient to invoke domains -->
             <DynamicImport-Package>org.openengsb.*</DynamicImport-Package>
           </instructions>

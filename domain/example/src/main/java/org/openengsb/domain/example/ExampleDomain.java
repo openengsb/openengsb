@@ -19,6 +19,7 @@ package org.openengsb.domain.example;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
+import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.domain.example.event.LogEvent;
 
 /**
@@ -26,13 +27,16 @@ import org.openengsb.domain.example.event.LogEvent;
  * connectors, this domain also provides the event interface {@link ExampleDomainEvents}, which can be used by
  * connectors.
  */
+@SecurityAttribute("domain.example")
 public interface ExampleDomain extends Domain {
 
+    @SecurityAttribute("something")
     @Raises(LogEvent.class)
     String doSomething(String message);
 
     String doSomething(ExampleEnum exampleEnum);
 
+    @SecurityAttribute("event")
     String doSomethingWithLogEvent(LogEvent event);
 
     public enum ExampleEnum {

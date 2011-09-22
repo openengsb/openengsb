@@ -25,8 +25,8 @@ import java.util.Hashtable;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.connector.serviceacl.internal.ServiceAclServiceImpl;
-import org.openengsb.connector.serviceacl.internal.ServicePermission;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -165,7 +165,14 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         userManager.storeUserPermission("testuser", permission);
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
+    }
 
+    @Test
+    public void checkMethodPublicAccess_shouldGrant() throws Exception {
+        NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
+        MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "getInstanceId");
+
+        assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
 
     @Override

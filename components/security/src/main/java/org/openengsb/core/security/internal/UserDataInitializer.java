@@ -17,6 +17,8 @@
 
 package org.openengsb.core.security.internal;
 
+import org.openengsb.connector.serviceacl.ServicePermission;
+import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
@@ -54,6 +56,10 @@ public class UserDataInitializer implements Runnable {
 
             userManager.createPermissionSet("ROLE_USER");
             userManager.storeUserPermissionSet("user", "ROLE_USER");
+
+            userManager.addPermissionToSet("ROLE_USER", new ServicePermission("domain.example",
+                "something"));
+            userManager.addPermissionToSet("ROLE_USER", new WicketPermission("SERVICE_USER"));
         } catch (UserNotFoundException e) {
             LOGGER.error("this should not happen... I just created the user", e);
         }

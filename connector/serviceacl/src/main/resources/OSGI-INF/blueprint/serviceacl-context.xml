@@ -47,6 +47,14 @@
     </bean>
   </service>
 
+  <service interface="org.openengsb.core.api.PermissionProvider">
+    <service-properties>
+      <entry key="connector" value="serviceacl" />
+      <entry key="permissionClass" value="org.openengsb.connector.serviceacl.ServicePermission" />
+    </service-properties>
+    <bean class="org.openengsb.connector.serviceacl.internal.ServicePermissionProvider" />
+  </service>
+
   <reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
 
 </blueprint>
