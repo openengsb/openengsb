@@ -37,7 +37,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>openengsb-connector-serviceacl</artifactId>
+  <artifactId>org.openengsb.connector.serviceacl</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Service ACL</name>
@@ -130,7 +130,7 @@
     <!-- OpenEngSB Domain References -->
     <dependency>
       <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-authorization</artifactId>
+      <artifactId>org.openengsb.domain.authorization</artifactId>
       <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>

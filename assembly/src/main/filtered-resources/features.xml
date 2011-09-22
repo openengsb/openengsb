@@ -66,7 +66,7 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxb-api-2.2/${jaxb.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/${saaj.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxws-api-2.2/${jaxws.api.version}</bundle>
-    <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle> 
+    <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
     <bundle start-level='10'>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
     <!-- Templating -->
@@ -145,19 +145,16 @@
     <!-- OpenEngSB Console -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.console/${project.version}</bundle>
     <!-- security domains and connectors -->
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-authentication/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.domain/openengsb-domain-authorization/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-usernamepassword/${project.version}
-    </bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-serviceacl/${project.version}
-    </bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-wicketacl/${project.version}
-    </bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
     <details>
-      This feature allone provides ActiveMQ support in the OpenEngSB. Still, it does not provide queues or anything 
+      This feature allone provides ActiveMQ support in the OpenEngSB. Still, it does not provide queues or anything
       else automatically, but rather provides the infrastructure only.
     </details>
     <bundle>mvn:org.apache.activemq/activemq-blueprint/${activemq.version}</bundle>
