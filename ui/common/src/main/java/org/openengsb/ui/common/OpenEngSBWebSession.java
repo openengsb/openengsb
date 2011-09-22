@@ -26,6 +26,7 @@ import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Common class of sessions for use in OpenEngSB and client applications. It enforces authentication and builds the
@@ -68,8 +69,13 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
             LOGGER.warn("unable to authenticate user", e);
             return false;
         }
-
         return true;
+    }
+
+    @Override
+    public void signOut() {
+        super.signOut();
+        SecurityContextHolder.clearContext();
     }
 
     @Override
