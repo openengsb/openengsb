@@ -59,8 +59,8 @@
     <!-- core versions -->
     <karaf.version>2.2.3</karaf.version>
     <!-- version range for externalized projects (connectors) -->
-    <openengsb.version.min>2</openengsb.version.min>
-    <openengsb.version.max>3</openengsb.version.max>
+    <openengsb.version.min>3</openengsb.version.min>
+    <openengsb.version.max>4</openengsb.version.max>
     <openengsb.version.range>[${openengsb.version.min},${openengsb.version.max})</openengsb.version.range>
     <!-- Plugin Versions -->
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
@@ -120,7 +120,7 @@
     <el.version>2.1.0</el.version>
     <wicket.version>1.4.17</wicket.version>
     <pax.wicket.version>0.7.2</pax.wicket.version>
-    <jackson.version>1.8.5</jackson.version>    
+    <jackson.version>1.8.5</jackson.version>
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
