@@ -24,6 +24,7 @@ import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -44,7 +45,7 @@ import org.osgi.framework.BundleContext;
 
 public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
-    private UsernamePasswordAuthenticator passwordAuthenticator;
+    private UsernamePasswordServiceImpl passwordAuthenticator;
     private OnetimePasswordAuthenticator onetimeAuthenticator;
     private AuthenticationDomain authManager;
 
@@ -59,7 +60,7 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         userManager.setUserCredentials("testuser", "onetime-basecode", "90489");
         userManager.setUserCredentials("testuser", "onetime-counter", "2");
 
-        UsernamePasswordAuthenticator authenticator1 = new UsernamePasswordAuthenticator();
+        UsernamePasswordServiceImpl authenticator1 = new UsernamePasswordServiceImpl();
         authenticator1.setUserManager(userManager);
         registerServiceAtLocation(authenticator1, "authenticator/password", AuthenticationDomain.class);
         passwordAuthenticator = authenticator1;

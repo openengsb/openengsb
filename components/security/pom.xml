@@ -171,6 +171,18 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.serviceacl</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-jpa_2.0_spec</artifactId>
       <scope>provided</scope>
