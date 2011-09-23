@@ -18,12 +18,14 @@ package org.openengsb.ui.common.usermanagement;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -36,7 +38,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.UserDataManager;
@@ -44,6 +45,7 @@ import org.openengsb.core.api.security.UserExistsException;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.ui.common.usermanagement.PermissionInput.State;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +75,19 @@ public abstract class UserEditPanel extends Panel {
         initContent();
     }
 
-    public UserEditPanel(String id, String username) {
+    public UserEditPanel(String id, String username) throws UserNotFoundException {
         super(id);
         input.setUsername(username);
+        Collection<Permission> userPermissions = userManager.getUserPermissions(username);
+        Collection<PermissionInput> permissionInput =
+            Collections2.transform(userPermissions, new Function<Permission, PermissionInput>() {
+                @Override
+                public PermissionInput apply(Permission input) {
+                    Map<String, String> values = BeanUtils2.buildAttributeMap(input);
+                    return new PermissionInput(input.getClass(), values);
+                }
+            });
+        input.setPermissions(Lists.newLinkedList(permissionInput));
         createMode = false;
         initContent();
     }
@@ -99,7 +111,9 @@ public abstract class UserEditPanel extends Panel {
             usernameField.setEnabled(false);
         }
         PasswordTextField passwordField = new PasswordTextField("password");
+        passwordField.setRequired(false);
         PasswordTextField passwordVerficationField = new PasswordTextField("passwordVerification");
+        passwordVerficationField.setRequired(false);
         usernameField.setOutputMarkupId(true);
         passwordField.setOutputMarkupId(true);
         passwordVerficationField.setOutputMarkupId(true);
@@ -110,47 +124,29 @@ public abstract class UserEditPanel extends Panel {
 
         userForm.setModel(new CompoundPropertyModel<UserInput>(input));
 
-        IModel<? extends List<? extends PermissionDesc>> permissionsModel =
-            new LoadableDetachableModel<List<? extends PermissionDesc>>() {
-
-                private static final long serialVersionUID = 4466384276713173634L;
-
-                @Override
-                protected List<? extends PermissionDesc> load() {
-                    if (createMode) {
-                        return Collections.emptyList();
-                    }
-                    Collection<Permission> userPermissions;
-                    try {
-                        userPermissions = userManager.getUserPermissions(input.getUsername());
-                    } catch (UserNotFoundException e) {
-                        LOGGER.warn("user \"{}\" not found", input.getUsername());
-                        return Collections.emptyList();
-                    }
-                    Collection<PermissionDesc> permissionDescs =
-                        Collections2.transform(userPermissions, new Function<Permission, PermissionDesc>() {
-                            @Override
-                            public PermissionDesc apply(Permission input) {
-                                PermissionDesc permissionDesc = new PermissionDesc();
-                                permissionDesc.setRepresentation(input.toString());
-                                permissionDesc.setDescription(input.describe());
-                                return permissionDesc;
-                            }
-                        });
-                    return Lists.newArrayList(permissionDescs);
-                }
-            };
-        ListView<PermissionDesc> listView = new ListView<PermissionDesc>("permissionList", permissionsModel) {
-
+        IModel<? extends List<? extends PermissionInput>> permissionsModel =
+            new PropertyModel<List<? extends PermissionInput>>(input, "permissions");
+        Component permissionList = new ListView<PermissionInput>("permissionList", permissionsModel) {
             private static final long serialVersionUID = -8712742630042478882L;
 
             @Override
-            protected void populateItem(ListItem<PermissionDesc> listitem) {
-                Label label = new Label("id", new PropertyModel<String>(listitem.getModelObject(), "representation"));
+            protected void populateItem(ListItem<PermissionInput> listitem) {
+                PermissionInput modelObject = listitem.getModelObject();
+                Permission permission = modelObject.toPermission();
+                Label label = new Label("id", permission.toString());
+                label.add(new SimpleAttributeModifier("class", "permission_" + modelObject.getState()));
                 listitem.add(label);
+
+                Label desc = new Label("description", permission.describe());
+                listitem.add(desc);
             }
         };
-        userForm.add(listView);
+
+        final WebMarkupContainer permissionListContainer = new WebMarkupContainer("permissionListContainer");
+        permissionListContainer.setOutputMarkupId(true);
+        permissionListContainer.add(permissionList);
+        userForm.add(permissionListContainer);
+
         final WebMarkupContainer createPermissionContainer = new WebMarkupContainer("createPermissionContainer");
         createPermissionContainer.setOutputMarkupId(true);
         userForm.add(createPermissionContainer);
@@ -171,7 +167,7 @@ public abstract class UserEditPanel extends Panel {
                     shown = false;
                 } else {
                     PermissionEditorPanel realPermissionEditorPanel =
-                        new PermissionEditorPanel("createPermissionContent", input);
+                        new PermissionEditorPanel("createPermissionContent", input, permissionListContainer);
                     createPermissionContainer.addOrReplace(realPermissionEditorPanel);
                     // permissionContentPanel.replace(realPermissionEditorPanel);
                     permissionContentPanel = realPermissionEditorPanel;
@@ -216,13 +212,18 @@ public abstract class UserEditPanel extends Panel {
                 return;
             }
         }
-        for (PermissionInput p : input.getNewPermissions()) {
-            Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
-            try {
-                userManager.storeUserPermission(username, perm);
-            } catch (UserNotFoundException e) {
-                error(Throwables.getStackTraceAsString(e));
-                return;
+        for (PermissionInput p : input.getPermissions()) {
+            if (p.getState() == State.UNMODIFIED) {
+                continue;
+            }
+            if (p.getState() == State.NEW) {
+                Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
+                try {
+                    userManager.storeUserPermission(username, perm);
+                } catch (UserNotFoundException e) {
+                    error(Throwables.getStackTraceAsString(e));
+                    return;
+                }
             }
         }
     }

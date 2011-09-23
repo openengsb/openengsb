@@ -27,7 +27,7 @@ class UserInput implements Serializable {
     private String passwordVerification;
     private String password;
     private String username;
-    private Collection<PermissionInput> newPermissions = Lists.newArrayList();
+    private Collection<PermissionInput> permissions = Lists.newArrayList();
 
     public String getPasswordVerification() {
         return passwordVerification;
@@ -53,12 +53,12 @@ class UserInput implements Serializable {
         this.username = username;
     }
 
-    public Collection<PermissionInput> getNewPermissions() {
-        return newPermissions;
+    public Collection<PermissionInput> getPermissions() {
+        return permissions;
     }
 
-    public void setNewPermissions(Collection<PermissionInput> newPermissions) {
-        this.newPermissions = newPermissions;
+    public void setPermissions(Collection<PermissionInput> permissions) {
+        this.permissions = permissions;
     }
 
 }

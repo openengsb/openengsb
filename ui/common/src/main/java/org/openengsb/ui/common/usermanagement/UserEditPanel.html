@@ -53,11 +53,14 @@
                   <input type="password" wicket:id="passwordVerification" />
                 </div>
               </li>
-              <ul wicket:id="permissionList">
-                <li>
-                  <span wicket:id="id" />
-                </li>
-              </ul>
+              <div wicket:id="permissionListContainer">
+                <ul wicket:id="permissionList">
+                  <li>
+                    <span wicket:id="id" />
+                    <span wicket:id="description" />
+                  </li>
+                </ul>
+              </div>
               
 <!--               <button wicket:id="cancelButton"> -->
 <!--                 <wicket:message key="resetButton" /> -->

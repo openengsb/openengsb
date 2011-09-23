@@ -19,6 +19,7 @@ package org.openengsb.ui.common.usermanagement;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -32,6 +33,7 @@ import org.apache.wicket.model.Model;
 import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
+import org.openengsb.ui.common.usermanagement.PermissionInput.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,14 +58,16 @@ public class PermissionEditorPanel extends Panel {
 
     private UserInput user;
 
-    public PermissionEditorPanel(String id, UserInput user) {
+    private Component listContainer;
+
+    public PermissionEditorPanel(String id, UserInput user, Component listContainer) {
         super(id);
         this.user = user;
+        this.listContainer = listContainer;
         init();
     }
 
     private void init() {
-
         final WebMarkupContainer container = new WebMarkupContainer("container");
         add(container);
         container.setOutputMarkupId(true);
@@ -94,10 +98,11 @@ public class PermissionEditorPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> arg1) {
                 Class<?> permissionClass = permissionTypeModel.getObject();
-                user.getNewPermissions().add(new PermissionInput(permissionClass, values));
+                user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
                 editorPanel.replaceWith(new EmptyPanel("permissionEditor"));
                 submitButton.setVisible(false);
                 target.addComponent(container);
+                target.addComponent(listContainer);
                 LOGGER.info("got values {}", values.toString());
             }
         };

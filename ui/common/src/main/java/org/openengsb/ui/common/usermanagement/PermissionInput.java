@@ -19,6 +19,9 @@ package org.openengsb.ui.common.usermanagement;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.util.BeanUtils2;
+
 public class PermissionInput implements Serializable {
     private static final long serialVersionUID = 1257288811611665273L;
 
@@ -26,15 +29,21 @@ public class PermissionInput implements Serializable {
         UNMODIFIED, NEW, UPDATED, DELETED
     }
 
-    private State state = State.UNMODIFIED;
-
     private Class<?> type;
 
     private Map<String, String> values;
 
+    private State state = State.UNMODIFIED;
+
     public PermissionInput(Class<?> type, Map<String, String> values) {
         this.values = values;
         this.type = type;
+    }
+
+    public PermissionInput(Class<?> type, Map<String, String> values, State state) {
+        this.type = type;
+        this.values = values;
+        this.state = state;
     }
 
     public PermissionInput() {
@@ -62,6 +71,10 @@ public class PermissionInput implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public Permission toPermission() {
+        return (Permission) BeanUtils2.buildBeanFromAttributeMap(type, values);
     }
 
 }

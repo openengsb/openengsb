@@ -19,9 +19,12 @@ package org.openengsb.ui.admin.userService;
 
 import org.apache.wicket.PageParameters;
 import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+
+import com.google.common.base.Throwables;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "USER_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
@@ -34,7 +37,7 @@ public class UserEditPage extends BasePage {
             super(id);
         }
 
-        public EditPanel(String id, String username) {
+        public EditPanel(String id, String username) throws UserNotFoundException {
             super(id, username);
         }
 
@@ -51,7 +54,11 @@ public class UserEditPage extends BasePage {
     public UserEditPage(PageParameters parameters) {
         super(parameters);
         String username = parameters.getString("user");
-        add(new EditPanel("userEditor", username));
+        try {
+            add(new EditPanel("userEditor", username));
+        } catch (UserNotFoundException e) {
+            Throwables.propagate(e);
+        }
     }
 
 }
