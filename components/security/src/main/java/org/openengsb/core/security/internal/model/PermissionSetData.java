@@ -26,13 +26,18 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class PermissionSetData {
 
     @Id
@@ -89,4 +94,13 @@ public class PermissionSetData {
         this.permissionSets = permissionSets;
     }
 
+    @Override
+    public String toString() {
+        Collection<String> children = Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
+            public String apply(PermissionSetData input) {
+                return input.getId();
+            };
+        });
+        return String.format("Set %s: %s, %s", id, children, permissions);
+    }
 }

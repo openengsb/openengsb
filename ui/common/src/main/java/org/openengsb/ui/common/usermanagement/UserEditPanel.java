@@ -101,6 +101,9 @@ public abstract class UserEditPanel extends Panel {
 
                 @Override
                 protected List<? extends PermissionDesc> load() {
+                    if (createMode) {
+                        return Collections.emptyList();
+                    }
                     Collection<Permission> userPermissions;
                     try {
                         userPermissions = userManager.getUserPermissions(input.getUsername());

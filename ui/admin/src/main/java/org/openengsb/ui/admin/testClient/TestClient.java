@@ -145,7 +145,7 @@ public class TestClient extends BasePage {
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
         DomainAuthorizationStrategy.registerComponent(serviceManagementContainer, new SecurityAttributeEntry(
-            "SERVICE_EDITOR", "RENDER"));
+            "org.openengsb.ui.component", "SERVICE_EDITOR"));
         serviceManagementContainer.add(makeServiceList());
 
         Form<Object> organize = createOrganizeForm();

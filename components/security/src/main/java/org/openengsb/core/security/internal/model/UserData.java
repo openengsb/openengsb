@@ -16,7 +16,6 @@
  */
 package org.openengsb.core.security.internal.model;
 
-import java.util.Collection;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -29,10 +28,10 @@ import javax.persistence.Id;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 @Entity
 @Table(name = "USERDATA")
@@ -47,11 +46,8 @@ public class UserData {
     @Column(name = "USER_CREDENTIAL_VALUE")
     private Map<String, String> credentials = Maps.newHashMap();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Collection<PermissionData> permissions = Sets.newHashSet();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private Collection<PermissionSetData> permissionSets = Sets.newHashSet();
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserPermissionSetData permissionSet;
 
     @OneToMany(cascade = CascadeType.ALL)
     @MapKey(name = "key")
@@ -80,20 +76,12 @@ public class UserData {
         this.credentials = credentials;
     }
 
-    public Collection<PermissionData> getPermissions() {
-        return permissions;
+    public UserPermissionSetData getPermissionSet() {
+        return permissionSet;
     }
 
-    public void setPermissions(Collection<PermissionData> permissions) {
-        this.permissions = permissions;
-    }
-
-    public Collection<PermissionSetData> getPermissionSets() {
-        return permissionSets;
-    }
-
-    public void setPermissionSets(Collection<PermissionSetData> permissionSets) {
-        this.permissionSets = permissionSets;
+    public void setPermissionSet(UserPermissionSetData permissionSet) {
+        this.permissionSet = permissionSet;
     }
 
     public Map<String, EntryValue> getAttributes() {
@@ -107,7 +95,6 @@ public class UserData {
     @Override
     public String toString() {
         return String.format("%s:%s:(%s permissions)", username, credentials.isEmpty() ? "none" : "****",
-            permissions.size());
+            permissionSet.getPermissions().size());
     }
-
 }

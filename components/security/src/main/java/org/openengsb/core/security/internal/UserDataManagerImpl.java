@@ -18,7 +18,6 @@
 package org.openengsb.core.security.internal;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ import org.openengsb.core.security.internal.model.EntryValue;
 import org.openengsb.core.security.internal.model.PermissionData;
 import org.openengsb.core.security.internal.model.PermissionSetData;
 import org.openengsb.core.security.internal.model.UserData;
+import org.openengsb.core.security.internal.model.UserPermissionSetData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,8 @@ public class UserDataManagerImpl implements UserDataManager {
     public void createUser(String username) throws UserExistsException {
         UserData newUser = new UserData();
         newUser.setUsername(username);
-        newUser.setPermissions(new HashSet<PermissionData>());
+        UserPermissionSetData permissionSetData = new UserPermissionSetData(username);
+        newUser.setPermissionSet(permissionSetData);
         entityManager.persist(newUser);
     }
 
@@ -138,20 +139,13 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Collection<PermissionData> data = user.getPermissions();
-        return EntryUtils.convertAllBeanDataToObjects(data);
+        return getPermissionsFromSetData(user.getPermissionSet());
     }
 
     @Override
     public Collection<Permission> getAllUserPermissions(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Collection<Permission> result = new HashSet<Permission>();
-        result.addAll(getUserPermissions(username));
-        for (PermissionSetData set : user.getPermissionSets()) {
-            Collection<Permission> setPermissions = getAllPermissionsFromSet(set.getId());
-            result.addAll(setPermissions);
-        }
-        return result;
+        return getAllPermissionsFromSetData(user.getPermissionSet());
     }
 
     @Override
@@ -171,10 +165,7 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public void storeUserPermission(String username, Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        PermissionData permissionData = convertPermissionToPermissionData(permission);
-        Collection<PermissionData> permissions = user.getPermissions();
-        permissions.add(permissionData);
-        entityManager.merge(user);
+        addPermissionsToSet(user.getPermissionSet(), permission);
     }
 
     private static PermissionData convertPermissionToPermissionData(Permission permission) {
@@ -192,7 +183,7 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public void removeUserPermission(String username, final Permission permission) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Collection<PermissionData> permissions = user.getPermissions();
+        Collection<PermissionData> permissions = user.getPermissionSet().getPermissions();
         final Map<String, EntryValue> entryMap = EntryUtils.convertBeanToEntryMap(permission);
         PermissionData entry = Iterators.find(permissions.iterator(), new Predicate<PermissionData>() {
             @Override
@@ -224,7 +215,7 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public Collection<String> getUserPermissionSets(String username) throws UserNotFoundException {
         UserData user = doFindUser(username);
-        Collection<PermissionSetData> permissionSets = user.getPermissionSets();
+        Collection<PermissionSetData> permissionSets = user.getPermissionSet().getPermissionSets();
         return Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
@@ -237,7 +228,7 @@ public class UserDataManagerImpl implements UserDataManager {
     public void storeUserPermissionSet(String username, String permissionSet) throws UserNotFoundException {
         UserData user = doFindUser(username);
         PermissionSetData set = findPermissionSet(permissionSet);
-        user.getPermissionSets().add(set);
+        user.getPermissionSet().getPermissionSets().add(set);
         entityManager.merge(user);
     }
 
@@ -245,7 +236,7 @@ public class UserDataManagerImpl implements UserDataManager {
     public void removeUserPermissionSet(String username, String permissionSet) throws UserNotFoundException {
         UserData user = doFindUser(username);
         PermissionSetData set = findPermissionSet(permissionSet);
-        user.getPermissionSets().remove(set);
+        user.getPermissionSet().getPermissionSets().remove(set);
         entityManager.merge(user);
     }
 
@@ -279,14 +270,22 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public Collection<Permission> getPermissionsFromSet(String permissionSet) {
         PermissionSetData set = findPermissionSet(permissionSet);
+        return getPermissionsFromSetData(set);
+    }
+
+    private Collection<Permission> getPermissionsFromSetData(PermissionSetData set) {
         Collection<PermissionData> data = set.getPermissions();
         return EntryUtils.convertAllBeanDataToObjects(data);
     }
 
     @Override
     public Collection<Permission> getAllPermissionsFromSet(String permissionSet) {
-        Collection<Permission> result = Sets.newHashSet(getPermissionsFromSet(permissionSet));
         PermissionSetData set = findPermissionSet(permissionSet);
+        return getAllPermissionsFromSetData(set);
+    }
+
+    private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
+        Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
         for (PermissionSetData child : set.getPermissionSets()) {
             result.addAll(getAllPermissionsFromSet(child.getId()));
         }
@@ -296,6 +295,10 @@ public class UserDataManagerImpl implements UserDataManager {
     @Override
     public void addPermissionToSet(String permissionSet, Permission... permission) {
         PermissionSetData set = findPermissionSet(permissionSet);
+        addPermissionsToSet(set, permission);
+    }
+
+    private void addPermissionsToSet(PermissionSetData set, Permission... permission) {
         for (Permission p : permission) {
             PermissionData data = convertPermissionToPermissionData(p);
             set.getPermissions().add(data);
@@ -324,32 +327,6 @@ public class UserDataManagerImpl implements UserDataManager {
         findPermissionSet(permissionSet).getMetadata().put(attributename, value);
     }
 
-    //
-    // private static PermissionSetData convertPermissionSetToData(PermissionSet permissionSet) {
-    // PermissionSetData data = new PermissionSetData();
-    // data.setId(permissionSet.getId());
-    // Collection<PermissionData> permissions =
-    // Collections2.transform(permissionSet.getPermissions(), new Function<Permission, PermissionData>() {
-    // @Override
-    // public PermissionData apply(Permission input) {
-    // PermissionData permissionData = new PermissionData();
-    // permissionData.setType(input.getClass().getName());
-    // permissionData.setAttributes(EntryUtils.convertBeanToEntryMap(input));
-    // return permissionData;
-    // }
-    // });
-    // data.setPermissions(permissions);
-    // Collection<PermissionSetData> permissionSets =
-    // Collections2.transform(permissionSet.getPermissionSets(), new Function<PermissionSet, PermissionSetData>() {
-    // @Override
-    // public PermissionSetData apply(PermissionSet input) {
-    // return convertPermissionSetToData(input);
-    // }
-    // });
-    // data.setPermissionSets(permissionSets);
-    // return data;
-    // }
-
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -364,7 +341,9 @@ public class UserDataManagerImpl implements UserDataManager {
 
     private PermissionSetData findPermissionSet(String permissionSet) {
         PermissionSetData set = entityManager.find(PermissionSetData.class, permissionSet);
+        if (set == null) {
+            throw new IllegalArgumentException("permissionSet " + permissionSet + " not found");
+        }
         return set;
     }
-
 }

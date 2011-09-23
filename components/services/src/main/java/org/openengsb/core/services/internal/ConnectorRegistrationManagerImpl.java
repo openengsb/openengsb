@@ -36,6 +36,8 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.security.SecurityAttributeManager;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.util.MapAsDictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -154,12 +156,12 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             Domain.class,
             domainProvider.getDomainInterface(),
         };
-        
+
         String[] clazznames = new String[clazzes.length];
-        for(int i = 0; i < clazzes.length; i++){
+        for (int i = 0; i < clazzes.length; i++) {
             clazznames[i] = clazzes[i].getName();
         }
-        
+
         Object secureInstance;
         if (INTERCEPTOR_BLACKLIST.contains(id.getDomainType())) {
             LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
@@ -173,6 +175,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             pfactory.setTarget(serviceInstance);
             pfactory.addAdvice(securityInterceptor);
             secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
+            SecurityAttributeManager.storeAttribute(serviceInstance, new SecurityAttributeEntry("name", id.toFullID()));
         }
 
         Map<String, Object> properties = populatePropertiesWithRequiredAttributes(description.getProperties(), id);

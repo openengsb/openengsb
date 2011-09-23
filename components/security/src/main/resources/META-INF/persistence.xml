@@ -29,6 +29,7 @@
     <class>org.openengsb.core.security.internal.model.UserData</class>
     <class>org.openengsb.core.security.internal.model.PermissionData</class>
     <class>org.openengsb.core.security.internal.model.PermissionSetData</class>
+    <class>org.openengsb.core.security.internal.model.UserPermissionSetData</class>
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

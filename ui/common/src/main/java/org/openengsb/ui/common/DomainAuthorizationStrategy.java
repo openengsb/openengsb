@@ -61,8 +61,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
             return true;
         }
 
-        Authentication authentication =
-            getAuthenticatedUser();
+        Authentication authentication = getAuthenticatedUser();
         if (authentication == null) {
             return false;
         }
@@ -70,7 +69,12 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         GenericControlledObject secureAction =
             new GenericControlledObject(attributeList, arg1.getName(), ImmutableMap.of("component", (Object) arg0));
 
-        return authorizer.checkAccess(user, secureAction) == Access.GRANTED;
+        Access checkAccess = authorizer.checkAccess(user, secureAction);
+        if (checkAccess != Access.GRANTED) {
+            LOGGER.warn("User {} was denied action {} on component {}", new Object[]{ user, arg1.toString(),
+                arg0.getClass().getName() });
+        }
+        return checkAccess == Access.GRANTED;
     }
 
     @Override

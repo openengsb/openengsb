@@ -62,4 +62,9 @@ public abstract class BeanData {
         this.attributes = attributes;
     }
 
+    @Override
+    public String toString() {
+        return String.format("BeanData (%s): %s", type, attributes.values());
+    }
+
 }
