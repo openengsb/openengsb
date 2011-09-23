@@ -111,6 +111,13 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
+    public void testCreatePermission() {
+        tester.startPage(UserEditPage.class);
+        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:createPermission", "onclick");
+        tester.debugComponentTrees();
+    }
+
+    @Test
     public void deleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);
         tester.clickLink("lazy:usermanagementContainer:form:users:0:user.delete");

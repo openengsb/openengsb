@@ -173,10 +173,6 @@ public class UserDataManagerImpl implements UserDataManager {
         UserData user = doFindUser(username);
         PermissionData permissionData = convertPermissionToPermissionData(permission);
         Collection<PermissionData> permissions = user.getPermissions();
-        if (permissions == null) {
-            permissions = Sets.newHashSet();
-            user.setPermissions(permissions);
-        }
         permissions.add(permissionData);
         entityManager.merge(user);
     }

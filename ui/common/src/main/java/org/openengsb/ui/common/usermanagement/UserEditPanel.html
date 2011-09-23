@@ -28,7 +28,7 @@
             <legend>
               <wicket:message key="createUser.title">[create user]</wicket:message>
             </legend>
-            <ol>
+            <ul>
               <li>
                 <div class="createUserFormField">
                   <wicket:message key="username.title">[username]</wicket:message>
@@ -53,13 +53,23 @@
                   <input type="password" wicket:id="passwordVerification" />
                 </div>
               </li>
-              <input type="submit" wicket:message="value:createButton,title:createButton" />
+              <ul wicket:id="permissionList">
+                <li>
+                  <span wicket:id="id" />
+                </li>
+              </ul>
+              
 <!--               <button wicket:id="cancelButton"> -->
 <!--                 <wicket:message key="resetButton" /> -->
 <!--               </button> -->
-            </ol>
+            </ul>
             <span wicket:id="feedback" />
           </fieldset>
+          <div wicket:id="createPermissionContainer">
+            <div wicket:id="createPermissionContent" />
+          </div>
+          <input type="button" wicket:id="createPermission" value="create" />
+          <input type="submit" wicket:message="value:createButton,title:createButton" />
         </form>
       </div>
     </wicket:panel>

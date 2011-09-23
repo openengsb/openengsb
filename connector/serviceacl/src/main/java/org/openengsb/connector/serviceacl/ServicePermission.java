@@ -7,6 +7,7 @@ public class ServicePermission implements Permission {
     private String type;
     private String instance;
     private String operation;
+    private String context;
 
     public ServicePermission() {
     }
@@ -42,6 +43,14 @@ public class ServicePermission implements Permission {
 
     public void setOperation(String operation) {
         this.operation = operation;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
     }
 
     @Override

@@ -28,6 +28,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
 
 import com.google.common.collect.Sets;
 
@@ -43,7 +44,7 @@ public class PermissionSetData {
     @Column(name = "PS_METADATA_VALUE")
     private Map<String, String> metadata;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private Collection<PermissionData> permissions = Sets.newHashSet();
 
     @ManyToMany(cascade = CascadeType.ALL)

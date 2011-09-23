@@ -28,6 +28,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.Public;
 import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.security.SecurityAttributeManager;
@@ -99,6 +100,10 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
             public boolean apply(ServicePermission input) {
                 if (!validatePermission(input)) {
                     LOGGER.error("invalid permission detected: {} - {}", input, input.describe());
+                    return false;
+                }
+                String context = input.getContext();
+                if (context != null && !context.equals(ContextHolder.get().getCurrentContextId())) {
                     return false;
                 }
                 String type = input.getType();

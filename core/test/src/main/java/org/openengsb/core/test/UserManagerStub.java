@@ -18,6 +18,7 @@ package org.openengsb.core.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,10 +124,17 @@ public class UserManagerStub implements UserDataManager {
 
     @Override
     public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
-        Collection<Collection<Permission>> values = permissionData.get(username).values();
-        Collection<Permission> result = new ArrayList<Permission>();
-        for (Collection<Permission> c : values) {
-            result.addAll(c);
+        if (!permissionData.containsKey(username)) {
+            throw new UserNotFoundException();
+        }
+        Map<Class<?>, Collection<Permission>> map = permissionData.get(username);
+        Collection<Collection<Permission>> permissions = map.values();
+        if (permissions == null) {
+            return Collections.emptyList();
+        }
+        List<Permission> result = new ArrayList<Permission>();
+        for (Collection<Permission> permissionList : permissions) {
+            result.addAll(permissionList);
         }
         return result;
     }

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MapKey;
@@ -29,11 +30,11 @@ import com.google.common.collect.Maps;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class BeanData {
+public abstract class BeanData {
 
     private String type;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKey(name = "key")
     private Map<String, EntryValue> attributes = Maps.newHashMap();
 

@@ -60,6 +60,8 @@ public class UserDataInitializer implements Runnable {
             userManager.addPermissionToSet("ROLE_USER", new ServicePermission("domain.example",
                 "something"));
             userManager.addPermissionToSet("ROLE_USER", new WicketPermission("SERVICE_USER"));
+
+            userManager.storeUserPermission("user", new WicketPermission("SERVICE_EDITOR"));
         } catch (UserNotFoundException e) {
             LOGGER.error("this should not happen... I just created the user", e);
         }
