@@ -261,7 +261,7 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getPermissionsFromSet(String permissionSet) {
+    public Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) {
         PermissionSetData set = doFindPermissionSet(permissionSet);
         return getPermissionsFromSetData(set);
     }
@@ -272,7 +272,7 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getAllPermissionsFromSet(String permissionSet) {
+    public Collection<Permission> getAllPermissionsFromPermissionSet(String permissionSet) {
         PermissionSetData set = doFindPermissionSet(permissionSet);
         return getAllPermissionsFromSetData(set);
     }
@@ -280,7 +280,7 @@ public class UserDataManagerImpl implements UserDataManager {
     private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
         Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
         for (PermissionSetData child : set.getPermissionSets()) {
-            result.addAll(getAllPermissionsFromSet(child.getId()));
+            result.addAll(getAllPermissionsFromPermissionSet(child.getId()));
         }
         return result;
     }

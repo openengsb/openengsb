@@ -180,13 +180,13 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getPermissionsFromSet(String permissionSet) {
+    public Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Collection<Permission> getAllPermissionsFromSet(String permissionSet) {
+    public Collection<Permission> getAllPermissionsFromPermissionSet(String permissionSet) {
         // TODO Auto-generated method stub
         return null;
     }
