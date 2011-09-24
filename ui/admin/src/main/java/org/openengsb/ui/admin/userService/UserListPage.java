@@ -37,13 +37,15 @@ public class UserListPage extends BasePage {
         }
 
         @Override
-        public void gotoEditorPage(String username) {
-            if (username != null) {
-                setResponsePage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", username)));
-            } else {
-                setResponsePage(UserEditPage.class);
-            }
+        protected void openCreatePage() {
+            setResponsePage(UserEditPage.class);
         }
+
+        @Override
+        protected void openEditorPage(String user) {
+            setResponsePage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", user)));
+        }
+
     }
 
     public UserListPage() {

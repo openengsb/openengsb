@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,8 +87,8 @@ public class UserServiceTest extends AbstractUITest {
     public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
-        AjaxButton button =
-            (AjaxButton) tester.getComponentFromLastRenderedPage("lazy:usermanagementContainer:form:createButton");
+        AjaxLink<?> button =
+            (AjaxLink<?>) tester.getComponentFromLastRenderedPage("lazy:createButton");
         tester.executeAjaxEvent(button, "onclick");
         tester.assertRenderedPage(UserEditPage.class);
         Component usernameField =
@@ -113,16 +113,18 @@ public class UserServiceTest extends AbstractUITest {
     @Test
     public void testCreatePermission() {
         tester.startPage(UserEditPage.class);
-        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:createPermission", "onclick");
         tester.debugComponentTrees();
+        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission", "onclick");
+        
     }
 
     @Test
     public void deleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);
-        tester.clickLink("lazy:usermanagementContainer:form:users:0:user.delete");
-
-        tester.executeAjaxEvent("lazy:usermanagementContainer:form:users:0:confirm:yes", "onclick");
+        tester.debugComponentTrees();
+        tester.clickLink("lazy:userList:listContainer:form:list:0:user.delete");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:confirm:yes", "onclick");
         assertThat(userManager.getUserList(), not(hasItem("test")));
     }
 

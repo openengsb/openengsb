@@ -24,12 +24,12 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public abstract class ConfirmPanel extends Panel {
+public abstract class ConfirmPanel<T> extends Panel {
 
     private static final long serialVersionUID = 7137438656270166861L;
     private WebMarkupContainer parent;
 
-    public ConfirmPanel(String id, IModel<String> model, WebMarkupContainer parent) {
+    public ConfirmPanel(String id, IModel<T> model, WebMarkupContainer parent) {
         super(id, model);
         this.parent = parent;
         initContent();

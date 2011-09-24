@@ -22,23 +22,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
@@ -51,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -124,34 +120,73 @@ public abstract class UserEditPanel extends Panel {
 
         userForm.setModel(new CompoundPropertyModel<UserInput>(input));
 
-        IModel<? extends List<? extends PermissionInput>> permissionsModel =
-            new PropertyModel<List<? extends PermissionInput>>(input, "permissions");
-        Component permissionList = new ListView<PermissionInput>("permissionList", permissionsModel) {
-            private static final long serialVersionUID = -8712742630042478882L;
-
-            @Override
-            protected void populateItem(ListItem<PermissionInput> listitem) {
-                PermissionInput modelObject = listitem.getModelObject();
-                Permission permission = modelObject.toPermission();
-                Label label = new Label("id", permission.toString());
-                label.add(new SimpleAttributeModifier("class", "permission_" + modelObject.getState()));
-                listitem.add(label);
-
-                Label desc = new Label("description", permission.describe());
-                listitem.add(desc);
-            }
-        };
-
         final WebMarkupContainer permissionListContainer = new WebMarkupContainer("permissionListContainer");
         permissionListContainer.setOutputMarkupId(true);
-        permissionListContainer.add(permissionList);
         userForm.add(permissionListContainer);
 
         final WebMarkupContainer createPermissionContainer = new WebMarkupContainer("createPermissionContainer");
         createPermissionContainer.setOutputMarkupId(true);
         permissionListContainer.add(createPermissionContainer);
+
         permissionContentPanel = new EmptyPanel("createPermissionContent");
         createPermissionContainer.add(permissionContentPanel);
+
+        GenericListPanel<PermissionInput> permissionList = new GenericListPanel<PermissionInput>("permissionList") {
+            private static final long serialVersionUID = 8972059517453578207L;
+
+            @Override
+            protected IModel<List<PermissionInput>> getListModel() {
+                return new LoadableDetachableModel<List<PermissionInput>>() {
+                    private static final long serialVersionUID = 5621251753383842382L;
+
+                    @Override
+                    protected List<PermissionInput> load() {
+                        Collection<PermissionInput> filtered =
+                            Collections2.filter(input.getPermissions(), new Predicate<PermissionInput>() {
+                                @Override
+                                public boolean apply(PermissionInput input) {
+                                    return input.getState() != State.DELETED;
+                                }
+                            });
+                        return Lists.newArrayList(filtered);
+                    }
+                };
+                // return new PropertyModel<List<PermissionInput>>(input, "permissions");
+            }
+
+            @Override
+            protected void onDeleteClick(AjaxRequestTarget ajaxRequestTarget, Form<?> form, PermissionInput param) {
+                if (param.getState() == State.NEW) {
+                    input.getPermissions().remove(param);
+                    return;
+                }
+                param.setState(State.DELETED);
+            }
+
+            @Override
+            protected void onEditClick(AjaxRequestTarget target, PermissionInput param) {
+                LOGGER.info("would edit " + param);
+            }
+
+        };
+        permissionListContainer.add(permissionList);
+
+        // Component permissionList = new ListView<PermissionInput>("permissionList", permissionsModel) {
+        // private static final long serialVersionUID = -8712742630042478882L;
+        //
+        // @Override
+        // protected void populateItem(ListItem<PermissionInput> listitem) {
+        // PermissionInput modelObject = listitem.getModelObject();
+        // Permission permission = modelObject.toPermission();
+        // Label label = new Label("id", permission.toString());
+        // label.add(new SimpleAttributeModifier("class", "permission_" + modelObject.getState()));
+        // listitem.add(label);
+        //
+        // Label desc = new Label("description", permission.describe());
+        // listitem.add(desc);
+        // }
+        // };
+
         AjaxLink<Object> ajaxButton = new AjaxLink<Object>("createPermission") {
             private static final long serialVersionUID = 6887755633726845337L;
 
@@ -162,7 +197,6 @@ public abstract class UserEditPanel extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-
                 PermissionEditorPanel realPermissionEditorPanel =
                     new PermissionEditorPanel("createPermissionContent", input) {
                         private static final long serialVersionUID = 6316566908822500463L;
@@ -184,7 +218,7 @@ public abstract class UserEditPanel extends Panel {
                 target.addComponent(createPermissionContainer);
                 // setVisible(false);
                 setEnabled(false);
-                target.addComponent(this);
+                // target.addComponent(this);
             }
         };
         permissionListContainer.add(ajaxButton);
@@ -227,14 +261,17 @@ public abstract class UserEditPanel extends Panel {
             if (p.getState() == State.UNMODIFIED) {
                 continue;
             }
-            if (p.getState() == State.NEW) {
-                Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
-                try {
+            Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
+            try {
+                if (p.getState() == State.NEW) {
                     userManager.storeUserPermission(username, perm);
-                } catch (UserNotFoundException e) {
-                    error(Throwables.getStackTraceAsString(e));
-                    return;
                 }
+                if (p.getState() == State.DELETED) {
+                    userManager.removeUserPermission(username, perm);
+                }
+            } catch (UserNotFoundException e) {
+                error(Throwables.getStackTraceAsString(e));
+                return;
             }
         }
     }
