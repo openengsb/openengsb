@@ -19,6 +19,10 @@ package org.openengsb.core.common;
 import org.openengsb.core.api.security.model.Authentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
+/**
+ * This is used to wrap an OpenEngSB internal Authentication into Spring Authentication so it can be stored in springs
+ * {@link org.springframework.security.core.context.SecurityContext}
+ */
 class OpenEngSBAuthentication extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = -3293065282606838713L;
