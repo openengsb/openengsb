@@ -24,27 +24,22 @@
     <wicket:panel>
       <div wicket:id="listContainer">
         <form wicket:id="form">
-          <div class="existingUsers">
-            <fieldset>
-              <legend>
-                <wicket:message key="existingUser.title">[existingUsers]</wicket:message>
-              </legend>
-              <ol wicket:id="list">
-                <li>
-                  <div class="formField">
-                    <span wicket:id="user.name">[service.name]</span>
-                    <a href="UserService.html#" wicket:id="user.delete">
-                      <img wicket:message="title:delete.use" alt="delete.user" title="delete" src="openengsb/images/deleteS.png" />
-                    </a>
-                    <a href="UserService.html#" wicket:id="user.update">
-                      <img wicket:message="title:delete.use" alt="update.user" title="update" src="openengsb/images/editS.png" />
-                    </a>
-                  </div>
-                  <div wicket:id="confirm" />
-                </li>
-              </ol>
-            </fieldset>
-          </div>
+          <fieldset>
+            <ol wicket:id="list">
+              <li>
+                <div class="formField">
+                  <span wicket:id="item.name">[service.name]</span>
+                  <a href="UserService.html#" wicket:id="item.delete">
+                    <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
+                  </a>
+                  <a href="UserService.html#" wicket:id="item.update">
+                    <img wicket:message="title:delete.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
+                  </a>
+                </div>
+                <div wicket:id="confirm" />
+              </li>
+            </ol>
+          </fieldset>
         </form>
       </div>
     </wicket:panel>

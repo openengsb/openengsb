@@ -59,11 +59,11 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
 
             @Override
             protected void populateItem(final ListItem<T> userListItem) {
-                userListItem.add(new Label("user.name", userListItem.getModelObject().toString()));
+                userListItem.add(new Label("item.name", userListItem.getModelObject().toString()));
                 Panel confirm = new EmptyPanel("confirm");
                 userListItem.add(confirm);
                 userListItem.setOutputMarkupId(true);
-                final AjaxLink<String> deleteLink = new AjaxLink<String>("user.delete") {
+                final AjaxLink<String> deleteLink = new AjaxLink<String>("item.delete") {
                     private static final long serialVersionUID = 2004369349622394213L;
 
                     @Override
@@ -94,7 +94,7 @@ public abstract class GenericListPanel<T extends Serializable> extends Panel {
                     }
                 };
                 userListItem.add(deleteLink);
-                userListItem.add(new AjaxLink<String>("user.update") {
+                userListItem.add(new AjaxLink<String>("item.update") {
                     private static final long serialVersionUID = -2327085637957255085L;
 
                     @Override

@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
+import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 import com.google.common.collect.ImmutableMap;
@@ -40,7 +41,7 @@ import com.google.common.collect.ImmutableMap;
 public class UserServiceTest extends AbstractUITest {
 
     protected String localization(Class<?> component, String resourceName) {
-        ResourceBundle resources = ResourceBundle.getBundle(UserListPage.class.getName());
+        ResourceBundle resources = ResourceBundle.getBundle(component.getName());
         if (resources != null) {
             return resources.getString(resourceName);
         } else {
@@ -123,7 +124,7 @@ public class UserServiceTest extends AbstractUITest {
     public void deleteUser_shouldBeRemovedFromList() throws Exception {
         tester.startPage(UserListPage.class);
         tester.debugComponentTrees();
-        tester.clickLink("lazy:userList:listContainer:form:list:0:user.delete");
+        tester.clickLink("lazy:userList:listContainer:form:list:0:item.delete");
         tester.debugComponentTrees();
         tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:confirm:yes", "onclick");
         assertThat(userManager.getUserList(), not(hasItem("test")));
@@ -153,7 +154,7 @@ public class UserServiceTest extends AbstractUITest {
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "userExistError") });
+        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "userExistError") });
     }
 
     @Test
@@ -171,7 +172,7 @@ public class UserServiceTest extends AbstractUITest {
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization(UserListPage.class, "passwordError") });
+        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
     }
 
     // @Test

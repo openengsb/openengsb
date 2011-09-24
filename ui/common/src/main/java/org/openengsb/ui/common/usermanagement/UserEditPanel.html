@@ -55,15 +55,10 @@
               </li>
               <div wicket:id="permissionListContainer">
                 <div wicket:id="permissionList" />
-<!--                   <li> -->
-<!--                     <span wicket:id="id" /> -->
-<!--                     <span wicket:id="description" /> -->
-<!--                   </li> -->
-<!--                 </ul> -->
                 <div wicket:id="createPermissionContainer">
                   <div wicket:id="createPermissionContent" />
                 </div>
-                <input type="button" wicket:id="createPermission" value="create" />
+                <input type="button" wicket:id="createPermission" wicket:message="value:permission.create" />
               </div>
               
               
@@ -74,7 +69,7 @@
             <span wicket:id="feedback" />
           </fieldset>
 
-          <input type="submit" wicket:message="value:createButton,title:createButton" />
+          <input type="submit" wicket:message="value:user.create.button,title:user.create.button" />
         </form>
       </div>
     </wicket:panel>
