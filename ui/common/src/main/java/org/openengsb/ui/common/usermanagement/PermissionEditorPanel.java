@@ -19,7 +19,6 @@ package org.openengsb.ui.common.usermanagement;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class PermissionEditorPanel extends Panel {
+public abstract class PermissionEditorPanel extends Panel {
 
     private static final long serialVersionUID = 2009943701781924243L;
 
@@ -58,12 +57,9 @@ public class PermissionEditorPanel extends Panel {
 
     private UserInput user;
 
-    private Component listContainer;
-
-    public PermissionEditorPanel(String id, UserInput user, Component listContainer) {
+    public PermissionEditorPanel(String id, UserInput user) {
         super(id);
         this.user = user;
-        this.listContainer = listContainer;
         init();
     }
 
@@ -96,13 +92,13 @@ public class PermissionEditorPanel extends Panel {
             private static final long serialVersionUID = 6787520770396648012L;
 
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> arg1) {
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 Class<?> permissionClass = permissionTypeModel.getObject();
                 user.getPermissions().add(new PermissionInput(permissionClass, values, State.NEW));
                 editorPanel.replaceWith(new EmptyPanel("permissionEditor"));
                 submitButton.setVisible(false);
                 target.addComponent(container);
-                target.addComponent(listContainer);
+                afterSubmit(target, form);
                 LOGGER.info("got values {}", values.toString());
             }
         };
@@ -131,6 +127,7 @@ public class PermissionEditorPanel extends Panel {
         editorPanel = new EmptyPanel("permissionEditor");
 
         form.add(editorPanel);
-
     }
+
+    protected abstract void afterSubmit(AjaxRequestTarget target, Form<?> form);
 }

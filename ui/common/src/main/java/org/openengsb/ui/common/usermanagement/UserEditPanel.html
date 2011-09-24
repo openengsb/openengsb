@@ -60,7 +60,12 @@
                     <span wicket:id="description" />
                   </li>
                 </ul>
+                <div wicket:id="createPermissionContainer">
+                  <div wicket:id="createPermissionContent" />
+                </div>
+                <input type="button" wicket:id="createPermission" value="create" />
               </div>
+              
               
 <!--               <button wicket:id="cancelButton"> -->
 <!--                 <wicket:message key="resetButton" /> -->
@@ -68,10 +73,7 @@
             </ul>
             <span wicket:id="feedback" />
           </fieldset>
-          <div wicket:id="createPermissionContainer">
-            <div wicket:id="createPermissionContent" />
-          </div>
-          <input type="button" wicket:id="createPermission" value="create" />
+
           <input type="submit" wicket:message="value:createButton,title:createButton" />
         </form>
       </div>

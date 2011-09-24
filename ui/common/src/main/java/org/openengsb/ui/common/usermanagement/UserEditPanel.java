@@ -149,34 +149,45 @@ public abstract class UserEditPanel extends Panel {
 
         final WebMarkupContainer createPermissionContainer = new WebMarkupContainer("createPermissionContainer");
         createPermissionContainer.setOutputMarkupId(true);
-        userForm.add(createPermissionContainer);
+        permissionListContainer.add(createPermissionContainer);
         permissionContentPanel = new EmptyPanel("createPermissionContent");
         createPermissionContainer.add(permissionContentPanel);
         AjaxLink<Object> ajaxButton = new AjaxLink<Object>("createPermission") {
             private static final long serialVersionUID = 6887755633726845337L;
 
-            private boolean shown = false;
+            private void reenable() {
+                setEnabled(true);
+                // setVisible(true);
+            }
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                if (shown) {
-                    EmptyPanel emptyPanel = new EmptyPanel("createPermissionContent");
-                    createPermissionContainer.addOrReplace(emptyPanel);
-                    permissionContentPanel = emptyPanel;
-                    target.addComponent(createPermissionContainer);
-                    shown = false;
-                } else {
-                    PermissionEditorPanel realPermissionEditorPanel =
-                        new PermissionEditorPanel("createPermissionContent", input, permissionListContainer);
-                    createPermissionContainer.addOrReplace(realPermissionEditorPanel);
-                    // permissionContentPanel.replace(realPermissionEditorPanel);
-                    permissionContentPanel = realPermissionEditorPanel;
-                    target.addComponent(createPermissionContainer);
-                    shown = true;
-                }
+
+                PermissionEditorPanel realPermissionEditorPanel =
+                    new PermissionEditorPanel("createPermissionContent", input) {
+                        private static final long serialVersionUID = 6316566908822500463L;
+
+                        @Override
+                        protected void afterSubmit(AjaxRequestTarget target, Form<?> form) {
+                            LOGGER.info("replacing permission-panel with empty panel");
+                            EmptyPanel emptyPanel = new EmptyPanel("createPermissionContent");
+                            createPermissionContainer.addOrReplace(emptyPanel);
+                            permissionContentPanel = emptyPanel;
+                            target.addComponent(createPermissionContainer);
+                            reenable();
+                            target.addComponent(permissionListContainer);
+                        }
+                    };
+                createPermissionContainer.addOrReplace(realPermissionEditorPanel);
+                // permissionContentPanel.replace(realPermissionEditorPanel);
+                permissionContentPanel = realPermissionEditorPanel;
+                target.addComponent(createPermissionContainer);
+                // setVisible(false);
+                setEnabled(false);
+                target.addComponent(this);
             }
         };
-        userForm.add(ajaxButton);
+        permissionListContainer.add(ajaxButton);
 
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
