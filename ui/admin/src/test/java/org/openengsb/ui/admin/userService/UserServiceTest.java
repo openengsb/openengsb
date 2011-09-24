@@ -23,14 +23,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.common.usermanagement.UserEditPanel;
@@ -112,12 +115,26 @@ public class UserServiceTest extends AbstractUITest {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCreatePermission() {
         tester.startPage(UserEditPage.class);
         tester.debugComponentTrees();
         tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission",
             "onclick");
 
+        DropDownChoice<Class> dropdown = (DropDownChoice<Class>) tester.getComponentFromLastRenderedPage(
+            "userEditor:userEditorContainer:userForm:permissionListContainer:"
+                    + "createPermissionContainer:createPermissionContent:container:form:permissionTypeSelect");
+
+        List<Class> choices = (List<Class>) dropdown.getChoices();
+        assertThat(choices, hasItem((Class) WicketPermission.class));
+
+        FormTester permissionFormTester = tester.newFormTester(
+            "userEditor:userEditorContainer:userForm:permissionListContainer:"
+                    + "createPermissionContainer:createPermissionContent:container:form");
+        permissionFormTester.select("permissionTypeSelect", 1);
+
+        tester.debugComponentTrees();
     }
 
     @Test

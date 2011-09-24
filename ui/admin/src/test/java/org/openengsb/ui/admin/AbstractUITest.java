@@ -20,6 +20,7 @@ package org.openengsb.ui.admin;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
+import org.openengsb.connector.wicketacl.internal.WicketPermissionProvider;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -38,6 +40,7 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
@@ -131,6 +134,13 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         userManager.setUserCredentials("admin", "password", "password");
         userManager.addPermissionToUser("admin", new RootPermission());
         context.putBean("userManager", userManager);
+
+        Dictionary<String, Object> wicketProviderProps = new Hashtable<String, Object>();
+        wicketProviderProps.put("permissionClass", WicketPermission.class.getName());
+        WicketPermissionProvider wicketPermissionProvider = new WicketPermissionProvider();
+        registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
+
+        context.putBean("permissionProviders", Arrays.asList(wicketPermissionProvider));
     }
 
     @Override
