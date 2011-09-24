@@ -41,7 +41,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
 
     @Before
     public void setUp() throws Exception {
-        userManager.storeUserPermission("test", new WicketPermission("SERVICE_USER"));
+        userManager.addPermissionToUser("test", new WicketPermission("SERVICE_USER"));
     }
 
     @Test

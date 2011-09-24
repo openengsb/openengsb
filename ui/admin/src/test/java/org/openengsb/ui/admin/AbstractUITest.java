@@ -122,14 +122,14 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         userManager = new UserManagerStub();
         userManager.createUser("test");
         userManager.setUserCredentials("test", "password", "password");
-        userManager.storeUserPermission("test", new WicketPermission("USER"));
+        userManager.addPermissionToUser("test", new WicketPermission("USER"));
 
         userManager.createUser("user");
         userManager.setUserCredentials("user", "password", "password");
 
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
-        userManager.storeUserPermission("admin", new RootPermission());
+        userManager.addPermissionToUser("admin", new RootPermission());
         context.putBean("userManager", userManager);
     }
 

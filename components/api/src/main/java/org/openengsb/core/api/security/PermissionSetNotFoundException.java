@@ -17,22 +17,22 @@
 
 package org.openengsb.core.api.security;
 
-public class UserManagementException extends Exception {
+public class PermissionSetNotFoundException extends UncheckedUserManagementException {
 
-    private static final long serialVersionUID = 269605012169642052L;
+    private static final long serialVersionUID = 694237122926139415L;
 
-    public UserManagementException() {
+    public PermissionSetNotFoundException() {
     }
 
-    public UserManagementException(String message) {
+    public PermissionSetNotFoundException(String message) {
         super(message);
     }
 
-    public UserManagementException(Throwable cause) {
+    public PermissionSetNotFoundException(Throwable cause) {
         super(cause);
     }
 
-    public UserManagementException(String message, Throwable cause) {
+    public PermissionSetNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 

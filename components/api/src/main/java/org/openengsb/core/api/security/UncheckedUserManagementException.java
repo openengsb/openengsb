@@ -17,23 +17,22 @@
 
 package org.openengsb.core.api.security;
 
-public class UserManagementException extends Exception {
+public class UncheckedUserManagementException extends RuntimeException {
 
-    private static final long serialVersionUID = 269605012169642052L;
+    private static final long serialVersionUID = 3202406779714705904L;
 
-    public UserManagementException() {
+    public UncheckedUserManagementException() {
     }
 
-    public UserManagementException(String message) {
-        super(message);
+    public UncheckedUserManagementException(String s) {
+        super(s);
     }
 
-    public UserManagementException(Throwable cause) {
-        super(cause);
+    public UncheckedUserManagementException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 
-    public UserManagementException(String message, Throwable cause) {
-        super(message, cause);
+    public UncheckedUserManagementException(Throwable throwable) {
+        super(throwable);
     }
-
 }

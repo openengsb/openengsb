@@ -17,23 +17,23 @@
 
 package org.openengsb.core.api.security;
 
-public class UserManagementException extends Exception {
+public class NoSuchAttributeException extends UserManagementException {
 
-    private static final long serialVersionUID = 269605012169642052L;
+    private static final long serialVersionUID = 5068513969199836581L;
 
-    public UserManagementException() {
+    public NoSuchAttributeException() {
     }
 
-    public UserManagementException(String message) {
+    public NoSuchAttributeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NoSuchAttributeException(String message) {
         super(message);
     }
 
-    public UserManagementException(Throwable cause) {
+    public NoSuchAttributeException(Throwable cause) {
         super(cause);
-    }
-
-    public UserManagementException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }

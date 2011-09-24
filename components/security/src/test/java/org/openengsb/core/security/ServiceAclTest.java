@@ -65,7 +65,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         userManager = new UserManagerStub();
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
-        userManager.storeUserPermission("admin", new RootPermission());
+        userManager.addPermissionToUser("admin", new RootPermission());
 
         userManager.createUser("testuser");
 
@@ -108,7 +108,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
-        userManager.storeUserPermission("testuser", new ServicePermission(NullDomain.class.getName()));
+        userManager.addPermissionToUser("testuser", new ServicePermission(NullDomain.class.getName()));
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
@@ -118,7 +118,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod");
 
-        userManager.storeUserPermission("testuser", new ServicePermission("NULL"));
+        userManager.addPermissionToUser("testuser", new ServicePermission("NULL"));
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
@@ -128,7 +128,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
-        userManager.storeUserPermission("testuser", new ServicePermission("NULL", "READ_NULL"));
+        userManager.addPermissionToUser("testuser", new ServicePermission("NULL", "READ_NULL"));
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
@@ -138,7 +138,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
-        userManager.storeUserPermission("testuser", new ServicePermission("NULL", "GET_NULL"));
+        userManager.addPermissionToUser("testuser", new ServicePermission("NULL", "GET_NULL"));
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.ABSTAINED));
     }
@@ -148,7 +148,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
-        userManager.storeUserPermission("testuser", new ServicePermission("NULL", "nullMethod"));
+        userManager.addPermissionToUser("testuser", new ServicePermission("NULL", "nullMethod"));
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }
@@ -162,7 +162,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
 
         ServicePermission permission = new ServicePermission();
         permission.setInstance("service.foo");
-        userManager.storeUserPermission("testuser", permission);
+        userManager.addPermissionToUser("testuser", permission);
 
         assertThat(accessControl.checkAccess("testuser", invocation), is(Access.GRANTED));
     }

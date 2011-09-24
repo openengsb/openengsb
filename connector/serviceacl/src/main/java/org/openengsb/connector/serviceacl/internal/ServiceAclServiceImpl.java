@@ -79,7 +79,7 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
         }
         Collection<ServicePermission> permissions;
         try {
-            permissions = userManager.getAllUserPermissions(user, ServicePermission.class);
+            permissions = userManager.getAllPermissionsForUser(user, ServicePermission.class);
         } catch (UserNotFoundException e) {
             LOGGER.warn("user not found in acl-connector", e);
             return Access.ABSTAINED;

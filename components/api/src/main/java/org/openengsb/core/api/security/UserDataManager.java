@@ -29,59 +29,65 @@ public interface UserDataManager {
 
     void deleteUser(String username);
 
-    String getUserCredentials(String username, String key) throws UserNotFoundException;
+    String getUserCredentials(String username, String key) throws UserNotFoundException, NoSuchCredentialsException;
 
     void setUserCredentials(String username, String type, String value) throws UserNotFoundException;
 
     void removeUserCredentials(String username, String type) throws UserNotFoundException;
 
-    List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException;
+    List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException,
+        NoSuchAttributeException;
 
     void setUserAttribute(String username, String attributename, Object... value) throws UserNotFoundException;
 
     void removeUserAttribute(String username, String attributename) throws UserNotFoundException;
 
-    Collection<Permission> getUserPermissions(String username) throws UserNotFoundException;
+    Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException;
 
-    Collection<Permission> getAllUserPermissions(String username) throws UserNotFoundException;
+    Collection<Permission> getAllPermissionsForUser(String username) throws UserNotFoundException;
 
-    <T extends Permission> Collection<T> getUserPermissions(String username, Class<T> type)
+    <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type)
         throws UserNotFoundException;
 
-    <T extends Permission> Collection<T> getAllUserPermissions(String username, Class<T> type)
+    <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type)
         throws UserNotFoundException;
 
-    void storeUserPermission(String username, Permission permission) throws UserNotFoundException;
+    void addPermissionToUser(String username, Permission... permission) throws UserNotFoundException;
 
-    void removeUserPermission(String username, Permission permission) throws UserNotFoundException;
+    void removePermissionFromUser(String username, Permission... permission) throws UserNotFoundException;
 
     /*
      * 
      */
-    void createPermissionSet(String permissionSet, Permission... permission);
+    void createPermissionSet(String permissionSet, Permission... permission) throws PermissionSetAlreadyExistsException;
 
-    void addPermissionToSet(String permissionSet, Permission... permission);
+    void addPermissionToSet(String permissionSet, Permission... permission) throws PermissionSetNotFoundException;
 
-    void removePermissionFromSet(String permissionSet, Permission... permission);
+    void removePermissionFromSet(String permissionSet, Permission... permission) throws PermissionSetNotFoundException;
 
-    Collection<String> getUserPermissionSets(String username) throws UserNotFoundException;
+    Collection<String> getPermissionSetsFromUser(String username) throws UserNotFoundException;
 
-    void storeUserPermissionSet(String username, String permissionSet) throws UserNotFoundException;
+    void addPermissionSetToUser(String username, String... permissionSet) throws UserNotFoundException,
+        PermissionSetNotFoundException;
 
-    void removeUserPermissionSet(String username, String permissionSet) throws UserNotFoundException;
+    void removePermissionSetFromUser(String username, String... permissionSet) throws UserNotFoundException;
 
-    void addSetToPermissionSet(String permissionSetParent, String permissionSet);
+    void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet)
+        throws PermissionSetNotFoundException;
 
-    void removeSetFromPermissionSet(String permissionSetParent, String permissionSet);
+    void removePermissionSetFromPermissionSet(String permissionSetParent, String... permissionSet)
+        throws PermissionSetNotFoundException;
 
-    Collection<String> getMemberPermissionSets(String permissionSet) throws UserNotFoundException;
+    Collection<String> getPermissionSetsFromPermissionSet(String permissionSet) throws UserNotFoundException;
 
-    Collection<Permission> getPermissionsFromSet(String permissionSet);
+    Collection<Permission> getPermissionsFromSet(String permissionSet) throws PermissionSetNotFoundException;
 
-    Collection<Permission> getAllPermissionsFromSet(String permissionSet);
+    Collection<Permission> getAllPermissionsFromSet(String permissionSet) throws PermissionSetNotFoundException;
 
-    void setPermissionSetAttribute(String permissionSet, String attributename, String value);
+    void setPermissionSetAttribute(String permissionSet, String attributename, String value)
+        throws PermissionSetNotFoundException;
 
-    String getPermissionSetAttribute(String permissionSet, String attributename);
+    String getPermissionSetAttribute(String permissionSet, String attributename) throws PermissionSetNotFoundException,
+        NoSuchAttributeException;
 
 }

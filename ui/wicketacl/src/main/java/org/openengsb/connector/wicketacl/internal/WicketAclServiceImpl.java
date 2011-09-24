@@ -125,7 +125,7 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
     }
 
     public Collection<WicketPermission> getWicketPermissions(String user) throws UserNotFoundException {
-        return userManager.getAllUserPermissions(user, WicketPermission.class);
+        return userManager.getAllPermissionsForUser(user, WicketPermission.class);
     }
 
     public void setUserManager(UserDataManager userManager) {

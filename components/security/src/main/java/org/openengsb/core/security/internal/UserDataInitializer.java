@@ -19,9 +19,9 @@ package org.openengsb.core.security.internal;
 
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.connector.wicketacl.WicketPermission;
+import org.openengsb.core.api.security.PermissionSetAlreadyExistsException;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.slf4j.Logger;
@@ -52,18 +52,18 @@ public class UserDataInitializer implements Runnable {
             userManager.setUserCredentials("user", "password", "password");
 
             userManager.createPermissionSet("ROLE_ROOT", new RootPermission());
-            userManager.storeUserPermissionSet("admin", "ROLE_ROOT");
+            userManager.addPermissionSetToUser("admin", "ROLE_ROOT");
 
             userManager.createPermissionSet("ROLE_USER");
-            userManager.storeUserPermissionSet("user", "ROLE_USER");
+            userManager.addPermissionSetToUser("user", "ROLE_USER");
 
             userManager.addPermissionToSet("ROLE_USER", new ServicePermission("domain.example",
                 "something"));
             userManager.addPermissionToSet("ROLE_USER", new WicketPermission("SERVICE_USER"));
 
-            userManager.storeUserPermission("user", new WicketPermission("SERVICE_EDITOR"));
-        } catch (UserNotFoundException e) {
-            LOGGER.error("this should not happen... I just created the user", e);
+            userManager.addPermissionToUser("user", new WicketPermission("SERVICE_EDITOR"));
+        } catch (PermissionSetAlreadyExistsException e) {
+            LOGGER.error("this should not happen... I just checked whether the userbase is empty", e);
         }
     }
 }

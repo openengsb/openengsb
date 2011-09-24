@@ -17,23 +17,23 @@
 
 package org.openengsb.core.api.security;
 
-public class UserManagementException extends Exception {
+public class PermissionSetAlreadyExistsException extends UserManagementException {
 
-    private static final long serialVersionUID = 269605012169642052L;
+    private static final long serialVersionUID = 2457100787977257604L;
 
-    public UserManagementException() {
+    public PermissionSetAlreadyExistsException() {
     }
 
-    public UserManagementException(String message) {
+    public PermissionSetAlreadyExistsException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PermissionSetAlreadyExistsException(String message) {
         super(message);
     }
 
-    public UserManagementException(Throwable cause) {
+    public PermissionSetAlreadyExistsException(Throwable cause) {
         super(cause);
-    }
-
-    public UserManagementException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }

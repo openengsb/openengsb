@@ -17,23 +17,24 @@
 
 package org.openengsb.core.api.security;
 
-public class UserManagementException extends Exception {
+public class NoSuchCredentialsException extends UncheckedUserManagementException {
 
-    private static final long serialVersionUID = 269605012169642052L;
+    private static final long serialVersionUID = -8046285400069147405L;
 
-    public UserManagementException() {
+    public NoSuchCredentialsException() {
+        super();
     }
 
-    public UserManagementException(String message) {
-        super(message);
+    public NoSuchCredentialsException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 
-    public UserManagementException(Throwable cause) {
-        super(cause);
+    public NoSuchCredentialsException(String s) {
+        super(s);
     }
 
-    public UserManagementException(String message, Throwable cause) {
-        super(message, cause);
+    public NoSuchCredentialsException(Throwable throwable) {
+        super(throwable);
     }
 
 }

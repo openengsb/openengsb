@@ -98,19 +98,22 @@ public class UserManagerStub implements UserDataManager {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Permission> Collection<T> getUserPermissions(String username, Class<T> type) {
+    public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) {
         return (Collection<T>) permissionData.get(username).get(type);
     }
 
     @Override
-    public void storeUserPermission(String username, Permission permission) {
-        permissionData.get(username).get(permission.getClass()).add(permission);
+    public void addPermissionToUser(String username, Permission... permissions) {
+        for (Permission permission : permissions) {
+            permissionData.get(username).get(permission.getClass()).add(permission);
+        }
     }
 
     @Override
-    public void removeUserPermission(String username, Permission permission) {
-        permissionData.get(username).get(permission.getClass()).remove(permission);
-
+    public void removePermissionFromUser(String username, Permission... permissions) {
+        for (Permission permission : permissions) {
+            permissionData.get(username).get(permission.getClass()).remove(permission);
+        }
     }
 
     @Override
@@ -119,7 +122,7 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getUserPermissions(String username) throws UserNotFoundException {
+    public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
         Collection<Collection<Permission>> values = permissionData.get(username).values();
         Collection<Permission> result = new ArrayList<Permission>();
         for (Collection<Permission> c : values) {
@@ -129,25 +132,25 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public Collection<Permission> getAllUserPermissions(String username) throws UserNotFoundException {
-        return getUserPermissions(username);
+    public Collection<Permission> getAllPermissionsForUser(String username) throws UserNotFoundException {
+        return getPermissionsForUser(username);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Permission> Collection<T> getAllUserPermissions(String username, Class<T> type)
+    public <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type)
         throws UserNotFoundException {
-        return (Collection<T>) Collections2.filter(getAllUserPermissions(username), Predicates.instanceOf(type));
+        return (Collection<T>) Collections2.filter(getAllPermissionsForUser(username), Predicates.instanceOf(type));
     }
 
     @Override
-    public void storeUserPermissionSet(String username, String permission) throws UserNotFoundException {
+    public void addPermissionSetToUser(String username, String... permission) throws UserNotFoundException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeUserPermissionSet(String username, String permission) throws UserNotFoundException {
+    public void removePermissionSetFromUser(String username, String... permission) throws UserNotFoundException {
         // TODO Auto-generated method stub
 
     }
@@ -159,19 +162,19 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public void addSetToPermissionSet(String permissionSetParent, String permissionSet) {
+    public void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeSetFromPermissionSet(String permissionSetParent, String permissionSet) {
+    public void removePermissionSetFromPermissionSet(String permissionSetParent, String... permissionSet) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public Collection<String> getMemberPermissionSets(String permissionSet) throws UserNotFoundException {
+    public Collection<String> getPermissionSetsFromPermissionSet(String permissionSet) throws UserNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -201,7 +204,7 @@ public class UserManagerStub implements UserDataManager {
     }
 
     @Override
-    public Collection<String> getUserPermissionSets(String username) throws UserNotFoundException {
+    public Collection<String> getPermissionSetsFromUser(String username) throws UserNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }

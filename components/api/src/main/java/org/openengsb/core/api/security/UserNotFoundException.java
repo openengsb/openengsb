@@ -16,7 +16,7 @@
  */
 package org.openengsb.core.api.security;
 
-public class UserNotFoundException extends OpenEngSBSecurityException {
+public class UserNotFoundException extends UncheckedUserManagementException {
 
     private static final long serialVersionUID = 6901506350918489164L;
 

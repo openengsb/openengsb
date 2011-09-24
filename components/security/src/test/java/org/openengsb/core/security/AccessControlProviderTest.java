@@ -61,7 +61,7 @@ public class AccessControlProviderTest extends AbstractOsgiMockServiceTest {
         UserDataManager userManager = new UserManagerStub();
         userManager.createUser("admin");
         userManager.setUserCredentials("admin", "password", "password");
-        userManager.storeUserPermission("admin", new RootPermission());
+        userManager.addPermissionToUser("admin", new RootPermission());
 
         userManager.createUser("testuser");
 

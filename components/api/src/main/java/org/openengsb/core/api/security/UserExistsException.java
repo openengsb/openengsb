@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api.security;
 
-public class UserExistsException extends OpenEngSBSecurityException {
+public class UserExistsException extends UserManagementException {
 
     private static final long serialVersionUID = 3741302495780303378L;
 

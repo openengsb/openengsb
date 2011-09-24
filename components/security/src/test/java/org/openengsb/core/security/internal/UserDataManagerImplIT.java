@@ -195,9 +195,9 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
     public void testStoreUserPermission_shouldBeStored() throws Exception {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
-        userManager.storeUserPermission("admin2", permission);
+        userManager.addPermissionToUser("admin2", permission);
         Collection<Permission> userPermissions =
-            userManager.getUserPermissions("admin2");
+            userManager.getPermissionsForUser("admin2");
         assertThat(userPermissions, hasItem(equalTo(permission)));
     }
 
@@ -205,10 +205,10 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
     public void testStoreUserPermissionAndDeleteAgain_shouldBeDeleted() throws Exception {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
-        userManager.storeUserPermission("admin2", permission);
-        userManager.removeUserPermission("admin2", permission);
+        userManager.addPermissionToUser("admin2", permission);
+        userManager.removePermissionFromUser("admin2", permission);
         Collection<Permission> userPermissions =
-            userManager.getUserPermissions("admin2");
+            userManager.getPermissionsForUser("admin2");
         assertThat(userPermissions, not(hasItem(equalTo(permission))));
     }
 
@@ -217,8 +217,8 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.createPermissionSet("ROLE_ADMIN", permission);
-        userManager.storeUserPermissionSet("admin2", "ROLE_ADMIN");
-        Collection<String> userPermissions = userManager.getUserPermissionSets("admin2");
+        userManager.addPermissionSetToUser("admin2", "ROLE_ADMIN");
+        Collection<String> userPermissions = userManager.getPermissionSetsFromUser("admin2");
         assertThat(userPermissions, hasItem("ROLE_ADMIN"));
     }
 
@@ -227,8 +227,8 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         userManager.createUser("admin2");
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.createPermissionSet("ROLE_ADMIN", permission);
-        userManager.storeUserPermissionSet("admin2", "ROLE_ADMIN");
-        Collection<Permission> allUserPermissions = userManager.getAllUserPermissions("admin2");
+        userManager.addPermissionSetToUser("admin2", "ROLE_ADMIN");
+        Collection<Permission> allUserPermissions = userManager.getAllPermissionsForUser("admin2");
         assertThat(allUserPermissions, hasItem(permission));
     }
 
@@ -236,8 +236,8 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
     public void addPermissionSetToSet_shouldBeListedAsMember() throws Exception {
         userManager.createPermissionSet("ROLE_ADMIN");
         userManager.createPermissionSet("ROLE_ROOT");
-        userManager.addSetToPermissionSet("ROLE_ROOT", "ROLE_ADMIN");
-        Collection<String> memberPermissionSets = userManager.getMemberPermissionSets("ROLE_ROOT");
+        userManager.addPermissionSetToPermissionSet("ROLE_ROOT", "ROLE_ADMIN");
+        Collection<String> memberPermissionSets = userManager.getPermissionSetsFromPermissionSet("ROLE_ROOT");
         assertThat(memberPermissionSets, hasItem("ROLE_ADMIN"));
     }
 
@@ -247,9 +247,9 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         Permission permission = new TestPermission(Access.GRANTED);
         userManager.createPermissionSet("ROLE_PROJECTMEMBER", permission);
         userManager.createPermissionSet("ROLE_MANAGER");
-        userManager.addSetToPermissionSet("ROLE_MANAGER", "ROLE_PROJECTMEMBER");
-        userManager.storeUserPermissionSet("admin2", "ROLE_MANAGER");
-        Collection<Permission> allUserPermissions = userManager.getAllUserPermissions("admin2");
+        userManager.addPermissionSetToPermissionSet("ROLE_MANAGER", "ROLE_PROJECTMEMBER");
+        userManager.addPermissionSetToUser("admin2", "ROLE_MANAGER");
+        Collection<Permission> allUserPermissions = userManager.getAllPermissionsForUser("admin2");
         assertThat(allUserPermissions, hasItem(permission));
     }
 

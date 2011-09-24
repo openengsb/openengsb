@@ -74,7 +74,7 @@ public abstract class UserEditPanel extends Panel {
     public UserEditPanel(String id, String username) throws UserNotFoundException {
         super(id);
         input.setUsername(username);
-        Collection<Permission> userPermissions = userManager.getUserPermissions(username);
+        Collection<Permission> userPermissions = userManager.getPermissionsForUser(username);
         Collection<PermissionInput> permissionInput =
             Collections2.transform(userPermissions, new Function<Permission, PermissionInput>() {
                 @Override
@@ -264,10 +264,10 @@ public abstract class UserEditPanel extends Panel {
             Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
             try {
                 if (p.getState() == State.NEW) {
-                    userManager.storeUserPermission(username, perm);
+                    userManager.addPermissionToUser(username, perm);
                 }
                 if (p.getState() == State.DELETED) {
-                    userManager.removeUserPermission(username, perm);
+                    userManager.removePermissionFromUser(username, perm);
                 }
             } catch (UserNotFoundException e) {
                 error(Throwables.getStackTraceAsString(e));
