@@ -46,6 +46,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
@@ -60,12 +61,16 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     /*
      * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
@@ -252,6 +257,14 @@ public abstract class AbstractExamTestHelper {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    protected void waitForUserDataInitializer() throws InterruptedException {
+        UserDataManager userDataManager = getOsgiService(UserDataManager.class);
+        while (userDataManager.getUserList().isEmpty()) {
+            LOGGER.warn("waiting for users to be initialized");
+            Thread.sleep(1000);
+        }
+    }
+
     public static Option[] baseConfiguration() throws Exception {
         String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
@@ -270,7 +283,8 @@ public abstract class AbstractExamTestHelper {
         Option[] mainOptions =
             new Option[]{
                 karafDistributionConfiguration().frameworkUrl(
-                    maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip").versionAsInProject()),
+                    maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
+                        .versionAsInProject()),
                 logLevel(realLogLevel),
                 editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
                 editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),

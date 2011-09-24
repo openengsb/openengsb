@@ -52,13 +52,10 @@ import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.common.util.MapAsDictionary;
 import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.BundleContext;
-
-import com.google.common.collect.ImmutableMap;
 
 public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
