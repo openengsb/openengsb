@@ -22,12 +22,12 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.openengsb.ui.api.UIAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +60,10 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
 
     @Override
     public Access checkAccess(String user, Object object) {
-        if (!(object instanceof GenericControlledObject)) {
+        if (!(object instanceof UIAction)) {
             return Access.ABSTAINED;
         }
-        GenericControlledObject actionData = (GenericControlledObject) object;
+        UIAction actionData = (UIAction) object;
         if (actionData.getSecurityAttributes() == null) {
             return Access.ABSTAINED;
         }
@@ -74,7 +74,7 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
         return Access.ABSTAINED;
     }
 
-    private boolean hasAccess(String user, final GenericControlledObject actionData) {
+    private boolean hasAccess(String user, final UIAction actionData) {
         Collection<WicketPermission> filtered;
         try {
             filtered = getWicketPermissions(user);
@@ -107,7 +107,7 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
         return false;
     }
 
-    private Collection<String> getRelevantComponentNames(GenericControlledObject actionData) {
+    private Collection<String> getRelevantComponentNames(UIAction actionData) {
         Collection<SecurityAttributeEntry> allAttributes = actionData.getSecurityAttributes();
         Collection<SecurityAttributeEntry> filtered =
             Collections2.filter(allAttributes, new Predicate<SecurityAttributeEntry>() {

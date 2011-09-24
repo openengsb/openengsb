@@ -17,7 +17,6 @@
 
 package org.openengsb.connector.wicketacl.internal;
 
-
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
@@ -30,9 +29,10 @@ public class WicketAclConnectorProvider extends AbstractConnectorProvider {
         builder.id(id);
         builder.name("UsernamePasswordAuthenticator.name").description("UsernamePasswordAuthenticator.description");
         builder.attribute(builder.newAttribute().id("attr").name("UsernamePasswordAuthenticator.attr")
-                .description("UsernamePasswordAuthenticator.attr.description").defaultValue("${connectorName.atr.defaultValue}")
-                .required()
-                .build());
+            .description("UsernamePasswordAuthenticator.attr.description")
+            .defaultValue("${connectorName.atr.defaultValue}")
+            .required()
+            .build());
         return builder.build();
     }
 

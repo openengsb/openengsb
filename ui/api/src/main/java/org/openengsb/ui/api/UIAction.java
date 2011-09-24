@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.api;
+package org.openengsb.ui.api;
 
 import java.util.Collection;
 import java.util.Map;
 
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 
-public class GenericControlledObject {
+public class UIAction {
 
     private Collection<SecurityAttributeEntry> securityAttributes;
 
@@ -29,24 +29,24 @@ public class GenericControlledObject {
 
     private Map<String, Object> metaData;
 
-    public GenericControlledObject() {
+    public UIAction() {
     }
 
-    public GenericControlledObject(Collection<SecurityAttributeEntry> securityAttributes) {
+    public UIAction(Collection<SecurityAttributeEntry> securityAttributes) {
         this.securityAttributes = securityAttributes;
     }
 
-    public GenericControlledObject(Collection<SecurityAttributeEntry> securityAttributes, String action) {
+    public UIAction(Collection<SecurityAttributeEntry> securityAttributes, String action) {
         this.securityAttributes = securityAttributes;
         this.action = action;
     }
 
-    public GenericControlledObject(Collection<SecurityAttributeEntry> securityAttributes, Map<String, Object> metaData) {
+    public UIAction(Collection<SecurityAttributeEntry> securityAttributes, Map<String, Object> metaData) {
         this.securityAttributes = securityAttributes;
         this.metaData = metaData;
     }
 
-    public GenericControlledObject(Collection<SecurityAttributeEntry> securityAttributes, String action,
+    public UIAction(Collection<SecurityAttributeEntry> securityAttributes, String action,
             Map<String, Object> metaData) {
         this.securityAttributes = securityAttributes;
         this.action = action;

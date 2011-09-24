@@ -30,7 +30,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +44,23 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.PermissionProvider;
 import org.openengsb.core.api.security.UserDataManager;
 import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.MapAsDictionary;
 import org.openengsb.core.security.internal.model.UserData;
-import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.osgi.framework.BundleContext;
 
-public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
+import com.google.common.collect.ImmutableMap;
+
+public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
     public static class TestPermission implements Permission {
         private String desiredResult;
@@ -85,20 +96,26 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             TestPermission other = (TestPermission) obj;
             if (desiredResult == null) {
-                if (other.desiredResult != null)
+                if (other.desiredResult != null) {
                     return false;
-            } else if (!desiredResult.equals(other.desiredResult))
+                }
+            } else if (!desiredResult.equals(other.desiredResult)) {
                 return false;
+            }
             return true;
         }
+
     }
 
     @Rule
@@ -130,6 +147,7 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         this.entityManager = entityManager;
     }
 
+    @SuppressWarnings("unchecked")
     private void setupUserManager() {
         final UserDataManagerImpl userManager = new UserDataManagerImpl();
         userManager.setEntityManager(entityManager);
@@ -151,6 +169,13 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
         this.userManager =
             (UserDataManager) Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class<?>[]{ UserDataManager.class }, invocationHandler);
+
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("permissionClass", (Object) TestPermission.class.getName());
+        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
+        };
+        registerService(permissionProvider, props, PermissionProvider.class);
+
     }
 
     @Test
@@ -255,5 +280,13 @@ public class UserDataManagerImplIT extends AbstractOpenEngSBTest {
 
     private void assertAttributeValue(List<Object> actual, Object... expected) {
         assertThat(actual, is(Arrays.asList(expected)));
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

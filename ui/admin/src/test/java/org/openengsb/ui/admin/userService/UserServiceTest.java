@@ -114,8 +114,9 @@ public class UserServiceTest extends AbstractUITest {
     public void testCreatePermission() {
         tester.startPage(UserEditPage.class);
         tester.debugComponentTrees();
-        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission", "onclick");
-        
+        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission",
+            "onclick");
+
     }
 
     @Test

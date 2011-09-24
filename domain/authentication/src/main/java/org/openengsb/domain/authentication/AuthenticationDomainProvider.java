@@ -19,6 +19,7 @@ package org.openengsb.domain.authentication;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
-public class AuthenticationDomainProvider extends AbstractDomainProvider<AuthenticationDomain, AuthenticationDomainEvents> {
+public class AuthenticationDomainProvider extends
+        AbstractDomainProvider<AuthenticationDomain, AuthenticationDomainEvents> {
 
 }

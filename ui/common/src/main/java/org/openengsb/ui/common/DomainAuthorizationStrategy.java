@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
-import org.openengsb.core.api.GenericControlledObject;
 import org.openengsb.core.api.security.SecurityAttribute;
 import org.openengsb.core.api.security.SecurityAttributeManager;
 import org.openengsb.core.api.security.SecurityAttributes;
@@ -33,6 +32,7 @@ import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SpringSecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.openengsb.ui.api.UIAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,8 +66,8 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
             return false;
         }
         String user = authentication.getUsername();
-        GenericControlledObject secureAction =
-            new GenericControlledObject(attributeList, arg1.getName(), ImmutableMap.of("component", (Object) arg0));
+        UIAction secureAction =
+            new UIAction(attributeList, arg1.getName(), ImmutableMap.of("component", (Object) arg0));
 
         Access checkAccess = authorizer.checkAccess(user, secureAction);
         if (checkAccess != Access.GRANTED) {
@@ -90,7 +90,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
         LOGGER.trace("security-attribute-annotation present on {}", componentClass);
 
-        return authorizer.checkAccess(user, new GenericControlledObject(getSecurityAttributes(componentClass))) == Access.GRANTED;
+        return authorizer.checkAccess(user, new UIAction(getSecurityAttributes(componentClass))) == Access.GRANTED;
     }
 
     private static Authentication getAuthenticatedUser() {

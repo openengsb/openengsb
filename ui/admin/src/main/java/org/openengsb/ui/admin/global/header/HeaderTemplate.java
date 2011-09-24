@@ -148,7 +148,8 @@ public class HeaderTemplate extends Panel {
      * should be displayed and authority defines who is authorized to see the link
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String... authority) {
+    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey,
+            String... authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
         addAuthorizationRoles(pageLabelLink, authority);
@@ -157,10 +158,10 @@ public class HeaderTemplate extends Panel {
     }
 
     private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String... authority) {
-        if(authority == null){
+        if (authority == null) {
             return;
         }
-        for(String a : authority){
+        for (String a : authority) {
             DomainAuthorizationStrategy.registerComponent(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
         }
     }

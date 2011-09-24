@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
 import org.openengsb.core.api.security.BundleAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class SecurityUtils {
+public final class SecurityUtils {
 
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -78,5 +78,8 @@ public class SecurityUtils {
 
     public static void executeWithSystemPermissions(Runnable task) {
         executor.execute(new RootRunnable(task));
+    }
+    
+    private SecurityUtils() {
     }
 }

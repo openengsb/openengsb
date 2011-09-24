@@ -19,6 +19,7 @@ package org.openengsb.domain.authorization;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
-public class AuthorizationDomainProvider extends AbstractDomainProvider<AuthorizationDomain, AuthorizationDomainEvents> {
+public class AuthorizationDomainProvider extends
+        AbstractDomainProvider<AuthorizationDomain, AuthorizationDomainEvents> {
 
 }
