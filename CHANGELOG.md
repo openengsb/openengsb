@@ -1,3 +1,19 @@
+openengsb-2.0.1 2011-09-24 
+--------------------------------------------
+
+This release does not fix any problems directly in the OpenEngSB Framework but updates three references with criticals
+bug fixes. Namely wicket (1.4.18), pax-wicket (0.7.3) and paxexam-karaf (0.1.1).
+
+### Details
+** Library Upgrade
+    * [OPENENGSB-2090] - Upgrade to labs-paxexam-karaf to 0.1.1
+    * [OPENENGSB-2098] - Upgrade to pax-wicket to 0.7.3
+    * [OPENENGSB-2099] - Upgrade to wicket to 1.4.18
+
+** Task
+    * [OPENENGSB-2052] - Release framework-2.0.1
+
+
 openengsb-2.0.0 2011-09-21 
 --------------------------------------------
 
