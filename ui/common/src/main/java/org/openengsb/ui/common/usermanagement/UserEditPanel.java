@@ -151,7 +151,6 @@ public abstract class UserEditPanel extends Panel {
                         return Lists.newArrayList(filtered);
                     }
                 };
-                // return new PropertyModel<List<PermissionInput>>(input, "permissions");
             }
 
             @Override
@@ -170,22 +169,6 @@ public abstract class UserEditPanel extends Panel {
 
         };
         permissionListContainer.add(permissionList);
-
-        // Component permissionList = new ListView<PermissionInput>("permissionList", permissionsModel) {
-        // private static final long serialVersionUID = -8712742630042478882L;
-        //
-        // @Override
-        // protected void populateItem(ListItem<PermissionInput> listitem) {
-        // PermissionInput modelObject = listitem.getModelObject();
-        // Permission permission = modelObject.toPermission();
-        // Label label = new Label("id", permission.toString());
-        // label.add(new SimpleAttributeModifier("class", "permission_" + modelObject.getState()));
-        // listitem.add(label);
-        //
-        // Label desc = new Label("description", permission.describe());
-        // listitem.add(desc);
-        // }
-        // };
 
         AjaxLink<Object> ajaxButton = new AjaxLink<Object>("createPermission") {
             private static final long serialVersionUID = 6887755633726845337L;
@@ -213,12 +196,10 @@ public abstract class UserEditPanel extends Panel {
                         }
                     };
                 createPermissionContainer.addOrReplace(realPermissionEditorPanel);
-                // permissionContentPanel.replace(realPermissionEditorPanel);
                 permissionContentPanel = realPermissionEditorPanel;
                 target.addComponent(createPermissionContainer);
-                // setVisible(false);
                 setEnabled(false);
-                // target.addComponent(this);
+                target.addComponent(this);
             }
         };
         permissionListContainer.add(ajaxButton);
@@ -241,6 +222,10 @@ public abstract class UserEditPanel extends Panel {
             return;
         }
         if (createMode) {
+            if (input.getPassword() == null) {
+                error(new StringResourceModel("passwordError", this, null).getString());
+                return;
+            }
             try {
                 userManager.createUser(username);
             } catch (UserExistsException e1) {
@@ -249,7 +234,6 @@ public abstract class UserEditPanel extends Panel {
             }
         }
         if (input.getPassword() != null) {
-            // TODO require password
             try {
                 userManager.setUserCredentials(username, "password", input.getPassword());
             } catch (UserNotFoundException e) {
