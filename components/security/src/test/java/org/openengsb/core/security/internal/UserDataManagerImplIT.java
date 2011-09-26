@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.AbstractPermissionProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.PermissionProvider;
+import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;

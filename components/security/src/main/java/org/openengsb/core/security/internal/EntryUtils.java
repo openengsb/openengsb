@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.PermissionProvider;
+import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.BeanUtils2;

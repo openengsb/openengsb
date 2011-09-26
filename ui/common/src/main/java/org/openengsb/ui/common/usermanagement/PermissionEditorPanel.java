@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.PermissionProvider;
+import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;

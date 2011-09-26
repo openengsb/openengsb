@@ -47,7 +47,7 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.api.PermissionProvider">
+  <service interface="org.openengsb.core.api.security.PermissionProvider">
     <service-properties>
       <entry key="connector" value="serviceacl" />
       <entry key="permissionClass" value="org.openengsb.connector.serviceacl.ServicePermission" />
