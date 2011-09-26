@@ -20,6 +20,7 @@ package org.openengsb.domain.example;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SpecialAccessControl;
 import org.openengsb.domain.example.event.LogEvent;
 
 /**
@@ -31,6 +32,7 @@ import org.openengsb.domain.example.event.LogEvent;
 public interface ExampleDomain extends Domain {
 
     @SecurityAttribute("something")
+    @SpecialAccessControl("example-domain-prefix")
     @Raises(LogEvent.class)
     String doSomething(String message);
 

@@ -39,4 +39,9 @@ public class DummyServiceImpl extends AbstractOpenEngSBService implements DummyS
     public int publicTest() {
         return 21;
     }
+
+    @Override
+    public void specialMethod(String arg) {
+
+    }
 }

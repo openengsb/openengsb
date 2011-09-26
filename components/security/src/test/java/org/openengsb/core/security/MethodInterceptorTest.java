@@ -23,22 +23,30 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.security.SpecialAccessControlHandler;
 import org.openengsb.core.api.security.service.AccessDeniedException;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.SecurityInterceptor;
-import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class MethodInterceptorTest extends AbstractOpenEngSBTest {
+public class MethodInterceptorTest extends AbstractOsgiMockServiceTest {
 
     private static final String DEFAULT_USER = "foo";
     private SecurityInterceptor interceptor;
@@ -77,9 +85,51 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
+    @Test
+    public void testSpecialHandler_shouldGrant() throws Exception {
+        authenticate(DEFAULT_USER, "password");
+        when(authorizer.checkAccess(eq("admin"), any(MethodInvocation.class))).thenReturn(Access.ABSTAINED);
+        SpecialAccessControlHandler handler = createParamAccessHandler("x");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("controlHandler.id", "special-test");
+        registerService(handler, props, SpecialAccessControlHandler.class);
+
+        service.specialMethod("x");
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testSpecialHandler_shouldDeny() throws Exception {
+        authenticate(DEFAULT_USER, "password");
+        when(authorizer.checkAccess(eq("admin"), any(MethodInvocation.class))).thenReturn(Access.ABSTAINED);
+        SpecialAccessControlHandler handler = createParamAccessHandler("y");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("controlHandler.id", "special-test");
+        registerService(handler, props, SpecialAccessControlHandler.class);
+
+        service.specialMethod("x");
+    }
+
+    private SpecialAccessControlHandler createParamAccessHandler(final String... allowed) {
+        return new SpecialAccessControlHandler() {
+            @Override
+            public boolean isAuthorized(String user, MethodInvocation invocation) {
+                String arg = (String) invocation.getArguments()[0];
+                return ArrayUtils.contains(allowed, arg);
+            }
+        };
+    }
+
     private void authenticate(String user, String password) {
         Authentication authentication =
             new UsernamePasswordAuthenticationToken(user, password, new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

@@ -20,12 +20,16 @@ package org.openengsb.core.security.internal;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
+import org.openengsb.core.api.security.SpecialAccessControlHandler;
+import org.openengsb.core.api.security.annotation.SpecialAccessControl;
 import org.openengsb.core.api.security.service.AccessDeniedException;
+import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.BundleAuthenticationToken;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -48,12 +52,24 @@ public class SecurityInterceptor implements MethodInterceptor {
         }
         String username = authentication.getName();
         Access decisionResult = authorizer.checkAccess(username, mi);
-        if (decisionResult != Access.GRANTED) {
+        if (decisionResult == Access.DENIED) {
             LOGGER.warn("Access denied because resul was {}", decisionResult);
             throw new AccessDeniedException();
         }
-        LOGGER.debug("Access was granted");
-        return mi.proceed();
+        if (decisionResult == Access.GRANTED) {
+            return mi.proceed();
+        }
+        SpecialAccessControl annotation = AnnotationUtils.findAnnotation(mi.getMethod(), SpecialAccessControl.class);
+        if (annotation != null) {
+            SpecialAccessControlHandler service =
+                (SpecialAccessControlHandler) OpenEngSBCoreServices.getServiceUtilsService().getService(
+                    String.format("(controlHandler.id=%s)", annotation.value()));
+            if (service.isAuthorized(username, mi)) {
+                return mi.proceed();
+            }
+        }
+        LOGGER.warn("Access denied because resul was {}", decisionResult);
+        throw new AccessDeniedException();
     }
 
     public void setAuthorizer(AuthorizationDomain authorizer) {

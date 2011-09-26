@@ -15,21 +15,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.api.security;
 
-import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.security.annotation.Public;
-import org.openengsb.core.api.security.annotation.SpecialAccessControl;
+import org.aopalliance.intercept.MethodInvocation;
 
-public interface DummyService extends OpenEngSBService {
+public interface SpecialAccessControlHandler {
 
-    int getTheAnswerToLifeTheUniverseAndEverything();
+    boolean isAuthorized(String user, MethodInvocation invocation);
 
-    int test();
-
-    @Public
-    int publicTest();
-
-    @SpecialAccessControl("special-test")
-    void specialMethod(String arg);
 }

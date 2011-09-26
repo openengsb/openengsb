@@ -53,7 +53,25 @@
     <property name="workflowService" ref="workflowService" />
   </bean>
 
+  <service interface="org.openengsb.core.api.security.PermissionProvider">
+    <service-properties>
+      <entry key="permissionClass" value="org.openengsb.domain.example.ExamplePermission" />
+    </service-properties>
+    <bean class="org.openengsb.domain.example.ExamplePermissionProvider" />
+  </service>
+
+  <service interface="org.openengsb.core.api.security.SpecialAccessControlHandler">
+    <service-properties>
+      <entry key="controlHandler.id" value="example-domain-prefix" />
+    </service-properties>
+    <bean class="org.openengsb.domain.example.ExampleAccessControlHandler">
+      <property name="userManager" ref="userManager" />
+    </bean>
+  </service>
+
   <reference id="contextService" interface="org.openengsb.core.api.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <reference id="edbService" interface="org.openengsb.core.api.edb.EngineeringDatabaseService" />
+  <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+
 </blueprint>

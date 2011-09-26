@@ -15,21 +15,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.api.security.annotation;
 
-import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.security.annotation.Public;
-import org.openengsb.core.api.security.annotation.SpecialAccessControl;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface DummyService extends OpenEngSBService {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface SpecialAccessControl {
 
-    int getTheAnswerToLifeTheUniverseAndEverything();
+    String value();
 
-    int test();
-
-    @Public
-    int publicTest();
-
-    @SpecialAccessControl("special-test")
-    void specialMethod(String arg);
 }

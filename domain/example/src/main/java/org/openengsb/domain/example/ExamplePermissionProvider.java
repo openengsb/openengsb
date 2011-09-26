@@ -15,21 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.domain.example;
 
-import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.security.annotation.Public;
-import org.openengsb.core.api.security.annotation.SpecialAccessControl;
+import org.openengsb.core.api.AbstractPermissionProvider;
 
-public interface DummyService extends OpenEngSBService {
+public class ExamplePermissionProvider extends AbstractPermissionProvider {
 
-    int getTheAnswerToLifeTheUniverseAndEverything();
+    @SuppressWarnings("unchecked")
+    public ExamplePermissionProvider() {
+        super(ExamplePermission.class);
+    }
 
-    int test();
-
-    @Public
-    int publicTest();
-
-    @SpecialAccessControl("special-test")
-    void specialMethod(String arg);
 }
