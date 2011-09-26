@@ -30,7 +30,7 @@ import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.SecurityAttributeManager;
-import org.openengsb.core.api.security.annotation.Public;
+import org.openengsb.core.api.security.annotation.Anonymous;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
@@ -73,7 +73,7 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
             return Access.ABSTAINED;
         }
         MethodInvocation methodInvocation = (MethodInvocation) object;
-        Public public1 = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), Public.class);
+        Anonymous public1 = AnnotationUtils.findAnnotation(methodInvocation.getMethod(), Anonymous.class);
         if (public1 != null) {
             return Access.GRANTED;
         }

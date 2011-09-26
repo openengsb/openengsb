@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.security.annotation;
 
-package org.openengsb.core.api;
-
-import org.openengsb.core.api.security.annotation.Anonymous;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
+ * Allows public access to the annotated entity. No authentication is required.
  */
-public interface Domain extends OpenEngSBService {
-
-    /**
-     * return the current state of the service,
-     *
-     * @see org.openengsb.core.api.AliveState
-     */
-    @Anonymous
-    AliveState getAliveState();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
+public @interface Anonymous {
 
 }

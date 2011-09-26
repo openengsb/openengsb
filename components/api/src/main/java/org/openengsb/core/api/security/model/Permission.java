@@ -16,8 +16,30 @@
  */
 package org.openengsb.core.api.security.model;
 
+/**
+ * Baseclass for Permissions used for Access control in OpenEngSB.
+ *
+ * Permissions can be stored and managed using a {@link org.openengsb.core.api.security.service.UserDataManager}
+ * service. In order to save and read permissions again, a permission must be designed as a plain Java Object. All
+ * property types must fulfill certain requirements:
+ * <ul>
+ * <li>a constructor with exactly one argument of type {@link String}</li>
+ * <li>the {@link Object#toString()} must create a string-representation that can be used with that constructor the
+ * recreate the object</li>
+ * </ul>
+ * This works fine with all wrapped primitive types.
+ *
+ * Collections of values are also allowed. However the types of the values underly the same constraints as single
+ * values.
+ */
 public interface Permission {
 
+    /**
+     * return a description of what this permission object permits a user to do (filling in what the values of the
+     * argument mean).
+     *
+     * Example: Allows the user to perform the operation "doSomething" on all services of type "example".
+     */
     String describe();
 
 }

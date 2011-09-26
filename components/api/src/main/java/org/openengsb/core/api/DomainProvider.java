@@ -20,7 +20,7 @@ package org.openengsb.core.api;
 import java.util.List;
 
 import org.openengsb.core.api.l10n.LocalizableString;
-import org.openengsb.core.api.security.annotation.Public;
+import org.openengsb.core.api.security.annotation.Anonymous;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the OpenEngSB has to create an implementation
@@ -31,19 +31,19 @@ public interface DomainProvider {
     /**
      * Returns the global identifier for this domain. This should be a short and unique human-readable id (e.g. "scm")
      */
-    @Public
+    @Anonymous
     String getId();
 
     /**
      * Returns the localizable name.
      */
-    @Public
+    @Anonymous
     LocalizableString getName();
 
     /**
      * Returns the localizable description.
      */
-    @Public
+    @Anonymous
     LocalizableString getDescription();
 
     /**

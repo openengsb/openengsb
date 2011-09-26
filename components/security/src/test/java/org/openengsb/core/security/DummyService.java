@@ -18,7 +18,7 @@
 package org.openengsb.core.security;
 
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.security.annotation.Public;
+import org.openengsb.core.api.security.annotation.Anonymous;
 
 public interface DummyService extends OpenEngSBService {
 
@@ -26,6 +26,6 @@ public interface DummyService extends OpenEngSBService {
 
     int test();
 
-    @Public
+    @Anonymous
     int publicTest();
 }

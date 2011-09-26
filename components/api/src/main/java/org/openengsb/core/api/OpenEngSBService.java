@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.security.annotation.Public;
+import org.openengsb.core.api.security.annotation.Anonymous;
 
 /**
  * Every service published within the OpenEngSB context creates an instanceId, which identifies itself unique in the
@@ -29,7 +29,7 @@ public interface OpenEngSBService {
     /**
      * Each created service in the OpenEngSB has its own unique id which could be resolved from code by this method.
      */
-    @Public
+    @Anonymous
     String getInstanceId();
 
 }

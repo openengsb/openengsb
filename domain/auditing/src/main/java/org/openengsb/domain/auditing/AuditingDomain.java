@@ -21,14 +21,14 @@ import java.util.List;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.security.annotation.Public;
+import org.openengsb.core.api.security.annotation.Anonymous;
 
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.
  */
 public interface AuditingDomain extends Domain {
 
-    @Public
+    @Anonymous
     void audit(Event event);
 
     List<Event> getAllAudits();

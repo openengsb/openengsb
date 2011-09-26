@@ -21,6 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Assigns a security-attribute to the target entity. These attributes are used by Access control connectors to
+ * determine wheter the user should be granted access.
+ * 
+ * It is also helpful for creating human readable names for service-interfaces, domain-interfaces, ...
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
 public @interface SecurityAttribute {

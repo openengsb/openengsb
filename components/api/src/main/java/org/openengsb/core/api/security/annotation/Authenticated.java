@@ -21,8 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Allows access to the annotated entity for any authenticated user.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
-public @interface Public {
+public @interface Authenticated {
 
 }
