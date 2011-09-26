@@ -577,4 +577,17 @@ table.OverviewPanel td.filter-td select {
 	display: block;
 	width: 250px;
 }
-	
+
+/* SERVICE LIST PANEL COLORS */
+
+#aliveStateOffline {
+color: red;
+}
+
+#aliveStateOnline {
+color: green;
+}
+
+#aliveStateOther {
+color: yellow;
+}
