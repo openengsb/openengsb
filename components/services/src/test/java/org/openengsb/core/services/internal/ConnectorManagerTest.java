@@ -31,6 +31,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -49,8 +54,8 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.services.internal.persistence.connector.ConnectorJPAPersistenceBackendService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
@@ -61,6 +66,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorManager serviceManager;
     private ConnectorRegistrationManagerImpl serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
+    private EntityManager em;
 
     @Before
     public void setUp() throws Exception {
@@ -73,12 +79,16 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         createServiceManager();
     }
 
+    @After
+    public void tearDown() {
+        em.close();
+    }
+
     private void registerConfigPersistence() {
-        final CorePersistenceServiceBackend<String> persistenceBackend = new CorePersistenceServiceBackend<String>();
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
-        persistenceBackend.setPersistenceManager(persistenceManager);
-        persistenceBackend.setBundleContext(bundleContext);
-        persistenceBackend.init();
+        final ConnectorJPAPersistenceBackendService persistenceBackend = new ConnectorJPAPersistenceBackendService();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("connector-test");
+        em = emf.createEntityManager();
+        persistenceBackend.setEntityManager(em);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, Constants.CONFIG_CONNECTOR);
         props.put(Constants.BACKEND_ID, "dummy");
