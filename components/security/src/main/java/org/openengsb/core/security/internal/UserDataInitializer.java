@@ -19,9 +19,9 @@ package org.openengsb.core.security.internal;
 
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.connector.wicketacl.WicketPermission;
-import org.openengsb.core.api.security.PermissionSetAlreadyExistsException;
-import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.UserExistsException;
+import org.openengsb.core.api.security.service.PermissionSetAlreadyExistsException;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.slf4j.Logger;

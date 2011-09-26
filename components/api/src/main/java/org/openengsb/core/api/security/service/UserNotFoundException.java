@@ -14,25 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.security.service;
 
-package org.openengsb.core.api.security;
+public class UserNotFoundException extends UncheckedUserManagementException {
 
-public class UncheckedUserManagementException extends RuntimeException {
+    private static final long serialVersionUID = 6901506350918489164L;
 
-    private static final long serialVersionUID = 3202406779714705904L;
-
-    public UncheckedUserManagementException() {
+    public UserNotFoundException() {
     }
 
-    public UncheckedUserManagementException(String s) {
-        super(s);
+    public UserNotFoundException(String message, Throwable cause) {
     }
 
-    public UncheckedUserManagementException(String s, Throwable throwable) {
-        super(s, throwable);
+    public UserNotFoundException(String message) {
+        super(message);
     }
 
-    public UncheckedUserManagementException(Throwable throwable) {
-        super(throwable);
+    public UserNotFoundException(Throwable cause) {
+        super(cause);
     }
+
 }

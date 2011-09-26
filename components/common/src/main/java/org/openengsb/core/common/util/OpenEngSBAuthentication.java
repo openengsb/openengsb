@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.common;
+package org.openengsb.core.common.util;
 
 import org.openengsb.core.api.security.model.Authentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

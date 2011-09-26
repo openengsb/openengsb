@@ -25,7 +25,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.service.UserDataManager;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import com.google.common.collect.Lists;

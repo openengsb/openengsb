@@ -15,25 +15,27 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.core.api.security.service;
 
-public class PermissionSetNotFoundException extends UncheckedUserManagementException {
 
-    private static final long serialVersionUID = 694237122926139415L;
+public class NoSuchCredentialsException extends UncheckedUserManagementException {
 
-    public PermissionSetNotFoundException() {
+    private static final long serialVersionUID = -8046285400069147405L;
+
+    public NoSuchCredentialsException() {
+        super();
     }
 
-    public PermissionSetNotFoundException(String message) {
-        super(message);
+    public NoSuchCredentialsException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 
-    public PermissionSetNotFoundException(Throwable cause) {
-        super(cause);
+    public NoSuchCredentialsException(String s) {
+        super(s);
     }
 
-    public PermissionSetNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public NoSuchCredentialsException(Throwable throwable) {
+        super(throwable);
     }
 
 }

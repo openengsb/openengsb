@@ -24,11 +24,11 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.openengsb.core.api.security.PermissionSetNotFoundException;
-import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.security.service.UserExistsException;
+import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.util.CollectionUtils2;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;

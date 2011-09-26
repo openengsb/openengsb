@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.core.api.security.service;
 
-public class UserExistsException extends UserManagementException {
 
-    private static final long serialVersionUID = 3741302495780303378L;
+public class PermissionSetNotFoundException extends UncheckedUserManagementException {
 
-    public UserExistsException() {
+    private static final long serialVersionUID = 694237122926139415L;
+
+    public PermissionSetNotFoundException() {
     }
 
-    public UserExistsException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UserExistsException(String message) {
+    public PermissionSetNotFoundException(String message) {
         super(message);
     }
 
-    public UserExistsException(Throwable cause) {
+    public PermissionSetNotFoundException(Throwable cause) {
         super(cause);
+    }
+
+    public PermissionSetNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

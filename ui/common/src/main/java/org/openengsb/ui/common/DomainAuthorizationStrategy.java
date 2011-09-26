@@ -29,7 +29,7 @@ import org.openengsb.core.api.security.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;

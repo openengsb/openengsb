@@ -14,26 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.api.security;
 
-public class AccessDeniedException extends RuntimeException {
+package org.openengsb.core.api.security.service;
 
-    private static final long serialVersionUID = -4110570969981216915L;
+public class UserManagementException extends Exception {
 
-    public AccessDeniedException() {
-        super();
+    private static final long serialVersionUID = 269605012169642052L;
+
+    public UserManagementException() {
     }
 
-    public AccessDeniedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public AccessDeniedException(String message) {
+    public UserManagementException(String message) {
         super(message);
     }
 
-    public AccessDeniedException(Throwable cause) {
+    public UserManagementException(Throwable cause) {
         super(cause);
+    }
+
+    public UserManagementException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

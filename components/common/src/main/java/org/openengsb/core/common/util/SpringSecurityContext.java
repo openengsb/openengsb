@@ -14,27 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.common.util;
 
-package org.openengsb.core.api.security;
+import org.springframework.security.core.Authentication;
 
-public class NoSuchCredentialsException extends UncheckedUserManagementException {
+public final class SpringSecurityContext {
 
-    private static final long serialVersionUID = -8046285400069147405L;
-
-    public NoSuchCredentialsException() {
-        super();
+    public static Authentication wrapToken(org.openengsb.core.api.security.model.Authentication authentication) {
+        return new OpenEngSBAuthentication(authentication);
     }
 
-    public NoSuchCredentialsException(String s, Throwable throwable) {
-        super(s, throwable);
+    public static org.openengsb.core.api.security.model.Authentication unwrapToken(Authentication authentication) {
+        if (authentication instanceof OpenEngSBAuthentication) {
+            return ((OpenEngSBAuthentication) authentication).getAuthentication();
+        }
+        return null;
     }
 
-    public NoSuchCredentialsException(String s) {
-        super(s);
-    }
-
-    public NoSuchCredentialsException(Throwable throwable) {
-        super(throwable);
+    protected SpringSecurityContext() {
     }
 
 }

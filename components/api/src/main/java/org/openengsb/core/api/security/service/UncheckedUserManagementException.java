@@ -14,24 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.common;
 
-import org.springframework.security.core.Authentication;
+package org.openengsb.core.api.security.service;
 
-public final class SpringSecurityContext {
+public class UncheckedUserManagementException extends RuntimeException {
 
-    public static Authentication wrapToken(org.openengsb.core.api.security.model.Authentication authentication) {
-        return new OpenEngSBAuthentication(authentication);
+    private static final long serialVersionUID = 3202406779714705904L;
+
+    public UncheckedUserManagementException() {
     }
 
-    public static org.openengsb.core.api.security.model.Authentication unwrapToken(Authentication authentication) {
-        if (authentication instanceof OpenEngSBAuthentication) {
-            return ((OpenEngSBAuthentication) authentication).getAuthentication();
-        }
-        return null;
+    public UncheckedUserManagementException(String s) {
+        super(s);
     }
 
-    protected SpringSecurityContext() {
+    public UncheckedUserManagementException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 
+    public UncheckedUserManagementException(Throwable throwable) {
+        super(throwable);
+    }
 }

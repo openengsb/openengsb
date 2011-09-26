@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.security.service.UserExistsException;
+import org.openengsb.core.api.security.service.UserNotFoundException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;

@@ -19,9 +19,9 @@ package org.openengsb.core.security.internal;
 import java.util.Collection;
 
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.domain.authorization.AuthorizationDomain;

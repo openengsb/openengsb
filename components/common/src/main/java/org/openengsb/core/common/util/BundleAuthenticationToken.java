@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.core.common.util;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 

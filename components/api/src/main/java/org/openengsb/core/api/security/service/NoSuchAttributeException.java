@@ -15,18 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.security;
+package org.openengsb.core.api.security.service;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * When annotated methods are invoked, the roles in the value are added to the list of authorized authorities
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface AuthorizedRoles {
-    String[] value();
+public class NoSuchAttributeException extends UserManagementException {
+
+    private static final long serialVersionUID = 5068513969199836581L;
+
+    public NoSuchAttributeException() {
+    }
+
+    public NoSuchAttributeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NoSuchAttributeException(String message) {
+        super(message);
+    }
+
+    public NoSuchAttributeException(Throwable cause) {
+        super(cause);
+    }
+
 }

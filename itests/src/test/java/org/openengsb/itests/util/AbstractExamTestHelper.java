@@ -46,7 +46,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;

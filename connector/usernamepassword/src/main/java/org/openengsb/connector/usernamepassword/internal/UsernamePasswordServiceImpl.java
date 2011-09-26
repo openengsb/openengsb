@@ -19,11 +19,11 @@ package org.openengsb.connector.usernamepassword.internal;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.security.UserDataManager;
-import org.openengsb.core.api.security.UserNotFoundException;
 import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;

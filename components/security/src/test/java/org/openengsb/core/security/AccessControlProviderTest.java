@@ -36,7 +36,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;

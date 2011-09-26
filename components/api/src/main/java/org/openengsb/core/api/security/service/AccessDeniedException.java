@@ -14,25 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.api.security.service;
 
-package org.openengsb.core.api.security;
+public class AccessDeniedException extends RuntimeException {
 
-public class NoSuchAttributeException extends UserManagementException {
+    private static final long serialVersionUID = -4110570969981216915L;
 
-    private static final long serialVersionUID = 5068513969199836581L;
-
-    public NoSuchAttributeException() {
+    public AccessDeniedException() {
+        super();
     }
 
-    public NoSuchAttributeException(String message, Throwable cause) {
+    public AccessDeniedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public NoSuchAttributeException(String message) {
+    public AccessDeniedException(String message) {
         super(message);
     }
 
-    public NoSuchAttributeException(Throwable cause) {
+    public AccessDeniedException(Throwable cause) {
         super(cause);
     }
 

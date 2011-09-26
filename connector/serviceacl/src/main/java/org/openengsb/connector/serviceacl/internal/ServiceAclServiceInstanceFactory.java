@@ -20,7 +20,7 @@ package org.openengsb.connector.serviceacl.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.security.UserDataManager;
+import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
 public class ServiceAclServiceInstanceFactory extends

@@ -16,7 +16,7 @@
  */
 package org.openengsb.ui.admin;
 
-import org.openengsb.core.common.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
