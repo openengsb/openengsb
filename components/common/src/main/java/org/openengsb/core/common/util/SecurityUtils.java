@@ -16,13 +16,27 @@
  */
 package org.openengsb.core.common.util;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang.ClassUtils;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttributes;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public final class SecurityUtils {
 
@@ -75,10 +89,77 @@ public final class SecurityUtils {
         }
     }
 
+    public static Collection<SecurityAttributeEntry> getSecurityAttributesFromClass(
+            Class<?> componentClass) {
+        SecurityAttribute annotation = componentClass.getAnnotation(SecurityAttribute.class);
+        if (annotation != null) {
+            return Arrays.asList(convertAnnotationToEntry(annotation));
+        }
+        SecurityAttributes annotation2 = componentClass.getAnnotation(SecurityAttributes.class);
+        if (annotation2 != null) {
+            Collection<SecurityAttributeEntry> result = Lists.newArrayList();
+            for (SecurityAttribute a : annotation2.value()) {
+                result.add(convertAnnotationToEntry(a));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    public static Collection<SecurityAttributeEntry> getSecurityAttributesForMethod(Method method) {
+        Collection<SecurityAttributeEntry> result = Sets.newHashSet();
+        @SuppressWarnings("unchecked")
+        List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(method.getDeclaringClass());
+        allInterfaces.add(method.getDeclaringClass());
+        for (Class<?> interfaze : allInterfaces) {
+            Method method2;
+            try {
+                method2 = interfaze.getMethod(method.getName(), method.getParameterTypes());
+
+            } catch (NoSuchMethodException e) {
+                continue;
+            }
+            for (SecurityAttribute a : findAllSecurityAttributeAnnotations(method2)) {
+                result.add(new SecurityAttributeEntry(a.key(), a.value()));
+            }
+        }
+        return result;
+    }
+
+    public static Collection<String> getServiceInstanceIds(Collection<SecurityAttributeProvider> providers,
+            Object service) {
+        Collection<String> result = new ArrayList<String>();
+        for (SecurityAttributeProvider p : providers) {
+            Collection<SecurityAttributeEntry> attribute = p.getAttribute(service);
+            for (SecurityAttributeEntry entry : attribute) {
+                if ("name".equals(entry.getKey())) {
+                    result.add(entry.getValue());
+                }
+            }
+        }
+        return result;
+    }
+
+    private static SecurityAttributeEntry convertAnnotationToEntry(SecurityAttribute annotation) {
+        return new SecurityAttributeEntry(annotation.key(), annotation.value());
+    }
+
     public static void executeWithSystemPermissions(Runnable task) {
         executor.execute(new RootRunnable(task));
     }
-    
+
+    public static SecurityAttribute[] findAllSecurityAttributeAnnotations(AnnotatedElement element) {
+        SecurityAttribute annotation = element.getAnnotation(SecurityAttribute.class);
+        if (annotation != null) {
+            return new SecurityAttribute[]{ annotation };
+        }
+        SecurityAttributes annotations = element.getAnnotation(SecurityAttributes.class);
+        if (annotations == null) {
+            return new SecurityAttribute[0];
+        }
+        return annotations.value();
+    }
+
     private SecurityUtils() {
     }
 }

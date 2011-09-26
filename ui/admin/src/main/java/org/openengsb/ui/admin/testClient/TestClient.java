@@ -29,6 +29,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -461,8 +462,19 @@ public class TestClient extends BasePage {
             Object result = m.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
             if (!m.getReturnType().equals(void.class)) {
-                info("Result: " + result);
-                LOGGER.info("result: {}", result);
+                String resultString;
+                if (m.getReturnType().isArray()) {
+                    if (result instanceof byte[]) {
+                        resultString = new String((byte[]) result);
+                    } else {
+                        resultString = ArrayUtils.toString(result);
+                    }
+                } else {
+                    resultString = result.toString();
+                }
+
+                info("Result: " + resultString);
+                LOGGER.info("result: {}", resultString);
             }
         } catch (IllegalAccessException e) {
             handleExceptionWithFeedback(e);
