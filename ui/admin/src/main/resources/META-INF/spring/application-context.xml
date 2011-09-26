@@ -69,7 +69,7 @@
   <osgi:reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
     filter="(location.root=authentication-root)" />
 
-  <osgi:reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
+  <osgi:reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
 
   <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
     lazy-init="false">

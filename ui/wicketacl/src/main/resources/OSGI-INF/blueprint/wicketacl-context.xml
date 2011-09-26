@@ -47,7 +47,7 @@
     </bean>
   </service>
 
-  <reference id="userManager" interface="org.openengsb.core.api.security.UserDataManager" />
+  <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
 
   <service interface="org.openengsb.core.api.security.PermissionProvider">
     <service-properties>

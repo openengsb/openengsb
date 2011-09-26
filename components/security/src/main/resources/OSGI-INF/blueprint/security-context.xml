@@ -26,7 +26,7 @@
     <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
-  <service interface="org.openengsb.core.api.security.UserDataManager">
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
     <ref component-id="userManager" />
   </service>
 
