@@ -32,8 +32,9 @@ public abstract class AbstractPermissionProvider implements PermissionProvider {
 
     protected final Map<String, Class<? extends Permission>> supported;
 
-    protected AbstractPermissionProvider(Class<? extends Permission>... classes) {
+    protected AbstractPermissionProvider(Class<? extends Permission> first, Class<? extends Permission>... classes) {
         Map<String, Class<? extends Permission>> map = Maps.newHashMap();
+        map.put(first.getName(), first);
         for (Class<? extends Permission> p : classes) {
             map.put(p.getName(), p);
         }
