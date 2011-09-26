@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.security.Public;
+import org.openengsb.core.api.security.annotation.Public;
 
 /**
  * Every service published within the OpenEngSB context creates an instanceId, which identifies itself unique in the

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.security.Public;
+import org.openengsb.core.api.security.annotation.Public;
 
 /**
  * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.

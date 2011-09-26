@@ -18,7 +18,7 @@
 package org.openengsb.core.security;
 
 import org.openengsb.core.api.OpenEngSBService;
-import org.openengsb.core.api.security.Public;
+import org.openengsb.core.api.security.annotation.Public;
 
 public interface DummyService extends OpenEngSBService {
 

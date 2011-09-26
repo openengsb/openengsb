@@ -18,7 +18,7 @@
 package org.openengsb.ui.admin.userService;
 
 import org.apache.wicket.PageParameters;
-import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.usermanagement.UserEditPanel;

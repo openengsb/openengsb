@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.security.Public;
+import org.openengsb.core.api.security.annotation.Public;
 
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.

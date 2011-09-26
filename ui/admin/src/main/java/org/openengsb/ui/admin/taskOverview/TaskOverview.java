@@ -19,7 +19,7 @@ package org.openengsb.ui.admin.taskOverview;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;

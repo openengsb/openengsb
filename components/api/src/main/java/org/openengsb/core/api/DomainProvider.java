@@ -20,7 +20,7 @@ package org.openengsb.core.api;
 import java.util.List;
 
 import org.openengsb.core.api.l10n.LocalizableString;
-import org.openengsb.core.api.security.Public;
+import org.openengsb.core.api.security.annotation.Public;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the OpenEngSB has to create an implementation

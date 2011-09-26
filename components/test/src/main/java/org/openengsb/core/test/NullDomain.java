@@ -19,7 +19,7 @@ package org.openengsb.core.test;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
-import org.openengsb.core.api.security.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 
 @SecurityAttribute("NULL")
 public interface NullDomain extends Domain {
