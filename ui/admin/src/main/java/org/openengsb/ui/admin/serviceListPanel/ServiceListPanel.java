@@ -95,15 +95,15 @@ public class ServiceListPanel extends Panel {
                 item.add(new Label("service.name", item.getModelObject().getInstanceId()));
                 item.add(new Label("service.state", item.getModelObject().aliveState.name()));
                 switch (item.getModelObject().aliveState) {
-                case OFFLINE:
-                    item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOffline"));
-                    break;
-                case ONLINE:
-                    item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOnline"));
-                    break;
-                default:
-                    item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOther"));
-                    break;
+                    case OFFLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOffline"));
+                        break;
+                    case ONLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOnline"));
+                        break;
+                    default:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOther"));
+                        break;
                 }
             }
         });
