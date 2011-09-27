@@ -21,7 +21,6 @@ import org.openengsb.core.api.AbstractPermissionProvider;
 
 public class ServicePermissionProvider extends AbstractPermissionProvider {
 
-    @SuppressWarnings("unchecked")
     public ServicePermissionProvider() {
         super(ServicePermission.class);
     }

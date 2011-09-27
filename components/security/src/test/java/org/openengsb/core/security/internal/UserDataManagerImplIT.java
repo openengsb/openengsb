@@ -144,7 +144,6 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         this.entityManager = entityManager;
     }
 
-    @SuppressWarnings("unchecked")
     private void setupUserManager() {
         final UserDataManagerImpl userManager = new UserDataManagerImpl();
         userManager.setEntityManager(entityManager);
@@ -168,7 +167,7 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
                 new Class<?>[]{ UserDataManager.class }, invocationHandler);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("permissionClass", (Object) TestPermission.class.getName());
+        props.put("permissionClass", TestPermission.class.getName());
         PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
         };
         registerService(permissionProvider, props, PermissionProvider.class);

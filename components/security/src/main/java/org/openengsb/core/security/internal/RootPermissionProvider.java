@@ -21,7 +21,6 @@ import org.openengsb.core.security.internal.model.RootPermission;
 
 public class RootPermissionProvider extends AbstractPermissionProvider {
 
-    @SuppressWarnings("unchecked")
     public RootPermissionProvider() {
         super(RootPermission.class);
     }

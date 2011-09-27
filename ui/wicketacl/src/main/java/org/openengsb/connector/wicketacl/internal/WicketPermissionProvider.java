@@ -21,7 +21,6 @@ import org.openengsb.core.api.AbstractPermissionProvider;
 
 public class WicketPermissionProvider extends AbstractPermissionProvider {
 
-    @SuppressWarnings("unchecked")
     public WicketPermissionProvider() {
         super(WicketPermission.class);
     }

@@ -25,19 +25,28 @@ import org.openengsb.core.api.security.model.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+/**
+ * Helps to provide a Simple PermissionProvider.
+ * 
+ * Just derive this class and add all permission-classes to the super-call in the default-constructor
+ */
 public abstract class AbstractPermissionProvider implements PermissionProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPermissionProvider.class);
 
     protected final Map<String, Class<? extends Permission>> supported;
 
-    protected AbstractPermissionProvider(Class<? extends Permission> first, Class<? extends Permission>... classes) {
+    protected AbstractPermissionProvider(Class<?>... classes) {
         Map<String, Class<? extends Permission>> map = Maps.newHashMap();
-        map.put(first.getName(), first);
-        for (Class<? extends Permission> p : classes) {
-            map.put(p.getName(), p);
+        for (Class<?> clazz : classes) {
+            Preconditions.checkArgument(Permission.class.isAssignableFrom(clazz),
+                "Permissions must implement the Permission-interface");
+            @SuppressWarnings("unchecked")
+            Class<? extends Permission> permissionClass = (Class<? extends Permission>) clazz;
+            map.put(clazz.getName(), permissionClass);
         }
         supported = Collections.unmodifiableMap(map);
     }
