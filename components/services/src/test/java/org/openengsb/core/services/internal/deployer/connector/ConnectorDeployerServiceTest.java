@@ -46,8 +46,16 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -66,11 +74,10 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
-import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
+import org.openengsb.core.services.internal.persistence.connector.ConnectorJPAPersistenceBackendService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
@@ -97,6 +104,29 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
     private ConnectorId testConnectorId;
+    private EntityManager em;
+    private EntityTransaction tx;
+    private final static File dbFile = new File("TEST.h2.db");
+
+    @After
+    public void tearDown() throws IOException {
+        try {
+            tx.commit();
+        } catch (Exception ex) {
+            // Do nothing the db will get destroyed either way.
+        }
+
+        em.close();
+        deleteDB();
+    }
+
+    @BeforeClass
+    @AfterClass
+    public static void deleteDB() throws IOException {
+        if (dbFile.exists()) {
+            FileUtils.forceDelete(dbFile);
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -106,7 +136,10 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         when(authManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
 
         createServiceManagerMock();
-        setupPersistence();
+        setupConfigPersistence();
+
+        tx = em.getTransaction();
+        tx.begin();
 
         connectorDeployerService.setAuthenticationManager(authManagerMock);
         connectorDeployerService.setServiceManager(serviceManager);
@@ -128,16 +161,15 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
     }
 
-    private void setupPersistence() {
-        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
-        CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
-        backend.setBundleContext(bundleContext);
-        backend.setPersistenceManager(dummyPersistenceManager);
-        backend.init();
-        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
-        Dictionary<String, Object> props2 = new Hashtable<String, Object>();
-        props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
-        registerService(configPersistence, props2, ConfigPersistenceService.class);
+    private void setupConfigPersistence() {
+        final ConnectorJPAPersistenceBackendService persistenceBackend = new ConnectorJPAPersistenceBackendService();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("connector-test");
+        em = emf.createEntityManager();
+        persistenceBackend.setEntityManager(em);
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(org.openengsb.core.api.Constants.CONFIGURATION_ID, org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
+        props.put(org.openengsb.core.api.Constants.BACKEND_ID, "dummy");
+        registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
     }
 
     private ConnectorManagerImpl createServiceManagerMock() {

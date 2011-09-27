@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -28,18 +29,21 @@ public class ConnectorConfigurationJPAEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "ID")
+    @Column(name = "CONFIG_ID")
     private Long id;
-    @Column(name = "DOMAINTYPE", nullable = false, length = 64)
+    @Column(name = "DOMAINTYPE", nullable = false, length = 63)
     private String domainType;
-    @Column(name = "CONNECTORTYPE", nullable = false, length = 64)
+    @Column(name = "CONNECTORTYPE", nullable = false, length = 63)
     private String connectorType;
-    @Column(name = "INSTANCEID", nullable = false, length = 64)
+    @Column(name = "INSTANCEID", nullable = false, length = 63)
     private String instanceId;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONNECTOR_ATTRIBUTES")
+    @MapKeyColumn(name = "ATTR_KEY", length = 255)
+    @Column(name = "ATTR_VALUE", length = 255)
     private Map<String, String> attributes;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @MapKeyColumn(name = "PROP_KEY", length = 255)
     private Map<String, ConnectorPropertiesWrapperJPAEntity> properties;
 
     public long getId() {

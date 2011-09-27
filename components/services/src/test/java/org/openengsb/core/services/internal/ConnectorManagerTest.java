@@ -26,6 +26,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -33,10 +35,14 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -67,6 +73,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorRegistrationManagerImpl serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
     private EntityManager em;
+    private EntityTransaction tx;
+    private final static File dbFile = new File("TEST.h2.db");
 
     @Before
     public void setUp() throws Exception {
@@ -77,11 +85,20 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
         serviceRegistrationManagerImpl.setServiceUtils(serviceUtils);
         createServiceManager();
+        tx = em.getTransaction();
+        tx.begin();
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws IOException {
+        try {
+            tx.commit();
+        } catch (Exception ex) {
+            // Do nothing the db will get destroyed either way.
+        }
+
         em.close();
+        deleteDB();
     }
 
     private void registerConfigPersistence() {
@@ -307,5 +324,13 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         serviceUtils.setBundleContext(bundleContext);
         OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
         registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+    }
+
+    @BeforeClass
+    @AfterClass
+    public static void deleteDB() throws IOException {
+        if (dbFile.exists()) {
+            FileUtils.forceDelete(dbFile);
+        }
     }
 }

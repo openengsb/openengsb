@@ -52,13 +52,32 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
         Preconditions.checkNotNull(config.getMetaData(), "Invalid metadata");
         Preconditions.checkNotNull(config.getContent(), "Invalid content");
 
-        ConnectorConfigurationJPAEntity entity = ConnectorConfigurationJPAEntity.generateFromConfigItem(config);
-        try {
-            entityManager.persist(entity);
-        } catch (Exception ex) {
-            throw new PersistenceException(ex);
+        List<ConnectorConfigurationJPAEntity> oldEntities = searchForMetadata(config.getMetaData());
+
+        if (oldEntities.size() > 1) {
+            throw new PersistenceException("Unexpected error: Found more than 1 object fitting the metadata!");
         }
-        LOGGER.info("inserted ConnectorConfiguration");
+        
+        ConnectorConfigurationJPAEntity entity = ConnectorConfigurationJPAEntity.generateFromConfigItem(config);
+        if (oldEntities.size()==1){
+            ConnectorConfigurationJPAEntity old =oldEntities.get(0);
+            entity.setId(old.getId());
+            try {
+                entityManager.merge(entity);
+            } catch (Exception ex) {
+                throw new PersistenceException(ex);
+            }
+            LOGGER.info("updated ConnectorConfiguration");
+        }
+
+        if (oldEntities.size()==0){
+            try {
+                entityManager.persist(entity);
+            } catch (Exception ex) {
+                throw new PersistenceException(ex);
+            }
+            LOGGER.info("inserted ConnectorConfiguration");
+        }
     }
 
     @Override
@@ -90,23 +109,24 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
 
     private List<ConnectorConfigurationJPAEntity> searchForMetadata(Map<String, String> metaData)
         throws PersistenceException {
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ConnectorConfigurationJPAEntity> query = cb.createQuery(ConnectorConfigurationJPAEntity.class);
         Root<ConnectorConfigurationJPAEntity> from = query.from(ConnectorConfigurationJPAEntity.class);
 
         List<Predicate> predicates = new ArrayList<Predicate>();
         if (metaData.get(Constants.ID_KEY) != null) {
-            predicates.add(cb.equal(from.get("INSTANCEID"), metaData.get(Constants.ID_KEY)));
+            predicates.add(cb.equal(from.get("instanceId"), metaData.get(Constants.ID_KEY)));
         }
         if (metaData.get(Constants.DOMAIN_KEY) != null) {
-            predicates.add(cb.equal(from.get("DOMAINTYPE"), metaData.get(Constants.DOMAIN_KEY)));
+            predicates.add(cb.equal(from.get("domainType"), metaData.get(Constants.DOMAIN_KEY)));
         }
         if (metaData.get(Constants.CONNECTOR_KEY) != null) {
-            predicates.add(cb.equal(from.get("CONNECTORTYPE"), metaData.get(Constants.CONNECTOR_KEY)));
+            predicates.add(cb.equal(from.get("connectorType"), metaData.get(Constants.CONNECTOR_KEY)));
         }
 
         query.select(from);
-        query.where(cb.and((Predicate[]) predicates.toArray()));
+        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
         try {
             return entityManager.createQuery(query).getResultList();
         } catch (Exception ex) {
