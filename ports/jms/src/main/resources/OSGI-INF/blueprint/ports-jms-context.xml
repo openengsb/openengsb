@@ -69,11 +69,7 @@
       <list>
         <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
         <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
-          <property name="privateKeySource">
-            <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
-              <property name="algorithm" value="RSA" />
-            </bean>
-          </property>
+          <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
@@ -101,6 +97,7 @@
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
   <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
 
 </blueprint>
 

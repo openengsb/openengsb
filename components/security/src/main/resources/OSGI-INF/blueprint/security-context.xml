@@ -70,4 +70,14 @@
     </bean>
   </service>
 
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.security.PrivateKeySource</value>
+      <value>org.openengsb.core.api.security.PublicKeySource</value>
+    </interfaces>
+    <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
+      <property name="algorithm" value="RSA" />
+    </bean>
+  </service>
+
 </blueprint>
