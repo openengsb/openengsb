@@ -1,11 +1,27 @@
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.openengsb.core.services.internal.persistence.connector;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,21 +30,23 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
 
-@Entity
+@Entity(name = "CONNECTOR_PROPERTIES_WRAPPER")
 public class ConnectorPropertiesWrapperJPAEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "ID")
     private Long id;
-    @Column(name = "COLLECTION_TYPE", length = 128)
+    @Column(name = "COLLECTION_TYPE", length = 127)
     private String collectionType;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<ConnectorPropertyJPAEntity> properties;
+    @OrderColumn
+    private List<ConnectorPropertyJPAEntity> properties;
 
     public Long getId() {
         return id;
@@ -46,11 +64,11 @@ public class ConnectorPropertiesWrapperJPAEntity {
         this.collectionType = collectionType;
     }
 
-    public Set<ConnectorPropertyJPAEntity> getProperties() {
+    public List<ConnectorPropertyJPAEntity> getProperties() {
         return properties;
     }
 
-    public void setProperties(Set<ConnectorPropertyJPAEntity> properties) {
+    public void setProperties(List<ConnectorPropertyJPAEntity> properties) {
         this.properties = properties;
     }
 
@@ -60,8 +78,8 @@ public class ConnectorPropertiesWrapperJPAEntity {
 
         ConnectorPropertiesWrapperJPAEntity wrapper = new ConnectorPropertiesWrapperJPAEntity();
 
-        Set<ConnectorPropertyJPAEntity> propSet = new HashSet<ConnectorPropertyJPAEntity>();
-        wrapper.setProperties(propSet);
+        List<ConnectorPropertyJPAEntity> propList = new ArrayList<ConnectorPropertyJPAEntity>();
+        wrapper.setProperties(propList);
         wrapper.setCollectionType(clazz.getName());
         Object[] arr;
         if (clazz.isArray()) {
@@ -78,18 +96,18 @@ public class ConnectorPropertiesWrapperJPAEntity {
                 arr = (Object[]) property;
 
             }
-            loopProperties(Arrays.asList(arr), propSet);
+            loopProperties(Arrays.asList(arr), propList);
             return wrapper;
         }
 
         if (Collection.class.isAssignableFrom(clazz)) {
             Collection<Object> coll = (Collection<Object>) property;
-            loopProperties(coll, propSet);
+            loopProperties(coll, propList);
             return wrapper;
         }
 
         wrapper.setCollectionType(null);
-        propSet.add(ConnectorPropertyJPAEntity.getFromObject(property));
+        propList.add(ConnectorPropertyJPAEntity.getFromObject(property));
         return wrapper;
     }
 
@@ -102,7 +120,7 @@ public class ConnectorPropertiesWrapperJPAEntity {
         try {
             Class<?> collectionClass = Class.forName(collectionType);
             if (collectionClass.isArray()) {
-                Object arr = Array.newInstance(collectionClass, properties.size());
+                Object arr = Array.newInstance(collectionClass.getComponentType(), properties.size());
                 int i = 0;
                 for (ConnectorPropertyJPAEntity entity : properties) {
                     Array.set(arr, i, entity.toObject());
@@ -121,7 +139,7 @@ public class ConnectorPropertiesWrapperJPAEntity {
         }
     }
 
-    private static void loopProperties(Iterable<Object> iter, Set<ConnectorPropertyJPAEntity> propSet) {
+    private static void loopProperties(Iterable<Object> iter, List<ConnectorPropertyJPAEntity> propSet) {
         Iterator<Object> iterator = iter.iterator();
 
         while (iterator.hasNext()) {

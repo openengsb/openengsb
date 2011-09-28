@@ -106,7 +106,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private ConnectorId testConnectorId;
     private EntityManager em;
     private EntityTransaction tx;
-    private final static File dbFile = new File("TEST.h2.db");
+    private static final File DBFILE = new File("TEST.h2.db");
 
     @After
     public void tearDown() throws IOException {
@@ -123,8 +123,8 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     @BeforeClass
     @AfterClass
     public static void deleteDB() throws IOException {
-        if (dbFile.exists()) {
-            FileUtils.forceDelete(dbFile);
+        if (DBFILE.exists()) {
+            FileUtils.forceDelete(DBFILE);
         }
     }
 

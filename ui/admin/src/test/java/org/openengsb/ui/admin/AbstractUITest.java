@@ -74,7 +74,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected WiringService wiringService;
     private EntityManager em;
     private EntityTransaction tx;
-    private final static File dbFile = new File("TEST.h2.db");
+    private static final File DBFILE = new File("TEST.h2.db");
 
     @Before
     public void makeContextMock() throws Exception {
@@ -132,8 +132,8 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     @BeforeClass
     @AfterClass
     public static void deleteDB() throws IOException {
-        if (dbFile.exists()) {
-            FileUtils.forceDelete(dbFile);
+        if (DBFILE.exists()) {
+            FileUtils.forceDelete(DBFILE);
         }
     }
 
