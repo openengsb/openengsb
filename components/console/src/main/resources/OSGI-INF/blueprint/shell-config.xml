@@ -22,14 +22,14 @@
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
     <command name="openengsb/info">
-      <action class="org.openengsb.core.console.OpenEngSBInfo">
+      <action class="org.openengsb.core.console.internal.OpenEngSBInfo">
         <property name="infoProviders" ref="infoProviders"/>
         <property name="versionNumber" value="${openengsb.version.number}"/>
         <property name="droolsVersion" value="${drools.version}"/>
       </action>
     </command>
     <command name="openengsb/domains">
-      <action class="org.openengsb.core.console.DomainInfoCommand"/>
+      <action class="org.openengsb.core.console.internal.DomainInfoCommand"/>
     </command>
   </command-bundle>
 
