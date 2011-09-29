@@ -33,6 +33,7 @@ import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
@@ -48,12 +49,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.CredentialTypeProvider;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.EncryptedMessage;
@@ -123,18 +128,18 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String AUTH_DATA = ""
             + "{"
-            + "  \"className\":\"org.openengsb.core.api.security.model.Authentication\","
+            + "  \"className\":\"org.openengsb.connector.usernamepassword.internal.Password\","
             + "  \"data\":"
             + "  {"
-            + "    \"username\":\"user\","
-            + "    \"credentials\":\"password\""
+            + "    \"value\":\"password\""
             + "  }"
             + "}";
 
     private static final String SECURE_METHOD_CALL = ""
             + "{"
             + "  \"timestamp\":" + System.currentTimeMillis() + ","
-            + "  \"authenticationData\":" + AUTH_DATA + ","
+            + "  \"principal\": \"user\","
+            + "  \"credentials\":" + AUTH_DATA + ","
             + "  \"message\":" + METHOD_CALL_REQUEST
             + "}";
 
@@ -214,6 +219,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         MethodResult result = new MethodResult(new TestClass("test"));
         result.setMetaData(metaData);
         methodReturn = new MethodResultMessage(result, "123");
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("credentialClass", Password.class.getName());
+        registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
     }
 
     private void setupKeys() {
@@ -268,17 +276,18 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     private FilterChain createSecureFilterChain() throws Exception {
         DefaultSecureMethodCallFilterFactory secureFilterChainFactory = new DefaultSecureMethodCallFilterFactory();
         AuthenticationDomain authenticationManager = mock(AuthenticationDomain.class);
-        when(authenticationManager.authenticate(anyString(), any())).thenAnswer(new Answer<Authentication>() {
-            @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
-                String user = (String) invocation.getArguments()[0];
-                Object credentials = invocation.getArguments()[1];
-                if ("user".equals(user) && credentials.equals("password")) {
-                    return new Authentication(user, credentials.toString());
+        when(authenticationManager.authenticate(anyString(), any(Credentials.class))).thenAnswer(
+            new Answer<Authentication>() {
+                @Override
+                public Authentication answer(InvocationOnMock invocation) throws Throwable {
+                    String user = (String) invocation.getArguments()[0];
+                    Password credentials = (Password) invocation.getArguments()[1];
+                    if ("user".equals(user) && credentials.getValue().equals("password")) {
+                        return new Authentication(user, credentials.toString());
+                    }
+                    throw new BadCredentialsException("username and password did not match");
                 }
-                throw new BadCredentialsException("username and password did not match");
-            }
-        });
+            });
         secureFilterChainFactory.setAuthenticationManager(authenticationManager);
         secureFilterChainFactory.setRequestHandler(handler);
         PrivateKeySource keySource = mock(PrivateKeySource.class);

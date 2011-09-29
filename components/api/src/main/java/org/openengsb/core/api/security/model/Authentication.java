@@ -17,37 +17,40 @@
 
 package org.openengsb.core.api.security.model;
 
-
+/**
+ * Container bean that is used to store the authenticated subject, e.g. in a thread-local variable like in
+ * {@link org.springframework.security.core.context.SecurityContext}
+ */
 public class Authentication {
 
-    protected String username;
-    private String credentials;
+    private String principal;
+    private Object credentials;
 
     public Authentication() {
     }
 
-    public Authentication(String username, String credentials) {
-        this.username = username;
+    public Authentication(String principal, String credentials) {
+        this.principal = principal;
         this.credentials = credentials;
     }
 
-    public Authentication(String username) {
-        this.username = username;
+    public Authentication(String principal) {
+        this.principal = principal;
     }
 
     public String getUsername() {
-        return username;
+        return principal;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String principal) {
+        this.principal = principal;
     }
 
-    public String getCredentials() {
+    public Object getCredentials() {
         return credentials;
     }
 
-    public void setCredentials(String credentials) {
+    public void setCredentials(Object credentials) {
         this.credentials = credentials;
     }
 

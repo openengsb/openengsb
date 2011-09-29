@@ -34,7 +34,6 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -100,21 +99,7 @@ public class BeanDescription implements Serializable {
      */
     public Object toObject() {
         Class<?> beanType = getBeanType();
-        Collection<PropertyDescriptor> accessibleProperties = getAccessiblePropertiesFromBean(beanType);
-        Object bean;
-        try {
-            bean = beanType.newInstance();
-            for (PropertyDescriptor d : accessibleProperties) {
-                doSetPropertyOnBean(bean, d);
-            }
-            return bean;
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e);
-        }
+        return toObject(beanType);
     }
 
     private void doSetPropertyOnBean(Object bean, PropertyDescriptor d) throws IllegalAccessException,
@@ -156,12 +141,22 @@ public class BeanDescription implements Serializable {
     /**
      * reconstructs the original object the {@link BeanDescription} is representing.
      */
-    @SuppressWarnings("unchecked")
     public <T> T toObject(Class<T> type) {
-        Class<?> beanType = getBeanType();
-        Preconditions
-            .checkArgument(type.isAssignableFrom(beanType), "types are not compatible (%s,%s)", type, beanType);
-        return (T) toObject();
+        Collection<PropertyDescriptor> accessibleProperties = getAccessiblePropertiesFromBean(type);
+        T bean;
+        try {
+            bean = type.newInstance();
+            for (PropertyDescriptor d : accessibleProperties) {
+                doSetPropertyOnBean(bean, d);
+            }
+            return bean;
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static BeanDescription populateData(BeanDescription desc, Object bean) {

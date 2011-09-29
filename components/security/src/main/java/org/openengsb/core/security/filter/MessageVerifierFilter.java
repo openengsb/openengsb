@@ -25,7 +25,6 @@ import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
-import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.AbstractFilterChainElement;
@@ -38,9 +37,9 @@ import com.google.common.collect.MapMaker;
 /**
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the verification information and
  * verifies it. If the verification fails an Exception is thrown and the next filter is not invoked.
- * 
+ *
  * This filter is intended for incoming ports.
- * 
+ *
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -59,11 +58,11 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     private FilterAction next;
 
     private long timeout = 10 * 60 * 1000; // 10 minutes
-    private ConcurrentMap<Authentication, Long> lastMessageTimestamp = new MapMaker()
+    private ConcurrentMap<String, Long> lastMessageTimestamp = new MapMaker()
         .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)
-        .makeComputingMap(new Function<Authentication, Long>() {
+        .makeComputingMap(new Function<String, Long>() {
             @Override
-            public Long apply(Authentication input) {
+            public Long apply(String input) {
                 return 0L;
             };
         });
@@ -99,7 +98,7 @@ public class MessageVerifierFilter extends AbstractFilterChainElement<SecureRequ
     }
 
     private void checkForReplayedMessage(SecureRequest request) throws MessageVerificationFailedException {
-        Authentication authenticationInfo = request.retrieveAuthenticationInfo();
+        String authenticationInfo = request.getPrincipal();
         synchronized (lastMessageTimestamp) {
             if (lastMessageTimestamp.get(authenticationInfo) >= request.getTimestamp()) {
                 throw new MessageVerificationFailedException(

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
@@ -46,7 +47,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
         }
 
         @Override
-        public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
+        public Authentication authenticate(String username, Credentials credentials) throws AuthenticationException {
             Iterator<AuthenticationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
                     AuthenticationDomain.class);
@@ -77,7 +78,7 @@ public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
         }
 
         @Override
-        public boolean supports(final Object credentials) {
+        public boolean supports(final Credentials credentials) {
             Iterator<AuthenticationDomain> serviceIterator =
                 OpenEngSBCoreServices.getServiceUtilsService().getServiceIterator(providers,
                     AuthenticationDomain.class);

@@ -16,6 +16,7 @@
  */
 package org.openengsb.ui.admin;
 
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.common.util.SpringSecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,7 +34,8 @@ public class UIAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         try {
             org.openengsb.core.api.security.model.Authentication authenticate =
-                authenticator.authenticate((String) authentication.getPrincipal(), authentication.getCredentials());
+                authenticator.authenticate((String) authentication.getPrincipal(),
+                    new Password((String) authentication.getCredentials()));
             Authentication wrapToken = SpringSecurityContext.wrapToken(authenticate);
             SecurityContextHolder.getContext().setAuthentication(wrapToken);
             return wrapToken;

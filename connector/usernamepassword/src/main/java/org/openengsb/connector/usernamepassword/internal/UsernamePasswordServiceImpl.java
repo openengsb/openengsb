@@ -18,7 +18,9 @@
 package org.openengsb.connector.usernamepassword.internal;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -46,14 +48,15 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
     }
 
     @Override
-    public Authentication authenticate(String username, Object credentials) throws AuthenticationException {
+    public Authentication authenticate(String username, Credentials credentials) throws AuthenticationException {
         String actualPassword;
         try {
             actualPassword = userManager.getUserCredentials(username, "password");
         } catch (UserNotFoundException e) {
             throw new AuthenticationException(e);
         }
-        if (ObjectUtils.notEqual(credentials, actualPassword)) {
+        String givenPassword = ((Password) credentials).getValue();
+        if (ObjectUtils.notEqual(givenPassword, actualPassword)) {
             throw new AuthenticationException("wrong password");
         }
         Authentication authentication = new Authentication(username);
@@ -63,8 +66,8 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
     }
 
     @Override
-    public boolean supports(Object credentials) {
-        return credentials instanceof String;
+    public boolean supports(Credentials credentials) {
+        return credentials instanceof Password;
     }
 
     public void setUserManager(UserDataManager userManager) {

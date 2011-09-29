@@ -24,6 +24,7 @@ import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
@@ -89,46 +90,46 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void authenticateUsernamePassword_shouldAuthenticateSuccessful() throws Exception {
-        Authentication authenticate = passwordAuthenticator.authenticate("testuser", "password");
+        Authentication authenticate = passwordAuthenticator.authenticate("testuser", new Password("password"));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticateUsernamePassword_shouldFail() throws Exception {
-        passwordAuthenticator.authenticate("testuser", "password2");
+        passwordAuthenticator.authenticate("testuser", new Password("password2"));
     }
 
     @Test
     public void authenticateOnetimePassword() throws Exception {
-        Authentication authenticate = onetimeAuthenticator.authenticate("testuser", 90489 * 2);
+        Authentication authenticate = onetimeAuthenticator.authenticate("testuser", new OneTimeValue((90489 * 2)));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticateOnetimePassword_shouldFail() throws Exception {
-        onetimeAuthenticator.authenticate("testuser", 123);
+        onetimeAuthenticator.authenticate("testuser", new OneTimeValue((123)));
     }
 
     @Test
     public void authenticateUsernamePasswordAtManager_shouldAuthenticateSuccessful() throws Exception {
-        Authentication authenticate = authManager.authenticate("testuser", "password");
+        Authentication authenticate = authManager.authenticate("testuser", new Password("password"));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticateUsernamePasswordAtManager_shouldFail() throws Exception {
-        authManager.authenticate("testuser", "password2");
+        authManager.authenticate("testuser", new Password("password2"));
     }
 
     @Test
     public void authenticateOnetimePasswordAtManager() throws Exception {
-        Authentication authenticate = authManager.authenticate("testuser", 90489 * 2);
+        Authentication authenticate = authManager.authenticate("testuser", new OneTimeValue((90489 * 2)));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticateOnetimePasswordAtManager_shouldFail() throws Exception {
-        authManager.authenticate("testuser", 123);
+        authManager.authenticate("testuser", new OneTimeValue(123));
     }
 
     @Override

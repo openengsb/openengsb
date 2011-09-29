@@ -21,6 +21,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.wicket.api.InjectorHolder;
@@ -64,7 +65,7 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         try {
-            getAuthenticationManager().authenticate(username, password);
+            getAuthenticationManager().authenticate(username, new Password(password));
         } catch (AuthenticationException e) {
             LOGGER.warn("unable to authenticate user", e);
             return false;

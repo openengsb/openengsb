@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.authentication;
+package org.openengsb.connector.usernamepassword.internal;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.AbstractCredentialTypeProvider;
 
-public interface AuthenticationDomain extends Domain {
+public class PasswordCredentialTypeProvider extends AbstractCredentialTypeProvider {
 
-    Authentication authenticate(String username, Credentials credentials) throws AuthenticationException;
-
-    boolean supports(Credentials credentials);
+    public PasswordCredentialTypeProvider() {
+        super(Password.class);
+    }
 
 }

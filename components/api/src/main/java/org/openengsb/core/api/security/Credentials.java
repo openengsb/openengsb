@@ -15,16 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.authentication;
+package org.openengsb.core.api.security;
 
-import org.openengsb.core.api.Domain;
-import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.Authentication;
-
-public interface AuthenticationDomain extends Domain {
-
-    Authentication authenticate(String username, Credentials credentials) throws AuthenticationException;
-
-    boolean supports(Credentials credentials);
+/**
+ * flag-interface for Classes representing credentials
+ */
+public interface Credentials {
 
 }

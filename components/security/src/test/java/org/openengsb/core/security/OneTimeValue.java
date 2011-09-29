@@ -15,16 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.authentication;
+package org.openengsb.core.security;
 
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.security.Credentials;
-import org.openengsb.core.api.security.model.Authentication;
 
-public interface AuthenticationDomain extends Domain {
+public class OneTimeValue implements Credentials {
+    private Integer value;
 
-    Authentication authenticate(String username, Credentials credentials) throws AuthenticationException;
+    public OneTimeValue() {
+    }
 
-    boolean supports(Credentials credentials);
+    public OneTimeValue(int value) {
+        this.value = value;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
 
 }
