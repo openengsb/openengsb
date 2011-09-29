@@ -23,9 +23,24 @@ import java.lang.annotation.Target;
 
 /**
  * Assigns a security-attribute to the target entity. These attributes are used by Access control connectors to
- * determine wheter the user should be granted access.
+ * determine whether the user should be granted access.
  * 
  * It is also helpful for creating human readable names for service-interfaces, domain-interfaces, ...
+ * 
+ * You can annotate a method like this
+ * 
+ * <pre>
+ * &#064;SecurityAttribute(&quot;example-method&quot;)
+ * void example(String param, int param2);
+ * </pre>
+ * 
+ * You can also define something other than a name:
+ * 
+ * <pre>
+ * &#064;SecurityAttribute(key = &quot;domain.example.operationType&quot;, value = &quot;READ&quot;)
+ * void getContent(String name);
+ * </pre>
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })

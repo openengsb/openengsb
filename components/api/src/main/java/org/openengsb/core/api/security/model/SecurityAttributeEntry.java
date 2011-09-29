@@ -16,6 +16,12 @@
  */
 package org.openengsb.core.api.security.model;
 
+/**
+ * represents a single attribute-entry.
+ *
+ * It can originate from a {@link org.openengsb.core.api.security.annotation.SecurityAttribute} annotation or be
+ * provided by a {@link org.openengsb.core.api.security.SecurityAttributeProvider} at runtime.
+ */
 public class SecurityAttributeEntry {
 
     private String key;
