@@ -74,7 +74,7 @@ public class PermissionInput implements Serializable {
     }
 
     public Permission toPermission() {
-        return (Permission) BeanUtilsExtended.buildBeanFromAttributeMap(type, values);
+        return (Permission) BeanUtilsExtended.createBeanFromAttributeMap(type, values);
     }
 
     @Override

@@ -21,47 +21,88 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 
+/**
+ * Provides utility-methods for converting beans to something that can be stored (Map) and vice versa. It uses
+ * {@link BeanUtils} to provide that functionality.
+ */
 public final class BeanUtilsExtended {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtilsExtended.class);
 
-    protected static Iterator<PropertyDescriptor> getRelevantProperties(final Object bean)
-        throws IntrospectionException {
-        Class<?> beanClass = bean.getClass();
-        BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-        Iterator<PropertyDescriptor> propertyIterator = Iterators.forArray(propertyDescriptors);
-        return Iterators.filter(propertyIterator, new Predicate<PropertyDescriptor>() {
-            @Override
-            public boolean apply(PropertyDescriptor input) {
-                if (!input.getPropertyType().equals(String.class)) {
-                    return false;
-                }
-                Method writeMethod = input.getWriteMethod();
-                if (writeMethod == null) {
-                    return false;
-                }
-                return Modifier.isPublic(writeMethod.getModifiers());
+    /**
+     * Analyzes the bean and returns a map containing the property-values. Works similar to
+     * {@link BeanUtils#describe(Object)} but does not convert everything to strings.
+     *
+     * @throws IllegalArgumentException if the bean cannot be analyzed properly. Propably because some getter throw an
+     *         Exception
+     */
+    public static Map<String, Object> buildObjectAttributeMap(Object bean) throws IllegalArgumentException {
+        BeanInfo beanInfo;
+        try {
+            beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
+        } catch (IntrospectionException e1) {
+            throw new IllegalArgumentException(e1);
+        }
+        Map<String, Object> result;
+        result = Maps.newHashMap();
+        for (PropertyDescriptor pDesc : beanInfo.getPropertyDescriptors()) {
+            String name = pDesc.getName();
+            Object propertyValue;
+            try {
+                propertyValue = pDesc.getReadMethod().invoke(bean);
+            } catch (IllegalAccessException e) {
+                // this should never happen since the Introspector only returns accessible read-methods
+                LOGGER.error("WTF: got property descriptor with inaccessible read-method");
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                throw new IllegalArgumentException(e);
             }
-        });
+            if (propertyValue != null) {
+                result.put(name, propertyValue);
+            }
+        }
+        return result;
     }
 
+    /**
+     * Creates a new instance of the beanType and populates it with the property-values from the map
+     *
+     * @throws IllegalArgumentException if the bean cannot be populated because of errors in the definition of the
+     *         beantype
+     */
+    public static <BeanType> BeanType createBeanFromAttributeMap(Class<BeanType> beanType,
+            Map<String, ? extends Object> attributeValues) {
+        BeanType instance;
+        try {
+            instance = beanType.newInstance();
+            BeanUtils.populate(instance, attributeValues);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return instance;
+    }
+
+    /**
+     * returns the result of {@link BeanUtils#describe(Object)} converted to the proper generic map-type.
+     *
+     * Exceptions from Reflection are wrapped in {@link IllegalArgumentException}s
+     *
+     * @throws IllegalArgumentException if some property in the bean cannot be accessed
+     */
     @SuppressWarnings("unchecked")
-    public static Map<String, String> buildAttributeMap(Object bean) {
+    public static Map<String, String> buildStringAttributeMap(Object bean) throws IllegalArgumentException {
         try {
             return BeanUtils.describe(bean);
         } catch (IllegalAccessException e) {
@@ -73,90 +114,7 @@ public final class BeanUtilsExtended {
         }
     }
 
-    public static Map<String, Object> buildAttributeValueMap(Object bean) {
-        BeanInfo beanInfo;
-        try {
-            beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
-        } catch (IntrospectionException e1) {
-            throw new IllegalArgumentException(e1);
-        }
-        Map<String, Object> result;
-        try {
-            result = Maps.newHashMap();
-            for (PropertyDescriptor pDesc : beanInfo.getPropertyDescriptors()) {
-                String name = pDesc.getName();
-                Object propertyValue = pDesc.getReadMethod().invoke(bean);
-                result.put(name, propertyValue);
-            }
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return result;
-    }
-
-    public static <T> T buildBeanFromAttributeMap(Class<T> beanClass, Map<String, String> values) {
-        T bean;
-        try {
-            bean = beanClass.newInstance();
-            BeanUtils.populate(bean, values);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return bean;
-    }
-
-    public enum TestEnum {
-        a, b, c
-    }
-
-    public static Object convertToCorrectClass(Class<?> type, Object value) {
-        if (type.isInstance(value)) {
-            return value;
-        }
-        if (type.isEnum()) {
-            type.getEnumConstants();
-            for (Object object : type.getEnumConstants()) {
-                if (object.toString().equals(value)) {
-                    return object;
-                }
-            }
-        }
-        if (String.class.isInstance(value)) {
-            Constructor<?> constructor = getStringOnlyConstructor(type);
-            if (constructor != null) {
-                try {
-                    return constructor.newInstance(value);
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException(e);
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return null;
-    }
-
-    public static Constructor<?> getStringOnlyConstructor(Class<?> type) {
-        try {
-            return type.getConstructor(String.class);
-        } catch (SecurityException e) {
-            LOGGER.error("unexpected security-exception occured", e);
-            return null;
-        } catch (NoSuchMethodException e) {
-            return null;
-        }
-    }
-
     private BeanUtilsExtended() {
     }
+
 }

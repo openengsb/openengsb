@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.PermissionProvider;
@@ -42,7 +41,7 @@ import com.google.common.collect.ComputationException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-final class EntryUtils {
+public final class EntryUtils {
 
     static List<EntryElement> convertAllObjectsToEntryElements(Collection<? extends Object> collection) {
         List<EntryElement> result = new ArrayList<EntryElement>();
@@ -135,7 +134,7 @@ final class EntryUtils {
     }
 
     static Map<String, EntryValue> convertBeanToEntryMap(Permission permission) {
-        Map<String, Object> buildAttributeValueMap = BeanUtilsExtended.buildAttributeValueMap(permission);
+        Map<String, Object> buildAttributeValueMap = BeanUtilsExtended.buildObjectAttributeMap(permission);
         return Maps.transformEntries(buildAttributeValueMap, new ObjectToEntryValueTransformer());
     }
 
@@ -161,6 +160,7 @@ final class EntryUtils {
         return Collections2.transform(data, new BeanDataToObjectFunction<T>());
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T convertBeanDataToObject(BeanData input) {
         Class<?> permType;
         try {
@@ -169,27 +169,11 @@ final class EntryUtils {
             throw new IllegalArgumentException("permission-type could not be found " + input.getType(), e);
         }
         Map<String, Object> attributeValues = convertEntryMapToAttributeMap(input.getAttributes());
-        return createAndPopulateBean(permType, attributeValues);
+        return (T) BeanUtilsExtended.createBeanFromAttributeMap(permType, attributeValues);
     }
 
     static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {
         return Maps.transformEntries(entryMap, new EntryValueToObjectTransformer());
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> T createAndPopulateBean(Class<?> beanType, Map<String, Object> attributeValues) {
-        T instance;
-        try {
-            instance = (T) beanType.newInstance();
-            BeanUtils.populate(instance, attributeValues);
-        } catch (InstantiationException e) {
-            throw new ComputationException(e);
-        } catch (IllegalAccessException e) {
-            throw new ComputationException(e);
-        } catch (InvocationTargetException e) {
-            throw new ComputationException(e);
-        }
-        return instance;
     }
 
     private static Class<? extends Permission> findPermissionClass(String name) throws ClassNotFoundException {

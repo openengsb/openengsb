@@ -79,7 +79,7 @@ public abstract class UserEditPanel extends Panel {
             Collections2.transform(userPermissions, new Function<Permission, PermissionInput>() {
                 @Override
                 public PermissionInput apply(Permission input) {
-                    Map<String, String> values = BeanUtilsExtended.buildAttributeMap(input);
+                    Map<String, String> values = BeanUtilsExtended.buildStringAttributeMap(input);
                     return new PermissionInput(input.getClass(), values);
                 }
             });
@@ -245,7 +245,7 @@ public abstract class UserEditPanel extends Panel {
             if (p.getState() == State.UNMODIFIED) {
                 continue;
             }
-            Permission perm = (Permission) BeanUtilsExtended.buildBeanFromAttributeMap(p.getType(), p.getValues());
+            Permission perm = (Permission) BeanUtilsExtended.createBeanFromAttributeMap(p.getType(), p.getValues());
             try {
                 if (p.getState() == State.NEW) {
                     userManager.addPermissionToUser(username, perm);
