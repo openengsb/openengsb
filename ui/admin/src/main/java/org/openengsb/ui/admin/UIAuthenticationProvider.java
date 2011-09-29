@@ -17,7 +17,7 @@
 package org.openengsb.ui.admin;
 
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.common.util.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,7 +36,7 @@ public class UIAuthenticationProvider implements AuthenticationProvider {
             org.openengsb.core.api.security.model.Authentication authenticate =
                 authenticator.authenticate((String) authentication.getPrincipal(),
                     new Password((String) authentication.getCredentials()));
-            Authentication wrapToken = SpringSecurityContext.wrapToken(authenticate);
+            Authentication wrapToken = SpringSecurityContextUtils.wrapToken(authenticate);
             SecurityContextHolder.getContext().setAuthentication(wrapToken);
             return wrapToken;
         } catch (org.openengsb.domain.authentication.AuthenticationException e) {

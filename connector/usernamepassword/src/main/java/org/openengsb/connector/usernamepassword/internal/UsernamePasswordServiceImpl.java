@@ -25,7 +25,7 @@ import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.util.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -60,7 +60,7 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
             throw new AuthenticationException("wrong password");
         }
         Authentication authentication = new Authentication(username);
-        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContext.wrapToken(authentication));
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
         return authentication;
 
     }

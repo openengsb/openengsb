@@ -18,12 +18,23 @@ package org.openengsb.core.common.util;
 
 import org.springframework.security.core.Authentication;
 
-public final class SpringSecurityContext {
+/**
+ * Util-methods to help interact with spring-security
+ */
+public final class SpringSecurityContextUtils {
 
+    /**
+     * convert a OpenEngSB-authentication-token to a spring one so that it can be stored in a
+     * {@link org.springframework.security.core.context.SecurityContext}
+     */
     public static Authentication wrapToken(org.openengsb.core.api.security.model.Authentication authentication) {
         return new OpenEngSBAuthentication(authentication);
     }
 
+    /**
+     * extract the OpenEngSB-authentication-token from a spring-authentication token. If it cannot be extracted, null is
+     * returned.
+     */
     public static org.openengsb.core.api.security.model.Authentication unwrapToken(Authentication authentication) {
         if (authentication instanceof OpenEngSBAuthentication) {
             return ((OpenEngSBAuthentication) authentication).getAuthentication();
@@ -31,7 +42,7 @@ public final class SpringSecurityContext {
         return null;
     }
 
-    protected SpringSecurityContext() {
+    private SpringSecurityContextUtils() {
     }
 
 }

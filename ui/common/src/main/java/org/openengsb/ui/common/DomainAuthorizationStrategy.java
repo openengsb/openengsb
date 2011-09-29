@@ -29,7 +29,7 @@ import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.SpringSecurityContext;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
@@ -94,7 +94,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     }
 
     private static Authentication getAuthenticatedUser() {
-        return SpringSecurityContext.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
+        return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
     private boolean hasSecurityAnnotation(Class<? extends Component> class1) {
