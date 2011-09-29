@@ -132,7 +132,7 @@ public class UserServiceTest extends AbstractUITest {
         FormTester permissionFormTester = tester.newFormTester(
             "userEditor:userEditorContainer:userForm:permissionListContainer:"
                     + "createPermissionContainer:createPermissionContent:container:form");
-        permissionFormTester.select("permissionTypeSelect", 1);
+        permissionFormTester.select("permissionTypeSelect", 0);
 
         tester.debugComponentTrees();
     }
