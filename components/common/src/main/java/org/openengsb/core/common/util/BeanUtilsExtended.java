@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ReflectionUtils;
 
 import com.google.common.collect.Maps;
 
@@ -40,8 +41,8 @@ public final class BeanUtilsExtended {
     /**
      * Analyzes the bean and returns a map containing the property-values. Works similar to
      * {@link BeanUtils#describe(Object)} but does not convert everything to strings.
-     *
-     * @throws IllegalArgumentException if the bean cannot be analyzed properly. Propably because some getter throw an
+     * 
+     * @throws IllegalArgumentException if the bean cannot be analyzed properly. Probably because some getter throw an
      *         Exception
      */
     public static Map<String, Object> buildObjectAttributeMap(Object bean) throws IllegalArgumentException {
@@ -63,7 +64,8 @@ public final class BeanUtilsExtended {
                 LOGGER.error("WTF: got property descriptor with inaccessible read-method");
                 throw new IllegalStateException(e);
             } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException(e);
+                ReflectionUtils.handleInvocationTargetException(e);
+                throw new IllegalStateException("Should never get here");
             }
             if (propertyValue != null) {
                 result.put(name, propertyValue);
@@ -84,12 +86,9 @@ public final class BeanUtilsExtended {
         try {
             instance = beanType.newInstance();
             BeanUtils.populate(instance, attributeValues);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
+        } catch (Exception e) {
+            ReflectionUtils.handleReflectionException(e);
+            throw new IllegalStateException("Should never get here");
         }
         return instance;
     }
@@ -105,12 +104,9 @@ public final class BeanUtilsExtended {
     public static Map<String, String> buildStringAttributeMap(Object bean) throws IllegalArgumentException {
         try {
             return BeanUtils.describe(bean);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+        } catch (Exception e) {
+            ReflectionUtils.handleReflectionException(e);
+            throw new IllegalStateException("Should never get here");
         }
     }
 
