@@ -39,7 +39,7 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.common.util.BeanUtilsExtended;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
@@ -79,7 +79,7 @@ public abstract class UserEditPanel extends Panel {
             Collections2.transform(userPermissions, new Function<Permission, PermissionInput>() {
                 @Override
                 public PermissionInput apply(Permission input) {
-                    Map<String, String> values = BeanUtils2.buildAttributeMap(input);
+                    Map<String, String> values = BeanUtilsExtended.buildAttributeMap(input);
                     return new PermissionInput(input.getClass(), values);
                 }
             });
@@ -245,7 +245,7 @@ public abstract class UserEditPanel extends Panel {
             if (p.getState() == State.UNMODIFIED) {
                 continue;
             }
-            Permission perm = (Permission) BeanUtils2.buildBeanFromAttributeMap(p.getType(), p.getValues());
+            Permission perm = (Permission) BeanUtilsExtended.buildBeanFromAttributeMap(p.getType(), p.getValues());
             try {
                 if (p.getState() == State.NEW) {
                     userManager.addPermissionToUser(username, perm);

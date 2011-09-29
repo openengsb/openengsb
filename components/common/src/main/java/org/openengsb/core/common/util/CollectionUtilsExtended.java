@@ -25,7 +25,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ComputationException;
 import com.google.common.collect.MapMaker;
 
-public final class CollectionUtils2 {
+public final class CollectionUtilsExtended {
 
     public static <T> Collection<T> filterCollectionByClass(Collection<?> source, final Class<T> clazz) {
         Collection<?> filtered = Collections2.filter(source, new Predicate<Object>() {
@@ -72,7 +72,7 @@ public final class CollectionUtils2 {
 
     }
 
-    private CollectionUtils2() {
+    private CollectionUtilsExtended() {
     }
 
 }

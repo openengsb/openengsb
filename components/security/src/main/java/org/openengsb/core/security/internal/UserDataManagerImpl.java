@@ -29,7 +29,7 @@ import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.util.CollectionUtils2;
+import org.openengsb.core.common.util.CollectionUtilsExtended;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
 import org.openengsb.core.security.internal.model.PermissionData;
@@ -151,14 +151,14 @@ public class UserDataManagerImpl implements UserDataManager {
     public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type)
         throws UserNotFoundException {
         // TODO improve performance with proper query.
-        return CollectionUtils2.filterCollectionByClass(getPermissionsForUser(username), type);
+        return CollectionUtilsExtended.filterCollectionByClass(getPermissionsForUser(username), type);
     }
 
     @Override
     public <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type)
         throws UserNotFoundException {
         // TODO improve performance with proper query.
-        return CollectionUtils2.filterCollectionByClass(getAllPermissionsForUser(username), type);
+        return CollectionUtilsExtended.filterCollectionByClass(getAllPermissionsForUser(username), type);
     }
 
     @Override

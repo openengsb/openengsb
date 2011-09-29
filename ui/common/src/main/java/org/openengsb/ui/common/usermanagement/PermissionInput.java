@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.common.util.BeanUtilsExtended;
 
 public class PermissionInput implements Serializable {
     private static final long serialVersionUID = 1257288811611665273L;
@@ -74,7 +74,7 @@ public class PermissionInput implements Serializable {
     }
 
     public Permission toPermission() {
-        return (Permission) BeanUtils2.buildBeanFromAttributeMap(type, values);
+        return (Permission) BeanUtilsExtended.buildBeanFromAttributeMap(type, values);
     }
 
     @Override

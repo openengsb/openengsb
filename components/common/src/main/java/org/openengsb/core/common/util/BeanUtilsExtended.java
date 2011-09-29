@@ -36,8 +36,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 
-public final class BeanUtils2 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils2.class);
+public final class BeanUtilsExtended {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtilsExtended.class);
 
     protected static Iterator<PropertyDescriptor> getRelevantProperties(final Object bean)
         throws IntrospectionException {
@@ -157,6 +157,6 @@ public final class BeanUtils2 {
         }
     }
 
-    private BeanUtils2() {
+    private BeanUtilsExtended() {
     }
 }

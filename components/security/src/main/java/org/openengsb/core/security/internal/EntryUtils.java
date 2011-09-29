@@ -30,7 +30,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.common.OpenEngSBCoreServices;
-import org.openengsb.core.common.util.BeanUtils2;
+import org.openengsb.core.common.util.BeanUtilsExtended;
 import org.openengsb.core.security.internal.model.BeanData;
 import org.openengsb.core.security.internal.model.EntryElement;
 import org.openengsb.core.security.internal.model.EntryValue;
@@ -135,7 +135,7 @@ final class EntryUtils {
     }
 
     static Map<String, EntryValue> convertBeanToEntryMap(Permission permission) {
-        Map<String, Object> buildAttributeValueMap = BeanUtils2.buildAttributeValueMap(permission);
+        Map<String, Object> buildAttributeValueMap = BeanUtilsExtended.buildAttributeValueMap(permission);
         return Maps.transformEntries(buildAttributeValueMap, new ObjectToEntryValueTransformer());
     }
 
