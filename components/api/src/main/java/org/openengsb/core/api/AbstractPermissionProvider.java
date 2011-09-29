@@ -30,7 +30,7 @@ import com.google.common.collect.Maps;
 
 /**
  * Helps to provide a Simple PermissionProvider.
- * 
+ *
  * Just derive this class and add all permission-classes to the super-call in the default-constructor
  */
 public abstract class AbstractPermissionProvider implements PermissionProvider {
@@ -51,15 +51,13 @@ public abstract class AbstractPermissionProvider implements PermissionProvider {
         supported = Collections.unmodifiableMap(map);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Class<? extends Permission> getPermissionClass(String className) {
-        try {
-            return (Class<? extends Permission>) this.getClass().getClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            LOGGER.warn("permission class not found: ", e);
-            return null;
+    public Class<? extends Permission> getPermissionClass(String className) throws ClassNotFoundException {
+        if (supported.containsKey(className)) {
+            return supported.get(className);
         }
+        LOGGER.warn("permission class not found: {}", className);
+        throw new ClassNotFoundException("PermissionType " + className + " not found in this provider");
     }
 
     @Override

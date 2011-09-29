@@ -162,9 +162,11 @@ final class EntryUtils {
     }
 
     static <T> T convertBeanDataToObject(BeanData input) {
-        Class<?> permType = findPermissionClass(input.getType());
-        if (permType == null) {
-            throw new IllegalArgumentException("permission-type could not be found " + input.getType());
+        Class<?> permType;
+        try {
+            permType = findPermissionClass(input.getType());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("permission-type could not be found " + input.getType(), e);
         }
         Map<String, Object> attributeValues = convertEntryMapToAttributeMap(input.getAttributes());
         return createAndPopulateBean(permType, attributeValues);
@@ -190,7 +192,7 @@ final class EntryUtils {
         return instance;
     }
 
-    private static Class<? extends Permission> findPermissionClass(String name) {
+    private static Class<? extends Permission> findPermissionClass(String name) throws ClassNotFoundException {
         OsgiUtilsService utilService = OpenEngSBCoreServices.getServiceUtilsService();
         Filter filter = utilService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
         PermissionProvider provider =
@@ -199,6 +201,7 @@ final class EntryUtils {
     }
 
     private static final class BeanDataToObjectFunction<T> implements Function<BeanData, T> {
+        @Override
         public T apply(BeanData input) {
             return convertBeanDataToObject(input);
         }

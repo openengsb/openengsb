@@ -21,8 +21,11 @@ import java.util.Collection;
 import org.openengsb.core.api.security.model.Permission;
 
 /**
- * Provides other bundles means of delegated classloading of permission-types and detecting which permission-classes are
- * available.
+ * Provides other bundles means of delegated class loading of permission-types and detecting which permission-classes
+ * are available.
+ *
+ * Every bundle declaring specific Permissions must export a service of this type to provide the declared permissions to
+ * management bundles (user management, UI, ...)
  *
  * Services exporting this interface must also declare the "permissionClass"-property where all supported classes are
  * listed.
@@ -34,9 +37,11 @@ public interface PermissionProvider {
      * to the declaring bundle, to avoid Dynamic-Import.
      *
      * All class-names must also be listed in the services' "permissionClass"-property, because it may be used to query
-     * for correct provider that is able to load a certain permission-class
+     * for correct provider that is able to load a certain permission-class.
+     *
+     * @throws ClassNotFoundException if no permission-type with that name is defined by the providing bundle.
      */
-    Class<? extends Permission> getPermissionClass(String className);
+    Class<? extends Permission> getPermissionClass(String className) throws ClassNotFoundException;
 
     /**
      * returns all Permission-types supported by this Provider. This method may be used by user interfaces to list all
