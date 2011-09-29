@@ -27,7 +27,6 @@ package org.openengsb.core.api.security.model;
  * <li>the {@link Object#toString()} must create a string-representation that can be used with that constructor the
  * recreate the object</li>
  * </ul>
- * This works fine with all wrapped primitive types.
  *
  * Collections of values are also allowed. However the types of the values underly the same constraints as single
  * values.
