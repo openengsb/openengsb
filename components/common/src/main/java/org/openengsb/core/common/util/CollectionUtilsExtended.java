@@ -34,18 +34,18 @@ public final class CollectionUtilsExtended {
      *
      * The returned collection is immutable.
      */
-    public static <T> Collection<T> filterCollectionByClass(Collection<?> source, final Class<T> clazz) {
+    public static <TargetType> Collection<TargetType> filterCollectionByClass(Collection<?> source, final Class<TargetType> clazz) {
         Collection<?> filtered = Collections2.filter(source, new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
                 return clazz.isInstance(input);
             }
         });
-        return Collections2.transform(filtered, new Function<Object, T>() {
+        return Collections2.transform(filtered, new Function<Object, TargetType>() {
             @SuppressWarnings("unchecked")
             @Override
-            public T apply(Object input) {
-                return (T) input;
+            public TargetType apply(Object input) {
+                return (TargetType) input;
             }
         });
     }

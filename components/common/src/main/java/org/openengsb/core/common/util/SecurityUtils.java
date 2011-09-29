@@ -24,24 +24,45 @@ import java.util.concurrent.Future;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * provides util-methods for security purposes
+ */
 public final class SecurityUtils {
 
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
-    static class RootCallable<V> extends ContextAwareCallable<V> {
-        public RootCallable(Callable<V> original) {
+    /**
+     * Executes the given task with root-permissions. Use with care.
+     *
+     * @throws ExecutionException if an exception occurs during the execution of the task
+     */
+    public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
+        throws ExecutionException {
+        Future<ReturnType> future = executor.submit(new RootCallable<ReturnType>(task));
+        try {
+            return future.get();
+        } catch (InterruptedException e) {
+            throw new ExecutionException(e);
+        }
+    }
+
+    /**
+     * Executes the given task with root-permissions. Use with care.
+     */
+    public static void executeWithSystemPermissions(Runnable task) {
+        executor.execute(new RootRunnable(task));
+    }
+
+    static class RootCallable<ReturnType> extends ContextAwareCallable<ReturnType> {
+        public RootCallable(Callable<ReturnType> original) {
             super(original);
         }
 
         @Override
-        public V call() throws Exception {
+        public ReturnType call() throws Exception {
             SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             try {
                 return super.call();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                throw e;
             } finally {
                 SecurityContextHolder.clearContext();
             }
@@ -66,19 +87,6 @@ public final class SecurityUtils {
 
     }
 
-    public static <V> V executeWithSystemPermissions(Callable<V> task) throws ExecutionException {
-        Future<V> future = executor.submit(new RootCallable<V>(task));
-        try {
-            return future.get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void executeWithSystemPermissions(Runnable task) {
-        executor.execute(new RootRunnable(task));
-    }
-    
     private SecurityUtils() {
     }
 }
