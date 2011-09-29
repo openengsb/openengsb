@@ -16,6 +16,9 @@
  */
 package org.openengsb.core.api.security.service;
 
+/**
+ * This Exception is thrown when a non-existing user is queried.
+ */
 public class UserNotFoundException extends UncheckedUserManagementException {
 
     private static final long serialVersionUID = 6901506350918489164L;

@@ -221,4 +221,10 @@ public class UserManagerStub implements UserDataManager {
 
     }
 
+    @Override
+    public Collection<String> getPermissionSetList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

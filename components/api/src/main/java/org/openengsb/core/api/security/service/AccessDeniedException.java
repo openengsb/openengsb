@@ -16,6 +16,10 @@
  */
 package org.openengsb.core.api.security.service;
 
+/**
+ * This exception is thrown when an access to some resource is denied. For example if the method-call on a service is
+ * not allowed.
+ */
 public class AccessDeniedException extends RuntimeException {
 
     private static final long serialVersionUID = -4110570969981216915L;

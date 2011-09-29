@@ -17,7 +17,9 @@
 
 package org.openengsb.core.api.security.service;
 
-
+/**
+ * This Exception is thrown when no credentials of a specific type were associated with a user
+ */
 public class NoSuchCredentialsException extends UncheckedUserManagementException {
 
     private static final long serialVersionUID = -8046285400069147405L;

@@ -55,7 +55,7 @@ public interface UserDataManager {
      * @throws UserNotFoundException if the user does not exist
      * @throws NoSuchCredentialsException if the user has no credentials of this type
      */
-    String getUserCredentials(String username, String key) throws UserNotFoundException, NoSuchCredentialsException;
+    String getUserCredentials(String username, String type) throws UserNotFoundException, NoSuchCredentialsException;
 
     /**
      * Sets the value of the credential of the specified type.
@@ -178,6 +178,11 @@ public interface UserDataManager {
     void removePermissionFromUser(String username, Permission... permission) throws UserNotFoundException;
 
     /**
+     * returns a list of names of all permissionSets available
+     */
+    Collection<String> getPermissionSetList();
+
+    /**
      * Creates a permissionSet granting the given Permissions
      *
      * @throws PermissionSetAlreadyExistsException if a permissionSet with that name already exists
@@ -269,7 +274,7 @@ public interface UserDataManager {
      * Sets the value of the given attribute.
      *
      * Previous values of the attribute are overwritten.
-     * 
+     *
      */
     void setPermissionSetAttribute(String permissionSet, String attributename, String value)
         throws PermissionSetNotFoundException;

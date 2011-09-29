@@ -45,10 +45,8 @@
   <description>
     OpenEngSB Common Core Utility classes, abstract classes to be extended by Domains and Connectors
     (Domains, DomainEvents, DomainProviders, ServiceManagers). The abstract and utility classes should
-    help a great deal
-    during developing for the OpenEngSB. Though non of the classes in this package are
-    required and can be easily
-    worked-around.
+    help a great deal during developing for the OpenEngSB. Though non of the classes in this package are
+    required and can be easily worked-around.
   </description>
 
   <url>http://www.openengsb.org</url>

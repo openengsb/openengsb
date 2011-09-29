@@ -186,6 +186,12 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
+    public Collection<String> getPermissionSetList() {
+        TypedQuery<String> query = entityManager.createQuery("SELECT s.id from PermissionSetData s", String.class);
+        return query.getResultList();
+    }
+
+    @Override
     public void createPermissionSet(String permissionSet, Permission... permission) {
         PermissionSetData data = new PermissionSetData(permissionSet);
         if (permission != null) {

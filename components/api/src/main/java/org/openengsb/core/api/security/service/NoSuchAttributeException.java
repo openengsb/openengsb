@@ -17,7 +17,9 @@
 
 package org.openengsb.core.api.security.service;
 
-
+/**
+ * This Exception is thrown by the {@link UserDataManager} when a non-existing attribute-value is queried.
+ */
 public class NoSuchAttributeException extends UserManagementException {
 
     private static final long serialVersionUID = 5068513969199836581L;

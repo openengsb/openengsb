@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api.security.service;
 
+/**
+ * Baseclass for unchecked UserManangementExceptions
+ */
 public class UncheckedUserManagementException extends RuntimeException {
 
     private static final long serialVersionUID = 3202406779714705904L;

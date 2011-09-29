@@ -17,7 +17,9 @@
 
 package org.openengsb.core.api.security.service;
 
-
+/**
+ * This exception is thrown when an non-existing permission-set is queried.
+ */
 public class PermissionSetNotFoundException extends UncheckedUserManagementException {
 
     private static final long serialVersionUID = 694237122926139415L;

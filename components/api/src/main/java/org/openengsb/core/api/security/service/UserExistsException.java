@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api.security.service;
 
+/**
+ * This Exception is thrown when trying to create a user while a user with the same name already exists.
+ */
 public class UserExistsException extends UserManagementException {
 
     private static final long serialVersionUID = 3741302495780303378L;

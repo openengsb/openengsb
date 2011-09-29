@@ -17,7 +17,11 @@
 
 package org.openengsb.core.api.security.service;
 
-
+/**
+ * This exception is thrown when trying to create a permissionSet, while another permissionSet with the same name
+ * already exists.
+ *
+ */
 public class PermissionSetAlreadyExistsException extends UserManagementException {
 
     private static final long serialVersionUID = 2457100787977257604L;

@@ -17,6 +17,11 @@
 
 package org.openengsb.core.api.security.service;
 
+/**
+ * Generic UserManagementException. It serves as baseclass for other Checked UserManagementExceptions
+ *
+ * If this class is used itself, this can mean that something went wrong in the persistence-backend.
+ */
 public class UserManagementException extends Exception {
 
     private static final long serialVersionUID = 269605012169642052L;
