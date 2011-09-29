@@ -17,16 +17,23 @@
 package org.openengsb.core.common.util;
 
 import java.util.Collection;
-import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ComputationException;
-import com.google.common.collect.MapMaker;
 
+/**
+ * provides additional util-methods for Collections not present in commons-collections or guava
+ */
 public final class CollectionUtilsExtended {
 
+    /**
+     * provides a view to the given collection, that only contains objects that are instances of the given clazz. It
+     * uses the guava-methods {@link Collections2#filter(Collection, Predicate)} and
+     * {@link Collections2#transform(Collection, Function)}.
+     *
+     * The returned collection is immutable.
+     */
     public static <T> Collection<T> filterCollectionByClass(Collection<?> source, final Class<T> clazz) {
         Collection<?> filtered = Collections2.filter(source, new Predicate<Object>() {
             @Override
@@ -41,35 +48,6 @@ public final class CollectionUtilsExtended {
                 return (T) input;
             }
         });
-    }
-
-    public <K, T> Function<K, T> autoInitializingFunction(Class<? extends T> elementClass) {
-        return new InitCollectionFunction<K, T>(elementClass);
-    }
-
-    public <K, T> Map<K, T> makeAutoInitializingMap(Class<? extends T> elementClass) {
-        return new MapMaker().makeComputingMap(autoInitializingFunction(elementClass));
-    }
-
-    static class InitCollectionFunction<K, T> implements Function<K, T> {
-
-        private Class<? extends T> elementClass;
-
-        public InitCollectionFunction(Class<? extends T> elementClass) {
-            this.elementClass = elementClass;
-        }
-
-        @Override
-        public T apply(K input) {
-            try {
-                return elementClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new ComputationException(e);
-            } catch (IllegalAccessException e) {
-                throw new ComputationException(e);
-            }
-        }
-
     }
 
     private CollectionUtilsExtended() {
