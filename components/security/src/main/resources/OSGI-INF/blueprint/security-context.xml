@@ -50,7 +50,7 @@
     <service-properties>
       <entry key="composite.strategy.name" value="authentication.provider" />
     </service-properties>
-    <bean class="org.openengsb.core.security.internal.AuthenticationProviderStrategy" />
+    <bean class="org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy" />
   </service>
 
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)"

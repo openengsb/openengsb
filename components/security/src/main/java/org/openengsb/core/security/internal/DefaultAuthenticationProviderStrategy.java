@@ -34,9 +34,17 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
-public class AuthenticationProviderStrategy extends AbstractDelegateStrategy {
+/**
+ * CompositeStrategy for {@link AuthenticationDomain} connectors
+ *
+ * Tries all associated connectors if they support the supplied credentials. If so, the connector is chosen to attempt
+ * authentication.
+ *
+ * As soon as the first connector can successfully authenticate the user, the result of that authentication is returned.
+ */
+public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrategy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationProviderStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAuthenticationProviderStrategy.class);
 
     private static class CompositeAuthenticationProvider extends AbstractOpenEngSBConnectorService implements
             AuthenticationDomain {

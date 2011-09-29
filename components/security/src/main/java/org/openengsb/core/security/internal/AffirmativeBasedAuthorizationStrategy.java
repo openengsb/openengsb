@@ -24,10 +24,18 @@ import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.authorization.AuthorizationDomain;
+import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Composite strategy for {@link AuthorizationDomain}.
+ *
+ * On every associated connector the "supports" method is called to determine if they can handle the supplied object.
+ * For a successful authorization at least one {@link Access#GRANTED} vote is required. The first {@link Access#DENIED}
+ * vote causes the strategy to deny access too. If all connectors abstain, the strategy abstains too.
+ */
 public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffirmativeBasedAuthorizationStrategy.class);

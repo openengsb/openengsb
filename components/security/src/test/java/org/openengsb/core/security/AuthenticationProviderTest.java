@@ -37,7 +37,7 @@ import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
-import org.openengsb.core.security.internal.AuthenticationProviderStrategy;
+import org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -75,7 +75,7 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
         ConnectorInstanceFactory factory = new CompositeConnectorProvider().createFactory(provider);
         authManager = (AuthenticationDomain) factory.createNewInstance("authProvider");
 
-        CompositeConnectorStrategy strategy = new AuthenticationProviderStrategy();
+        CompositeConnectorStrategy strategy = new DefaultAuthenticationProviderStrategy();
 
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("composite.strategy.name", "authManagerStrategy");
