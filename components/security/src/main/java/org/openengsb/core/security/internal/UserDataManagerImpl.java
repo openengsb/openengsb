@@ -233,14 +233,6 @@ public class UserDataManagerImpl implements UserDataManager {
         doAddPermissionSetToSet(parent, permissionSet);
     }
 
-    private void doAddPermissionSetToSet(PermissionSetData parent, String... permissionSet) {
-        for (String p : permissionSet) {
-            PermissionSetData child = doFindPermissionSet(p);
-            parent.getPermissionSets().add(child);
-        }
-        entityManager.merge(parent);
-    }
-
     @Override
     public Collection<String> getPermissionSetsFromPermissionSet(String permissionSet) throws UserNotFoundException {
         PermissionSetData parent = doFindPermissionSet(permissionSet);
@@ -258,37 +250,16 @@ public class UserDataManagerImpl implements UserDataManager {
         doRemovePermissionSetFromSet(parent, permissionSet);
     }
 
-    private void doRemovePermissionSetFromSet(PermissionSetData parent, String... permissionSet) {
-        for (String p : permissionSet) {
-            PermissionSetData child = doFindPermissionSet(p);
-            parent.getPermissionSets().remove(child);
-        }
-        entityManager.merge(parent);
-    }
-
     @Override
     public Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) {
         PermissionSetData set = doFindPermissionSet(permissionSet);
         return getPermissionsFromSetData(set);
     }
 
-    private Collection<Permission> getPermissionsFromSetData(PermissionSetData set) {
-        Collection<PermissionData> data = set.getPermissions();
-        return EntryUtils.convertAllBeanDataToObjects(data);
-    }
-
     @Override
     public Collection<Permission> getAllPermissionsFromPermissionSet(String permissionSet) {
         PermissionSetData set = doFindPermissionSet(permissionSet);
         return getAllPermissionsFromSetData(set);
-    }
-
-    private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
-        Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
-        for (PermissionSetData child : set.getPermissionSets()) {
-            result.addAll(getAllPermissionsFromPermissionSet(child.getId()));
-        }
-        return result;
     }
 
     @Override
@@ -311,14 +282,6 @@ public class UserDataManagerImpl implements UserDataManager {
         doRemovePermissionsFromSet(set, permission);
     }
 
-    private void doRemovePermissionsFromSet(PermissionSetData set, Permission... permission) {
-        for (Permission p : permission) {
-            PermissionData data = convertPermissionToPermissionData(p);
-            set.getPermissions().remove(data);
-        }
-        entityManager.merge(set);
-    }
-
     @Override
     public String getPermissionSetAttribute(String permissionSet, String attributename) {
         return doFindPermissionSet(permissionSet).getMetadata().get(attributename);
@@ -329,8 +292,41 @@ public class UserDataManagerImpl implements UserDataManager {
         doFindPermissionSet(permissionSet).getMetadata().put(attributename, value);
     }
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    private void doAddPermissionSetToSet(PermissionSetData parent, String... permissionSet) {
+        for (String p : permissionSet) {
+            PermissionSetData child = doFindPermissionSet(p);
+            parent.getPermissionSets().add(child);
+        }
+        entityManager.merge(parent);
+    }
+
+    private void doRemovePermissionSetFromSet(PermissionSetData parent, String... permissionSet) {
+        for (String p : permissionSet) {
+            PermissionSetData child = doFindPermissionSet(p);
+            parent.getPermissionSets().remove(child);
+        }
+        entityManager.merge(parent);
+    }
+
+    private Collection<Permission> getPermissionsFromSetData(PermissionSetData set) {
+        Collection<PermissionData> data = set.getPermissions();
+        return EntryUtils.convertAllBeanDataToObjects(data);
+    }
+
+    private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
+        Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
+        for (PermissionSetData child : set.getPermissionSets()) {
+            result.addAll(getAllPermissionsFromPermissionSet(child.getId()));
+        }
+        return result;
+    }
+
+    private void doRemovePermissionsFromSet(PermissionSetData set, Permission... permission) {
+        for (Permission p : permission) {
+            PermissionData data = convertPermissionToPermissionData(p);
+            set.getPermissions().remove(data);
+        }
+        entityManager.merge(set);
     }
 
     private UserData doFindUser(String username) throws UserNotFoundException {
@@ -347,5 +343,9 @@ public class UserDataManagerImpl implements UserDataManager {
             throw new PermissionSetNotFoundException("permissionSet " + permissionSet + " not found");
         }
         return set;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }
