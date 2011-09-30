@@ -69,7 +69,7 @@ public class RulebaseBuilder {
      *
      * @throws RuleBaseException if the rulebase contains errors
      */
-    public void reloadRulebase() throws RuleBaseException {
+    public synchronized void reloadRulebase() throws RuleBaseException {
         long start = System.currentTimeMillis();
         reloadDeclarations();
         packageStrings.clear();
@@ -122,7 +122,7 @@ public class RulebaseBuilder {
         });
     }
 
-    public void reloadPackage(String packageName) throws RuleBaseException {
+    public synchronized void reloadPackage(String packageName) throws RuleBaseException {
         long start = System.currentTimeMillis();
         packageStrings.clear();
         StringBuffer packageString = initNewPackageString(packageName);
