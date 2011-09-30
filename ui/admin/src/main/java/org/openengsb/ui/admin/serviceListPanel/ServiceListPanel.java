@@ -23,6 +23,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -95,6 +96,17 @@ public class ServiceListPanel extends Panel {
             protected void populateItem(final ListItem<ServiceEntry> item) {
                 item.add(new Label("service.name", item.getModelObject().getInstanceId()));
                 item.add(new Label("service.state", item.getModelObject().aliveState.name()));
+                switch (item.getModelObject().aliveState) {
+                    case OFFLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOffline"));
+                        break;
+                    case ONLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOnline"));
+                        break;
+                    default:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOther"));
+                        break;
+                }
             }
         });
         add(container);

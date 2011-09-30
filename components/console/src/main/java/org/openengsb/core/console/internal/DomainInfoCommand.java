@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.console;
+package org.openengsb.core.console.internal;
 
 import java.util.Collections;
 import java.util.List;
