@@ -43,10 +43,13 @@ public class SecurityInterceptor implements MethodInterceptor {
             return mi.proceed();
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AccessDeniedException("no authentication was found in context");
+        }
         if (authentication instanceof BundleAuthenticationToken) {
             return mi.proceed();
         }
-        String username = authentication.getName();
+        String username = (String) authentication.getPrincipal();
         Access decisionResult = authorizer.checkAccess(username, mi);
         if (decisionResult != Access.GRANTED) {
             LOGGER.warn("Access denied because resul was {}", decisionResult);
