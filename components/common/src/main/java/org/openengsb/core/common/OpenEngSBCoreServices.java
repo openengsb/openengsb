@@ -54,6 +54,7 @@ public final class OpenEngSBCoreServices {
      * anywhere else. The type to request the config persistence service is stored directly at the Configuration objects
      * in a string constant such as RuleConfiguration#TYPE_ID or ContextConfiguration#TYPE_ID
      */
+    @Deprecated
     public static ConfigPersistenceService getConfigPersistenceService(String type)
         throws OsgiServiceNotAvailableException {
         Filter configPersistenceFilter;
