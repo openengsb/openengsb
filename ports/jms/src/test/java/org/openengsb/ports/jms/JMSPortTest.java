@@ -70,12 +70,12 @@ import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
+import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
-import org.openengsb.core.security.internal.CipherUtils;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -128,7 +128,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String AUTH_DATA = ""
             + "{"
-            + "  \"className\":\"org.openengsb.connector.usernamepassword.internal.Password\","
+            + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
             + "  \"data\":"
             + "  {"
             + "    \"value\":\"password\""

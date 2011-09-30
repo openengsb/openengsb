@@ -48,7 +48,7 @@ import org.openengsb.core.api.security.EncryptionException;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.security.internal.CipherUtils;
+import org.openengsb.core.common.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

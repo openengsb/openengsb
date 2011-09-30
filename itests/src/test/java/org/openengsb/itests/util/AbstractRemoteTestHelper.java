@@ -39,7 +39,7 @@ import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.security.internal.CipherUtils;
+import org.openengsb.core.common.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,17 +149,17 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
 
         String authInfo = ""
                 + "{"
-                + "  \"className\":\"org.openengsb.core.api.security.model.Authentication\","
+                + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
                 + "  \"data\":"
                 + "  {"
-                + "    \"username\":\"" + username + "\","
-                + "    \"credentials\":\"" + password + "\""
+                + "    \"value\":\"" + password + "\""
                 + "  }"
                 + "}";
 
         String secureRequest = ""
                 + "{"
-                + "  \"authenticationData\":" + authInfo + ","
+                + "  \"principal\": \"" + username + "\","
+                + "  \"credentials\":" + authInfo + ","
                 + "  \"timestamp\":" + System.currentTimeMillis() + ","
                 + "  \"message\":" + request
                 + "}";

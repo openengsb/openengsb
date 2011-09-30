@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -35,7 +35,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openengsb.core.security.internal.CipherUtils;
+import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 
 public class CipherUtilTest extends AbstractOpenEngSBTest {
