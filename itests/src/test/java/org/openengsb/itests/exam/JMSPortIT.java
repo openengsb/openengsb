@@ -29,9 +29,13 @@ import java.io.IOException;
 import javax.crypto.SecretKey;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
@@ -40,23 +44,42 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
+
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms"));
+    }
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        RuleManager rm = getOsgiService(RuleManager.class);
+        addWorkflow("simpleFlow");
+        String string = null;
+        while (string == null) {
+            // TODO OPENENGSB-2097 find a better way than an endless loop
+            LOGGER.warn("checking for simpleFlow to be present");
+            string = rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
+            Thread.sleep(1000);
+        }
     }
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
             OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-
         assertNotNull(serviceWithId);
+
     }
 
     @Test
@@ -117,7 +140,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
-        addWorkflow("simpleFlow");
         ActiveMQConnectionFactory cf =
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);

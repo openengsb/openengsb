@@ -18,8 +18,6 @@
 package org.openengsb.itests.util;
 
 import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
@@ -37,16 +35,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
@@ -58,14 +59,9 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
@@ -221,18 +217,6 @@ public abstract class AbstractExamTestHelper {
         return "target/paxrunner/features/";
     }
 
-    public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
-        ManagedServiceFactory factoryService =
-            getOsgiService(ManagedServiceFactory.class, "(service.pid=org.openengsb.persistence.config)",
-                30000);
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
-        String pid = "org.openengsb.persistence.config." + UUID.randomUUID();
-        props.put("backend.id", backendId);
-        props.put("configuration.id", configurationId);
-        props.put("service.pid", pid);
-        factoryService.updated(pid, props);
-    }
-
     public static List<String> getImportantBundleSymbolicNames() {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.infrastucture.jpa");
@@ -245,16 +229,14 @@ public abstract class AbstractExamTestHelper {
         return importantBundles;
     }
 
-    protected void authenticateAsAdmin() throws InterruptedException {
+    protected void authenticateAsAdmin() throws InterruptedException, AuthenticationException {
         authenticate("admin", "password");
     }
 
-    protected void authenticate(String user, String password) throws InterruptedException {
-        AuthenticationManager authenticationManager = getOsgiService(AuthenticationManager.class, 20000);
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
-        assertThat(authentication.isAuthenticated(), is(true));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
+        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
+        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {

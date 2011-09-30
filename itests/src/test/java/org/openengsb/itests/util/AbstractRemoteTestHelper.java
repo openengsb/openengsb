@@ -31,10 +31,13 @@ import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -188,13 +191,21 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         return result;
     }
 
-    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws DecryptionException {
+    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws Exception {
         try {
             result = decryptResult(sessionKey, result);
         } catch (DecryptionException e) {
             LOGGER.error("decryption failed.");
             LOGGER.error(result);
         }
-        assertThat(result, containsString("The answer to life the universe and everything"));
+
+        if (!result.contains("The answer to life the universe and everything")) {
+            SecureResponse readValue = new ObjectMapper().readValue(result, SecureResponse.class);
+            MethodResult result2 = readValue.getMessage().getResult();
+            if (result2.getType().equals(MethodResult.ReturnType.Exception)) {
+                LOGGER.error(result2.getArg().toString());
+            }
+            assertThat(result, containsString("The answer to life the universe and everything"));
+        }
     }
 }
