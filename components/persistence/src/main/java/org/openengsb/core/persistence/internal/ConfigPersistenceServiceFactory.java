@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.persistence.internal;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceRegistration;
@@ -101,10 +102,9 @@ public class ConfigPersistenceServiceFactory implements ManagedServiceFactory {
 
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-    }
-
-    public void setServiceUtils(OsgiUtilsService serviceUtils) {
-        this.serviceUtils = serviceUtils;
+        DefaultOsgiUtilsService defaultOsgiUtilsService = new DefaultOsgiUtilsService();
+        defaultOsgiUtilsService.setBundleContext(bundleContext);
+        serviceUtils = defaultOsgiUtilsService;
     }
 
 }

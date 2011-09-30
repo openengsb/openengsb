@@ -49,6 +49,8 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
@@ -61,6 +63,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
     private ConnectorManager serviceManager;
     private ConnectorRegistrationManagerImpl serviceRegistrationManagerImpl;
     private ConnectorInstanceFactory factory;
+    private DefaultConfigPersistenceService configPersistence;
 
     @Before
     public void setUp() throws Exception {
@@ -82,12 +85,14 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, Constants.CONFIG_CONNECTOR);
         props.put(Constants.BACKEND_ID, "dummy");
-        registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
+        configPersistence = new DefaultConfigPersistenceService(persistenceBackend);
+        registerService(configPersistence, props, ConfigPersistenceService.class);
     }
 
     private void createServiceManager() {
         ConnectorManagerImpl serviceManagerImpl = new ConnectorManagerImpl();
         serviceManagerImpl.setRegistrationManager(serviceRegistrationManagerImpl);
+        serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManager = serviceManagerImpl;
     }
 
