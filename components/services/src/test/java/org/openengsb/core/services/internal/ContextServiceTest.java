@@ -42,6 +42,8 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.BundleContext;
@@ -50,11 +52,13 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
 
     private DefaultOsgiUtilsService serviceUtils;
     private ContextCurrentService cs;
+    private DefaultConfigPersistenceService configPersistence;
 
     @Before
     public void setup() {
         registerConfigPersistence();
         ContextServiceImpl cs = new ContextServiceImpl();
+        cs.setConfigPersistence(configPersistence);
         this.cs = cs;
     }
 
@@ -67,7 +71,8 @@ public class ContextServiceTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.CONFIGURATION_ID, ContextConfiguration.TYPE_ID);
         props.put(Constants.BACKEND_ID, "dummy");
-        registerService(new DefaultConfigPersistenceService(persistenceBackend), props, ConfigPersistenceService.class);
+        configPersistence = new DefaultConfigPersistenceService(persistenceBackend);
+        registerService(configPersistence, props, ConfigPersistenceService.class);
     }
 
     private void createTestContextA() {

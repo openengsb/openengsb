@@ -26,7 +26,6 @@ import java.util.Map;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -34,7 +33,6 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +45,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorManagerImpl.class);
 
     private ConnectorRegistrationManager registrationManager;
+    private ConfigPersistenceService configPersistence;
 
     public void init() {
         /*
@@ -221,8 +220,12 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }
     }
 
-    private ConfigPersistenceService getConfigPersistence() {
-        return OpenEngSBCoreServices.getConfigPersistenceService(Constants.CONFIG_CONNECTOR);
+    public ConfigPersistenceService getConfigPersistence() {
+        return configPersistence;
+    }
+
+    public void setConfigPersistence(ConfigPersistenceService configPersistence) {
+        this.configPersistence = configPersistence;
     }
 
     public void setRegistrationManager(ConnectorRegistrationManager registrationManager) {

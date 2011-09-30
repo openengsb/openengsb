@@ -21,11 +21,16 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
-
-    <!-- Allows us to use system properties as variables in this configuration file -->
+  
+  <!-- Allows us to use system properties as variables in this configuration file -->
   <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
 
-  <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl" />
+  <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl">
+    <property name="configPersistence" ref="contextConfigPersistence" />
+  </bean>
+
+  <reference id="contextConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=CONTEXT)" />
 
   <service ref="contextService">
     <interfaces>
@@ -43,7 +48,13 @@
 
   <bean id="connectorManager" class="org.openengsb.core.services.internal.ConnectorManagerImpl" init-method="init">
     <property name="registrationManager" ref="registrationManager" />
+    <property name="configPersistence" ref="connectorConfigPersistence" />
   </bean>
+
+  <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=CONNECTOR)" />
+
+
 
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
@@ -64,22 +75,6 @@
     <bean class="org.openengsb.core.services.internal.DefaultOutgoingPortUtilService" />
   </service>
 
-  <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
-    <property name="bundleContext" ref="blueprintBundleContext" />
-  </bean>
-
-  <service interface="org.openengsb.core.api.OsgiUtilsService" ref="serviceUtils" />
-
-  <service interface="org.osgi.service.cm.ManagedServiceFactory">
-    <service-properties>
-      <entry key="service.pid" value="org.openengsb.persistence.config" />
-    </service-properties>
-    <bean class="org.openengsb.core.services.internal.ConfigPersistenceServiceFactory">
-      <property name="bundleContext" ref="blueprintBundleContext" />
-      <property name="serviceUtils" ref="serviceUtils" />
-    </bean>
-  </service>
-
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
     <service-properties>
       <entry key="backend.id" value="contextFilePersistenceService" />
@@ -90,8 +85,13 @@
   </service>
 
   <service interface="org.openengsb.core.api.workflow.WorkflowEditorService">
-    <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl" />
+    <bean class="org.openengsb.core.services.internal.WorkflowEditorServiceImpl">
+      <property name="configPersistence" ref="workflowConfigPersistence" />
+    </bean>
   </service>
+
+  <reference id="workflowConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
+    filter="(configuration.id=WORKFLOW)" />
 
   <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
@@ -127,16 +127,6 @@
     <bean class="org.openengsb.core.services.internal.virtual.InvokeAllIgnoreResultStrategy" />
   </service>
 
-  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
-    <service-properties>
-      <entry key="backend.id" value="persistenceService" />
-    </service-properties>
-    <bean class="org.openengsb.core.services.internal.CorePersistenceServiceBackend" init-method="init">
-      <property name="bundleContext" ref="blueprintBundleContext" />
-      <property name="persistenceManager" ref="persistenceManager" />
-    </bean>
-  </service>
-
   <service id="contextDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.context.ContextDeployerService">
       <property name="contextCurrentService" ref="contextService" />
@@ -153,6 +143,12 @@
       </props>
     </property>
   </bean>
+
+  <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.OsgiUtilsService" ref="serviceUtils" />
 
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
 

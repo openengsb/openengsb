@@ -33,10 +33,11 @@ import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.persistence.ConfigPersistenceBackendService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
+import org.openengsb.core.persistence.internal.ConfigPersistenceServiceFactory;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceRegistration;
@@ -86,7 +87,6 @@ public class ConfigPersistenceServiceFactoryTest {
             }))).thenReturn(serviceRegistration);
 
         serviceFactory = new ConfigPersistenceServiceFactory();
-        serviceFactory.setServiceUtils(serviceUtils);
         serviceFactory.setBundleContext(bundleContext);
     }
 
@@ -99,14 +99,6 @@ public class ConfigPersistenceServiceFactoryTest {
     @Test(expected = ConfigurationException.class)
     public void testNonExisting_shouldThrowConfigurationException() throws Exception {
         properties.remove(Constants.CONFIGURATION_ID);
-        serviceFactory.updated("anyPid", properties);
-    }
-
-    @Test(expected = ConfigurationException.class)
-    public void testBackendServiceNotExisting_shouldThrowConfigurationException() throws Exception {
-        properties.put(Constants.BACKEND_ID, "otherBackend");
-        when(serviceUtils.getOsgiServiceProxy((Filter) null, ConfigPersistenceBackendService.class)).thenThrow(
-            new OsgiServiceNotAvailableException());
         serviceFactory.updated("anyPid", properties);
     }
 
