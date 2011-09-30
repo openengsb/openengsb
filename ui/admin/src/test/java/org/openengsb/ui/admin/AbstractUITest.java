@@ -53,10 +53,10 @@ import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
+import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
-import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
-import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
@@ -114,6 +114,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         backend.setBundleContext(bundleContext);
         backend.init();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);
+
+        serviceManager.setConfigPersistence(persistenceService);
+
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("configuration.id", Constants.CONFIG_CONNECTOR);
         registerService(persistenceService, props, ConfigPersistenceService.class);

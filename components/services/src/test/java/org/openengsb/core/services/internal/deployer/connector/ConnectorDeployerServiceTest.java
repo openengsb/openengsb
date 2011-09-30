@@ -64,10 +64,10 @@ import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
+import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
-import org.openengsb.core.services.internal.CorePersistenceServiceBackend;
-import org.openengsb.core.services.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.DummyPersistenceManager;
@@ -91,13 +91,14 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
     private ConnectorId testConnectorId;
+    private DefaultConfigPersistenceService configPersistence;
 
     @Before
     public void setUp() throws Exception {
         connectorDeployerService = new ConnectorDeployerService();
 
-        createServiceManagerMock();
         setupPersistence();
+        createServiceManagerMock();
 
         connectorDeployerService.setServiceManager(serviceManager);
 
@@ -124,7 +125,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         backend.setBundleContext(bundleContext);
         backend.setPersistenceManager(dummyPersistenceManager);
         backend.init();
-        DefaultConfigPersistenceService configPersistence = new DefaultConfigPersistenceService(backend);
+        configPersistence = new DefaultConfigPersistenceService(backend);
         Dictionary<String, Object> props2 = new Hashtable<String, Object>();
         props2.put("configuration.id", org.openengsb.core.api.Constants.CONFIG_CONNECTOR);
         registerService(configPersistence, props2, ConfigPersistenceService.class);
@@ -136,6 +137,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         registrationManager.setBundleContext(bundleContext);
         registrationManager.setServiceUtils(OpenEngSBCoreServices.getServiceUtilsService());
         serviceManagerImpl.setRegistrationManager(registrationManager);
+        serviceManagerImpl.setConfigPersistence(configPersistence);
         serviceManager = serviceManagerImpl;
         return serviceManagerImpl;
     }

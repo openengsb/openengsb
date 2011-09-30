@@ -29,7 +29,6 @@ import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.WorkflowEditorService;
 import org.openengsb.core.api.workflow.model.WorkflowRepresentation;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +40,12 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
 
     private WorkflowRepresentation currentWorkflow;
 
-    private ConfigPersistenceService getPersistence() {
-        return OpenEngSBCoreServices
-            .getConfigPersistenceService("WORKFLOW");
-    }
+    private ConfigPersistenceService configPersistence;
 
     @Override
     public void loadWorkflowsFromDatabase() throws PersistenceException {
         try {
-            List<ConfigItem<WorkflowRepresentation>> load = getPersistence().load(new HashMap<String, String>());
+            List<ConfigItem<WorkflowRepresentation>> load = configPersistence.load(new HashMap<String, String>());
             for (ConfigItem<WorkflowRepresentation> configItem : load) {
                 final WorkflowRepresentation content = configItem.getContent();
                 workflows.put(content.getName(), content);
@@ -90,7 +86,7 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
         workflowRepresentation.setContent(getCurrentWorkflow());
         try {
             LOGGER.debug("Saving workflow " + getCurrentWorkflow().getName());
-            getPersistence().persist(workflowRepresentation);
+            configPersistence.persist(workflowRepresentation);
         } catch (InvalidConfigurationException e) {
             LOGGER.error("Invalid Configuration: " + e.getMessage());
             throw new PersistenceException(e);
@@ -115,9 +111,13 @@ public class WorkflowEditorServiceImpl implements WorkflowEditorService {
     public void removeCurrentWorkflow() throws PersistenceException {
         final HashMap<String, String> metadata = new HashMap<String, String>();
         metadata.put("name", getCurrentWorkflow().getName());
-        getPersistence().remove(metadata);
-        this.workflows.remove(this.getCurrentWorkflow().getName());
-        this.currentWorkflow = null;
+        configPersistence.remove(metadata);
+        workflows.remove(this.getCurrentWorkflow().getName());
+        currentWorkflow = null;
 
+    }
+
+    public void setConfigPersistence(ConfigPersistenceService configPersistence) {
+        this.configPersistence = configPersistence;
     }
 }

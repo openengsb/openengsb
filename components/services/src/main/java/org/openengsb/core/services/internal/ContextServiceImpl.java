@@ -31,13 +31,14 @@ import org.openengsb.core.api.model.ContextId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ContextServiceImpl implements ContextCurrentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextServiceImpl.class);
+
+    private ConfigPersistenceService configPersistence;
 
     @Override
     public Context getContext(String path) {
@@ -129,7 +130,11 @@ public class ContextServiceImpl implements ContextCurrentService {
     }
 
     private ConfigPersistenceService getConfigPersistenceService() {
-        return OpenEngSBCoreServices.getConfigPersistenceService(ContextConfiguration.TYPE_ID);
+        return configPersistence;
+    }
+
+    public void setConfigPersistence(ConfigPersistenceService configPersistence) {
+        this.configPersistence = configPersistence;
     }
 
 }
