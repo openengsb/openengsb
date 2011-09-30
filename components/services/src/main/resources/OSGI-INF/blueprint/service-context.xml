@@ -76,14 +76,6 @@
     <bean class="org.openengsb.core.services.internal.DefaultOutgoingPortUtilService" />
   </service>
 
-<!--   <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService"> -->
-<!--     <property name="bundleContext" ref="blueprintBundleContext" /> -->
-<!--   </bean> -->
-
-  <service interface="org.openengsb.core.api.OsgiUtilsService" ref="serviceUtils" />
-
-
-
   <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
     <service-properties>
       <entry key="backend.id" value="contextFilePersistenceService" />
@@ -155,6 +147,8 @@
   <bean id="serviceUtils" class="org.openengsb.core.common.util.DefaultOsgiUtilsService">
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
+
+  <service interface="org.openengsb.core.api.OsgiUtilsService" ref="serviceUtils" />
 
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
 

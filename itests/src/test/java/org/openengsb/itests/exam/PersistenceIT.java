@@ -103,7 +103,8 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private ConfigPersistenceService retrieveAndConfigureRuleCorePersistenceService() throws IOException {
-        return getOsgiService(ConfigPersistenceService.class, "(configuration.id=RULE)", 30000L);
+        return getOsgiService(ConfigPersistenceService.class,
+            String.format("(%s=%s)", Constants.CONFIGURATION_ID, RuleConfiguration.TYPE_ID), 30000L);
 
     }
 
