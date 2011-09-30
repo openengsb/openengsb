@@ -17,13 +17,14 @@
 
 package org.openengsb.core.common.beans;
 
+
 public class BeanWithFaultyGetter {
 
     public BeanWithFaultyGetter() {
     }
 
     public String getValue() {
-        throw new RuntimeException();
+        throw new SecurityException("test");
     }
 
     public void setValue(String value) {

@@ -17,7 +17,6 @@
 
 package org.openengsb.itests.util;
 
-import static java.lang.String.format;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
@@ -111,7 +110,7 @@ public abstract class AbstractExamTestHelper {
             Thread.sleep(1000);
             localCounter--;
         }
-        throw new IllegalStateException(format("Couldn't reach page %s within %s seconds", urlToWatchFor,
+        throw new IllegalStateException(String.format("Couldn't reach page %s within %s seconds", urlToWatchFor,
             maxWaitTime));
     }
 
@@ -199,7 +198,7 @@ public abstract class AbstractExamTestHelper {
     /*
      * Provides an iterable collection of references, even if the original array is null
      */
-    private static final Collection<ServiceReference> asCollection(ServiceReference[] references) {
+    private static Collection<ServiceReference> asCollection(ServiceReference[] references) {
         List<ServiceReference> result = new LinkedList<ServiceReference>();
         if (references != null) {
             for (ServiceReference reference : references) {
@@ -234,6 +233,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
+        waitForUserDataInitializer();
         AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
         Authentication authentication = authenticationManager.authenticate(user, new Password(password));
         SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
@@ -245,6 +245,7 @@ public abstract class AbstractExamTestHelper {
             LOGGER.warn("waiting for users to be initialized");
             Thread.sleep(1000);
         }
+        getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
 
     public static Option[] baseConfiguration() throws Exception {

@@ -34,7 +34,8 @@ public final class CollectionUtilsExtended {
      *
      * The returned collection is immutable.
      */
-    public static <TargetType> Collection<TargetType> filterCollectionByClass(Collection<?> source, final Class<TargetType> clazz) {
+    public static <TargetType> Collection<TargetType> filterCollectionByClass(Collection<?> source,
+            final Class<TargetType> clazz) {
         Collection<?> filtered = Collections2.filter(source, new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {

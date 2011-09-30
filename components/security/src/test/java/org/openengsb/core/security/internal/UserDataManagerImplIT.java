@@ -92,6 +92,11 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         }
 
         @Override
+        public String toString() {
+            return "TestPermission: " + desiredResult;
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;

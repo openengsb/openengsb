@@ -38,7 +38,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -68,8 +67,8 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws WorkflowException, IOException,
-        RuleBaseException {
+    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws Exception {
+        authenticateAsAdmin();
         addWorkflow("TaskDemoWorkflow");
 
         ProcessBag processBag = new ProcessBag();

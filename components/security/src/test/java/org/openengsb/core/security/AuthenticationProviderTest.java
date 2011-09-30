@@ -101,13 +101,13 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void authenticateOnetimePassword() throws Exception {
-        Authentication authenticate = onetimeAuthenticator.authenticate("testuser", new OneTimeValue((90489 * 2)));
+        Authentication authenticate = onetimeAuthenticator.authenticate("testuser", new OneTimeValue(90489 * 2));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 
     @Test(expected = AuthenticationException.class)
     public void authenticateOnetimePassword_shouldFail() throws Exception {
-        onetimeAuthenticator.authenticate("testuser", new OneTimeValue((123)));
+        onetimeAuthenticator.authenticate("testuser", new OneTimeValue(123));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class AuthenticationProviderTest extends AbstractOsgiMockServiceTest {
 
     @Test
     public void authenticateOnetimePasswordAtManager() throws Exception {
-        Authentication authenticate = authManager.authenticate("testuser", new OneTimeValue((90489 * 2)));
+        Authentication authenticate = authManager.authenticate("testuser", new OneTimeValue(90489 * 2));
         assertThat(authenticate.getUsername(), is("testuser"));
     }
 

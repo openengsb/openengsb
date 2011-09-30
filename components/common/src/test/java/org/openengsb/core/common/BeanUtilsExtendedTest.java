@@ -102,7 +102,7 @@ public class BeanUtilsExtendedTest {
         assertThat(created, not(is(bean)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SecurityException.class)
     public void buildMapFromBeanWithFaultyGetter_shouldThrowException() throws Exception {
         BeanWithFaultyGetter bean = new BeanWithFaultyGetter();
         BeanUtilsExtended.buildObjectAttributeMap(bean);
