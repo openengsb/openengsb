@@ -95,7 +95,9 @@ public class WorkflowEditorTest extends AbstractUITest {
     }
 
     private void createWorkflowEditorService() throws PersistenceException {
-        service = new WorkflowEditorServiceImpl();
+        WorkflowEditorServiceImpl workflowEditorServiceImpl = new WorkflowEditorServiceImpl();
+        workflowEditorServiceImpl.setConfigPersistence(workflowPersistence);
+        service = workflowEditorServiceImpl;
         context.putBean("workflowEditorService", service);
     }
 

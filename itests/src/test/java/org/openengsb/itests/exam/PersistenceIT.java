@@ -24,23 +24,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.model.RuleConfiguration;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -108,18 +103,8 @@ public class PersistenceIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     private ConfigPersistenceService retrieveAndConfigureRuleCorePersistenceService() throws IOException {
-        ConfigurationAdmin configAdmin = getOsgiService(ConfigurationAdmin.class);
-        Configuration configuration =
-            configAdmin.createFactoryConfiguration(
-                "org.openengsb.persistence.config",
-                getInstalledBundle("org.openengsb.framework.services").getLocation());
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.BACKEND_ID, "persistenceService");
-        properties.put(Constants.CONFIGURATION_ID, RuleConfiguration.TYPE_ID);
-        configuration.update(properties);
-        ConfigPersistenceService configPersistenceService =
-            OpenEngSBCoreServices.getConfigPersistenceService(RuleConfiguration.TYPE_ID);
-        return configPersistenceService;
+        return getOsgiService(ConfigPersistenceService.class, "(configuration.id=RULE)", 30000L);
+
     }
 
     @Test

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.core.persistence.internal;
 
 import java.util.ArrayList;
 import java.util.List;

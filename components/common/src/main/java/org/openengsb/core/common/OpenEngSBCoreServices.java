@@ -17,13 +17,10 @@
 
 package org.openengsb.core.common;
 
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.remote.OutgoingPortUtilService;
-import org.osgi.framework.Filter;
 
 /**
  * Static helper methods providing proxies which access the OSGi service registry for each request to retrieve the
@@ -46,20 +43,6 @@ public final class OpenEngSBCoreServices {
      */
     public static WiringService getWiringService() throws OsgiServiceNotAvailableException {
         return serviceUtils.getOsgiServiceProxy(WiringService.class);
-    }
-
-    /**
-     * OpenEngSB Core persistence service specialized to retrieve and store ConfigItem. Those are basically simple
-     * persistence items which can be stored at various endpoints like file, the "regular" persistence service or
-     * anywhere else. The type to request the config persistence service is stored directly at the Configuration objects
-     * in a string constant such as RuleConfiguration#TYPE_ID or ContextConfiguration#TYPE_ID
-     */
-    public static ConfigPersistenceService getConfigPersistenceService(String type)
-        throws OsgiServiceNotAvailableException {
-        Filter configPersistenceFilter;
-        configPersistenceFilter = serviceUtils.makeFilter(ConfigPersistenceService.class,
-                String.format("(%s=%s)", Constants.CONFIGURATION_ID, type));
-        return serviceUtils.getOsgiServiceProxy(configPersistenceFilter, ConfigPersistenceService.class);
     }
 
     /**
