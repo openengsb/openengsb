@@ -30,7 +30,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -41,9 +40,13 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
@@ -83,6 +86,19 @@ public abstract class AbstractExamTestHelper {
 
     @Inject
     private BundleContext bundleContext;
+
+    @Before
+    public void waitForRequiredTasks() throws Exception {
+        RuleManager rm = getOsgiService(RuleManager.class);
+        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+        }
+        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
+            LOGGER.warn("waiting for taskboxConfig to finish init");
+            Thread.sleep(1000);
+        }
+    }
 
     protected <T> T getOsgiService(Class<T> type, long timeout) {
         return getOsgiService(type, null, timeout);
@@ -214,18 +230,6 @@ public abstract class AbstractExamTestHelper {
 
     protected static String getWorkingDirectory() {
         return "target/paxrunner/features/";
-    }
-
-    public static List<String> getImportantBundleSymbolicNames() {
-        List<String> importantBundles = new ArrayList<String>();
-        importantBundles.add("org.openengsb.infrastucture.jpa");
-        importantBundles.add("org.openengsb.core.api");
-        importantBundles.add("org.openengsb.core.common");
-        importantBundles.add("org.openengsb.core.service");
-        importantBundles.add("org.openengsb.core.persistence");
-        importantBundles.add("org.openengsb.core.workflow");
-        importantBundles.add("org.openengsb.core.security");
-        return importantBundles;
     }
 
     protected void authenticateAsAdmin() throws InterruptedException, AuthenticationException {
