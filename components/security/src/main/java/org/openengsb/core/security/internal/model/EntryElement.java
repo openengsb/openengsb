@@ -16,6 +16,7 @@
  */
 package org.openengsb.core.security.internal.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -33,7 +34,9 @@ import com.google.common.base.Objects;
 @Entity
 public class EntryElement {
 
+    @Column(name = "TYPE", nullable = false)
     private String type;
+    @Column(name = "VALUE", nullable = false)
     private String value;
 
     public EntryElement(String type, String value) {

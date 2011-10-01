@@ -19,6 +19,7 @@ package org.openengsb.core.security.internal.model;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -42,6 +43,7 @@ import com.google.common.collect.Maps;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BeanData {
 
+    @Column(name = "type", nullable = false)
     private String type;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

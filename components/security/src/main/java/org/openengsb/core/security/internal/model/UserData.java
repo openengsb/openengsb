@@ -42,6 +42,7 @@ import com.google.common.collect.Maps;
 public class UserData {
 
     @Id
+    @Column(name = "USERNAME")
     private String username;
 
     @ElementCollection(fetch = FetchType.EAGER)

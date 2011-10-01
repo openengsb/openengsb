@@ -19,6 +19,7 @@ package org.openengsb.core.security.internal.model;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -34,6 +35,7 @@ import com.google.common.base.Objects;
 @Entity
 public class EntryValue {
 
+    @Column(name = "KEY")
     private String key;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

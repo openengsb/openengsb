@@ -48,6 +48,7 @@ import com.google.common.collect.Sets;
 public class PermissionSetData {
 
     @Id
+    @Column(name = "id")
     private String id;
 
     @ElementCollection(fetch = FetchType.EAGER)
