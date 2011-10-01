@@ -98,7 +98,7 @@ public class RequestHandlerImpl implements RequestHandler {
         Map<String, String> metaData = call.getMetaData();
         String serviceId = metaData.get("serviceId");
         String filter = metaData.get("serviceFilter");
-        String filterString = createFilterString(filter, serviceId);
+        String filterString = String.format("(&(!(internal=true))%s)", createFilterString(filter, serviceId));
         return OpenEngSBCoreServices.getServiceUtilsService().getService(filterString);
     }
 

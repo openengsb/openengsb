@@ -229,8 +229,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         publicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
     }
 
-    @Test(timeout = 10000)
-    public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
+    @Test
+    // (timeout = 10000)
+        public
+        void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(
             JsonMethodCallMarshalFilter.class,

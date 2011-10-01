@@ -27,17 +27,41 @@
   </bean>
 
   <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <service-properties>
+      <entry key="service.ranking" value="-1" />
+      <entry key="internal" value="true" />
+    </service-properties>
     <ref component-id="userManager" />
+  </service>
+
+  <bean id="secureUserManagerFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.api.security.service.UserDataManager</value>
+      </list>
+    </property>
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+    <property name="target" ref="userManager" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <bean factory-method="getObject" factory-ref="secureUserManagerFactory" />
   </service>
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
     <service-properties>
       <entry key="org.openengsb.interceptor" value="security" />
     </service-properties>
-    <bean class="org.openengsb.core.security.internal.SecurityInterceptor">
-      <property name="authorizer" ref="authorizer" />
-    </bean>
+    <ref component-id="securityInterceptor" />
   </service>
+
+  <bean id="securityInterceptor" class="org.openengsb.core.security.internal.SecurityInterceptor">
+    <property name="authorizer" ref="authorizer" />
+  </bean>
 
   <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
     <service-properties>
