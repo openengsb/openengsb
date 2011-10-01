@@ -21,10 +21,22 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 
+/**
+ * provides a way of authenticating users with specific credentials
+ */
 public interface AuthenticationDomain extends Domain {
 
+    /**
+     * authenticates a user with the given credentials. if the authentication is successful an {@link Authentication}
+     * containing the user is returned.
+     *
+     * @throws AuthenticationException if the authentication fails.
+     */
     Authentication authenticate(String username, Credentials credentials) throws AuthenticationException;
 
+    /**
+     * checks whether the given credentials are supported by this connector
+     */
     boolean supports(Credentials credentials);
 
 }

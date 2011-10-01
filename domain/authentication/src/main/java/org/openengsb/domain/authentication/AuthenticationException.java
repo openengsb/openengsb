@@ -16,6 +16,9 @@
  */
 package org.openengsb.domain.authentication;
 
+/**
+ * thrown when an authentication fails
+ */
 public class AuthenticationException extends Exception {
 
     private static final long serialVersionUID = 7360776501856159367L;

@@ -19,11 +19,18 @@ package org.openengsb.domain.authorization;
 
 import org.openengsb.core.api.Domain;
 
+/**
+ * Makes decisions about Access on a specific resource
+ */
 public interface AuthorizationDomain extends Domain {
 
     public enum Access {
         GRANTED, DENIED, ABSTAINED,
     }
 
+    /**
+     * Makes decisions about Access on a specific resource. If the Connector cannot handle the object, it should return
+     * {@link Access#ABSTAINED}
+     */
     Access checkAccess(String user, Object object);
 }

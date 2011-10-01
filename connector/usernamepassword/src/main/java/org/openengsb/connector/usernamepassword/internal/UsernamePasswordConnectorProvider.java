@@ -27,19 +27,8 @@ public class UsernamePasswordConnectorProvider extends AbstractConnectorProvider
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
         builder.id(id);
-        builder.name("UsernamePasswordAuthenticator.name").description("UsernamePasswordAuthenticator.description");
-        builder.attribute(builder.newAttribute().id("attr").name("UsernamePasswordAuthenticator.attr")
-            .description("UsernamePasswordAuthenticator.attr.description")
-            .defaultValue("${connectorName.atr.defaultValue}")
-            .required()
-            .build());
+        builder.name("usernamepassword.name").description("usernamepassword.description");
         return builder.build();
     }
 
-    // private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
-    // String descriptionId) {
-    // return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
-    // .build();
-    //
-    // }
 }
