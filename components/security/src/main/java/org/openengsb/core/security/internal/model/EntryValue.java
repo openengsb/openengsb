@@ -22,7 +22,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+import com.google.common.base.Objects;
+
+/**
+ * represents the value of a property in a bean. Multiple values in the form of Arrays and Collections are supported. If
+ * a property has a single value, it is saved as a singleton-list.
+ */
+@Table(name = "ENTRY_VALUE")
 @Entity
 public class EntryValue {
 
@@ -62,40 +70,16 @@ public class EntryValue {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(key, value);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof EntryValue)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        EntryValue other = (EntryValue) obj;
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        final EntryValue other = (EntryValue) obj;
+        return Objects.equal(key, other.key) && Objects.equal(value, other.value);
     }
 
 }

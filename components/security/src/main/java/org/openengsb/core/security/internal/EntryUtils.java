@@ -41,9 +41,17 @@ import com.google.common.collect.ComputationException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+/**
+ * Provides util-functions for handling multi-valued attributes, used to save {@link BeanData}.
+ *
+ * For more details on the conversion from a bean to {@link BeanData} and vice versa, see {@link BeanData}.
+ */
 public final class EntryUtils {
 
-    static List<Object> convertAllEntryElementsToObject(List<EntryElement> value) {
+    /**
+     * converts a list of {@link EntryElement} back to a list containing the original java objects.
+     */
+    public static List<Object> convertAllEntryElementsToObject(List<EntryElement> value) {
         return Lists.transform(value, new EntryElementParserFunction());
     }
 
@@ -67,7 +75,10 @@ public final class EntryUtils {
 
     }
 
-    static List<EntryElement> makeEntryElementList(Object... value) {
+    /**
+     * converts all Objects to {@link EntryElement}s to their Bean-data can be saved to the DB
+     */
+    public static List<EntryElement> makeEntryElementList(Object... value) {
         List<EntryElement> valueElements = new ArrayList<EntryElement>();
         for (Object o : value) {
             Class<?> type = ClassUtils.primitiveToWrapper(o.getClass());
@@ -77,7 +88,10 @@ public final class EntryUtils {
         return valueElements;
     }
 
-    static Map<String, EntryValue> convertBeanToEntryMap(Object bean) {
+    /**
+     * Takes any bean Object and converts it to a Map of {@link EntryValue} so the beandata can be saved to the DB.
+     */
+    public static Map<String, EntryValue> convertBeanToEntryMap(Object bean) {
         Map<String, Object> buildAttributeValueMap = BeanUtilsExtended.buildObjectAttributeMap(bean);
         return Maps.transformEntries(buildAttributeValueMap, new ObjectToEntryValueTransformer());
     }
@@ -100,6 +114,9 @@ public final class EntryUtils {
         }
     }
 
+    /**
+     * works similar to {@link EntryUtils#makeEntryElementList(Object...)}, but takes a list as argument
+     */
     private static List<EntryElement> convertAllObjectsToEntryElements(Collection<? extends Object> collection) {
         List<EntryElement> result = new ArrayList<EntryElement>();
         for (Object o : collection) {
@@ -120,7 +137,10 @@ public final class EntryUtils {
         return new EntryElement(o.getClass().getName(), o.toString());
     }
 
-    static <T> Collection<T> convertAllBeanDataToObjects(Collection<? extends BeanData> data) {
+    /**
+     * converts a Collection of {@link BeanData} to their original {@link Object} form.
+     */
+    public static <T> Collection<T> convertAllBeanDataToObjects(Collection<? extends BeanData> data) {
         return Collections2.transform(data, new BeanDataToObjectFunction<T>());
     }
 

@@ -26,6 +26,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * This serves as a bridge between our own {@link AuthenticationDomain} and the web-app using spring-security for
+ * authentication
+ */
 public class UIAuthenticationProvider implements AuthenticationProvider {
 
     private AuthenticationDomain authenticator;

@@ -31,8 +31,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
+/**
+ * represents the data of a user (or other principal) identified with a unique username.
+ */
 @Entity
 @Table(name = "USERDATA")
 public class UserData {
@@ -96,5 +100,20 @@ public class UserData {
     public String toString() {
         return String.format("%s:%s:(%s permissions)", username, credentials.isEmpty() ? "none" : "****",
             permissionSet.getPermissions().size());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(username, credentials, permissionSet, attributes);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UserData)) {
+            return false;
+        }
+        final UserData other = (UserData) obj;
+        return Objects.equal(username, other.username) && Objects.equal(credentials, other.credentials)
+                && Objects.equal(permissionSet, other.permissionSet) && Objects.equal(attributes, other.attributes);
     }
 }

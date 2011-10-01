@@ -17,7 +17,19 @@
 package org.openengsb.core.security.internal.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import com.google.common.base.Objects;
+
+/**
+ * Holds a single value of a property. The type must be a class with a String-only-constructor that can be used to
+ * instantiate the original instance with a previous result of the type's toString-method.
+ *
+ * The value is saved as string.
+ *
+ * To support multiple values (Collections, Arrays) {@link EntryValue} is used as a wrapper
+ */
+@Table(name = "ENTRY_VALUE_ELEMENT")
 @Entity
 public class EntryElement {
 
@@ -55,40 +67,16 @@ public class EntryElement {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(type, value);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof EntryElement)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        EntryElement other = (EntryElement) obj;
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        final EntryElement other = (EntryElement) obj;
+        return Objects.equal(type, other.type) && Objects.equal(value, other.value);
     }
 
 }

@@ -26,8 +26,18 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
+/**
+ * This entity-class is used to save Java-beans to the Database. Because the Object is not serialized and saved as a
+ * BLOB, there are some restrictions on the bean-properties.
+ *
+ * Only types are allowed which have a String-only-constructor, that can be used to instantiate the original instance
+ * with a previous result of the type's toString-method.
+ *
+ * Arrays and Collections of such objects are also supported.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BeanData {
@@ -69,40 +79,47 @@ public abstract class BeanData {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+        return Objects.hashCode(type, attributes);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof BeanData)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        BeanData other = (BeanData) obj;
-        if (attributes == null) {
-            if (other.attributes != null) {
-                return false;
-            }
-        } else if (!attributes.equals(other.attributes)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
+        final BeanData other = (BeanData) obj;
+        return Objects.equal(type, other.type) && Objects.equal(attributes, other.attributes);
     }
+
+    //
+    //
+    // @Override
+    // public boolean equals(Object obj) {
+    // if (this == obj) {
+    // return true;
+    // }
+    // if (obj == null) {
+    // return false;
+    // }
+    // if (getClass() != obj.getClass()) {
+    // return false;
+    // }
+    // BeanData other = (BeanData) obj;
+    // if (attributes == null) {
+    // if (other.attributes != null) {
+    // return false;
+    // }
+    // } else if (!attributes.equals(other.attributes)) {
+    // return false;
+    // }
+    // if (type == null) {
+    // if (other.type != null) {
+    // return false;
+    // }
+    // } else if (!type.equals(other.type)) {
+    // return false;
+    // }
+    // return true;
+    // }
 
 }

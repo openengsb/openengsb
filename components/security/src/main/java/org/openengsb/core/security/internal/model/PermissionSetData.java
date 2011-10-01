@@ -31,12 +31,19 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
+/**
+ * entity that represents a permission-set. Contains the associated permissions and other permission-sets along with
+ * additional metadata
+ */
 @Entity
+@Table(name = "PERMISSIONSETDATA")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class PermissionSetData {
 
@@ -97,10 +104,26 @@ public class PermissionSetData {
     @Override
     public String toString() {
         Collection<String> children = Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
+            @Override
             public String apply(PermissionSetData input) {
                 return input.getId();
             };
         });
         return String.format("Set %s: %s, %s", id, children, permissions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, metadata, permissions, permissionSets);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PermissionSetData)) {
+            return false;
+        }
+        final PermissionSetData other = (PermissionSetData) obj;
+        return Objects.equal(id, other.id) && Objects.equal(metadata, other.metadata) &&
+                Objects.equal(permissions, other.permissions) && Objects.equal(permissionSets, other.permissionSets);
     }
 }

@@ -17,7 +17,14 @@
 package org.openengsb.core.security.internal.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import org.openengsb.core.api.security.model.Permission;
+
+/**
+ * {@link BeanData} intended to save {@link Permission}s
+ */
+@Table(name = "PERMISSIONDATA")
 @Entity
 public class PermissionData extends BeanData {
 

@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
+/**
+ * Connector that checks if the user has {@link RootPermission}
+ *
+ * If so, it always returns {@link Access#GRANTED}.
+ */
 public class AdminAccessConnector extends AbstractOpenEngSBService implements AuthorizationDomain {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminAccessConnector.class);
