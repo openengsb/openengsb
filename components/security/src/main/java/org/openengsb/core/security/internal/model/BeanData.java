@@ -91,35 +91,4 @@ public abstract class BeanData {
         return Objects.equal(type, other.type) && Objects.equal(attributes, other.attributes);
     }
 
-    //
-    //
-    // @Override
-    // public boolean equals(Object obj) {
-    // if (this == obj) {
-    // return true;
-    // }
-    // if (obj == null) {
-    // return false;
-    // }
-    // if (getClass() != obj.getClass()) {
-    // return false;
-    // }
-    // BeanData other = (BeanData) obj;
-    // if (attributes == null) {
-    // if (other.attributes != null) {
-    // return false;
-    // }
-    // } else if (!attributes.equals(other.attributes)) {
-    // return false;
-    // }
-    // if (type == null) {
-    // if (other.type != null) {
-    // return false;
-    // }
-    // } else if (!type.equals(other.type)) {
-    // return false;
-    // }
-    // return true;
-    // }
-
 }
