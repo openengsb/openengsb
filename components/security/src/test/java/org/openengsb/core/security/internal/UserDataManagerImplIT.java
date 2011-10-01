@@ -138,8 +138,12 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         Map<String, String> props = new HashMap<String, String>();
+        File baseDir = new File("/dev/shm"); // use ramdisk on linux for ~400% better performance
+        if (!baseDir.exists()) {
+            baseDir = FileUtils.getTempDirectory();
+        }
         persistenceDirectory =
-            new File(FileUtils.getTempDirectory(), "openengsb/userdatatest/" + UUID.randomUUID().toString());
+            new File(baseDir, "openengsb/userdatatest/" + UUID.randomUUID().toString());
         persistenceDirectory.mkdirs();
         props.put("openjpa.ConnectionURL", "jdbc:h2:" + persistenceDirectory.getAbsolutePath() + "/TEST");
         emf = Persistence.createEntityManagerFactory("security-test", props);
