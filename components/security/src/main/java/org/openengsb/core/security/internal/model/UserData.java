@@ -25,6 +25,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
@@ -56,6 +57,7 @@ public class UserData {
 
     @OneToMany(cascade = CascadeType.ALL)
     @MapKey(name = "key")
+    @JoinTable(name = "USERDATA_ATTRIBUTES")
     private Map<String, EntryValue> attributes = Maps.newHashMap();
 
     public UserData() {
