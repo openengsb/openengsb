@@ -45,6 +45,7 @@ import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
@@ -325,6 +326,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
         KnowledgeBase rb = rulemanager.getRulebase();
+        ((KnowledgeBaseImpl) rb).ruleBase.lock();
         LOGGER.debug("retrieved rulebase: {} from source {}", rb, rulemanager);
         final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
         LOGGER.debug("session started");
@@ -368,6 +370,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
                 LOGGER.info("rule \"{}\" fired.", ruleName);
             }
         });
+        ((KnowledgeBaseImpl) rb).ruleBase.unlock();
         return session;
     }
 

@@ -32,6 +32,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.KnowledgePackage;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -100,9 +101,10 @@ public class RulebaseBuilder {
                 compiledPackages.addAll(compiledDrlPackage);
             }
         }
+        lockRuleBase();
         clearRulebase();
         base.addKnowledgePackages(compiledPackages);
-
+        unlockRuleBase();
         LOGGER.info("Reloading the rulebase took {}ms", System.currentTimeMillis() - start);
     }
 
@@ -124,6 +126,7 @@ public class RulebaseBuilder {
 
     public synchronized void reloadPackage(String packageName) throws RuleBaseException {
         long start = System.currentTimeMillis();
+        reloadDeclarations();
         packageStrings.clear();
         StringBuffer packageString = initNewPackageString(packageName);
 
@@ -138,11 +141,21 @@ public class RulebaseBuilder {
         }
         Collection<String> flows = queryFlows(packageName);
         Collection<KnowledgePackage> compiledPackage = compileDrlString(packageString.toString(), flows);
+        lockRuleBase();
         if (base.getKnowledgePackage(packageName) != null) {
             base.removeKnowledgePackage(packageName);
         }
         base.addKnowledgePackages(compiledPackage);
+        unlockRuleBase();
         LOGGER.info("Reloading only package {} took {}ms", packageName, System.currentTimeMillis() - start);
+    }
+
+    private void unlockRuleBase() {
+        ((KnowledgeBaseImpl) base).ruleBase.unlock();
+    }
+
+    private void lockRuleBase() {
+        ((KnowledgeBaseImpl) base).ruleBase.lock();
     }
 
     private void clearRulebase() {
