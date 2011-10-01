@@ -37,6 +37,7 @@
       <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported" />
+      <property name="openjpa.ConnectionRetainMode" value="always" />
     </properties>
   </persistence-unit>
 </persistence>

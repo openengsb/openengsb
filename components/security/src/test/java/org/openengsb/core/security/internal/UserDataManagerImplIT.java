@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,12 +36,16 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -56,6 +61,8 @@ import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.BundleContext;
+
+import com.google.common.base.Objects;
 
 public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
@@ -85,10 +92,7 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((desiredResult == null) ? 0 : desiredResult.hashCode());
-            return result;
+            return Objects.hashCode(desiredResult);
         }
 
         @Override
@@ -98,30 +102,17 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
+            if (!(obj instanceof UserDataManagerImplIT.TestPermission)) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            TestPermission other = (TestPermission) obj;
-            if (desiredResult == null) {
-                if (other.desiredResult != null) {
-                    return false;
-                }
-            } else if (!desiredResult.equals(other.desiredResult)) {
-                return false;
-            }
-            return true;
+            final UserDataManagerImplIT.TestPermission other = (UserDataManagerImplIT.TestPermission) obj;
+            return Objects.equal(desiredResult, other.desiredResult);
         }
 
     }
 
     @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
+    public static TemporaryFolder tmpFolder = new TemporaryFolder();
 
     private EntityManager entityManager;
 
@@ -129,6 +120,10 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
     private UserData testUser2;
     private UserData testUser3;
+
+    private static EntityManagerFactory emf;
+
+    private static File persistenceDirectory;
 
     @Before
     public void setUp() throws Exception {
@@ -140,13 +135,34 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
         entityManager.persist(testUser3);
     }
 
-    private void setupPersistence() {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         Map<String, String> props = new HashMap<String, String>();
-        props.put("openjpa.ConnectionURL", "jdbc:h2:" + tmpFolder.getRoot().getAbsolutePath() + "/TEST");
+        persistenceDirectory =
+            new File(FileUtils.getTempDirectory(), "openengsb/userdatatest/" + UUID.randomUUID().toString());
+        persistenceDirectory.mkdirs();
+        props.put("openjpa.ConnectionURL", "jdbc:h2:" + persistenceDirectory.getAbsolutePath() + "/TEST");
+        emf = Persistence.createEntityManagerFactory("security-test", props);
+    }
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("security-test", props);
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        FileUtils.deleteDirectory(persistenceDirectory);
+    }
+
+    private void setupPersistence() {
         final EntityManager entityManager = emf.createEntityManager();
         this.entityManager = entityManager;
+        executeDelete("USERDATA", "PERMISSIONDATA", "PERMISSIONSETDATA", "ENTRY_VALUE_ELEMENT");
+    }
+
+    private void executeDelete(String... query) {
+        entityManager.getTransaction().begin();
+        for (String q : query) {
+            // somehow fails after 3 tests ro so with JPQL-queries
+            entityManager.createNativeQuery(String.format("DELETE FROM %s", q)).executeUpdate();
+        }
+        entityManager.getTransaction().commit();
     }
 
     private void setupUserManager() {
