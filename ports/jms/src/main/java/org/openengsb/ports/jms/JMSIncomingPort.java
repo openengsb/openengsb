@@ -95,7 +95,7 @@ public class JMSIncomingPort {
                 try {
                     return textMessage.getText();
                 } catch (JMSException e) {
-                    throw new RuntimeException(e);
+                    throw new IllegalStateException("Couldn't extract text from jms message", e);
                 }
             }
 
