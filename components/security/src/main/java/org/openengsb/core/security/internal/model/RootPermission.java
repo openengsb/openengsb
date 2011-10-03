@@ -17,11 +17,10 @@
 package org.openengsb.core.security.internal.model;
 
 import org.openengsb.core.api.security.model.Permission;
-import org.openengsb.core.security.internal.AdminAccessConnector;
 
 /**
  * When a user is granted an instance of this permission, every action and access is allowed. This is ensured by the
- * {@link AdminAccessConnector}.
+ * {@link org.openengsb.core.security.internal.AdminAccessConnector}.
  */
 public class RootPermission implements Permission {
     @Override

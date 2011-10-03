@@ -20,9 +20,7 @@ package org.openengsb.core.security.internal;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
-import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.security.service.AccessDeniedException;
-import org.openengsb.core.common.ProxyFactoryBean;
 import org.openengsb.core.common.util.BundleAuthenticationToken;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
@@ -34,9 +32,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 /**
  * This interceptor is used to enforce access control on services. Secure services are supposed to be advised with this
  * interceptor.
- *
- * Either the {@link ConnectorRegistrationManager} or the developer himself must take care of this. To configure an
- * advice in blueprint you may use {@link ProxyFactoryBean}.
+ * 
+ * Either the {@link org.openengsb.core.api.ConnectorRegistrationManager} or the developer himself must take care of
+ * this. To configure an advice in blueprint you may use {@link org.openengsb.core.common.ProxyFactoryBean}.
  */
 public class SecurityInterceptor implements MethodInterceptor {
 

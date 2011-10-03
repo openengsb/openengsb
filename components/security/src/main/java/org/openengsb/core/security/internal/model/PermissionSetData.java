@@ -124,7 +124,7 @@ public class PermissionSetData {
             return false;
         }
         final PermissionSetData other = (PermissionSetData) obj;
-        return Objects.equal(id, other.id) && Objects.equal(metadata, other.metadata) &&
-                Objects.equal(permissions, other.permissions) && Objects.equal(permissionSets, other.permissionSets);
+        return Objects.equal(id, other.id) && Objects.equal(metadata, other.metadata)
+                && Objects.equal(permissions, other.permissions) && Objects.equal(permissionSets, other.permissionSets);
     }
 }
