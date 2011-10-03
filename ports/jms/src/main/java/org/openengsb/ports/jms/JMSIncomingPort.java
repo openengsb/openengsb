@@ -58,35 +58,44 @@ public class JMSIncomingPort {
             @Override
             public void onMessage(Message message) {
                 LOGGER.trace("JMS-message recieved. Checking if the type is supported");
-                if (message instanceof TextMessage) {
-                    LOGGER.trace("parsing as TextMessage");
-                    TextMessage textMessage = (TextMessage) message;
-                    String textContent;
-                    try {
-                        textContent = textMessage.getText();
-                    } catch (JMSException e) {
-                        throw new RuntimeException(e);
-                    }
-                    HashMap<String, Object> metadata = new HashMap<String, Object>();
-                    String result;
-                    try {
-                        LOGGER.debug("starting filterchain for incoming message");
-                        result = (String) getFilterChainToUse().filter(textContent, metadata);
-                    } catch (Exception e) {
-                        LOGGER.error("an error occured when processing the filterchain", e);
-                        String callId = (String) metadata.get("callId");
-                        if (callId != null) {
-                            LOGGER.info("callId could be extracted. Sending Exception-response to remote caller ({})",
-                                callId);
-                            new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
-                        }
-                        return;
-                    }
-                    String callId = (String) metadata.get("callId");
-                    LOGGER.debug("filterchain processed OK, sending result to answer-queue ({})", callId);
-                    if (metadata.containsKey("answer")) {
-                        new JmsTemplate(connectionFactory).convertAndSend(callId, result);
-                    }
+                if (!(message instanceof TextMessage)) {
+                    LOGGER.debug("Received JMS-message is not type of text message.");
+                    return;
+                }
+                LOGGER.trace("Received a text message and start parsing");
+                TextMessage textMessage = (TextMessage) message;
+                String textContent = extractTextFromMessage(textMessage);
+                HashMap<String, Object> metadata = new HashMap<String, Object>();
+                String result;
+                try {
+                    LOGGER.debug("starting filterchain for incoming message");
+                    result = (String) getFilterChainToUse().filter(textContent, metadata);
+                } catch (Exception e) {
+                    handleJmsReplyException(metadata, e);
+                    return;
+                }
+                String callId = (String) metadata.get("callId");
+                LOGGER.debug("filterchain processed OK, sending result to answer-queue ({})", callId);
+                if (metadata.containsKey("answer")) {
+                    new JmsTemplate(connectionFactory).convertAndSend(callId, result);
+                }
+            }
+
+            private void handleJmsReplyException(HashMap<String, Object> metadata, Exception e) {
+                LOGGER.error("an error occured when processing the filterchain", e);
+                String callId = (String) metadata.get("callId");
+                if (callId != null) {
+                    LOGGER.info("callId could be extracted. Sending Exception-response to remote caller ({})",
+                        callId);
+                    new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
+                }
+            }
+
+            private String extractTextFromMessage(TextMessage textMessage) {
+                try {
+                    return textMessage.getText();
+                } catch (JMSException e) {
+                    throw new IllegalStateException("Couldn't extract text from jms message", e);
                 }
             }
 
