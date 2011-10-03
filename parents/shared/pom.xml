@@ -119,7 +119,7 @@
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
     <el.version>2.1.0</el.version>
     <wicket.version>1.4.18</wicket.version>
-    <pax.wicket.version>0.7.3</pax.wicket.version>
+    <pax.wicket.version>0.7.4</pax.wicket.version>
     <jackson.version>1.8.5</jackson.version>    
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
