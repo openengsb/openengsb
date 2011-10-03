@@ -1,3 +1,22 @@
+openengsb-2.0.2 2011-10-03 
+--------------------------------------------
+
+This release fixes 4 bugs; One in the infrastructure of the OpenEngSB; two directly in the OpenEngSB 
+(rulebase & security) and one in the class search algorithm of pax-wicket (by upgrading to 0.7.4).
+
+### Details
+** Bug
+    * [OPENENGSB-2102] - sed -r is not working under OSX
+    * [OPENENGSB-2112] - Keypair for remote security should be created by security-bundle instead of the ports
+    * [OPENENGSB-2126] - race-condition when reloading rulebase
+
+** Library Upgrade
+    * [OPENENGSB-2131] - Upgrade to pax-wicket 0.7.4
+
+** Task
+    * [OPENENGSB-2100] - Release framework-2.0.2
+
+
 openengsb-2.0.1 2011-09-24 
 --------------------------------------------
 
