@@ -47,8 +47,8 @@
       backend.id=workflow-persistence
       configuration.id=WORKFLOW
     </config>
-	<config name="org.openengsb.persistence.config-context">
-	  backend.id=contextFilePersistenceService
+    <config name="org.openengsb.persistence.config-context">
+      backend.id=contextFilePersistenceService
       configuration.id=CONTEXT
     </config>
 
