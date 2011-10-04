@@ -217,7 +217,7 @@
     <stax2.api.version>3.1.1</stax2.api.version>
     <staxex.version>1.0.0</staxex.version>
     <woodstox.version>4.1.1</woodstox.version>
-    <neethi.version>3.0.0</neethi.version>
+    <neethi.version>3.0.1</neethi.version>
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
     <javax.mail.version>1.4.4</javax.mail.version>
