@@ -201,7 +201,7 @@
     <backport.util.concurrent.version>2.2</backport.util.concurrent.version>
     <classworlds.version>1.1</classworlds.version>
     <derby.version>10.2.2.0</derby.version>
-    <velocity.version>1.6.2_4</velocity.version>
+    <velocity.version>1.7</velocity.version>
     <jdom.version>1.1_3</jdom.version>
     <geronimo.ejb.version>1.1</geronimo.ejb.version>
     <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
