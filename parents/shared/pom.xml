@@ -241,7 +241,6 @@
     <odb.wrapped.version>${odb.version}.w1</odb.wrapped.version>
     <org.apache.geronimo.specs.version>1.0.1</org.apache.geronimo.specs.version>
     <javax.ejb.version>3.0.0</javax.ejb.version>
-    <javax.xml.soap>1.3.0</javax.xml.soap>
     <jira.wrapped.version>4.0.0.w1</jira.wrapped.version>
     <junit.version>4.8.2</junit.version>
     <commons.pool.version>1.5.6</commons.pool.version>
