@@ -113,7 +113,6 @@
     <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
-    <bundle>mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
