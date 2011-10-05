@@ -26,7 +26,7 @@
     <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3</version>
   </parent>
 
   <properties>
@@ -36,7 +36,7 @@
 
   <groupId>org.openengsb.connector</groupId>
   <artifactId>org.openengsb.connector.memoryauditing</artifactId>
-  <version>2.0.3-SNAPSHOT</version>
+  <version>2.0.3</version>
 
   <name>OpenEngSB :: Connector :: MemoryAuditing</name>
 
@@ -99,19 +99,19 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.0.3-SNAPSHOT</version>
+      <version>2.0.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.persistence</artifactId>
-      <version>2.0.3-SNAPSHOT</version>
+      <version>2.0.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.auditing</artifactId>
-      <version>2.0.3-SNAPSHOT</version>
+      <version>2.0.3</version>
     </dependency>
   </dependencies>
 
