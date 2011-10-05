@@ -1,3 +1,31 @@
+openengsb-2.0.3 2011-10-05 
+--------------------------------------------
+
+Basically this release fixes on base issue: allowing plain jaxb/jaxws in components running in the OpenEngSB. Therefore
+it was required to change various versions and exports in the jre.properties. This includes upgrades to velocity (1.7),
+wss4j (1.6.2), neethi (3.0.1) and activation api (1.8.0).
+
+### Details
+** Bug
+    * [OPENENGSB-2145] - "Plain" jaxws/jaxb does not work in openengsb
+    * [OPENENGSB-2146] - javax.jws in jre.properties already exported via lib
+    * [OPENENGSB-2147] - javax.xml.crypto duplicated between lib and jre.properties
+    * [OPENENGSB-2148] - javax.xml.soap duplicated between two libs and jre.properties
+    * [OPENENGSB-2149] - javax.xml.ws duplicated between jre.properties and lib
+    * [OPENENGSB-2150] - Tabs are not allowed in features.xml
+    * [OPENENGSB-2151] - Duplicated javax.xml exports in two libs
+    * [OPENENGSB-2164] - TaskboxIT integration tests fail
+
+** Library Upgrade
+    * [OPENENGSB-2152] - Upgrade apache velocity libs to 1.7
+    * [OPENENGSB-2153] - Upgrade wss4j to 1.6.2
+    * [OPENENGSB-2154] - Upgrade neethi to 3.0.1
+    * [OPENENGSB-2155] - Upgrade activation api to 1.8.0
+
+** Task
+    * [OPENENGSB-2139] - Release framework-2.0.3
+
+
 openengsb-2.0.2 2011-10-03 
 --------------------------------------------
 
