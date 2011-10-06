@@ -134,13 +134,17 @@
     <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
     <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
-
+	
+	<!-- OpenEngSB ConfigPersistence Implementations -->
+	<bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
+	
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.edb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
+		
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
