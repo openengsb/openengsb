@@ -47,8 +47,8 @@
       backend.id=workflow-persistence
       configuration.id=WORKFLOW
     </config>
-	<config name="org.openengsb.persistence.config-context">
-	  backend.id=contextFilePersistenceService
+    <config name="org.openengsb.persistence.config-context">
+      backend.id=contextFilePersistenceService
       configuration.id=CONTEXT
     </config>
 
@@ -74,10 +74,9 @@
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jaxws-api-2.2/${jaxws.api.version}</bundle>
     <bundle start-level='10'>mvn:com.sun.mail/javax.mail/${javax.mail.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1/${jsr311.api.version}</bundle>
-    <bundle start-level='10'>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
     <!-- Templating -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.oro/${oro.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/${velocity.version}</bundle>
+    <bundle>mvn:org.apache.velocity/velocity/${velocity.version}</bundle>
     <!-- jaxb -->
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/${jaxb.wrapped.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
@@ -114,7 +113,6 @@
     <bundle>mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
-    <bundle>mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fastinfoset/${fastinfoset.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.guava/${guava.wrapped.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
@@ -221,6 +219,8 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.version}</bundle>
     <bundle>mvn:org.apache.ws.security/wss4j/${wss4j.version}</bundle>
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.saaj-impl/${saaj.impl.version}</bundle>
+    <!-- DO NOT ADD THIS ONE! While it is named in the cxf feature files it makes BIG troubles in the openengsb... -->
+    <!--<bundle start-level="25">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxp-ri/1.4.4_2</bundle>-->
     <bundle start-level='20'>mvn:org.codehaus.woodstox/stax2-api/${stax2.api.version}</bundle>
     <bundle start-level='20'>mvn:org.codehaus.woodstox/woodstox-core-asl/${woodstox.version}</bundle>
     <bundle>mvn:org.apache.neethi/neethi/${neethi.version}</bundle>
