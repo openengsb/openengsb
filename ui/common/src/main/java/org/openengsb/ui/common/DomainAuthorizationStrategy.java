@@ -28,11 +28,11 @@ import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,8 +44,8 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainAuthorizationStrategy.class);
 
-    private AuthorizationDomain authorizer = OpenEngSBCoreServices.getWiringService().getDomainEndpoint(
-        AuthorizationDomain.class, "authorization-root");
+    @PaxWicketBean(name = "authorizer")
+    private AuthorizationDomain authorizer;
 
     @Override
     public boolean isActionAuthorized(Component arg0, Action arg1) {

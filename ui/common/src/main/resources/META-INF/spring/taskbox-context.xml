@@ -38,5 +38,7 @@
     
   <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+  <osgi:reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain"
+    filter="(location.root=authorization-root)" />
         
  </beans>
