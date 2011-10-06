@@ -102,7 +102,7 @@ public class UserData {
     @Override
     public String toString() {
         return String.format("%s:%s:(%s permissions)", username, credentials.isEmpty() ? "none" : "****",
-            permissionSet.getPermissions().size());
+            permissionSet == null ? "No" : permissionSet.getPermissions().size());
     }
 
     @Override
