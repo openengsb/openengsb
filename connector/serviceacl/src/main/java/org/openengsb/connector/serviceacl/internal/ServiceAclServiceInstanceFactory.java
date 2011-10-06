@@ -17,9 +17,11 @@
 
 package org.openengsb.connector.serviceacl.internal;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
@@ -27,6 +29,7 @@ public class ServiceAclServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<ServiceAclServiceImpl> {
 
     private UserDataManager userManager;
+    private List<SecurityAttributeProvider> attributeProviders;
 
     public ServiceAclServiceInstanceFactory() {
     }
@@ -37,11 +40,15 @@ public class ServiceAclServiceInstanceFactory extends
 
     @Override
     public Connector createNewInstance(String id) {
-        return new ServiceAclServiceImpl(userManager);
+        return new ServiceAclServiceImpl(userManager, attributeProviders);
     }
 
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
+    }
+
+    public void setAttributeProviders(List<SecurityAttributeProvider> attributeProviders) {
+        this.attributeProviders = attributeProviders;
     }
 
 }

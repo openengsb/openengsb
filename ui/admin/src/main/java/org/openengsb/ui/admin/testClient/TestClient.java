@@ -67,6 +67,7 @@ import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -77,7 +78,6 @@ import org.openengsb.ui.admin.model.MethodId;
 import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
-import org.openengsb.ui.common.DomainAuthorizationStrategy;
 import org.openengsb.ui.common.model.LocalizableStringModel;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
@@ -101,6 +101,9 @@ public class TestClient extends BasePage {
 
     @PaxWicketBean
     private ConnectorManager serviceManager;
+
+    @PaxWicketBean
+    private SecurityAttributeProviderImpl attributeStore;
 
     private DropDownChoice<MethodId> methodList;
 
@@ -144,7 +147,7 @@ public class TestClient extends BasePage {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
-        DomainAuthorizationStrategy.registerComponent(serviceManagementContainer, new SecurityAttributeEntry(
+        attributeStore.putAttribute(serviceManagementContainer, new SecurityAttributeEntry(
             "org.openengsb.ui.component", "SERVICE_EDITOR"));
         serviceManagementContainer.add(makeServiceList());
 

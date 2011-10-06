@@ -19,6 +19,7 @@ package org.openengsb.core.security;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -33,10 +34,11 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.SecurityAttributeManager;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.security.internal.AdminAccessConnector;
@@ -57,6 +59,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
     private AuthorizationDomain accessControl;
     private AuthorizationDomain servicePermissionAccessConnector;
     private UserDataManager userManager;
+    private SecurityAttributeProviderImpl attributeStore;
 
     @Before
     public void setUp() throws Exception {
@@ -74,7 +77,12 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
 
         registerServiceAtLocation(adminAccessConnector, "authorization/admin", AuthorizationDomain.class);
 
-        servicePermissionAccessConnector = new ServiceAclServiceImpl(userManager);
+        attributeStore = new SecurityAttributeProviderImpl();
+
+        ServiceAclServiceImpl serviceAclServiceImpl = new ServiceAclServiceImpl(userManager, Collections
+            .singletonList((SecurityAttributeProvider) attributeStore));
+
+        servicePermissionAccessConnector = serviceAclServiceImpl;
 
         registerServiceAtLocation(servicePermissionAccessConnector, "authorization/service", AuthorizationDomain.class);
         CompositeConnectorStrategy strategy = new AffirmativeBasedAuthorizationStrategy();
@@ -158,7 +166,7 @@ public class ServiceAclTest extends AbstractOsgiMockServiceTest {
         NullDomainImpl nullDomainImpl = new NullDomainImpl("foo");
         MethodInvocation invocation = MethodInvocationUtils.create(nullDomainImpl, "nullMethod", new Object());
 
-        SecurityAttributeManager.storeAttribute(nullDomainImpl, new SecurityAttributeEntry("name", "service.foo"));
+        attributeStore.putAttribute(nullDomainImpl, new SecurityAttributeEntry("name", "service.foo"));
 
         ServicePermission permission = new ServicePermission();
         permission.setInstance("service.foo");

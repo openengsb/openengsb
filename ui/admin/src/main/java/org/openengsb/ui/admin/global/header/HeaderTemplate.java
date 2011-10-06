@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -44,7 +45,6 @@ import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.api.OpenEngSBVersionService;
-import org.openengsb.ui.common.DomainAuthorizationStrategy;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
@@ -58,6 +58,8 @@ public class HeaderTemplate extends Panel {
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
+    @PaxWicketBean(name = "attributeStore")
+    private SecurityAttributeProviderImpl attributeStore;
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
@@ -162,7 +164,7 @@ public class HeaderTemplate extends Panel {
             return;
         }
         for (String a : authority) {
-            DomainAuthorizationStrategy.registerComponent(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
+            attributeStore.putAttribute(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
         }
     }
 

@@ -54,13 +54,16 @@
   <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=CONNECTOR)" />
 
-
-
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="serviceUtils" ref="serviceUtils" />
     <property name="securityInterceptor" ref="securityInterceptor" />
+    <property name="attributeStore" ref="attributeProvider" />
   </bean>
+
+  <bean id="attributeProvider" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeProvider" />
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
     <bean class="org.openengsb.core.services.internal.RequestHandlerImpl" />

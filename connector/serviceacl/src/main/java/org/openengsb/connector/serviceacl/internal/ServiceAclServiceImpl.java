@@ -20,7 +20,6 @@ package org.openengsb.connector.serviceacl.internal;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +28,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.SecurityAttributeManager;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.Anonymous;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
@@ -46,6 +45,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService implements
@@ -54,12 +54,14 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAclServiceImpl.class);
 
     private UserDataManager userManager;
+    private List<SecurityAttributeProvider> attributeProviders;
 
     public ServiceAclServiceImpl() {
     }
 
-    public ServiceAclServiceImpl(UserDataManager userManager) {
+    public ServiceAclServiceImpl(UserDataManager userManager, List<SecurityAttributeProvider> attributeProviders) {
         this.userManager = userManager;
+        this.attributeProviders = attributeProviders;
     }
 
     @Override
@@ -130,12 +132,12 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
     }
 
     private Collection<String> getServiceInstanceNames(Object this1) {
-        Collection<SecurityAttributeEntry> attribute = SecurityAttributeManager.getAttribute(this1);
-        if (attribute == null) {
-            return Collections.emptySet();
+        Collection<SecurityAttributeEntry> attributes = Lists.newArrayList();
+        for (SecurityAttributeProvider p : attributeProviders) {
+            attributes.addAll(p.getAttribute(this1));
         }
         Collection<SecurityAttributeEntry> filtered =
-            Collections2.filter(attribute, new Predicate<SecurityAttributeEntry>() {
+            Collections2.filter(attributes, new Predicate<SecurityAttributeEntry>() {
                 @Override
                 public boolean apply(SecurityAttributeEntry input) {
                     return input.getKey().equals("name");
@@ -205,5 +207,9 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
             return new SecurityAttribute[0];
         }
         return annotations.value();
+    }
+
+    public void setAttributeProviders(List<SecurityAttributeProvider> attributeProviders) {
+        this.attributeProviders = attributeProviders;
     }
 }

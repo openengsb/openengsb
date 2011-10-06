@@ -30,6 +30,7 @@
     </service-properties>
     <bean class="org.openengsb.connector.serviceacl.internal.ServiceAclServiceInstanceFactory">
       <property name="userManager" ref="userManager" />
+      <property name="attributeProviders" ref="attributeProviders" />
     </bean>
   </service>
 
@@ -56,5 +57,6 @@
   </service>
 
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" filter="(internal=true)" />
+  <reference-list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" availability="optional" />
 
 </blueprint>

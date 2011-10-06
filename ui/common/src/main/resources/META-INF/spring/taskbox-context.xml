@@ -35,10 +35,12 @@
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="bundleContext" />
   </bean>
-    
+
   <osgi:reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
   <osgi:reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain"
     filter="(location.root=authorization-root)" />
-        
- </beans>
+
+  <osgi:list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" />
+
+</beans>

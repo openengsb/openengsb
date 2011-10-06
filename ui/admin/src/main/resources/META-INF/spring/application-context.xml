@@ -79,4 +79,8 @@
     <property name="securityFilterChain" ref="springSecurityFilterChain" />
   </bean>
 
+  <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <osgi:service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
+
 </beans>

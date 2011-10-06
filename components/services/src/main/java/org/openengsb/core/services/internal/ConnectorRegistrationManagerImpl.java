@@ -36,8 +36,8 @@ import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.security.SecurityAttributeManager;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.MapAsDictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -69,6 +69,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     private OsgiUtilsService serviceUtils;
     private BundleContext bundleContext;
+    private SecurityAttributeProviderImpl attributeStore;
 
     private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
     private Map<ConnectorId, Connector> instances = new HashMap<ConnectorId, Connector>();
@@ -175,7 +176,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             pfactory.setTarget(serviceInstance);
             pfactory.addAdvice(securityInterceptor);
             secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
-            SecurityAttributeManager.storeAttribute(serviceInstance, new SecurityAttributeEntry("name", id.toFullID()));
+            attributeStore.replaceAttributes(serviceInstance, new SecurityAttributeEntry("name", id.toFullID()));
         }
 
         Map<String, Object> properties = populatePropertiesWithRequiredAttributes(description.getProperties(), id);
@@ -255,5 +256,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
 
     public void setSecurityInterceptor(MethodInterceptor securityInterceptor) {
         this.securityInterceptor = securityInterceptor;
+    }
+
+    public void setAttributeStore(SecurityAttributeProviderImpl attributeStore) {
+        this.attributeStore = attributeStore;
     }
 }

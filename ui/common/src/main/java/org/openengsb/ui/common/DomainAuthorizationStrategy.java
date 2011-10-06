@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
-import org.openengsb.core.api.security.SecurityAttributeManager;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.Authentication;
@@ -47,16 +47,22 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     @PaxWicketBean(name = "authorizer")
     private AuthorizationDomain authorizer;
 
+    @PaxWicketBean(name = "attributeProviders")
+    private List<SecurityAttributeProvider> attributeProviders;
+
     @Override
     public boolean isActionAuthorized(Component arg0, Action arg1) {
         List<SecurityAttributeEntry> attributeList = Lists.newArrayList();
         if (hasSecurityAnnotation(arg0.getClass())) {
             attributeList.addAll(getSecurityAttributes(arg0.getClass()));
         }
-        Collection<SecurityAttributeEntry> runtimeAttributes = SecurityAttributeManager.getAttribute(arg0);
-        if (runtimeAttributes != null) {
-            attributeList.addAll(runtimeAttributes);
+        for (SecurityAttributeProvider p : attributeProviders) {
+            Collection<SecurityAttributeEntry> runtimeAttributes = p.getAttribute(arg0);
+            if (runtimeAttributes != null) {
+                attributeList.addAll(runtimeAttributes);
+            }
         }
+
         if (attributeList.isEmpty()) {
             return true;
         }
@@ -120,15 +126,6 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     private SecurityAttributeEntry convertAnnotationToEntry(SecurityAttribute annotation) {
         return new SecurityAttributeEntry(annotation.key(), annotation.value());
-    }
-
-    public static final void registerComponent(Component component, SecurityAttributeEntry... securityAttributes) {
-        registerComponent(component, Arrays.asList(securityAttributes));
-    }
-
-    public static final void registerComponent(Component component,
-            Collection<SecurityAttributeEntry> securityAttributes) {
-        SecurityAttributeManager.storeAttribute(component, securityAttributes);
     }
 
     public void setAuthorizer(AuthorizationDomain authorizer) {
