@@ -90,8 +90,8 @@
     <module>components/security</module>
     <module>components/services</module>
     <module>components/workflow</module>
-	<!-- OpenEngSB ConfigPersistence Modules -->
-	<module>persistence/context</module>
+    <!-- OpenEngSB ConfigPersistence Modules -->
+    <module>persistence/context</module>
     <!-- OpenEngSB Infrastructure Modules -->
     <module>infrastructure</module>
     <!-- OpenEngSB Port Modules -->

@@ -29,7 +29,7 @@
     <service-properties>
       <entry key="backend.id" value="contextFilePersistenceService" />
     </service-properties>
-    <bean class="org.openengsb.persistence.context.ContextFilePersistenceService">
+    <bean class="org.openengsb.persistence.context.filebackend.ContextFilePersistenceService">
       <property name="storageFolderPath" value="$[karaf.data]/openengsb/config" />
     </bean>
   </service>
