@@ -37,7 +37,7 @@
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
     </properties>
   </persistence-unit>
-
+  
   <persistence-unit name="edb-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>org.openengsb.core.edb.internal.JPACommit</class>
@@ -47,7 +47,7 @@
 
     <properties>
       <property name="openjpa.Log" value="slf4j"/>
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:TEST"/>
+      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
       <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
