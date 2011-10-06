@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,23 +31,16 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.AbstractPermissionProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.PermissionProvider;
@@ -64,7 +56,7 @@ import org.osgi.framework.BundleContext;
 
 import com.google.common.base.Objects;
 
-public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
+public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     public static class TestPermission implements Permission {
         private String desiredResult;
@@ -102,19 +94,16 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof UserDataManagerImplIT.TestPermission)) {
+            if (!(obj instanceof UserDataManagerImplTest.TestPermission)) {
                 return false;
             }
-            final UserDataManagerImplIT.TestPermission other = (UserDataManagerImplIT.TestPermission) obj;
+            final UserDataManagerImplTest.TestPermission other = (UserDataManagerImplTest.TestPermission) obj;
             return Objects.equal(desiredResult, other.desiredResult);
         }
 
     }
 
-    @Rule
-    public static TemporaryFolder tmpFolder = new TemporaryFolder();
-
-    private EntityManager entityManager;
+    private static EntityManager entityManager;
 
     private UserDataManager userManager;
 
@@ -123,11 +112,9 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
     private static EntityManagerFactory emf;
 
-    private static File persistenceDirectory;
-
     @Before
     public void setUp() throws Exception {
-        setupPersistence();
+        executeDelete("UserData", "PermissionData", "PermissionSetData", "EntryValue");
         setupUserManager();
         testUser2 = new UserData("testUser2");
         entityManager.persist(testUser2);
@@ -137,34 +124,19 @@ public class UserDataManagerImplIT extends AbstractOsgiMockServiceTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        Map<String, String> props = new HashMap<String, String>();
-        File baseDir = new File("/dev/shm"); // use ramdisk on linux for ~400% better performance
-        if (!baseDir.exists()) {
-            baseDir = FileUtils.getTempDirectory();
-        }
-        persistenceDirectory =
-            new File(baseDir, "openengsb/userdatatest/" + UUID.randomUUID().toString());
-        persistenceDirectory.mkdirs();
-        props.put("openjpa.ConnectionURL", "jdbc:h2:" + persistenceDirectory.getAbsolutePath() + "/TEST");
-        emf = Persistence.createEntityManagerFactory("security-test", props);
+        emf = Persistence.createEntityManagerFactory("security-test");
+        setupPersistence();
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        FileUtils.deleteDirectory(persistenceDirectory);
-    }
-
-    private void setupPersistence() {
-        final EntityManager entityManager = emf.createEntityManager();
-        this.entityManager = entityManager;
-        executeDelete("USERDATA", "PERMISSIONDATA", "PERMISSIONSETDATA", "ENTRY_VALUE_ELEMENT");
+    private static void setupPersistence() {
+        entityManager = emf.createEntityManager();
     }
 
     private void executeDelete(String... query) {
         entityManager.getTransaction().begin();
         for (String q : query) {
             // somehow fails after 3 tests ro so with JPQL-queries
-            entityManager.createNativeQuery(String.format("DELETE FROM %s", q)).executeUpdate();
+            entityManager.createQuery(String.format("DELETE FROM %s", q)).executeUpdate();
         }
         entityManager.getTransaction().commit();
     }
