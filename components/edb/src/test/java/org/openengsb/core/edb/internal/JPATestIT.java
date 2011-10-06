@@ -23,13 +23,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
@@ -47,39 +45,21 @@ public class JPATestIT {
     private static JPADatabase db;
     private static Utils utils;
 
-    private void openDatabase() {
-        if (db == null) {
-            db = new JPADatabase();
-            try {
-                db.open();
-            } catch (Exception ex) {
-                db = null;
-                fail("Cannot open database: " + ex.toString());
-            }
-        }
-    }
-
     @BeforeClass
     public static void initDB() {
         utils = new Utils();
-        File f = new File("TEST.h2.db");
-        if (f.exists() && (!f.canWrite() || !f.delete())) {
-            fail("Cannot remove previous test database!");
-        }
         db = new JPADatabase();
-        db.open();
+        try {
+            db.open();
+        } catch (Exception ex) {
+            db = null;
+            fail("Cannot open database: " + ex.toString());
+        }
     }
 
     @AfterClass
     public static void closeDB() {
         db.close();
-        File f = new File("TEST.h2.db");
-        f.delete();
-    }
-
-    @Before
-    public void setup() {
-        openDatabase();
     }
 
     @Test
@@ -493,10 +473,8 @@ public class JPATestIT {
 
         assertThat(name1, is("blub"));
         assertThat(version1, is(1));
-
         assertThat(name2, is("blab"));
         assertThat(version2, is(2));
-
         assertThat(name3, is("blob"));
         assertThat(version3, is(1));
     }
@@ -609,30 +587,30 @@ public class JPATestIT {
         assertThat(subObject, notNullValue());
         assertThat((String) mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
     }
-    
+
     @Test
     public void testSupportOfListOfSubModels_shouldWork() {
         TestModel model = new TestModel();
         model.setName("blub");
         model.setEdbId("testSub/3");
-        
+
         SubModel sub1 = new SubModel();
         sub1.setEdbId("testSub/4");
         sub1.setName("sub1");
         SubModel sub2 = new SubModel();
         sub2.setEdbId("testSub/5");
         sub2.setName("sub2");
-        
+
         model.setSubs(Arrays.asList(sub1, sub2));
-        
+
         EDBInsertEvent event = new EDBInsertEvent(model);
         enrichEDBEvent(event);
         db.processEDBInsertEvent(event);
-        
+
         EDBObject mainObject = db.getObject("testdomain/testconnector/testSub/3");
         EDBObject subObject1 = db.getObject("testdomain/testconnector/testSub/4");
         EDBObject subObject2 = db.getObject("testdomain/testconnector/testSub/5");
-        
+
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
         assertThat((String) mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
