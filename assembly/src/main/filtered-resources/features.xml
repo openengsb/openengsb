@@ -137,6 +137,7 @@
 	
     <!-- OpenEngSB ConfigPersistence Implementations -->
     <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
 	
     <!-- OpenEngSB Core Features -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.api/${project.version}</bundle>
