@@ -107,11 +107,12 @@ public class ConnectorJPAPersistenceBackendService implements ConfigPersistenceB
         if (ret.size() == 0) {
             throw new PersistenceException("Configuration to delete, could not be found!");
         }
-        ConnectorConfigurationJPAEntity entity = ret.get(0);
-        try {
-            entityManager.remove(entity);
-        } catch (Exception ex) {
-            throw new PersistenceException(ex);
+        for (ConnectorConfigurationJPAEntity entity : ret) {
+            try {
+                entityManager.remove(entity);
+            } catch (Exception ex) {
+                throw new PersistenceException(ex);
+            }
         }
         LOGGER.info("removed ConnectorConfiguration");
     }
