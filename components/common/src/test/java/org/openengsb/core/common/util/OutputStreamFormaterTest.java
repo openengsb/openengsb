@@ -1,15 +1,16 @@
 package org.openengsb.core.common.util;
 
-import java.io.PrintStream;
-
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.io.PrintStream;
+
+import org.junit.Test;
+
 
 public class OutputStreamFormaterTest {
 

@@ -8,10 +8,14 @@ import org.fusesource.jansi.Ansi;
  * This class is a helper class for the console commands, it prints out the given values to the given stream,
  * default is System.out. It further formats the output using Ansi formats.
  */
-public class OutputStreamFormater {
+public final class OutputStreamFormater {
 
     private static int padding = 25;
     private static PrintStream outputStream = System.out;
+
+    private OutputStreamFormater() {
+
+    }
 
     public static void printValue(String name, String value) {
         outputStream.println(formatValues(name, value));
