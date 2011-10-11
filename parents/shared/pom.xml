@@ -55,7 +55,7 @@
 
   <properties>
     <!-- base settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding><!--this is defined in 3 poms but used nowhere!-->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
     <karaf.version>2.2.3</karaf.version>
     <!-- version range for externalized projects (connectors) -->
