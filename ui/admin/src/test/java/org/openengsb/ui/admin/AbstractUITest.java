@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -44,10 +45,12 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.security.PermissionProvider;
+import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
@@ -144,6 +147,10 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
 
         context.putBean("permissionProviders", Arrays.asList(wicketPermissionProvider));
+
+        SecurityAttributeProvider attributeStore = new SecurityAttributeProviderImpl();
+        context.putBean("attributeStore", attributeStore);
+        context.putBean("attributeProviders", Collections.singletonList(attributeStore));
     }
 
     @Override
@@ -185,6 +192,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         cFactory.applyAttributes(instance,
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
+        context.putBean("authorizer", instance);
     }
 
 }

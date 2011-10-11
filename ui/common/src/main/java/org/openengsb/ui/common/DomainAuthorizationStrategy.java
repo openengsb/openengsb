@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
@@ -56,6 +57,11 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (hasSecurityAnnotation(arg0.getClass())) {
             attributeList.addAll(getSecurityAttributes(arg0.getClass()));
         }
+        // List<Object> copy = new ArrayList<Object>(attributeProviders);
+
+        LOGGER.info(ArrayUtils.toString(attributeProviders.getClass().getInterfaces()));
+
+        LOGGER.error(attributeProviders.toString());
         for (SecurityAttributeProvider p : attributeProviders) {
             Collection<SecurityAttributeEntry> runtimeAttributes = p.getAttribute(arg0);
             if (runtimeAttributes != null) {
