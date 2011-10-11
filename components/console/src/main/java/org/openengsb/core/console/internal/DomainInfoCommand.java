@@ -23,41 +23,28 @@ import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.fusesource.jansi.Ansi;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.OutputStreamFormater;
 import org.osgi.framework.ServiceReference;
 
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
 public class DomainInfoCommand extends OsgiCommandSupport {
 
     protected Object doExecute() throws Exception {
-        int maxNameLen = 25;
         ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
         OsgiUtilsService service = getService(OsgiUtilsService.class, sr);
         List<DomainProvider> serviceList = service.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
         System.out.println("Services");
         for (DomainProvider dp : serviceList) {
-            printValue(dp.getName().getString(Locale.getDefault()), maxNameLen,
+            OutputStreamFormater.printValue(dp.getName().getString(Locale.getDefault()),
                 dp.getDescription().getString(Locale.getDefault()));
         }
 
         return null;
     }
 
-    private void printValue(String name, int pad, String value) {
-        System.out.println(Ansi.ansi().a("  ").a(Ansi.Attribute.INTENSITY_BOLD).a(name).a(spaces(pad - name.length()))
-            .a(Ansi.Attribute.RESET).a("   ").a(value).toString());
-    }
-
-    private String spaces(int nb) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nb; i++) {
-            sb.append(' ');
-        }
-        return sb.toString();
-    }
 
 }
