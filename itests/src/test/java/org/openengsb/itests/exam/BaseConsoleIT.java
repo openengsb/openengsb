@@ -24,6 +24,7 @@ import org.apache.felix.gogo.commands.CommandException;
 import org.apache.felix.gogo.runtime.CommandNotFoundException;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.util.OutputStreamFormater;
@@ -41,7 +42,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+// This one will run each test in it's own container (slower speed)
+// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class BaseConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
     @ProbeBuilder
@@ -56,8 +58,8 @@ public class BaseConsoleIT extends AbstractPreConfiguredExamTestHelper {
         CommandSession cs = cp.createSession(System.in, System.out, System.err);
 
         cs.execute("failing-command");
-        fail("Exception should be thrown that the command does not exist");
         cs.close();
+        fail("Exception should be thrown that the command does not exist");
     }
 
     @Test(expected = CommandException.class)
@@ -69,8 +71,8 @@ public class BaseConsoleIT extends AbstractPreConfiguredExamTestHelper {
         b.start();
         cs.execute("log:display argument1");
         b.stop();
-        fail("Exception should be thrown that the argument is not expected");
         cs.close();
+        fail("Exception should be thrown that the argument is not expected");
     }
 
     @Test
@@ -84,9 +86,7 @@ public class BaseConsoleIT extends AbstractPreConfiguredExamTestHelper {
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
         cs.execute("openengsb:info");
-        b.stop();
         cs.close();
-
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "OpenEngSB Framework Version", ""));
         assertTrue(contains(result, "Karaf Version", ""));
@@ -105,7 +105,6 @@ public class BaseConsoleIT extends AbstractPreConfiguredExamTestHelper {
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
         cs.execute("openengsb:domains");
-        b.stop();
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
