@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.openengsb.core.api.context.ContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -53,33 +54,41 @@ public final class SecurityUtils {
         executor.execute(new RootRunnable(task));
     }
 
-    static class RootCallable<ReturnType> extends ContextAwareCallable<ReturnType> {
+    static class RootCallable<ReturnType> implements Callable<ReturnType> {
+        private Callable<ReturnType> original;
+        private String context = ContextHolder.get().getCurrentContextId();
+
         public RootCallable(Callable<ReturnType> original) {
-            super(original);
+            this.original = original;
         }
 
         @Override
         public ReturnType call() throws Exception {
             SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
+            ContextHolder.get().setCurrentContextId(context);
             try {
-                return super.call();
+                return original.call();
             } finally {
                 SecurityContextHolder.clearContext();
             }
         }
     }
 
-    static class RootRunnable extends ContextAwareRunnable {
+    static class RootRunnable implements Runnable {
+
+        private Runnable original;
+        private String context = ContextHolder.get().getCurrentContextId();
 
         public RootRunnable(Runnable original) {
-            super(original);
+            this.original = original;
         }
 
         @Override
         public void run() {
             SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
+            ContextHolder.get().setCurrentContextId(context);
             try {
-                super.run();
+                original.run();
             } finally {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
