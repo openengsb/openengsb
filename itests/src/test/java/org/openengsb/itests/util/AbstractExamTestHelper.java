@@ -244,7 +244,7 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {
-        UserDataManager userDataManager = getOsgiService(UserDataManager.class);
+        UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
             Thread.sleep(1000);
