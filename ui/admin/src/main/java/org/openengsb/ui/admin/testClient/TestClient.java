@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.testClient;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -463,10 +465,24 @@ public class TestClient extends BasePage {
         try {
             Object result = m.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
-            if (!m.getReturnType().equals(void.class)) {
-                info("Result: " + result);
-                LOGGER.info("result: {}", result);
+            Class<?> returnType = m.getReturnType();
+            if (returnType.equals(void.class)) {
+                return;
             }
+            String resultString;
+            if (returnType.isArray()) {
+                try {
+                    // to handle byte[] and char[]
+                    Constructor<String> constructor = String.class.getConstructor(returnType);
+                    resultString = constructor.newInstance(result);
+                } catch (Exception e) {
+                    resultString = ArrayUtils.toString(result);
+                }
+            } else {
+                resultString = result.toString();
+            }
+            info("Result " + returnType.getName() + ": " + resultString);
+            LOGGER.info("result: {}", resultString);
         } catch (IllegalAccessException e) {
             handleExceptionWithFeedback(e);
         } catch (InvocationTargetException e) {
