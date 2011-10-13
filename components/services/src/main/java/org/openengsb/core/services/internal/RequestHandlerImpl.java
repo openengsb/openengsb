@@ -34,10 +34,14 @@ import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.RequestHandler;
 import org.openengsb.core.api.remote.UseCustomJasonMarshaller;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
 public class RequestHandlerImpl implements RequestHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestHandlerImpl.class);
 
     @Override
     public MethodResult handleCall(MethodCall call) {
@@ -94,7 +98,7 @@ public class RequestHandlerImpl implements RequestHandler {
         Map<String, String> metaData = call.getMetaData();
         String serviceId = metaData.get("serviceId");
         String filter = metaData.get("serviceFilter");
-        String filterString = createFilterString(filter, serviceId);
+        String filterString = String.format("(&(!(internal=true))%s)", createFilterString(filter, serviceId));
         return OpenEngSBCoreServices.getServiceUtilsService().getService(filterString);
     }
 
@@ -123,13 +127,14 @@ public class RequestHandlerImpl implements RequestHandler {
                 returnTemplate.setArg(result);
                 returnTemplate.setClassName(result.getClass().getName());
             }
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
+            LOGGER.warn("Exception in remote method invocation: ", e);
             returnTemplate.setType(ReturnType.Exception);
+            if (e.getClass().equals(InvocationTargetException.class)) {
+                e = (Exception) e.getCause();
+                // if it's not an Exception we are in REAL trouble anyway
+            }
             returnTemplate.setArg(e.getCause());
-            returnTemplate.setClassName(e.getClass().getName());
-        } catch (IllegalAccessException e) {
-            returnTemplate.setType(ReturnType.Exception);
-            returnTemplate.setArg(e);
             returnTemplate.setClassName(e.getClass().getName());
         }
         return returnTemplate;

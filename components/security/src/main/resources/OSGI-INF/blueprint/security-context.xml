@@ -17,56 +17,87 @@
     limitations under the License.
 
 -->
-
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0" xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-
-  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl" init-method="init">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="bundleContext" ref="blueprintBundleContext" />
+  <bean id="userManager" class="org.openengsb.core.security.internal.UserDataManagerImpl">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="openengsb-security" />
   </bean>
 
-  <service interface="org.openengsb.core.api.security.UserManager" ref="userManager" />
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <service-properties>
+      <entry key="service.ranking" value="-1" />
+      <entry key="internal" value="true" />
+    </service-properties>
+    <ref component-id="userManager" />
+  </service>
 
-  <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-    <property name="userDetailsService" ref="userManager" />
-  </bean>
-  <service interface="org.springframework.security.authentication.AuthenticationProvider" ref="userAuthenticationProvider" />
-
-  <bean id="bundleAuthenticationProvider" class="org.openengsb.core.security.internal.SystemUserAuthenticationProvider" />
-
-  <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-    <property name="providers">
+  <bean id="secureUserManagerFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
       <list>
-        <ref component-id="userAuthenticationProvider" />
-        <ref component-id="bundleAuthenticationProvider" />
+        <value>org.openengsb.core.api.security.service.UserDataManager</value>
       </list>
     </property>
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+    <property name="target" ref="userManager" />
   </bean>
-  <service interface="org.springframework.security.authentication.AuthenticationManager" ref="authenticationManager" />
+
+  <service interface="org.openengsb.core.api.security.service.UserDataManager">
+    <bean factory-method="getObject" factory-ref="secureUserManagerFactory" />
+  </service>
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
-    <bean class="org.openengsb.core.security.SecurityInterceptor">
-      <property name="securityMetadataSource">
-        <bean class="org.openengsb.core.security.internal.MetadataSource" />
-      </property>
-      <property name="rejectPublicInvocations" value="true" />
-      <property name="authenticationManager" ref="authenticationManager" />
-      <property name="accessDecisionManager">
-        <bean class="org.springframework.security.access.vote.AffirmativeBased">
-          <property name="decisionVoters">
-            <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" init-method="init">
-                <property name="persistenceManager" ref="persistenceManager" />
-                <property name="bundleContext" ref="blueprintBundleContext" />
-              </bean>
-              <bean class="org.openengsb.core.security.BundleAuthorizationDecisionVoter" />
-            </list>
-          </property>
-        </bean>
-      </property>
+    <service-properties>
+      <entry key="org.openengsb.interceptor" value="security" />
+    </service-properties>
+    <ref component-id="securityInterceptor" />
+  </service>
+
+  <bean id="securityInterceptor" class="org.openengsb.core.security.internal.SecurityInterceptor">
+    <property name="authorizer" ref="authorizer" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authorization.affirmativebased" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy" />
+  </service>
+
+  <service interface="org.openengsb.core.api.CompositeConnectorStrategy">
+    <service-properties>
+      <entry key="composite.strategy.name" value="authentication.provider" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.internal.DefaultAuthenticationProviderStrategy" />
+  </service>
+
+  <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)"
+    activation="lazy" availability="optional" />
+
+  <service>
+    <interfaces>
+      <value>org.openengsb.core.api.OpenEngSBService</value>
+      <value>org.openengsb.core.api.Domain</value>
+      <value>org.openengsb.domain.authorization.AuthorizationDomain</value>
+    </interfaces>
+    <service-properties>
+      <entry key="id" value="authorization+admin+admin" />
+      <entry key="domain" value="authorization" />
+      <entry key="connector" value="admin" />
+      <entry key="location.root">
+        <array>
+          <value>authorization/admin</value>
+        </array>
+      </entry>
+    </service-properties>
+    <bean class="org.openengsb.core.security.internal.AdminAccessConnector">
+      <property name="userManager" ref="userManager" />
     </bean>
   </service>
 
@@ -75,9 +106,17 @@
       <value>org.openengsb.core.api.security.PrivateKeySource</value>
       <value>org.openengsb.core.api.security.PublicKeySource</value>
     </interfaces>
-    <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
+    <bean class="org.openengsb.core.security.internal.FileKeySource" init-method="init">
       <property name="algorithm" value="RSA" />
     </bean>
+  </service>
+
+  <service interface="org.openengsb.core.api.security.PermissionProvider">
+    <service-properties>
+      <entry key="connector" value="root" />
+      <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
+    </service-properties>
+    <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
   </service>
 
 </blueprint>

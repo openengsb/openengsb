@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
@@ -32,18 +33,14 @@ import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.security.BundleAuthenticationToken;
+import org.openengsb.core.common.util.SecurityUtils;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapDifference;
@@ -55,7 +52,6 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorDeployerService.class);
 
-    private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
     private Map<File, ConnectorFile> oldConfigs = new MapMaker().makeComputingMap(new Function<File, ConnectorFile>() {
         @Override
@@ -85,22 +81,24 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     @Override
     public void install(File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.install(\"{}\")", artifact.getAbsolutePath());
-        ConnectorFile configFile = oldConfigs.get(artifact);
-
-        Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
+        final ConnectorFile configFile = oldConfigs.get(artifact);
+        configFile.update(artifact);
+        final Map<String, Object> properties = new Hashtable<String, Object>(configFile.getProperties());
 
         if (properties.get(Constants.SERVICE_RANKING) == null && ConnectorFile.isRootService(artifact)) {
             properties.put(Constants.SERVICE_RANKING, -1);
         }
         LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
-        login();
-        try {
-            serviceManager.create(configFile.getConnectorId(),
-                new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
-        } finally {
-            logout();
-        }
+        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                serviceManager.create(configFile.getConnectorId(),
+                    new ConnectorDescription(new HashMap<String, String>(configFile.getAttributes()), properties));
+                return null;
+            }
+        });
+
     }
 
     @Override
@@ -117,11 +115,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private void doUpdate(File artifact) throws Exception {
         ConnectorFile connectorFile = oldConfigs.get(artifact);
-        ConnectorId connectorId = connectorFile.getConnectorId();
+        final ConnectorId connectorId = connectorFile.getConnectorId();
         ConnectorDescription persistenceContent = serviceManager.getAttributeValues(connectorId);
         ChangeSet changes = connectorFile.getChanges(artifact);
 
-        ConnectorDescription newDescription;
+        final ConnectorDescription newDescription;
         try {
             newDescription = applyChanges(persistenceContent, changes);
             connectorFile.update(artifact);
@@ -134,12 +132,14 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
             throw e;
         }
 
-        login();
-        try {
-            serviceManager.update(connectorId, newDescription);
-        } finally {
-            logout();
-        }
+        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                serviceManager.update(connectorId, newDescription);
+                return null;
+            }
+        });
+
     }
 
     private File getBackupFile(File artifact) {
@@ -167,30 +167,17 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
     }
 
     @Override
-    public void uninstall(File artifact) throws PersistenceException {
+    public void uninstall(final File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")", artifact.getAbsolutePath());
-        login();
-        try {
-            String name = FilenameUtils.removeExtension(artifact.getName());
-            ConnectorId fullId = ConnectorId.fromFullId(name);
-            serviceManager.delete(fullId);
-        } finally {
-            logout();
-        }
-    }
-
-    private void login() {
-        Authentication authentication =
-            authenticationManager.authenticate(new BundleAuthenticationToken("core-services", ""));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private void logout() {
-        SecurityContextHolder.clearContext();
-    }
-
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                String name = FilenameUtils.removeExtension(artifact.getName());
+                ConnectorId fullId = ConnectorId.fromFullId(name);
+                serviceManager.delete(fullId);
+                return null;
+            }
+        });
     }
 
     public void setServiceManager(ConnectorManager serviceManager) {

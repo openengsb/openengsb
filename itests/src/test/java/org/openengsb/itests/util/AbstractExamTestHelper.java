@@ -17,8 +17,6 @@
 
 package org.openengsb.itests.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
@@ -43,9 +41,15 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.junit.Before;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
@@ -60,12 +64,11 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     /*
      * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
@@ -73,8 +76,6 @@ public abstract class AbstractExamTestHelper {
      * possible properties are debugport=5005 and hold=true. The debugport option specifies the port where the container
      * is reachable and the hold option if the container should wait for a debugger to be attached or not.
      */
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     private static final int DEBUG_PORT = 5005;
     private static final String LOG_LEVEL = "WARN";
@@ -213,7 +214,7 @@ public abstract class AbstractExamTestHelper {
     /*
      * Provides an iterable collection of references, even if the original array is null
      */
-    private static final Collection<ServiceReference> asCollection(ServiceReference[] references) {
+    private static Collection<ServiceReference> asCollection(ServiceReference[] references) {
         List<ServiceReference> result = new LinkedList<ServiceReference>();
         if (references != null) {
             for (ServiceReference reference : references) {
@@ -231,16 +232,24 @@ public abstract class AbstractExamTestHelper {
         return "target/paxrunner/features/";
     }
 
-    protected void authenticateAsAdmin() throws InterruptedException {
+    protected void authenticateAsAdmin() throws InterruptedException, AuthenticationException {
         authenticate("admin", "password");
     }
 
-    protected void authenticate(String user, String password) throws InterruptedException {
-        AuthenticationManager authenticationManager = getOsgiService(AuthenticationManager.class, 20000);
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
-        assertThat(authentication.isAuthenticated(), is(true));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
+        waitForUserDataInitializer();
+        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
+        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+    }
+
+    protected void waitForUserDataInitializer() throws InterruptedException {
+        UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
+        while (userDataManager.getUserList().isEmpty()) {
+            LOGGER.warn("waiting for users to be initialized");
+            Thread.sleep(1000);
+        }
+        getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
 
     public static Option[] baseConfiguration() throws Exception {

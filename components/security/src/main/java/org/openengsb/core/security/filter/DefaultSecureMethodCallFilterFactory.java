@@ -27,18 +27,18 @@ import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.openengsb.domain.authentication.AuthenticationDomain;
 
 /**
  * This factory wraps an existing {@link RequestHandler} to a secure one to be used as final element in a
  * {@link org.openengsb.core.common.remote.FilterChain}.
- *
+ * 
  * The resulting FilterAction takes care of message verification and authentication.
- *
+ * 
  */
 public class DefaultSecureMethodCallFilterFactory {
 
-    private AuthenticationManager authenticationManager;
+    private AuthenticationDomain authenticationManager;
     private RequestHandler requestHandler;
 
     public DefaultSecureMethodCallFilterFactory() {
@@ -67,7 +67,7 @@ public class DefaultSecureMethodCallFilterFactory {
         return messageAuthenticatorFactory;
     }
 
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+    public void setAuthenticationManager(AuthenticationDomain authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 

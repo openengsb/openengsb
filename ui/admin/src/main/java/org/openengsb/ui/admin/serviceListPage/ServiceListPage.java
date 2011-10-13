@@ -19,13 +19,11 @@ package org.openengsb.ui.admin.serviceListPage;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceListPanel.ServiceListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-@AuthorizeInstantiation("ROLE_USER")
 @PaxWicketMountPoint(mountPoint = "services")
 public class ServiceListPage extends BasePage {
 

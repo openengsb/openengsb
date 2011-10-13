@@ -54,12 +54,16 @@
   <reference id="connectorConfigPersistence" interface="org.openengsb.core.api.persistence.ConfigPersistenceService"
     filter="(configuration.id=CONNECTOR)" />
 
-
-
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
     <property name="serviceUtils" ref="serviceUtils" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+    <property name="attributeStore" ref="attributeProvider" />
   </bean>
+
+  <bean id="attributeProvider" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeProvider" />
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
     <bean class="org.openengsb.core.services.internal.RequestHandlerImpl" />
@@ -95,7 +99,6 @@
 
   <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
     <bean class="org.openengsb.core.services.internal.deployer.connector.ConnectorDeployerService">
-      <property name="authenticationManager" ref="authenticationManager" />
       <property name="serviceManager" ref="connectorManager" />
     </bean>
   </service>
@@ -114,7 +117,7 @@
     <interfaces>
       <value>org.openengsb.core.api.VirtualConnectorProvider</value>
     </interfaces>
-    <bean class="org.openengsb.core.services.internal.virtual.CompositeConnectorProvider">
+    <bean class="org.openengsb.core.common.virtual.CompositeConnectorProvider">
       <property name="id" value="composite-connector" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
@@ -124,7 +127,7 @@
     <service-properties>
       <entry key="composite.strategy.name" value="invoke-all-ignore-result" />
     </service-properties>
-    <bean class="org.openengsb.core.services.internal.virtual.InvokeAllIgnoreResultStrategy" />
+    <bean class="org.openengsb.core.common.virtual.InvokeAllIgnoreResultStrategy" />
   </service>
 
   <service id="contextDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
@@ -153,7 +156,9 @@
   <service ref="openengsbInfo" interface="org.apache.karaf.shell.commands.info.InfoProvider" />
 
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
+  <reference id="securityInterceptor" availability="optional" interface="org.aopalliance.intercept.MethodInterceptor"
+    filter="(org.openengsb.interceptor=security)" />
+
   <reference-list id="domains" availability="optional" interface="org.openengsb.core.api.DomainProvider" />
-  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
 
 </blueprint>

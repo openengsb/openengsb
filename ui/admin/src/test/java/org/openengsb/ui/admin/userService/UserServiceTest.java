@@ -17,59 +17,44 @@
 
 package org.openengsb.ui.admin.userService;
 
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.context.ContextCurrentService;
-import org.openengsb.core.api.security.UserExistsException;
-import org.openengsb.core.api.security.UserManagementException;
-import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
-import org.openengsb.core.test.LocalisedTest;
+import org.openengsb.connector.wicketacl.WicketPermission;
+import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
-import org.openengsb.ui.api.OpenEngSBVersionService;
-import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
+import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.osgi.framework.BundleContext;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public class UserServiceTest extends LocalisedTest {
+import com.google.common.collect.ImmutableMap;
 
-    private WicketTester tester;
+public class UserServiceTest extends AbstractUITest {
 
-    private ApplicationContextMock context;
-    private BundleContext bundleContext;
-    private UserManager userManager;
+    protected String localization(Class<?> component, String resourceName) {
+        ResourceBundle resources = ResourceBundle.getBundle(component.getName());
+        if (resources != null) {
+            return resources.getString(resourceName);
+        } else {
+            return null;
+        }
+
+    }
 
     @Before
-    public void setup() {
-        tester = new WicketTester();
-        context = new ApplicationContextMock();
-        context.putBean(mock(ContextCurrentService.class));
-        bundleContext = mock(BundleContext.class);
-        context.putBean(bundleContext);
-        context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
-        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
-        context.putBean("openengsbVersionService", versionService);
-        userManager = mock(UserManager.class);
-        context.putBean("userManager", userManager);
+    public void setup() throws Exception {
         setupTesterWithSpringMockContext();
     }
 
@@ -85,105 +70,142 @@ public class UserServiceTest extends LocalisedTest {
     }
 
     @Test
+    public void createUserPageWithoutParams_shouldEnableUsernameField() throws Exception {
+        tester.startPage(UserEditPage.class);
+        tester.assertRenderedPage(UserEditPage.class);
+        Component usernameField =
+            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
+        assertTrue(usernameField.isEnabled());
+    }
+
+    @Test
+    public void createUserPageWithUserParam_shouldDisableUsernameField() throws Exception {
+        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "admin")));
+        tester.assertRenderedPage(UserEditPage.class);
+        Component usernameField =
+            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
+        assertFalse(usernameField.isEnabled());
+    }
+
+    @Test
+    public void createUserLink_shouldCreateEmptyEditPage() throws Exception {
+        tester.startPage(UserListPage.class);
+        tester.debugComponentTrees();
+        AjaxLink<?> button =
+            (AjaxLink<?>) tester.getComponentFromLastRenderedPage("lazy:createButton");
+        tester.executeAjaxEvent(button, "onclick");
+        tester.assertRenderedPage(UserEditPage.class);
+        Component usernameField =
+            tester.getComponentFromLastRenderedPage("userEditor:userEditorContainer:userForm:username");
+        assertTrue(usernameField.isEnabled());
+    }
+
+    @Test
     public void testUserCreation_ShouldWork() {
-        tester.startPage(UserService.class);
+        tester.startPage(UserEditPage.class);
 
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
-        formTester.setValue("roles", "admin,user");
         formTester.submit();
-        tester.assertNoErrorMessage();
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
 
+        tester.assertNoErrorMessage();
+        assertThat(userManager.getUserList(), hasItem("user1"));
     }
 
     @Test
-    public void testUserCreationWithoutRoles_ShouldWork() {
-        tester.startPage(UserService.class);
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void testCreatePermission() {
+        tester.startPage(UserEditPage.class);
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("userEditor:userEditorContainer:userForm:permissionListContainer:createPermission",
+            "onclick");
 
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-        formTester.setValue("username", "user1");
-        formTester.setValue("password", "password");
-        formTester.setValue("passwordVerification", "password");
-        formTester.submit();
-        tester.assertNoErrorMessage();
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
+        DropDownChoice<Class> dropdown = (DropDownChoice<Class>) tester.getComponentFromLastRenderedPage(
+            "userEditor:userEditorContainer:userForm:permissionListContainer:"
+                    + "createPermissionContainer:createPermissionContent:container:form:permissionTypeSelect");
 
+        List<Class> choices = (List<Class>) dropdown.getChoices();
+        assertThat(choices, hasItem((Class) WicketPermission.class));
+
+        FormTester permissionFormTester = tester.newFormTester(
+            "userEditor:userEditorContainer:userForm:permissionListContainer:"
+                    + "createPermissionContainer:createPermissionContent:container:form");
+        permissionFormTester.select("permissionTypeSelect", 0);
+
+        tester.debugComponentTrees();
     }
 
     @Test
-    public void testErrorMessage_shouldReturnUserExists() {
-        tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+    public void deleteUser_shouldBeRemovedFromList() throws Exception {
+        tester.startPage(UserListPage.class);
+        tester.debugComponentTrees();
+        tester.clickLink("lazy:userList:listContainer:form:list:0:item.delete");
+        tester.debugComponentTrees();
+        tester.executeAjaxEvent("lazy:userList:listContainer:form:list:0:confirm:yes", "onclick");
+        assertThat(userManager.getUserList(), not(hasItem("test")));
+    }
+
+    //
+    // @Test
+    // public void testUserCreationWithoutRoles_ShouldWork() throws Exception {
+    // tester.startPage(UserListPage.class);
+    //
+    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+    // formTester.setValue("username", "user1");
+    // formTester.setValue("password", "password");
+    // formTester.setValue("passwordVerification", "password");
+    // formTester.submit();
+    // tester.assertNoErrorMessage();
+    // assertThat(userManager.getUserCredentials("user1", "password"), is("password"));
+    // }
+    //
+    @Test
+    public void testErrorMessage_shouldReturnUserExists() throws Exception {
+        tester.startPage(UserEditPage.class);
+        userManager.createUser("user1");
+        tester.debugComponentTrees();
+        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
-        formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization("userExistError") });
-        verify(userManager, times(1)).createUser(new User("user1", "password"));
-
+        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "userExistError") });
     }
 
     @Test
     public void testShowCreatedUser_ShouldShowAdmin() {
-        when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
-            @Override
-            public List<User> answer(InvocationOnMock invocationOnMock) {
-                List<User> users = new ArrayList<User>();
-                users.add(new User("admin", "password"));
-                return users;
-            }
-        });
-        tester.startPage(UserService.class);
-        tester.assertContains(localization("existingUser.title"));
+        tester.startPage(UserListPage.class);
         tester.assertContains("admin");
-        tester.assertContains("delete");
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
-        tester.startPage(UserService.class);
-        doThrow(new UserExistsException("user exists")).when(userManager).createUser(new User("user1", "password"));
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws Exception {
+        userManager.createUser("user1");
+        tester.startPage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", "user1")));
+        FormTester formTester = tester.newFormTester("userEditor:userEditorContainer:userForm");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization("passwordError") });
-        verify(userManager, times(0)).createUser(new User("user1", "password"));
+        tester.assertErrorMessages(new String[]{ localization(UserEditPanel.class, "passwordError") });
     }
 
-    @Test
-    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
-        tester.startPage(UserService.class);
-        doThrow(new UserManagementException("database error")).when(userManager).createUser(
-            new User("user1", "password"));
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-        formTester.setValue("username", "user1");
-        formTester.setValue("password", "password");
-        formTester.setValue("roles", "admin,user");
-        formTester.setValue("passwordVerification", "password");
-        formTester.submit();
-        tester.assertErrorMessages(new String[]{ localization("userManagementExceptionError") });
-    }
-
-    @Test
-    public void testShowUserAuthorities() throws Exception {
-        tester.startPage(UserService.class);
-        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
-        formTester.setValue("username", "user1");
-        formTester.setValue("password", "password");
-        formTester.setValue("passwordVerification", "password");
-        formTester.setValue("roles", "ROLE_ADMIN");
-        formTester.submit();
-        tester.assertNoErrorMessage();
-        ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userManager, times(1)).createUser(argCaptor.capture());
-        User userCreated = argCaptor.getValue();
-        assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
-    }
+    // @Test
+    // public void testShowUserAuthorities() throws Exception {
+    // tester.startPage(UserListPage.class);
+    // FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+    // formTester.setValue("username", "user1");
+    // formTester.setValue("password", "password");
+    // formTester.setValue("passwordVerification", "password");
+    // formTester.setValue("roles", "ROLE_ADMIN");
+    // formTester.submit();
+    // tester.assertNoErrorMessage();
+    // //
+    // // ArgumentCaptor<User> argCaptor = ArgumentCaptor.forClass(User.class);
+    // // verify(userManager, times(1)).createUser(argCaptor.capture());
+    // // User userCreated = argCaptor.getValue();
+    // // assertThat(userCreated.getAuthorities(), hasItem((GrantedAuthority) new GrantedAuthorityImpl("ROLE_ADMIN")));
+    // }
 }

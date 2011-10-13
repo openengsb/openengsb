@@ -56,7 +56,7 @@ public final class ThreadLocalUtil {
         if (arg instanceof Runnable && arg.getClass() != ContextAwareRunnable.class) {
             return new ContextAwareRunnable((Runnable) arg);
         } else if (arg instanceof Callable<?> && arg.getClass() != ContextAwareCallable.class) {
-            return new ContextAwareCallable((Callable<Object>) arg);
+            return new ContextAwareCallable<Object>((Callable<Object>) arg);
         }
         return arg;
     }

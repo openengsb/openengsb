@@ -25,16 +25,18 @@
 
 
   <http create-session="never" auto-config="true">
-    <remember-me />
     <intercept-url pattern="/**" />
   </http>
 
   <authentication-manager alias="authenticationManager">
-    <authentication-provider ref="userAuthenticationProvider" />
+    <authentication-provider ref="authenticationProvider" />
   </authentication-manager>
 
-  <osgi:reference id="userManager" interface="org.openengsb.core.api.security.UserManager" />
-  <osgi:reference id="userAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" />
-  <osgi:reference id="osgiAuthenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
+  <beans:bean id="authenticationProvider" class="org.openengsb.ui.admin.UIAuthenticationProvider">
+    <beans:property name="authenticator" ref="authenticator" />
+  </beans:bean>
+
+  <osgi:reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
 
 </beans:beans>

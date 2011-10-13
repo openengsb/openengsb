@@ -25,8 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,37 +33,22 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
-import org.openengsb.ui.api.OpenEngSBVersionService;
-import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
-import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
+import org.openengsb.ui.admin.AbstractUITest;
 
-public class OrganizeGlobalsPageTest {
-    private WicketTester tester;
+public class OrganizeGlobalsPageTest extends AbstractUITest {
     private RuleManager ruleManager;
     private Map<String, String> globals;
 
     @Before
     public void init() throws RuleBaseException {
-        tester = new WicketTester();
-        ApplicationContextMock appContext = new ApplicationContextMock();
-        ContextCurrentService contextService = mock(ContextCurrentService.class);
-        appContext.putBean(contextService);
-        appContext.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
-        List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
-        appContext.putBean("openengsbVersionService", versionService);
         ruleManager = mock(RuleManager.class);
-        appContext.putBean(ruleManager);
-        tester.getApplication().addComponentInstantiationListener(
-            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), appContext));
+        context.putBean(ruleManager);
 
         globals = new TreeMap<String, String>();
         globals.put("glob1", "aaaa.bbbb.ccc");

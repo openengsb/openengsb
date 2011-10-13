@@ -38,7 +38,6 @@ import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.TaskboxService;
-import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -68,8 +67,8 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws WorkflowException, IOException,
-        RuleBaseException {
+    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws Exception {
+        authenticateAsAdmin();
         addWorkflow("TaskDemoWorkflow");
 
         ProcessBag processBag = new ProcessBag();
@@ -98,11 +97,12 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException, IOException, RuleBaseException {
+    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws Exception {
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
 
+        authenticateAsAdmin();
         workflowService.startFlow("TaskDemoWorkflow");
         assertThat(taskboxService.getOpenTasks().size(), is(1));
 
@@ -115,17 +115,17 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException {
+    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws Exception {
         addWorkflow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(0));
-        ;
+
+        authenticateAsAdmin();
 
         long id = workflowService.startFlow("TaskDemoWorkflow");
         long id2 = workflowService.startFlow("TaskDemoWorkflow");
 
         assertThat(taskboxService.getOpenTasks().size(), is(2));
-        ;
 
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 1);
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);
@@ -144,10 +144,9 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     }
 
     @Test
-    public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws WorkflowException, IOException,
-        RuleBaseException, InterruptedException {
+    public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws Exception {
         addWorkflow("HIDemoWorkflow");
-
+        authenticateAsAdmin();
         workflowService.startFlow("HIDemoWorkflow");
         Task task = taskboxService.getOpenTasks().get(0);
         Date date = new Date();
