@@ -20,18 +20,18 @@ package org.openengsb.core.security.filter;
 import org.openengsb.core.api.remote.FilterChainElement;
 import org.openengsb.core.api.remote.FilterChainElementFactory;
 import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.openengsb.domain.authentication.AuthenticationDomain;
 
 public class MessageAuthenticatorFactory implements FilterChainElementFactory {
 
-    private AuthenticationManager authenticationManager;
+    private AuthenticationDomain authenticationManager;
 
     @Override
     public FilterChainElement newInstance() throws FilterConfigurationException {
         return new MessageAuthenticatorFilter(authenticationManager);
     }
 
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+    public void setAuthenticationManager(AuthenticationDomain authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 }

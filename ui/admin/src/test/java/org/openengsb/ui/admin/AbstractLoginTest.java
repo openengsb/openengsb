@@ -18,32 +18,23 @@
 package org.openengsb.ui.admin;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.security.UserManager;
-import org.openengsb.core.api.security.model.User;
-import org.openengsb.core.security.internal.UserManagerImpl;
+import org.junit.Rule;
+import org.junit.rules.MethodRule;
+import org.openengsb.core.test.rules.DedicatedThread;
 import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+
 
 public abstract class AbstractLoginTest extends AbstractUITest {
 
-    private UserManager userManager;
+    @Rule
+    public MethodRule dedicatedThread = new DedicatedThread();
 
     @Before
-    public void setup() {
+    public void setupLogin() throws Exception {
         mockAuthentication();
         ApplicationLifecycleListener listener = mock(ApplicationLifecycleListener.class);
         tester = new WicketTester(new WicketApplication(listener) {
@@ -52,34 +43,5 @@ public abstract class AbstractLoginTest extends AbstractUITest {
                 addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(this, context));
             }
         });
-    }
-
-    private void mockAuthentication() {
-        ProviderManager authManager = new ProviderManager();
-        List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        userManager = mock(UserManagerImpl.class);
-        provider.setUserDetailsService(userManager);
-        providers.add(provider);
-        authManager.setProviders(providers);
-
-        final User user = new User("test", "password");
-        when(userManager.loadUserByUsername("test")).thenAnswer(new Answer<User>() {
-            @Override
-            public User answer(InvocationOnMock invocationOnMock) {
-                return user;
-            }
-        });
-        ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-        final User admin = new User("admin", "password", grantedAuthorities);
-        when(userManager.loadUserByUsername("admin")).thenAnswer(new Answer<User>() {
-            @Override
-            public User answer(InvocationOnMock invocationOnMock) {
-                return admin;
-            }
-        });
-        context.putBean("authenticationManager", authManager);
     }
 }

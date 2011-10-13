@@ -18,42 +18,39 @@
 package org.openengsb.domain.auditing.internal;
 
 import java.io.InputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.security.BundleAuthenticationToken;
+import org.openengsb.core.common.util.SecurityUtils;
 import org.openengsb.domain.auditing.AuditingDomain;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuditingConfig {
 
     private RuleManager ruleManager;
-    private AuthenticationManager authManager;
 
     public final void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
     }
 
-    public void setAuthManager(AuthenticationManager authManager) {
-        this.authManager = authManager;
-    }
-
     public void init() {
-        Authentication authentication = authManager.authenticate(new BundleAuthenticationToken("auditing-domain", ""));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         try {
-            ruleManager.addImport(AuditingDomain.class.getCanonicalName());
-            ruleManager.addGlobalIfNotPresent(AuditingDomain.class.getCanonicalName(), "auditing");
-        } catch (RuleBaseException e) {
-            throw new RuntimeException(e);
+            SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    ruleManager.addImport(AuditingDomain.class.getCanonicalName());
+                    ruleManager.addGlobalIfNotPresent(AuditingDomain.class.getCanonicalName(), "auditing");
+                    addRule("auditEvent");
+                    return null;
+                }
+            });
+        } catch (ExecutionException e1) {
+            throw new RuntimeException(e1);
         }
-        addRule("auditEvent");
+
     }
 
     private void addRule(String rule) {

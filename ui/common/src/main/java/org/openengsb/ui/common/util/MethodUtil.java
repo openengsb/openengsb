@@ -21,8 +21,10 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +44,10 @@ import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Maps;
 
 public final class MethodUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodUtil.class);
@@ -91,12 +99,12 @@ public final class MethodUtil {
         }
     }
 
-    public static Object buildBean(Class<?> beanClass, Map<String, String> values) {
+    @SuppressWarnings("unchecked")
+    public static <T> T buildBean(Class<T> beanClass, Map<String, String> values) {
         try {
             Object obj = null;
 
             if (beanClass.isInterface()) {
-                @SuppressWarnings("unchecked")
                 Class<? extends OpenEngSBModel> model = (Class<? extends OpenEngSBModel>) beanClass;
                 obj = ekbService.createEmptyModelObject(model);
             } else {
@@ -114,10 +122,68 @@ public final class MethodUtil {
                 Object ob = convertToCorrectClass(propertyDescriptor.getPropertyType(), value);
                 propertyDescriptor.getWriteMethod().invoke(obj, ob);
             }
-            return obj;
+            return (T) obj;
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public static Map<String, PropertyEditor> getRelevantProperties(final Object bean)
+        throws IntrospectionException {
+        Class<?> beanClass = bean.getClass();
+        BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        Iterator<PropertyDescriptor> propertyIterator = Iterators.forArray(propertyDescriptors);
+        Iterator<PropertyDescriptor> filtered = Iterators.filter(propertyIterator, new Predicate<PropertyDescriptor>() {
+            @Override
+            public boolean apply(PropertyDescriptor input) {
+                if (!input.getPropertyType().equals(String.class)) {
+                    return false;
+                }
+                Method writeMethod = input.getWriteMethod();
+                if (writeMethod == null) {
+                    return false;
+                }
+                return Modifier.isPublic(writeMethod.getModifiers());
+            }
+        });
+        Map<String, PropertyEditor> result = Maps.newHashMap();
+        while (filtered.hasNext()) {
+            PropertyDescriptor descriptor = filtered.next();
+            result.put(descriptor.getName(), descriptor.createPropertyEditor(bean));
+        }
+        return result;
+    }
+
+    public static Map<String, String> buildAttributeMap(Object bean) throws IntrospectionException {
+        Map<String, PropertyEditor> relevantProperties = getRelevantProperties(bean);
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, PropertyEditor> entry : relevantProperties.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().getAsText());
+        }
+        return result;
+    }
+
+    public static <T> T buildBeanFromAttributeMap(Class<T> beanClass, Map<String, String> values) {
+        T bean;
+        try {
+            bean = beanClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        Map<String, PropertyEditor> relevantProperties;
+        try {
+            relevantProperties = getRelevantProperties(bean);
+        } catch (IntrospectionException e) {
+            throw new IllegalArgumentException(e);
+        }
+        for (Map.Entry<String, PropertyEditor> entry : relevantProperties.entrySet()) {
+            PropertyEditor editor = entry.getValue();
+            editor.setAsText(values.get(entry.getKey()));
+        }
+        return bean;
     }
 
     public enum TestEnum {

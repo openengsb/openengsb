@@ -66,6 +66,11 @@
 
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
 
+  <osgi:reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
+
+  <osgi:reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+
   <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
     lazy-init="false">
     <constructor-arg name="bundleContext" ref="bundleContext" />
@@ -73,5 +78,9 @@
     <constructor-arg name="priority" value="2" />
     <property name="securityFilterChain" ref="springSecurityFilterChain" />
   </bean>
+
+  <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <osgi:service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
 
 </beans>

@@ -17,7 +17,7 @@
 
 package org.openengsb.core.api;
 
-import org.openengsb.core.api.security.AuthorizedRoles;
+import org.openengsb.core.api.security.annotation.Authenticated;
 
 /**
  * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
@@ -29,7 +29,7 @@ public interface Domain extends OpenEngSBService {
      *
      * @see org.openengsb.core.api.AliveState
      */
-    @AuthorizedRoles("ROLE_USER")
+    @Authenticated
     AliveState getAliveState();
 
 }

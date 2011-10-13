@@ -21,13 +21,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.security.PublicKey;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import javax.crypto.SecretKey;
 
@@ -39,6 +42,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterException;
@@ -47,20 +53,25 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
+import org.openengsb.core.api.security.CredentialTypeProvider;
+import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.PrivateKeySource;
-import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.CipherUtils;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
-import org.openengsb.core.test.AbstractOpenEngSBTest;
+import org.openengsb.core.security.internal.FileKeySource;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 
-public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEngSBTest {
+public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMockServiceTest {
 
     @Rule
     public TemporaryFolder dataFolder = new TemporaryFolder();
@@ -81,7 +92,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     protected FilterAction secureRequestHandler;
     protected RequestHandler requestHandler;
     protected PublicKey serverPublicKey;
-    protected AuthenticationManager authManager;
+    protected AuthenticationDomain authManager;
     protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
 
     @Before
@@ -92,10 +103,8 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
         serverPublicKey = fileKeySource.getPublicKey();
         privateKeySource = fileKeySource;
         requestHandler = mock(RequestHandler.class);
-        authManager = mock(AuthenticationManager.class);
-        Authentication mockedGoodAuthentication = mock(Authentication.class);
-        when(mockedGoodAuthentication.isAuthenticated()).thenReturn(true);
-        when(authManager.authenticate(any(Authentication.class))).thenReturn(mockedGoodAuthentication);
+        authManager = mock(AuthenticationDomain.class);
+
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
@@ -108,6 +117,10 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
         defaultSecureMethodCallFilterFactory.setRequestHandler(requestHandler);
 
         secureRequestHandler = getSecureRequestHandlerFilterChain();
+
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("credentialClass", Password.class.getName());
+        registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
     }
 
     protected abstract FilterAction getSecureRequestHandlerFilterChain() throws Exception;
@@ -130,25 +143,26 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     }
 
     protected SecureRequest prepareSecureRequest() {
-        return prepareSecureRequest(new UsernamePasswordAuthenticationInfo("test", "password"));
+        return prepareSecureRequest("test", new Password("password"));
     }
 
-    private SecureRequest prepareSecureRequest(AuthenticationInfo token) {
+    private SecureRequest prepareSecureRequest(String username, Object credentials) {
         MethodCall methodCall = new MethodCall("doSomething", new Object[]{ METHOD_ARG, });
         MethodCallRequest request = new MethodCallRequest(methodCall, "c42");
-        SecureRequest secureRequest = SecureRequest.create(request, BeanDescription.fromObject(token));
+        SecureRequest secureRequest = SecureRequest.create(request, username, BeanDescription.fromObject(credentials));
         return secureRequest;
     }
 
     @Test
     public void testInvalidAuthentication_shouldNotInvokeRequestHandler() throws Exception {
-        when(authManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("bad"));
+        when(authManager.authenticate(anyString(), any(Credentials.class))).thenThrow(
+            new AuthenticationException("bad"));
         SecureRequest secureRequest = prepareSecureRequest();
         try {
             processRequest(secureRequest);
             fail("Expected exception");
-        } catch (BadCredentialsException e) {
-            // expected, because thrown earlier
+        } catch (FilterException e) {
+            assertThat(e.getCause(), is(AuthenticationException.class));
         }
         verify(requestHandler, never()).handleCall(any(MethodCall.class));
     }
@@ -175,11 +189,15 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
     @Test
     public void testReplayMessage_shouldBeRejected() throws Exception {
         SecureRequest secureRequest = prepareSecureRequest();
-
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
         EncodingType encryptedRequest = encodeAndEncrypt(secureRequest, sessionKey);
         secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
-        secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
+        try {
+            secureRequestHandler.filter(encryptedRequest, new HashMap<String, Object>());
+            fail("replay was not detected");
+        } catch (FilterException e) {
+            assertThat(e.getCause(), is(MessageVerificationFailedException.class));
+        }
     }
 
     private SecureResponse processRequest(SecureRequest secureRequest) throws Exception {
@@ -199,5 +217,13 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOpenEn
         } else {
             LOGGER.info(o.toString());
         }
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
     }
 }

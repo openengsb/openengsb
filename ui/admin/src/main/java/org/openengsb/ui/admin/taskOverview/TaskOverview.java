@@ -18,14 +18,14 @@
 package org.openengsb.ui.admin.taskOverview;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-@AuthorizeInstantiation("ROLE_USER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "TASK_USER")
 @PaxWicketMountPoint(mountPoint = "tasks")
 public class TaskOverview extends BasePage {
     @PaxWicketBean(name = "webtaskboxService")

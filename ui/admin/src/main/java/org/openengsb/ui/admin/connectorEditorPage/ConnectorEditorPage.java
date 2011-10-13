@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
@@ -35,6 +34,7 @@ import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.serviceEditor.ServiceEditor;
@@ -47,7 +47,7 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation("ROLE_USER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "CONNECTOR_EDITOR")
 @PaxWicketMountPoint(mountPoint = "connectors/editor")
 public class ConnectorEditorPage extends BasePage {
 

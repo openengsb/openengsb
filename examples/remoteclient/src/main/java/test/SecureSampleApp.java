@@ -45,12 +45,10 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
-import org.openengsb.core.api.security.model.AuthenticationInfo;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
-import org.openengsb.core.security.CipherUtils;
+import org.openengsb.core.common.util.CipherUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,19 +80,19 @@ public final class SecureSampleApp {
         producer = session.createProducer(destination);
     }
 
-    private static MethodResult call(MethodCall call, AuthenticationInfo authenticationInfo) throws IOException,
+    private static MethodResult call(MethodCall call, String username, Object credentails) throws IOException,
         JMSException, InterruptedException, ClassNotFoundException, EncryptionException, DecryptionException {
         MethodCallRequest methodCallRequest = new MethodCallRequest(call);
         SecretKey sessionKey = CipherUtils.generateKey("AES", 128);
-        String requestString = marshalRequest(methodCallRequest, sessionKey, authenticationInfo);
+        String requestString = marshalRequest(methodCallRequest, sessionKey, username, credentails);
         sendMessage(requestString);
         String resultString = getResultFromQueue(methodCallRequest.getCallId());
         return convertStringToResult(resultString, sessionKey);
     }
 
     private static String marshalRequest(MethodCallRequest methodCallRequest, SecretKey sessionKey,
-            AuthenticationInfo authenticationInfo) throws IOException, EncryptionException {
-        byte[] requestString = marshalSecureRequest(methodCallRequest, authenticationInfo);
+            String username, Object credentials) throws IOException, EncryptionException {
+        byte[] requestString = marshalSecureRequest(methodCallRequest, username, credentials);
         EncryptedMessage encryptedMessage = encryptMessage(sessionKey, requestString);
         return MAPPER.writeValueAsString(encryptedMessage);
     }
@@ -116,9 +114,9 @@ public final class SecureSampleApp {
     }
 
     private static byte[] marshalSecureRequest(MethodCallRequest methodCallRequest,
-            AuthenticationInfo authenticationInfo) throws IOException {
-        BeanDescription auth = BeanDescription.fromObject(authenticationInfo);
-        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, auth);
+            String username, Object credentials) throws IOException {
+        BeanDescription credentialsBean = BeanDescription.fromObject(credentials);
+        SecureRequest secureRequest = SecureRequest.create(methodCallRequest, username, credentialsBean);
         return MAPPER.writeValueAsBytes(secureRequest);
     }
 
@@ -197,7 +195,7 @@ public final class SecureSampleApp {
             new MethodCall("doSomething", new Object[]{ "Hello World!" }, ImmutableMap.of("serviceId",
                 "example+example+testlog", "contextId", "foo"));
         LOGGER.info("calling method");
-        MethodResult methodResult = call(methodCall, new UsernamePasswordAuthenticationInfo("admin", "password"));
+        MethodResult methodResult = call(methodCall, "admin", "password");
         System.out.println(methodResult);
 
         stop();
@@ -206,4 +204,3 @@ public final class SecureSampleApp {
     private SecureSampleApp() {
     }
 }
-

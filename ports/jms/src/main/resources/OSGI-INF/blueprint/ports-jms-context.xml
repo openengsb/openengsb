@@ -90,13 +90,13 @@
   </bean>
 
   <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
-    <property name="authenticationManager" ref="authenticationManager" />
     <property name="requestHandler" ref="requestHandler" />
+    <property name="authenticationManager" ref="authenticator" />
   </bean>
 
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
-  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
 
 </blueprint>
