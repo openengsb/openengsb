@@ -51,7 +51,13 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
 
     @After
     public void tearDown() throws Exception {
-        userManager.deleteUser("test");
+        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                userManager.deleteUser("test");
+                return null;
+            }
+        });
     }
 
     @Test
