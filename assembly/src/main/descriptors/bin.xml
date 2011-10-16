@@ -45,7 +45,6 @@
         <exclude>karaf-manual*</exclude>
       </excludes>
     </fileSet>
-
     <!-- Copy over bin/karaf separately to get the correct file mode -->
     <fileSet>
       <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
@@ -60,7 +59,6 @@
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>
-
     <!-- Copy over bin/karaf separately to get the correct file mode -->
     <fileSet>
       <directory>target/dependencies/win/apache-karaf-${karaf.version}</directory>
@@ -75,7 +73,6 @@
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>
-
     <!-- Copy license and other files from root -->
     <fileSet>
       <directory>${basedir}/..</directory>
@@ -87,8 +84,7 @@
       <lineEnding>dos</lineEnding>
       <fileMode>0644</fileMode>
     </fileSet>
-
-    <!-- Copy over everything that needs to get unix line endings -->
+    <!-- Copy over configuration folders -->
     <fileSet>
       <directory>target/classes/etc</directory>
       <outputDirectory>/etc/</outputDirectory>
@@ -101,16 +97,15 @@
       <lineEnding>dos</lineEnding>
       <fileMode>0644</fileMode>
     </fileSet>
-
     <!-- Copy openengsb system repo -->
     <fileSet>
       <directory>target/features-repo</directory>
       <outputDirectory>system</outputDirectory>
     </fileSet>
-
   </fileSets>
 
   <files>
+    <!-- Copy Changlog File -->
     <file>
       <source>${basedir}/../CHANGELOG.md</source>
       <outputDirectory>/</outputDirectory>
@@ -118,6 +113,7 @@
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
+    <!-- Copy Known Issues File -->
     <file>
       <source>${basedir}/../KNOWN_ISSUES.md</source>
       <outputDirectory>/</outputDirectory>
@@ -125,20 +121,22 @@
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
+    <!-- Executable Scripts -->
     <file>
-      <source>${basedir}/target/classes/openengsb</source>
+      <source>${basedir}/target/classes/bin/openengsb</source>
       <outputDirectory>/bin/</outputDirectory>
       <destName>openengsb</destName>
       <fileMode>0755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
     <file>
-      <source>${basedir}/target/classes/openengsb.bat</source>
+      <source>${basedir}/target/classes/bin/openengsb.bat</source>
       <outputDirectory>/bin/</outputDirectory>
       <destName>openengsb.bat</destName>
       <fileMode>0755</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
+    <!-- Readme File -->
     <file>
       <source>${basedir}/target/classes/README.txt</source>
       <outputDirectory>/</outputDirectory>
