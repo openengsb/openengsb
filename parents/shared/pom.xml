@@ -58,6 +58,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
     <karaf.version>2.2.3</karaf.version>
+    <felix.gogo.version>0.6.1</felix.gogo.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>3</openengsb.version.min>
     <openengsb.version.max>4</openengsb.version.max>
@@ -575,6 +576,12 @@
         <groupId>org.apache.karaf.shell</groupId>
         <artifactId>org.apache.karaf.shell.commands</artifactId>
         <version>${karaf.version}</version>
+      </dependency>
+      <!-- The version here is directly relative to the karaf version -->
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.gogo.command</artifactId>
+        <version>${felix.gogo.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
