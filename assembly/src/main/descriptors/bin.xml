@@ -113,14 +113,6 @@
       <fileMode>0644</fileMode>
       <lineEnding>dos</lineEnding>
     </file>
-    <!-- Copy Known Issues File -->
-    <file>
-      <source>${basedir}/../KNOWN_ISSUES.md</source>
-      <outputDirectory>/</outputDirectory>
-      <destName>KNOWN_ISSUES</destName>
-      <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
-    </file>
     <!-- Executable Scripts -->
     <file>
       <source>${basedir}/target/classes/bin/openengsb</source>
