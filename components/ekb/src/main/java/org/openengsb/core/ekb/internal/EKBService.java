@@ -29,38 +29,48 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 /**
  * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
  * OpenEngSBModel interfaces.
+ * 
+ * This service is deprecated. If you want to use the proxiing functionality, you have to use a ModelFactory
+ * service. If you want to query for elements from the EDB, you have to use a QueryInterface service.
  */
+@Deprecated
 public class EKBService implements EngineeringKnowledgeBaseService {
     private ModelFactory modelFactory;
     private QueryInterface queryInterface;
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         return modelFactory.createEmptyModelObject(model, entries);
     }
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> T getModel(Class<T> model, String oid) {
         return queryInterface.getModel(model, oid);
     }
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> List<T> getModelHistory(Class<T> model, String oid) {
         return queryInterface.getModelHistory(model, oid);
     }
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, 
             Long from, Long to) {
         return queryInterface.getModelHistoryForTimeRange(model, oid, from, to);
     }
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String key, Object value) {
         return queryInterface.queryForModels(model, key, value);
     }
 
     @Override
+    @Deprecated
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
         return queryInterface.queryForModels(model, queryMap);
     }
