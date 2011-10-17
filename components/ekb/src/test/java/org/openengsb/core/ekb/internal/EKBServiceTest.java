@@ -39,13 +39,14 @@ import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 public class EKBServiceTest {
     private EKBService service;
-    private EngineeringDatabaseService edbService;
 
     @Before
     public void setup() {
         this.service = new EKBService();
+        
+        ModelFactoryService modelFactory = new ModelFactoryService();
 
-        edbService = mock(EngineeringDatabaseService.class);
+        EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
 
         EDBObject edbObject = new EDBObject("testoid");
         edbObject.put("id", "testid");
@@ -75,8 +76,13 @@ public class EKBServiceTest {
         when(edbService.getObject("suboid1")).thenReturn(subObject1);
         when(edbService.getObject("suboid2")).thenReturn(subObject2);
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
+        
+        QueryInterfaceService queryInterface = new QueryInterfaceService();
+        queryInterface.setEdbService(edbService);
+        queryInterface.setModelFactory(modelFactory);
 
-        this.service.setEdbService(edbService);
+        service.setQueryInterface(queryInterface);
+        service.setModelFactory(modelFactory);
     }
 
     @Test
