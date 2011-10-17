@@ -57,7 +57,7 @@
     <!-- base settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- core versions -->
-    <karaf.version>2.2.3</karaf.version>
+    <karaf.version>2.2.4</karaf.version>
     <felix.gogo.version>0.6.1</felix.gogo.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>2</openengsb.version.min>
