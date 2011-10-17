@@ -91,7 +91,7 @@
     <xmlschema.version>2.0</xmlschema.version>
     <cxf.version>2.4.2</cxf.version>
     <jaxb.api.version>1.8.0</jaxb.api.version>
-    <jaxws.api.version>1.8.0</jaxws.api.version>
+    <jaxws.api.version>1.1</jaxws.api.version>
     <jsr311.api.version>1.8.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <pax.exam.version>2.3.0.M1</pax.exam.version>
