@@ -32,37 +32,30 @@ public interface EngineeringKnowledgeBaseService {
     /**
      * Creates a proxy for the model interface which simulates an implementation of the interface.
      */
-    @Deprecated
     <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries);
 
     /**
      * Loads the most actual tool data from the given oid
      */
-    @Deprecated
     <T extends OpenEngSBModel> T getModel(Class<T> model, String oid);
 
     /**
      * Loads the history (all saved versions) of the tool data from the given oid
      */
-    @Deprecated
     <T extends OpenEngSBModel> List<T> getModelHistory(Class<T> model, String oid);
 
     /**
      * Loads the history (all saved versions) of the tool data from the given oid for the given time range
      */
-    @Deprecated
     <T extends OpenEngSBModel> List<T> getModelHistoryForTimeRange(Class<T> model, String oid, Long from, Long to);
 
     /**
      * Queries for models which have a OpenEngSBModelEntry with the given key and the given value saved
      */
-    @Deprecated
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String key, Object value);
 
     /**
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries
      */
-    @Deprecated
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap);
-
 }
