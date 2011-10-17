@@ -119,8 +119,8 @@
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
     <el.version>2.1.0</el.version>
-    <wicket.version>1.4.18</wicket.version>
-    <pax.wicket.version>0.7.4</pax.wicket.version>
+    <wicket.version>1.4.19</wicket.version>
+    <pax.wicket.version>0.7.5</pax.wicket.version>
     <jackson.version>1.8.5</jackson.version>    
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
@@ -152,7 +152,6 @@
     <felix.configadmin.version>1.2.8</felix.configadmin.version>
     <felix.fileinstall.version>3.1.10</felix.fileinstall.version>
     <felix.prefs.version>1.0.4</felix.prefs.version>
-    
     <felix.version>3.0.2</felix.version>
     <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
