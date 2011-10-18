@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.commands.info.InfoProvider;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.fusesource.jansi.Ansi;
+import org.openengsb.core.common.util.OutputStreamFormater;
 import org.osgi.framework.Bundle;
 
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
@@ -36,13 +36,11 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() throws Exception {
-        int maxNameLen = 25;
-
         //
         // print OpenEngSB information
         //
-        System.out.println("OpenEngSB Framework");
-        printValue("OpenEngSB Framework Version", maxNameLen, versionNumber);
+        OutputStreamFormater.printValue("OpenEngSB Framework");
+        OutputStreamFormater.printValue("OpenEngSB Framework Version", versionNumber);
         // print loaded openengsb-bundles
         Bundle[] bundles = getBundleContext().getBundles();
         Integer count = 0;
@@ -51,34 +49,20 @@ public class OpenEngSBInfo extends OsgiCommandSupport {
                 count++;
             }
         }
-        printValue("OpenEngSB Framework Bundles", maxNameLen, count.toString());
-        System.out.println();
+        OutputStreamFormater.printValue("OpenEngSB Framework Bundles", count.toString());
+        OutputStreamFormater.printValue("\n");
 
         //
         // Other infos:
         //
-        System.out.println("Used libraries");
-        printValue("Karaf Version", maxNameLen, System.getProperty("karaf.version"));
-        printValue("OSGi Framework", maxNameLen,
+        OutputStreamFormater.printValue("Used libraries");
+        OutputStreamFormater.printValue("Karaf Version", System.getProperty("karaf.version"));
+        OutputStreamFormater.printValue("OSGi Framework",
             bundleContext.getBundle(0).getSymbolicName() + " - " + bundleContext.getBundle(0).getVersion());
-        printValue("Drools version", maxNameLen, droolsVersion);
-        System.out.println();
-
+        OutputStreamFormater.printValue("Drools version", droolsVersion);
+        OutputStreamFormater.printValue("\n");
 
         return null;
-    }
-
-    private void printValue(String name, int pad, String value) {
-        System.out.println(Ansi.ansi().a("  ").a(Ansi.Attribute.INTENSITY_BOLD).a(name).a(spaces(pad - name.length()))
-            .a(Ansi.Attribute.RESET).a("   ").a(value).toString());
-    }
-
-    private String spaces(int nb) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nb; i++) {
-            sb.append(' ');
-        }
-        return sb.toString();
     }
 
     public List<InfoProvider> getInfoProviders() {
