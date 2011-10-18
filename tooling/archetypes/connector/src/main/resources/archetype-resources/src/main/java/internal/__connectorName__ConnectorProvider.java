@@ -17,13 +17,10 @@
 
 package ${package}.internal;
 
-
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
-
-import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ConnectorProvider extends AbstractConnectorProvider {
 
