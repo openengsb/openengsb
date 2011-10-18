@@ -16,12 +16,8 @@
 # limitations under the License.
 #
 
-# Configure environment
 export JAVA_MIN_MEM=${java.min.mem}
 export JAVA_MAX_MEM=${java.max.mem}
 export JAVA_PERM_MEM=${java.min.perm}
 export JAVA_MAX_PERM_MEM=${java.max.perm}
-
-# Startup Karaf
-$(dirname $0)/karaf
 
