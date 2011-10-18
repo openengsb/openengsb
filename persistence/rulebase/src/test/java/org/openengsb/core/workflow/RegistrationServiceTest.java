@@ -43,6 +43,7 @@ import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
+import org.openengsb.core.workflow.RemoteEventUtil;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
 

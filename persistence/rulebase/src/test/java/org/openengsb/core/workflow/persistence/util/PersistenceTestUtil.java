@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.persistence;
+package org.openengsb.core.workflow.persistence.util;
 
 import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.workflow.internal.persistence.GlobalDeclarationPersistenceBackendService;
-import org.openengsb.core.workflow.internal.persistence.ImportDeclarationPersistenceBackendService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
-import org.openengsb.core.workflow.internal.persistence.RuleBaseElementPersistenceBackendService;
+import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.persistence.rulebase.filebackend.GlobalDeclarationPersistenceBackendService;
+import org.openengsb.persistence.rulebase.filebackend.ImportDeclarationPersistenceBackendService;
+import org.openengsb.persistence.rulebase.filebackend.RuleBaseElementPersistenceBackendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

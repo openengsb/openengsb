@@ -27,6 +27,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -45,11 +47,12 @@ import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
+import org.openengsb.core.workflow.persistence.util.PersistenceTestUtil;
 import org.osgi.framework.BundleContext;
 
 public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
-
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
     protected WorkflowServiceImpl service;
     protected RuleManager manager;
     protected DummyService myservice;
@@ -91,7 +94,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
+        manager = PersistenceTestUtil.getRuleManager(folder);
         RuleUtil.addHello1Rule(manager);
         RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
