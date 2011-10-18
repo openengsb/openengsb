@@ -25,22 +25,19 @@
 
   <requiredProperties>
     <requiredProperty key="groupId">
-      <defaultValue>org.openengsb.domain.domainname</defaultValue>
+      <defaultValue>org.openengsb.domain</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>openengsb-domain-domainname-parent</defaultValue>
+      <defaultValue>org.openengsb.domain.domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>OpenEngSB :: Domain :: Domainname :: Parent</defaultValue>
+      <defaultValue>OpenEngSB :: Domain :: Domainname </defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+      <defaultValue>3.0.0-SNAPSHOT</defaultValue>
     </requiredProperty>
-    <requiredProperty key="implementationArtifactId">
-      <defaultValue>openengsb-domain-domainname</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="implementationName">
-      <defaultValue>OpenEngSB :: Domain :: Domainname</defaultValue>
+    <requiredProperty key="openengsbVersion" >
+      <defaultValue>3.0.0-SNAPSHOT</defaultValue>
     </requiredProperty>
     <requiredProperty key="package">
       <defaultValue>org.openengsb.domain.domainname</defaultValue>
@@ -64,6 +61,12 @@
       <directory>src/main/resources</directory>
       <includes>
         <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory></directory>
+      <includes>
+        <include>pom.xml</include>
       </includes>
     </fileSet>
   </fileSets>

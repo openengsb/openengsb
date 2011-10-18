@@ -22,7 +22,7 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.api.AliveState;
 
 import org.openengsb.core.api.Domain;
-import ${domainPackage}.${domainInterface};
+import org.openengsb.domain.${domainL}.${domainInterface};
 
 public class ${connectorName}ServiceImpl extends AbstractOpenEngSBConnectorService implements ${domainInterface} {
 
