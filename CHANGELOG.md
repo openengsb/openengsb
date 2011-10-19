@@ -1,3 +1,39 @@
+openengsb-2.0.4 2011-10-19
+--------------------------------------------
+
+This release contains various minor bug fixes including the removal of the not supported 1.5 jre; in addition the
+problem was fixed that the sources of the releases are not pushed to m2 central. Finally version bug in the openengsb
+console package had been fixed. This release comes with a new version of karaf (2.2.4), openengsb-root (24), wicket 
+and paxwicket (1.4.19, 0.7.5) and cxf (2.4.3). All of those upgrades fixes on or another issue with the used libraries.
+
+### Details
+** Bug
+    * [OPENENGSB-2188] - remove jre-1.5
+    * [OPENENGSB-2215] - Sources are not deployed to m2 central
+    * [OPENENGSB-2217] - Console uses wrong import version of gogo shell
+
+** Improvement
+    * [OPENENGSB-2204] - display arrays properly when returned by a method
+
+** Library Upgrade
+    * [OPENENGSB-2016] - Upgrade jaxb smx bundles to 2.2.4
+    * [OPENENGSB-2142] - upgrade to openengsb-root-23
+    * [OPENENGSB-2199] - Upgrade to karaf-2.2.4
+    * [OPENENGSB-2202] - Upgrade to cxf 2.4.3
+    * [OPENENGSB-2203] - Upgrade to pax-wicket 0.7.5
+    * [OPENENGSB-2216] - Upgrade to wicket 1.4.19
+    * [OPENENGSB-2220] - switch from smx jaxws api to geronimo jaxws spec
+    * [OPENENGSB-2221] - Upgrade xmlschema to 2.0.1
+    * [OPENENGSB-2222] - upgrade saaj impl version to 1.3.9_1
+    * [OPENENGSB-2223] - Upgrade opensaml to 2.5.1_1
+    * [OPENENGSB-2224] - Upgrade wss4j to 1.6.3
+    * [OPENENGSB-2227] - Upgrade to openengsb-root-24
+
+** Task
+    * [OPENENGSB-2165] - Release framework-2.0.4
+    * [OPENENGSB-2208] - Move startup scripts into filtered-resources/bin
+
+
 openengsb-2.0.3 2011-10-05 
 --------------------------------------------
 
