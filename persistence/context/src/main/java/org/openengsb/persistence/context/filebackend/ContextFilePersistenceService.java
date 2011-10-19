@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.persistence.context.filebackend;
 
 import java.io.File;
 import java.io.IOException;
