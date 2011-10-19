@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.services.internal;
+package org.openengsb.persistence.context.filebackend;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -100,27 +100,27 @@ public class ContextFilePersistenceServiceTest {
     public void persistingContext_shouldCreateNewFile() throws InvalidConfigurationException, PersistenceException {
         File configFileThatShouldBeCreated = new File(temporaryFolder.getRoot(), "contextFoo.context");
         Integer filesBefore = countFilesInTempFolder();
-        
+
         persistenceService.persist(getEmptyContextConfigurationWithId("contextFoo"));
         Integer filesAfter = countFilesInTempFolder();
 
         assertThat(filesAfter, is(filesBefore + 1));
         assertThat(configFileThatShouldBeCreated.exists(), is(true));
     }
-    
+
     @Test
     public void removingConfiguration_ShouldDeleteFile() throws PersistenceException {
         File configFileThatShouldBeDeleted = new File(temporaryFolder.getRoot(), "context3.context");
-        
+
         persistenceService.remove(getMetaDataWithContextId("context3"));
-        
+
         assertThat(configFileThatShouldBeDeleted.exists(), is(false));
     }
 
     private int countFilesInTempFolder() {
         return temporaryFolder.getRoot().list().length;
     }
-    
+
     private ContextConfiguration getEmptyContextConfigurationWithId(String contextId) {
         Map<String, String> metaData = getMetaDataWithContextId(contextId);
         return new ContextConfiguration(metaData, null);
