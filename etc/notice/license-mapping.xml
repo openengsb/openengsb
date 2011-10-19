@@ -772,5 +772,10 @@
         <artifactId>saaj-impl</artifactId>
         <license>Commons Development and Distribution License, Version 1.0</license>
     </artifact>
+    <artifact>
+        <groupId>javax.xml.soap</groupId>
+        <artifactId>saaj-api</artifactId>
+        <license>Apache License, Version 2.0</license>
+    </artifact>
 </license-lookup>
 
