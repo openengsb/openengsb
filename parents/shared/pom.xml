@@ -88,7 +88,7 @@
     <jsr311.api.version>1.8.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
     <pax.exam.version>2.3.0.M1</pax.exam.version>
-    <karaf.exam.version>0.2.2</karaf.exam.version>
+    <karaf.exam.version>0.3.0</karaf.exam.version>
     <saaj.api.version>1.8.0</saaj.api.version>
     <saaj.impl.version>1.3.9_1</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
