@@ -50,6 +50,7 @@ import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -260,6 +261,8 @@ public abstract class AbstractExamTestHelper {
         LogLevel realLogLevel = transformLogLevel(loglevel);
         Option[] mainOptions =
             new Option[]{
+                new VMOption("-Xmx2048m"),
+                new VMOption("-XX:MaxPermSize=256m"),
                 karafDistributionConfiguration().frameworkUrl(
                     maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
                         .versionAsInProject()),
