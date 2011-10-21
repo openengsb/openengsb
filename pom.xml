@@ -44,7 +44,7 @@
   <groupId>org.openengsb.framework</groupId>
   <artifactId>openengsb-framework-root</artifactId>
   <packaging>pom</packaging>
-  <version>2.1.0-SNAPSHOT</version>
+  <version>2.1.0</version>
   <name>OpenEngSB :: Framework :: Root</name>
 
   <description>
@@ -202,7 +202,21 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  </profiles>
+  <profile><id>4266f1b2-8f69-42d2-a4cd-d6bdafc2bcf1</id><build><plugins><plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-release-plugin</artifactId>
+      <configuration>
+        <autoVersionSubmodules>true</autoVersionSubmodules>
+        <mavenExecutorId>forked-path</mavenExecutorId>
+        <useReleaseProfile>false</useReleaseProfile>
+        <pushChanges>false</pushChanges>
+        <arguments>-Psonatype-oss-release -DpushChanges=false</arguments>
+        <preparationGoals>clean install</preparationGoals>
+        <checkModificationExcludes>
+          <checkModificationExclude>pom.xml</checkModificationExclude>
+        </checkModificationExcludes>
+      </configuration>
+    </plugin></plugins><resources /></build><modules /></profile></profiles>
 
 </project>
 
