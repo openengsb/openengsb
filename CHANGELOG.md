@@ -1,3 +1,90 @@
+openengsb-2.1.0 2011-10-21 
+--------------------------------------------
+
+The second release of the 2.x series of the OpenEngSB Framework fixed 61 issues. Among the various bugs we where able to
+make jaxws work out of the box in the OpenEngSB framework, removing jre 1.5 pseudo compability and finally deploy the
+sources to m2 central. The OpenEngSBCoreService#getConfigPersistence and EngineeringKnowledgeBase had been deprecated
+opening the doors for better, new implementations of them. There had been various minor improvements to the UI; But the
+most important improvement was definitely that all scripts could now be setup via setenv/setenv.bat which does not longer
+forces child projects to write all scripts for themselves. In addition this makes start, stop, ... scripts work as 
+expected. Another important change was that we've splitted the background persistence bundle into three main bundles 
+which could be configured and replaced now as required. To complete the new feature set of the 2.1.0 release of the
+OpenEngSB Framework we've included an upgrade for Apache Karaf (2.2.4), Apache CXF (2.4.3), Apache Wicket (1.4.19), 
+Pax Wicket (0.7.5), OpenEngSB Root (24) and the PaxExam Karaf Testframework (0.3.0).
+
+### Details
+** Bug
+    * [OPENENGSB-2060] - BackendPersistenceSystem basically flawed
+    * [OPENENGSB-2102] - sed -r is not working under OSX
+    * [OPENENGSB-2112] - Keypair for remote security should be created by security-bundle instead of the ports
+    * [OPENENGSB-2126] - race-condition when reloading rulebase
+    * [OPENENGSB-2145] - "Plain" jaxws/jaxb does not work in openengsb
+    * [OPENENGSB-2146] - javax.jws in jre.properties already exported via lib
+    * [OPENENGSB-2147] - javax.xml.crypto duplicated between lib and jre.properties
+    * [OPENENGSB-2148] - javax.xml.soap duplicated between two libs and jre.properties
+    * [OPENENGSB-2149] - javax.xml.ws duplicated between jre.properties and lib
+    * [OPENENGSB-2150] - Tabs are not allowed in features.xml
+    * [OPENENGSB-2151] - Duplicated javax.xml exports in two libs
+    * [OPENENGSB-2164] - TaskboxIT integration tests fail
+    * [OPENENGSB-2188] - remove jre-1.5
+    * [OPENENGSB-2215] - Sources are not deployed to m2 central
+    * [OPENENGSB-2217] - Console uses wrong import version of gogo shell
+
+** Deprecation
+    * [OPENENGSB-2125] - Deprecate OpenEngSBCoreServices.getConfigPersistence
+    * [OPENENGSB-2229] - deprecate EngineeringKnowledgeBaseService
+
+** Improvement
+    * [OPENENGSB-1819] - Color OFFLINE services in the service tag RED and ONLINE Green
+    * [OPENENGSB-2134] - Avoid arrow anti pattern in JMSIncomingPort
+    * [OPENENGSB-2135] - Use IllegalStateException instead of RuntimeException if extraction of text of jms message fails
+    * [OPENENGSB-2144] - Provide libs from features.xml via parent/shared
+    * [OPENENGSB-2195] - edb tests should use in memory database
+    * [OPENENGSB-2197] - Remove KNOWN_ISSUES file
+    * [OPENENGSB-2204] - display arrays properly when returned by a method
+    * [OPENENGSB-2209] - All other then standard scripts are not working
+    * [OPENENGSB-2218] - restructure current EKB bundle
+    * [OPENENGSB-2238] - memory and permSize needs to be increased for integration tests to increase stability
+
+** Library Upgrade
+    * [OPENENGSB-2016] - Upgrade jaxb smx bundles to 2.2.4
+    * [OPENENGSB-2090] - Upgrade to labs-paxexam-karaf to 0.1.1
+    * [OPENENGSB-2098] - Upgrade to pax-wicket to 0.7.3
+    * [OPENENGSB-2099] - Upgrade to wicket to 1.4.18
+    * [OPENENGSB-2131] - Upgrade to pax-wicket 0.7.4
+    * [OPENENGSB-2142] - upgrade to openengsb-root-23
+    * [OPENENGSB-2152] - Upgrade apache velocity libs to 1.7
+    * [OPENENGSB-2153] - Upgrade wss4j to 1.6.2
+    * [OPENENGSB-2154] - Upgrade neethi to 3.0.1
+    * [OPENENGSB-2155] - Upgrade activation api to 1.8.0
+    * [OPENENGSB-2196] - Upgrade paxexam-karaf test container to 0.2.0
+    * [OPENENGSB-2199] - Upgrade to karaf-2.2.4
+    * [OPENENGSB-2202] - Upgrade to cxf 2.4.3
+    * [OPENENGSB-2203] - Upgrade to pax-wicket 0.7.5
+    * [OPENENGSB-2205] - upgrade paxexam-karaf to 0.2.1
+    * [OPENENGSB-2216] - Upgrade to wicket 1.4.19
+    * [OPENENGSB-2220] - switch from smx jaxws api to geronimo jaxws spec
+    * [OPENENGSB-2221] - Upgrade xmlschema to 2.0.1
+    * [OPENENGSB-2222] - upgrade saaj impl version to 1.3.9_1
+    * [OPENENGSB-2223] - Upgrade opensaml to 2.5.1_1
+    * [OPENENGSB-2224] - Upgrade wss4j to 1.6.3
+    * [OPENENGSB-2227] - Upgrade to openengsb-root-24
+    * [OPENENGSB-2230] - upgrade to upgrade paxexam-karaf to 0.2.2
+    * [OPENENGSB-2237] - Upgrade to paxexam-karaf 0.3.0
+
+** Task
+    * [OPENENGSB-1639] - Create integration tests for the console commands
+    * [OPENENGSB-2033] - Release openengsb-framework-2.1.0
+    * [OPENENGSB-2124] - inject configPersistence via blueprint and remove it from OpenengSBCoreServices
+    * [OPENENGSB-2156] - Check properties in parents/shared
+    * [OPENENGSB-2157] - Make clear that adding jaxp-ri in features.xml is a BAD idea
+    * [OPENENGSB-2189] - add javax.tools version 1 to the exports of jre-1.6 and jre-1.7
+    * [OPENENGSB-2190] - Create Bundle org.openengsb.persistence.connector for Connector backends
+    * [OPENENGSB-2191] - Create Bundle org.openengsb.persistence.context for Context backends
+    * [OPENENGSB-2192] - Create Bundle org.openengsb.persistence.rulebase for rule backends
+    * [OPENENGSB-2208] - Move startup scripts into filtered-resources/bin
+
+
 openengsb-2.0.0 2011-09-21 
 --------------------------------------------
 
