@@ -25,13 +25,14 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.openengsb.core.common.AbstractDataRow;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -42,15 +43,14 @@ import com.google.common.collect.Sets;
  * entity that represents a permission-set. Contains the associated permissions and other permission-sets along with
  * additional metadata
  */
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "PERMISSIONSETDATA")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class PermissionSetData {
+public class PermissionSetData extends AbstractDataRow {
 
-    @Id
-    @Column(name = "id")
-    private String id;
-
+    @Column(name = "name", unique = true)
+    private String name;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PERMISSIONSET_METADATA")
     @MapKeyColumn(name = "PS_METADATA_KEY")
@@ -66,18 +66,18 @@ public class PermissionSetData {
     public PermissionSetData() {
     }
 
-    public PermissionSetData(String id) {
-        this.id = id;
+    public PermissionSetData(String name) {
+        this.name = name;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
-
+    
     public Map<String, String> getMetadata() {
         return metadata;
     }
@@ -107,15 +107,15 @@ public class PermissionSetData {
         Collection<String> children = Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
-                return input.getId();
+                return input.getName();
             };
         });
-        return String.format("Set %s: %s, %s", id, children, permissions);
+        return String.format("Set %s: %s, %s", name, children, permissions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, metadata, permissions, permissionSets);
+        return Objects.hashCode(name, metadata, permissions, permissionSets);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class PermissionSetData {
             return false;
         }
         final PermissionSetData other = (PermissionSetData) obj;
-        return Objects.equal(id, other.id) && Objects.equal(metadata, other.metadata)
+        return Objects.equal(name, other.name) && Objects.equal(metadata, other.metadata)
                 && Objects.equal(permissions, other.permissions) && Objects.equal(permissionSets, other.permissionSets);
     }
 }
