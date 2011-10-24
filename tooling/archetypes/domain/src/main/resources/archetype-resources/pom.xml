@@ -32,8 +32,6 @@
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
     <openengsb.compile.version>${openengsbVersion}</openengsb.compile.version>
-    <openengsb.compile.version>${versionT}</openengsb.compile.version>
-    <openengsb.compile.version2>${openengsbVersionT}</openengsb.compile.version2>
   </properties>
 
   <groupId>${groupId}</groupId>
