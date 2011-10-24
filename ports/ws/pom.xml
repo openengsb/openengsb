@@ -84,7 +84,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, *</Import-Package>
+            <Import-Package>javax.servlet;version="[2.5,3)",sun.reflect, *</Import-Package>
             <!--
               This import is required since the WS package relies heavily on reflection and loading of 
               calling classes at runtime 
@@ -108,13 +108,13 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.framework</groupId>
-      <artifactId>org.openengsb.framework.security</artifactId>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.5_spec</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-servlet_2.5_spec</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
