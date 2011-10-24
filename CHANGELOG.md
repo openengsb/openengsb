@@ -1,3 +1,23 @@
+openengsb-2.1.1 2011-10-24 
+--------------------------------------------
+
+The first maintenance release for the openengsb-2.1.x series fixed 3 issues, all belonging to the problem that CXF
+2.4.3 contains a bug that the osgi-transport does not work using Apache Felix as runtime in Karaf. In addition
+CXF requires the whiteboard extender to be present to run correctly. Therefore this release contains the following 
+changes to fix the problems: a) downgrade to CXF 2.4.2; b) use the war feature of Karaf instead of http; c) add a 
+org.apache.cxf.cfg file configuring the new cxf servlet.
+
+### Details
+** Bug
+    * [OPENENGSB-2239] - CXF OSGi transport does not work
+
+** Library Upgrade
+    * [OPENENGSB-2240] - downgrade to cxf 2.4.2
+
+** Task
+    * [OPENENGSB-2231] - Release framework-2.1.1
+
+
 openengsb-2.1.0 2011-10-21 
 --------------------------------------------
 
