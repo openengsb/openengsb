@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>${openengsbVersion}</version>
+    <version>${version}</version>
   </parent>
 
   <properties>
@@ -32,6 +32,7 @@
     <bundle.namespace>${package}</bundle.namespace>
     <openengsb.domain.version>${domainVersion}</openengsb.domain.version>
     <openengsb.domain.range>${domainRange}</openengsb.domain.range>
+    <openengsbVersion>${version}</openengsbVersion>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
