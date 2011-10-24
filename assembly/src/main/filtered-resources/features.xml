@@ -56,7 +56,7 @@
     <feature>spring</feature>
     <feature>spring-web</feature>
     <feature>spring-dm</feature>
-    <feature>http</feature>
+    <feature>war</feature>
 
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
