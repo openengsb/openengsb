@@ -29,6 +29,11 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.Comparators;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later
+ * release it will be moved to the internal package
+ */
+@Deprecated
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
 public class DomainInfoCommand extends OsgiCommandSupport {
 

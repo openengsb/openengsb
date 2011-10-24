@@ -26,6 +26,11 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.fusesource.jansi.Ansi;
 import org.osgi.framework.Bundle;
 
+/**
+ * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later
+ * release it will be moved to the internal package
+ */
+@Deprecated
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
 public class OpenEngSBInfo extends OsgiCommandSupport {
 
