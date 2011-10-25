@@ -79,9 +79,11 @@
     <!-- OpenEngSB Core Domain Modules -->
     <module>domain/auditing</module>
     <module>domain/example</module>
+    <module>domain/binarytransformation</module>
     <!-- OpenEngSB Core Connector Modules -->
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
+    <module>connector/smooksbinarytransformation</module>
     <!-- OpenEngSB UI Modules -->
     <module>components/console</module>
     <module>components/edb</module>
