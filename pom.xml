@@ -81,6 +81,7 @@
     <module>domain/example</module>
     <module>domain/authentication</module>
     <module>domain/authorization</module>
+    <module>domain/binarytransformation</module>
     <!-- OpenEngSB Core Connector Modules -->
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
