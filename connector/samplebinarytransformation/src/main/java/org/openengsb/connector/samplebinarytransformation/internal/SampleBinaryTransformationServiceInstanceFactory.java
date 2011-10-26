@@ -25,6 +25,8 @@ import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 public class SampleBinaryTransformationServiceInstanceFactory extends
         AbstractConnectorInstanceFactory<SampleBinaryTransformationServiceImpl> {
 
+    private SampleBinaryTransformationServiceImpl instance;
+
     public SampleBinaryTransformationServiceInstanceFactory() {
     }
 
@@ -34,6 +36,9 @@ public class SampleBinaryTransformationServiceInstanceFactory extends
 
     @Override
     public Connector createNewInstance(String id) {
-        return new SampleBinaryTransformationServiceImpl();
+        if (instance == null) {
+            instance = new SampleBinaryTransformationServiceImpl();
+        }
+        return instance;
     }
 }

@@ -27,6 +27,7 @@
     <service-properties>
       <entry key="domain" value="binarytransformation" />
       <entry key="connector" value="samplebinarytransformation" />
+      <entry key="technology" value="sample" />
     </service-properties>
     <bean class="org.openengsb.connector.samplebinarytransformation.internal.SampleBinaryTransformationServiceInstanceFactory" />
   </service>

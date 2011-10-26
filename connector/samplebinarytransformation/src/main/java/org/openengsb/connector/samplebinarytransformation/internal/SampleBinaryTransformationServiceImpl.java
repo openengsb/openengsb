@@ -18,17 +18,27 @@
 package org.openengsb.connector.samplebinarytransformation.internal;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.binarytransformation.BinaryTransformationDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConnectorService implements
         BinaryTransformationDomain {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleBinaryTransformationServiceImpl.class);
+    
+    private Map<String, SampleBinaryConverter> converter;
+
     public SampleBinaryTransformationServiceImpl() {
+        converter = new HashMap<String, SampleBinaryConverter>();
     }
 
     @Override
@@ -38,30 +48,47 @@ public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
 
     @Override
     public void register(String binaryId, File... transformationConfigs) {
-        // TODO Auto-generated method stub
+        SampleBinaryConverter conv = new SampleBinaryConverter(transformationConfigs);
+        converter.put(binaryId, conv);
+        LOGGER.debug("added new converter for the binary id {}", binaryId);
     }
 
     @Override
     public void unregister(String binaryId) {
-        // TODO Auto-generated method stub
+        if (!converter.containsKey(binaryId)) {
+            LOGGER.error("no converter for binary Id {} defined", binaryId);
+            throw new IllegalArgumentException("no converter for this binary Id defined");
+        }
+        converter.remove(binaryId);
     }
 
     @Override
     public List<String> showAll() {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> svs = new ArrayList<String>();
+        for (Map.Entry<String, SampleBinaryConverter> entry : converter.entrySet()) {
+            svs.add(entry.getKey() + "=" + entry.getValue().toString());
+        }
+        return svs;
     }
 
     @Override
     public List<OpenEngSBModelEntry> convertToOpenEngSBModelEntries(String binaryId, Object object) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!converter.containsKey(binaryId)) {
+            LOGGER.error("no converter for binary Id {} defined", binaryId);
+            throw new IllegalArgumentException("no converter for this binary Id defined");
+        }
+        LOGGER.debug("forwarding converting request to converter");
+        return converter.get(binaryId).convertToOpenEngSBModelEntries(object);
     }
 
     @Override
     public Object convertFromOpenEngSBModelEntries(String binaryId, List<OpenEngSBModelEntry> entries) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!converter.containsKey(binaryId)) {
+            LOGGER.error("no converter for binary Id {} defined", binaryId);
+            throw new IllegalArgumentException("no converter for this binary Id defined");
+        }
+        LOGGER.debug("forwarding converting request to transconverterformer");
+        return converter.get(binaryId).convertFromOpenEngSBModelEntries(entries);
     }
 
 }
