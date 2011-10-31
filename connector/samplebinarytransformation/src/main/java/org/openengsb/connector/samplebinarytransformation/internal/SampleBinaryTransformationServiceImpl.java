@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConnectorService implements
         BinaryTransformationDomain {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleBinaryTransformationServiceImpl.class);
-    
     private Map<String, SampleBinaryConverter> converter;
 
     public SampleBinaryTransformationServiceImpl() {
@@ -47,10 +45,10 @@ public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
     }
 
     @Override
-    public void register(String binaryId, File... transformationConfigs) {
-        SampleBinaryConverter conv = new SampleBinaryConverter(transformationConfigs);
+    public void register(String binaryId, Class<?> clasz, File... transformationConfigs) {
+        SampleBinaryConverter conv = new SampleBinaryConverter(clasz, transformationConfigs);
         converter.put(binaryId, conv);
-        LOGGER.debug("added new converter for the binary id {}", binaryId);
+        LOGGER.info("added new converter for the binary id {}", binaryId);
     }
 
     @Override
@@ -59,6 +57,7 @@ public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
             LOGGER.error("no converter for binary Id {} defined", binaryId);
             throw new IllegalArgumentException("no converter for this binary Id defined");
         }
+        LOGGER.info("removed converter for the binary id {}", binaryId);
         converter.remove(binaryId);
     }
 
