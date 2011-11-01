@@ -27,6 +27,7 @@ public class SampleBinaryTransformationConnectorProvider extends AbstractConnect
     public ServiceDescriptor getDescriptor() {
         Builder builder = ServiceDescriptor.builder(strings);
         builder.id(id);
+        builder.name("service.name").description("service.description");
         return builder.build();
     }
 
