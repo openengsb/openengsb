@@ -31,6 +31,9 @@
     <command name="openengsb/domains">
       <action class="org.openengsb.core.console.DomainInfoCommand"/>
     </command>
+    <command name="openengsb/service">
+      <action class="org.openengsb.core.console.internal.ServiceCommands"/>
+    </command>
   </command-bundle>
 
   <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"
