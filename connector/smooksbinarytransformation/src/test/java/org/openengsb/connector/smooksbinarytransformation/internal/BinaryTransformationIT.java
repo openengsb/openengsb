@@ -16,7 +16,7 @@
  */
 
 
-package org.openengsb.connector.samplebinarytransformation.internal;
+package org.openengsb.connector.smooksbinarytransformation.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class BinaryTransformationIT {
 
-    private SampleBinaryTransformationServiceImpl service;
+    private SmooksBinaryTransformationServiceImpl service;
 
     @Before
     public void setUp() {
-        service = new SampleBinaryTransformationServiceImpl();
+        service = new SmooksBinaryTransformationServiceImpl();
         File f = new File("test");
         service.register("testId", TestModel.class, new File[] { f });
     }

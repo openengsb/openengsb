@@ -15,30 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.samplebinarytransformation.internal;
+package org.openengsb.connector.smooksbinarytransformation.internal;
 
-import java.util.Map;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.AbstractConnectorProvider;
 
-import org.openengsb.core.api.Connector;
-import org.openengsb.core.common.AbstractConnectorInstanceFactory;
-
-public class SampleBinaryTransformationServiceInstanceFactory extends
-        AbstractConnectorInstanceFactory<SampleBinaryTransformationServiceImpl> {
-
-    private SampleBinaryTransformationServiceImpl instance;
-
-    public SampleBinaryTransformationServiceInstanceFactory() {
-    }
+public class SmooksBinaryTransformationConnectorProvider extends AbstractConnectorProvider {
 
     @Override
-    public void doApplyAttributes(SampleBinaryTransformationServiceImpl instance, Map<String, String> attributes) {
+    public ServiceDescriptor getDescriptor() {
+        Builder builder = ServiceDescriptor.builder(strings);
+        builder.id(id);
+        builder.name("service.name").description("service.description");
+        return builder.build();
     }
 
-    @Override
-    public Connector createNewInstance(String id) {
-        if (instance == null) {
-            instance = new SampleBinaryTransformationServiceImpl();
-        }
-        return instance;
-    }
 }

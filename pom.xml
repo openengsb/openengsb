@@ -87,7 +87,7 @@
     <module>connector/example</module>
     <module>connector/usernamepassword</module>
     <module>connector/serviceacl</module>
-    <module>connector/samplebinarytransformation</module>
+    <module>connector/smooksbinarytransformation</module>
     <!-- OpenEngSB UI Modules -->
     <module>components/console</module>
     <module>components/edb</module>

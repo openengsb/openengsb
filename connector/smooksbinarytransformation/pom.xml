@@ -29,21 +29,19 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.samplebinarytransformation</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.samplebinarytransformation</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connector.smooksbinarytransformation</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.smooksbinarytransformation</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>org.openengsb.connector.samplebinarytransformation</artifactId>
+  <artifactId>org.openengsb.connector.smooksbinarytransformation</artifactId>
   <version>3.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Connector :: Sample Binary Transform Provider Factory</name>
+  <name>OpenEngSB :: Connector :: Smooks Binary Transform Provider Factory</name>
 
   <description>
-    This connector provides a mocked implementation of a binary transform provider factory. It does not really provide
-    an implementation for a binary transform provider factory. Instead it only shows how it is supposed to work and
-    provide some mocking implementations so that the binary transform environment can be tested.
+    This connector provides an implementation of a binary transform provider factory with the technology smooks.
   </description>
   
   <packaging>bundle</packaging>

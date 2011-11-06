@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.samplebinarytransformation.internal;
+package org.openengsb.connector.smooksbinarytransformation.internal;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -28,12 +28,12 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SampleBinaryConverter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SampleBinaryConverter.class);
+public class SmooksBinaryConverter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksBinaryConverter.class);
     private File[] configs;
     private Class<?> clasz;
 
-    public SampleBinaryConverter(Class<?> clasz, File... configs) {
+    public SmooksBinaryConverter(Class<?> clasz, File... configs) {
         this.configs = configs;
         this.clasz = clasz;
     }

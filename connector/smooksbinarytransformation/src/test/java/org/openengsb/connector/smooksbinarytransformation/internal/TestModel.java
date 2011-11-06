@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.samplebinarytransformation.internal;
+package org.openengsb.connector.smooksbinarytransformation.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.samplebinarytransformation.internal;
+package org.openengsb.connector.smooksbinarytransformation.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,13 +30,13 @@ import org.openengsb.domain.binarytransformation.BinaryTransformationDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConnectorService implements
+public class SmooksBinaryTransformationServiceImpl extends AbstractOpenEngSBConnectorService implements
         BinaryTransformationDomain {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SampleBinaryTransformationServiceImpl.class);
-    private Map<String, SampleBinaryConverter> converter;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksBinaryTransformationServiceImpl.class);
+    private Map<String, SmooksBinaryConverter> converter;
 
-    public SampleBinaryTransformationServiceImpl() {
-        converter = new HashMap<String, SampleBinaryConverter>();
+    public SmooksBinaryTransformationServiceImpl() {
+        converter = new HashMap<String, SmooksBinaryConverter>();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
 
     @Override
     public void register(String binaryId, Class<?> clasz, File... transformationConfigs) {
-        SampleBinaryConverter conv = new SampleBinaryConverter(clasz, transformationConfigs);
+        SmooksBinaryConverter conv = new SmooksBinaryConverter(clasz, transformationConfigs);
         converter.put(binaryId, conv);
         LOGGER.info("added new converter for the binary id {}", binaryId);
     }
@@ -64,7 +64,7 @@ public class SampleBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
     @Override
     public List<String> showAll() {
         List<String> svs = new ArrayList<String>();
-        for (Map.Entry<String, SampleBinaryConverter> entry : converter.entrySet()) {
+        for (Map.Entry<String, SmooksBinaryConverter> entry : converter.entrySet()) {
             svs.add(entry.getKey() + "=" + entry.getValue().toString());
         }
         return svs;

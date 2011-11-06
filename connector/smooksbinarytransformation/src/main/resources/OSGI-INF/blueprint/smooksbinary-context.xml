@@ -26,10 +26,10 @@
     </interfaces>
     <service-properties>
       <entry key="domain" value="binarytransformation" />
-      <entry key="connector" value="samplebinarytransformation" />
-      <entry key="technology" value="sample" />
+      <entry key="connector" value="smooksbinarytransformation" />
+      <entry key="technology" value="smooks" />
     </service-properties>
-    <bean class="org.openengsb.connector.samplebinarytransformation.internal.SampleBinaryTransformationServiceInstanceFactory" />
+    <bean class="org.openengsb.connector.smooksbinarytransformation.internal.SmooksBinaryTransformationServiceInstanceFactory" />
   </service>
 
   <service>
@@ -38,10 +38,10 @@
     </interfaces>
     <service-properties>
       <entry key="domain" value="binarytransformation" />
-      <entry key="connector" value="samplebinarytransformation" />
+      <entry key="connector" value="smooksbinarytransformation" />
     </service-properties>
-    <bean class="org.openengsb.connector.samplebinarytransformation.internal.SampleBinaryTransformationConnectorProvider">
-      <property name="id" value="samplebinarytransformation" />
+    <bean class="org.openengsb.connector.smooksbinarytransformation.internal.SmooksBinaryTransformationConnectorProvider">
+      <property name="id" value="smooksbinarytransformation" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>

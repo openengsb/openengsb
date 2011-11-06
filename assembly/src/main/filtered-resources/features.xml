@@ -160,7 +160,7 @@
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.samplebinarytransformation/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
