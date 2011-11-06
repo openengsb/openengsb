@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="architecture" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Architecture of the OpenEngSB</title>
+
+  <para>This chapter tries to give a short summary of the most important concepts in the OpenEngSB architecture.</para>
+
+  <para>The following graphic shows the architecture of the OpenEngSB. In the center we use a bus system
+  to integrate different modules. In this case we do not use a classical Enterprise Service Bus (ESB), but rather the
+  OSGi service infrastructure via Spring-DM (<xref linkend="architecture.concept.esb" />). We are using <link xlink:href="http://karaf.apache.org">Apache Karaf</link> as the OSGi
+  environment. Karaf is used in this case, instead of a most basic OSGi environment, such as 
+  <link xlink:href="http://felix.apache.org">Apache Felix</link> or 
+  <link xlink:href="http://www.eclipse.org">Eclipse Equinox</link> , because it supports us with additional features as 
+  extended console support and the feature definitions.
+  This base infrastructure, including all modifications required for the OpenEngSB is called the 
+  <xref linkend="architecture.concept.infrastructure" />. Within the OpenEngSB 
+  Infrastructure so called <xref linkend="architecture.concept.components" /> and 
+  <xref linkend="architecture.concept.tooldomains" /> are installed. Both
+  types are written in a JVM compatible language, including OSGi configuration files to run in the OpenEngSB 
+  Infrastructure. They are explained later within this chapter. Different tools running outside the OpenEngSB 
+  Infrastructure are called <xref linkend="architecture.concept.clienttools" /> or 
+  <xref linkend="architecture.concept.domaintools" />, depending on their usage scenario. 
+  To integrate and use them within the OpenEngSB so called 
+  <xref linkend="architecture.concept.connectors" /> are used. All of these concepts are explained 
+  within the next sections.</para>
+
+  <para>
+    <mediaobject>
+      <alt>Technical view of the OpenEngSB highlighting the most important concepts of the integration system.</alt>
+      <imageobject>
+        <imagedata fileref="graphics/extendedEngSB.png" format="png" width="450" align="center"/>
+      </imageobject>
+      <caption><para>Technical view of the OpenEngSB highlighting the most important concepts of the integration system</para></caption>
+    </mediaobject>
+  </para>
+
+  <section xml:id="architecture.concept.esb">
+    <title>OpenEngSB Enterprise Service Bus (ESB)</title>
+    <para>One of the principal concepts for the OpenEngSB development is (if possible) 
+    to use already existing and proven solutions rather than inventing new ones. In this manner the OpenEngSB is an 
+    extension to the ESB concept. Typical ESBs such as 
+    <link xlink:href="http://servicemix.apache.org">Apache Servicemix</link> or other JBI or ESB implementations 
+    always have the feeling to be huge and bloated. Complex integration patterns, messaging, huge configuration files
+    and similar concepts/problems lead to this feeling. And those feelings are right. They are bloated. The OpenEngsB
+    tries a different approach. Using Karaf as its base framework the environment is VERY lightweight. Depending on 
+    your use case you can use different configurations and packages out of the box.</para>
+  </section>
+ 
+  <section xml:id="architecture.concept.infrastructure">
+    <title>OpenEngSB Infrastructure</title>
+    <para>While Apache Karaf provides a rich environment and functionality we're not done with it. Via the Spring-DM
+    extension mechanism, AOP and the OSGi listener model the OpenEngSB directly extends the environment to provide
+    own commands for the console, fine grained security and a full grown workflow model. These extensions are optional
+    and not required if you want to use the platform alone. Add or remove them as required for your use case.</para>
+  </section>
+
+  <section xml:id="architecture.concept.components">
+    <title>OpenEngSB Components</title>
+    <para>These libraries are the OpenEngSB core. The core is responsible to provide the OpenEngSB infrastructure
+    as well as general services such as persistence, security and workflows. To provide best integration most of
+    these components are tied to the OpenEngSB ESB environment. Nevertheless, feel free to add or remove them
+    as required for your use case.</para>
+  </section>
+
+  <section xml:id="architecture.concept.tooldomains">
+    <title>OpenEngSB Tool Domains</title>
+    <para>Although each tool provider gives a personal touch to its product their design is driven by a specific 
+    purpose. For example, there are many different issue trackers available, each having its own advantages and 
+    disadvantages, but all of them can create issues, assign and delete them. Tool Domains are based on this idea 
+    and distill the common functionality for such a group of tools into one Tool Domain interface (and component).
+    Tool domains could be compared best to the concept of abstract classes in in object orientated programming 
+    languages. Similar to these, they can contain code, workflows, additional logic and data, but they are useless 
+    without a concrete implementation. Together with the ESB, the OpenEngSB infrastructure and the core components 
+    the tool domains finally result in the OpenEngSB.</para>
+  </section>
+
+  <section xml:id="architecture.concept.clienttools">
+    <title>Client Tools (Service Consumer)</title>
+    <para>Client Tools in the OpenEngSB concept are tools which do not provide any 
+    services, but consume services provided by Tool Domains and Core Components instead. A classical example from 
+    software engineering for a client tool is the Integrated Development Environment (IDE). Developer prefer to 
+    have the entire development environment, reaching from the tickets for a project to its build results, at
+    hand. On the other hand they do not need to provide any services.</para>
+  </section>
+
+  <section xml:id="architecture.concept.domaintools">
+    <title>Domain Tools (Service Provider)</title>
+    <para>Domain Tools (Service Provider) Domain Tools, compared to Client Tools, denote the other extreme of only 
+    providing services. Classically, single purpose server tools, like issue tracker or chat server, match the 
+    category of Domain Tools best. Most tools in (software+) engineering environments fit of course in both 
+    categories, but since there are significant technically differences between them they are 
+    described as two different component types.</para>
+  </section>
+
+  <section xml:id="architecture.concept.connectors">
+    <title>Domain- and Client Tool Connectors</title>
+    <para>Tool Connectors connect tools to the OpenEngSB environment. They implement the respective
+    Tool Domain interface. As Client Tool Connectors they provide a Client Tool with 
+    an access to the OpenEngSB services. Again, Domain- and Client Tool Connectors are mostly mixed up but 
+    separated because of their technical differences. Additionally it is worth mentioning that 
+    tools can be integrated with more than one connector. This allows one tool to act in many different domains. 
+    Apache Maven is an example for such multi-purpose tools, relevant for build, as well as test and deploy of Java 
+    projects.</para>
+  </section>
+
+  <section xml:id="architecture.concept.edb">
+    <title>EDB (Engineering Data Base)</title>
+    <para>The EDB is a database with additional versioning feature. Its main job is to save and version 
+    so called tool data. Tool data are information units which are used by tools which are connect to
+    the OpenEngSB. The versioning feature is necessary because it should be possible to restore tool data
+    which has been changed in the meantime. Easiest example for this is the handling of signals.</para>
+
+    <para>Signals are little information units which can for example describe a circuit on a board. This
+    circuits are once planned and building the base for workers which works at another layer (e.g. programmer).
+    If this signals are changed and the other layers didn't notice that, the final product won't work or even
+    worse. With the EDB it is possible to get noticed if a signal has changed and you can check what has been
+    changed.</para>
+
+    <para>The connection between the tools and the EDB is done through the EngineeringDatabaseService provided
+    by the core/edb bundle. This service gets a datasource (database) from the infrastructure/jpa bundle.
+    The EngineeringDatabaseService is implemented with JPA, that means that every database which support
+    JPA can be used as database backend for the EDB.
+    As standard database backend was the H2 database chosen.
+    </para>
+
+    <para>You have also the possibility to replace the database backend used for the EDB. A reason for 
+    this could be that your company wants a more performant database because the sets of tooldata are
+    so big that the standard database isn't fast enough. For exchanging the database backend there are two 
+    cases: You want to replace the database with another database which is supported by openjpa or you take 
+    another database which isn't supported by openjpa. (List of supported databases can be checked 
+    <link xlink:href="http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html">here</link>)
+    </para>
+
+    <para>If you want to replace the standard database with another openjpa supported database, the procedure
+    of changing is rather simple. You have to change the properties for the database connection of the infrastructure/jpa 
+    bundle. This is done by changing the config file "org.openengsb.infrastructure.jpa.cfg". This file is in the 
+    "assembly/src/main/filtered-resources/etc" folder. This file has following entries:
+    <programlisting>
+    driverClassName=[here shall be the name of your driver class name, 
+                     example: org.h2.jdbcx.JdbcDataSource]
+    url=[here shall be the url to the used database file, example: jdbc:h2:openengsb]
+    username=[here shall be the username for authentication at the database]
+    password=[here shall be the password for authentication at the database]
+    </programlisting>
+    After changing of this file, you have to assure that the driver which shall be used by the datasource is loaded
+    at runtime. For that you have to load the database driver before the connection to the database is established.
+    Your database bundle dependency should be added to the poms/pom.xml file. A dependency entry for the h2 database looks
+    like this (the h2.version is defined as property in the same file. Info: had to alter the brackets so that they can be shown here. 
+    Also there should be a dollar sign before the {h2.version} part):
+    <programlisting>
+     [dependency]
+       [groupId]com.h2database[/groupId]
+       [artifactId]h2[/artifactId]
+       [version]{h2.version}[/version]
+     [/dependency]
+    </programlisting>
+   If you made sure the dependency is entered, you have to make sure the database is loaded before the database connection
+   is established. For that just replace following code line in the file "assembly/src/main/filtered-resources/features.xml"
+   with the new database driver bundle (as you can see you only have to copy and paste the values of the dependency):
+   <programlisting>
+     [bundle]mvn:com.h2database/h2/{h2.version}[/bundle]
+   </programlisting>
+   And thats all you have to do.</para>
+
+    <para>If you want to replace the standard database with another non openjpa supported database you will have
+    to change first the datasource like descriped in the last paragraph. After that you have to write another
+    bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
+    commands and port it for the new database and replace the standard EngineeringDatabaseService.</para>
+
+    <para>Last but not least a few words about the working with the EDB. If you have models that shall be versioned
+    by the EDB, the easiest way is to build this models as interfaces and let them extend the interface OpenEngSBModel.
+    Such an interface can only contain getter and setter methods, since this interfaces can now be proxied through the
+    EngineeringKnowledgeBase (EKB). As soon as you have done this, you are able to send such models with an event from
+    a connector (Method for that is called "sendEDBEvent" and is accessable from every connector that AbstractOpenEngSBConnectorService
+    extends, which shall be done by all connector implementations.</para>
+
+    <para>If your domain model requires sub models (like location for a contact), you have also to make this sub model an interface and let
+    it extend OpenEngSBModel interface. In that way, the EDB is able to save all sub models if you save the root model. It is even possible
+    to give a model a list of submodels, the EDB is able to handle that too and you have nothing else to do.</para>
+  </section>
+
+  <section xml:id="architecture.concept.ekb">
+  <title>EKB (Engineering Knowledge Base)</title>
+  <para>The Engineering Knowledge Base (as it is now) is the partner of the EDB. The EKB enables two important features:load models from the EDB and
+  generate proxies for domain models.</para>
+
+  <para>The first feature importance is quite clear. The EKB enables to load the models which are collected by the EDB. It's main work for that
+  feature is to retrieve the model in a rare form from the EDB (in a only EDB readable format) and convert this rare form to the domain model
+  the user requested.
+  </para>
+
+  <para>The second feature makes it possible to simulate implementations of domain models. Like already mentioned in the EDB part, every domain
+  model only consists of getter and setter pairs and extends the OpenEngSBModel interface. If you let the EKB proxy such models, your work you
+  have to do to communicate with the EDB and versionize models is minimized. Also the EKB proxies does the whole converting work from the models
+  to EDB readable format for you.
+  </para>
+  </section>
+
+</chapter>
+

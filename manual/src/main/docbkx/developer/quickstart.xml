@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.quickstart" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Getting Started as a Developer</title>
+  <para>This chapter describes the basic steps to get started as a developer for the OpenEngSB project.</para>
+
+  <section xml:id="developer.quickstart.infrastructure">
+    <title>Getting comfortable with the infrastructure</title>
+    <para>As any open source project the OpenEngSB development depends on a wide range of different infrastructural and 
+      communication methods to get things done. The following sub-chapters describe the different tools, their
+      location and usage in the OpenEngSB development process.</para>
+
+    <section xml:id="developer.quickstart.infrastructure.mail">
+      <title>Mailing Lists</title>
+      <para>The most important communication medium for the OpenEngSB development team is email. Mostly all of
+        the vital design, architectural and infrastructural decisions are discussed on the OpenEngSB developer
+        list. Therefore, the first step to get involved into the development of the OpenEngSB is to register to the 
+        <link xlink:href="http://groups.google.com/group/openengsb-dev">Google Groups OpenEngSB Developer Mailing List
+        </link> and say hello world.</para>
+      <para>While notifications from the OpenCIT Build Server, about code commits and Jira issues are vital for the
+        OpenEngSB core developer, they may not be as interesting for you. If you get annoyed by the automatically 
+        generated notification mails ignore all mails from openengsb@gmail.com and noreply@github.com to 
+        openengsb-dev@googlegroups.com. Please remember it is important to configure both, <literal>to</literal> and 
+        <literal>from</literal> in your filter. Both addresses will also send notifications directly to you which are 
+        important and should not be ignored!</para>
+    </section>
+
+    <section xml:id="developer.quickstart.infrastructure.jira">
+      <title>Jira Issue Tracker</title>
+      <para>All issues are stored within a Jira instance reachable at <link 
+      xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB">issues.openengsb.org</link>. Please use the issue tracker
+      to keep track of all bugs, ideas and new features you're currently working or of which you think they might be
+      interesting.</para>
+    </section>
+
+    <section xml:id="developer.quickstart.infrastructure.github">
+      <title>Code Repository</title>
+      <para>As for any open source project the source code is public available. We've chosen <link xlink:href="http://github.com">
+        Github</link> for this task. The project is available at <link xlink:href="http://github.com/openengsb/openengsb">
+        github.com/openengsb/openengsb</link>.</para>
+      <para>As explained later within this document Github is not only used to store our code, but also for collaboration,
+        code review and patch-tracking.</para>
+    </section>
+
+    <section xml:id="developer.quickstart.infrastructure.maven">
+      <title>Maven Repository</title>
+      <para>The OpenEngSB is available at <link xlink:href="http://repo1.maven.org/maven2/org/openengsb/">Maven Central</link>. We still
+        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org</link>.Please keep in mind 
+        that we try to get rid of this own infrastructure as soon as possible. Therefore the use of this repository is as minimal as possible.
+        Snapshots are available via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
+    </section>
+
+    <section xml:id="developer.quickstart.infrastructure.build">
+      <title>Build Server</title>
+      <para>The master and integration branch of the OpenEngSB repository are watched and built by an 
+        <link xlink:href="http://opencit.openengsb.org">OpenCIT</link> build server instance available at 
+        <link xlink:href="http://build.openengsb.org/opencit/">build.openengsb.org</link>. Notifications about failures are directly sent to 
+        the OpenEngSB developer list.</para>
+    </section>
+
+  </section>
+
+  <section xml:id="developer.quickstart.pre">
+    <title>Prerequisites</title>
+    <para>First of all the latest JDK has to be installed on the system and the <envar>JAVA_HOME</envar> variable has to be
+      set accordingly. All further steps are described in the subsections of this chapter.</para>
+
+    <section xml:id="developer.quickstart.pre.git">
+      <title>Installing Git</title>
+      <para> It is assumed that Git is installed. For Linux your distribution provides already a 
+        package for git. Please use the package manager of your distribution (apt, yum, pacman, ...) to install it. For MAC
+        binaries are available at <link xlink:href="git-scm.com">git-scm.com</link>. For MS users <link xlink:href="www.cygwin.com">cygwin
+        </link> or <link xlink:href="code.google.com/p/msysgit">msysgit</link>. After installing, set at least the following 
+        variables:</para>
+      <literallayout>
+        <command>git config</command> <option>--global</option> user.name "<replaceable>Firstname Lastname</replaceable>"
+        <command>git config</command> <option>--global</option> user.email <replaceable>user@example.com</replaceable>
+        <command>git config</command> <option>--global</option> core.autcrlf input
+      </literallayout>
+    </section>
+
+    <section xml:id="developer.quickstart.pre.maven">
+      <title>Installing Maven</title>
+      <para> Finally download Apache Maven3 and unpack it. Add the path of the maven binary to your <envar>PATH</envar> variable.
+        Furthermore you should set the <envar>MAVEN_OPTS</envar> environment variable to allow Maven to use more RAM. If
+        you don't you'll get Out Of Memory errors.
+        <literallayout>
+          <command>export</command> <envar>PATH</envar>=$<envar>PATH</envar>:<replaceable>/path/to/maven</replaceable>/bin
+          <command>export</command> <envar>MAVEN_OPTS</envar>='-Xmx1024M -XX:MaxPermSize=512m'
+        </literallayout>
+        Add these commands to <filename>~/.bashrc</filename> to make the settings permanent.</para>
+    </section>
+
+  </section>
+
+  <section xml:id="developer.quickstart.essential">
+    <title>Starting OpenEngSB</title>
+    <para>The next step is to get the OpenEngSB source by checking out the current master using git:</para>
+    <literallayout>
+      <command>git clone</command> git://github.com/openengsb/openengsb.git
+    </literallayout>
+    <para>
+      Connector, domains and additional various features are included into the OpenEngSB as submodules. To include them into
+      the build and development cycle execute <command>./etc/scripts/submodulePush.sh</command> if you're a commiter and
+      <command>./etc/scripts/submodulePull.sh</command> otherwise.
+    </para>
+    <para>Now start the OpenEngSB by executing</para>
+    <literallayout>
+      <command>mvn clean install openengsb:provision</command>
+    </literallayout>
+    <para>This command builds, tests and runs the OpenEngSB right from your command-line. Executing the following command
+      will shutdown it again:</para>
+    <literallayout>
+      <command>shutdown</command>
+    </literallayout>
+  </section>
+
+  <section xml:id="developer.quickstart.eclipse">
+    <title>Using Eclipse</title>
+    <para> Eclipse had been chosen by the OpenEngSB team as the main development environment. After checkout the code
+      the following command creates the required Eclipse project files:</para>
+    <literallayout>
+      <command>mvn</command> install
+      <command>mvn</command> openengsb:eclipse
+    </literallayout>
+    <para>Start Eclipse and select any workspace. The folder  <filename>eclipse-workspace</filename> is ignored in the 
+      OpenEngSB project structure for this purpose. But you can choose any other directory if you prefer. At the preference
+      page go to <guimenu>Java/Build Path/Classpath Variables</guimenu> and create a new <guilabel>M2_REPO</guilabel> pointing
+      to <filename>~/.m2/repository</filename>. Now use <guimenu>File</guimenu>, <guimenu>Import...</guimenu>, 
+      <guilabel>Existing Projects into Workspace</guilabel>. As the root directory select the root of the OpenEngSB source. 
+      Eclipse will list several projects and for now it's best to import them all by clicking <guibutton>Finish</guibutton>.</para>
+    <para>At <filename>openengsb/etc/eclipse/</filename> eclipse configuration files for formatting can found. Checkstyle configuration files
+      are part of the openengsb-maven-plugin (<xref linkend="developer.quickstart.tools.mavenplugin"/>) and can be found
+      <link xlink:href="${checkstyleconfig}">here</link>. The mvn openengsb:eclipse goal configures your eclipse project to
+      download and use the provided checkstyle configuration file, so no manual steps are necessary here (however the formatter
+      still needs to and should be configured manually).
+    </para>
+  </section>
+
+  <section xml:id="developer.quickstart.noneclipse">
+    <title>Using Other IDEs than Eclipse</title>
+    <para>Basically, the OpenEngSB is developed in plain Java, which means any other IDE than Eclipse can be used too. While
+      there are tools for most IDEs to use Checkstyle, but non of it supports the formatting file of the OpenEngSB. Please use
+      Checkstyle, which automatically validates the eclipse formatting rules too.</para>    
+  </section>
+
+  <section xml:id="git">
+    <title>Git Documentation</title>
+    <section>
+      <title>Usage</title>
+      <para> First of all this chapter explains only the <emphasis>very</emphasis> basics of Git and only that parts
+        directly relevant for the development of the OpenEngSB project, but not the entire idea and possibilities of
+        Git. <emphasis>Please</emphasis> read some tutorials first to get how to work with Git and see this chapter more
+        as an summary! You may also take a look at the <link xlink:href="http://git-scm.com/documentation/">Git Documentation
+          Page</link> and the <link xlink:href="http://progit.org/book/">Pro Git Book</link>. </para>
+    </section>
+    <section>
+      <title>Github</title>
+      <para>OpenEngSB is developed at <link xlink:href="http://github.com/">github.com</link>. Please create an account there
+        and explore its features. Specify your real name in the admin tab and add a picture. This makes it easier to
+        associate your commits to you.</para>
+    </section>
+    <section>
+      <title>Starting up and configure</title>
+      <para> Before starting to work with Git some settings should be applied to Git. Therefore simply execute the
+        following commands.
+        <literallayout><command>git config</command> <option>--global</option> user.name "<replaceable>Firstname Lastname</replaceable>"
+<command>git config</command> <option>--global</option> user.email <replaceable>user@example.com</replaceable>
+<command>git config</command> <option>--global</option> color.ui "auto"
+<command>git config</command> <option>--global</option> pack.threads "0"
+<command>git config</command> <option>--global</option> diff.renamelimit "0"
+<command>git config</command> <option>--global</option> core.autocrlf "input"</literallayout>
+        Additionally execute the special settings for github as could be found on github in the "Account Settings" tab
+        is a point "Global git config information". Please use the two git commands described there
+        <literallayout><command>git config</command> <option>--global</option> github.user <replaceable>username</replaceable>
+<command>git config</command> <option>--global</option> github.token <replaceable>token</replaceable></literallayout>
+        If you don't already have an SSH key you can create one by executing <command>ssh-keygen</command> Simply answer
+        all questions from the application with "enter" without enter any values. Afterwards the content of the
+          <filename>id_rsa.pub</filename> file from your <filename>~/.ssh/</filename> directory should be submitted to
+        github (<guilabel>Account Settings</guilabel>/<guilabel>SSH public keys</guilabel>). </para>
+        <para>You may also want to setup the provided git-hooks. Hooks are scripts that automate some small tasks in
+        the git-workflow. To enable them they have to be located in the <filename>.git/hooks</filename> directory.
+        You can achieve this by copying the scripts located in the <filename>etc/git-hooks</filename> directory to
+        <filename>.git/hooks</filename></para>
+    </section>
+
+    <section>
+      <title>Contributor Workflow</title>
+      <para>Contributor are all developer who like to contribute to the OpenEngSB project, but not have commit rights
+        to openengsb/openengsb.</para>
+      <para>Please keep in mind, that this manual is NOT a Git tutorial. Github itself, e.g. provides a great help at 
+        <link xlink:href="http://book.git-scm.com/">help.github.com</link>. All base concepts such as forking, pull-requests, ...</para>
+      <para>Please start by choose or create a new issue. Now create a new fork of the OpenEngSB at Github (if you've not
+        done already so; otherwise this is explained <link xlink:href="http://help.github.com/forking/">here</link>). 
+        Clone your fork, but also add the original openengsb repository as remote repository. This is also explained
+        <link xlink:href="http://help.github.com/forking/">here</link>. In difference to the Github tutorial please do not 
+        commit to the master, but rather create a new branch named OPENENGSB-ISSUE_NUMBER_YOURE_WORKING_ON. 
+        Optionally append /DESCRIPTION (e.g. OPENENGSB-586/mvn-eclipse-download-fix). 
+        <literallayout><command>git checkout</command> <option>-b</option> <replaceable>OPENENGSB-ISSUE origin/BRANCH</replaceable></literallayout>
+        <replaceable>BRANCH</replaceable> is the point where you like to start your work. If you like to contribute to the head this will be typically
+        integration, but could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches
+        and we'll really appreciate if you work according to it. Please notice that each commit should include [OPENENGSB-ISSUEID] at the beginning of its message.</para>
+      <para>Now hack, commit and push as you like. If you think you're finished invoke <command>mvn openengsb:prePush</command> (or
+        use <filename>etc/scripts/pre-push.sh</filename>) to validate your code, tests, licenses and so on. If 
+        everything works without errors create a Github pull request on Github, between the master or integration
+        branch (depending on where you've created your branch on) and your branch. This process is also explained at
+        help.github.com (<link xlink:href="http://help.github.com/pull-requests/">here</link>). In addition it will help 
+        if you add the link to the pull request to the issue you're working on. A commiter will tend as fast as possible 
+        to your request and give feedback or directly merge your commit into the integration/master branch.</para>
+    </section>
+    <section>
+      <title>Commiter Workflow</title>
+      <para> The only difference between a commiter and a contributor is that he has to watch and merge branches of
+        contributors. If a commiter is happy with the work of a contributor. Comments and other discussions should be
+        done on the mailing list and/or via the Github review system and pull requests.</para>
+      <para>In addition commiters typically do not create forks but rather create their branches directly  in
+        the OpenEngSB repository. This is done because the repository is covered by the OpenEngSB build server and
+        in addition keeps everything closer together.</para>
+    </section>
+    <section>
+      <title>Additional Rules</title>
+      <para>
+        <orderedlist>
+          <listitem><para>(Contributor/Committer) All development is done in branches (also of the core developers) One
+            exception to this rule exists: Small fixes and maintenance work which is NOT related to a new feature and
+            does not exceed 2 commits should be cherry-picked into the master directly.</para></listitem>
+
+          <listitem><para>(Contributor/Committer) Rebase is <emphasis>not</emphasis> dead (although we use merges).
+              <emphasis>Never ever</emphasis> commit local merges. You still should develop in local dev branches and
+            rebasing them with the upstream branches. Only if nobody else has access to your fork you can be sure that
+            nobody changed it!</para></listitem>
+
+          <listitem><para>(Committer) If merging branches from forked repositories ALWAYS use the <option>--no-ff</option>
+            option for merges; this will always create a merge node (even if a fast-forward merge is possible). This is
+            required to create a clear and consistent history!</para></listitem>
+
+          <listitem><para>Avoid backward merges from the master and keep feature branches small! This does not mean that
+            backward merges from master are forbidden. But they should not be done too often, since they create a
+            history not easy to read. Please use the method described on this page (with <option>--no-ff</option>
+            <option>--no-commit</option>) to reduce the number of merge nodes.</para></listitem>
+
+          <listitem><para>Use <emphasis>meaningful</emphasis> feature branch names. Using the merge history in the master you
+            can easily follow the development of features. But this requires (maybe long) good names! In addition, always
+            start with OPENENGSB-NUMBER of the issue you're working on. Try to always do work based on issues. If no issue
+            covers what you're doing create one.</para></listitem>
+
+        </orderedlist>
+      </para>
+    </section>
+  </section>
+
+  <section xml:id="developer.quickstart.tools">
+    <title>Useful Tools</title>
+    <section xml:id="developer.quickstart.tools.mavenplugin">
+      <title>openengsb-maven-plugin</title>
+      <para>
+        The openengsb-maven-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
+        domains or connectors, building a release artifact of the whole project etc.) when developing based on the
+        OpenEngSB.
+      </para>
+      <section>
+        <title>Configuring the openengsb-maven-plugin for your project</title>
+        <para>
+          To use the openengsb-maven-plugin in your project add the following configuration to your project's pom.xml:
+        </para>
+        <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+  ...
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.openengsb&lt;/groupId&gt;
+        &lt;artifactId&gt;openengsb-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${openengsb.maven.plugin.version}&lt;/version&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+  ...
+&lt;/project&gt;       
+        </programlisting>
+        <para>
+          The plugin can now be invoked via <command>mvn openengsb:&lt;goal&gt;</command>
+        </para>
+      </section>
+      <section>
+        <title>Purpose of the openengsb-maven-plugin</title>
+        <para>The purpose of the OpenEngSB Maven Plugin is to provide additional useful goals for
+          the development of the OpenEngSB itself and all projects which base on the OpenEngSB. It
+          helps in various goals starting in assembling, checkstyle, license checking and many other
+          various goals which would otherwise require to duplicate tons of version (and manage it in
+          addition) between the OpenEngSB and projects which are based on the OpenEngSB.</para>
+      </section>
+      <section>
+        <title>Changing the default configuration of the mojos</title>
+        <para>Currently the default configurations can not be changed or adapted in the OpenEngSB
+          plugin. This means that all changes and adaptions have to be made directly in the
+          openengsb-maven-plugin. This situation is not ideal. The version 1.6.0 of the plugin will
+          tackle this drawback.</para>
+      </section>
+      <section>
+        <title>Available Goals</title>
+        <para>
+          <command>assemble</command> or <filename>etc/scripts/assemble.sh</filename>
+        </para>
+        <para>
+          Installs the OpenEngSB and skips tests. Furthermore a <emphasis>nightly</emphasis> profile is activated if available
+          in your poms.
+        </para>
+        <para>
+          <command>eclipse</command> or <filename>etc/scripts/eclipse.sh</filename>
+        </para>
+        <para>
+          Generates eclipse configuration file for the module where it is invoked from and all submodules. The generated
+          eclipse projects are also configured to use the checkstyle rules shipped with the plugin (see checkstyle mojo).
+        </para>
+        <para>
+          <command>checkstyle</command>
+        </para>
+        <para>
+          Performs a Checkstyle check of the project. The checkstyle configuration file which is used for the check can be found
+          <link xlink:href="https://github.com/openengsb/openengsb-maven-plugin/blob/master/src/main/resources/checkstyle/checkstyle.xml">here</link>.
+          We ship this configuration file with the plugin (and changes need to be done there) because we think it may be useful for other
+          OpenEngSB related projects. Setting up eclipse projects with configured checkstyle becomes very easy that way (simply mvn openengsb:eclipse).
+        </para>
+        <para>
+          <command>genConnector</command> or <filename>etc/scripts/gen-connector.sh</filename> (For additional info how to create a connector see
+          <xref linkend="developer.howto.internal.connector"/>)
+        </para>
+        <para>
+          Guides interactively through the creation of a connector and generates the artifact via the connector
+          archetype.
+        </para>
+        <para>
+          <command>genDomain</command> or <filename>etc/scripts/gen-domain.sh</filename> (For
+          additional info how to create a domain see <xref linkend="developer.howto.internal.domain"/>)
+        </para>
+        <para>
+          Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
+        </para>
+        <para xml:id="licenseCheck">
+          <command>licenseCheck</command> or <filename>etc/scripts/license-check.sh</filename>
+        </para>
+        <para>
+          Performs a check if appropriate license headers are available in every source file. The licenseCheck mojo
+          wraps the com.mycila.maven-license-plugin.
+          A large part of the default behavior of this mojo can be changed in
+          <filename>src/main/resources/license/licenseConfig.xml</filename>.
+          See <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
+          for available configuration options. The openengsb-maven-plugin needs to be reinstalled after changing its
+          default behavior.
+        </para>
+        <para>
+          <emphasis>NOTE: pom.xml files are excluded from license check</emphasis>
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>Defines path to a file where each line represents a pattern which files to exclude from 
+            license check or license format (additionally to the default excludes).</para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>licenseFormat</command> or <filename>etc/scripts/license-format.sh</filename>
+        </para>
+        <para>
+          Adds a license header to files where the license header is missing. Regarding the configuration for this mojo the same applies as for licenseCheck.
+        </para>
+        <para>
+          <emphasis>NOTE: pom.xml files are excluded from license format</emphasis>
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>see description of <link linkend="licenseCheck">licenseCheck</link></para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>prePush</command> or <filename>etc/scripts/pre-push.sh</filename>
+        </para>
+        <para>
+          Builds and installs the openengsb, checks for license headers, performs a Checkstyle check and runs the integration tests.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>additionalExcludes</emphasis></para>
+            <para>see description of <link linkend="licenseCheck">licenseCheck</link></para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>provision</command> or <filename>etc/scripts/run.sh</filename> / <filename>etc/scripts/quickrun.sh</filename>
+        </para>
+        <para>
+         Equivalent to execute karaf or karaf.bat per hand after build by mvn clean
+         install in a (typically) assembly directory.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>provisionPathUnix</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+            to point to the final directory where the karaf system, etc configs and
+            so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathUnix</emphasis></para>
+            <para>
+              The path to the executable in the unix archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathUnix</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+            <emphasis>provisionExecutionPathUnix</emphasis> execute other files which have to
+            made executable to work correctly on themselves. Those files should be
+            specified here.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionPathWindows</emphasis></para>
+            <para>
+              This setting should be done in the one of the assembly folders and have
+            to point to the final directory where the karaf system, etc configs and
+            so on consist.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>provisionExecutionPathWindows</emphasis></para>
+            <para>
+              The path to the executable in the windows archive file
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>additionalRequiredExecutionPathWindows</emphasis></para>
+            <para>
+              Sometimes it's required that some executable files, provided in
+            <emphasis>provisionExecutionPathWindows</emphasis> execute other files which have to
+            made executable to work correctly on themselves. Those files should be
+            specified here.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          These parameters are typically configured in the pom of your assembly project
+          (<filename>/assembly/pom.xml</filename> for the OpenEngSB)).
+        </para>
+        <para>
+          <command>pushVersion</command> or <filename>etc/scripts/push-version.sh</filename>
+        </para>
+        <para>
+          Updates the development version.
+        </para>
+        <para>
+          Parameters:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>developmentVersion</emphasis></para>
+            <para>
+              The new SNAPSHOT version.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>
+          <command>releaseNightly</command> or <filename>etc/scripts/release-nightly.sh</filename>
+        </para>
+        <para>
+          Mojo to perform nightly releases. This mojo activates the <emphasis>nightly</emphasis> profile
+	      in the project, where you can put your additional configuration for nightly releases (To see what these profiles
+          can be necessary for please read the descript of the other release mojos).
+        </para>
+        <para>
+          <command>release&lt;XXX&gt;</command> (You can find a detailed description of the OpenEngSB release process
+          in <xref linkend="developer.release"/>)
+        </para>
+        <para>
+        The release&lt;XXX&gt; mojos (except Nightly) wrap the
+        <link xlink:href="http://code.google.com/p/maven-license-plugin/">maven-license-plugin</link>, basically just
+        invoking <literal>mvn release:prepare</literal> and then <literal>mvn release:perforn</literal> with some
+        useful default configuration which can be reused for other projects related to the openengsb.
+        These mojos perform a release and activate the <emphasis>&lt;XXX&gt;</emphasis> profile. These release profiles
+        are important and are required to ..</para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              .. select the appropriate passphrase for the maven release repository from your <filename>settings.xml</filename>.
+              For additional information on this topic see <xref linkend="developer.release.configuremaven"/>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              .. set links depending on the release type. For examples please see the profiles in
+              <link xlink:href="https://github.com/openengsb/openengsb/blob/master/pom.xml">the pom</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              .. configure distribution management of the project site, depending on the release type. For examples see
+              profiles in <link xlink:href="https://github.com/openengsb/openengsb/blob/master/docs/homepage/pom.xml">docs/homepage/pom</link>
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>Parameters:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>connectionUrl</emphasis></para>
+            <para>
+              URL to your SCM repository (e.g. scm:git:file://~/openengsb). During the release process changes
+              (version updates, etc) are commited into your SCM.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>Goals:</para>
+        <itemizedlist>
+            <listitem>
+              <para><command>releaseFinal</command> or <filename>etc/scripts/release-final.sh</filename></para>
+              <para>profile = <emphasis>final</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseMilestone</command> or <filename>etc/scripts/release-milestone.sh</filename></para>
+              <para>profile = <emphasis>milestone</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseRC</command> or <filename>etc/scripts/release-rc.sh</filename></para>
+              <para>profile = <emphasis>rc</emphasis></para>
+            </listitem>
+            <listitem>
+              <para><command>releaseSupport</command> or <filename>etc/scripts/release-support.sh</filename></para>
+              <para>profile = <emphasis>support</emphasis></para>
+            </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+  </section>
+
+</chapter>

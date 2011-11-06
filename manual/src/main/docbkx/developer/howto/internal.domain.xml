@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.howto.internal.domain" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>How To Create an Internal Domain</title>
+
+  <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
+    interface and common events and thereby defines how to interact with connectors for this domain. For a better 
+    description of what a domain exactly consists of, take a look at the architecture guide 
+    <xref linkend="architecture" />.</para>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>In case it isn't known what a domain is and how it defines the interface and events for connectors, then 
+    <xref linkend="architecture.concept.tooldomains" /> is a good starting point.</para>
+  </section>
+
+  <section>
+    <title>Creating a new domain project</title>
+
+    <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
+      structure. The
+      <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
+      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) simplifies
+      the creation of a domain.
+    </para>
+
+    <section>
+      <title>Using the Maven Archetype</title>
+
+      <para>It is not recommended to use the maven archetype directly, because the <emphasis>genDomain</emphasis> goal 
+      of the openengsb-maven-plugin executes additional tasks, i.e. renaming of the resulting project.
+      Furthermore it tries to make sure that the new project is consistent with the naming conventions
+      of the OpenEngSB project.</para>
+      
+      <para>The following parameters have to be specified to execute the correct archetype:
+        <itemizedlist>
+          <listitem>archetypeGroupId - the groupId of the OpenEngSB domain archetype.</listitem>
+          <listitem>archetypeArtifactId - the artifactId of the OpenEngSB domain archetype.</listitem>
+          <listitem>archetypeVersion - the current version of the OpenEngSB domain archetype.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the parent of the new domain. It is not solely parent
+      of the domain implementation, but parent of all connectors of this domain too.
+        <itemizedlist>
+          <listitem>groupId - the groupId of the project parent. Has to be &quot;org.openengsb.domains.&lt;yourDomain&gt;&quot;.</listitem>
+          <listitem>artifactId - the artifactId of the project parent. Has to be &quot;openengsb-domains-&lt;yourDomain&gt;-parent&quot;.</listitem>
+          <listitem>version - the version of the domain parent, which is usually equal to the current archetype version.</listitem>
+          <listitem>name - the name of the parent module. Has to be &quot;OpenEngSB :: Domains :: &lt;yourDomain&gt; :: Parent&quot;</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the implementation of the new domain. 
+        <itemizedlist>
+          <listitem>implementationArtifactId - the implementation artifact id. Has to be &quot;openengsb-domains-&lt;yourDomain&gt;-implementation&quot;.</listitem>
+          <listitem>package - the package for the source code of the domain implementation. Has to be &quot;org.openengsb.domains.&lt;yourDomain&gt;&quot;.</listitem>
+          <listitem>implementationName - the name of the implementation module. Has to be &quot;OpenEngSB :: Domains :: &lt;yourDomain&gt; :: Implementation&quot;</listitem>
+        </itemizedlist>
+        Where &lt;yourDomain&gt; has to be replaced by your domain name which is usually written in lower case, i.e. <literal>report</literal> for the report domain.
+      </para>
+      <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
+      domain name. Therefore you will have to rename the resulting project. Do not forget to check that the new domain is 
+      included in the modules section of the domains pom.</para>
+    </section>
+
+    <section>
+      <title>Using <literal>mvn openengsb:genDomain</literal></title>
+
+      <para>
+        Simply invoke <literal>mvn openengsb:genDomain</literal> from the domains directory in your OpenEngSB
+        repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> script can be used which invokes the
+        openengsb-maven-plugin for you).
+      </para>
+
+      <literallayout>
+        <command>domains $</command> mvn openengsb:genDomain
+      </literallayout>
+
+      <para>You'll be asked to fill in a few variables which are needed to create the initial project structure. Based on
+        your input, the mojo tries to guess further values. Guessed values are displayed in brackets. If the guess is
+        correct, simply acknowledge with <literal>Return</literal>. As example, the following output has been recorded
+        while creating the Test domain:</para>
+
+      <literallayout><command>Domain Name [mydomain]:</command> test &lt;Enter>
+<command>Version [1.0.0-SNAPSHOT]:</command> &lt;Enter>
+<command>Prefix for project names [OpenEngSB :: Domains :: Test]:</command> &lt;Enter></literallayout>
+
+      <para>Only the domain name has been filled in, while the rest has been correctly guessed. After
+        giving the inputs, the Maven archetype gets executed and may ask for further inputs. You can simply hit
+          <literal>Return</literal>, as the values have been already correctly set. If the mojo finishes
+        successfully two new Maven projects, the domain parent and domain implementation project, have been created and
+        setup with a sample implementation for a domain.</para>
+    </section>
+
+    <section>
+      <title>Project structure</title>
+
+      <para>The newly created domain should have the exact same structure as the following listing:</para>
+
+      <programlisting>-- implementation
+|  -- pom.xml
+|  -- src
+|     -- main
+|     |  -- java
+|     |  -- org
+|     |     -- openengsb
+|     |        -- domains
+|     |           -- mydomain
+|     |              -- MyDomain.java
+|     |              -- MyDomainEvents.java
+|     |              -- MyDomainProvider.java
+|     -- resources
+|        -- META-INF
+|        |   -- spring
+|        |      -- mydomain-context.xml
+|        -- OSGI-INF
+|           -- l10n
+|              -- bundle_de.properties
+|              -- bundle.properties
+-- pom.xml</programlisting>
+
+      <para>The project contains stubs for the domain interface, the domain events interface and the domain provider
+      and a resources folder with the spring setup and property files for internationalization.</para>
+
+      <para>Although the generated domain does in effect nothing, you can already start the OpenEngSB for testing with
+          <literal>mvn clean install openengsb:provision</literal> and the domain will be automatically be picked up and started.</para>
+
+      <para>The spring setup in the resources folder already contains the necessary setup for this domain to work in the
+      OpenEngSB environment. Furthermore the default implementation proxies for the domain interface, which forwards all
+      service calls to the default connector for the domain and the default implementation of the domain event interface, 
+      which forwards all events to the workflow service of the OpenEngSB are configured.</para>
+
+      <para>Each OpenEngSB bundle (core, domain, connector) has been designed with localization in mind. The Maven
+        Archetype already creates two <literal>bundle*.properties</literal> files, one for English (bundle.properties)
+        and one for the German (bundle_de.properties) language. Each connector has to provide localization through it own
+        properties files. For domains, this only means localization for a name and description of the domain
+        itself.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Components</title>
+    <orderedlist>
+      <listitem>
+        <para>Domain interface - This is the interface that connectors of that domain must implement. Operations that
+          connectors should provide, are specified here. Events that are raised by this Domain in unexpected fashion 
+          (e.g new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
+          classes it takes as an argument are used. If the Raise annotation is put on a method the events that 
+          are specified through the annotation are raised in sequence upon a call.</para>
+      </listitem>
+      <listitem>
+        <para>Domain event interface - This is the interface the domain provides for its connectors to send events
+        into OpenEngSB. The event interface contains a <literal>raiseEvent(SomeEvent event)</literal> method for each 
+        supported event type.</para>
+      </listitem>
+      <listitem>
+        <para>Domain Provider - The domain provider is a service that provides information about the domain itself. It
+          is used to determine which domains are currently registered in the environment. There is an abstract class,
+          that takes over most of the setup.</para>
+      </listitem>
+      <listitem>
+        <para>Spring context - There are three services, that must be registered with the OSGi service-environment. First,
+          there is the Domain Provider. Moreover, the domain must provide a kind of connector itself since it
+          must be able to handle service calls and redirect it to the default-connector specified in the current
+          context. And finally the domain provides an event interface for its connectors which can be used by them to send
+          events into OpenEngSB. The default implementation of this event interface simply forwards all events sent through
+          the domain to the workflow service. However, domains can also provide their own implementation of their event
+          interface and add data to events or perform other tasks. There is a bean factory that creates a Java-Proxy that can be used as 
+          ForwardService both for the forwarding of service calls from domain to connector and for the forwarding of events to
+          the workflow service. The service call to ForwardService looks up the default-connector for the specified domain in the
+          current context and forwards the method-call right to it. The event forward service simply forwards all events to 
+          the workflow service of OpenEngSB.</para>
+      </listitem>
+    </orderedlist>
+  </section>
+  
+  <section>
+    <title>Connectors</title>  
+    <para>
+      For information regarding the implementation of connectors for the newly created domain see 
+      <xref linkend="developer.howto.internal.connector" />. 
+    </para>
+  </section>
+
+
+</chapter>

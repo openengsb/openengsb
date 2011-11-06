@@ -109,6 +109,8 @@
     <module>loom</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
+	<!-- OpenEngSB Manual -->
+	<module>manual</module>
   </modules>
 
   <scm>

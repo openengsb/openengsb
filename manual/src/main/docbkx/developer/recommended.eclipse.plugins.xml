@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="recommended.eclipse.plugins" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Recommended Eclipse Plug-ins for Developers</title>
+
+  <para>The following plug-ins for Eclipse are recommended for the development of the OpenEngSB.
+  If not otherwise stated we recommend the latest stable version of the plug-ins. For information about
+  the basic setup of this plug-ins please take a look into the corresponding plug-in documentation. This 
+  section only gives hints for setup if it is OpenEngSB specific.</para>
+
+  <section>
+    <title>Properties Editor</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/properties-editor-0">properties editor</link> 
+    can be used to edit the properties files used for internationalization and automatically escapes special characters,
+    like the German "ü".</para>
+  </section>
+
+  <section>
+    <title>Rinzo XML Editor</title>
+    <para><link xlink:href="http://marketplace.eclipse.org/content/rinzo-xml-editor">Rinzo XML Editor</link> 
+    adds support for full XML editing including Java File completion and renaming to the Eclipse platform. 
+    Since SpringIDE is no longer an option (because of blueprint) Rinzo XML is a good alternative for
+    SpringIDE in the context of the OpenEngSB.</para>
+  </section>
+
+  <section>
+    <title>Eclemma code coverage</title>
+    <para>At the OpenEngSB project we're trying to keep test density as high as possible. To check the coverage
+    of code written locally we recommend <link xlink:href="http://marketplace.eclipse.org/content/eclemma-java-code-coverage">Eclemma</link> 
+    as a free and OpenSource Eclipse plugin.</para>
+  </section>
+
+  <section>
+    <title>Eclipse M2 Plugin</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/maven-integration-eclipse">M2 Eclipse Plugin</link> 
+    adds Maven support directly to your platform. Though, please still use openengsb:eclipse instead of this plugin
+    if you're generating the .project, .classpath and .settings files. We recommend you this plugin since it helps a
+    great deal with editing pom files, but for NO other use.</para>
+  </section>
+
+  <section>
+    <title>Egit Eclipse Plugin</title>
+    <para><link xlink:href="http://marketplace.eclipse.org/content/egit-git-team-provider">Egit Eclipse Plugin</link> 
+    adds Git support to your Eclipse IDE. Though, we do not reccomend commiting/pulling via the IDE, but rather via
+    the CMD and use the IDE as a visual indicator for changed files</para>
+  </section>
+
+  <section>
+    <title>Eclipse CS</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/checkstyle-plug">checkstyle plugin</link> 
+    integrates checkstyle into Eclipse. Conformance with checkstyle criteria has to be checked before each push to 
+    the repository, so integrating the check into the IDE helps developers to already conform to the checkstyle 
+    criteria during development. You have to configure the plug-in to use our checkstyle configuration file, which
+    can be found <link xlink:href="${checkstyleconfig}">here</link>
+    </para>
+  </section>
+
+  <section>
+    <title>Drools</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/jboss-drools">Drools plug-in</link> is handy
+    if you want to edit workflows or Drools rules, because it provides syntax highlighting for rules and a graphical
+    editor for workflows.</para>
+  </section>
+
+</chapter>
+
