@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.setup" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Setup OpenEngSB for development (First steps)</title>
+
+
+  <section>
+    <title>Goal</title>
+      <para>This section describes the setup process required for OpenEngSB development.</para>
+
+      <para>If you would like to view a use-case centric tutorial take a look at the continuous integration example.</para>
+  </section>
+
+  <section>
+    <title>Time to Complete</title>
+    <para>If you are already familiar with Java EE servers about 15 minutes. We will not be using advanced concepts, so you likely be able to continue with the tutorial even without it.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>It is assumed you have basic knowledge of system administration and you are able to set up auxiliary software (i.e. JDK 1.6) youself.</para>
+  </section>
+
+  <section>
+    <title>Java Development Kit 6</title>
+
+    <para>First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set.
+  (<link xlink:href="http://java.sun.com/javase/downloads">Java download</link>).</para>
+    <para>Also, make sure that the java-command is available in the PATH-variable.</para>
+  </section>
+
+  <section>
+    <title>Getting OpenEngSB</title>
+
+    <para>Download the latest OpenEngSB release from <link xlink:href="http://openengsb.org/downloads.html">here</link>.</para>
+  </section>
+
+  <section>
+    <title>Installing OpenEngSB</title>
+
+    <para>Extract the archive, and run the openengsb-script (bin/openengsb.bat on windows, bin/openengsb otherwise). Click the following link to open the web interface in your browser <link xlink:href="http://localhost:8090/openengsb">http://localhost:8090/openengsb</link>.You should automatically be directed to a page asking for a login. The default login is "admin" with "password" as password.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="login" fileref="graphics/setup_login.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>login</caption>
+    </mediaobject>
+
+    <para>If everything works fine you should be welcomed by the following page presenting you the currently installed domains:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="mainpage" fileref="graphics/setup_mainpage.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>main page</caption>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Setup required domains</title>
+
+    <para>OpenEngSB implements it's functionality in so called features. Each feature contains a number of OSGi bundles. While all features are distributed with the OpenEngSB not all of them are installed to speed up the startup. For the next section (First Steps) it is required to install additional features. Therefore open the console in which you've started the OpenEngSB and enter "list" which should output something like:</para>
+
+    <programlisting>
+<![CDATA[karaf@root> list
+START LEVEL 100 , List Threshold: 50
+   ID   State         Blueprint      Level  Name
+[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2
+...
+[ 116] [Active     ] [            ] [   60] Jackson JSON processor (1.5.3)
+[ 117] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Common (1.2.0.SNAPSHOT)
+[ 118] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Events (1.2.0.SNAPSHOT)
+[ 119] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Persistence Layer (1.2.0
+[ 120] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Security (1.2.0.SNAPSHOT
+[ 121] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Workflow Engine (1.2.0.S
+[ 122] [Active     ] [Created     ] [   60] OpenEngSB :: Domains :: Auditing :: Implement
+[ 123] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: MemoryAuditing (1.2
+[ 124] [Active     ] [Created     ] [   60] OpenEngSB :: Domain :: Example (1.2.0.SNAPSHO
+[ 125] [Active     ] [Created     ] [   60] OpenEngSB :: Connector :: Example (1.2.0.SNAP
+[ 126] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Ports :: JMS (1.2.0.SNAP
+[ 127] [Active     ] [Created     ] [   60] OpenEngSB :: User Interface :: Common (1.2.0.
+[ 128] [Active     ] [            ] [   60] OpenEngSB :: User Interface :: Administration
+[ 129] [Active     ] [Created     ] [   60] OpenEngSB :: Core :: Deployer :: Connector (1]]>
+    </programlisting>
+
+    <para>In order to install domains and connectors from other repositories you need to add the corresponding
+      feature-URLs. Note that in order to install a connector you need to install all domains it implements.</para>
+
+    <table>
+      <title>Supported domains</title>
+      <tgroup cols='2' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>name</entry>
+            <entry>feature-url</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>appointment</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-appointment/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>build</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-build/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>contact</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-contact/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>deploy</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-deploy/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>issue</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-issue/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>notification</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-notification/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>report</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-report/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>scm</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-scm/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>test</entry>
+            <entry>mvn:org.openengsb.domain/openengsb-domain-test/1.2.1/xml/features</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <table>
+      <title>Supported connectors</title>
+      <tgroup cols='2' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>name</entry>
+            <entry>feature-url</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>email</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-email/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>gcalendar</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-gcalendar/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>gcontacts</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-gcontacts/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>git</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-git/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>github</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-github/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>email</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-email/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>jira</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-jira/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>maven</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-maven/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>plaintextreport</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-plaintextreport/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>promreport</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-promreport/1.2.1/xml/features</entry>
+          </row>
+          <row>
+            <entry>trac</entry>
+            <entry>mvn:org.openengsb.connector/openengsb-connector-trac/1.2.1/xml/features</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>In order to install a domain first add the feature-repository using the command <code>features:addurl</code>.
+      When the URL has been added the domain can usually be installed using <code>features:install</code></para>
+
+    <programlisting>
+<![CDATA[root@openengsb>features:addurl mvn:org.openengsb.domain/openengsb-domain-notification/1.2.1/xml/features
+root@openengsb>features:install openengsb-domain-notification]]>
+    </programlisting>
+
+    <para>Note that domains and connectors are versioned independently of each other and the OpenEngSB. It's possible
+      to run openengsb-domain-issue-1.2.0 with openengsb-connector-jira-1.2.1 inside openengsb-1.3.0.M2</para>
+
+  </section>
+
+  <section>
+    <title>First Steps</title>
+
+    <para>Now that the OpenEngSB is up and running (and all required bundles are installed) start with the first integration tutorial.</para>
+  </section>
+
+  <section>
+    <title>Shutdown OpenEngSB</title>
+
+    <para>To shutdown the OpenEngSB, go to the command-window and type <command>shutdown</command> or press <command>Ctrl+D</command></para>
+  </section>
+
+</chapter>
+
