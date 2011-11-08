@@ -38,9 +38,19 @@ public final class OutputStreamFormater {
         outputStream.println(formatValues(name, value));
     }
 
+    public static void printValuesWithPrefix(String pref, String name, String value) {
+        outputStream.println(formatValues(pref, name, value));
+    }
+
     public static String formatValues(String name, String value) {
         return Ansi.ansi().a("  ").a(Ansi.Attribute.INTENSITY_BOLD).a(name)
-            .a(spaces(padding - name.length())).a(Ansi.Attribute.RESET).a("   ").a(value).toString();
+                .a(spaces(padding - name.length())).a(Ansi.Attribute.RESET).a("   ").a(value).toString();
+    }
+
+    public static String formatValues(String pref, String name, String value) {
+        return Ansi.ansi().a("  ").a("[" + pref + "]").a(Ansi.Attribute.INTENSITY_BOLD).a(name)
+                .a(spaces(padding - name.length() - pref.length())).a(Ansi.Attribute.RESET).a("   ").a(value)
+                .toString();
     }
 
     public static String spaces(int nb) {
