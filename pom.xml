@@ -81,11 +81,13 @@
     <module>domain/example</module>
     <module>domain/authentication</module>
     <module>domain/authorization</module>
+    <module>domain/binarytransformation</module>
     <!-- OpenEngSB Core Connector Modules -->
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
     <module>connector/usernamepassword</module>
     <module>connector/serviceacl</module>
+    <module>connector/smooksbinarytransformation</module>
     <!-- OpenEngSB UI Modules -->
     <module>components/console</module>
     <module>components/edb</module>
