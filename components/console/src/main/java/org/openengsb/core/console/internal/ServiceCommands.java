@@ -22,14 +22,20 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.osgi.framework.ServiceReference;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -37,14 +43,19 @@ import java.util.Locale;
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
 
-    @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)", required = true, multiValued = false)
+    @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
+            required = true, multiValued = false)
     String arg = null;
 
-    @Argument(index = 1, name = "serviceId", description = "The domain id to be instantiated", required = false, multiValued = false)
+    @Argument(index = 1, name = "serviceId", description = "The domain id to be instantiated", required = false,
+            multiValued = false)
     String serviceId = null;
 
-    @Argument(index = 2, name = "serviceAttributes", description = "The service attributes (alphabetic order)", required = false, multiValued = true)
+    @Argument(index = 2, name = "serviceAttributes", description = "The service attributes (alphabetic order)",
+            required = false, multiValued = true)
     List<String> attributes = null;
+
+    private OsgiUtilsService osgiUtilsService;
 
     private enum ARGUMENTS {
         LIST,
@@ -55,13 +66,14 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     protected Object doExecute() throws Exception {
         ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
-        ServiceReference commandSessionReference = getBundleContext().getServiceReference("org.apache.felix.service.command.CommandProcessor");
-        OsgiUtilsService service = getService(OsgiUtilsService.class, sr);
+        ServiceReference commandSessionReference =
+                getBundleContext().getServiceReference("org.apache.felix.service.command.CommandProcessor");
+        osgiUtilsService = getService(OsgiUtilsService.class, sr);
         CommandProcessor commandProcessor = getService(CommandProcessor.class, commandSessionReference);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         InputStream keyboard = commandSession.getKeyboard();
 
-        List<DomainProvider> serviceList = service.listServices(DomainProvider.class);
+        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
 
         ARGUMENTS arguments = ARGUMENTS.valueOf(arg.toUpperCase());
@@ -102,11 +114,39 @@ public class ServiceCommands extends OsgiCommandSupport {
     }
 
     private void listServices(List<DomainProvider> serviceList) {
-        System.out.println("Services");
+        OutputStreamFormater.printValue("Services");
+        /**List<ServiceReference> listServiceReferences = osgiUtilsService.listServiceReferences(Domain.class);
+         for (ServiceReference ref : listServiceReferences) {
+         Domain service = osgiUtilsService.getService(Domain.class, ref);
+         try {
+         String instanceId = service.getInstanceId();
+         if (instanceId != null) {
+         OutputStreamFormater.printValue(instanceId, service.getAliveState().toString());
+         }
+         } catch (AccessDeniedException ex) {
+         OutputStreamFormater.printValue(ex.getMessage());
+         }
+         }
+         **/
         for (DomainProvider dp : serviceList) {
-            OutputStreamFormater.printValue(dp.getName().getString(Locale.getDefault()),
-                    dp.getDescription().getString(Locale.getDefault()));
+            String domainType = dp.getId();
+            List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(
+                    ConnectorProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
+
+            Locale defaultLocale = Locale.getDefault();
+
+            OutputStreamFormater.printValue(dp.getName().getString(defaultLocale),
+                    dp.getDescription().getString(defaultLocale));
+            for (ConnectorProvider connectorProvider : connectorProviders) {
+                String serviceId = connectorProvider.getId();
+                String serviceName = connectorProvider.getDescriptor().getName().getString(defaultLocale);
+                String serviceDescription = connectorProvider.getDescriptor().getDescription().getString(defaultLocale);
+                if (serviceId != null && serviceName != null && serviceDescription != null) {
+                    OutputStreamFormater.printValuesWithPrefix(serviceId, serviceName, serviceDescription);
+                }
+            }
         }
+
     }
 
 
