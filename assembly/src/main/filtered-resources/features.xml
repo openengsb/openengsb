@@ -156,9 +156,11 @@
     <!-- security domains and connectors -->
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">
