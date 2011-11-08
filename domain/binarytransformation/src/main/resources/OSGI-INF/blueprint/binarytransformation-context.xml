@@ -25,7 +25,7 @@
     <service-properties>
       <entry key="domain" value="binarytransformation" />
     </service-properties>
-    <bean class="org.openengsb.domain.authentication.AuthenticationDomainProvider">
+    <bean class="org.openengsb.domain.binarytransformation.BinaryTransformationDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
       <property name="id" value="binarytransformation" />
     </bean>
