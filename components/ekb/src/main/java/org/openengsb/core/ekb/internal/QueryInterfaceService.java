@@ -27,9 +27,9 @@ import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.ekb.ModelFactory;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +41,10 @@ public class QueryInterfaceService implements QueryInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryInterfaceService.class);
     
     private EngineeringDatabaseService edbService;
-    private ModelFactory modelFactory;
 
     private Object createNewInstance(Class<?> model) {
         if (model.isInterface() && OpenEngSBModel.class.isAssignableFrom(model)) {
-            return modelFactory.createModelObject(model);
+            return ModelUtils.createModelObject(model);
         } else {
             try {
                 return model.newInstance();
@@ -67,14 +66,14 @@ public class QueryInterfaceService implements QueryInterface {
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
 
-        for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
+        for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
             Method setterMethod = propertyDescriptor.getWriteMethod();
             Object value = getValueForProperty(propertyDescriptor, object);
             if (value != null) {
-                EKBUtils.invokeSetterMethod(setterMethod, instance, value);
+                ModelUtils.invokeSetterMethod(setterMethod, instance, value);
                 nothingSet = false;
             }
         }
@@ -183,9 +182,4 @@ public class QueryInterfaceService implements QueryInterface {
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
-    
-    public void setModelFactory(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
-    }
-
 }

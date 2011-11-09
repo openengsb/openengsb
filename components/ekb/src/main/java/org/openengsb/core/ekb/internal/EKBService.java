@@ -30,8 +30,8 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
  * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
  * OpenEngSBModel interfaces.
  * 
- * This service is deprecated. If you want to use the proxiing functionality, you have to use a ModelFactory
- * service. If you want to query for elements from the EDB, you have to use a QueryInterface service.
+ * This service is deprecated. If you want to use the proxiing functionality, you should use the ModelUtils class
+ * in the common bundle. If you want to query for elements from the EDB, you have to use a QueryInterface service.
  */
 @Deprecated
 public class EKBService implements EngineeringKnowledgeBaseService {
