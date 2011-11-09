@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+
 package ${package}.internal;
 
 import java.util.Map;
@@ -36,7 +37,7 @@ public class ${connectorName}ServiceInstanceFactory extends AbstractConnectorIns
     }
 
     @Override
-    public Domain createNewInstance(String id) {
+    public ${connectorName}ServiceImpl createNewInstance(String id) {
         ${connectorName}ServiceImpl service = new ${connectorName}ServiceImpl();
         return service;
     }

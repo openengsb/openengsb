@@ -56,7 +56,7 @@
     <feature>spring</feature>
     <feature>spring-web</feature>
     <feature>spring-dm</feature>
-    <feature>http</feature>
+    <feature>war</feature>
 
     <!-- Specs -->
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
@@ -156,9 +156,11 @@
     <!-- security domains and connectors -->
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authentication/${project.version}</bundle>
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.authorization/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-infrastructure-activemq" version="${project.version}" description="OpenEngSB ActiveMQ Infrastructure">

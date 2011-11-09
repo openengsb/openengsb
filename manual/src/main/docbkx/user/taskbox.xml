@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
+         xml:id="developer.taskbox" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Taskbox</title>
+  <para>The Taskbox enables you to combine workflows with Human Interactions.</para>
+  <section>
+    <title>Core Functionality</title>
+    <para>All workflows started in the OpenEngSB are supplied with the global variable  
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/workflow/model/ProcessBag.java">ProcessBag</link>.
+    Inside the workflow you can populate the ProcessBag with your data. As soon as Human Interaction is needed you have to incorporate
+    the sub-workflow "humantask", which wraps the ProcessBag into a
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/workflow/model/Task.java">Task</link>.
+    You can then query the 
+    <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/workflow/TaskboxService.java">Taskbox service</link>
+    for open Tasks, and manipulate the data inside of the Task (Not necessarily by Human Interaction). When you are finished, 
+    you again call the Taskbox service and supply the changed Task. The changed data gets extracted and is handed back over to the workflow.
+    </para>
+  </section>
+  <section>
+    <title>UI Functionality</title>
+    <para>The
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/WebTaskboxService.java">Webtaskbox service</link>
+    provides additional UI Features, if you want to integrate the Taskbox-Concept into a wicket Page. You can query the Webtaskbox service for an    
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/web/TaskOverviewPanel.java">Overview Panel</link>
+    that displays all open Tasks. If the default Overview Panel doesn't fit your needs exactly you can develop your own UI-Component using the (Core-)Taskboxservice.
+    If you navigate onto a specific Task the Overview Panel displays a (default)
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/web/TaskPanel.java">Detail Panel</link>
+    populated with the values of the Task, if there is no custom Panel registered for the supplied tasktype.
+    You can develop your own Detail-Panels and register them for a specific Tasktype via the Webtaskbox service.    
+    </para>
+  </section>
+</chapter>
