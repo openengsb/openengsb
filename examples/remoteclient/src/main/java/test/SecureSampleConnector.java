@@ -23,9 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Setup to run this app: + Start OpenEngSB + install the jms-feature: features:install openengsb-ports-jms + copy
- * example+example+testlog.connector to the openengsb/config-directory + copy openengsb/etc/keys/public.key.data to
- * src/main/resources
+ * Setup to run this app:
+ *
+ * + Start OpenEngSB
+ *
+ * + install the jms-feature: features:install openengsb-ports-jms
+ *
+ * + copy example+external-connector-proxy+example-remote.connector to the openengsb/config-directory
+ *
+ * + copy openengsb/etc/keys/public.key.data to src/main/resources
  */
 public final class SecureSampleConnector {
 
