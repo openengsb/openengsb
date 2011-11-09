@@ -25,16 +25,20 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 public class EKBServiceTest {
@@ -43,9 +47,6 @@ public class EKBServiceTest {
     @Before
     public void setup() {
         this.service = new EKBService();
-        
-        ModelFactoryService modelFactory = new ModelFactoryService();
-
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
 
         EDBObject edbObject = new EDBObject("testoid");
@@ -76,13 +77,11 @@ public class EKBServiceTest {
         when(edbService.getObject("suboid1")).thenReturn(subObject1);
         when(edbService.getObject("suboid2")).thenReturn(subObject2);
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
-        
+
         QueryInterfaceService queryInterface = new QueryInterfaceService();
         queryInterface.setEdbService(edbService);
-        queryInterface.setModelFactory(modelFactory);
 
         service.setQueryInterface(queryInterface);
-        service.setModelFactory(modelFactory);
     }
 
     @Test
@@ -490,5 +489,64 @@ public class EKBServiceTest {
 
         assertThat(testExists, is(true));
         assertThat(testValue, nullValue());
+    }
+
+    @Test
+    public void testname() throws Exception {
+//        ModelFactoryService service = new ModelFactoryService();
+//        TestModel1 model = service.createEmptyModelObject(TestModel1.class);
+        
+        TestModel1 model = ModelUtils.createEmptyModelObject(TestModel1.class);
+        model.setId(10);
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        Wrapper wrapper = new Wrapper();
+        wrapper.setClazz(TestModel1.class);
+        wrapper.setEntries(model.getOpenEngSBModelEntries());
+
+        String content = objectMapper.writeValueAsString(wrapper);
+        Wrapper w = objectMapper.readValue(content, Wrapper.class);
+
+        List<OpenEngSBModelEntry> entries = w.getEntries();
+        OpenEngSBModelEntry[] entr = new OpenEngSBModelEntry[entries.size()];
+        for (int i = 0; i < entr.length; i++) {
+            entr[i] = (OpenEngSBModelEntry) entries.get(i);
+        }
+
+        TestModel1 m = ModelUtils.createEmptyModelObject(TestModel1.class, entr);
+        
+        assertThat(m.getId(), is(10));
+
+    }
+
+    interface TestModel1 extends OpenEngSBModel {
+        int getId();
+
+        void setId(int id);
+    }
+    
+    static class Wrapper implements Serializable {
+        private static Class<?> clazz;
+        private static List<OpenEngSBModelEntry> entries;
+        
+        public Wrapper() {
+            
+        }
+        
+        public void setClazz(Class<?> clazz) {
+            this.clazz = clazz;
+        }
+        
+        public Class<?> getClazz() {
+            return clazz;
+        }
+        
+        public void setEntries(List<OpenEngSBModelEntry> entries) {
+            this.entries = entries;
+        }
+        
+        public List<OpenEngSBModelEntry> getEntries() {
+            return entries;
+        }
     }
 }
