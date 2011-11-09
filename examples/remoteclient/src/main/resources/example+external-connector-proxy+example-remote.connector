@@ -1,0 +1,3 @@
+attribute.portId = jms-json
+attribute.destination = tcp://127.0.0.1:6549?example-remote
+attribute.serviceId = example-remote
