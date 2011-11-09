@@ -29,6 +29,7 @@ import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
+import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
 
 /**
@@ -68,14 +69,18 @@ public class JsonOutgoingMethodCallMarshalFilter extends
             throw new FilterException(e);
         }
         MethodResult result = resultMessage.getResult();
-        Class<?> className;
-        try {
-            className = Class.forName(result.getClassName());
-        } catch (ClassNotFoundException e) {
-            throw new FilterException(e);
+        if (result.getType().equals(ReturnType.Void)) {
+            result.setArg(null);
+        } else {
+            Class<?> className;
+            try {
+                className = Class.forName(result.getClassName());
+            } catch (ClassNotFoundException e) {
+                throw new FilterException(e);
+            }
+            Object convertedValue = objectMapper.convertValue(result.getArg(), className);
+            result.setArg(convertedValue);
         }
-        Object convertedValue = objectMapper.convertValue(result.getArg(), className);
-        result.setArg(convertedValue);
         return resultMessage;
     }
 
