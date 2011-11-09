@@ -31,7 +31,6 @@
   <!-- Query Interface -->
   <bean id="queryInterfaceService" class="org.openengsb.core.ekb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
-    <property name="modelFactory" ref="modelFactoryService"/>
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.QueryInterface">
