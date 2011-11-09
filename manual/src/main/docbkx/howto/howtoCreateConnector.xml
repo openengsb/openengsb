@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.connector" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Create a connector for an already existing domain for the OpenEngSB</title>
+
+
+  <section>
+    <title>Goal</title>
+	<para>This tutorial describes examplary for all connectors the implementation of an email connector. The email
+    connector implements the interface of the <xref linkend="domains.notification.domain" />, which is already implemented
+    in the OpenEngSB. Therefore, this tutorial describes the implementation of a connector for
+    an already present domain.</para>
+  </section>
+  <section>
+    <title>Time to Complete</title>
+    <para>If you are already familiar with the OpenEngSB about 30 minutes. If you are not familiar with
+    the OpenEngSB please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.</para>
+  </section>
+  <section>
+    <title>Prerequisites</title>
+    <para>Warning: This section is likely to change in the near future, as domains and connectors are
+    currently separated from the rest of the OpenEngSB project. Currently connectors are developed
+    together with the core system.</para>
+    <para>For information about how to get started as contributor to the OpenEngSB project and how to
+    get the current OpenEngSB source please read the contributor section of the manual: 
+    <xref linkend="developer.manual" />.</para>
+  </section>
+  <section>
+    <title>Step 1 - Use the archetype</title>
+    <para> As the development of a connector is a recurring task the OpenEngSB developer team has prepared
+    Maven archetypes and useful mojos, which provide support for the initial creation of a connector. A new connector
+    can be created by invoking <command>mvn openengsb:genConnector</command> (or using
+    <filename>/etc/scripts/gen-connector.sh</filename>)</para>
+    <para>Go into the directory "/connector" and invoke the mojo from there. It
+    generates the result in the directory from where it is started, therefore it is recommended to run it
+    from the "/connector" directory. You can also run it from a different directory and copy the results into
+    the "/connector" directory. Fill in the following values (if no input is provided the default value is kept):</para>
+    <programlisting>Domain Name (is domainname): notification
+Domain Interface (is NotificationDomain):
+Connector Name: email
+Version (is 1.1.0-SNAPSHOT):
+Project Name (is OpenEngSB :: Connector :: Email):
+    </programlisting>
+    <para>Now the maven archetype is executed. It asks you to confirm the configuration:</para>
+    <programlisting>groupId: org.openengsb.connector
+artifactId: openengsb-connector-email
+version: 1.1.0-SNAPSHOT
+package: org.openengsb.connector.email
+connectorName: Email
+connectorNameLC: email
+domainArtifactId: openengsb-domain-notification
+domainInterface: NotificationDomain
+domainPackage: org.openengsb.domain.notification
+name: OpenEngSB :: Connector :: Email
+ Y: : y
+    </programlisting>
+    <para>A project named "email" is created with the following structure:</para>
+    <programlisting>email
+|
+|---pom.xml
+|
+|---src
+     |
+     |---main
+          |
+          |---java
+          |     |
+          |     |---org
+          |          |
+          |          |---openengsb
+          |                  |
+          |                  |---connector
+          |                          |
+          |                          |---email
+          |                                |
+          |                                |---EmailServiceManager.java
+          |                                |
+          |                                |---internal
+          |                                       |
+          |                                       |---EmailServiceImpl.java
+          |                                       |
+          |                                       |---EmailServiceInstanceFactory.java
+          |
+          |---resources
+                  |
+                  |---META-INF
+                  |      |
+                  |      |---spring
+                  |             |
+                  |             |---email-context.xml
+                  |
+                  |---OSGI-INF
+                          |
+                          |---l10n
+                               |
+                               |---bundle.properties
+                               |
+                               |---bundle_de.properties
+    </programlisting>
+    <para>All these artifacts will be covered during the implementation of the connector and explained in
+    step 2 of this tutorial.</para>
+  </section>
+  <section>
+    <title>Step 2 - Add the dependencies</title>
+    <para>Let's start with the dependencies. As the email connector will be based upon the javax mail
+    libraries, we need to include dependencies for the OSGI versions of these artifacts into the
+    pom file located at "/provision/pom.xml". So we add this dependency to the dependencies section:</para>
+    <programlisting>
+    <![CDATA[<dependency>
+  <groupId>org.apache.servicemix.bundles</groupId>
+  <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
+  <version>${javax.mail.version}</version>
+</dependency>
+    ]]>
+    </programlisting>
+    
+  </section>
+  <section>
+    <title>Step 3 - Configure the connector</title>
+    <para>To configure the connector as part of the OpenEngSB two more things are necessary. At first
+    we have to add the connector to the modules section of its parent pom if it is not already present there.
+    If you have run openengsb:genConnector in the "connector" directory this step should have already been performed
+    automatically for you. To check or manually add the entry, open the file "/connector/pom.xml" and add the
+    new connector to the modules section:</para>
+
+  <programlisting>
+  <![CDATA[...
+<modules>
+  <module>email</module>
+...
+</modules>
+...
+  ]]>
+  </programlisting>
+  <para>The second step is necessary to configure Karaf correctly. Please open the file
+  "/assembly/pom.xml" and add the following line:</para>
+  
+  <programlisting>
+  <![CDATA[...
+<profile>
+  <id>release</id>
+  ...
+     <deployURLs>
+       ...
+       scan-bundle:mvn:org.openengsb.connector/openengsb-connector-email/${project.version},
+       ...
+     </deployURLs>
+...
+  ]]>
+  </programlisting>
+  </section>
+  <section>
+    <title>Step 4 - Implement the connector</title>
+    <para>Now you can run the following command in the root folder of the OpenEngSB to create an eclipse
+    project for the new connector: </para>
+    <programlisting>mvn openengsb:eclipse</programlisting>
+    <para>Now import the connector project into Eclipse and implement the email service by implementing
+    the classes EmailServiceImpl.java and EmailServiceInstanceFactory.java. We won't go into detail about
+    the actual mail implementation here, so we encapsulated the mailing functionality in a mail
+    abstraction. While the class EmailServiceImpl is responsible for the realization of the domain
+    interface, the factory is responsible for creating instances of the email service and for
+    publishing the meta data necessary to configure an instance of the email service. These two classes
+    are now explained in detail.</para>
+  <programlisting>package org.openengsb.connector.email.internal;
+
+import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
+import org.openengsb.connector.email.internal.abstraction.MailProperties;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.domain.notification.NotificationDomain;
+import org.openengsb.domain.notification.model.Notification;
+import org.osgi.framework.ServiceRegistration;
+
+public class EmailServiceImpl implements NotificationDomain {
+
+    private final String id;
+
+    private final MailAbstraction mailAbstraction;
+    private ServiceRegistration serviceRegistration;
+    private final MailProperties properties;
+
+    public EmailServiceImpl(String id, MailAbstraction mailAbstraction) {
+        this.id = id;
+        this.mailAbstraction = mailAbstraction;
+        properties = mailAbstraction.createMailProperties();
+    }
+
+    /**
+     * Perform the given notification, which defines message, recipient, subject and 
+     * attachments.
+     */
+    @Override
+    public void notify(Notification notification) {
+        mailAbstraction.send(properties, notification.getSubject(), notification
+                .getMessage(), notification.getRecipient());
+    }
+
+    /**
+     * return the current state of the service,
+     *
+     * @see org.openengsb.core.api.AliveState
+     */
+    @Override
+    public AliveState getAliveState() {
+        AliveState aliveState = mailAbstraction.getAliveState();
+        if (aliveState == null) {
+            return AliveState.OFFLINE;
+        }
+        return aliveState;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public ServiceRegistration getServiceRegistration() {
+        return serviceRegistration;
+    }
+
+    public void setServiceRegistration(ServiceRegistration serviceRegistration) {
+        this.serviceRegistration = serviceRegistration;
+    }
+
+    public MailProperties getProperties() {
+        return properties;
+    }
+}
+  </programlisting>
+  
+  <para>As you can see, without the mail specific stuff the implementation is quite straight forward.
+  Simply implement the domain interface as well as the getAliveState() method, which is used to query to current status of a tool.</para>
+  
+  <programlisting>
+<![CDATA[ 
+package org.openengsb.connector.email.internal;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
+import org.openengsb.core.api.ServiceInstanceFactory;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.domain.notification.NotificationDomain;
+
+public class EmailServiceInstanceFactory implements
+          ServiceInstanceFactory<NotificationDomain, EmailServiceImpl> {
+
+    private final MailAbstraction mailAbstraction;
+
+    public EmailServiceInstanceFactory(MailAbstraction mailAbstraction) {
+        this.mailAbstraction = mailAbstraction;
+    }
+
+    private void setAttributesOnNotifier(Map<String, String> attributes, 
+            EmailServiceImpl notifier) {
+
+        if (attributes.containsKey("user")) {
+            notifier.getProperties().setUser(attributes.get("user"));
+        }
+        if (attributes.containsKey("password")) {
+            notifier.getProperties().setPassword(attributes.get("password"));
+        }
+        if (attributes.containsKey("prefix")) {
+            notifier.getProperties().setPrefix(attributes.get("prefix"));
+        }
+        if (attributes.containsKey("smtpAuth")) {
+            notifier.getProperties().setSmtpAuth(Boolean.parseBoolean(attributes.
+                    get("smtpAuth")));
+        }
+        if (attributes.containsKey("smtpSender")) {
+            notifier.getProperties().setSender(attributes.get("smtpSender"));
+        }
+        if (attributes.containsKey("smtpHost")) {
+            notifier.getProperties().setSmtpHost(attributes.get("smtpHost"));
+        }
+        if (attributes.containsKey("smtpPort")) {
+            notifier.getProperties().setSmtpPort(attributes.get("smtpPort"));
+        }
+    }
+
+    /**
+     * Called when the {@link #ServiceDescriptor} for the provided service is needed.
+     *
+     * The {@code builder} already has the id, service type and implementation type
+     * set to defaults.
+     */
+    @Override
+    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+        builder.name("email.name").description("email.description");
+
+        builder
+            .attribute(buildAttribute(builder, "user", "username.outputMode", 
+                    "username.outputMode.description"))
+            .attribute(
+                builder.newAttribute().id("password").name("password.outputMode")
+                    .description("password.outputMode.description").defaultValue("")
+                    .required().asPassword().build())
+            .attribute(buildAttribute(builder, "prefix", "prefix.outputMode", 
+                    "prefix.outputMode.description"))
+            .attribute(
+                builder.newAttribute().id("smtpAuth").name("mail.smtp.auth.outputMode")
+                    .description("mail.smtp.auth.outputMode.description")
+                    .defaultValue("false").asBoolean().build())
+            .attribute(
+                buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
+                    "mail.smtp.sender.outputMode.description"))
+            .attribute(
+                buildAttribute(builder, "smtpPort", "mail.smtp.port.outputMode",
+                    "mail.smtp.port.outputMode.description"))
+            .attribute(
+                buildAttribute(builder, "smtpHost", "mail.smtp.host.outputMode",
+                    "mail.smtp.host.outputMode.description")).build();
+
+        return builder.build();
+    }
+
+    private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, 
+            String id, String nameId, String descriptionId) {
+        return builder.newAttribute().id(id).name(nameId).description(descriptionId)
+            .defaultValue("").required().build();
+
+    }
+    
+    /**
+     * Called by the {@link AbstractServiceManager} when updated service attributes for
+     * an instance are available. The attributes may only contain changed values and 
+     * omit previously set attributes.
+     *
+     * @param instance the instance to update
+     * @param attributes the new service settings
+     */
+    @Override
+    public void updateServiceInstance(EmailServiceImpl instance, Map<String,
+            String> attributes) {
+        setAttributesOnNotifier(attributes, instance);
+    }
+
+    /**
+     * The {@link AbstractServiceManager} calls this method each time a new service 
+     * instance has to be started.
+     *
+     * @param id the unique id this service has been assigned.
+     * @param attributes the initial service settings
+     */
+    @Override
+    public EmailServiceImpl createServiceInstance(String id, 
+            Map<String, String> attributes) {
+        EmailServiceImpl notifier = new EmailServiceImpl(id, mailAbstraction);
+        setAttributesOnNotifier(attributes, notifier);
+        return notifier;
+    }
+
+    /**
+     * Validates if the service is correct before updating.
+     */
+    @Override
+    public MultipleAttributeValidationResult updateValidation(EmailServiceImpl instance,
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, 
+                new HashMap<String, String>());
+    }
+
+    /**
+     * Validates if the attributes are correct before creation.
+     */
+    @Override
+    public MultipleAttributeValidationResult createValidation(String id, 
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, 
+                new HashMap<String, String>());
+    }
+}
+]]>
+  </programlisting>
+  <para>
+    The factory is more interesting with respect to the OpenEngSB. It is used to create and configure
+    instances of the email service. Furthermore it is responsible for publishing which properties
+    a mail notifier needs to be configured in a proper way. The "getDescriptor" method returns a service
+    descriptor, which is created with the help of a builder. This service descriptor contains the properties
+    a mail notifier needs. In this case things like user password, smtp server and so on. The "updateServiceInstance"
+    method updates an already created instance of the mail service. Basically this means setting the properties, which
+    are provided in the attributes map parameter (see "setAttributesOnNotifier" method). The "createServiceInstance"
+    method is responsible for the creation of a new email service.
+    The methods "updateValidation" and "createValidation" are used to check properties before "updateServiceInstance" or
+    "createServiceInstance" are called. As the mail service does not want to check properties beforehand it simply returns
+    that all values are OK.</para>
+  </section>
+  <section>
+    <title>Step 5 - Spring Setup and Internationalization</title>
+    <para>The Maven archetype already created the spring setup for the email service at src/main/resources/META-INF/spring.
+      If properties or constructor arguments are needed for the service factory, they have to be defined in the spring
+      setup here. In our case the mail abstraction has to be injected as constructor argument on the creation of the
+      email service factory.</para>
+    <para>With regards to internationalization it is necessary to add a name and a description for each property used in the
+      service descriptor (see email service factory). The properties files for English and German are also already created
+      by the Maven archetype and can be found at "src/main/resources/OSGI-INF/l10n/". In our case the bundle.properties file
+      contains the following entries:</para>
+    <programlisting>email.name=Email Notification
+email.description=This is a Email Notification Service
+
+username.outputMode = Username
+username.outputMode.description = Specifies the username of the email account 
+
+password.outputMode = Password
+password.outputMode.description = Password of the specified user
+
+prefix.outputMode = Prefix
+prefix.outputMode.description = Subject prefix for all mails sent by this connector
+
+mail.smtp.auth.outputMode = Authentification
+mail.smtp.auth.outputMode.description = Specifies if the smtp authentication is on or off
+
+mail.smtp.sender.outputMode = Sender Emailadress
+mail.smtp.sender.outputMode.description = Specifies the Emailadress of the sender
+
+mail.smtp.port.outputMode = SMTP Port
+mail.smtp.port.outputMode.description = Specifies the Port for the smtp connection
+
+mail.smtp.host.outputMode = SMTP Host
+mail.smtp.host.outputMode.description = Specifies the SMTP Hostname
+    </programlisting>
+    <para>As you can see each property is defined with name and description. The same entries can be found in the
+    German properties file (bundle_de.properties) with German names and descriptions.</para>
+  </section>
+  <section>
+    <title>Step 6 - Start the OpenEngSB with your Connector</title>
+    <para>After implementing and testing your connector locally you can try to start up the OpenEngSB with your new connector.
+    Enter the following commands in the root directory of the OpenEngSB to build and start the OpenEngSB in development mode:</para>
+    <programlisting>mvn clean install
+mvn openengsb:provision
+    </programlisting>
+    <para>Now you can enter "list" into the karaf console to check whether your new connector was installed and
+      started.</para>
+  </section>
+  <section>
+    <title>Step 7 - Test the new connector</title>
+    <para>Now you can use the OpenEngSB administration WebApp (available at 
+      <link xlink:href="http://localhost:8090/openengsb">http://localhost:8090/openengsb</link>) to test your new 
+      connector. For more information about how to use the WebApp see 
+      <link xlink:href="http://openengsb.org/howto/howto_logging.html">the How-to section</link>} of the the OpenEngSB homepage.</para>
+  </section>
+  
+</chapter>
+

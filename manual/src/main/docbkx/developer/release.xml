@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.release" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Release and Release Process</title>
+
+  <para>This section provides a step by step description to execute a release of the OpenEngSB. It is relevant for
+  everyone marked in the <link xlink:href="http://openengsb.org/team-list.html">OpenEngSB Team List</link> as release
+  manager because only they have the required rights to execute the following steps.</para>
+
+  <section>
+    <title>Releases and the OpenEngSB</title>
+    <para>Every release of the OpenEngSB consists of the following parts: RELEASE.MAJOR.MINOR.TYPE. Every release
+    of this type is available at <link xlink:href="http://repo1.maven.org/maven2/">Maven Central</link>. Optionally
+    SNAPSHOT is appended. Snapshot releases are available from the
+    <link xlink:href="https://oss.sonatype.org/content/groups/public/">Sonatype Snapshot repository</link>. This section
+    explains what each modifier means and how it is used within the OpenEngSB.</para>
+
+    <para>SNAPSHOTS: Snapshots are always available from the latest build of the OpenEngSB. They are taken from the
+    master branch automatically at each commit.</para>
+
+    <para>TYPE: Type could be MX, RCX or RELEASE, where X is a number. While RELEASE marks a final release, ready for
+    use in your production environment, M and RC are typically not ready for production. M stands for Milestone
+    release and is cut every two weeks to present the current state of the OpenEngSB and allow a coarse grained
+    planning and roadmap for the OpenEngSB team. RC, release candidates, are handled differently. After everything is
+    finished and the OpenEngSB teams think that the current work is ready for a release, we provide a release candidate
+    and invite everyone to test the release. If there are any issues with the release we fix them and provide another
+    release candidate. During this process no new features, but only bug fixes are handled. We continue this process as
+    long as there are no new bug reports for a RC for two weeks. Then we re-release the latest release candidate as
+    final release. This process only applies for RELEASE and MAJOR. MINOR is handled differently, as explained later
+    on.</para>
+
+    <para>RELEASE is a increasing number used for mayor changes within the OpenEngSB architecture. In addition all
+    methods and interfaces marked as deprecated are removed during such a release. It is also possible that a
+    RELEASE does not enhance any mayor architectural concept but is only used to get rid of all the deprecated
+    methods, generated during MAJOR releases.</para>
+
+    <para>MAJOR is the main feature development number of the OpenEngSB. Each release containing new features will be
+    a MAJOR release. Nevertheless, between MAJOR releases architectural concepts are not removed but only set to
+    deprecated. This means they only enhance functionality but try to not break with former releases.</para>
+
+    <para>MINOR releases are bug-fix releases. They do not include any new features but only fix bugs within the
+    OpenEngSB. They have no release plan, but are simply cut after each bug-fix.</para>
+
+    <para>To visualize the explained process the following example. Assume we have released openengsb-1.0.0.RELEASE.
+    Now we're working on openengsb-1.1.0.RELEASE. Therefore we start developing openengsb-1.1.0.M1 which will be
+    released in two weeks. During the development of 1.1.0.M1 a bug occurs at openengsb-1.0.0.RELEASE. During the
+    development the bug is fixed and openengsb-1.0.1.RELEASE is released. After 1.1.0.M1 we require three additional
+    milestone releases to get feature releases. Six weeks after 1.1.0.M1 we'll release 1.1.0.RC1. From now on we
+    continue to develop 1.2.0.M1 (or 2.0.0.M1, depending on the gravity of the changes) and wait for feedback on
+    1.1.0.RC1. Now a bug-report occurs for 1.0.1.RELEASE. We fix the bug, release 1.0.2.RELEASE with the fix. If
+    it also affects 1.1.0.RC1, we fix the bug there too and release 1.1.0.RC2 (still working on 1.2.0.M1(!)). Now
+    assume that some other bug reports are received for 1.0.0.RC2. We fix them and release 1.1.0.RC3. In the meantime
+    we finished 1.2.0.M1 and start work on 1.2.0.M2. Now two weeks after the release of 1.1.0.RC3 without any new
+    bug-reports we re-release 1.1.0.RC3 to 1.1.0.RELEASE (starting the game again from the beginning).</para>
+  </section>
+  
+  <section>
+	<title>Git Branches</title>
+	<para>For the best cooperation between Git and Maven the OpenEngSB team has developed its own workflow with branches
+	during releases. For different project phases (milestone, RC, final, support) different workflows apply.</para>
+	<section>
+		<title>New Feature Workflow</title>
+		<para>For new features the already described workflow apply. This means create a feature branch based on the integration
+		branch, add your commits and create a pull request if you're finished. Your changes will be merged (after review) to
+		the integration branch. From time to time the integration branch ins merged into the master, which is pushed as 
+		snapshots to sonatype.</para>
+	</section>
+	<section>
+		<title>Milestone Releases</title>
+		<para>For milestone releases about one day before a planned release a openensb-1.X.0-release branch is created. This
+		branch can be forward merged to integration as often as liked (no backward merges are allowed). If all final bugs
+		and changes are done the MX version is released on this branch and the branch is merged into integration and deleted
+		again. During this process any number of new features are merged into integration, without affecting the release any
+		longer.</para>
+	</section>
+	<section>
+		<title>Release Candidates</title>
+		<para>RCs are the pre-level for final releases. This means, after the openengsb team decides a release is ready to
+		go, two new branch  are created from the latest commit AFTER the milestone release (where the mvn versions are set back
+		to the snapshot version): openengsb-1.X.x-dev and openengsb-1.X.x-release. openengsb-1.X.x-dev is used for bug-fixes. Every
+		fix which should also be merged into the integration branch/master should be branched off openengsb-1.X.x-dev and afterewards
+		merged into integration and openengsb-1.X.x-dev. If a release is ready openengsb-1.X.x-dev is merged into openengsb-1.X.x-release,
+		where the release takes place. BUT no merge from openengsb-1.X.x-release to openengsb-1.X.x-release is allowed!</para>
+	</section>
+	<section>
+		<title>Final and Support Releases</title>
+		<para>All support and final releases are handled exactly as the RC releases between the openengsb-1.X.x-dev and
+		openengsb-1.X.x-release branch.</para>
+	</section>
+  </section>
+
+  <section xml:id="developer.release.configuremaven">
+    <title>Configure Maven</title>
+    <para>For the right rights to deploy to maven central and upload maven site to openengsb.org the following
+    entries are required in your ~/.m2/settings.xml file:
+    <programlisting language="xml"><![CDATA[<settings>
+  <server>
+    <id>sonatype-nexus-snapshots</id>
+    <username>SONATYPE_USERNAME</username>
+    <password>SONATYPE_PASSWORD</password>
+  </server>
+  <server>
+    <id>sonatype-nexus-staging</id>
+    <username>SONATYPE_USERNAME</username>
+    <password>SONATYPE_PASSWORD</password>
+  </server>
+  <server>
+    <id>OpenengsbWebServer</id>
+    <username>OPENENGSB_SERVER_USERNAME</username>
+    <password>OPENEGNSB_SERVER_PASSWORD</password>
+  </server>
+  <profiles>
+    <profile>
+      <id>milestone</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+    <profile>
+      <id>final</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
+<settings>]]></programlisting></para>
+
+    <para>All the usernames and passwords can be retrieved from someone marked as administrator in the
+    <link xlink:href="http://openengsb.org/team-list.html">OpenEngSB Team List</link>.</para>
+
+    <para>In addition you have to have a GPG key for your mail address (the same you're using to commit to the
+    OpenEngSB source repository which is uploaded to the <link xlink:href="hkp://pgp.mit.edu/">MIT Key Server</link>.</para>
+  </section>
+
+  <section>
+    <title>Adapt Jira</title>
+    <para>A word in front, how Jira is used for the OpenEngSB. Jira is used for bug tracking and release planning.
+    ONLY each Milestone release has its own target. Release candidates and final releases are handled differently.
+    Since we release RC and MINOR releases quite often its much too much administration work to keep JIRA up to date.
+    </para>
+
+    <para>Ok, knowing that the release process is simple:</para>
+    <itemizedlist>
+      <listitem>If you release a milestone release close the release target (e.g. 1.0.0.M1)</listitem>
+      <listitem>If you release a release candidate create a VERSION.RCX release target and close the old one.</listitem>
+      <listitem>If you release a final release (MAJOR RELEASE) create a new release target 1.0.X.RELEASE.</listitem>
+      <listitem>If you release a minor release close the 1.0.X.RELEASE target and create 1.0.(X+1).RELEASE.</listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Perform the release</title>
+    <para>Performing a release is quite simple, because of the maven release plugin and some scripts. Simple
+    follow these steps:</para>
+    <itemizedlist>
+      <listitem>First of all make sure that the NOTICE file is up-to-date using notice:generate</listitem>
+      <listitem>
+        Now invoke <command>mvn openengsb:release{Final|Milestone|Support|RC} -DconnectionUrl=path/to/your/repo</command>
+        (e.g. mvn openengsb:releaseMilestone -DconnectionUrl=scm:git:file://~/openengsb)
+      </listitem>
+      <listitem>After the artifacts are available for sync to maven central you have to push them from the
+      staging to the final repository. Therefore follow the steps as explained
+      <link xlink:href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">
+      here</link></listitem>
+      <listitem>If everything works fine execute git push;git push --tags</listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Spread the News</title>
+    <para>Post a message to the OpenEngSB twitter account with the following content:
+<programlisting><![CDATA[openengsb-VERSION "NAME" released, closing XX issues (JIRA_RELEASE_REPORT_SHORT_URL).
+  Try the new features now: http://openengsb.org]]></programlisting></para>
+    <para>Mails in this case are not only used for notification but also to get the developers and users
+      to try a new release and report issues and problems. Therefore, we use different templates for different
+      types of releases of the project.
+    </para>
+    <para>The following template shows a copy and paste template for mails send for a release candidate. This 
+      mail should only be sent to the developer mailing list:<programlisting><![CDATA[Hey guys,
+
+I've just uploaded openengsb-1.0.0.RC4 to maven central (Should be available
+within the next hour).
+
+Sources can be downloaded here:
+
+https://github.com/openengsb/openengsb/zipball/openengsb-1.0.0.RC4
+
+The binary release can be downloaded here:
+
+http://repo1.maven.org/maven2/org/openengsb/openengsb/1.0.0.RC4/openengsb-1.0.0.RC4.zip
+
+Between openengsb-1.0.0.RC3 and openegnsb-1.0.0.RC4 we've fixed the following
+issues:
+
+** Bug
+  * [OPENENGSB-548] - jetty7 - felix problems 
+  * [OPENENGSB-605] - Use png as favicon for openengsb war file and script
+
+** Improvement
+  * [OPENENGSB-603] - Context has to be stored persistently and
+  * restored on system startup
+  * [OPENENGSB-610] - Maven connector has to support the execution of a configurable command
+
+** Task
+  * [OPENENGSB-606] - update docs new jira release 
+
+** TBD
+  * [OPENENGSB-589] - document release process for stable branches
+
+Please give it a try and report all problems you encounter here:
+
+http://issues.openengsb.org/jira/browse/OPENENGSB/fixforversion/10142
+
+If there are no new issues reported within the next 72 hours I set RC4 as the
+final release 1.0.0.RELEASE.
+
+Kind regards,
+andreas]]></programlisting>
+    </para>
+  </section>
+
+  <section>
+    <title>Prepare Changelog</title>
+    <para>The changelog is a file to inform users about the changes in the version they are using.
+      This file should only contain the releases which are done in one branch. E.g. the master will never contain changelog about minor releases; because of the way we handle Jira those changes are captured and included
+      anyhow.
+    </para>
+
+    <para>Now the CHANGELOG.md file has to be updated. Therefore the following template with the correct version
+    have to be copied in the current changelog file (the latest version always has the most "on-top" position in the
+    text file):
+<programlisting><![CDATA[openengsb-VERSION
+------------------
+
+Add a General Description
+
+### Highlights
+  * [e.g.] org.openengsb.domain.scm.doSomething() is removed
+
+### Details
+
+Copy JIRA issues here]]></programlisting></para>
+
+    <para>The following sections explain shortly what changes belong to which part of the changelog.</para>
+
+    <section>
+      <title>General Description</title>
+      <para>The general description summarizes the most important changes in this release. This is
+        a short and verbal description of the changes.
+      </para>
+    </section>
+
+    <section>
+      <title>Highlights</title>
+      <para>The highlight section could be a little bit more detailed than the general description.
+        Things which should be changed by developers could be explained here and other important points
+        could be lined up here.
+      </para>
+    </section>
+
+    <section>
+      <title>Details</title>
+      <para>The details section contains a copy of the release notes generated by Jira if a developer
+        wants to take a detailed look at the changes included in this release.
+      </para>
+    </section>
+
+  </section>
+
+</chapter>
+
