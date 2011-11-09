@@ -31,6 +31,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.osgi.framework.ServiceReference;
 
 import java.io.IOException;
@@ -57,12 +58,6 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     private OsgiUtilsService osgiUtilsService;
 
-    private enum ARGUMENTS {
-        LIST,
-        CREATE,
-        UPDATE,
-        DELETE
-    }
 
     protected Object doExecute() throws Exception {
         ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
@@ -75,27 +70,29 @@ public class ServiceCommands extends OsgiCommandSupport {
 
         List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
-
-        ARGUMENTS arguments = ARGUMENTS.valueOf(arg.toUpperCase());
-        switch (arguments) {
-            case LIST:
-                listServices(serviceList);
-                break;
-            case CREATE:
-                createService(serviceList, keyboard);
-                //TODO
-                break;
-            case UPDATE:
-                //TODO
-                break;
-            case DELETE:
-                //TODO
-                break;
-            default:
-                System.err.println("Invalid Argument");
-                break;
+        try {
+            ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
+            switch (arguments) {
+                case LIST:
+                    listServices(serviceList);
+                    break;
+                case CREATE:
+                    createService(serviceList, keyboard);
+                    //TODO
+                    break;
+                case UPDATE:
+                    //TODO
+                    break;
+                case DELETE:
+                    //TODO
+                    break;
+                default:
+                    System.err.println("Invalid Argument");
+                    break;
+            }
+        } catch (IllegalArgumentException ex) {
+            System.err.println("Invalid Argument");
         }
-
         return null;
     }
 
@@ -115,19 +112,6 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     private void listServices(List<DomainProvider> serviceList) {
         OutputStreamFormater.printValue("Services");
-        /**List<ServiceReference> listServiceReferences = osgiUtilsService.listServiceReferences(Domain.class);
-         for (ServiceReference ref : listServiceReferences) {
-         Domain service = osgiUtilsService.getService(Domain.class, ref);
-         try {
-         String instanceId = service.getInstanceId();
-         if (instanceId != null) {
-         OutputStreamFormater.printValue(instanceId, service.getAliveState().toString());
-         }
-         } catch (AccessDeniedException ex) {
-         OutputStreamFormater.printValue(ex.getMessage());
-         }
-         }
-         **/
         for (DomainProvider dp : serviceList) {
             String domainType = dp.getId();
             List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(
