@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.logging" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - First steps with the OpenEngSB (Send mails via the OpenEngSB)</title>
+
+
+  <section>
+    <title>Goal</title>
+      <para>This section describes a  "hello world" use-case for the notification domain using the email connector.</para>
+  </section>
+
+  <section>
+    <title>Time to Complete</title>
+    <para>If you are already familiar with setting up services in OpenEngSB about 15 minutes. (see <link xlink:href="#howto.setup">HowTo: Setup</link></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>This HowTo assumes you have already a running instance of the OpenEngSB.</para>
+  </section>
+
+  <section>
+    <title>Creating EMail Services</title>
+
+    <para>Create a new Email Notification Service by clicking the "New..." link for the Email Notification on the Test Client link.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="testclient" fileref="graphics/logging_testClient.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>test client</caption>
+    </mediaobject>
+
+    <para>In the following view you have the possibility to configure the Notification Service. The following screen provides an example for a gmail account. Please use "test1" for the Service Id field.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="emailnotification" fileref="graphics/logging_emailNot.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>email notification</caption>
+    </mediaobject>
+
+    <para>When you have finished setting all fields to appropriate values, create the new instance by clicking the "Save" button.</para>
+
+    <para>Now create another service with the Service Id "test2". Otherwise you can use exactly the same values again.</para>
+  
+    <para>You can validate the services open the "Services" page, which should look similar to the following screenshot. All your created services should be available with the state "ONLINE".</para>
+  
+    <mediaobject>
+      <imageobject>
+        <imagedata id="overview" fileref="graphics/logging_notificationOverview.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>overview</caption>
+    </mediaobject>
+
+  </section>
+
+  <section>
+    <title>Executing Service Actions Directly</title>
+
+    <para>Now we're going to validate the created services. First of all start by open the "Test Client" link. Now open the "Notification Domain" tree and choose test1. Next get the notify method from the drop down box. The available fields should change instantly. Let the attachment field free and enter anything into message and subject. The address should be a valid email address (not validated for the moment). After all the view should look similar to the following image:</para>
+  
+    <mediaobject>
+      <imageobject>
+        <imagedata id="notificationproperties" fileref="graphics/logging_not.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>notification properties</caption>
+    </mediaobject>
+
+    <para>Call the service by using the "Call" button. Some seconds after you've pressed the call button the following message 
+    should occur on on your screen:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata id="success" fileref="graphics/logging_success.png" format="png" width="200" align="center" />
+      </imageobject>
+      <caption>success</caption>
+    </mediaobject>
+  
+    <para>Within the next seconds to minutes the address, specified by you, should receive a mail.</para>
+
+    <para>Next validate if the service test2 does the same. Therefore press on test2, choose notify again and enter your values. Click "Call" again and validate if you receive an email.</para>
+ 
+  </section>
+
+  <section>
+    <title>Executing Service Actions via Domains</title>
+
+    <para>Till now you've used the services directly. Now one of the OpenEngSB core concepts is presented: the Domains:</para>
+ 
+    <para>To send messages via domains, instead of directly via the connectors a default receiver for a specific project has to be set. A graphical user inteface for doing so is the "Context Page":</para>
+    
+    <mediaobject>
+      <imageobject>
+        <imagedata id="context" fileref="graphics/logging_contextOverview.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>context</caption>
+    </mediaobject>
+
+    <para>Change the entry "domains/NotificationDomain/defaultConnector/id" to test1 or test2. Do this by clicking on the node (id). This should create a drop down box next to it. Select test1 or test2. Afterwards go back to the "Test Client" page and select "Notification Domain/domains.notification". Now choose the notify method again and try sending a message to yourself.</para>
+  
+    <para>Again, the call was successful if you receive a message (with the prefix of the notifier you've chosen in the context).</para>
+  
+    <para>Congratulations, you have just finished the first implementation HowTo of Open Engineering Service Bus.</para>
+
+  </section>
+
+  <section>
+    <title>Next Steps</title>
+
+    <para>Now that you've finished the most easy OpenEngSB use case go on with a more complex one: <link xlink:href="#howto.contexteditor">Events</link></para>
+
+  </section>
+
+</chapter>
+

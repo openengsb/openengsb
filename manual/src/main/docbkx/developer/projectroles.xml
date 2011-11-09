@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.projectroles" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Project Roles</title>
+
+  <para>This section describes the how the roles in the OpenEngSB Project are defined.</para>
+
+  <para>Basically the OpenEngSB is, from it's structure exactly as any Apache Software Foundation 
+    (ASF) project.  We split the different roles in User, Contributor, Commiters and Project Comitee 
+    Members. In addition the OpenEngSB is developed in a metocracy, similar to ASF the persons
+    doing the most affect the project most. Basically the only reason we're not an ASF project
+    is that we prefer using GIT :)
+  </para>
+
+  <section xml:id="developer.projectroles.user">
+    <title>Users</title>
+    <para>Users are persons using the OpenEngSB.</para>
+    <para>
+      This group does not contribute in the OpenEngSB project in any way. They download the
+      OpenEngSB, use it and may ask questions in the IRC channel or on the mailing lists.
+    </para>
+  </section>
+
+  <section xml:id="developer.projectroles.contributor">
+    <title>Contributors</title>
+    <para>Contributors are users who contribute ideas, issues or pull requests.</para>
+    <para>
+      Basically the only difference between users and contributors are that they actively
+      contribute to the OpenEngSB in one or another way. Those users have full rights on
+      the issue tracker after they've created an account but are not allowed to access the
+      OpenEngSB core repos with write karma.
+    </para>
+  </section>
+
+  <section xml:id="developer.projectroles.commiter">
+    <title>Commiters</title>
+    <para>
+      Commiters have the same rights as contributors with the difference that they have
+      wirte access to the OpenEngSB Github repositories. They are allowed to directly push
+      changes, but also should review pull-requests.
+    </para>
+    <para>
+      To become a commiter a person have to be active on different parts of the OpenEngSB.
+      Provide patches, write documentation, answer on the user mailing list and the IRC
+      channel. If a contributor is active for an undefined time the project comitee members may 
+      vote to add a contributor to a commiter.
+    </para>
+  </section>
+
+  <section xml:id="developer.projectroles.pmc">
+    <title>Project Comitee Members</title>
+    <para>
+      Project comitee members have the same rights as commiters, with the difference that they
+      are responsible for the project. PMCs relese the OpenEngSB, vote contributors to commiters
+      and commiters to PMCs.
+    </para>
+    <para>Every commiter can become a PMC through active contribution to the OpenEngSB.</para>
+  </section>
+
+</chapter>
+
