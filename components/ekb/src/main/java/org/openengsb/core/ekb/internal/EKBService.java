@@ -25,6 +25,7 @@ import org.openengsb.core.api.ekb.ModelFactory;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
@@ -41,7 +42,7 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     @Override
     @Deprecated
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
-        return modelFactory.createEmptyModelObject(model, entries);
+        return ModelUtils.createEmptyModelObject(model, entries);
     }
 
     @Override

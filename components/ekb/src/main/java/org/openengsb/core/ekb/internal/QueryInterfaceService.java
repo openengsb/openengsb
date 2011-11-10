@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -73,7 +74,7 @@ public class QueryInterfaceService implements QueryInterface {
             Method setterMethod = propertyDescriptor.getWriteMethod();
             Object value = getValueForProperty(propertyDescriptor, object);
             if (value != null) {
-                ModelUtils.invokeSetterMethod(setterMethod, instance, value);
+                invokeSetterMethod(setterMethod, instance, value);
                 nothingSet = false;
             }
         }
@@ -82,6 +83,22 @@ public class QueryInterfaceService implements QueryInterface {
             return null;
         } else {
             return instance;
+        }
+    }
+    
+    private void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
+        try {
+            setterMethod.invoke(instance, parameter);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("illegal argument exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
+        } catch (IllegalAccessException ex) {
+            LOGGER.error("illegal access exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            LOGGER.error("invocatin target exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
         }
     }
 
