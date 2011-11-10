@@ -39,6 +39,7 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
+        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
         <value>org.openengsb.core.security.filter.OutgoingWrapperFilter</value>
         <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
