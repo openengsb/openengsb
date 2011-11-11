@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,33 @@ public final class ModelUtils {
         return handler;
     }
     
+    public static OpenEngSBModelWrapper generateWrapperOutOfModel(OpenEngSBModel model) {
+        OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
+        Class<?> clazz = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
+        wrapper.setEntries(model.getOpenEngSBModelEntries());
+        wrapper.setModelClass(clazz);
+        return wrapper;
+    }
+    
+    public static Object generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper) {
+        OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
+        return ModelUtils.createModelObject(wrapper.getModelClass(), entries);
+    }
+
+    private static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {
+        Class<?> result = null;
+        for (Class<?> inter : clazz.getInterfaces()) {
+            if (OpenEngSBModel.class.isAssignableFrom(inter) && !inter.equals(OpenEngSBModel.class)) {
+                result = inter;
+                break;
+            }
+        }
+        if (result == null) {
+            throw new IllegalArgumentException("class " + clazz.getName() + " doesn't implement domain model object");
+        }
+        return result;
+    }
+
     public static List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
         List<PropertyDescriptor> properties = Lists.newArrayList();
         try {
