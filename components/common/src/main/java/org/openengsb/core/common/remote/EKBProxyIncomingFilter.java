@@ -30,10 +30,10 @@ import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.ModelUtils;
 
 /**
- * This filter takes a {@link MethodCallRequest} and checks if any parameter is type of OpenEngSBModelWrapper.
- * If so, it converts it to the corresponding OpenEngSBModelObject. The new object is then passed on to the next 
- * filter. The returned {@link MethodResultMessage} is checked for OpenEngSBModelObject. If this is the case,
- * it is converted to a OpenEngSBModelWrapper again.
+ * This filter takes a {@link MethodCallRequest} and checks if any parameter is type of OpenEngSBModelWrapper. If so, it
+ * converts it to the corresponding OpenEngSBModelObject. The new object is then passed on to the next filter. The
+ * returned {@link MethodResultMessage} is checked for OpenEngSBModelObject. If this is the case, it is converted to a
+ * OpenEngSBModelWrapper again.
  * 
  * <code>
  * <pre>
@@ -56,23 +56,25 @@ public class EKBProxyIncomingFilter extends
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
         Object[] parameters = input.getMethodCall().getArgs();
-        for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].getClass().equals(OpenEngSBModelWrapper.class)) {
-                OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) parameters[i];
-                Class<?> modelClass = wrapper.getModelClass();
-                OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
-                Object model = ModelUtils.createModelObject(modelClass, entries);
-                parameters[i] = model;
+        if (parameters != null) {
+            for (int i = 0; i < parameters.length; i++) {
+                if (parameters[i].getClass().equals(OpenEngSBModelWrapper.class)) {
+                    OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) parameters[i];
+                    Class<?> modelClass = wrapper.getModelClass();
+                    OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
+                    Object model = ModelUtils.createModelObject(modelClass, entries);
+                    parameters[i] = model;
+                }
             }
+            input.getMethodCall().setArgs(parameters);
         }
-        input.getMethodCall().setArgs(parameters);
 
         MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
 
-        if (OpenEngSBModel.class.isAssignableFrom(message.getResult().getClass())) {
+        if (OpenEngSBModel.class.isAssignableFrom(message.getResult().getArg().getClass())) {
             OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
-            wrapper.setModelClass(message.getResult().getClass());
-            wrapper.setEntries(((OpenEngSBModel) message.getResult()).getOpenEngSBModelEntries());
+            wrapper.setModelClass(message.getResult().getArg().getClass());
+            wrapper.setEntries(((OpenEngSBModel) message.getResult().getArg()).getOpenEngSBModelEntries());
             message.getResult().setArg(wrapper);
         }
         return message;
