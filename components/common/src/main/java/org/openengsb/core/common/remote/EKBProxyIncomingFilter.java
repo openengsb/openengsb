@@ -20,7 +20,6 @@ package org.openengsb.core.common.remote;
 import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
@@ -60,9 +59,7 @@ public class EKBProxyIncomingFilter extends
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i].getClass().equals(OpenEngSBModelWrapper.class)) {
                     OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) parameters[i];
-                    Class<?> modelClass = wrapper.getModelClass();
-                    OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
-                    Object model = ModelUtils.createModelObject(modelClass, entries);
+                    Object model = ModelUtils.generateModelOutOfWrapper(wrapper);
                     parameters[i] = model;
                 }
             }
@@ -72,9 +69,8 @@ public class EKBProxyIncomingFilter extends
         MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
 
         if (OpenEngSBModel.class.isAssignableFrom(message.getResult().getArg().getClass())) {
-            OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
-            wrapper.setModelClass(message.getResult().getArg().getClass());
-            wrapper.setEntries(((OpenEngSBModel) message.getResult().getArg()).getOpenEngSBModelEntries());
+            OpenEngSBModel model = (OpenEngSBModel) message.getResult().getArg();
+            OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
             message.getResult().setArg(wrapper);
         }
         return message;
