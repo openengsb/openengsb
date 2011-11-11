@@ -87,8 +87,9 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
             handleRemoveEntry((String) args[0]);
             return null;
         } else {
-            LOGGER.error("EKBProxyHandler is only able to handle getters and setters");
-            throw new IllegalArgumentException("EKBProxyHandler is only able to handle getters and setters");
+            LOGGER.error("{} is only able to handle getters and setters", this.getClass().getSimpleName());
+            throw new IllegalArgumentException(this.getClass().getSimpleName()
+                    + " is only able to handle getters and setters");
         }
     }
 
