@@ -30,12 +30,29 @@ import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 
 /**
- * This factory wraps an existing {@link RequestHandler} to a secure one to be used as final element in a
+ * /** This factory wraps an existing {@link RequestHandler} to a secure one to be used as final element in a
  * {@link org.openengsb.core.common.remote.FilterChain}.
- *
+ * 
  * The resulting FilterAction takes care of message verification and authentication.
- *
+ * 
+ * DEPRECATED: use manual configuration instead.
+ * 
+ * This code replaces this class in a blueprint definition:
+ * 
+ * <pre>
+ * {@code
+ * <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+ * <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
+ *   <property name="authenticationManager" ref="authenticationManager" />
+ * </bean>
+ * <value>org.openengsb.core.security.filter.WrapperFilter</value>
+ * <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+ *   <property name="requestHandler" ref="requestHandler" />
+ * </bean>}
+ * </pre>
  */
+
+@Deprecated
 public class DefaultSecureMethodCallFilterFactory {
 
     private AuthenticationManager authenticationManager;
