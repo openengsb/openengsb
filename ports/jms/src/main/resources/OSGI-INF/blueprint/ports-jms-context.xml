@@ -89,6 +89,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
@@ -105,6 +106,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
