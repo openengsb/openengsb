@@ -35,6 +35,8 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Constants;
@@ -66,6 +68,11 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
 
         @Override
         public AliveState getAliveState() {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        @Override
+        public ExampleResponseModel doSomething(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
 
