@@ -19,10 +19,13 @@ package org.openengsb.connector.example.internal;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.event.LogEvent.LogLevel;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +95,13 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     @Override
     public String doSomethingWithLogEvent(LogEvent event) {
         return "Called: " + event.getMessage() + " " + event.getLevel();
+    }
+
+    @Override
+    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        LOGGER.info("received model with the id \"{}\" and name \"{}\"", model.getId(), model.getName());
+        ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        return response;
     }
 
 }
