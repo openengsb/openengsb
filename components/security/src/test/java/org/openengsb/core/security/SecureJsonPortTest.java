@@ -77,7 +77,7 @@ public class SecureJsonPortTest extends GenericSecurePortTest<String> {
                 EncryptedJsonMessageMarshaller.class,
                 new MessageCryptoFilterFactory(privateKeySource, "AES"),
                 JsonSecureRequestMarshallerFilter.class,
-                defaultSecureMethodCallFilterFactory.create());
+                filterTop.create());
         factory.setFilters(asList);
         return factory.create();
     }

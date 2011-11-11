@@ -113,9 +113,7 @@ public class SecureJavaSerializePortTest extends GenericSecurePortTest<byte[]> {
         };
 
         FilterChainFactory<byte[], byte[]> factory = new FilterChainFactory<byte[], byte[]>(byte[].class, byte[].class);
-        List<Object> asList =
-            Arrays.asList(unpackerFactory, decrypterFactory, parserFactory,
-                defaultSecureMethodCallFilterFactory.create());
+        List<Object> asList = Arrays.asList(unpackerFactory, decrypterFactory, parserFactory, filterTop.create());
         factory.setFilters(asList);
         return factory.create();
     }

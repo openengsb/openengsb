@@ -31,6 +31,8 @@ import java.security.PublicKey;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 
@@ -60,9 +62,13 @@ import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.remote.FilterChainFactory;
+import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
+import org.openengsb.core.security.filter.MessageAuthenticatorFactory;
+import org.openengsb.core.security.filter.MessageVerifierFilter;
+import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.security.internal.FileKeySource;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -93,7 +99,8 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
     protected RequestHandler requestHandler;
     protected PublicKey serverPublicKey;
     protected AuthenticationDomain authManager;
-    protected DefaultSecureMethodCallFilterFactory defaultSecureMethodCallFilterFactory;
+
+    protected FilterChainFactory<SecureRequest, SecureResponse> filterTop;
 
     @Before
     public void setupInfrastructure() throws Exception {
@@ -112,9 +119,21 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
                 return new MethodResult(call.getArgs()[0], call.getMetaData());
             }
         });
-        defaultSecureMethodCallFilterFactory = new DefaultSecureMethodCallFilterFactory();
-        defaultSecureMethodCallFilterFactory.setAuthenticationManager(authManager);
-        defaultSecureMethodCallFilterFactory.setRequestHandler(requestHandler);
+
+        MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();
+        authenticatorFactory.setAuthenticationManager(authManager);
+
+        FilterChainFactory<SecureRequest, SecureResponse> factory =
+            new FilterChainFactory<SecureRequest, SecureResponse>(SecureRequest.class, SecureResponse.class);
+        List<Object> filterFactories = new LinkedList<Object>();
+        filterFactories.add(MessageVerifierFilter.class);
+        filterFactories.add(authenticatorFactory);
+        filterFactories.add(WrapperFilter.class);
+        filterFactories.add(new RequestMapperFilter(requestHandler));
+        factory.setFilters(filterFactories);
+        factory.create();
+
+        filterTop = factory;
 
         secureRequestHandler = getSecureRequestHandlerFilterChain();
 

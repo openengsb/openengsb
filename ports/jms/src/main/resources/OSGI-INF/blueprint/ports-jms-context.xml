@@ -73,7 +73,12 @@
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
       </list>
     </property>
   </bean>
@@ -84,13 +89,16 @@
     <property name="filters">
       <list>
         <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
-        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
       </list>
     </property>
   </bean>
 
-  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
-    <property name="requestHandler" ref="requestHandler" />
+  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
     <property name="authenticationManager" ref="authenticator" />
   </bean>
 
