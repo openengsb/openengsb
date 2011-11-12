@@ -422,21 +422,6 @@
         <version>${aspectj.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>${spring.security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-config</artifactId>
-        <version>${spring.security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
-        <version>${spring.security.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
         <version>${xstream.version}</version>
@@ -630,11 +615,6 @@
         <artifactId>wicket</artifactId>
         <version>${wicket.version}</version>
         <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>com.springsource.org.aspectj.weaver</artifactId>
-        <version>${aspectj.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.wicket</groupId>
