@@ -27,7 +27,7 @@ import org.springframework.jms.core.JmsTemplate;
 
 public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
 
-    private static final int TIMEOUT = 3000;
+    private int timeout;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSOutgoingPort.class);
 
@@ -48,9 +48,9 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
             LOGGER.debug("no answer expected, just returning null");
             return null;
         }
-        LOGGER.info("waiting {}ms for response on call with id {}", TIMEOUT, callId);
+        LOGGER.info("waiting {}ms for response on call with id {}", timeout, callId);
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.setReceiveTimeout(TIMEOUT);
+        createJMSTemplate.setReceiveTimeout(timeout);
         Object receiveAndConvert = createJMSTemplate.receiveAndConvert(callId);
         if (receiveAndConvert == null) {
             throw new RuntimeException("JMS Receive Timeout reached");
@@ -71,4 +71,9 @@ public class JMSOutgoingPort extends AbstractFilterAction<String, String> {
     public void setFactory(JMSTemplateFactory factory) {
         this.factory = factory;
     }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
 }
