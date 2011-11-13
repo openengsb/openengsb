@@ -74,7 +74,7 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
+        <ref component-id="authenticationFilterFactory" />  
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
@@ -89,6 +89,7 @@
     <property name="filters">
       <list>
         <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
