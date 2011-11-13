@@ -68,7 +68,8 @@ public class EKBProxyOutgoingFilter extends
 
         MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
 
-        if (message.getResult().getArg().getClass().equals(OpenEngSBModelWrapper.class)) {
+        if (message.getResult().getArg() != null 
+                && message.getResult().getArg().getClass().equals(OpenEngSBModelWrapper.class)) {
             OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) message.getResult().getArg();
             Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
             message.getResult().setArg(modelObject);
