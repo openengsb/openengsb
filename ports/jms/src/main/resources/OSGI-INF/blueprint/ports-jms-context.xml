@@ -18,8 +18,18 @@
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-  xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+  xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" >
+
+  <!-- Allows us to use system properties as variables in this configuration file -->
+  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
+
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.ports.jms">
+    <cm:default-properties>
+      <cm:property name="timeForResponse" value="3000" />
+    </cm:default-properties>
+  </cm:property-placeholder>
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
@@ -44,6 +54,7 @@
           <property name="factory">
             <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
           </property>
+          <property name="timeout" value="${timeForResponse}" />
         </bean>
       </list>
     </property>
@@ -74,7 +85,7 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />  
+        <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
