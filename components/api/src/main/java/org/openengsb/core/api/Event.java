@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Event {
     private String name;
     private Long processId;
+    private String origin;
 
     public Event() {
     }
@@ -68,6 +69,14 @@ public class Event {
 
     public void setProcessId(Long processId) {
         this.processId = processId;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     @Override
