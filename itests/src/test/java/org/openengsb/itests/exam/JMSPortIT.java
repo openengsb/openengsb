@@ -26,8 +26,6 @@ import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -207,18 +205,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         call.setMetaData(metadata);
 
-        File f = new File("/home/felix/Desktop/try.txt");
-        if (f.exists()) {
-            f.delete();
-        }
-        FileWriter writer = new FileWriter(f);
-        writer.write("method call: \n");
-
         String jsonCall = mapper.writeValueAsString(call);
 
-        writer.write(jsonCall + "\n");
-        System.out.println(jsonCall);
-        writer.write("response: \n");
+        LOGGER.debug(jsonCall);
 
         JmsTemplate template = prepareActiveMqConnection();
         String secureRequest = prepareRequest(jsonCall, "admin", "password");
@@ -227,8 +216,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         String result = sendMessage(template, encryptedMessage);
         String decryptedResult = decryptResult(sessionKey, result);
-        writer.write(decryptedResult);
-        writer.close();
+        
+        assertThat(decryptedResult.contains("successful"), is(true));
     }
 
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
