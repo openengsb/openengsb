@@ -27,6 +27,8 @@ import org.openengsb.core.api.remote.FilterException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.common.util.ModelUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This filter takes a {@link MethodCallRequest} and checks if any parameter is type of OpenEngSBModel. If so, it
@@ -45,7 +47,8 @@ import org.openengsb.core.common.util.ModelUtils;
  */
 public class EKBProxyOutgoingFilter extends
         AbstractFilterChainElement<MethodCallRequest, MethodResultMessage> {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyOutgoingFilter.class);    
+    
     private FilterAction next;
 
     public EKBProxyOutgoingFilter() {
@@ -54,26 +57,34 @@ public class EKBProxyOutgoingFilter extends
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
+        LOGGER.debug("entered EKBProxyOutgoingFilter");
         Object[] parameters = input.getMethodCall().getArgs();
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
                 if (OpenEngSBModel.class.isAssignableFrom(parameters[i].getClass())) {
+                    LOGGER.debug("try to generate wrapper from model");
                     OpenEngSBModel model = (OpenEngSBModel) parameters[i];
                     OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
                     parameters[i] = wrapper;
+                    LOGGER.debug("successfully generated wrapper");
                 }
             }
             input.getMethodCall().setArgs(parameters);
         }
 
+        LOGGER.debug("forward to next filter");
         MethodResultMessage message = (MethodResultMessage) next.filter(input, metadata);
 
+        LOGGER.debug("receiving answer from next filter");
         if (message.getResult().getArg() != null 
                 && message.getResult().getArg().getClass().equals(OpenEngSBModelWrapper.class)) {
+            LOGGER.debug("try to generate model out of wrapper");
             OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) message.getResult().getArg();
             Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
+            LOGGER.debug("successfully generated model");
             message.getResult().setArg(modelObject);
         }
+        LOGGER.debug("leaving EKBProxyIncomingFilter");
         return message;
     }
 
