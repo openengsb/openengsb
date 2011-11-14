@@ -26,6 +26,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -43,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.workflow.RuleBaseException;
@@ -50,6 +52,7 @@ import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
 
@@ -389,6 +392,25 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testAddElementToDifferentPackage_shouldNotAddOpenEngSBFlows() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "org.test", "testrule"), "when\nthen\n");
         // Drools throws Exceptions when a flow does not belong to the package
+    }
+
+    @Test
+    public void testResponseRule() throws Exception {
+        NullDomain nullDomainImpl = mock(NullDomain.class);
+        registerServiceViaId(nullDomainImpl, "test-connector", NullDomain.class, Domain.class);
+
+        manager.addImport(NullDomain.class.getName());
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
+                + "when\n"
+                + "   e : Event()\n"
+                + "then\n"
+                + "   NullDomain origin = (NullDomain) OsgiHelper.getResponseProxy(e, NullDomain.class);"
+                + "   origin.nullMethod(42);");
+
+        Event event = new Event();
+        event.setOrigin("test-connector");
+        service.processEvent(event);
+        verify(nullDomainImpl).nullMethod(42);
     }
 
 }
