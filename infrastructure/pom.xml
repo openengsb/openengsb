@@ -58,6 +58,7 @@
   <modules>
     <module>jms</module>
     <module>jpa</module>
+    <module>ldap</module>
   </modules>
 
 </project>
