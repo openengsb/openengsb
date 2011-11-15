@@ -84,7 +84,7 @@ public final class ModelUtils {
         return null;
     }
 
-    private static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {
+    public static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {
         Class<?> result = null;
         for (Class<?> inter : clazz.getInterfaces()) {
             if (OpenEngSBModel.class.isAssignableFrom(inter) && !inter.equals(OpenEngSBModel.class)) {

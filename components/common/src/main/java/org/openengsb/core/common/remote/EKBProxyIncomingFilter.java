@@ -63,9 +63,7 @@ public class EKBProxyIncomingFilter extends
         LOGGER.debug("entered EKBProxyIncomingFilter");
         if (parameters != null) {
             List<String> classes = input.getMethodCall().getClasses();
-            if (classes == null) {
-                classes = new ArrayList<String>();
-            }
+            List<String> newClasses = new ArrayList<String>();
 
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i].getClass().equals(OpenEngSBModelWrapper.class)) {
@@ -74,17 +72,17 @@ public class EKBProxyIncomingFilter extends
                     Object model = ModelUtils.generateModelOutOfWrapper(wrapper);
                     LOGGER.debug("successfully generated model");
                     parameters[i] = model;
-
-                    int index = classes.indexOf(OpenEngSBModelWrapper.class.getName());
-                    if (index != -1) {
-                        classes.remove(index);
-                        classes.add(index, wrapper.getModelClass());
+                    newClasses.add(wrapper.getModelClass());
+                } else {
+                    if (classes != null && classes.size() >= (i + 1)) {
+                        newClasses.add(classes.get(i));
                     } else {
-                        classes.add(wrapper.getModelClass());
+                        newClasses.add(parameters[i].getClass().getName());
                     }
                 }
             }
             input.getMethodCall().setArgs(parameters);
+            input.getMethodCall().setClasses(newClasses);
         }
 
         LOGGER.debug("forward to next filter");
@@ -96,7 +94,7 @@ public class EKBProxyIncomingFilter extends
             LOGGER.debug("try to generate wrapper from model");
             OpenEngSBModel model = (OpenEngSBModel) message.getResult().getArg();
             OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
-            
+
             message.getResult().setArg(wrapper);
             message.getResult().setClassName(OpenEngSBModelWrapper.class.getName());
             LOGGER.debug("successfully generated wrapper");
