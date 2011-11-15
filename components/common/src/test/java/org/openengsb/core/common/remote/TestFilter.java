@@ -83,7 +83,7 @@ public class TestFilter implements FilterAction {
     private MethodResultMessage createOutputForOutgoing2(MethodCallRequest request) {
         MethodResultMessage message = new MethodResultMessage();
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
-        wrapper.setModelClass(TestModel.class);
+        wrapper.setModelClass(TestModel.class.getName());
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         entries.add(new OpenEngSBModelEntry("id", 100, Integer.class));
         entries.add(new OpenEngSBModelEntry("name", "test", String.class));

@@ -67,13 +67,21 @@ public final class ModelUtils {
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
         Class<?> clazz = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
         wrapper.setEntries(model.getOpenEngSBModelEntries());
-        wrapper.setModelClass(clazz);
+        wrapper.setModelClass(clazz.getName());
         return wrapper;
     }
     
     public static Object generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper) {
         OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
-        return ModelUtils.createModelObject(wrapper.getModelClass(), entries);
+        Class<?> clazz;
+        try {
+            clazz = ModelUtils.class.getClassLoader().loadClass(wrapper.getModelClass());
+            return ModelUtils.createModelObject(clazz, entries);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {

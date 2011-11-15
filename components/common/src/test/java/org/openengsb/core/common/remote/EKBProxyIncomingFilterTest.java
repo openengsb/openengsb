@@ -50,7 +50,7 @@ public class EKBProxyIncomingFilterTest {
         entries.add(new OpenEngSBModelEntry("id", 50, Integer.class));
         entries.add(new OpenEngSBModelEntry("name", "test", String.class));
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
-        wrapper.setModelClass(TestModel.class);
+        wrapper.setModelClass(TestModel.class.getName());
         wrapper.setEntries(entries);
 
         MethodCallRequest request = new MethodCallRequest();
@@ -101,7 +101,7 @@ public class EKBProxyIncomingFilterTest {
         entries.add(new OpenEngSBModelEntry("id", 50, Integer.class));
         entries.add(new OpenEngSBModelEntry("name", "test", String.class));
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
-        wrapper.setModelClass(TestModel.class);
+        wrapper.setModelClass(TestModel.class.getName());
         wrapper.setEntries(entries);
 
         MethodCallRequest request = new MethodCallRequest();
@@ -128,7 +128,7 @@ public class EKBProxyIncomingFilterTest {
         }
 
         // values get changed in the TestFilter class
-        assertThat(TestModel.class.isAssignableFrom(wrapper.getModelClass()), is(true));
+        assertThat(wrapper.getModelClass(), is(TestModel.class.getName()));
         assertThat(id, is(60));
         assertThat(name, is("teststring"));
     }
