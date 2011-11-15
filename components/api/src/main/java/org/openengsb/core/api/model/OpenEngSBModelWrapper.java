@@ -23,13 +23,13 @@ import java.util.List;
  * The OpenEngSBModelWrapper class is needed for the proper sending of OpenEngSBModels (with Jason). 
  */
 public class OpenEngSBModelWrapper {
-    private Class<?> modelClass;
+    private String modelClass;
     private List<OpenEngSBModelEntry> entries;
     
-    public Class<?> getModelClass() {
+    public String getModelClass() {
         return modelClass;
     }
-    public void setModelClass(Class<?> modelClass) {
+    public void setModelClass(String modelClass) {
         this.modelClass = modelClass;
     }
     public List<OpenEngSBModelEntry> getEntries() {
