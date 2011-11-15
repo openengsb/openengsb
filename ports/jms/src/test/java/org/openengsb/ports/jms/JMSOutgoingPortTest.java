@@ -40,13 +40,16 @@ import org.mockito.Mockito;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.OutgoingPortImpl;
 import org.openengsb.core.common.remote.FilterChainFactory;
-import org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter;
+import org.openengsb.core.security.filter.OutgoingWrapperFilter;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
@@ -56,14 +59,20 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
     private static final String METHOD_RESULT_MESSAGE = ""
             + "{"
-            + "  \"result\":{"
-            + "    \"type\":\"Object\","
-            + "    \"className\":\"org.openengsb.ports.jms.TestClass\","
-            + "    \"metaData\":{\"test\":\"test\"},"
-            + "    \"arg\":{\"test\":\"test\"}"
-            + "  },"
-            + "  \"callId\":\"12345\""
-            + "}";
+            + "   \"message\":{"
+            + "      \"result\":{"
+            + "         \"type\":\"Object\","
+            + "         \"className\":\"java.lang.String\","
+            + "         \"arg\":\"42\","
+            + "         \"metaData\":{"
+            + ""
+            + "         }"
+            + "      },"
+            + "      \"callId\":\"12345\""
+            + "   },"
+            + "   \"timestamp\":1321314411697"
+            + "}"
+            + "";
 
     private MethodCallRequest call;
     private JmsTemplate jmsTemplate;
@@ -76,7 +85,13 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
     private OutgoingPort outgoingPort;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        MethodResult methodResult = new MethodResult("42");
+        MethodResultMessage methodResultMessage = new MethodResultMessage(methodResult, "12345");
+        String writeValueAsString = new ObjectMapper().writeValueAsString(SecureResponse.create(methodResultMessage));
+
+        System.out.println(writeValueAsString);
+
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
         Mockito.when(jmsTemplateFactory.createJMSTemplate(any(DestinationUrl.class))).thenReturn(jmsTemplate);
@@ -99,7 +114,8 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         FilterChainFactory<MethodCallRequest, MethodResultMessage> factory =
             new FilterChainFactory<MethodCallRequest, MethodResultMessage>(MethodCallRequest.class,
                 MethodResultMessage.class);
-        factory.setFilters(Arrays.asList(JsonOutgoingMethodCallMarshalFilter.class, jmsOutgoingPort));
+        factory.setFilters(Arrays.asList(OutgoingWrapperFilter.class, OutgoingJsonSecureMethodCallMarshalFilter.class,
+            jmsOutgoingPort));
 
         OutgoingPortImpl outgoingPort = new OutgoingPortImpl();
         outgoingPort.setFilterChain(factory.create());
@@ -114,7 +130,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         Mockito.verify(jmsTemplate).convertAndSend(captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
         JsonNode requestMessage = new ObjectMapper().readTree(captor.getValue());
-        JsonNode readTree = requestMessage.get("methodCall");
+        JsonNode readTree = requestMessage.get("message").get("methodCall");
 
         assertThat(readTree.get("classes").toString(), Matchers.equalTo("[\"java.lang.String\","
                 + "\"java.lang.Integer\"," + "\"org.openengsb.ports.jms.TestClass\"]"));
@@ -132,8 +148,8 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
         Mockito.verify(jmsTemplate).convertAndSend(sendIdCaptor.capture());
 
         String destination =
-            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
-                .getValueAsText();
+            new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("message")
+                .get("callId").getValueAsText();
         assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
     }
 
