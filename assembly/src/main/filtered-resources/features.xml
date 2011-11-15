@@ -35,9 +35,17 @@
       backend.id=persistenceService
       configuration.id=RULE
     </config>
-    <config name="org.openengsb.persistence.config-flow">
-      backend.id=persistenceService
-      configuration.id=FLOW
+	<config name="org.openengsb.persistence.config-rulebase">
+      backend.id=rule-persistence
+      configuration.id=RULEBASE
+    </config>
+	<config name="org.openengsb.persistence.config-global">
+      backend.id=global-persistence
+      configuration.id=GLOBAL
+    </config>
+	<config name="org.openengsb.persistence.config-import">
+      backend.id=import-persistence
+      configuration.id=IMPORT
     </config>
     <config name="org.openengsb.persistence.config-connector">
       backend.id=persistenceService

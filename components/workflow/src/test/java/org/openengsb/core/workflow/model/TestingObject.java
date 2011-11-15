@@ -15,27 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.model;
+package org.openengsb.core.workflow.model;
 
-import java.util.Map;
+public class TestingObject {
+    private String value;
 
-import javax.xml.bind.annotation.XmlRootElement;
+    public TestingObject() {
+    }
 
-/**
- * General model describing the configuration required for flow.
- */
-// TODO: [OPENENGSB-1253] Design Flow Configuration object
-@XmlRootElement
-public class FlowConfiguration extends ConfigItem<String> {
-
-    public static final String TYPE_ID = "FLOW";
-
-    public FlowConfiguration() {
+    public TestingObject(String value) {
         super();
+        this.value = value;
     }
 
-    public FlowConfiguration(Map<String, String> metaData, String ruleContent) {
-        super(metaData, ruleContent);
+    public String getValue() {
+        return this.value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("TestObject: \"%s\"", value);
+    }
 }

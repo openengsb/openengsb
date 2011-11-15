@@ -17,7 +17,13 @@
 
 package org.openengsb.core.workflow.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GlobalDeclaration {
+
+    public static final String META_GLOBAL_VARIABLE = "variable";
+
     private String className;
     private String variableName;
 
@@ -49,4 +55,11 @@ public class GlobalDeclaration {
         this.variableName = variableName;
     }
 
+    public Map<String, String> toMetadata() {
+        Map<String, String> ret = new HashMap<String, String>();
+        if (this.getVariableName() != null) {
+            ret.put(META_GLOBAL_VARIABLE, this.getVariableName());
+        }
+        return ret;
+    }
 }
