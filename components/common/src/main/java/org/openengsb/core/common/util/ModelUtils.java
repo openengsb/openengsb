@@ -35,18 +35,28 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+/**
+ * This static util class contains all necessary functions to deal with OpenEngSBModels (creating, converting).
+ */
 public final class ModelUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelUtils.class);
 
     private ModelUtils() {
     }
 
+    /**
+     * Creates a proxy for the model interface which simulates an implementation of the interface.
+     */
     @SuppressWarnings("unchecked")
     public static <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
         return (T) createModelObject(model, entries);
     }
 
+    /**
+     * Creates a proxy for the model interface which simulates an implementation of the interface. Only useable with
+     * OpenEngSBModel interfaces. If the model parameter is not an OpenEngSBModel interface, an exception is thrown.
+     */
     public static Object createModelObject(Class<?> model, OpenEngSBModelEntry... entries) {
         if (!OpenEngSBModel.class.isAssignableFrom(model)) {
             throw new IllegalArgumentException("OpenEngSBModel has to be deriveable from model parameter");
@@ -63,6 +73,10 @@ public final class ModelUtils {
         return handler;
     }
     
+    /**
+     * Generates an OpenEngSBModelWrapper out of a model. This construct is needed so that the sending of
+     * OpenEngSBModels over remote can work properly
+     */
     public static OpenEngSBModelWrapper generateWrapperOutOfModel(OpenEngSBModel model) {
         OpenEngSBModelWrapper wrapper = new OpenEngSBModelWrapper();
         Class<?> clazz = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
@@ -71,6 +85,28 @@ public final class ModelUtils {
         return wrapper;
     }
     
+    /**
+     * Tries to generate a model of the given class out of a wrapper. If something went wrong (e.g. the model contained
+     * in the wrapper is not of the class which is given as parameter) an illegal argument exception is thrown.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends OpenEngSBModel> T generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper,
+            Class<T> clazz) {
+        Object modelObject = ModelUtils.generateModelOutOfWrapper(wrapper);
+        if (modelObject != null) {
+            try {
+                return (T) modelObject;
+            } catch (ClassCastException ex) {
+                throw new IllegalArgumentException("Wrapper doesn't contain a model of class" + clazz.getName(), ex);
+            }
+        }
+        throw new IllegalArgumentException("Wrapper doesn't contain a model of class" + clazz.getName());
+    }
+    
+    /**
+     * Tries to generate a model out of an OpenEngSB model wrapper. Without casting, only generating. If the model class
+     * can't be found, an illegal argument exception is thrown.
+     */
     public static Object generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper) {
         OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
         Class<?> clazz;
@@ -84,6 +120,10 @@ public final class ModelUtils {
         return null;
     }
 
+    /**
+     * Returns the real model class of a model (instead of "$ProxyX"). If the given class is not a model, an illegal
+     * argument exception is thrown.
+     */
     public static Class<?> getModelClassOfOpenEngSBModelObject(Class<?> clazz) {
         Class<?> result = null;
         for (Class<?> inter : clazz.getInterfaces()) {
@@ -98,6 +138,9 @@ public final class ModelUtils {
         return result;
     }
 
+    /**
+     * Returns all property descriptors for a given class.
+     */
     public static List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
         List<PropertyDescriptor> properties = Lists.newArrayList();
         try {
@@ -111,6 +154,9 @@ public final class ModelUtils {
         return properties;
     }
 
+    /**
+     * Tries to invoke a setter method of a given instance, with the given parameter object.
+     */
     public static void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
         try {
             setterMethod.invoke(instance, parameter);
@@ -126,6 +172,9 @@ public final class ModelUtils {
         }
     }
 
+    /**
+     * Tries to invoke a getter method of the given instance.
+     */
     public static Object invokeGetterMethod(Method getterMethod, Object instance) {
         try {
             return getterMethod.invoke(instance);
@@ -142,6 +191,9 @@ public final class ModelUtils {
         return null;
     }
 
+    /**
+     * Converts the property name out of a method(e.g. getId -> id).
+     */
     public static String getPropertyName(Method propertyMethod) {
         String propertyName = propertyMethod.getName().substring(3);
         char firstChar = propertyName.charAt(0);
