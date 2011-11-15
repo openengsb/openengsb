@@ -113,11 +113,9 @@ public final class ModelUtils {
         try {
             clazz = ModelUtils.class.getClassLoader().loadClass(wrapper.getModelClass());
             return ModelUtils.createModelObject(clazz, entries);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalArgumentException("The class of the model can't be found", ex);
         }
-        return null;
     }
 
     /**
