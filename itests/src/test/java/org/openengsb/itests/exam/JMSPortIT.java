@@ -17,7 +17,9 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -37,6 +39,8 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
@@ -131,6 +135,35 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         assertThat(decryptedResult, containsString("\"type\":\"Void\""));
         assertThat(decryptedResult, not(containsString("Exception")));
+    }
+
+    @Test
+    public void testStartAndStopRemoteConnector_shouldRegisterAndUnregisterProxy() throws Exception {
+        // make sure security-stuff is off
+        System.setProperty("org.openengsb.jms.noencrypt", "true");
+        System.setProperty("org.openengsb.security.noverify", "true");
+
+        // make sure jms is up and running
+        OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+
+        SecureSampleConnector remoteConnector = new SecureSampleConnector();
+        remoteConnector.start();
+        ExampleDomain osgiService =
+            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+        assertThat(osgiService, not(nullValue()));
+
+        remoteConnector.getInvocationHistory().clear();
+        osgiService.doSomething("test");
+        assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
+
+        remoteConnector.stop();
+        Thread.sleep(5000);
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+
     }
 
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
