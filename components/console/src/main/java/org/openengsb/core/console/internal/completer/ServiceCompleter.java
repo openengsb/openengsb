@@ -1,18 +1,16 @@
 package org.openengsb.core.console.internal.completer;
 
-import com.google.common.base.Strings;
-import org.apache.karaf.shell.console.Completer;
-import org.apache.karaf.shell.console.completer.StringsCompleter;
-import org.openengsb.core.console.internal.ServiceCommands;
-import org.openengsb.core.console.internal.util.ServiceCommandArguments;
-import org.openengsb.core.console.internal.util.ServicesHelper;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
 
 import java.util.List;
 
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
+import org.apache.karaf.shell.console.Completer;
+import org.apache.karaf.shell.console.completer.StringsCompleter;
+import org.openengsb.core.console.internal.util.ServiceCommandArguments;
+import org.openengsb.core.console.internal.util.ServicesHelper;
 
 /**
  *
@@ -48,6 +46,8 @@ public class ServiceCompleter implements Completer {
                         // TODO
                         break;
                     case DELETE:
+                        break;
+                    default:
                         break;
                 }
             } catch (IllegalArgumentException ex) {

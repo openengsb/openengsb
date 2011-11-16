@@ -17,6 +17,10 @@
 
 package org.openengsb.core.console.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.service.command.CommandProcessor;
@@ -27,10 +31,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
 import org.osgi.framework.ServiceReference;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
@@ -65,11 +65,10 @@ public class ServiceCommands extends OsgiCommandSupport {
             ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
             switch (arguments) {
                 case LIST:
-                    serviceHelper.listCreatableServices();
+                    serviceHelper.listService();
                     break;
                 case CREATE:
-                    //TODO implement one line create
-                    serviceHelper.createService(keyboard);
+                    //TODO
                     break;
                 case UPDATE:
                     //TODO

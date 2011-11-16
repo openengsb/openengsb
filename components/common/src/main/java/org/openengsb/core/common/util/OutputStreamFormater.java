@@ -42,6 +42,10 @@ public final class OutputStreamFormater {
         outputStream.println(formatValues(pref, name, value));
     }
 
+    public static void printTabbedValues(int spaces, String name, String value) {
+        outputStream.println(formatValues(spaces, name, value));
+    }
+
     public static String formatValues(String name, String value) {
         return Ansi.ansi().a("  ").a(Ansi.Attribute.INTENSITY_BOLD).a(name)
                 .a(spaces(padding - name.length())).a(Ansi.Attribute.RESET).a("   ").a(value).toString();
@@ -63,6 +67,11 @@ public final class OutputStreamFormater {
 
     public static void printValue(String value) {
         outputStream.println(value);
+    }
+
+    public static String formatValues(int spaces, String id, String status) {
+        return Ansi.ansi().a(spaces(spaces)).a(Ansi.Attribute.INTENSITY_BOLD).a(id)
+                .a(spaces(padding - id.length())).a(Ansi.Attribute.RESET).a("   ").a(status).toString();
     }
 
     public static void setOutputStream(PrintStream outputStream) {
