@@ -30,8 +30,8 @@ import org.openengsb.core.common.remote.AbstractFilterChainElement;
 /**
  * extracts the original {@link org.openengsb.core.api.remote.MethodCallRequest} from a {@link SecureRequest} and
  * invokes the next filter. The resulting {@link MethodResultMessage} is then wrapped into a {@link SecureResponse}
- * 
- * 
+ *
+ *
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [MethodCallRequest]     > ...
@@ -51,7 +51,7 @@ public class OutgoingWrapperFilter extends AbstractFilterChainElement<MethodCall
 
     @Override
     protected MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metaData) {
-        SecureRequest request = SecureRequest.create(input, null);
+        SecureRequest request = SecureRequest.create(input, null, null);
         SecureResponse resultMessage = (SecureResponse) next.filter(request, metaData);
         if (resultMessage == null) {
             return null;
