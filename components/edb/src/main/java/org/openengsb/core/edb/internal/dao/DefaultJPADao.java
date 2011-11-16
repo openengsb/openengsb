@@ -393,7 +393,8 @@ public class DefaultJPADao implements JPADao {
             query.select(maxExpression);
             Predicate p1 = criteriaBuilder.equal(f.get("oid"), tempOid);
             Predicate p2 = criteriaBuilder.gt(f.get("timestamp"), tempTime);
-            query.where(criteriaBuilder.and(p1, p2));
+            Predicate p3 = criteriaBuilder.le(f.get("timestamp"), timestamp);
+            query.where(criteriaBuilder.and(p1, p2, p3));
 
             TypedQuery<Long> r = entityManager.createQuery(query);
             Long l = r.getSingleResult();
