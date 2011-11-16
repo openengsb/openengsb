@@ -56,5 +56,11 @@ public interface QueryInterface {
      * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a
      * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
      */
+    <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp);
+    
+    /**
+     * Queries for models which have all key/value pairs given in the map saved in the OpenEngSBModelEntries for a
+     * given timestamp ("cut" at the timestamp and get all elements where the pairs fit)
+     */
     <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap, Long timestamp);
 }
