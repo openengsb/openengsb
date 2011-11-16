@@ -27,24 +27,16 @@ import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.e
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-<<<<<<< HEAD
-=======
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
->>>>>>> f081590... [OPENENGSB-2260] first try of an ITest for the new filters in the JMSPortIT
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.OpenEngSBModelWrapper;
-import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
@@ -174,29 +166,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
-        ObjectMapper mapper = new ObjectMapper();
-        
-        ExampleRequestModel model = ModelUtils.createEmptyModelObject(ExampleRequestModel.class);
-        model.setId(10);
-        model.setName("test");
-        OpenEngSBModelWrapper wrapper = ModelUtils.generateWrapperOutOfModel(model);
-
-        MethodCall call = new MethodCall();
-        call.setClasses(Arrays.asList(OpenEngSBModelWrapper.class.getName()));
-        call.setMethodName("doSomething");
-        call.setArgs(new Object[]{ wrapper });
-        Map<String, String> metadata = new HashMap<String, String>();
-
-        metadata.put("serviceId", "test");
-
-        call.setMetaData(metadata);
-
-        String jsonCall = mapper.writeValueAsString(call);
-
-        LOGGER.debug(jsonCall);
-
         JmsTemplate template = prepareActiveMqConnection();
-        String secureRequest = prepareRequest(jsonCall, "admin", "password");
+        String secureRequest = prepareRequest(METHOD_CALL_WITH_MODEL_PARAMETER, "admin", "password");
         SecretKey sessionKey = generateSessionKey();
         String encryptedMessage = encryptMessage(secureRequest, sessionKey);
 
