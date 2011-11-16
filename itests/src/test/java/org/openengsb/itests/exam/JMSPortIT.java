@@ -32,16 +32,21 @@ import java.util.Hashtable;
 import javax.crypto.SecretKey;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
@@ -189,17 +194,17 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         String result = sendMessage(template, encryptedMessage);
         String decryptedResult = decryptResult(sessionKey, result);
+
+        ObjectMapper mapper = new ObjectMapper();
+        SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
+        MethodResultMessage methodResult = response.getMessage();
+        JsonUtils.convertResult(methodResult);
+        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
+        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
         
         assertThat(decryptedResult.contains("successful"), is(true));
-        
-//        ObjectMapper mapper = new ObjectMapper();
-//        // have to be done since there are ; where none should be!!!
-//        decryptedResult = decryptedResult.replaceAll(";", "");
-//        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
-//        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
-//        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
-//        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
-//        assertThat(model.getResult(), is("successful"));
+        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
+        assertThat(model.getResult(), is("successful"));
     }
 
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
