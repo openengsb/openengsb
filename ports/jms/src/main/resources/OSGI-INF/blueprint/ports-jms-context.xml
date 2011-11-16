@@ -74,9 +74,7 @@
     <property name="unsecureFilterChain">
       <bean factory-ref="unsecureIncomingFilterChainFactory" factory-method="create" />
     </property>
-    <property>
-        <bean name="receive" value="${defaultReceiveQueue}"></bean>
-    </property>
+    <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
