@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.reflect.MethodUtils;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.remote.CustomJsonMarshaller;
@@ -137,15 +139,17 @@ public class RequestHandlerImpl implements RequestHandler {
 
     private Method findMethod(Object service, String methodName, Class<?>[] argTypes) {
         Method method;
-        try {
-            Class<?> serviceClass = retrieveRealServiceClass(service);
-            if (serviceClass.isInstance(CustomMarshallerRealTypeAccess.class)) {
-                serviceClass = ((CustomMarshallerRealTypeAccess) service).getRealUnproxiedType();
-            }
-            method = serviceClass.getMethod(methodName, argTypes);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+
+        Class<?> serviceClass = retrieveRealServiceClass(service);
+        if (serviceClass.isInstance(CustomMarshallerRealTypeAccess.class)) {
+            serviceClass = ((CustomMarshallerRealTypeAccess) service).getRealUnproxiedType();
         }
+        method = MethodUtils.getMatchingAccessibleMethod(serviceClass, methodName, argTypes);
+        if (method == null) {
+            throw new IllegalArgumentException(String.format("could not find method matching arguments \"%s(%s)\"",
+                methodName, ArrayUtils.toString(argTypes)));
+        }
+
         return method;
     }
 
