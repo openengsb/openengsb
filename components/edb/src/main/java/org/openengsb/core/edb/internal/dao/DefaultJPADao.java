@@ -346,4 +346,27 @@ public class DefaultJPADao implements JPADao {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
+    @Override
+    public List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<JPAObject> query = criteriaBuilder.createQuery(JPAObject.class);
+        Root<JPAObject> from = query.from(JPAObject.class);
+
+        List<Predicate> predicates = new ArrayList<Predicate>();
+        for (Map.Entry<String, Object> value : values.entrySet()) {
+            Join<?, ?> join = from.join("entries");
+
+            Predicate predicate1 = criteriaBuilder.equal(join.get("key"), value.getKey());
+            Predicate predicate2 = criteriaBuilder.equal(join.get("value"), value.getValue());
+
+            predicates.add(criteriaBuilder.and(predicate1, predicate2));
+        }
+        
+        query.where(predicates.toArray(new Predicate[1]));
+        query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
+        TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
+        List<JPAObject> result = typedQuery.getResultList();
+        return result;
+    }
 }
