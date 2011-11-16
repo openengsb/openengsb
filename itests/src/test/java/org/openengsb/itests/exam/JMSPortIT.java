@@ -175,6 +175,15 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String decryptedResult = decryptResult(sessionKey, result);
         
         assertThat(decryptedResult.contains("successful"), is(true));
+        
+//        ObjectMapper mapper = new ObjectMapper();
+//        // have to be done since there are ; where none should be!!!
+//        decryptedResult = decryptedResult.replaceAll(";", "");
+//        MethodResultMessage methodResult = mapper.readValue(decryptedResult, MethodResultMessage.class);
+//        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
+//        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+//        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
+//        assertThat(model.getResult(), is("successful"));
     }
 
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
