@@ -320,6 +320,7 @@ public class DefaultJPADao implements JPADao {
         query.orderBy(criteriaBuilder.desc(from.get("timestamp")));
         TypedQuery<JPAObject> typedQuery = entityManager.createQuery(query);
         List<JPAObject> result = typedQuery.getResultList();
+        System.out.println(typedQuery.toString());
         return result;
     }
 
