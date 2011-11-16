@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the QueryInterface service. It's main responsibilities are the loading of
- * elements from the EDB and converting them to the correct format.
+ * Implementation of the QueryInterface service. It's main responsibilities are the loading of elements from the EDB and
+ * converting them to the correct format.
  */
 public class QueryInterfaceService implements QueryInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryInterfaceService.class);
-    
+
     private EngineeringDatabaseService edbService;
 
     private Object createNewInstance(Class<?> model) {
@@ -85,7 +86,7 @@ public class QueryInterfaceService implements QueryInterface {
             return instance;
         }
     }
-    
+
     private void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
         try {
             setterMethod.invoke(instance, parameter);
@@ -143,7 +144,7 @@ public class QueryInterfaceService implements QueryInterface {
             } else {
                 obj = object.get(propertyName + i);
             }
-            
+
             temp.add(obj);
         }
         return temp;
@@ -195,7 +196,7 @@ public class QueryInterfaceService implements QueryInterface {
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
         return convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
     }
-    
+
     @Override
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap,
             Long timestamp) {
@@ -204,5 +205,22 @@ public class QueryInterfaceService implements QueryInterface {
 
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
+    }
+
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+        Long time = Long.parseLong(timestamp);
+        Map<String, Object> map = generateMapOutOfString(query);
+        return convertEDBObjectsToModelObjects(model, edbService.query(map, time));
+    }
+
+    public Map<String, Object> generateMapOutOfString(String query) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String[] elements = query.split(" and ");
+        for (String element : elements) {
+            String[] parts = element.split(":");
+            map.put(parts[0], parts[1]);
+        }
+        return map;
     }
 }
