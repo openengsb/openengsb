@@ -5,6 +5,7 @@ import org.apache.karaf.shell.console.Completer;
 import org.apache.karaf.shell.console.completer.StringsCompleter;
 import org.openengsb.core.console.internal.ServiceCommands;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
+import org.openengsb.core.console.internal.util.ServicesHelper;
 
 import java.util.List;
 
@@ -18,6 +19,12 @@ import static org.openengsb.core.console.internal.util.ServiceCommandArguments.D
  */
 public class ServiceCompleter implements Completer {
 
+    private ServicesHelper servicesHelper;
+
+    public ServiceCompleter(ServicesHelper helper) {
+        this.servicesHelper = helper;
+    }
+
     /**
      * @param buffer     it's the beginning string typed by the user
      * @param cursor     it's the position of the cursor
@@ -26,28 +33,36 @@ public class ServiceCompleter implements Completer {
     public int complete(String buffer, int cursor, List<String> candidates) {
 
         StringsCompleter delegate = new StringsCompleter();
-        if (buffer != null) {
-            ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(buffer.toUpperCase());
-            switch (arguments) {
-                case LIST:
-                    return delegate.complete(buffer, cursor, candidates);
-                case CREATE:
-                    // TODO
-                    break;
-                case UPDATE:
-                    // TODO
-                    break;
-                case DELETE:
-                    break;
-            }
-
+        if (buffer == null) {
+            delegate = printStandardCommands(delegate);
         } else {
-            delegate.getStrings().add(LIST.toString().toLowerCase());
-            delegate.getStrings().add(CREATE.toString().toLowerCase());
-            delegate.getStrings().add(UPDATE.toString().toLowerCase());
-            delegate.getStrings().add(DELETE.toString().toLowerCase());
+            try {
+                ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(buffer.toUpperCase());
+                switch (arguments) {
+                    case LIST:
+                        return delegate.complete(buffer, cursor, candidates);
+                    case CREATE:
+                        // TODO
+                        break;
+                    case UPDATE:
+                        // TODO
+                        break;
+                    case DELETE:
+                        break;
+                }
+            } catch (IllegalArgumentException ex) {
+                delegate = printStandardCommands(delegate);
+            }
         }
         return delegate.complete(buffer, cursor, candidates);
+    }
+
+    private StringsCompleter printStandardCommands(StringsCompleter delegate) {
+        delegate.getStrings().add(LIST.toString().toLowerCase());
+        delegate.getStrings().add(CREATE.toString().toLowerCase());
+        delegate.getStrings().add(UPDATE.toString().toLowerCase());
+        delegate.getStrings().add(DELETE.toString().toLowerCase());
+        return delegate;
     }
 
 }

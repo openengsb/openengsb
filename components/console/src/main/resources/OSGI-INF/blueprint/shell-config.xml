@@ -18,7 +18,9 @@
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+  >
+
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
     <command name="openengsb/info">
@@ -32,13 +34,22 @@
       <action class="org.openengsb.core.console.DomainInfoCommand"/>
     </command>
     <command name="openengsb/service">
-      <action class="org.openengsb.core.console.internal.ServiceCommands"/>
+      <action class="org.openengsb.core.console.internal.ServiceCommands">
+         <property name="serviceHelper" ref="serviceHelper" />
+      </action>
       <completers>
-        <bean class="org.openengsb.core.console.internal.completer.ServiceCompleter" />
+        <ref component-id="sc"/>
       </completers>
     </command>
   </command-bundle>
 
+  <bean id="sc" class="org.openengsb.core.console.internal.completer.ServiceCompleter">
+    <argument index="0" type="org.openengsb.core.console.internal.util.ServicesHelper" ref="serviceHelper"/>
+  </bean>
+
+  <bean id="serviceHelper" class="org.openengsb.core.console.internal.util.ServicesHelper">
+    <argument index="0" type="org.osgi.framework.BundleContext" ref="blueprintBundleContext"/>
+  </bean>
 
 
   <reference-list id="infoProviders" interface="org.apache.karaf.shell.commands.info.InfoProvider"
