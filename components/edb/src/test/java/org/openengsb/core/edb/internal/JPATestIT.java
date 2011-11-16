@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -652,6 +653,89 @@ public class JPATestIT {
         assertThat((String) mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
 
+    @Test
+    public void testQueryOfOldVersionShouldWork(){
+    	HashMap<String, Object> data1_v1 = new HashMap<String, Object>();
+        data1_v1.put("KeyA", "Value A 1");
+        data1_v1.put("KeyB", "Value A 1");
+        EDBObject v1_1 = new EDBObject("/test/object1", data1_v1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.add(v1_1);
+        HashMap<String, Object> data2_v1 = new HashMap<String, Object>();
+        data2_v1.put("KeyA", "Value A 2");
+        data2_v1.put("KeyB", "Value A 1");
+        EDBObject v1_2 = new EDBObject("/test/object2", data2_v1);
+		ci.add(v1_2);
+		HashMap<String, Object> data3_v1 = new HashMap<String, Object>();
+        data3_v1.put("KeyA", "Value A 3");
+        data3_v1.put("KeyB", "Value A 1");
+        EDBObject v1_3 = new EDBObject("/test/object3", data3_v1);
+		ci.add(v1_3);
+		
+        long time1 = db.commit(ci);
+        
+        HashMap<String, Object> data1_v2 = new HashMap<String, Object>();
+        data1_v2.put("KeyA", "Value A 1");
+        data1_v2.put("KeyB", "Value A 1");
+        EDBObject v2_1 = new EDBObject("/test/object1", data1_v2);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v2_1);
+        HashMap<String, Object> data2_v2 = new HashMap<String, Object>();
+        data2_v2.put("KeyA", "Value A 2");
+        data2_v2.put("KeyB", "Value A 1");
+        EDBObject v2_2 = new EDBObject("/test/object2", data2_v2);
+		ci.add(v2_2);
+		HashMap<String, Object> data4_v1 = new HashMap<String, Object>();
+        data4_v1.put("KeyA", "Value A 4");
+        data4_v1.put("KeyB", "Value A 1");
+        EDBObject v2_3 = new EDBObject("/test/object4", data4_v1);
+		ci.add(v2_3);
+		
+		long time2 = db.commit(ci);
+		
+		HashMap<String, Object> data1_v3 = new HashMap<String, Object>();
+        data1_v3.put("KeyA", "Value A 1");
+        data1_v3.put("KeyB", "Value A 1");
+        EDBObject v3_1 = new EDBObject("/test/object1", data1_v3);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v3_1);
+        HashMap<String, Object> data2_v3 = new HashMap<String, Object>();
+        data2_v3.put("KeyA", "Value A 2a");
+        data2_v3.put("KeyB", "Value A 1");
+        EDBObject v3_2 = new EDBObject("/test/object2", data2_v3);
+		ci.add(v3_2);
+		HashMap<String, Object> data4_v2 = new HashMap<String, Object>();
+        data4_v2.put("KeyA", "Value A 4");
+        data4_v2.put("KeyB", "Value A 1");
+        EDBObject v3_3 = new EDBObject("/test/object4", data4_v2);
+		ci.add(v3_3);
+		
+		long time3 = db.commit(ci);
+		
+		 Map<String, Object> map = new HashMap<String, Object>();
+	        map.put("KeyB", "Value A 1");
+	        List<EDBObject> result = db.query(map, time2+1);
+	        
+	        boolean b1 =false,b2 = false ,b3 = false;
+	        
+	        for(EDBObject e : result) {
+	        	if(e.get("KeyA").equals("Value A 1")) {
+	        		b1 = true;
+	        	}
+	        	if(e.get("KeyA").equals("Value A 2")) {
+	        		b2 = true;
+	        	}
+	        	if(e.get("KeyA").equals("Value A 3")) {
+	        		b3 = true;
+	        	}
+	        }
+	        
+	        assertTrue(b1);
+	        assertTrue(b2);
+	        assertTrue(b3);
+        
+    }
+    
     private void enrichEDBEvent(EDBEvent event) {
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
