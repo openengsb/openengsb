@@ -17,8 +17,6 @@
 
 package org.openengsb.itests.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
@@ -32,23 +30,31 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.junit.Before;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.core.api.security.service.UserDataManager;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.extra.VMOption;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -56,15 +62,14 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.ServiceTracker;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     /*
      * to configure loglevel and debug-flag, create a file called itests.local.properties in src/test/resources. This
@@ -83,6 +88,19 @@ public abstract class AbstractExamTestHelper {
     @Inject
     private BundleContext bundleContext;
 
+    @Before
+    public void waitForRequiredTasks() throws Exception {
+        RuleManager rm = getOsgiService(RuleManager.class);
+        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
+            LOGGER.warn("waiting for auditing to finish init");
+            Thread.sleep(1000);
+        }
+        while (rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "humantask")) == null) {
+            LOGGER.warn("waiting for taskboxConfig to finish init");
+            Thread.sleep(1000);
+        }
+    }
+
     protected <T> T getOsgiService(Class<T> type, long timeout) {
         return getOsgiService(type, null, timeout);
     }
@@ -98,6 +116,19 @@ public abstract class AbstractExamTestHelper {
             }
         }
         return null;
+    }
+
+    protected void waitForSiteToBeAvailable(String urlToWatchFor, Integer maxWaitTime) throws InterruptedException {
+        Integer localCounter = maxWaitTime;
+        while (localCounter != 0) {
+            if (isUrlReachable(urlToWatchFor)) {
+                return;
+            }
+            Thread.sleep(1000);
+            localCounter--;
+        }
+        throw new IllegalStateException(String.format("Couldn't reach page %s within %s seconds", urlToWatchFor,
+            maxWaitTime));
     }
 
     @SuppressWarnings("deprecation")
@@ -184,7 +215,7 @@ public abstract class AbstractExamTestHelper {
     /*
      * Provides an iterable collection of references, even if the original array is null
      */
-    private static final Collection<ServiceReference> asCollection(ServiceReference[] references) {
+    private static Collection<ServiceReference> asCollection(ServiceReference[] references) {
         List<ServiceReference> result = new LinkedList<ServiceReference>();
         if (references != null) {
             for (ServiceReference reference : references) {
@@ -202,39 +233,24 @@ public abstract class AbstractExamTestHelper {
         return "target/paxrunner/features/";
     }
 
-    public void registerConfigPersistence(String backendId, String configurationId) throws ConfigurationException {
-        ManagedServiceFactory factoryService =
-            getOsgiService(ManagedServiceFactory.class, "(service.pid=org.openengsb.persistence.config)",
-                30000);
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
-        String pid = "org.openengsb.persistence.config." + UUID.randomUUID();
-        props.put("backend.id", backendId);
-        props.put("configuration.id", configurationId);
-        props.put("service.pid", pid);
-        factoryService.updated(pid, props);
-    }
-
-    public static List<String> getImportantBundleSymbolicNames() {
-        List<String> importantBundles = new ArrayList<String>();
-        importantBundles.add("org.openengsb.core.api");
-        importantBundles.add("org.openengsb.core.common");
-        importantBundles.add("org.openengsb.core.service");
-        importantBundles.add("org.openengsb.core.persistence");
-        importantBundles.add("org.openengsb.core.workflow");
-        importantBundles.add("org.openengsb.core.security");
-        return importantBundles;
-    }
-
-    protected void authenticateAsAdmin() throws InterruptedException {
+    protected void authenticateAsAdmin() throws InterruptedException, AuthenticationException {
         authenticate("admin", "password");
     }
 
-    protected void authenticate(String user, String password) throws InterruptedException {
-        AuthenticationManager authenticationManager = getOsgiService(AuthenticationManager.class, 20000);
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
-        assertThat(authentication.isAuthenticated(), is(true));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
+        waitForUserDataInitializer();
+        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
+        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+    }
+
+    protected void waitForUserDataInitializer() throws InterruptedException {
+        UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
+        while (userDataManager.getUserList().isEmpty()) {
+            LOGGER.warn("waiting for users to be initialized");
+            Thread.sleep(1000);
+        }
+        getOsgiService(AuthenticationDomain.class, "(connector=usernamepassword)", 15000);
     }
 
     public static Option[] baseConfiguration() throws Exception {
@@ -254,8 +270,11 @@ public abstract class AbstractExamTestHelper {
         LogLevel realLogLevel = transformLogLevel(loglevel);
         Option[] mainOptions =
             new Option[]{
+                new VMOption("-Xmx2048m"),
+                new VMOption("-XX:MaxPermSize=256m"),
                 karafDistributionConfiguration().frameworkUrl(
-                    maven().groupId("org.openengsb").artifactId("openengsb").type("zip").versionAsInProject()),
+                    maven().groupId("org.openengsb.framework").artifactId("openengsb-framework").type("zip")
+                        .versionAsInProject()),
                 logLevel(realLogLevel),
                 editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
                 editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),

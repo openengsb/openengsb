@@ -29,18 +29,15 @@
 
   <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
     <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
-    <prop key="openengsb.version.name.adjective">OpenEngSB</prop>
-    <prop key="openengsb.version.name.noun">Release</prop>
   </osgix:cm-properties>
 
   <context:property-placeholder properties-ref="settings" />
 
-  <bean id="openengsbVersion" class="org.openengsb.ui.admin.model.OpenEngSBVersion">
+  <bean id="openengsbVersion" class="org.openengsb.ui.admin.model.OpenEngSBFallbackVersion">
     <property name="versionNumber" value="${openengsb.version.number}" />
-    <property name="nameAdjective" value="${openengsb.version.name.adjective}" />
-    <property name="nameNoun" value="${openengsb.version.name.noun}" />
   </bean>
 
+  <osgi:list id="openengsbVersionService" interface="org.openengsb.ui.api.OpenEngSBVersionService" cardinality="0..N" />
   <osgi:reference id="serviceManager" interface="org.openengsb.core.api.ConnectorManager" />
   <osgi:reference id="eventService" interface="org.openengsb.core.api.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
@@ -69,6 +66,11 @@
 
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
 
+  <osgi:reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
+
+  <osgi:reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+
   <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
     lazy-init="false">
     <constructor-arg name="bundleContext" ref="bundleContext" />
@@ -76,5 +78,9 @@
     <constructor-arg name="priority" value="2" />
     <property name="securityFilterChain" ref="springSecurityFilterChain" />
   </bean>
+
+  <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
+
+  <osgi:service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
 
 </beans>

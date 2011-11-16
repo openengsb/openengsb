@@ -25,19 +25,20 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>${version}</version>
+    <version>${openengsbVersion}</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
+    <openengsb.compile.version>${openengsbVersion}</openengsb.compile.version>
   </properties>
 
-  <groupId>org.openengsb.domain</groupId>
-  <artifactId>${implementationArtifactId}</artifactId>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
   <version>${version}</version>
 
-  <name>${implementationName}</name>
+  <name>${name}</name>
 
   <packaging>bundle</packaging>
 
@@ -58,42 +59,26 @@
   </scm>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*.info</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+     <plugins>
+       <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>build-helper-maven-plugin</artifactId>
+       </plugin>
+     </plugins>
+   </build>
 
-  <dependencies>
+
+   <dependencies>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-api</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
+      <version>${openengsb.compile.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
+      <version>${openengsb.compile.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

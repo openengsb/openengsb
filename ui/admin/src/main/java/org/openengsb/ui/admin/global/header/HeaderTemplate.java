@@ -19,10 +19,10 @@ package org.openengsb.ui.admin.global.header;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -32,16 +32,19 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
-import org.openengsb.ui.admin.model.OpenEngSBVersion;
+import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
 import org.openengsb.ui.admin.taskOverview.TaskOverview;
 import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
+import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
@@ -52,7 +55,11 @@ public class HeaderTemplate extends Panel {
     private static String menuIndex;
 
     @PaxWicketBean(name = "openengsbVersion")
-    private OpenEngSBVersion openengsbVersion;
+    private OpenEngSBFallbackVersion openengsbVersion;
+    @PaxWicketBean(name = "openengsbVersionService")
+    private List<OpenEngSBVersionService> openengsbVersionService;
+    @PaxWicketBean(name = "attributeStore")
+    private SecurityAttributeProviderImpl attributeStore;
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
@@ -65,13 +72,13 @@ public class HeaderTemplate extends Panel {
         add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
+                getSession().setLocale(Locale.ENGLISH);
             }
         });
         add(new Link<Object>("lang.de") {
             @Override
             public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
+                getSession().setLocale(Locale.GERMAN);
             }
         });
 
@@ -79,21 +86,24 @@ public class HeaderTemplate extends Panel {
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
         if (openengsbVersion == null) {
-            openengsbVersion = new OpenEngSBVersion();
+            openengsbVersion = new OpenEngSBFallbackVersion();
         }
-        add(new Label("version", openengsbVersion.getVersionNumber() + " \"" + openengsbVersion.getNameAdjective()
-                + " " + openengsbVersion.getNameNoun() + "\""));
+        if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
+            add(new Label("version", openengsbVersion.getVersionNumber()));
+        } else {
+            add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
+        }
     }
 
     private void initMainMenuItems() {
-        addHeaderMenuItem("Index", Index.class, "index.title", "");
+        addHeaderMenuItem("Index", Index.class, "index.title");
 
-        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title", "");
-        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", "");
-        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
-        addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
-        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
-        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", "");
+        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
+        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+        addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
+        addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
+        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
         addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
 
@@ -140,7 +150,8 @@ public class HeaderTemplate extends Panel {
      * should be displayed and authority defines who is authorized to see the link
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
+    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey,
+            String... authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
         addAuthorizationRoles(pageLabelLink, authority);
@@ -148,11 +159,12 @@ public class HeaderTemplate extends Panel {
         avialableItems.add(index);
     }
 
-    private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String authority) {
-        if (authority != null && !"".equals(authority)) {
-            MetaDataRoleAuthorizationStrategy.authorize(pageLabelLink, RENDER, authority);
-        } else {
-            MetaDataRoleAuthorizationStrategy.authorizeAll(pageLabelLink, RENDER);
+    private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String... authority) {
+        if (authority == null) {
+            return;
+        }
+        for (String a : authority) {
+            attributeStore.putAttribute(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
         }
     }
 

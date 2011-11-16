@@ -20,10 +20,11 @@ package org.openengsb.ui.common;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
+import org.ops4j.pax.wicket.api.InjectorHolder;
 
 /**
- * Base class for Wicket Applications in OpenEngSB and client projects.
- * It enforces authentication and initializes the spring-injector.
+ * Base class for Wicket Applications in OpenEngSB and client projects. It enforces authentication and initializes the
+ * spring-injector.
  */
 public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplication {
 
@@ -31,11 +32,14 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
     protected void init() {
         super.init();
         addInjector();
+        DomainAuthorizationStrategy strategy = new DomainAuthorizationStrategy();
+        InjectorHolder.getInjector().inject(strategy);
+        getSecuritySettings().setAuthorizationStrategy(strategy);
         getResourceSettings().setAddLastModifiedTimeToResourceReferenceUrl(true);
     }
 
     protected void addInjector() {
-        
+
     }
 
     @Override

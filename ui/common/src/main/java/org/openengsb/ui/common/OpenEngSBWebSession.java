@@ -21,14 +21,12 @@ import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -52,8 +50,8 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
         }
     }
 
-    protected abstract AuthenticationManager getAuthenticationManager();
-    
+    protected abstract AuthenticationDomain getAuthenticationManager();
+
     protected void ensureDependenciesNotNull() {
         if (getAuthenticationManager() == null) {
             throw new IllegalStateException("AdminSession requires an authenticationManager.");
@@ -66,41 +64,25 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     @Override
     public boolean authenticate(String username, String password) {
-        boolean authenticated = false;
         try {
-            Authentication authentication = getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(username, password));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            authenticated = authentication.isAuthenticated();
+            getAuthenticationManager().authenticate(username, new Password(password));
         } catch (AuthenticationException e) {
-            LOGGER.warn("User '{}' failed to login. Reason: ", username, e);
-            authenticated = false;
+            LOGGER.warn("unable to authenticate user", e);
+            return false;
         }
-        return authenticated;
+        return true;
+    }
+
+    @Override
+    public void signOut() {
+        super.signOut();
+        SecurityContextHolder.clearContext();
     }
 
     @Override
     public Roles getRoles() {
         Roles roles = new Roles();
-        getRolesIfSignedIn(roles);
         return roles;
-    }
-
-    private void getRolesIfSignedIn(Roles roles) {
-        if (isSignedIn()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            addRolesFromAuthentication(roles, authentication);
-        }
-    }
-
-    private void addRolesFromAuthentication(Roles roles, Authentication authentication) {
-        if (authentication == null) {
-            signOut();
-            return;
-        }
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            roles.add(authority.getAuthority());
-        }
     }
 
 }

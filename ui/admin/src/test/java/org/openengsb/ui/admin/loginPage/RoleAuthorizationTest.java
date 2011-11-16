@@ -19,21 +19,30 @@ package org.openengsb.ui.admin.loginPage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.util.tester.FormTester;
+import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.ui.admin.AbstractLoginTest;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserService;
+import org.openengsb.ui.admin.userService.UserListPage;
 
 /**
  * This class tests the ui for visible components depending on the logged in user roles
  */
 public class RoleAuthorizationTest extends AbstractLoginTest {
+
+    @Before
+    public void setUp() throws Exception {
+        userManager.addPermissionToUser("test", new WicketPermission("SERVICE_USER"));
+    }
 
     @Test
     public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {
@@ -45,7 +54,7 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         BookmarkablePageLabelLink<?> userServiceLink =
             (BookmarkablePageLabelLink<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNotNull(userServiceLink);
-        assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserService.class.getCanonicalName()));
+        assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserListPage.class.getCanonicalName()));
     }
 
     @Test
@@ -80,10 +89,19 @@ public class RoleAuthorizationTest extends AbstractLoginTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
+        tester.debugComponentTrees();
+        assertThat(tester.getComponentFromLastRenderedPage("header"), notNullValue());
+        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems"), notNullValue());
+        ListItem<?> componentFromLastRenderedPage =
+            (ListItem<?>) tester.getComponentFromLastRenderedPage("header:headerMenuItems:1");
+        System.out.println(componentFromLastRenderedPage);
+        Component component = componentFromLastRenderedPage.get(0);
+        System.out.println(component);
+
+        assertThat(tester.getComponentFromLastRenderedPage("header:headerMenuItems:1:link"), notNullValue());
         tester.clickLink("header:headerMenuItems:1:link");
         tester.assertRenderedPage(TestClient.class);
         Component domains = tester.getComponentFromLastRenderedPage("serviceManagementContainer");
         assertNull(domains);
     }
-
 }

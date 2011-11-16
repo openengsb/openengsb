@@ -31,20 +31,27 @@ import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.DecryptionException;
 import org.openengsb.core.api.security.EncryptionException;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.security.CipherUtils;
+import org.openengsb.core.common.util.CipherUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstracts the general concepts required for remote tests
  */
 public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractExamTestHelper.class);
 
     protected static final String METHOD_CALL_STRING = ""
             + "{"
@@ -145,17 +152,17 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
 
         String authInfo = ""
                 + "{"
-                + "  \"className\":\"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo\","
+                + "  \"className\":\"org.openengsb.connector.usernamepassword.Password\","
                 + "  \"data\":"
                 + "  {"
-                + "    \"username\":\"" + username + "\","
-                + "    \"password\":\"" + password + "\""
+                + "    \"value\":\"" + password + "\""
                 + "  }"
                 + "}";
 
         String secureRequest = ""
                 + "{"
-                + "  \"authenticationData\":" + authInfo + ","
+                + "  \"principal\": \"" + username + "\","
+                + "  \"credentials\":" + authInfo + ","
                 + "  \"timestamp\":" + System.currentTimeMillis() + ","
                 + "  \"message\":" + request
                 + "}";
@@ -166,6 +173,7 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         // FIXME do this properly when OPENENGSB-1597 is resolved
         File file = new File(System.getProperty("karaf.home"), "/etc/keys/public.key.data");
         while (!file.exists()) {
+            LOGGER.warn("waiting for public key to be generated in " + file);
             Thread.sleep(1000);
         }
         byte[] keyData;
@@ -183,9 +191,21 @@ public class AbstractRemoteTestHelper extends AbstractExamTestHelper {
         return result;
     }
 
-    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws DecryptionException {
-        result = decryptResult(sessionKey, result);
-        assertThat(result, containsString("The answer to life the universe and everything"));
-    }
+    protected void verifyEncryptedResult(SecretKey sessionKey, String result) throws Exception {
+        try {
+            result = decryptResult(sessionKey, result);
+        } catch (DecryptionException e) {
+            LOGGER.error("decryption failed.");
+            LOGGER.error(result);
+        }
 
+        if (!result.contains("The answer to life the universe and everything")) {
+            SecureResponse readValue = new ObjectMapper().readValue(result, SecureResponse.class);
+            MethodResult result2 = readValue.getMessage().getResult();
+            if (result2.getType().equals(MethodResult.ReturnType.Exception)) {
+                LOGGER.error(result2.getArg().toString());
+            }
+            assertThat(result, containsString("The answer to life the universe and everything"));
+        }
+    }
 }

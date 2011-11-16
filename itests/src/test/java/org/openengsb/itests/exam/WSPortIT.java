@@ -39,6 +39,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -56,9 +57,17 @@ import org.w3c.dom.Document;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WSPortIT extends AbstractRemoteTestHelper {
 
+    private static final String WSDL_URL = "http://localhost:" + WEBUI_PORT + "/ws/receiver/?wsdl";
+    private static final Integer MAX_SLEEP_TIME_IN_SECONDS = 30;
+
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-ws"));
+    }
+
+    @Before
+    public void checkIfTestsAreReady() throws Exception {
+        waitForSiteToBeAvailable(WSDL_URL, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
     @Test
@@ -70,7 +79,6 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
-        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
@@ -86,7 +94,6 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void startSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
-        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING_FILTER, "admin", "password");
@@ -102,7 +109,6 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void testSendMethodCallWithWrongAuthentication_shouldFail() throws Exception {
-        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "wrong-password");
@@ -119,7 +125,6 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void recordAuditInCoreService_ShouldReturnVoid() throws Exception {
-        Thread.sleep(5000);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         Dispatch<DOMSource> dispatcher = createMessageDispatcher();
         String secureRequest = prepareRequest(VOID_CALL_STRING, "admin", "password");
@@ -138,27 +143,28 @@ public class WSPortIT extends AbstractRemoteTestHelper {
     private Dispatch<DOMSource> createMessageDispatcher() throws Exception {
         addWorkflow("simpleFlow");
         QName serviceName = new QName("http://ws.ports.openengsb.org/", "PortReceiverService");
-        Service service = Service.create(new URL("http://localhost:8091/ws/receiver/?wsdl"), serviceName);
+        Service service = Service.create(new URL(WSDL_URL), serviceName);
         QName portName = new QName("http://ws.ports.openengsb.org/", "PortReceiverPort");
         Dispatch<DOMSource> disp = service.createDispatch(portName, DOMSource.class, Service.Mode.MESSAGE);
         return disp;
     }
 
     private DOMSource convertMessageToDomSource(String messageToTransport) throws Exception {
-        String message =
-            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-                    "xmlns:ws=\"http://ws.ports.openengsb.org/\" >" +
-                    "<soapenv:Header/>" +
-                    "<soapenv:Body>" +
-                    "<ws:receive>" +
-                    "<arg0>" + messageToTransport + "</arg0>" +
-                    "</ws:receive>" +
-                    "</soapenv:Body>" +
-                    "</soapenv:Envelope>";
+        StringBuilder message = new StringBuilder();
+        message.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+        message.append("xmlns:ws=\"http://ws.ports.openengsb.org/\" >");
+        message.append("<soapenv:Header/>");
+        message.append("<soapenv:Body>");
+        message.append("<ws:receive>");
+        message.append("<arg0>" + messageToTransport + "</arg0>");
+        message.append("</ws:receive>");
+        message.append("</soapenv:Body>");
+        message.append("</soapenv:Envelope>");
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder db = factory.newDocumentBuilder();
-        Document requestDoc = db.parse(new ByteArrayInputStream(message.getBytes()));
+        Document requestDoc = db.parse(new ByteArrayInputStream(message.toString().getBytes()));
         DOMSource request = new DOMSource(requestDoc);
         return request;
     }

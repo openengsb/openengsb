@@ -30,7 +30,6 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -47,6 +46,7 @@ import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
@@ -62,7 +62,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation("ROLE_USER")
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_USER")
 @PaxWicketMountPoint(mountPoint = "events")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 

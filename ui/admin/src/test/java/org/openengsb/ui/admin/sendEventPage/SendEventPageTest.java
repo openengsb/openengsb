@@ -65,8 +65,8 @@ public class SendEventPageTest extends AbstractUITest {
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         domain = mock(AuditingDomain.class);
-        
-        List<Event> allAudits = new ArrayList<Event>(); 
+
+        List<Event> allAudits = new ArrayList<Event>();
         Event event1 = new Event();
         event1.setName("123");
         event1.setProcessId(1L);
@@ -75,7 +75,7 @@ public class SendEventPageTest extends AbstractUITest {
         event2.setProcessId(2L);
         allAudits.add(event1);
         allAudits.add(event2);
-        
+
         Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
@@ -110,7 +110,7 @@ public class SendEventPageTest extends AbstractUITest {
 
     @Test
     public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
-        assertThat(fieldList.size(), is(3));
+        assertThat(fieldList.size(), is(4));
         Component attributeName = fieldList.get("testProperty:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
@@ -119,7 +119,7 @@ public class SendEventPageTest extends AbstractUITest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
-        assertThat(fieldList.size(), is(2));
+        assertThat(fieldList.size(), is(3));
         Component attributeName = fieldList.get("name:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("name"));
     }

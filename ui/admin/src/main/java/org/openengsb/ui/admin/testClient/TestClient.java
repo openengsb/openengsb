@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.testClient;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,13 +30,12 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -65,7 +65,11 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttributes;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -82,7 +86,10 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation("ROLE_USER")
+@SecurityAttributes({
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER"),
+    @SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_EDITOR")
+})
 @PaxWicketMountPoint(mountPoint = "tester")
 public class TestClient extends BasePage {
 
@@ -96,6 +103,9 @@ public class TestClient extends BasePage {
 
     @PaxWicketBean
     private ConnectorManager serviceManager;
+
+    @PaxWicketBean
+    private SecurityAttributeProviderImpl attributeStore;
 
     private DropDownChoice<MethodId> methodList;
 
@@ -139,8 +149,8 @@ public class TestClient extends BasePage {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
-        MetaDataRoleAuthorizationStrategy.authorize(serviceManagementContainer, RENDER, "ROLE_ADMIN");
-
+        attributeStore.putAttribute(serviceManagementContainer, new SecurityAttributeEntry(
+            "org.openengsb.ui.component", "SERVICE_EDITOR"));
         serviceManagementContainer.add(makeServiceList());
 
         Form<Object> organize = createOrganizeForm();
@@ -234,23 +244,22 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                // if (!mnode.isLeaf() || !mnode.getUserObject().getClass().equals(ServiceId.class)) {
-                // editButton.setEnabled(false);
-                // deleteButton.setEnabled(false);
-                // submitButton.setEnabled(false);
-                // target.addComponent(editButton);
-                // target.addComponent(deleteButton);
-                // target.addComponent(submitButton);
-                // return;
-                // }
-                call.setService((ServiceId) mnode.getUserObject());
-                populateMethodList();
+                try {
+                    argumentList.removeAll();
+                    target.addComponent(argumentListContainer);
+                    ServiceId service = (ServiceId) mnode.getUserObject();
+                    LOGGER.info("clicked on node {} of type {}", node, node.getClass());
+                    call.setService(service);
+                    populateMethodList();
+                    updateModifyButtons(service);
+                } catch (ClassCastException ex) {
+                    LOGGER.info("clicked on not ServiceId node");
+                    methodList.setChoices(new ArrayList<MethodId>());
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    submitButton.setEnabled(false);
+                }
                 target.addComponent(methodList);
-                argumentList.removeAll();
-                target.addComponent(argumentListContainer);
-                LOGGER.info("clicked on node {} of type {}", node, node.getClass());
-
-                updateModifyButtons((ServiceId) mnode.getUserObject());
                 target.addComponent(editButton);
                 target.addComponent(deleteButton);
                 target.addComponent(submitButton);
@@ -456,10 +465,24 @@ public class TestClient extends BasePage {
         try {
             Object result = m.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
-            if (!m.getReturnType().equals(void.class)) {
-                info("Result: " + result);
-                LOGGER.info("result: {}", result);
+            Class<?> returnType = m.getReturnType();
+            if (returnType.equals(void.class)) {
+                return;
             }
+            String resultString;
+            if (returnType.isArray()) {
+                try {
+                    // to handle byte[] and char[]
+                    Constructor<String> constructor = String.class.getConstructor(returnType);
+                    resultString = constructor.newInstance(result);
+                } catch (Exception e) {
+                    resultString = ArrayUtils.toString(result);
+                }
+            } else {
+                resultString = result.toString();
+            }
+            info("Result " + returnType.getName() + ": " + resultString);
+            LOGGER.info("result: {}", resultString);
         } catch (IllegalAccessException e) {
             handleExceptionWithFeedback(e);
         } catch (InvocationTargetException e) {

@@ -23,14 +23,14 @@
                       name="OpenEngSB Connector" partial="false">
 
   <requiredProperties>
-    <requiredProperty key="domainArtifactId">
-      <defaultValue>openengsb-domain-domainname</defaultValue>
+    <requiredProperty key="groupId">
+      <defaultValue>org.openengsb.connector.connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>openengsb-connector-connectorname</defaultValue>
+      <defaultValue>org.openengsb.connector</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>1.2.0-SNAPSHOT</defaultValue>
+      <defaultValue>${project.version}</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
       <defaultValue>Connectorname</defaultValue>
@@ -45,10 +45,10 @@
       <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>
     <requiredProperty key="domain">
-      <defaultValue>domain</defaultValue>
+      <defaultValue>ExampleDomain</defaultValue>
     </requiredProperty>
-    <requiredProperty key="domainPackage">
-      <defaultValue>org.openengsb.domain.domainname</defaultValue>
+    <requiredProperty key="domainL">
+      <defaultValue>example</defaultValue>
     </requiredProperty>
      <requiredProperty key="domainVersion">
       <defaultValue>1.2.0</defaultValue>

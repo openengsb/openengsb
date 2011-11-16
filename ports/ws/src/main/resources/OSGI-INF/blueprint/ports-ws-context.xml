@@ -63,27 +63,28 @@
       <list>
         <value>org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller</value>
         <bean class="org.openengsb.core.security.filter.MessageCryptoFilterFactory">
-          <property name="privateKeySource">
-            <bean class="org.openengsb.core.security.FileKeySource" init-method="init">
-              <property name="algorithm" value="RSA" />
-            </bean>
-          </property>
+          <property name="privateKeySource" ref="privateKeySource" />
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
       </list>
     </property>
   </bean>
 
-  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
-    <property name="authenticationManager" ref="authenticationManager" />
-    <property name="requestHandler" ref="requestHandler" />
+  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
+    <property name="authenticationManager" ref="authenticator" />
   </bean>
 
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
-  <reference id="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager" />
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="httpService" interface="org.osgi.service.http.HttpService" />
+  <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />
 
 </blueprint>
 

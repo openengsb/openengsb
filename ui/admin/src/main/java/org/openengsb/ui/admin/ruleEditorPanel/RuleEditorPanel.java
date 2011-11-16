@@ -33,10 +33,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "WORKFLOW_ADMIN")
 @SuppressWarnings("serial")
 public class RuleEditorPanel extends Panel {
 
@@ -102,12 +104,12 @@ public class RuleEditorPanel extends Panel {
         cancelButton.setEnabled(false);
         target.addComponent(cancelButton);
     }
-    
+
     private void enableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(true);
         target.addComponent(deleteButton);
     }
-    
+
     private void disableDeleteButton(AjaxRequestTarget target) {
         deleteButton.setEnabled(false);
         target.addComponent(deleteButton);
@@ -121,7 +123,7 @@ public class RuleEditorPanel extends Panel {
                 if (newRuleMode) {
                     boolean error = false;
                     RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(typeChoice.getModelObject(),
-                            newRuleTextField.getModelObject());
+                        newRuleTextField.getModelObject());
                     try {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
@@ -217,7 +219,7 @@ public class RuleEditorPanel extends Panel {
     private void loadRuleChoice() {
         RuleBaseElementType selectedType = typeChoice.getModelObject();
         List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager().list(
-                selectedType));
+            selectedType));
         ruleChoice.setChoices(choices);
         ruleChoice.setModel(new Model<RuleBaseElementId>());
     }
@@ -256,7 +258,7 @@ public class RuleEditorPanel extends Panel {
         }
         disableButtons(target);
     }
-    
+
     private void deleteRule(AjaxRequestTarget target) {
         RuleBaseElementId selection = ruleChoice.getModelObject();
         ruleManagerProvider.getRuleManager().delete(selection);

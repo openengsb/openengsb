@@ -23,6 +23,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -32,11 +33,13 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SecurityAttribute(key = "org.openengsb.ui.component", value = "SERVICE_USER")
 @SuppressWarnings("serial")
 public class ServiceListPanel extends Panel {
 
@@ -93,6 +96,17 @@ public class ServiceListPanel extends Panel {
             protected void populateItem(final ListItem<ServiceEntry> item) {
                 item.add(new Label("service.name", item.getModelObject().getInstanceId()));
                 item.add(new Label("service.state", item.getModelObject().aliveState.name()));
+                switch (item.getModelObject().aliveState) {
+                    case OFFLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOffline"));
+                        break;
+                    case ONLINE:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOnline"));
+                        break;
+                    default:
+                        item.get("service.state").add(new SimpleAttributeModifier("id", "aliveStateOther"));
+                        break;
+                }
             }
         });
         add(container);

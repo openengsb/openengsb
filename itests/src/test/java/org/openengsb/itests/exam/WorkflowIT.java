@@ -20,21 +20,32 @@ package org.openengsb.itests.exam;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.api.workflow.model.RuleBaseElementId;
+import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
-// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
 
     public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
@@ -72,6 +83,72 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     public void testCorrectContextHolderStrategy() throws Exception {
         assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
             is("InheritableThreadLocalSecurityContextHolderStrategy"));
+    }
+
+    @Test
+    public void testCreateRuleAndTriggerDomain() throws Exception {
+        DummyLogDomain exampleMock = new DummyLogDomain();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("domain", "example");
+        properties.put("connector", "example");
+        properties.put("location.foo", "example2");
+        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
+
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
+
+        ruleManager.addImport(ExampleDomain.class.getName());
+        ruleManager.addImport(LogEvent.class.getName());
+
+        ruleManager.addGlobal(ExampleDomain.class.getName(), "example2");
+
+        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example-trigger"), "" +
+                "when\n" +
+                "    l : LogEvent()\n" +
+                "then\n" +
+                "    example2.doSomething(\"42\");\n"
+            );
+
+        ContextHolder.get().setCurrentContextId("foo");
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+
+        authenticate("admin", "password");
+        workflowService.processEvent(new LogEvent());
+
+        assertThat(exampleMock.wasCalled, is(true));
+    }
+
+    @Test
+    public void testCreateAndTriggerResponseRule_shouldCallOrigin() throws Exception {
+        DummyLogDomain exampleMock = new DummyLogDomain();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("domain", "example");
+        properties.put("connector", "example");
+        properties.put("location.foo", "example2");
+        properties.put(Constants.ID_KEY, "example2");
+        getBundleContext().registerService(ExampleDomain.class.getName(), exampleMock, properties);
+
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
+
+        ruleManager.addImport(ExampleDomain.class.getName());
+        ruleManager.addImport(LogEvent.class.getName());
+
+        ruleManager.addGlobal(ExampleDomain.class.getName(), "example2");
+
+        ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "example-response"), ""
+                + "when\n"
+                + "    l : LogEvent()\n"
+                + "then\n"
+                + "   ExampleDomain origin = (ExampleDomain) OsgiHelper.getResponseProxy(l, ExampleDomain.class);"
+                + "   origin.doSomething(\"42\");"
+            );
+
+        ContextHolder.get().setCurrentContextId("foo");
+        WorkflowService workflowService = getOsgiService(WorkflowService.class);
+        LogEvent event = new LogEvent();
+        event.setOrigin("example2");
+        workflowService.processEvent(event);
+
+        assertThat(exampleMock.wasCalled, is(true));
     }
 
     /**

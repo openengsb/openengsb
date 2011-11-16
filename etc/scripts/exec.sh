@@ -29,7 +29,7 @@ if [ ! -e "$ZIPFILE" ]; then
 	mvn install -Dmaven.test.skip
 	ZIPFILE=`ls assembly/target/openengsb-*.zip 2> /dev/null`
 fi
-DIRNAME=`echo $ZIPFILE | sed -r s/".zip$"//`
+DIRNAME=`echo $ZIPFILE | sed s/".zip$"//`
 if [ ! -e $DIRNAME ]; then
 	unzip $ZIPFILE -d assembly/target
 fi

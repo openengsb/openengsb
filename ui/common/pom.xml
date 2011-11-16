@@ -18,12 +18,13 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openengsb.ui</groupId>
     <artifactId>openengsb-ui-parent</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -33,8 +34,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
-  <artifactId>openengsb-ui-common</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <artifactId>org.openengsb.ui.common</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: User Interface :: Common</name>
   <description>Common classes for wicket UIs</description>
@@ -112,13 +113,13 @@
           </execution>
         </executions>
         <configuration>
-		  <instructions>
+          <instructions>
             <Import-Package>org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)", *
             </Import-Package>
-		  </instructions>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
@@ -159,23 +160,49 @@
 
     <!-- OpenEngSB Dependencies -->
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-api</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.authentication</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>org.openengsb.connector.usernamepassword</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>org.openengsb.domain.authorization</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-workflow</artifactId>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.workflow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>org.openengsb.ui.api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -189,41 +216,6 @@
       <groupId>org.ops4j.pax.wicket</groupId>
       <artifactId>pax-wicket-test</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <!-- Wicket Dependencies -->
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-datetime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-devutils</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-extensions</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-jmx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-auth-roles</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-velocity</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

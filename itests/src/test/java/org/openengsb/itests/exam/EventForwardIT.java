@@ -39,7 +39,7 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.Level;
+import org.openengsb.domain.example.event.LogEvent.LogLevel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -81,6 +81,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void testSendEvent() throws Exception {
+        authenticateAsAdmin();
         addHelloWorldRule();
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         contextService.createContext("42");
@@ -96,7 +97,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
 
         LogEvent e = new LogEvent();
         e.setName("42");
-        e.setLevel(Level.INFO);
+        e.setLevel(LogLevel.INFO);
 
         ExampleDomainEvents exampleEvents = getOsgiService(ExampleDomainEvents.class);
         // this should be routed through the domain, which forwards it to the workflow service

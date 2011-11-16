@@ -133,7 +133,7 @@ public class TestClientTest extends AbstractUITest {
     }
 
     public enum UpdateEnum {
-            ONE, TWO
+        ONE, TWO
     }
 
     private TestInterface testService;
@@ -236,7 +236,7 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         @SuppressWarnings("unchecked")
         DropDownChoice<MethodId> methodList =
-                (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
+            (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
         setServiceInDropDown(2);
 
@@ -253,7 +253,7 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
 
         Component argList =
-                tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         Assert.assertNotNull(argList);
     }
@@ -262,8 +262,8 @@ public class TestClientTest extends AbstractUITest {
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
@@ -279,15 +279,15 @@ public class TestClientTest extends AbstractUITest {
     public void testCreateDropdownForOptionArguments() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(2);
 
         Assert.assertEquals(1, argList.size());
         tester.assertComponent("methodCallForm:argumentListContainer:argumentList:arg0panel:valueEditor",
-                DropdownField.class);
+            DropdownField.class);
     }
 
     private void setMethodInDropDown(int index) {
@@ -299,8 +299,8 @@ public class TestClientTest extends AbstractUITest {
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(1);
@@ -316,8 +316,8 @@ public class TestClientTest extends AbstractUITest {
     public void testPerformMethodCall() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
@@ -335,8 +335,8 @@ public class TestClientTest extends AbstractUITest {
         setupAndStartTestClientPage();
         tester.debugComponentTrees();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
@@ -358,7 +358,7 @@ public class TestClientTest extends AbstractUITest {
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
         BeanEditorPanel beanPanel =
-                (BeanEditorPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
+            (BeanEditorPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
         String idFieldId = beanPanel.getFieldViewId("id");
         String nameFieldId = beanPanel.getFieldViewId("name");
         formTester.setValue(beanPanelPath + ":fields:" + idFieldId + ":row:field", "42");
@@ -390,19 +390,18 @@ public class TestClientTest extends AbstractUITest {
         tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", true);
         tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink",
-                "onclick");
+            "onclick");
     }
 
     @Test
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
 
         Assert.assertEquals(2, argList.size());
     }
@@ -419,8 +418,8 @@ public class TestClientTest extends AbstractUITest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(0, argList.size());
     }
 
@@ -466,8 +465,8 @@ public class TestClientTest extends AbstractUITest {
         setMethodInDropDown(0);
         setServiceInDropDown(2);
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         assertThat(argList.size(), is(0));
     }
 
@@ -482,20 +481,20 @@ public class TestClientTest extends AbstractUITest {
         tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
+            (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
         Label domainDescription =
-                (Label) tester
-                        .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
+            (Label) tester
+                .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
         Label domainClass =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
+            (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
         tester.debugComponentTrees();
         Label name =
-                (Label) tester
-                        .getComponentFromLastRenderedPage(
-                                "serviceManagementContainer:domains:1:services:0:service.name");
+            (Label) tester
+                .getComponentFromLastRenderedPage(
+                "serviceManagementContainer:domains:1:services:0:service.name");
         Label description =
-                (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
-                        + "1:services:0:service.description");
+            (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:"
+                    + "1:services:0:service.description");
         assertThat(domainName.getDefaultModel().getObject().toString(), equalTo("testdomain"));
         assertThat(domainDescription.getDefaultModel().getObject().toString(), equalTo("testdomain"));
         assertThat(domainClass.getDefaultModel().getObject().toString(), equalTo(TestInterface.class.getName()));
@@ -511,7 +510,7 @@ public class TestClientTest extends AbstractUITest {
         }
         for (int index = 2; index < expected.size() + 2; index++) {
             tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
+                AjaxLink.class);
         }
         tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
@@ -527,7 +526,7 @@ public class TestClientTest extends AbstractUITest {
         }
         for (int index = 2; index < expected.size() + 2; index++) {
             tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
+                AjaxLink.class);
         }
         tester.assertComponent("methodCallForm:deleteButton", AjaxButton.class);
         AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
@@ -549,7 +548,7 @@ public class TestClientTest extends AbstractUITest {
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
-                new PassThroughLocalizableString("ServiceDescription"));
+            new PassThroughLocalizableString("ServiceDescription"));
 
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -577,7 +576,7 @@ public class TestClientTest extends AbstractUITest {
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
         Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
-                new PassThroughLocalizableString("ServiceDescription"));
+            new PassThroughLocalizableString("ServiceDescription"));
 
         if (!serviceListExpanded) {
             expandServiceListTree();
@@ -620,23 +619,24 @@ public class TestClientTest extends AbstractUITest {
         List<String> availableInTree = new ArrayList<String>();
         List<DefaultMutableTreeNode> availableInTreeAsTreeNode = new ArrayList<DefaultMutableTreeNode>();
 
-        int count = ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                .getDefaultModelObject()).size();
+        int count =
+            ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
+                    .getDefaultModelObject()).size();
         // get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
-                    .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
+                .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
             domains.add(label.getDefaultModelObjectAsString());
         }
 
         // get all services from the tree
         DefaultTreeModel serviceListTree = (DefaultTreeModel) tester
-                .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
+            .getComponentFromLastRenderedPage("methodCallForm:serviceList").getDefaultModelObject();
         count = serviceListTree.getChildCount(serviceListTree.getRoot());
         for (int i = 0; i < count; i++) {
             DefaultMutableTreeNode child =
-                    (DefaultMutableTreeNode) serviceListTree.getChild(serviceListTree.getRoot(), i);
+                (DefaultMutableTreeNode) serviceListTree.getChild(serviceListTree.getRoot(), i);
             String userObject = (String) child.getUserObject();
             availableInTreeAsTreeNode.add(child);
             availableInTree.add(userObject);
@@ -657,8 +657,8 @@ public class TestClientTest extends AbstractUITest {
         setServiceInDropDown(2);
         setMethodInDropDown(0);
         RepeatingView argList =
-                (RepeatingView) tester
-                        .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(2, argList.size());
 
     }
@@ -685,7 +685,7 @@ public class TestClientTest extends AbstractUITest {
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
         Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
-                new PassThroughLocalizableString("service.description"));
+            new PassThroughLocalizableString("service.description"));
 
         doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         setupTesterWithSpringMockContext();
