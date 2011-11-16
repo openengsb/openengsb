@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -31,7 +32,6 @@ import javax.crypto.SecretKey;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -39,9 +39,6 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.JsonUtils;
@@ -50,7 +47,6 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
-import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
@@ -59,8 +55,6 @@ import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 @RunWith(JUnit4TestRunner.class)
@@ -129,34 +123,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         assertThat(decryptedResult, containsString("\"type\":\"Void\""));
         assertThat(decryptedResult, not(containsString("Exception")));
-    }
-
-    @Test
-    public void testStartAndStopRemoteConnector_shouldRegisterAndUnregisterProxy() throws Exception {
-        // make sure security-stuff is off
-        System.setProperty("org.openengsb.jms.noencrypt", "true");
-        System.setProperty("org.openengsb.security.noverify", "true");
-
-        // make sure jms is up and running
-        OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
-
-        SecureSampleConnector remoteConnector = new SecureSampleConnector();
-        remoteConnector.start();
-        ExampleDomain osgiService =
-            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
-
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
-        assertThat(osgiService, not(nullValue()));
-
-        remoteConnector.getInvocationHistory().clear();
-        osgiService.doSomething("test");
-        assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
-
-        remoteConnector.stop();
-        Thread.sleep(5000);
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), nullValue());
     }
 
     @Test
