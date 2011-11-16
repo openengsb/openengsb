@@ -13,4 +13,10 @@
 	    <property name="timeOut" value="0"/>
 	</bean>
 
+  <service id="iConnection" ref="connection" 
+    interface="org.apache.directory.ldap.client.api.LdapConnection">
+  </service>
+
+
+
 </blueprint>
