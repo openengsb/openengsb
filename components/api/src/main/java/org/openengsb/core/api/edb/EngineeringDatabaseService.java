@@ -38,9 +38,9 @@ public interface EngineeringDatabaseService {
      * Retrieve the current state of the object with the specified OID.
      */
     EDBObject getObject(String oid) throws EDBException;
-    
+
     /**
-     * Retrieve the current state of the objects with the specified OIDs. 
+     * Retrieve the current state of the objects with the specified OIDs.
      */
     List<EDBObject> getObjects(List<String> oids) throws EDBException;
 
@@ -79,6 +79,12 @@ public interface EngineeringDatabaseService {
      * More general query for an object in the current state with the provided key-value pairs.
      */
     List<EDBObject> query(Map<String, Object> query) throws EDBException;
+
+    /**
+     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
+     * (similar to getHead)
+     * */
+    List<EDBObject> query(Map<String, Object> query, Long timestamp) throws EDBException;
 
     /**
      * Convenience function to query for a commit with a single matching key-value pair.
@@ -125,22 +131,22 @@ public interface EngineeringDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
-    
+
     /**
      * processes an edb insert event
      */
     void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
-    
+
     /**
      * processes an edb delete event
      */
     void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
-    
+
     /**
      * processes an edb update event
      */
     void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
-    
+
     /**
      * processes an edb batch event
      */
