@@ -22,24 +22,15 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.ConnectorProvider;
-import org.openengsb.core.api.Constants;
-import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.service.AccessDeniedException;
-import org.openengsb.core.common.util.Comparators;
-import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
+import org.openengsb.core.console.internal.util.ServicesHelper;
 import org.osgi.framework.ServiceReference;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
@@ -57,28 +48,28 @@ public class ServiceCommands extends OsgiCommandSupport {
     List<String> attributes = null;
 
     private OsgiUtilsService osgiUtilsService;
-
+    private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
         ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
         ServiceReference commandSessionReference =
                 getBundleContext().getServiceReference("org.apache.felix.service.command.CommandProcessor");
+
         osgiUtilsService = getService(OsgiUtilsService.class, sr);
+
         CommandProcessor commandProcessor = getService(CommandProcessor.class, commandSessionReference);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         InputStream keyboard = commandSession.getKeyboard();
 
-        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
-        Collections.sort(serviceList, Comparators.forDomainProvider());
         try {
             ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
             switch (arguments) {
                 case LIST:
-                    listServices(serviceList);
+                    serviceHelper.listCreatableServices();
                     break;
                 case CREATE:
-                    createService(serviceList, keyboard);
-                    //TODO
+                    //TODO implement one line create
+                    serviceHelper.createService(keyboard);
                     break;
                 case UPDATE:
                     //TODO
@@ -110,28 +101,11 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     }
 
-    private void listServices(List<DomainProvider> serviceList) {
-        OutputStreamFormater.printValue("Services");
-        for (DomainProvider dp : serviceList) {
-            String domainType = dp.getId();
-            List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(
-                    ConnectorProvider.class, String.format("(%s=%s)", Constants.DOMAIN_KEY, domainType));
-
-            Locale defaultLocale = Locale.getDefault();
-
-            OutputStreamFormater.printValue(dp.getName().getString(defaultLocale),
-                    dp.getDescription().getString(defaultLocale));
-            for (ConnectorProvider connectorProvider : connectorProviders) {
-                String serviceId = connectorProvider.getId();
-                String serviceName = connectorProvider.getDescriptor().getName().getString(defaultLocale);
-                String serviceDescription = connectorProvider.getDescriptor().getDescription().getString(defaultLocale);
-                if (serviceId != null && serviceName != null && serviceDescription != null) {
-                    OutputStreamFormater.printValuesWithPrefix(serviceId, serviceName, serviceDescription);
-                }
-            }
-        }
-
+    public ServicesHelper getServiceHelper() {
+        return serviceHelper;
     }
 
-
+    public void setServiceHelper(ServicesHelper serviceHelper) {
+        this.serviceHelper = serviceHelper;
+    }
 }
