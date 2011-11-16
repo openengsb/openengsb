@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -254,6 +255,40 @@ public class JPATestIT {
         assertThat(log.size(), is(3));
 
         checkTimeStamps(Arrays.asList(time1, time2, time3, time4));
+    }
+
+    @Test
+    public void test() {
+        HashMap<String, Object> data1 = new HashMap<String, Object>();
+        data1.put("A", "B");
+        data1.put("Cow", "Milk");
+        data1.put("Dog", "Food");
+        EDBObject v1 = new EDBObject("/test/querynew1", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+        
+        data1 = new HashMap<String, Object>();
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew1", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+        
+        
+        
+        data1 = new HashMap<String, Object>();
+        data1.put("A", "B");
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew2", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("A", "B");
+        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        assertThat(result.size(), is(1));
     }
 
     @SuppressWarnings("serial")
