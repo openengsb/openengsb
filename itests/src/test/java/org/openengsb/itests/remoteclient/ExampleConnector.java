@@ -55,6 +55,12 @@ public class ExampleConnector extends AbstractOpenEngSBConnectorService implemen
     }
 
     @Override
+    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public String doSomethingWithLogEvent(LogEvent event) {
         LOGGER.info("LogEvent: {}", event);
         return event.toString();
