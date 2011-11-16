@@ -19,9 +19,8 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
-  
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
   <bean id="contextService" class="org.openengsb.core.services.internal.ContextServiceImpl">
     <property name="configPersistence" ref="contextConfigPersistence" />
   </bean>
@@ -40,6 +39,9 @@
     <interfaces>
       <value>org.openengsb.core.api.ConnectorManager</value>
     </interfaces>
+    <service-properties>
+      <entry key="id" value="connectorManager" />
+    </service-properties>
     <ref component-id="connectorManager" />
   </service>
 
