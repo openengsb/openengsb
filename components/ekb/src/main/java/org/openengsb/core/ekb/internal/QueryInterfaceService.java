@@ -195,6 +195,12 @@ public class QueryInterfaceService implements QueryInterface {
     public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap) {
         return convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
     }
+    
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap,
+            Long timestamp) {
+        return convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
+    }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
