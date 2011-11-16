@@ -153,6 +153,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
         WorkflowService workflowService = getOsgiService(WorkflowService.class);
         LogEvent event = new LogEvent();
         event.setOrigin("example2");
+        authenticateAsAdmin();
         workflowService.processEvent(event);
 
         assertThat(exampleMock.wasCalled, is(true));
