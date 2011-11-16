@@ -258,7 +258,7 @@ public class JPATestIT {
     }
 
     @Test
-    public void test() {
+    public void testQueryWithTimestamp_shouldWork() {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
         data1.put("A", "B");
         data1.put("Cow", "Milk");
