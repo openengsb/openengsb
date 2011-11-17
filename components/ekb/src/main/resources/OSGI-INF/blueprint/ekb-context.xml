@@ -34,6 +34,9 @@
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.QueryInterface">
+    <service-properties>
+      <entry key="location.root" value="ekbQueryService" />
+    </service-properties>
     <ref component-id="queryInterfaceService"/>
   </service>
   
