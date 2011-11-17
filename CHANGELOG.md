@@ -1,3 +1,34 @@
+openengsb-2.1.2 2011-11-17
+--------------------------------------------
+
+The second maintenance release of the openensb-2.1.x series fixed 14 issues. First of all the archetypes work
+correctly now again; query and ekb services are exported with a correct root location to allow integration into
+flows. Most fixes had been done in the section of remoting e.g. handling OpenEngSBDomainObjects correctly; correcting
+various filters, make outgoing and ingoing messages the same. The upgrade of CXF (2.4.4) finally corrects various bugs
+of the former release.
+
+### Details
+** Bug
+    * [OPENENGSB-2071] - adapt archetypes to new artifact names
+    * [OPENENGSB-2260] - Remote interface cannot work correctly with openengsb model objects
+    * [OPENENGSB-2261] - http://localhost:8090/openengsb/tester does not load external domains
+    * [OPENENGSB-2265] - JsonOutgoingMethodCallMarshalFilter quites Void return value with a NPE
+    * [OPENENGSB-2267] - Minor issues in pom structure
+    * [OPENENGSB-2269] - DefaultSecureMethodCallFilterFactory disrupts the filter-concept
+    * [OPENENGSB-2274] - Incoming and outgoing message fromat differs
+    * [OPENENGSB-2290] - Remote methodcalls do not work when passing instances of subtypes as arguments
+    * [OPENENGSB-2292] - ekbproxyfilter should also be able to handle lists of models/modelwrappers
+    * [OPENENGSB-2293] - QueryService has no root (default) location defined
+    * [OPENENGSB-2294] - EkbService has no root (default) location defined
+    * [OPENENGSB-2296] - Database tests could fail from time to time
+
+** Library Upgrade
+    * [OPENENGSB-2255] - Upgrade to cxf 2.4.4
+
+** Task
+    * [OPENENGSB-2241] - Release framework-2.1.2
+
+
 openengsb-2.1.1 2011-10-24 
 --------------------------------------------
 
