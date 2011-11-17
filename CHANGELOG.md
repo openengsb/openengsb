@@ -1,3 +1,62 @@
+openengsb-2.2.0 2011-11-17
+--------------------------------------------
+
+All in all the second minor release of the 2.x series contains 34 closed issues with 13 bugfixes and various 
+improvements, library upgrades, and new features. Bug fixes are mostly done in the section of remote communication. With
+the upgrade of drools (5.3.0.FINAL) the OpenEngSB-Framework is now also fully java7 compatible. The upgrades of 
+CXF (2.4.4), paxexam-karaf (0.4.1) and commons-compress (1.3) fix various bugs and also add new features. Improvements
+had been done in the area of remote communication (ports-jms) and data storage (ekb/edb queries). Please take special
+care that the non-internal classes in the console project had been deprecated and the 
+DefaultSecureMethodCallFilterFactory. Please update them to be compatible to the future 3.0 release.
+
+### Details
+** Bug
+    * [OPENENGSB-2071] - adapt archetypes to new artifact names
+    * [OPENENGSB-2239] - CXF OSGi transport does not work
+    * [OPENENGSB-2260] - Remote interface cannot work correctly with openengsb model objects
+    * [OPENENGSB-2261] - http://localhost:8090/openengsb/tester does not load external domains
+    * [OPENENGSB-2265] - JsonOutgoingMethodCallMarshalFilter quites Void return value with a NPE
+    * [OPENENGSB-2267] - Minor issues in pom structure
+    * [OPENENGSB-2269] - DefaultSecureMethodCallFilterFactory disrupts the filter-concept
+    * [OPENENGSB-2274] - Incoming and outgoing message fromat differs
+    * [OPENENGSB-2290] - Remote methodcalls do not work when passing instances of subtypes as arguments
+    * [OPENENGSB-2292] - ekbproxyfilter should also be able to handle lists of models/modelwrappers
+    * [OPENENGSB-2293] - QueryService has no root (default) location defined
+    * [OPENENGSB-2294] - EkbService has no root (default) location defined
+    * [OPENENGSB-2296] - Database tests could fail from time to time
+
+** Deprecation
+    * [OPENENGSB-2143] - Deprecate all non-internal classes in console
+    * [OPENENGSB-2270] - Deprecate DefaultSecureMethodCallFilterFactory
+
+** Improvement
+    * [OPENENGSB-2057] - Java7 compatibility
+    * [OPENENGSB-2262] - Timeout needs to be configurable for jms
+    * [OPENENGSB-2264] - couple event to workflow integration test
+    * [OPENENGSB-2268] - Provide integration tests for various remoting situations
+    * [OPENENGSB-2284] - "recieve"-queue in JmsIncomingPort should be configurable
+    * [OPENENGSB-2286] - Add ModelUtils to the core common bundle
+    * [OPENENGSB-2288] - EDB Query improvement
+    * [OPENENGSB-2291] - new function for ekb query
+    * [OPENENGSB-2295] - It's not very wise that the default database is put into the dir where the project is executed
+
+** Library Upgrade
+    * [OPENENGSB-2240] - downgrade to cxf 2.4.2
+    * [OPENENGSB-2252] - Upgrade commons-compress to 1.3
+    * [OPENENGSB-2255] - Upgrade to cxf 2.4.4
+    * [OPENENGSB-2256] - upgrade drools to 5.3.0.Final
+    * [OPENENGSB-2266] - Upgrade to paxexam-karaf testframework 0.4.0
+    * [OPENENGSB-2289] - Upgrade paxexam-karaf to 0.4.1
+
+** New Feature
+    * [OPENENGSB-2243] - introduce BTPF-domain and BTPF-sample connector
+
+** Task
+    * [OPENENGSB-2232] - Release framework-2.2.0
+    * [OPENENGSB-2254] - Move documentation to domains they belong to. 
+    * [OPENENGSB-2263] - create example for remote connector
+
+
 openengsb-2.1.0 2011-10-21 
 --------------------------------------------
 
