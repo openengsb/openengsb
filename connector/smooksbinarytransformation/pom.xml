@@ -24,7 +24,7 @@
     <relativePath>../../parents/connector</relativePath>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -35,7 +35,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>org.openengsb.connector.smooksbinarytransformation</artifactId>
-  <version>2.2.0</version>
+  <version>2.3.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Smooks Binary Transform Provider Factory</name>
 
@@ -101,19 +101,19 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.test</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>org.openengsb.domain.binarytransformation</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
