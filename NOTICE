@@ -172,7 +172,10 @@ This project includes:
   OpenEngSB :: Connector :: Example under Apache 2
   OpenEngSB :: Connector :: MemoryAuditing under Apache 2
   OpenEngSB :: Connector :: Parent under Apache 2
+  OpenEngSB :: Connector :: Smooks Binary Transform Provider Factory under Apache 2
+  OpenEngSB :: Documentation :: Manual under Apache 2
   OpenEngSB :: Domain :: Auditing under Apache 2
+  OpenEngSB :: Domain :: Binary Transformation Provider Factory under Apache 2
   OpenEngSB :: Domain :: Example under Apache 2
   OpenEngSB :: Domain :: Parent under Apache 2
   OpenEngSB :: Examples :: Java Remote Client under Apache 2
