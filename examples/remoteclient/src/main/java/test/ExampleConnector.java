@@ -19,8 +19,11 @@ package test;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +80,14 @@ class ExampleConnector implements ExampleDomain, Connector {
     public String doSomethingWithLogEvent(LogEvent event) {
         LOGGER.info("LogEvent: {}", event);
         return event.toString();
+    }
+
+    @Override
+    public ExampleResponseModel doSomething(ExampleRequestModel model) {
+        LOGGER.info("RequestModelEvent: {}", model);
+        ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+        response.setResult("success");
+        return response;
     }
 
 }
