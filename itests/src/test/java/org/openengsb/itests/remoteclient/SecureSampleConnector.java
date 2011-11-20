@@ -26,6 +26,7 @@ import javax.jms.JMSException;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
@@ -33,7 +34,6 @@ import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,8 +171,8 @@ public final class SecureSampleConnector {
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
         MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
-        BeanDescription auth = BeanDescription.fromObject(new UsernamePasswordAuthenticationInfo("admin", "password"));
-        SecureRequest create = SecureRequest.create(methodCallRequest, auth);
+        BeanDescription auth = BeanDescription.fromObject(new Password("password"));
+        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
         ObjectMapper mapper = new ObjectMapper();
         String writeValueAsString = mapper.defaultPrettyPrintingWriter().writeValueAsString(create);
         System.out.println(writeValueAsString);
@@ -188,7 +188,7 @@ public final class SecureSampleConnector {
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
         MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
-        SecureRequest create = SecureRequest.create(methodCallRequest, null);
+        SecureRequest create = SecureRequest.create(methodCallRequest, null, null);
         String writeValueAsString = new ObjectMapper().writeValueAsString(create);
         System.out.println(writeValueAsString);
     }
