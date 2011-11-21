@@ -17,7 +17,7 @@
 
 package org.openengsb.core.console.internal.util;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -53,23 +53,6 @@ public class ServicesHelper {
     }
 
     /**
-     * this method prints out services which can be created
-     */
-    public void listCreatableServices() {
-        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
-        Collections.sort(serviceList, Comparators.forDomainProvider());
-
-        OutputStreamFormater.printValue("Services");
-        Locale defaultLocale = Locale.getDefault();
-
-        for (DomainProvider dp : serviceList) {
-            OutputStreamFormater
-                    .printValue(dp.getName().getString(defaultLocale), dp.getDescription().getString(defaultLocale));
-            printConnectorProvidersByDomain(dp.getId());
-        }
-    }
-
-    /**
      * prints out all available connectors for a given domain provider
      */
     private void printConnectorProvidersByDomain(String domainType) {
@@ -90,43 +73,42 @@ public class ServicesHelper {
         }
     }
 
-    public void createService(InputStream keyboard) {
-        //OutputStreamFormater.printValue("Enter Service ID");
-        //TODO: not yet implemented
-    }
-
     /**
      * this method prints out all available services and their alive state
      */
     public void listService() {
-        Locale defaultLocale = Locale.getDefault();
-
+        final Locale defaultLocale = Locale.getDefault();
+        List<String> formatedOutput = new ArrayList<String>();
         List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
 
-        for (DomainProvider domainProvider : serviceList) {
-            OutputStreamFormater
-                    .printValue(domainProvider.getName().getString(defaultLocale),
-                            domainProvider.getDescription().getString(defaultLocale));
+        for (final DomainProvider domainProvider : serviceList) {
 
             Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
             final List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
             try {
-                SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                formatedOutput = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
                     @Override
-                    public Object call() throws Exception {
+                    public List<String> call() throws Exception {
+                        List<String> formatedOutput = new ArrayList<String>();
+                        formatedOutput.add(OutputStreamFormater.formatValues(domainProvider.getName().getString
+                                (defaultLocale),
+                                domainProvider.getDescription().getString(defaultLocale)));
                         for (Domain serviceReference : domainEndpoints) {
                             String id = serviceReference.getInstanceId();
                             AliveState aliveState = serviceReference.getAliveState();
                             if (id != null) {
-                                OutputStreamFormater.printTabbedValues(9, id, aliveState.toString());
+                                formatedOutput.add(OutputStreamFormater.formatValues(9, id, aliveState.toString()));
                             }
                         }
-                        return null;
+                        return formatedOutput;
                     }
                 });
             } catch (ExecutionException e) {
                 e.printStackTrace();
+            }
+            for (String s : formatedOutput) {
+                OutputStreamFormater.printValue(s);
             }
         }
     }
