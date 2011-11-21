@@ -17,20 +17,11 @@
 
 package org.openengsb.core.console.internal;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.service.command.CommandProcessor;
-import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
-import org.osgi.framework.ServiceReference;
 
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
@@ -39,27 +30,9 @@ public class ServiceCommands extends OsgiCommandSupport {
             required = true, multiValued = false)
     String arg = null;
 
-    @Argument(index = 1, name = "serviceId", description = "The domain id to be instantiated", required = false,
-            multiValued = false)
-    String serviceId = null;
-
-    @Argument(index = 2, name = "serviceAttributes", description = "The service attributes (alphabetic order)",
-            required = false, multiValued = true)
-    List<String> attributes = null;
-
-    private OsgiUtilsService osgiUtilsService;
     private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
-        ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
-        ServiceReference commandSessionReference =
-                getBundleContext().getServiceReference("org.apache.felix.service.command.CommandProcessor");
-
-        osgiUtilsService = getService(OsgiUtilsService.class, sr);
-
-        CommandProcessor commandProcessor = getService(CommandProcessor.class, commandSessionReference);
-        CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
-        InputStream keyboard = commandSession.getKeyboard();
 
         try {
             ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
@@ -84,20 +57,6 @@ public class ServiceCommands extends OsgiCommandSupport {
             System.err.println("Invalid Argument");
         }
         return null;
-    }
-
-    private void createService(List<DomainProvider> serviceList, InputStream keyboard) {
-        boolean readInput = true;
-        try {
-            while (readInput) {
-                char read = (char) keyboard.read();
-
-            }
-        } catch (IOException e) {
-            //TODO error handling
-            e.printStackTrace();
-        }
-
     }
 
     public ServicesHelper getServiceHelper() {
