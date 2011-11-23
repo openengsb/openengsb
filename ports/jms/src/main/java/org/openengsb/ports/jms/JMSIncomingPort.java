@@ -48,6 +48,8 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
+    private String receive;
+
     /*
      * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
      */
@@ -141,6 +143,10 @@ public class JMSIncomingPort {
 
     public void setUnsecureFilterChain(FilterChain unsecureFilterChain) {
         this.unsecureFilterChain = unsecureFilterChain;
+    }
+
+    public void setReceive(String receive) {
+        this.receive = receive;
     }
 
 }

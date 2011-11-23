@@ -31,10 +31,12 @@
   <!-- Query Interface -->
   <bean id="queryInterfaceService" class="org.openengsb.core.ekb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
-    <property name="modelFactory" ref="modelFactoryService"/>
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.QueryInterface">
+    <service-properties>
+      <entry key="location.root" value="ekbQueryService" />
+    </service-properties>
     <ref component-id="queryInterfaceService"/>
   </service>
   
@@ -59,6 +61,9 @@
   </bean>
 
   <service interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService">
+    <service-properties>
+      <entry key="location.root" value="ekbService" />
+    </service-properties>
     <ref component-id="ekbServiceProvider" />
   </service>
   

@@ -18,8 +18,19 @@
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
-  xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+  xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" >
+
+  <!-- Allows us to use system properties as variables in this configuration file -->
+  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
+
+  <!-- Property place holder -->
+  <cm:property-placeholder persistent-id="org.openengsb.ports.jms">
+    <cm:default-properties>
+      <cm:property name="timeForResponse" value="3000" />
+      <cm:property name="defaultReceiveQueue" value="receive" />
+    </cm:default-properties>
+  </cm:property-placeholder>
 
   <service interface="org.openengsb.core.api.remote.OutgoingPort">
     <service-properties>
@@ -39,11 +50,14 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
-        <value>org.openengsb.core.common.remote.JsonOutgoingMethodCallMarshalFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
+        <value>org.openengsb.core.security.filter.OutgoingWrapperFilter</value>
+        <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
           <property name="factory">
             <bean class="org.openengsb.ports.jms.JMSTemplateFactoryImpl" />
           </property>
+          <property name="timeout" value="${timeForResponse}" />
         </bean>
       </list>
     </property>
@@ -60,6 +74,7 @@
     <property name="unsecureFilterChain">
       <bean factory-ref="unsecureIncomingFilterChainFactory" factory-method="create" />
     </property>
+    <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -73,7 +88,13 @@
           <property name="secretKeyAlgorithm" value="AES" />
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
-        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
       </list>
     </property>
   </bean>
@@ -84,13 +105,18 @@
     <property name="filters">
       <list>
         <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
-        <bean factory-ref="defaultSecureFilterChainFactory" factory-method="create" />
+        <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
+        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
+        <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
+          <property name="requestHandler" ref="requestHandler" />
+        </bean>
       </list>
     </property>
   </bean>
 
-  <bean id="defaultSecureFilterChainFactory" class="org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory">
-    <property name="requestHandler" ref="requestHandler" />
+  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
     <property name="authenticationManager" ref="authenticator" />
   </bean>
 

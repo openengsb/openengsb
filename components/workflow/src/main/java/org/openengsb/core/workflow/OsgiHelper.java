@@ -20,6 +20,9 @@ package org.openengsb.core.workflow;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openengsb.core.api.Constants;
+import org.openengsb.core.api.Event;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -42,6 +45,13 @@ public final class OsgiHelper {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", serviceId);
         sendRemoteEvent(portId, destination, e, metaData);
+    }
+
+    public static <T> T getResponseProxy(Event e, Class<T> targetClass) {
+        String origin = e.getOrigin();
+        OsgiUtilsService utilService = OpenEngSBCoreServices.getServiceUtilsService();
+        String filter = String.format("(%s=%s)", Constants.ID_KEY, origin);
+        return utilService.getOsgiServiceProxy(filter, targetClass);
     }
 
     private OsgiHelper() {

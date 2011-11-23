@@ -26,7 +26,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,14 +37,11 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 public class EKBServiceTest {
-    private EKBService service;
+    private QueryInterfaceService service;
 
     @Before
     public void setup() {
-        this.service = new EKBService();
-        
-        ModelFactoryService modelFactory = new ModelFactoryService();
-
+        this.service = new QueryInterfaceService();
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
 
         EDBObject edbObject = new EDBObject("testoid");
@@ -76,172 +72,8 @@ public class EKBServiceTest {
         when(edbService.getObject("suboid1")).thenReturn(subObject1);
         when(edbService.getObject("suboid2")).thenReturn(subObject2);
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
-        
-        QueryInterfaceService queryInterface = new QueryInterfaceService();
-        queryInterface.setEdbService(edbService);
-        queryInterface.setModelFactory(modelFactory);
 
-        service.setQueryInterface(queryInterface);
-        service.setModelFactory(modelFactory);
-    }
-
-    @Test
-    public void testSetterAndGetterWithStringObject_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-        model.setId("testId");
-
-        assertThat(model.getId(), is("testId"));
-    }
-
-    @Test
-    public void testSetterAndGetterWithDateObject_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-        Date date = new Date();
-        model.setDate(date);
-
-        assertThat(model.getDate(), is(date));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotGetterOrSetterMethod_shouldThrowException() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-        model.testMethod();
-    }
-
-    @Test
-    public void testGetOpenEngSBModelEntries_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-        String id = "testId";
-        model.setId(id);
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-
-        boolean idExisting = false;
-        String tempId = null;
-
-        for (OpenEngSBModelEntry entry : entries) {
-            if (entry.getKey().equals("id")) {
-                idExisting = true;
-                tempId = (String) entry.getValue();
-            }
-        }
-        assertThat(idExisting, is(true));
-        assertThat(tempId, is(id));
-    }
-
-    @Test
-    public void testGetOpenEngSBModelEntriesNonSimpleObject_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-        Date date = new Date();
-        model.setDate(date);
-
-        boolean dateExisting = false;
-        Date tempDate = null;
-
-        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
-            if (entry.getKey().equals("date")) {
-                dateExisting = true;
-                tempDate = (Date) entry.getValue();
-            }
-        }
-
-        assertThat(dateExisting, is(true));
-        assertThat(tempDate, is(date));
-    }
-
-    @Test
-    public void testGetOpenEngSBModelEntriesListObjects_shouldWork() {
-        List<String> test = Arrays.asList("string1", "string2", "string3");
-        OpenEngSBModelEntry entry = new OpenEngSBModelEntry("list", test, test.getClass());
-        TestModel model = service.createEmptyModelObject(TestModel.class, entry);
-
-        boolean stringEntry1 = false;
-        boolean stringEntry2 = false;
-        boolean stringEntry3 = false;
-
-        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("list0") && e.getValue().equals("string1")) {
-                stringEntry1 = true;
-            }
-            if (e.getKey().equals("list1") && e.getValue().equals("string2")) {
-                stringEntry2 = true;
-            }
-            if (e.getKey().equals("list2") && e.getValue().equals("string3")) {
-                stringEntry3 = true;
-            }
-        }
-
-        assertThat(stringEntry1, is(true));
-        assertThat(stringEntry2, is(true));
-        assertThat(stringEntry3, is(true));
-    }
-
-    @Test
-    public void testGetOpenEngSBModelEntriesEnumObjects_shouldWork() {
-        ENUM enumeration = ENUM.A;
-        OpenEngSBModelEntry entry = new OpenEngSBModelEntry("enumeration", enumeration, ENUM.class);
-        TestModel model = service.createEmptyModelObject(TestModel.class, entry);
-
-        boolean enumEntry = false;
-
-        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("enumeration") && e.getValue().equals("A")) {
-                enumEntry = true;
-            }
-        }
-
-        assertThat(enumEntry, is(true));
-    }
-
-    @Test
-    public void testGetOpenEngSBModelEntriesWhichWerentSettet_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-
-        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
-
-        // 8 because the model define 8 fields
-        assertThat(entries.size(), is(8));
-    }
-
-    @Test
-    public void testFunctionalityOfAddingTailInformation_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("tailentry", "tail", String.class));
-        boolean tailEntry = false;
-
-        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
-                tailEntry = true;
-            }
-        }
-        assertThat(tailEntry, is(true));
-    }
-
-    @Test
-    public void testFunctionalityOfRemovingTailInformation_shouldWork() {
-        TestModel model = service.createEmptyModelObject(TestModel.class);
-
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("tailentry", "tail", String.class));
-        boolean tailEntry = false;
-
-        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
-                tailEntry = true;
-            }
-        }
-
-        model.removeOpenEngSBModelEntry("tailentry");
-
-        boolean tailAway = true;
-
-        for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("tailentry") && e.getValue().equals("tail")) {
-                tailEntry = false;
-            }
-        }
-
-        assertThat(tailEntry, is(true));
-        assertThat(tailAway, is(true));
+        service.setEdbService(edbService);
     }
 
     @Test

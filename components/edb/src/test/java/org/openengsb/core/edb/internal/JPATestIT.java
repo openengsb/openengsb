@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -615,6 +616,208 @@ public class JPATestIT {
         assertThat(subObject2, notNullValue());
         assertThat((String) mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
         assertThat((String) mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+    }
+
+    @Test
+    public void testQueryOfOldVersionShouldWork() {
+        HashMap<String, Object> data1v1 = new HashMap<String, Object>();
+        data1v1.put("pre:KeyA", "pre:Value A 1");
+        data1v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v11 = new EDBObject("pre:/test/object1", data1v1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.add(v11);
+        HashMap<String, Object> data2v1 = new HashMap<String, Object>();
+        data2v1.put("pre:KeyA", "pre:Value A 2");
+        data2v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v12 = new EDBObject("pre:/test/object2", data2v1);
+        ci.add(v12);
+        HashMap<String, Object> data3v1 = new HashMap<String, Object>();
+        data3v1.put("pre:KeyA", "pre:Value A 3");
+        data3v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v13 = new EDBObject("pre:/test/object3", data3v1);
+        ci.add(v13);
+
+        long time1 = db.commit(ci);
+
+        HashMap<String, Object> data1v2 = new HashMap<String, Object>();
+        data1v2.put("pre:KeyA", "pre:Value A 1");
+        data1v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v21 = new EDBObject("pre:/test/object1", data1v2);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v21);
+        HashMap<String, Object> data2v2 = new HashMap<String, Object>();
+        data2v2.put("pre:KeyA", "pre:Value A 2");
+        data2v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v22 = new EDBObject("pre:/test/object2", data2v2);
+        ci.add(v22);
+        HashMap<String, Object> data4v1 = new HashMap<String, Object>();
+        data4v1.put("pre:KeyA", "pre:Value A 4");
+        data4v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v23 = new EDBObject("pre:/test/object4", data4v1);
+        ci.add(v23);
+
+        long time2 = db.commit(ci);
+
+        HashMap<String, Object> data1v3 = new HashMap<String, Object>();
+        data1v3.put("pre:KeyA", "pre:Value A 1");
+        data1v3.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v31 = new EDBObject("pre:/test/object1", data1v3);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v31);
+        HashMap<String, Object> data2v3 = new HashMap<String, Object>();
+        data2v3.put("pre:KeyA", "pre:Value A 2a");
+        data2v3.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v32 = new EDBObject("pre:/test/object2", data2v3);
+        ci.add(v32);
+        HashMap<String, Object> data4v2 = new HashMap<String, Object>();
+        data4v2.put("pre:KeyA", "pre:Value A 4");
+        data4v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v33 = new EDBObject("pre:/test/object4", data4v2);
+        ci.add(v33);
+
+        long time3 = db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("pre:KeyB", "pre:Value A 1");
+        List<EDBObject> result = db.query(map, time2);
+
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+
+        for (EDBObject e : result) {
+            if (e.get("pre:KeyA").equals("pre:Value A 1")) {
+                b1 = true;
+            }
+            if (e.get("pre:KeyA").equals("pre:Value A 2")) {
+                b2 = true;
+            }
+            if (e.get("pre:KeyA").equals("pre:Value A 3")) {
+                b3 = true;
+            }
+        }
+
+        assertThat(b1, is(true));
+        assertThat(b2, is(true));
+        assertThat(b3, is(true));
+        assertThat(time1 > 0, is(true));
+        assertThat(time2 > 0, is(true));
+        assertThat(time3 > 0, is(true));
+    }
+
+    @Test
+    public void testQueryWithTimestamp_shouldWork() {
+        HashMap<String, Object> data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Cow", "Milk");
+        data1.put("Dog", "Food");
+        EDBObject v1 = new EDBObject("/test/querynew1", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew1", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew2", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("K", "B");
+        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        assertThat(result.size(), is(1));
+    }
+
+    @Test
+    public void testQueryOfLastKnownVersionShouldWork() {
+        HashMap<String, Object> data1v1 = new HashMap<String, Object>();
+        data1v1.put("KeyA", "Value A 1");
+        data1v1.put("KeyB", "Value A 1");
+        EDBObject v11 = new EDBObject("/test/object1", data1v1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.add(v11);
+        HashMap<String, Object> data2v1 = new HashMap<String, Object>();
+        data2v1.put("KeyA", "Value A 2");
+        data2v1.put("KeyB", "Value A 1");
+        EDBObject v12 = new EDBObject("/test/object2", data2v1);
+        ci.add(v12);
+        HashMap<String, Object> data3v1 = new HashMap<String, Object>();
+        data3v1.put("KeyA", "Value A 3");
+        data3v1.put("KeyB", "Value A 1");
+        EDBObject v13 = new EDBObject("/test/object3", data3v1);
+        ci.add(v13);
+
+        long time1 = db.commit(ci);
+
+        ci = db.createCommit("Blub", "Testing");
+        HashMap<String, Object> data1v2 = new HashMap<String, Object>();
+        data1v2.put("KeyA", "Value A 1");
+        data1v2.put("KeyB", "Value A 1");
+        EDBObject v21 = new EDBObject("/test/object1", data1v2);
+        ci.add(v21);
+        HashMap<String, Object> data2v2 = new HashMap<String, Object>();
+        data2v2.put("KeyA", "Value A 2");
+        data2v2.put("KeyB", "Value A 1");
+        EDBObject v22 = new EDBObject("/test/object2", data2v2);
+        ci.add(v22);
+
+        long time2 = db.commit(ci);
+
+        ci = db.createCommit("Blub", "Testing");
+        HashMap<String, Object> data2v3 = new HashMap<String, Object>();
+        data2v3.put("KeyA", "Value A 2a");
+        data2v3.put("KeyB", "Value A 1");
+        EDBObject v32 = new EDBObject("/test/object2", data2v3);
+        ci.add(v32);
+        HashMap<String, Object> data4v1 = new HashMap<String, Object>();
+        data4v1.put("KeyA", "Value A 4");
+        data4v1.put("KeyB", "Value A 1");
+        EDBObject v33 = new EDBObject("/test/object4", data4v1);
+        ci.add(v33);
+
+        long time3 = db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("KeyB", "Value A 1");
+        List<EDBObject> result = db.query(map, time3);
+
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+        boolean b4 = false;
+
+        for (EDBObject e : result) {
+            if (e.get("KeyA").equals("Value A 1")) {
+                b1 = true;
+            }
+            if (e.get("KeyA").equals("Value A 2a")) {
+                b2 = true;
+            }
+            if (e.get("KeyA").equals("Value A 3")) {
+                b3 = true;
+            }
+
+            if (e.get("KeyA").equals("Value A 4")) {
+                b4 = true;
+            }
+        }
+
+        assertThat(b1, is(true));
+        assertThat(b2, is(true));
+        assertThat(b3, is(true));
+        assertThat(b4, is(true));
+        assertThat(time1 > 0, is(true));
+        assertThat(time2 > 0, is(true));
+        assertThat(time3 > 0, is(true));
     }
 
     private void enrichEDBEvent(EDBEvent event) {

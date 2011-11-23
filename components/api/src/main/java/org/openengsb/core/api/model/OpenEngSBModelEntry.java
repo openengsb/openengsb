@@ -29,6 +29,9 @@ public class OpenEngSBModelEntry {
     private Object value;
     private Class<?> type;
 
+    public OpenEngSBModelEntry() {
+    }
+    
     public OpenEngSBModelEntry(String key, Object value, Class<?> type) {
         this.key = key;
         this.value = value;
@@ -38,13 +41,25 @@ public class OpenEngSBModelEntry {
     public String getKey() {
         return key;
     }
+    
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Object getValue() {
         return value;
     }
+    
+    public void setValue(Object value) {
+        this.value = value;
+    }
 
     public Class<?> getType() {
         return type;
+    }
+    
+    public void setType(Class<?> type) {
+        this.type = type;
     }
 
 }

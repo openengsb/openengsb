@@ -18,34 +18,35 @@
 package org.openengsb.core.ekb.internal;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.ekb.ModelFactory;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the QueryInterface service. It's main responsibilities are the loading of
- * elements from the EDB and converting them to the correct format.
+ * Implementation of the QueryInterface service. It's main responsibilities are the loading of elements from the EDB and
+ * converting them to the correct format.
  */
 public class QueryInterfaceService implements QueryInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryInterfaceService.class);
-    
+
     private EngineeringDatabaseService edbService;
-    private ModelFactory modelFactory;
 
     private Object createNewInstance(Class<?> model) {
         if (model.isInterface() && OpenEngSBModel.class.isAssignableFrom(model)) {
-            return modelFactory.createModelObject(model);
+            return ModelUtils.createModelObject(model);
         } else {
             try {
                 return model.newInstance();
@@ -67,14 +68,14 @@ public class QueryInterfaceService implements QueryInterface {
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
 
-        for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
+        for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             if (propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
             Method setterMethod = propertyDescriptor.getWriteMethod();
             Object value = getValueForProperty(propertyDescriptor, object);
             if (value != null) {
-                EKBUtils.invokeSetterMethod(setterMethod, instance, value);
+                invokeSetterMethod(setterMethod, instance, value);
                 nothingSet = false;
             }
         }
@@ -83,6 +84,22 @@ public class QueryInterfaceService implements QueryInterface {
             return null;
         } else {
             return instance;
+        }
+    }
+
+    private void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
+        try {
+            setterMethod.invoke(instance, parameter);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("illegal argument exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
+        } catch (IllegalAccessException ex) {
+            LOGGER.error("illegal access exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            LOGGER.error("invocatin target exception when invoking {} with argument {}",
+                setterMethod.getName(), parameter);
         }
     }
 
@@ -127,7 +144,7 @@ public class QueryInterfaceService implements QueryInterface {
             } else {
                 obj = object.get(propertyName + i);
             }
-            
+
             temp.add(obj);
         }
         return temp;
@@ -180,12 +197,30 @@ public class QueryInterfaceService implements QueryInterface {
         return convertEDBObjectsToModelObjects(model, edbService.query(queryMap));
     }
 
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, Map<String, Object> queryMap,
+            Long timestamp) {
+        return convertEDBObjectsToModelObjects(model, edbService.query(queryMap, timestamp));
+    }
+
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
-    
-    public void setModelFactory(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
+
+    @Override
+    public <T extends OpenEngSBModel> List<T> queryForModels(Class<T> model, String query, String timestamp) {
+        Long time = Long.parseLong(timestamp);
+        Map<String, Object> map = generateMapOutOfString(query);
+        return convertEDBObjectsToModelObjects(model, edbService.query(map, time));
     }
 
+    public Map<String, Object> generateMapOutOfString(String query) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String[] elements = query.split(" and ");
+        for (String element : elements) {
+            String[] parts = element.split(":");
+            map.put(parts[0], parts[1]);
+        }
+        return map;
+    }
 }

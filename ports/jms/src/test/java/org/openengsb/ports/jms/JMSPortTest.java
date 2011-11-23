@@ -72,10 +72,12 @@ import org.openengsb.core.common.remote.XmlDecoderFilter;
 import org.openengsb.core.common.remote.XmlMethodCallMarshalFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.security.filter.DefaultSecureMethodCallFilterFactory;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
+import org.openengsb.core.security.filter.MessageAuthenticatorFactory;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
+import org.openengsb.core.security.filter.MessageVerifierFilter;
+import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -274,7 +276,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     }
 
     private FilterChain createSecureFilterChain() throws Exception {
-        DefaultSecureMethodCallFilterFactory secureFilterChainFactory = new DefaultSecureMethodCallFilterFactory();
         AuthenticationDomain authenticationManager = mock(AuthenticationDomain.class);
         when(authenticationManager.authenticate(anyString(), any(Credentials.class))).thenAnswer(
             new Answer<Authentication>() {
@@ -288,8 +289,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                     throw new BadCredentialsException("username and password did not match");
                 }
             });
-        secureFilterChainFactory.setAuthenticationManager(authenticationManager);
-        secureFilterChainFactory.setRequestHandler(handler);
+        MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();
+        authenticatorFactory.setAuthenticationManager(authenticationManager);
         PrivateKeySource keySource = mock(PrivateKeySource.class);
         when(keySource.getPrivateKey()).thenReturn(privateKey);
         MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource, "AES");
@@ -298,7 +299,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             EncryptedJsonMessageMarshaller.class,
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
-            secureFilterChainFactory.create()));
+            MessageVerifierFilter.class,
+            authenticatorFactory,
+            WrapperFilter.class,
+            new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();
         return secureChain;
     }

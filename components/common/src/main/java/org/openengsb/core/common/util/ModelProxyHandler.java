@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.common.util;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
  * Simulates an implementation for a model interface. This class is only able to handle getters and setters, toString
  * and getOpenEngSBModelEntries of domain models.
  */
-public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
+public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EKBProxyHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelProxyHandler.class);
     private Map<String, OpenEngSBModelEntry> objects;
 
-    public EKBProxyHandler(Class<?> model, OpenEngSBModelEntry... entries) {
+    public ModelProxyHandler(Class<?> model, OpenEngSBModelEntry... entries) {
         objects = new HashMap<String, OpenEngSBModelEntry>();
         fillModelWithNullValues(model);
         for (OpenEngSBModelEntry entry : entries) {
@@ -54,7 +54,7 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     private void fillModelWithNullValues(Class<?> model) {
-        for (PropertyDescriptor propertyDescriptor : EKBUtils.getPropertyDescriptorsForClass(model)) {
+        for (PropertyDescriptor propertyDescriptor : ModelUtils.getPropertyDescriptorsForClass(model)) {
             String propertyName = propertyDescriptor.getName();
             Class<?> clasz = propertyDescriptor.getPropertyType();
             objects.put(propertyName, new OpenEngSBModelEntry(propertyName, null, clasz));
@@ -87,8 +87,9 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
             handleRemoveEntry((String) args[0]);
             return null;
         } else {
-            LOGGER.error("EKBProxyHandler is only able to handle getters and setters");
-            throw new IllegalArgumentException("EKBProxyHandler is only able to handle getters and setters");
+            LOGGER.error("{} is only able to handle getters and setters", this.getClass().getSimpleName());
+            throw new IllegalArgumentException(this.getClass().getSimpleName()
+                    + " is only able to handle getters and setters");
         }
     }
 
@@ -101,7 +102,7 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
-        String propertyName = EKBUtils.getPropertyName(method);
+        String propertyName = ModelUtils.getPropertyName(method);
         if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
             objects.put("edbId", new OpenEngSBModelEntry("edbId", args[0].toString(), String.class));
         }
@@ -110,7 +111,7 @@ public class EKBProxyHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     private Object handleGetMethod(Method method) throws Throwable {
-        String propertyName = EKBUtils.getPropertyName(method);
+        String propertyName = ModelUtils.getPropertyName(method);
         return objects.get(propertyName).getValue();
     }
 

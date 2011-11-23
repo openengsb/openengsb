@@ -254,6 +254,15 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             throw new EDBException("failed to query for objects with the given map", ex);
         }
     }
+    
+    @Override
+    public List<EDBObject> query(Map<String, Object> queryMap, Long timestamp) throws EDBException {
+        try {
+            return generateEDBObjectList(new ArrayList<JPAObject>(dao.query(queryMap, timestamp)));
+        } catch (Exception ex) {
+            throw new EDBException("failed to query for objects with the given map", ex);
+        }
+    }
 
     @Override
     public List<EDBCommit> getCommits(String key, Object value) throws EDBException {
