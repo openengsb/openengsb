@@ -1,9 +1,7 @@
 package org.openengsb.core.console.internal.util;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,18 +21,13 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
-/**
- *
- */
 public class ServicesHelperTest {
 
     private ServicesHelper serviceHelper;
-    private DefaultOsgiUtilsService osgiServiceMock;
-
 
     @Before
     public void init() {
-        osgiServiceMock = mock(DefaultOsgiUtilsService.class);
+        DefaultOsgiUtilsService osgiServiceMock = mock(DefaultOsgiUtilsService.class);
         final List<DomainProvider> domainProviders = new ArrayList<DomainProvider>();
         final List<Domain> domainEndpoints = new ArrayList<Domain>();
         Domain domainEndpoint = new NullDomainImpl("id");
