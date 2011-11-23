@@ -30,7 +30,7 @@ import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
 
 /**
- *
+ * this completer helps the user to know which input is expected
  */
 public class ServiceCompleter implements Completer {
 
@@ -57,12 +57,13 @@ public class ServiceCompleter implements Completer {
                     case LIST:
                         return delegate.complete(buffer, cursor, candidates);
                     case CREATE:
-                        // TODO
+                        // TODO: see OPENENGSB-2280
                         break;
                     case UPDATE:
-                        // TODO
+                        // TODO: see OPENENGSB-2282
                         break;
                     case DELETE:
+                        //TODO : see OPENENGSB-2281
                         break;
                     default:
                         break;
