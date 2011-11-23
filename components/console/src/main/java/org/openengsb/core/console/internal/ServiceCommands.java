@@ -38,16 +38,16 @@ public class ServiceCommands extends OsgiCommandSupport {
             ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
             switch (arguments) {
                 case LIST:
-                    serviceHelper.listService();
+                    serviceHelper.listRunningServices();
                     break;
                 case CREATE:
-                    //TODO
+                    // TODO: see OPENENGSB-2280
                     break;
                 case UPDATE:
-                    //TODO
+                    // TODO: see OPENENGSB-2282
                     break;
                 case DELETE:
-                    //TODO
+                    //TODO : see OPENENGSB-2281
                     break;
                 default:
                     System.err.println("Invalid Argument");
