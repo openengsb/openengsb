@@ -30,6 +30,9 @@ public class ServiceCommands extends OsgiCommandSupport {
         required = false, multiValued = false)
     String arg = null;
 
+    @Argument(index = 1, name = "id", required = false, multiValued = false)
+    String id = null;
+
     private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
@@ -47,10 +50,10 @@ public class ServiceCommands extends OsgiCommandSupport {
                     // TODO: see OPENENGSB-2282
                     break;
                 case DELETE:
-                    // TODO : see OPENENGSB-2281
+                    serviceHelper.deleteService(id);
                     break;
                 default:
-                    System.err.println("Invalid Argument");
+                    serviceHelper.listRunningServices();
                     break;
             }
         } catch (IllegalArgumentException ex) {

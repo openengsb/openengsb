@@ -19,8 +19,11 @@ package org.openengsb.core.console.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -29,6 +32,7 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
@@ -61,25 +65,12 @@ public class ServicesHelper {
      * this method prints out all available services and their alive state
      */
     public void listRunningServices() {
-        List<String> formatedOutput = getRunningServices();
-        for (String s : formatedOutput) {
-            OutputStreamFormater.printValue(s);
-        }
-    }
-
-    /**
-     * returns all running services
-     */
-    public List<String> getRunningServices() {
         final Locale defaultLocale = Locale.getDefault();
         List<String> formatedOutput = new ArrayList<String>();
-        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
-        Collections.sort(serviceList, Comparators.forDomainProvider());
-
-        for (final DomainProvider domainProvider : serviceList) {
-
-            Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
-            final List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints = getDomainsAndEndpoints();
+        Set<DomainProvider> domainProviders = domainsAndEndpoints.keySet();
+        for (final DomainProvider domainProvider : domainProviders) {
+            final List<? extends Domain> domainEndpoints = domainsAndEndpoints.get(domainProvider);
             try {
                 formatedOutput.addAll(SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
                     @Override
@@ -102,7 +93,55 @@ public class ServicesHelper {
                 e.printStackTrace();
             }
         }
-        return formatedOutput;
+        for (String s : formatedOutput) {
+            OutputStreamFormater.printValue(s);
+        }
+    }
+
+
+    /**
+     * returns all running services
+     */
+    public List<Domain> getRunningServices() {
+        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints = getDomainsAndEndpoints();
+        List<Domain> endpoints = new ArrayList<Domain>();
+        Set<DomainProvider> domainProviders = domainsAndEndpoints.keySet();
+        for (DomainProvider provider : domainProviders) {
+            endpoints.addAll(domainsAndEndpoints.get(provider));
+        }
+        return endpoints;
+    }
+
+    public Map<DomainProvider, List<? extends Domain>> getDomainsAndEndpoints() {
+        Map<DomainProvider, List<? extends Domain>>
+                domainsAndEndpoints = new HashMap<DomainProvider, List<? extends Domain>>();
+        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
+        Collections.sort(serviceList, Comparators.forDomainProvider());
+
+        for (final DomainProvider domainProvider : serviceList) {
+            Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
+            List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+            domainsAndEndpoints.put(domainProvider, domainEndpoints);
+        }
+        return domainsAndEndpoints;
+    }
+
+    /**
+     * delete a service identified by its id
+     */
+    public void deleteService(final String id) {
+        try {
+            SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    ConnectorId fullId = ConnectorId.fromFullId(id);
+                    serviceManager.delete(fullId);
+                    return null;
+                }
+            });
+        } catch (ExecutionException e) {
+            System.err.println("Could not delete service");
+        }
     }
 
     public void setOsgiUtilsService(DefaultOsgiUtilsService osgiUtilsService) {

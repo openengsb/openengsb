@@ -17,17 +17,17 @@
 
 package org.openengsb.core.console.internal.completer;
 
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
-
 import java.util.List;
 
 import org.apache.karaf.shell.console.Completer;
 import org.apache.karaf.shell.console.completer.StringsCompleter;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
+
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
 
 /**
  * this completer helps the user to know which input is expected
@@ -47,7 +47,7 @@ public class ServiceCompleter implements Completer {
      */
     public int complete(String buffer, int cursor, List<String> candidates) {
 
-        StringsCompleter delegate = new StringsCompleter();
+        StringsCompleter delegate = new  StringsCompleter();
         if (buffer == null) {
             delegate = printStandardCommands(delegate);
         } else {
@@ -63,8 +63,10 @@ public class ServiceCompleter implements Completer {
                         // TODO: see OPENENGSB-2282
                         break;
                     case DELETE:
-                        //TODO : see OPENENGSB-2281
-                        break;
+                        candidates.add("eins");
+                        candidates.add("zwei");
+                        candidates.add("drei");
+                        return delegate.complete(buffer, cursor, candidates);
                     default:
                         break;
                 }
