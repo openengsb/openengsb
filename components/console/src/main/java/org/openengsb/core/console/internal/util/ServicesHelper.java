@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutionException;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
-import org.openengsb.core.api.ConnectorProvider;
-import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
@@ -70,7 +68,7 @@ public class ServicesHelper {
     }
 
     /**
-     *  returns all running services
+     * returns all running services
      */
     public List<String> getRunningServices() {
         final Locale defaultLocale = Locale.getDefault();
@@ -87,9 +85,9 @@ public class ServicesHelper {
                     @Override
                     public List<String> call() throws Exception {
                         List<String> formatedOutput = new ArrayList<String>();
-                        formatedOutput.add(OutputStreamFormater.formatValues(domainProvider.getName().getString
-                                (defaultLocale),
-                                domainProvider.getDescription().getString(defaultLocale)));
+                        formatedOutput.add(OutputStreamFormater
+                                .formatValues(domainProvider.getName().getString(defaultLocale),
+                                        domainProvider.getDescription().getString(defaultLocale)));
                         for (Domain serviceReference : domainEndpoints) {
                             String id = serviceReference.getInstanceId();
                             AliveState aliveState = serviceReference.getAliveState();
