@@ -152,6 +152,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void testStartAndStopRemoteConnector_shouldRegisterAndUnregisterProxy() throws Exception {
+        authenticateAsAdmin();
         // make sure security-stuff is off
         System.setProperty("org.openengsb.jms.noencrypt", "true");
         System.setProperty("org.openengsb.security.noverify", "true");
