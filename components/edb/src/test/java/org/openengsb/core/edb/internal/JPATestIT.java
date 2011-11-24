@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -46,8 +46,8 @@ public class JPATestIT {
     private static JPADatabase db;
     private static Utils utils;
 
-    @BeforeClass
-    public static void initDB() {
+    @Before
+    public void initDB() {
         utils = new Utils();
         db = new JPADatabase();
         try {
@@ -58,8 +58,8 @@ public class JPATestIT {
         }
     }
 
-    @AfterClass
-    public static void closeDB() {
+    @After
+    public void closeDB() {
         db.close();
     }
 
@@ -586,7 +586,7 @@ public class JPATestIT {
         EDBObject subObject = db.getObject("testdomain/testconnector/testSub/2");
 
         assertThat(subObject, notNullValue());
-        assertThat((String) mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
+        assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
     }
 
     @Test
@@ -614,8 +614,8 @@ public class JPATestIT {
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat((String) mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat((String) mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
+        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
 
     @Test
