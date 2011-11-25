@@ -58,4 +58,10 @@ public class OutputStreamFormaterTest {
         OutputStreamFormater.printValue("OpenEngSB Version", "3.0.0-SNAPSHOT");
         verify(streamMock, times(1)).println(string);
     }
+
+    @Test
+    public void testPrintWithPrefix() {
+        String s = OutputStreamFormater.formatValues(9, "id", "status");
+        assertThat(s, equalTo("         \u001B[1mid                       \u001B[m   status"));
+    }
 }
