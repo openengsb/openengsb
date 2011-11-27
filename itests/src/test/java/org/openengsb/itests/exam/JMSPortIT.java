@@ -73,7 +73,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
-        return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms"));
+        return combine(baseConfiguration(),
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
     }
 
     @Override
@@ -202,7 +203,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         JsonUtils.convertResult(methodResult);
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
         ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
-        
+
         assertThat(decryptedResult.contains("successful"), is(true));
         assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
         assertThat(model.getResult(), is("successful"));

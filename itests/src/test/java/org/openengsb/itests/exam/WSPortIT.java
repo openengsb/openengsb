@@ -62,7 +62,8 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
-        return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-ws"));
+        return combine(baseConfiguration(),
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-ws,openengsb-connector-example"));
     }
 
     @Before
