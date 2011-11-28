@@ -27,7 +27,7 @@ import org.openengsb.core.console.internal.util.ServicesHelper;
 public class ServiceCommands extends OsgiCommandSupport {
 
     @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
-            required = true, multiValued = false)
+        required = false, multiValued = false)
     String arg = null;
 
     private ServicesHelper serviceHelper;
@@ -36,7 +36,7 @@ public class ServiceCommands extends OsgiCommandSupport {
     protected Object doExecute() throws Exception {
 
         try {
-            ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(arg.toUpperCase());
+            ServiceCommandArguments arguments = retrieveArgumentOrDefault();
             switch (arguments) {
                 case LIST:
                     serviceHelper.listRunningServices();
@@ -48,7 +48,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     // TODO: see OPENENGSB-2282
                     break;
                 case DELETE:
-                    //TODO : see OPENENGSB-2281
+                    // TODO : see OPENENGSB-2281
                     break;
                 default:
                     System.err.println("Invalid Argument");
@@ -58,6 +58,13 @@ public class ServiceCommands extends OsgiCommandSupport {
             System.err.println("Invalid Argument");
         }
         return null;
+    }
+
+    private ServiceCommandArguments retrieveArgumentOrDefault() {
+        if (arg == null) {
+            return ServiceCommandArguments.LIST;
+        }
+        return ServiceCommandArguments.valueOf(arg.toUpperCase());
     }
 
     public ServicesHelper getServiceHelper() {
