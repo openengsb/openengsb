@@ -21,40 +21,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
-import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
 
 /**
- *
+ * Helper class providing the required internal services to the rest of the console.
  */
 public class ServicesHelper {
 
-
     private DefaultOsgiUtilsService osgiUtilsService;
     private WiringService wiringService;
-    private ConnectorManager serviceManager;
-
 
     public ServicesHelper() {
 
     }
 
     public ServicesHelper(BundleContext bundleContext) {
-        this.osgiUtilsService = new DefaultOsgiUtilsService();
-        this.osgiUtilsService.setBundleContext(bundleContext);
+        osgiUtilsService = new DefaultOsgiUtilsService();
+        osgiUtilsService.setBundleContext(bundleContext);
         wiringService = osgiUtilsService.getService(org.openengsb.core.api.WiringService.class);
-        serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
     }
 
     /**
@@ -75,31 +67,26 @@ public class ServicesHelper {
         List<String> formatedOutput = new ArrayList<String>();
         List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
-
         for (final DomainProvider domainProvider : serviceList) {
-
             Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
-            final List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
-            try {
-                formatedOutput.addAll(SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
-                    @Override
-                    public List<String> call() throws Exception {
-                        List<String> formatedOutput = new ArrayList<String>();
-                        formatedOutput.add(OutputStreamFormater
-                                .formatValues(domainProvider.getName().getString(defaultLocale),
-                                        domainProvider.getDescription().getString(defaultLocale)));
-                        for (Domain serviceReference : domainEndpoints) {
-                            String id = serviceReference.getInstanceId();
-                            AliveState aliveState = serviceReference.getAliveState();
-                            if (id != null) {
-                                formatedOutput.add(OutputStreamFormater.formatValues(9, id, aliveState.toString()));
-                            }
-                        }
-                        return formatedOutput;
-                    }
-                }));
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+            formatedOutput
+                .addAll(createFormatedOutputForDomainProvider(domainProvider, defaultLocale, domainEndpoints));
+        }
+        return formatedOutput;
+    }
+
+    private List<String> createFormatedOutputForDomainProvider(DomainProvider domainProvider, Locale defaultLocale,
+            List<? extends Domain> domainEndpoints) {
+        List<String> formatedOutput = new ArrayList<String>();
+        formatedOutput.add(OutputStreamFormater
+            .formatValues(domainProvider.getName().getString(defaultLocale),
+                domainProvider.getDescription().getString(defaultLocale)));
+        for (Domain serviceReference : domainEndpoints) {
+            String id = serviceReference.getInstanceId();
+            AliveState aliveState = serviceReference.getAliveState();
+            if (id != null) {
+                formatedOutput.add(OutputStreamFormater.formatValues(9, id, aliveState.toString()));
             }
         }
         return formatedOutput;

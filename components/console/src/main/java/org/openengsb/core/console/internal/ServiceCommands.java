@@ -32,6 +32,7 @@ public class ServiceCommands extends OsgiCommandSupport {
 
     private ServicesHelper serviceHelper;
 
+    @Override
     protected Object doExecute() throws Exception {
 
         try {
