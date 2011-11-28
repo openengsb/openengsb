@@ -27,8 +27,13 @@ import org.fusesource.jansi.Ansi;
 import org.osgi.framework.Bundle;
 
 /**
- * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later
- * release it will be moved to the internal package
+ * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later release it will be moved
+ * to the internal package
+ *
+ * @deprecated This class was mistakely took into the public packages and will be removed without any replacement in the
+ *             upcomming openengsb-framework 3.0.0 release. If you need any specific functionality from it please
+ *             contact openengsb-user@googlegroups.com and let's check where we can move this functionality.
+ *
  */
 @Deprecated
 @Command(scope = "openengsb", name = "info", description = "Prints out system information.")
@@ -41,6 +46,7 @@ public class ServicesInfo extends OsgiCommandSupport {
 
     private List<InfoProvider> infoProviders = new LinkedList<InfoProvider>();
 
+    @Override
     protected Object doExecute() throws Exception {
         int maxNameLen;
 
@@ -71,7 +77,6 @@ public class ServicesInfo extends OsgiCommandSupport {
             bundleContext.getBundle(0).getSymbolicName() + " - " + bundleContext.getBundle(0).getVersion());
         printValue("Drools version", maxNameLen, droolsVersion);
         System.out.println();
-
 
         return null;
     }

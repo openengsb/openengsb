@@ -30,13 +30,19 @@ import org.openengsb.core.common.util.Comparators;
 import org.osgi.framework.ServiceReference;
 
 /**
- * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later
- * release it will be moved to the internal package
+ * this class should only be used INSIDE the console package and NOT OUTSIDE because in a later release it will be moved
+ * to the internal package
+ *
+ * @deprecated This class was mistakely took into the public packages and will be removed without any replacement in the
+ *             upcomming openengsb-framework 3.0.0 release. If you need any specific functionality from it please
+ *             contact openengsb-user@googlegroups.com and let's check where we can move this functionality.
+ *
  */
 @Deprecated
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
 public class DomainInfoCommand extends OsgiCommandSupport {
 
+    @Override
     protected Object doExecute() throws Exception {
         int maxNameLen = 25;
         ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
