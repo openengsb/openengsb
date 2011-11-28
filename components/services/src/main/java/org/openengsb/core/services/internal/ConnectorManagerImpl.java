@@ -76,10 +76,16 @@ public class ConnectorManagerImpl implements ConnectorManager {
     @Override
     public void create(ConnectorId id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
+        create(id, connectorDescription, false);
+    }
+
+    @Override
+    public void create(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity) throws ConnectorValidationFailedException {
         validateId(id);
         checkForExistingServices(id);
         addDefaultLocations(id, connectorDescription);
-        registrationManager.updateRegistration(id, connectorDescription);
+        registrationManager.updateRegistration(id, connectorDescription, connectorInstanceKnowsItsIdentity);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
             getConfigPersistence().persist(configuration);
@@ -100,9 +106,15 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     @Override
     public void forceCreate(ConnectorId id, ConnectorDescription connectorDescription) {
+        forceCreate(id, connectorDescription, false);
+    }
+
+    @Override
+    public void forceCreate(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity) {
         validateId(id);
         checkForExistingServices(id);
-        registrationManager.forceUpdateRegistration(id, connectorDescription);
+        registrationManager.forceUpdateRegistration(id, connectorDescription, connectorInstanceKnowsItsIdentity);
         ConnectorConfiguration configuration = new ConnectorConfiguration(id, connectorDescription);
         try {
             getConfigPersistence().persist(configuration);

@@ -40,11 +40,38 @@ public interface ConnectorRegistrationManager extends OpenEngSBService {
 
     /**
      * updates a the registration service instance. If no service with the given ID is registered a new registration is
+     * created. In addition the {@link #updateRegistration(ConnectorId, ConnectorDescription)} method would expect that
+     *
+     * The identiy defines if general properties such as connectorId or domainId are set to a connector instance after
+     * it had been created. This makes sense most of the time, but e.g. if a remote connector is registered via a
+     * message it knows already about its identify and those method could be supressed therefore.
+     *
+     * @throws ConnectorValidationFailedException if the validation of the connector-attributes fails.
+     */
+    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity)
+        throws ConnectorValidationFailedException;
+
+    /**
+     * updates a the registration service instance. If no service with the given ID is registered a new registration is
      * created.
      *
      * As opposed to {@link ConnectorRegistrationManager#updateRegistration} this method skips the validation-step.
      */
     void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescpription);
+
+    /**
+     * updates a the registration service instance. If no service with the given ID is registered a new registration is
+     * created.
+     *
+     * The identiy defines if general properties such as connectorId or domainId are set to a connector instance after
+     * it had been created. This makes sense most of the time, but e.g. if a remote connector is registered via a
+     * message it knows already about its identify and those method could be supressed therefore.
+     *
+     * As opposed to {@link ConnectorRegistrationManager#updateRegistration} this method skips the validation-step.
+     */
+    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity);
 
     /**
      * Removes the connector instance with the given {@code id} from the service registry.
