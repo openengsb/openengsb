@@ -59,6 +59,7 @@
     <feature>war</feature>
 
     <!-- Specs -->
+    <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${activation.api.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/${geronimo.annotation.version}</bundle>
     <bundle start-level='10'>mvn:org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/${geronimo.ws.metadata.version}</bundle>
@@ -237,6 +238,7 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom.version}</bundle>
     <bundle>mvn:org.apache.cxf/cxf-bundle/${cxf.version}</bundle>
+    <bundle>mvn:org.apache.cxf.karaf/cxf-karaf-commands/${cxf.version}</bundle>
   </feature>
 
   <feature name="openengsb-ports-ws" version="${project.version}" description="OpenEngSB WS Port Integration">
