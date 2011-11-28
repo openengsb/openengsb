@@ -32,7 +32,8 @@ import org.osgi.framework.Bundle;
  *
  * @deprecated This class was mistakely took into the public packages and will be removed without any replacement in the
  *             upcomming openengsb-framework 3.0.0 release. If you need any specific functionality from it please
- *             contact openengsb-user@googlegroups.com and let's check where we can move this functionality.
+ *             contact openengsb-user@googlegroups.com and let's check where we can move this functionality. In
+ *             addidition this class had been depricated because it is a duplicate of the {@link OpenEngSBInfo} command.
  *
  */
 @Deprecated
