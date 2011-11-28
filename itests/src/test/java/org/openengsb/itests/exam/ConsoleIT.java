@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.util.OutputStreamFormater;
@@ -63,7 +62,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
         assertTrue(contains(result, "Example Domain",
-                "This domain is provided as an example for all developers. It should not be used in production."));
+            "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
     @Test
@@ -80,12 +79,15 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();
+        for (String string : result) {
+            System.out.println(string);
+        }
         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
-        assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
         assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
-        assertTrue(contains(result, "authorization+composite-connector+root-authorizer", "ONLINE"));
+        assertTrue(contains(result, "BinaryTransformationDomain",
+            "Domain for connectors which want to provide a BinaryTransformationProviderFactory."));
         assertTrue(contains(result, "Example Domain",
-                "This domain is provided as an example for all developers. It should not be used in production."));
+            "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
     private boolean contains(List<String> list, String value, String value2) {
