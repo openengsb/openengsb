@@ -40,6 +40,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -411,6 +413,42 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         event.setOrigin("test-connector");
         service.processEvent(event);
         verify(nullDomainImpl).nullMethod(42);
+    }
+
+    @Test
+    public void testTriggerExceptionInEventProcessing_shouldNotKeepLocked() throws Exception {
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
+                + "when\n"
+                + "   e : Event(name==\"evil\")\n"
+                + "then\n"
+                + "   String testxx = null;"
+                + "   testxx.toString();"); // provoke NPE
+        try {
+            service.processEvent(new Event("evil"));
+            fail("evil Event should trigger Exception");
+        } catch (Exception e) {
+            // expected
+        }
+        final AtomicReference<Exception> exceptionOccured = new AtomicReference<Exception>();
+        final AtomicBoolean completed = new AtomicBoolean(false);
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    service.processEvent(new Event()); // should work because the evil Event should have been removed
+                    completed.set(true);
+                } catch (Exception e) {
+                    exceptionOccured.set(e);
+                }
+            };
+        };
+        t.start();
+        t.join(10000);
+        assertThat("processEvent did not complete in time. Seems the workflow-engine is locked",
+            completed.get(), is(true));
+        if (exceptionOccured.get() != null) {
+            throw exceptionOccured.get();
+        }
     }
 
 }
