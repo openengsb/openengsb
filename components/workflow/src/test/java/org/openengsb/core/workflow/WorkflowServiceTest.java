@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -448,6 +449,23 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             completed.get(), is(true));
         if (exceptionOccured.get() != null) {
             throw exceptionOccured.get();
+        }
+    }
+
+    @Test
+    public void serializeConsequenceException_shouldReturnString() throws Exception {
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "response-test"), ""
+                + "when\n"
+                + "   e : Event(name==\"evil\")\n"
+                + "then\n"
+                + "   String testxx = null;"
+                + "   testxx.toString();"); // provoke NPE
+        try {
+            service.processEvent(new Event("evil"));
+            fail("evil Event should trigger Exception");
+        } catch (Exception e) {
+            String exceptionString = new ObjectMapper().writeValueAsString(e);
+            assertThat(exceptionString, not(nullValue()));
         }
     }
 
