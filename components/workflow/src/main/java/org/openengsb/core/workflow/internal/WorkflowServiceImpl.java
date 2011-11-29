@@ -99,21 +99,27 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     public void processEvent(Event event) throws WorkflowException {
         LOGGER.info("processing Event {} of type {}", event, event.getClass());
         StatefulKnowledgeSession session = getSessionForCurrentContext();
-        FactHandle factHandle = session.insert(event);
-        workflowLock.lock();
-        session.fireAllRules();
-        workflowLock.unlock();
-
-        Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
-        if (processIds.isEmpty()) {
-            for (ProcessInstance p : session.getProcessInstances()) {
-                p.signalEvent(event.getType(), event);
+        FactHandle factHandle = null;
+        try {
+            factHandle = session.insert(event);
+            workflowLock.lock();
+            try {
+                session.fireAllRules();
+            } finally {
+                workflowLock.unlock();
             }
-        } else {
-            signalEventToProcesses(event, session, processIds);
-        }
 
-        session.retract(factHandle);
+            Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
+            if (processIds.isEmpty()) {
+                for (ProcessInstance p : session.getProcessInstances()) {
+                    p.signalEvent(event.getType(), event);
+                }
+            } else {
+                signalEventToProcesses(event, session, processIds);
+            }
+        } finally {
+            session.retract(factHandle);
+        }
     }
 
     @Override
