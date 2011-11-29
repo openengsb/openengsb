@@ -49,6 +49,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
+import org.drools.runtime.rule.ConsequenceException;
 import org.drools.runtime.rule.FactHandle;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.api.Event;
@@ -105,6 +106,8 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             workflowLock.lock();
             try {
                 session.fireAllRules();
+            } catch (ConsequenceException e) {
+                throw new WorkflowException("ConsequenceException occured while processing event", e.getCause());
             } finally {
                 workflowLock.unlock();
             }
