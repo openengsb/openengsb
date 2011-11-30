@@ -1,3 +1,22 @@
+openengsb-2.2.1 2011-11-30
+--------------------------------------------
+
+The first bug-fix-release in the 2.2.x series fixed various problems by finishing 4 issues in this release. We've
+corrected some internal test cases, corrected the exception processing in the workflow engine and upraged 
+ActiveMQ (5.5.1).
+
+### Details
+** Bug
+    * [OPENENGSB-2301] - JPATestIT does not close and reopen the database before each test
+    * [OPENENGSB-2314] - Exceptions in event-processing leave the workflow engine locked for other threads for eternity
+
+** Library Upgrade
+    * [OPENENGSB-2285] - Upgrade amq to 5.5.1
+
+** Task
+    * [OPENENGSB-2298] - Release framework-2.2.1
+
+
 openengsb-2.2.0 2011-11-17
 --------------------------------------------
 
