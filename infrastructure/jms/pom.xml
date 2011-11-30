@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.infrastructure</groupId>
     <artifactId>openengsb-infrastructure-parent</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.2-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.infrastructure</groupId>
   <artifactId>org.openengsb.infrastructure.jms</artifactId>
-  <version>2.2.1</version>
+  <version>2.2.2-SNAPSHOT</version>
 
   <name>OpenEngSB :: Infrastructure :: JMS</name>
 
