@@ -450,7 +450,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return modelVersion;
     }
 
-    private List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
+    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, String oid, EDBEvent event, Integer version) {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         convertSubModel(model, event, objects, oid, version);
         return objects;
@@ -479,32 +479,34 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         EDBObject object = new EDBObject(oid);
 
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getValue() == null) {
+                continue;
+            }
             if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
-                if (entry.getValue() == null) {
-                    continue;
-                }
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
                 OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
                 String subOid = convertSubModel(temp, event, objects);
                 object.put(entry.getKey(), subOid);
             } else if (List.class.isAssignableFrom(entry.getType())) {
                 List<?> list = (List<?>) entry.getValue();
-                if (list.size() == 0) {
+                if (list == null || list.size() == 0) {
                     continue;
                 }
                 if (list.get(0).getClass().equals(OpenEngSBModelWrapper.class)) {
                     @SuppressWarnings("unchecked")
-                    List<OpenEngSBModel> subList = (List<OpenEngSBModel>) entry.getValue();
+                    List<OpenEngSBModelWrapper> subList = (List<OpenEngSBModelWrapper>) entry.getValue();
                     if (subList == null) {
                         continue;
                     }
                     for (int i = 0; i < subList.size(); i++) {
-                        String subOid = convertSubModel((OpenEngSBModel) subList.get(i), event, objects);
+                        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) subList.get(i);
+                        OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+                        String subOid = convertSubModel(temp, event, objects);
                         object.put(entry.getKey() + i, subOid);
                     }
                 } else {
                     for (int i = 0; i < list.size(); i++) {
-                        object.put(entry.getKey() + i, entry.getValue());
+                        object.put(entry.getKey() + i, list.get(i));
                     }
                 }
 
