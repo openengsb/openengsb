@@ -17,53 +17,15 @@
 
 package org.openengsb.core.edb.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
-public class SubModel implements OpenEngSBModel {
-    
-    private Map<String, OpenEngSBModelEntry> entries;
-    
-    public SubModel() {
-        entries = new HashMap<String, OpenEngSBModelEntry>();
-    }
-    
-    public void setName(String name) {
-        entries.put("name", new OpenEngSBModelEntry("name", name, String.class));
-    }
-    
-    public String getName() {
-        return (String) entries.get("name").getValue();
-    }
-    
-    public void setEdbId(String edbId) {
-        entries.put("edbId", new OpenEngSBModelEntry("edbId", edbId, String.class));
-    }
-    
-    public String getEdbId() {
-        return (String) entries.get("edbId").getValue();
-    }
+public interface SubModel extends OpenEngSBModel {
 
-    @Override
-    public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
-        List<OpenEngSBModelEntry> e = new ArrayList<OpenEngSBModelEntry>();
-        
-        e.addAll(entries.values());
-        return e;
-    }
+    void setName(String name);
 
-    @Override
-    public void addOpenEngSBModelEntry(OpenEngSBModelEntry entry) {
-        entries.put(entry.getKey(), entry);
-    }
+    String getName();
 
-    @Override
-    public void removeOpenEngSBModelEntry(String key) {
-        entries.remove(key);
-    }
+    void setEdbId(String edbId);
+
+    String getEdbId();
 }
