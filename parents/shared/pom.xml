@@ -618,11 +618,6 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>com.springsource.org.aspectj.weaver</artifactId>
-        <version>${aspectj.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-auth-roles</artifactId>
         <version>${wicket.version}</version>
