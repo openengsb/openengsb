@@ -144,6 +144,7 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
                         temp.add(obj);
                     }
                     objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
+                    break;
                 }
             }
         } else {

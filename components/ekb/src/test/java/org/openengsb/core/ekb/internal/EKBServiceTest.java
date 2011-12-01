@@ -95,6 +95,7 @@ public class EKBServiceTest {
         for (int i = 0; i < list.size(); i++) {
             assertThat(list.get(i).toString().equals(list2.get(i).toString()), is(true));
         }
+        assertThat(model.toString().equals(model2.toString()), is(true));
     }
 
     @Test
