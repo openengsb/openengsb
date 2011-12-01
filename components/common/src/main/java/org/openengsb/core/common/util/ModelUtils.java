@@ -30,6 +30,7 @@ import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
+import org.openengsb.core.common.model.ModelProxyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

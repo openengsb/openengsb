@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class ModelUtilsTest {
-    
+
     @Test
     public void testSetterAndGetterWithStringObject_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
@@ -103,14 +103,18 @@ public class ModelUtilsTest {
         boolean stringEntry3 = false;
 
         for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("list0") && e.getValue().equals("string1")) {
-                stringEntry1 = true;
-            }
-            if (e.getKey().equals("list1") && e.getValue().equals("string2")) {
-                stringEntry2 = true;
-            }
-            if (e.getKey().equals("list2") && e.getValue().equals("string3")) {
-                stringEntry3 = true;
+            if (e.getKey().equals("list")) {
+                @SuppressWarnings("unchecked")
+                List<String> list = (List<String>) e.getValue();
+                for (String elem : list) {
+                    if (elem.equals("string1")) {
+                        stringEntry1 = true;
+                    } else if (elem.equals("string2")) {
+                        stringEntry2 = true;
+                    } else if (elem.equals("string3")) {
+                        stringEntry3 = true;
+                    }
+                }
             }
         }
 
@@ -128,7 +132,7 @@ public class ModelUtilsTest {
         boolean enumEntry = false;
 
         for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("enumeration") && e.getValue().equals("A")) {
+            if (e.getKey().equals("enumeration") && e.getValue().equals(enumeration)) {
                 enumEntry = true;
             }
         }
