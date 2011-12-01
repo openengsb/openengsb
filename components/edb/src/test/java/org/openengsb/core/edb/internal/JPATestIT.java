@@ -41,6 +41,7 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 
 public class JPATestIT {
     private static JPADatabase db;
@@ -410,7 +411,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
         enrichEDBEvent(event);
@@ -420,7 +421,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -438,7 +439,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBBatchEvent_shouldWork() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("batchevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -454,7 +455,7 @@ public class JPATestIT {
         EDBBatchEvent e = new EDBBatchEvent();
         enrichEDBEvent(e);
         e.addModelUpdate(model);
-        TestModel model2 = new TestModel();
+        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
 
@@ -482,7 +483,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
         EDBDeleteEvent event = new EDBDeleteEvent(model);
         db.processEDBDeleteEvent(event);
@@ -490,7 +491,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -521,7 +522,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/3");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -553,7 +554,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/4");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -569,11 +570,46 @@ public class JPATestIT {
     }
 
     @Test
+    public void test() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setName("bla");
+        model.setEdbId("ladida");
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub.setEdbId("testSub/111");
+        sub.setName("sub");
+        model.setSubModel(sub);
+
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub1.setEdbId("testSub/222");
+        sub1.setName("sub1");
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub2.setEdbId("testSub/333");
+        sub2.setName("sub2");
+
+        model.setSubs(Arrays.asList(sub1, sub2));
+
+        model.setIds(Arrays.asList(1, 2, 3, 4));
+
+        EDBInsertEvent event = new EDBInsertEvent(model);
+        enrichEDBEvent(event);
+
+        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "kldjskl", event, 1);
+        for (EDBObject obj : edbobjects) {
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, Object> entry : obj.entrySet()) {
+                builder.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+            }
+            builder.append("\n");
+            System.out.println(builder.toString());
+        }
+    }
+
+    @Test
     public void testSupportOfSimpleSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/1");
-        SubModel sub = new SubModel();
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
         sub.setEdbId("testSub/2");
         sub.setName("sub");
         model.setSubModel(sub);
@@ -591,14 +627,14 @@ public class JPATestIT {
 
     @Test
     public void testSupportOfListOfSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/3");
 
-        SubModel sub1 = new SubModel();
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub1.setEdbId("testSub/4");
         sub1.setName("sub1");
-        SubModel sub2 = new SubModel();
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub2.setEdbId("testSub/5");
         sub2.setName("sub2");
 

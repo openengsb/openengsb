@@ -17,71 +17,30 @@
 
 package org.openengsb.core.edb.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelId;
 
-public class TestModel implements OpenEngSBModel {
-    
-    private Map<String, OpenEngSBModelEntry> entries;
-    
-    public TestModel() {
-        entries = new HashMap<String, OpenEngSBModelEntry>();
-    }
-    
-    public void setName(String name) {
-        entries.put("name", new OpenEngSBModelEntry("name", name, String.class));
-    }
-    
-    public String getName() {
-        return (String) entries.get("name").getValue();
-    }
-    
-    public void setEdbId(String edbId) {
-        entries.put("edbId", new OpenEngSBModelEntry("edbId", edbId, String.class));
-    }
-    
-    public String getEdbId() {
-        return (String) entries.get("edbId").getValue();
-    }
-    
-    public void setSubModel(SubModel subModel) {
-        entries.put("subModel", new OpenEngSBModelEntry("subModel", subModel, SubModel.class));
-    }
-    
-    public SubModel getSubModel() {
-        return (SubModel) entries.get("subModel").getValue();
-    }
-    
-    public void setSubs(List<SubModel> subs) {
-        entries.put("subs", new OpenEngSBModelEntry("subs", subs, subs.getClass()));
-    }
-    
-    @SuppressWarnings("unchecked")
-    public List<SubModel> getSubs() {
-        return (List<SubModel>) entries.get("subs").getValue();
-    }
+public interface TestModel extends OpenEngSBModel {
+    void setName(String name);
 
-    @Override
-    public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
-        List<OpenEngSBModelEntry> e = new ArrayList<OpenEngSBModelEntry>();
-        
-        e.addAll(entries.values());
-        return e;
-    }
+    String getName();
 
-    @Override
-    public void addOpenEngSBModelEntry(OpenEngSBModelEntry entry) {
-        entries.put(entry.getKey(), entry);
-    }
+    @OpenEngSBModelId
+    void setEdbId(String edbId);
 
-    @Override
-    public void removeOpenEngSBModelEntry(String key) {
-        entries.remove(key);
-    }
+    String getEdbId();
 
+    void setSubModel(SubModel subModel);
+
+    SubModel getSubModel();
+
+    void setSubs(List<SubModel> subs);
+
+    List<SubModel> getSubs();
+    
+    void setIds(List<Integer> ids);
+    
+    List<Integer> getIds();
 }
