@@ -570,10 +570,10 @@ public class JPATestIT {
     }
 
     @Test
-    public void test() {
+    public void testCreationOfEDBObjectsAreCorrect_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("bla");
-        model.setEdbId("ladida");
+        model.setName("creationtest1");
+        model.setEdbId("creationtest2");
         SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
         sub.setEdbId("testSub/111");
         sub.setName("sub");
@@ -587,21 +587,29 @@ public class JPATestIT {
         sub2.setName("sub2");
 
         model.setSubs(Arrays.asList(sub1, sub2));
-
         model.setIds(Arrays.asList(1, 2, 3, 4));
 
         EDBInsertEvent event = new EDBInsertEvent(model);
         enrichEDBEvent(event);
 
-        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "kldjskl", event, 1);
-        for (EDBObject obj : edbobjects) {
-            StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, Object> entry : obj.entrySet()) {
-                builder.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
-            }
-            builder.append("\n");
-            System.out.println(builder.toString());
-        }
+        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "creationtest3", event, 1);
+        
+        EDBObject edbObject = edbobjects.get(edbobjects.size() - 1);
+                
+        assertThat(edbObject.get("edbVersion").toString(), is("1"));        
+        assertThat(edbObject.get("subModel").toString(), is("testdomain/testconnector/testSub/111"));
+        assertThat(edbObject.get("subs0").toString(), is("testdomain/testconnector/testSub/222"));
+        assertThat(edbObject.get("subs1").toString(), is("testdomain/testconnector/testSub/333"));
+        assertThat(edbObject.get("connectorId").toString(), is("testconnector"));
+        assertThat(edbObject.get("instanceId").toString(), is("testinstance"));
+        assertThat(edbObject.get("domainId").toString(), is("testdomain"));
+        assertThat(edbObject.get("name").toString(), is("creationtest1"));
+        assertThat(edbObject.get("edbId").toString(), is("creationtest2"));
+        assertThat(edbObject.get("oid").toString(), is("creationtest3"));        
+        assertThat(edbObject.get("ids0").toString(), is("1"));
+        assertThat(edbObject.get("ids1").toString(), is("2"));
+        assertThat(edbObject.get("ids2").toString(), is("3"));
+        assertThat(edbObject.get("ids3").toString(), is("4"));
     }
 
     @Test
