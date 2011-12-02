@@ -32,22 +32,22 @@ public final class DefaultConverterStep implements ModelEntryConverterStep {
     }
     
     @Override
-    public boolean matches(Object object) {
+    public boolean matchForGetModelEntries(Object object) {
         return true;
     }
 
     @Override
-    public Object convert(Object object) {
+    public Object convertForGetModelEntries(Object object) {
         return object;
     }
 
     @Override
-    public boolean matches2(Object object) {
+    public boolean matchForGetter(Object object) {
         return true;
     }
 
     @Override
-    public Object convert2(Object object) {
+    public Object convertForGetter(Object object) {
         return object;
     }
 
