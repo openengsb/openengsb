@@ -236,6 +236,7 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     private void initializeModelConverterSteps() {
         steps = new ArrayList<ModelEntryConverterStep>();
         steps.add(ModelConverterStep.getInstance());
+        steps.add(FileConverterStep.getInstance());
         steps.add(DefaultConverterStep.getInstance());
     }
 }
