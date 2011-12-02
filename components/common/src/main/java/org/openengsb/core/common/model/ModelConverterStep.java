@@ -21,6 +21,10 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.util.ModelUtils;
 
+/**
+ * The model converter step has the purpose to does the conversion work OpenEngSBModel <-> OpenEngSBModelWrapper in the
+ * model proxy environment.
+ */
 public final class ModelConverterStep implements ModelEntryConverterStep {
     private static ModelConverterStep instance;
 
