@@ -20,11 +20,11 @@ package org.openengsb.core.common.model;
 
 public interface ModelEntryConverterStep {
     
-    boolean matches(Object object);
+    boolean matchForGetModelEntries(Object object);
     
-    Object convert(Object object);
+    Object convertForGetModelEntries(Object object);
     
-    boolean matches2(Object object);
+    boolean matchForGetter(Object object);
     
-    Object convert2(Object object);
+    Object convertForGetter(Object object);
 }
