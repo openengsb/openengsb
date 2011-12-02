@@ -68,8 +68,15 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     @Override
     public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
+        updateRegistration(id, connectorDescription, false);
+    }
+
+    @Override
+    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity)
+        throws ConnectorValidationFailedException {
         if (!instances.containsKey(id)) {
-            createService(id, connectorDescription);
+            createService(id, connectorDescription, connectorInstanceKnowsItsIdentity);
         } else if (connectorDescription.getAttributes() != null) {
             updateAttributes(id, connectorDescription.getAttributes());
         }
@@ -81,9 +88,15 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     @Override
-    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription) {
+    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescpription) {
+        forceUpdateRegistration(id, connectorDescpription, false);
+    }
+
+    @Override
+    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity) {
         if (!instances.containsKey(id)) {
-            forceCreateService(id, connectorDescription);
+            forceCreateService(id, connectorDescription, connectorInstanceKnowsItsIdentity);
         } else if (connectorDescription.getAttributes() == null) {
             forceUpdateAttributes(id, connectorDescription.getAttributes());
         }
@@ -102,7 +115,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         instances.remove(id);
     }
 
-    private void createService(ConnectorId id, ConnectorDescription description)
+    private void createService(ConnectorId id, ConnectorDescription description,
+            boolean connectorInstanceKnowsItsIdentity)
         throws ConnectorValidationFailedException {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
@@ -112,29 +126,32 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             throw new ConnectorValidationFailedException(errors);
         }
 
-        finishCreatingInstance(id, description, domainProvider, factory);
+        finishCreatingInstance(id, description, domainProvider, factory, connectorInstanceKnowsItsIdentity);
     }
 
-    private void forceCreateService(ConnectorId id, ConnectorDescription description) {
+    private void forceCreateService(ConnectorId id, ConnectorDescription description,
+            boolean connectorInstanceKnowsItsIdentity) {
         DomainProvider domainProvider = getDomainProvider(id.getDomainType());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
 
         Connector serviceInstance = factory.createNewInstance(id.toString());
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
-        finishCreatingInstance(id, description, domainProvider, factory);
+        finishCreatingInstance(id, description, domainProvider, factory, connectorInstanceKnowsItsIdentity);
     }
 
     private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
-            DomainProvider domainProvider, ConnectorInstanceFactory factory) {
+            DomainProvider domainProvider, ConnectorInstanceFactory factory, boolean connectorInstanceKnowsItsIdentity) {
         Connector serviceInstance = factory.createNewInstance(id.toString());
         if (serviceInstance == null) {
             throw new IllegalStateException("Factory cannot create a new service for instance id " + id.toString());
         }
         factory.applyAttributes(serviceInstance, description.getAttributes());
-        
-        serviceInstance.setDomainId(id.getDomainType());
-        serviceInstance.setConnectorId(id.getConnectorType());
+
+        if (!connectorInstanceKnowsItsIdentity) {
+            serviceInstance.setDomainId(id.getDomainType());
+            serviceInstance.setConnectorId(id.getConnectorType());
+        }
 
         String[] clazzes = new String[]{
             OpenEngSBService.class.getName(),

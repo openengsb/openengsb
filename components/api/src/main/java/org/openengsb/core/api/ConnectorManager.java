@@ -43,6 +43,23 @@ public interface ConnectorManager {
         throws ConnectorValidationFailedException;
 
     /**
+     * creates a new connector instance with the given id and description. The new connectorDescription is validated
+     * before the connector instance is created. In this validation-step only the combination of the attributes is
+     * validated. Each valid is assumed to be valid by itself (e.g. number-attributes)
+     *
+     * The connector instance is then registered in the OSGi-registry and persisted using
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     *
+     * The identiy defines if general properties such as connectorId or domainId are set to a connector instance after
+     * it had been created. This makes sense most of the time, but e.g. if a remote connector is registered via a
+     * message it knows already about its identify and those method could be supressed therefore.
+     *
+     * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
+     */
+    void create(ConnectorId id, ConnectorDescription connectorDescription, boolean connectorInstanceKnowsItsIdentity)
+        throws ConnectorValidationFailedException;
+
+    /**
      * creates a new connector instance with the given id and description. It works similar to
      * {@link ConnectorManager#createService} but skips the validation step. However this method still assumes that each
      * attribute is valid by itself (e.g. number-attributes)
@@ -53,6 +70,23 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
     void forceCreate(ConnectorId id, ConnectorDescription connectorDescription);
+
+    /**
+     * creates a new connector instance with the given id and description. It works similar to
+     * {@link ConnectorManager#createService} but skips the validation step. However this method still assumes that each
+     * attribute is valid by itself (e.g. number-attributes)
+     *
+     * The connector instance is then registered in the OSGi-registry and persisted using
+     * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
+     *
+     * The identiy defines if general properties such as connectorId or domainId are set to a connector instance after
+     * it had been created. This makes sense most of the time, but e.g. if a remote connector is registered via a
+     * message it knows already about its identify and those method could be supressed therefore.
+     *
+     * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
+     */
+    void forceCreate(ConnectorId id, ConnectorDescription connectorDescription,
+            boolean connectorInstanceKnowsItsIdentity);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
