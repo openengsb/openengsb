@@ -17,7 +17,10 @@
 
 package org.openengsb.core.common.model;
 
-
+/**
+ * The default converter step has the purpose to just forward the objects as it get it from the parameter. This
+ * converter is needed as the last item in the converter list because it matches if all other converter doesn't match.
+ */
 public final class DefaultConverterStep implements ModelEntryConverterStep {
     private static DefaultConverterStep instance;
 
@@ -27,10 +30,10 @@ public final class DefaultConverterStep implements ModelEntryConverterStep {
         }
         return instance;
     }
-    
+
     private DefaultConverterStep() {
     }
-    
+
     @Override
     public boolean matchForGetModelEntries(Object object) {
         return true;
