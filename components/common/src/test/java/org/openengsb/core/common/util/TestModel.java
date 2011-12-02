@@ -17,6 +17,7 @@
 
 package org.openengsb.core.common.util;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +61,10 @@ interface TestModel extends OpenEngSBModel {
     void setSubs(List<SubModel> subs);
     
     List<SubModel> getSubs();
+    
+    void setFile(File file);
+    
+    File getFile();
 }
 
 enum ENUM {
