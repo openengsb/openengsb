@@ -17,14 +17,35 @@
 
 package org.openengsb.core.common.model;
 
-
+/**
+ * A model entry converter step have the purpose to support the model proxy handler with its task to create the list of
+ * OpenEngSBModelEntries and also with the getter calls. It is needed because there are some objects (like
+ * OpenEngSBModels) which have to be converted into OpenEngSBModelWrapper while creating OpenEngSBModelEntries and which
+ * have to be transformed back to OpenEngSBModels when the user wants to retrieve the OpenEngSBModel from the proxy.
+ */
 public interface ModelEntryConverterStep {
-    
+
+    /**
+     * Checks if the given object is suitable for converting work when "getOpenEngSBModelObjects" of the proxy is
+     * called. (e.g. an OpenEngSBModel)
+     */
     boolean matchForGetModelEntries(Object object);
-    
+
+    /**
+     * Does the converting work for the proxy when "getOpenEngSBModelObjects" is called. (e.g. OpenEngSBModel ->
+     * OpenEngSBModelWrapper)
+     */
     Object convertForGetModelEntries(Object object);
-    
+
+    /**
+     * Checks if the given object is suitable for converting work when a getter of the proxy is called. (e.g. an
+     * OpenEngSBModelWrapper)
+     */
     boolean matchForGetter(Object object);
-    
+
+    /**
+     * Does the converting work for the proxy when a getter is called. (e.g. OpenEngSBModelWrapper ->
+     * OpenEngSBModel)
+     */
     Object convertForGetter(Object object);
 }
