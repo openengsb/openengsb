@@ -20,6 +20,7 @@ package org.openengsb.core.common.model;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,23 +96,23 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         }
     }
 
+    /**
+     * Handle call of "addOpenEngSBModelEntry"
+     */
     private void handleAddEntry(OpenEngSBModelEntry entry) {
         objects.put(entry.getKey(), entry);
     }
 
+    /**
+     * Handle call of "removeOpenEngSBModelEntry"
+     */
     private void handleRemoveEntry(String key) {
         objects.remove(key);
     }
 
-    private void handleSetMethod(Method method, Object[] args) throws Throwable {
-        String propertyName = ModelUtils.getPropertyName(method);
-        if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
-            objects.put("edbId", new OpenEngSBModelEntry("edbId", args[0].toString(), String.class));
-        }
-        Class<?> clasz = method.getParameterTypes()[0];
-        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
-    }
-
+    /**
+     * handle call of "toString"
+     */
     private String handleToString() {
         StringBuilder builder = new StringBuilder();
         boolean first = true;
@@ -127,41 +128,48 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         return builder.toString();
     }
 
+    /**
+     * Handle call of a setter method
+     */
+    private void handleSetMethod(Method method, Object[] args) throws Throwable {
+        String propertyName = ModelUtils.getPropertyName(method);
+        if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
+            objects.put("edbId", new OpenEngSBModelEntry("edbId", args[0].toString(), String.class));
+        }
+        Class<?> clasz = method.getParameterTypes()[0];
+        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
+    }
+
+    /**
+     * Handle call of a getter method
+     */
     private Object handleGetMethod(Method method) throws Throwable {
         String propertyName = ModelUtils.getPropertyName(method);
-        OpenEngSBModelEntry entry = objects.get(propertyName);
-
-        if (List.class.isAssignableFrom(entry.getType())) {
-            List<?> list = (List<?>) entry.getValue();
-            if (list.size() == 0) {
-                return entry.getValue();
-            }
-            List<Object> temp = new ArrayList<Object>();
-            for (ModelEntryConverterStep step : steps) {
-                if (step.matches2(list.get(0))) {
-                    for (Object o : list) {
-                        Object obj = step.convert2(o);
-                        temp.add(obj);
-                    }
-                    objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
-                    break;
-                }
-            }
-        } else {
-            for (ModelEntryConverterStep step : steps) {
-                if (step.matches2(entry.getValue())) {
-                    Object obj = step.convert2(objects.get(propertyName).getValue());
-                    if (obj != null) {
-                        objects.put(propertyName, new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
-                    }
-                    break;
-                }
-            }
-        }
-
+        checkForGetterResultConversion(propertyName);
         return objects.get(propertyName).getValue();
     }
 
+    /**
+     * Does the conversion of model entries before they are returned by the getter if needed.
+     */
+    private void checkForGetterResultConversion(String propertyName) {
+        OpenEngSBModelEntry entry = objects.get(propertyName);
+        if (List.class.isAssignableFrom(entry.getType())) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) entry.getValue();
+            if (list.size() != 0) {
+                List<Object> temp = doListConversion(list, true);
+                objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
+            }
+        } else {
+            Object obj = doObjectConversion(entry.getValue(), true);
+            objects.put(propertyName, new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
+        }
+    }
+
+    /**
+     * Handle call of "getOpenEngSBModelEntries"
+     */
     private Object handleGetOpenEngSBModelEntries() throws Throwable {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (OpenEngSBModelEntry entry : objects.values()) {
@@ -174,38 +182,57 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         return entries;
     }
 
+    /**
+     * Does the conversion of model entries before they are added to the list of model entries if needed.
+     */
     private List<OpenEngSBModelEntry> convertEntry(OpenEngSBModelEntry entry) {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
-
         if (List.class.isAssignableFrom(entry.getType())) {
-            List<?> list = (List<?>) entry.getValue();
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) entry.getValue();
             if (list.size() == 0) {
                 entries.add(entry);
             } else {
-                List<Object> temp = new ArrayList<Object>();
-                for (ModelEntryConverterStep step : steps) {
-                    if (step.matches(list.get(0))) {
-                        for (Object o : list) {
-                            Object obj = step.convert(o);
-                            temp.add(obj);
-                        }
-                        entries.add(new OpenEngSBModelEntry(entry.getKey(), temp, entry.getType()));
-                        break;
-                    }
-                }
+                List<Object> temp = doListConversion(list, false);
+                entries.add(new OpenEngSBModelEntry(entry.getKey(), temp, entry.getType()));
             }
         } else {
-            for (ModelEntryConverterStep step : steps) {
-                if (step.matches(entry.getValue())) {
-                    Object obj = step.convert(entry.getValue());
-                    entries.add(new OpenEngSBModelEntry(entry.getKey(), obj, obj.getClass()));
-                    break;
-                }
-            }
+            Object obj = doObjectConversion(entry.getValue(), false);
+            entries.add(new OpenEngSBModelEntry(entry.getKey(), obj, obj.getClass()));
         }
         return entries;
     }
 
+    /**
+     * Checks if an object needs to be converted and does the converting work
+     */
+    private Object doObjectConversion(Object value, boolean forGetter) {
+        return doListConversion(Arrays.asList(value), forGetter).get(0);
+    }
+
+    /**
+     * Checks if a list of objects needs to be converted and does the converting work
+     */
+    private List<Object> doListConversion(List<Object> values, boolean forGetter) {
+        List<Object> temp = new ArrayList<Object>();
+        for (ModelEntryConverterStep step : steps) {
+            Object value = values.get(0);
+            if (forGetter ? step.matchForGetter(value) : step.matchForGetModelEntries(value)) {
+                for (Object val : values) {
+                    Object obj = forGetter ? step.convertForGetter(val) : step.convertForGetModelEntries(val);
+                    temp.add(obj);
+                }
+                return temp;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Defines the list of conversion steps which should be checked every time a converting task has to be done. The
+     * order of the steps is important and the default converter step have always to be the last one (because this
+     * converter just forwards the old value).
+     */
     private void initializeModelConverterSteps() {
         steps = new ArrayList<ModelEntryConverterStep>();
         steps.add(ModelConverterStep.getInstance());
