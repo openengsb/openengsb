@@ -18,6 +18,7 @@
 package org.openengsb.core.ekb.internal;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,10 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.QueryInterface;
+import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.common.model.FileConverterStep;
 import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +118,13 @@ public class QueryInterfaceService implements QueryInterface {
             value = getListValue(clazz, propertyName, object);
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
+        } else if (parameterType.equals(File.class)) {
+            FileWrapper wrapper = new FileWrapper();
+            String filename = (String) object.get(propertyName + ".filename");
+            String content = (String) value;
+            wrapper.setFilename(filename);
+            wrapper.setContent(Base64.decodeBase64(content));
+            value = FileConverterStep.getInstance().convertForGetter(wrapper);
         } else if (object.containsKey(propertyName)) {
             if (parameterType.isEnum()) {
                 value = getEnumValue(parameterType, value);
