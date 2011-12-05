@@ -30,6 +30,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -40,6 +41,7 @@ import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelWrapper;
@@ -482,7 +484,12 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             if (entry.getValue() == null) {
                 continue;
             }
-            if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
+            if (entry.getType().equals(FileWrapper.class)) {
+                FileWrapper wrapper = (FileWrapper) entry.getValue();
+                String content = Base64.encodeBase64String(wrapper.getContent());
+                object.put(entry.getKey(), content);
+                object.put(entry.getKey() + ".filename", wrapper.getFilename());
+            } else if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
                 OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
                 String subOid = convertSubModel(temp, event, objects);
