@@ -24,7 +24,7 @@
     <relativePath>..</relativePath>
     <groupId>org.openengsb.infrastructure</groupId>
     <artifactId>openengsb-infrastructure-parent</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -34,8 +34,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.infrastructure</groupId>
-  <artifactId>openengsb-infrastructure-ldap</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <artifactId>org.openengsb-infrastructure-ldap</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Infrastructure :: LDAP</name>
 
