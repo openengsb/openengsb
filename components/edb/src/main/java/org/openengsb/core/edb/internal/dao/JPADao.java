@@ -91,6 +91,12 @@ public interface JPADao {
     List<JPAObject> query(Map<String, Object> values) throws EDBException;
     
     /**
+     * Returns a list of JPAObjects which have all JPAEntries with the given keys and values at a specific timestamp
+     * (similar to getHead)
+     */
+    List<JPAObject> query(Map<String, Object> values, Long timestamp) throws EDBException;
+    
+    /**
      * Returns the version of the element under the given oid. If oid isn't existing, 0 is returned.
      */
     Integer getVersionOfOid(String oid) throws EDBException;

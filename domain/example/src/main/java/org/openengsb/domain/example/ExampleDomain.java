@@ -21,6 +21,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Raises;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 
 /**
  * This is the interface of the example domain. Besides this functional interface, which has to be implemented by
@@ -33,6 +35,8 @@ public interface ExampleDomain extends Domain {
     @SecurityAttribute("something")
     @Raises(LogEvent.class)
     String doSomething(String message);
+    
+    ExampleResponseModel doSomething(ExampleRequestModel model);
 
     String doSomething(ExampleEnum exampleEnum);
 

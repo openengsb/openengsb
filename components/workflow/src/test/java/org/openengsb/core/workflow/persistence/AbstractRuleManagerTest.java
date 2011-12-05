@@ -28,6 +28,8 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
 
 public abstract class AbstractRuleManagerTest {
     protected RuleManager ruleManager;
@@ -94,6 +96,11 @@ public abstract class AbstractRuleManagerTest {
 
             @Override
             public String doSomething(String message) {
+                return null;
+            }
+
+            @Override
+            public ExampleResponseModel doSomething(ExampleRequestModel model) {
                 return null;
             }
         };

@@ -17,12 +17,10 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-
 import org.openengsb.core.api.ekb.ModelFactory;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +30,10 @@ import org.slf4j.LoggerFactory;
 public class ModelFactoryService implements ModelFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelFactoryService.class);
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
         LOGGER.debug("createEmpytModelObject for model interface {} called", model.getName());
-        return (T) createModelObject(model, entries);
+        return (T) ModelUtils.createEmptyModelObject(model, entries);
     }
 
     @Override
@@ -44,15 +41,7 @@ public class ModelFactoryService implements ModelFactory {
         if (!OpenEngSBModel.class.isAssignableFrom(model)) {
             throw new IllegalArgumentException("OpenEngSBModel has to be deriveable from model parameter");
         }
-        ClassLoader classLoader = model.getClassLoader();
-        Class<?>[] classes = new Class<?>[]{ OpenEngSBModel.class, model };
-        InvocationHandler handler = makeHandler(model, entries);
-
-        return Proxy.newProxyInstance(classLoader, classes, handler);
-    }
-
-    private EKBProxyHandler makeHandler(Class<?> model, OpenEngSBModelEntry[] entries) {
-        EKBProxyHandler handler = new EKBProxyHandler(model, entries);
-        return handler;
+        
+        return ModelUtils.createModelObject(model, entries);
     }
 }

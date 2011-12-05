@@ -25,13 +25,14 @@ import org.openengsb.core.api.ekb.ModelFactory;
 import org.openengsb.core.api.ekb.QueryInterface;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * Service which implements the EngineeringKnowlegeBaseService. Also represents a proxy for simulating simple
  * OpenEngSBModel interfaces.
  * 
- * This service is deprecated. If you want to use the proxiing functionality, you have to use a ModelFactory
- * service. If you want to query for elements from the EDB, you have to use a QueryInterface service.
+ * This service is deprecated. If you want to use the proxiing functionality, you should use the ModelUtils class
+ * in the common bundle. If you want to query for elements from the EDB, you have to use a QueryInterface service.
  */
 @Deprecated
 public class EKBService implements EngineeringKnowledgeBaseService {
@@ -41,7 +42,7 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     @Override
     @Deprecated
     public <T extends OpenEngSBModel> T createEmptyModelObject(Class<T> model, OpenEngSBModelEntry... entries) {
-        return modelFactory.createEmptyModelObject(model, entries);
+        return ModelUtils.createEmptyModelObject(model, entries);
     }
 
     @Override

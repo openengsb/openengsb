@@ -28,6 +28,7 @@
   <cm:property-placeholder persistent-id="org.openengsb.ports.jms">
     <cm:default-properties>
       <cm:property name="timeForResponse" value="3000" />
+      <cm:property name="defaultReceiveQueue" value="receive" />
     </cm:default-properties>
   </cm:property-placeholder>
 
@@ -49,6 +50,7 @@
     <property name="outputType" value="org.openengsb.core.api.remote.MethodResultMessage" />
     <property name="filters">
       <list>
+        <value>org.openengsb.core.common.remote.EKBProxyOutgoingFilter</value>
         <value>org.openengsb.core.security.filter.OutgoingWrapperFilter</value>
         <value>org.openengsb.core.security.filter.OutgoingJsonSecureMethodCallMarshalFilter</value>
         <bean class="org.openengsb.ports.jms.JMSOutgoingPort">
@@ -72,6 +74,7 @@
     <property name="unsecureFilterChain">
       <bean factory-ref="unsecureIncomingFilterChainFactory" factory-method="create" />
     </property>
+    <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
@@ -88,6 +91,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>
@@ -104,6 +108,7 @@
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
         <ref component-id="authenticationFilterFactory" />
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
+        <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
           <property name="requestHandler" ref="requestHandler" />
         </bean>

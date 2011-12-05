@@ -26,9 +26,10 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -40,13 +41,14 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 
 public class JPATestIT {
     private static JPADatabase db;
     private static Utils utils;
 
-    @BeforeClass
-    public static void initDB() {
+    @Before
+    public void initDB() {
         utils = new Utils();
         db = new JPADatabase();
         try {
@@ -57,8 +59,8 @@ public class JPATestIT {
         }
     }
 
-    @AfterClass
-    public static void closeDB() {
+    @After
+    public void closeDB() {
         db.close();
     }
 
@@ -409,7 +411,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
         enrichEDBEvent(event);
@@ -419,7 +421,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -437,7 +439,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBBatchEvent_shouldWork() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("batchevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -453,7 +455,7 @@ public class JPATestIT {
         EDBBatchEvent e = new EDBBatchEvent();
         enrichEDBEvent(e);
         e.addModelUpdate(model);
-        TestModel model2 = new TestModel();
+        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
 
@@ -481,7 +483,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
         EDBDeleteEvent event = new EDBDeleteEvent(model);
         db.processEDBDeleteEvent(event);
@@ -489,7 +491,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -520,7 +522,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/3");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -552,7 +554,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/4");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -568,11 +570,54 @@ public class JPATestIT {
     }
 
     @Test
+    public void testCreationOfEDBObjectsAreCorrect_shouldWork() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setName("creationtest1");
+        model.setEdbId("creationtest2");
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub.setEdbId("testSub/111");
+        sub.setName("sub");
+        model.setSubModel(sub);
+
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub1.setEdbId("testSub/222");
+        sub1.setName("sub1");
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub2.setEdbId("testSub/333");
+        sub2.setName("sub2");
+
+        model.setSubs(Arrays.asList(sub1, sub2));
+        model.setIds(Arrays.asList(1, 2, 3, 4));
+
+        EDBInsertEvent event = new EDBInsertEvent(model);
+        enrichEDBEvent(event);
+
+        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "creationtest3", event, 1);
+        
+        EDBObject edbObject = edbobjects.get(edbobjects.size() - 1);
+                
+        assertThat(edbObject.get("edbVersion").toString(), is("1"));        
+        assertThat(edbObject.get("subModel").toString(), is("testdomain/testconnector/testSub/111"));
+        assertThat(edbObject.get("subs0").toString(), is("testdomain/testconnector/testSub/222"));
+        assertThat(edbObject.get("subs1").toString(), is("testdomain/testconnector/testSub/333"));
+        assertThat(edbObject.get("connectorId").toString(), is("testconnector"));
+        assertThat(edbObject.get("instanceId").toString(), is("testinstance"));
+        assertThat(edbObject.get("domainId").toString(), is("testdomain"));
+        assertThat(edbObject.get("name").toString(), is("creationtest1"));
+        assertThat(edbObject.get("edbId").toString(), is("creationtest2"));
+        assertThat(edbObject.get("oid").toString(), is("creationtest3"));        
+        assertThat(edbObject.get("ids0").toString(), is("1"));
+        assertThat(edbObject.get("ids1").toString(), is("2"));
+        assertThat(edbObject.get("ids2").toString(), is("3"));
+        assertThat(edbObject.get("ids3").toString(), is("4"));
+    }
+
+    @Test
     public void testSupportOfSimpleSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/1");
-        SubModel sub = new SubModel();
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
         sub.setEdbId("testSub/2");
         sub.setName("sub");
         model.setSubModel(sub);
@@ -585,19 +630,19 @@ public class JPATestIT {
         EDBObject subObject = db.getObject("testdomain/testconnector/testSub/2");
 
         assertThat(subObject, notNullValue());
-        assertThat((String) mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
+        assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
     }
 
     @Test
     public void testSupportOfListOfSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/3");
 
-        SubModel sub1 = new SubModel();
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub1.setEdbId("testSub/4");
         sub1.setName("sub1");
-        SubModel sub2 = new SubModel();
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub2.setEdbId("testSub/5");
         sub2.setName("sub2");
 
@@ -613,8 +658,210 @@ public class JPATestIT {
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat((String) mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat((String) mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
+        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+    }
+
+    @Test
+    public void testQueryOfOldVersionShouldWork() {
+        HashMap<String, Object> data1v1 = new HashMap<String, Object>();
+        data1v1.put("pre:KeyA", "pre:Value A 1");
+        data1v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v11 = new EDBObject("pre:/test/object1", data1v1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.add(v11);
+        HashMap<String, Object> data2v1 = new HashMap<String, Object>();
+        data2v1.put("pre:KeyA", "pre:Value A 2");
+        data2v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v12 = new EDBObject("pre:/test/object2", data2v1);
+        ci.add(v12);
+        HashMap<String, Object> data3v1 = new HashMap<String, Object>();
+        data3v1.put("pre:KeyA", "pre:Value A 3");
+        data3v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v13 = new EDBObject("pre:/test/object3", data3v1);
+        ci.add(v13);
+
+        long time1 = db.commit(ci);
+
+        HashMap<String, Object> data1v2 = new HashMap<String, Object>();
+        data1v2.put("pre:KeyA", "pre:Value A 1");
+        data1v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v21 = new EDBObject("pre:/test/object1", data1v2);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v21);
+        HashMap<String, Object> data2v2 = new HashMap<String, Object>();
+        data2v2.put("pre:KeyA", "pre:Value A 2");
+        data2v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v22 = new EDBObject("pre:/test/object2", data2v2);
+        ci.add(v22);
+        HashMap<String, Object> data4v1 = new HashMap<String, Object>();
+        data4v1.put("pre:KeyA", "pre:Value A 4");
+        data4v1.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v23 = new EDBObject("pre:/test/object4", data4v1);
+        ci.add(v23);
+
+        long time2 = db.commit(ci);
+
+        HashMap<String, Object> data1v3 = new HashMap<String, Object>();
+        data1v3.put("pre:KeyA", "pre:Value A 1");
+        data1v3.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v31 = new EDBObject("pre:/test/object1", data1v3);
+        ci = db.createCommit("Blub", "Testing");
+        ci.add(v31);
+        HashMap<String, Object> data2v3 = new HashMap<String, Object>();
+        data2v3.put("pre:KeyA", "pre:Value A 2a");
+        data2v3.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v32 = new EDBObject("pre:/test/object2", data2v3);
+        ci.add(v32);
+        HashMap<String, Object> data4v2 = new HashMap<String, Object>();
+        data4v2.put("pre:KeyA", "pre:Value A 4");
+        data4v2.put("pre:KeyB", "pre:Value A 1");
+        EDBObject v33 = new EDBObject("pre:/test/object4", data4v2);
+        ci.add(v33);
+
+        long time3 = db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("pre:KeyB", "pre:Value A 1");
+        List<EDBObject> result = db.query(map, time2);
+
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+
+        for (EDBObject e : result) {
+            if (e.get("pre:KeyA").equals("pre:Value A 1")) {
+                b1 = true;
+            }
+            if (e.get("pre:KeyA").equals("pre:Value A 2")) {
+                b2 = true;
+            }
+            if (e.get("pre:KeyA").equals("pre:Value A 3")) {
+                b3 = true;
+            }
+        }
+
+        assertThat(b1, is(true));
+        assertThat(b2, is(true));
+        assertThat(b3, is(true));
+        assertThat(time1 > 0, is(true));
+        assertThat(time2 > 0, is(true));
+        assertThat(time3 > 0, is(true));
+    }
+
+    @Test
+    public void testQueryWithTimestamp_shouldWork() {
+        HashMap<String, Object> data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Cow", "Milk");
+        data1.put("Dog", "Food");
+        EDBObject v1 = new EDBObject("/test/querynew1", data1);
+        JPACommit ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew1", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        data1 = new HashMap<String, Object>();
+        data1.put("K", "B");
+        data1.put("Dog", "Food");
+        v1 = new EDBObject("/test/querynew2", data1);
+        ci = db.createCommit(utils.getRandomCommitter(), utils.getRandomRole());
+        ci.add(v1);
+        db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("K", "B");
+        List<EDBObject> result = db.query(map, System.currentTimeMillis());
+        assertThat(result.size(), is(1));
+    }
+
+    @Test
+    public void testQueryOfLastKnownVersionShouldWork() {
+        HashMap<String, Object> data1v1 = new HashMap<String, Object>();
+        data1v1.put("KeyA", "Value A 1");
+        data1v1.put("KeyB", "Value A 1");
+        EDBObject v11 = new EDBObject("/test/object1", data1v1);
+        JPACommit ci = db.createCommit("Blub", "Testing");
+        ci.add(v11);
+        HashMap<String, Object> data2v1 = new HashMap<String, Object>();
+        data2v1.put("KeyA", "Value A 2");
+        data2v1.put("KeyB", "Value A 1");
+        EDBObject v12 = new EDBObject("/test/object2", data2v1);
+        ci.add(v12);
+        HashMap<String, Object> data3v1 = new HashMap<String, Object>();
+        data3v1.put("KeyA", "Value A 3");
+        data3v1.put("KeyB", "Value A 1");
+        EDBObject v13 = new EDBObject("/test/object3", data3v1);
+        ci.add(v13);
+
+        long time1 = db.commit(ci);
+
+        ci = db.createCommit("Blub", "Testing");
+        HashMap<String, Object> data1v2 = new HashMap<String, Object>();
+        data1v2.put("KeyA", "Value A 1");
+        data1v2.put("KeyB", "Value A 1");
+        EDBObject v21 = new EDBObject("/test/object1", data1v2);
+        ci.add(v21);
+        HashMap<String, Object> data2v2 = new HashMap<String, Object>();
+        data2v2.put("KeyA", "Value A 2");
+        data2v2.put("KeyB", "Value A 1");
+        EDBObject v22 = new EDBObject("/test/object2", data2v2);
+        ci.add(v22);
+
+        long time2 = db.commit(ci);
+
+        ci = db.createCommit("Blub", "Testing");
+        HashMap<String, Object> data2v3 = new HashMap<String, Object>();
+        data2v3.put("KeyA", "Value A 2a");
+        data2v3.put("KeyB", "Value A 1");
+        EDBObject v32 = new EDBObject("/test/object2", data2v3);
+        ci.add(v32);
+        HashMap<String, Object> data4v1 = new HashMap<String, Object>();
+        data4v1.put("KeyA", "Value A 4");
+        data4v1.put("KeyB", "Value A 1");
+        EDBObject v33 = new EDBObject("/test/object4", data4v1);
+        ci.add(v33);
+
+        long time3 = db.commit(ci);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("KeyB", "Value A 1");
+        List<EDBObject> result = db.query(map, time3);
+
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+        boolean b4 = false;
+
+        for (EDBObject e : result) {
+            if (e.get("KeyA").equals("Value A 1")) {
+                b1 = true;
+            }
+            if (e.get("KeyA").equals("Value A 2a")) {
+                b2 = true;
+            }
+            if (e.get("KeyA").equals("Value A 3")) {
+                b3 = true;
+            }
+
+            if (e.get("KeyA").equals("Value A 4")) {
+                b4 = true;
+            }
+        }
+
+        assertThat(b1, is(true));
+        assertThat(b2, is(true));
+        assertThat(b3, is(true));
+        assertThat(b4, is(true));
+        assertThat(time1 > 0, is(true));
+        assertThat(time2 > 0, is(true));
+        assertThat(time3 > 0, is(true));
     }
 
     private void enrichEDBEvent(EDBEvent event) {

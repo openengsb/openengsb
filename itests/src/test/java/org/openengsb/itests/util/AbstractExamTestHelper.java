@@ -18,6 +18,7 @@
 package org.openengsb.itests.util;
 
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.debugConfiguration;
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
@@ -51,6 +52,7 @@ import org.openengsb.core.common.util.SpringSecurityContextUtils;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
+import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.ManagementCfg;
 import org.openengsb.labs.paxexam.karaf.options.configs.WebCfg;
 import org.ops4j.pax.exam.Option;
@@ -279,6 +281,7 @@ public abstract class AbstractExamTestHelper {
                 editConfigurationFilePut(WebCfg.HTTP_PORT, WEBUI_PORT),
                 editConfigurationFilePut(ManagementCfg.RMI_SERVER_PORT, RMI_SERVER_PORT),
                 editConfigurationFilePut(ManagementCfg.RMI_REGISTRY_PORT, RMI_REGISTRY_PORT),
+                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-connector-example"),
                 mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
                     .versionAsInProject()) };
         if (debug) {

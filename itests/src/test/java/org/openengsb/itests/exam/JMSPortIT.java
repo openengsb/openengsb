@@ -17,7 +17,9 @@
 
 package org.openengsb.itests.exam;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -25,18 +27,32 @@ import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.e
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.crypto.SecretKey;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
+import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
+import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.JsonUtils;
+import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.model.ExampleRequestModel;
+import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.itests.remoteclient.SecureSampleConnector;
 import org.openengsb.itests.util.AbstractRemoteTestHelper;
 import org.openengsb.labs.paxexam.karaf.options.configs.FeaturesCfg;
 import org.ops4j.pax.exam.Option;
@@ -44,6 +60,7 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -56,7 +73,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
-        return combine(baseConfiguration(), editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms"));
+        return combine(baseConfiguration(),
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
     }
 
     @Override
@@ -133,6 +151,64 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(decryptedResult, not(containsString("Exception")));
     }
 
+    @Test
+    public void testStartAndStopRemoteConnector_shouldRegisterAndUnregisterProxy() throws Exception {
+        authenticateAsAdmin();
+        // make sure security-stuff is off
+        System.setProperty("org.openengsb.jms.noencrypt", "true");
+        System.setProperty("org.openengsb.security.noverify", "true");
+
+        // make sure jms is up and running
+        OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+
+        SecureSampleConnector remoteConnector = new SecureSampleConnector();
+        remoteConnector.start();
+        ExampleDomain osgiService =
+            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+        assertThat(osgiService, not(nullValue()));
+
+        remoteConnector.getInvocationHistory().clear();
+        osgiService.doSomething("test");
+        assertThat(remoteConnector.getInvocationHistory().isEmpty(), is(false));
+
+        remoteConnector.stop();
+        Thread.sleep(5000);
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+    }
+
+    @Test
+    public void testSendMethodWithModelAsParamter_shouldWork() throws Exception {
+        ExampleDomain service = new DummyService("test");
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("id", "test");
+        properties.put(Constants.SERVICE_RANKING, -1);
+        properties.put("location.root", new String[]{ "foo" });
+        getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
+
+        JmsTemplate template = prepareActiveMqConnection();
+        String secureRequest = prepareRequest(METHOD_CALL_WITH_MODEL_PARAMETER, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+
+        String result = sendMessage(template, encryptedMessage);
+        String decryptedResult = decryptResult(sessionKey, result);
+
+        ObjectMapper mapper = new ObjectMapper();
+        SecureResponse response = mapper.readValue(decryptedResult, SecureResponse.class);
+        MethodResultMessage methodResult = response.getMessage();
+        JsonUtils.convertResult(methodResult);
+        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
+        ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+
+        assertThat(decryptedResult.contains("successful"), is(true));
+        assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
+        assertThat(model.getResult(), is("successful"));
+    }
+
     private String sendMessage(JmsTemplate template, String encryptedMessage) {
         template.convertAndSend("receive", encryptedMessage);
         String result = (String) template.receiveAndConvert("12345");
@@ -144,6 +220,41 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
             new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
+    }
+
+    public class DummyService extends AbstractOpenEngSBService implements ExampleDomain {
+
+        public DummyService(String instanceId) {
+            super(instanceId);
+        }
+
+        @Override
+        public String doSomething(ExampleEnum exampleEnum) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        @Override
+        public String doSomething(String message) {
+            return "success : " + message;
+        }
+
+        @Override
+        public String doSomethingWithLogEvent(LogEvent event) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        @Override
+        public ExampleResponseModel doSomething(ExampleRequestModel model) {
+            ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
+            response.setResult("successful");
+            return response;
+        }
+
     }
 
 }
