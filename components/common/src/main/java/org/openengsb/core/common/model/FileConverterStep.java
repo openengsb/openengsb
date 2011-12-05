@@ -62,32 +62,40 @@ public final class FileConverterStep implements ModelEntryConverterStep {
     public Object convertForGetModelEntries(Object object) {
         File file = (File) object;
         File zipFile = zipFile(file);
+        FileInputStream fileInputStream = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(zipFile);
+            fileInputStream = new FileInputStream(zipFile);
             byte[] data = new byte[(int) zipFile.length()];
             fileInputStream.read(data);
-            fileInputStream.close();
 
             FileWrapper wrapper = new FileWrapper();
             wrapper.setFilename(file.getName());
             wrapper.setContent(data);
-            
+
             zipFile.delete();
             return wrapper;
         } catch (FileNotFoundException ex) {
             LOGGER.error("File " + file.getAbsolutePath() + " was not found", ex);
         } catch (IOException ex) {
             LOGGER.error("IOException while reading from file " + file.getAbsolutePath(), ex);
+        } finally {
+            try {
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+            } catch (IOException ex) {
+                LOGGER.error("Error while closing InputStream", ex);
+            }
         }
         return null;
     }
 
     private File zipFile(File file) {
-        new File(tempDir).mkdir();
         File result = new File(tempDir + File.separator + file.getName() + ".zip");
+        result.getParentFile().mkdir();
+        ZipOutputStream out = null;
         try {
-            FileOutputStream dest = new FileOutputStream(result);
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+            out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(result)));
             byte[] data = new byte[BUFFER];
 
             File[] files;
@@ -109,11 +117,16 @@ public final class FileConverterStep implements ModelEntryConverterStep {
                 }
                 bis.close();
             }
-            out.close();
         } catch (FileNotFoundException ex) {
             LOGGER.error("File " + file.getAbsolutePath() + " was not found", ex);
         } catch (IOException ex) {
             LOGGER.error("IOException while zipping file " + file.getAbsolutePath(), ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                LOGGER.error("Error while closing ZipOutputStream", ex);
+            }
         }
         return result;
     }
@@ -126,10 +139,11 @@ public final class FileConverterStep implements ModelEntryConverterStep {
     @Override
     public Object convertForGetter(Object object) {
         FileWrapper wrapper = (FileWrapper) object;
-        File f = new File(tempDir + File.separator + wrapper.getFilename() + ".zip"); 
+        File f = new File(tempDir + File.separator + wrapper.getFilename() + ".zip");
+        FileOutputStream stream = null;
         try {
             f.createNewFile();
-            FileOutputStream stream = new FileOutputStream(f);
+            stream = new FileOutputStream(f);
             stream.write(wrapper.getContent());
             stream.flush();
             stream.close();
@@ -137,6 +151,12 @@ public final class FileConverterStep implements ModelEntryConverterStep {
             LOGGER.error("File " + f.getAbsolutePath() + " could not be created", ex);
         } catch (IOException ex) {
             LOGGER.error("IOException while writing the byte array of the wrapper to file " + f.getAbsolutePath(), ex);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException ex) {
+                LOGGER.error("Error while closing FileOutputStream", ex);
+            }
         }
 
         return unzipFile(f, wrapper.getFilename());
