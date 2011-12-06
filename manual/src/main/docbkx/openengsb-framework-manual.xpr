@@ -4,7 +4,7 @@
         <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
-    <projectTree name="newProject.xpr">
+    <projectTree name="openengsb-manual.xpr">
         <folder path="developer/"/>
         <folder path="domains/"/>
         <folder path="howto/"/>
