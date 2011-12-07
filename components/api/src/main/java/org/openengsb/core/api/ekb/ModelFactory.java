@@ -23,7 +23,10 @@ import org.openengsb.core.api.model.OpenEngSBModelEntry;
 /**
  * The ModelFactory provides a service which enables the possibility to proxy the implementation of
  * simple OpenEngSBModel interface objects. This is needed, because all domain models are interfaces.
+ * 
+ * Deprecated. Use ModelUtils in the framework common bundle instead (same function names)
  */
+@Deprecated
 public interface ModelFactory {
     
     /**
