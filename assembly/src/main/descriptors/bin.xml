@@ -109,7 +109,7 @@
   <files>
     <!-- Copy Changlog File -->
     <file>
-      <source>${basedir}/../CHANGELOG.md</source>
+      <source>${basedir}/../CHANGELOG</source>
       <outputDirectory>/</outputDirectory>
       <destName>CHANGELOG</destName>
       <fileMode>0644</fileMode>
