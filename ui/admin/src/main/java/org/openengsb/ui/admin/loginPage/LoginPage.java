@@ -22,15 +22,17 @@ import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.ui.admin.basePage.BasePage;
+import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
 import org.openengsb.ui.admin.model.UsernamePassword;
+import org.openengsb.ui.common.OpenEngSBPage;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
-public class LoginPage extends BasePage {
+public class LoginPage extends OpenEngSBPage{
     private UsernamePassword user = new UsernamePassword();
 
     public LoginPage() {
@@ -63,6 +65,7 @@ public class LoginPage extends BasePage {
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+        add(new BookmarkablePageLink<ImprintPage>("imprint", ImprintPage.class));
     }
 
     public LoginPage(PageParameters parameters) {

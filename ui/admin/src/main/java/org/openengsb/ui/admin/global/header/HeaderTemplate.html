@@ -23,29 +23,33 @@
 
 <body>
   <wicket:panel>
-    <div id="header">
-      <div id="banner">
-        <a class="pageLogo" href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="logo">
-          <img wicket:message="title:headerPage.title" alt="" title="" src="openengsb/images/openengsb.png">
-        </a>
-        <span class="languages">
-          <a href="HeaderTemplate.html#" wicket:id="lang.en">
-            <img wicket:message="title:headerPage.title" alt="English" title="English" src="openengsb/images/english_icon.png" />
-          </a>
-          <a href="HeaderTemplate.html#" wicket:id="lang.de">
-            <img wicket:message="title:headerPage.title" alt="Deutsch" title="Deutsch" src="openengsb/images/german_icon.png" />
-          </a>
-        </span>
-        <span class="version" wicket:id="version"></span>
-      </div>
-
-      <div id="mainMenu">
-        <ul>
-          <li wicket:id="headerMenuItems">
-            <a href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="link">linkTarget</a>
-          </li>
-        </ul>
-      </div>
+  	<div class="line">
+	    <div id="topHeader" class="unit size2of3 header" width="*">
+	      <div id="topLogo">
+	      	<a class="pageLogo" href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="logo">
+	        	<img wicket:message="title:headerPage.title" alt="OpenEngSB logo" class="logoSmallSize" title="OpenEngSB Logo" src="openengsb/images/openengsb_medium_greyscale.png">
+	     	 </a>
+	     </div>
+	      <div id="topHeadline">
+	      	<span class="topH1">Open Engineering Service Bus</span><br />
+	      	<span class="topH2 quiet">Admin Console, Version 1.0.0</span>
+	      </div>
+	    </div>
+	    <div id="topMenu" class="unit size1of3 lastUnit right header">
+	    	<div id="topMenuContainer">
+	    		<div class="tmc-left"></div>
+	    		<div class="tmc-center">
+	    		  <span>Max Meier</span>
+	    		  <div class="tmc-seperator"></div>
+	    		  <span wicket:id="currentProject">Project</span>
+	    		  <div class="tmc-seperator"></div>
+	    		  <span>EN</span>
+	    		  <div class="tmc-seperator"></div>
+	    		  <a href="BasePage.html#" wicket:id="logout" >Logout</a>
+	    		</div>
+	    		<div class="tmc-right"></div>
+	    	</div>
+	    </div>
     </div>
   </wicket:panel>
 </body>

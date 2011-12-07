@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -32,10 +33,13 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebSession;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
+import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
@@ -45,11 +49,16 @@ import org.openengsb.ui.admin.userService.UserListPage;
 import org.openengsb.ui.admin.wiringPage.WiringPage;
 import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.api.OpenEngSBVersionService;
+import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
-    private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
+    
+	
+	
+	/*
+	private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
     private final ArrayList<String> avialableItems = new ArrayList<String>();
 
     private static String menuIndex;
@@ -60,16 +69,19 @@ public class HeaderTemplate extends Panel {
     private List<OpenEngSBVersionService> openengsbVersionService;
     @PaxWicketBean(name = "attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
-
+*/
+	
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
 
         baseInitialization(menuIndex);
-        initializeMenu();
+        initializeTopMenu();
+  //      initializeMenu();
     }
 
     private void baseInitialization(String menuIndex) {
-        add(new Link<Object>("lang.en") {
+        /*
+    	add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
                 getSession().setLocale(Locale.ENGLISH);
@@ -83,8 +95,9 @@ public class HeaderTemplate extends Panel {
         });
 
         HeaderTemplate.menuIndex = menuIndex;
-
+*/
         add(new BookmarkablePageLink<Index>("logo", Index.class));
+/*
         if (openengsbVersion == null) {
             openengsbVersion = new OpenEngSBFallbackVersion();
         }
@@ -92,9 +105,9 @@ public class HeaderTemplate extends Panel {
             add(new Label("version", openengsbVersion.getVersionNumber()));
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
-        }
+        } */
     }
-
+/*
     private void initMainMenuItems() {
         addHeaderMenuItem("Index", Index.class, "index.title");
 
@@ -106,9 +119,29 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
         addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
     }
-
+	*/
+    
+    private void initializeTopMenu() {
+    	Link<Object> link = new Link<Object>("logout") {
+    		@Override
+            public void onClick() {
+                boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
+                if (signedIn) {
+                    ((AuthenticatedWebSession) getSession()).signOut();
+                }
+                setResponsePage(signedIn ? Index.class : LoginPage.class);
+            }
+        };
+        add(link);
+        
+        final Label projectLabel = new Label("currentProject",ContextHolder.get().getCurrentContextId());
+        add(projectLabel);
+    }
+    
+    /*
     private void initializeMenu() {
-        initMainMenuItems();
+        
+    	initMainMenuItems();
 
         if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
@@ -140,15 +173,16 @@ public class HeaderTemplate extends Panel {
     /**
      * get the name of the current active menu item
      */
-    public static String getActiveIndex() {
-        return HeaderTemplate.menuIndex;
-    }
+    //public static String getActiveIndex() {
+    //    return HeaderTemplate.menuIndex;
+    //}
 
     /**
      * Adds a new item to main header navigation where the index defines the name of the index, which should be the
      * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
      * should be displayed and authority defines who is authorized to see the link
      */
+    /*
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey,
             String... authority) {
@@ -184,6 +218,6 @@ public class HeaderTemplate extends Panel {
         public BookmarkablePageLabelLink<? extends WebPage> getLink() {
             return link;
         }
-    }
+    } */
 
 }

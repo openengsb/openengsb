@@ -29,6 +29,7 @@ import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
+import org.openengsb.ui.admin.global.menu.MenuTemplate;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.common.OpenEngSBPage;
@@ -38,11 +39,16 @@ import org.openengsb.ui.common.OpenEngSBWebSession;
 public abstract class BasePage extends OpenEngSBPage {
 
     public BasePage() {
-        initCommonContent();
+    	
+    if(((AuthenticatedWebSession) getSession()).isSignedIn()==false)
+    	setResponsePage(LoginPage.class);
+    else
+    		initCommonContent();
     }
 
     private void initCommonContent() {
         initializeHeader();
+        initializeMenu();
         initializeLoginLogoutTemplate();
         initializeFooter();
     }
@@ -57,13 +63,15 @@ public abstract class BasePage extends OpenEngSBPage {
     }
 
     private void initializeLoginLogoutTemplate() {
-        Form<?> form = new Form<Object>("projectChoiceForm");
+        /*
+    	Form<?> form = new Form<Object>("projectChoiceForm");
         form.add(createProjectChoice());
         add(form);
         try {
             form.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
         } catch (ClassCastException e) {
         }
+
 
         Link<Object> link = new Link<Object>("logout") {
             @Override
@@ -88,13 +96,17 @@ public abstract class BasePage extends OpenEngSBPage {
         try {
             container.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
         } catch (ClassCastException e) {
-        }
+        } */
     }
 
     private void initializeHeader() {
         add(new HeaderTemplate("header", getHeaderMenuItem()));
     }
 
+    private void initializeMenu() {
+        add(new MenuTemplate("menu",this.getMenuItem()));
+    }
+    
     private Component createProjectChoice() {
         DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
             @Override
@@ -129,8 +141,7 @@ public abstract class BasePage extends OpenEngSBPage {
      * @return the class name, which should be the index in navigation bar
      * 
      */
-    @Override
-    public String getHeaderMenuItem() {
+    public String getMenuItem() {
         return this.getClass().getSimpleName();
     }
 

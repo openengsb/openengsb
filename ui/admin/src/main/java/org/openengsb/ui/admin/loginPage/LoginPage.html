@@ -20,19 +20,48 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
       xml:lang="en">
+      
+<wicket:head>
+  <link rel="stylesheet" type="text/css" href="openengsb/style/grids.css"/>
+  <link rel="stylesheet" type="text/css" href="openengsb/style/blueprint/screen.css"/>
+  <link rel="stylesheet" type="text/css" href="openengsb/style/style.css"/>
+  <link rel="icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>OpenEngSB Login</title>
+</wicket:head>
+
 
 <body>
-  <wicket:extend>
-    <div class="loginForm">
-      <form wicket:id="loginForm">
-        <wicket:message key="username"></wicket:message>:
-          <input wicket:id="username" class="login" />
-          <wicket:message key="password"></wicket:message>:
-          <input type="password" wicket:id="password" class="login" />
-          <input type="submit" wicket:message="value:button.login,title:button.login" />
-        </form>
-      <span wicket:id="feedback" />
-    </div>
-  </wicket:extend>
+	<div id="loginMaskContainer">
+	  <div class="line">  
+        <div class="unit size1of2 background">
+       	  <div class="positionRelative"><img src="/openengsb/images/openengsb_small.png" /><h3 class="inline headerLabel quiet">Admin console</h3></div><br />
+          <p class="smalltext quiet"><wicket:message key="login.welcome"></wicket:message></p>
+        </div>
+        <div class="unit size1of2 lastUnit">
+      	  <div class="loginForm">
+      		  <h3 class="right quiet">Login</h3><br />
+        	  <form wicket:id="loginForm">
+        		  <div>
+          			  <label for="username" class="quiet"><wicket:message key="username"></wicket:message></label><br />
+            		  <input type="text" wicket:id="username" /> 
+            	  </div>
+            	  <div>
+            		  <label for="password" class="quiet"><wicket:message key="password"></wicket:message></label><br />
+            		  <input type="password" wicket:id="password" />
+            	  </div>
+            	  <div><br /><input type="submit" wicket:message="value:button.login,title:button.login" /></div>
+          	  </form>
+        	  <span wicket:id="feedback" />
+      	  </div>
+        </div>
+  	  </div>
+  	  <div class="line center smalltext">
+  	    <a href="../" wicket:id="imprint">
+          <wicket:message key="imprint"></wicket:message>
+        </a>
+  	  </div>
+  	</div>
 </body>
 </html>

@@ -24,6 +24,25 @@
     <wicket:panel>
       <div wicket:id="listContainer">
         <form wicket:id="form">
+		  <table>
+		  	<tr>
+		  	  <th><wicket:message key="username.tableHead" /></th>
+		  	  <th><wicket:message key="action.tableHead" /></th>
+		  	  <th><wicket:message key="action.tableHead" /></th>
+		  	</tr>
+		  	<tr wicket:id="list">
+		  	  <td><span wicket:id="item.name">[service.name]</span></td>
+		  	  <td><a href="UserService.html#" wicket:id="item.delete">
+                    <img wicket:message="title:delete.item.title" alt="delete.item.alt" src="openengsb/images/deleteS.png" />
+                  </a></td>
+		  	  <td>                  <a href="UserService.html#" wicket:id="item.update">
+                    <img wicket:message="title:delete.item.title" alt="update.item.alt" src="openengsb/images/editS.png" />
+                  </a></td>
+               <td><div wicket:id="confirm" />        
+          </td>
+		  	</tr>
+		  </table>  
+		  <!--
           <fieldset>
             <ol wicket:id="list">
               <li>
@@ -40,6 +59,7 @@
               </li>
             </ol>
           </fieldset>
+          -->
         </form>
       </div>
     </wicket:panel>
