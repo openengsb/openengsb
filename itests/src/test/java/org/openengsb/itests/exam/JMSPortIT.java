@@ -28,8 +28,16 @@ import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -64,6 +72,8 @@ import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.SessionCallback;
+import org.springframework.jms.support.JmsUtils;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -74,7 +84,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(),
-            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
+                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
     }
 
     @Override
@@ -94,8 +104,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+        OutgoingPort serviceWithId = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(
+                OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
 
     }
@@ -163,11 +173,12 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService =
-            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
+        ExampleDomain osgiService = getOsgiService(ExampleDomain.class,
+                "(id=example+external-connector-proxy+example-remote)", 31000);
 
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+        assertThat(
+                getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+                        "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
@@ -176,8 +187,9 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         remoteConnector.stop();
         Thread.sleep(5000);
-        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-            "(id=example+external-connector-proxy+example-remote)"), nullValue());
+        assertThat(
+                getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+                        "(id=example+external-connector-proxy+example-remote)"), nullValue());
     }
 
     @Test
@@ -186,7 +198,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", new String[]{ "foo" });
+        properties.put("location.root", new String[] { "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         JmsTemplate template = prepareActiveMqConnection();
@@ -209,15 +221,29 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(model.getResult(), is("successful"));
     }
 
-    private String sendMessage(JmsTemplate template, String encryptedMessage) {
-        template.convertAndSend("receive", encryptedMessage);
-        String result = (String) template.receiveAndConvert("12345");
-        return result;
+    private String sendMessage(final JmsTemplate template, final String msg) {
+        String resultString = template.execute(new SessionCallback<String>() {
+            @Override
+            public String doInJms(Session session) throws JMSException {
+                Queue queue = session.createQueue("receive");
+                MessageProducer producer = session.createProducer(queue);
+                TemporaryQueue tempQueue = session.createTemporaryQueue();
+                MessageConsumer consumer = session.createConsumer(tempQueue);
+                TextMessage message = session.createTextMessage(msg);
+                message.setJMSReplyTo(tempQueue);
+                message.setJMSCorrelationID(UUID.randomUUID().toString());
+                producer.send(message);
+                TextMessage response = (TextMessage) consumer.receive(1000);
+                JmsUtils.closeMessageProducer(producer);
+                JmsUtils.closeMessageConsumer(consumer);
+                return response.getText();
+            }
+        }, true);
+        return resultString;
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
-        ActiveMQConnectionFactory cf =
-            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
     }

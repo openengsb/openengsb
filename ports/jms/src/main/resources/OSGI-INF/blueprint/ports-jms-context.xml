@@ -28,7 +28,6 @@
   <cm:property-placeholder persistent-id="org.openengsb.ports.jms">
     <cm:default-properties>
       <cm:property name="timeForResponse" value="3000" />
-      <cm:property name="defaultReceiveQueue" value="receive" />
     </cm:default-properties>
   </cm:property-placeholder>
 
@@ -74,7 +73,6 @@
     <property name="unsecureFilterChain">
       <bean factory-ref="unsecureIncomingFilterChainFactory" factory-method="create" />
     </property>
-    <property name="receive" value="${defaultReceiveQueue}" />
   </bean>
 
   <bean id="incomingFilterChainFactory" class="org.openengsb.core.common.remote.FilterChainFactory">
