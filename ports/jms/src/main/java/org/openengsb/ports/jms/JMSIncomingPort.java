@@ -38,8 +38,6 @@ public class JMSIncomingPort {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSIncomingPort.class);
 
-    private static final String RECEIVE = "receive";
-
     private static final String DISABLE_ENCRYPTION = "org.openengsb.jms.noencrypt";
 
     private JMSTemplateFactory factory;
@@ -50,6 +48,8 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
+    private String receive;
+
     /*
      * TODO OPENENGSB-1575 this property is kind of a hack and should be
      * replaced by proper dynamic port configuration
@@ -57,7 +57,7 @@ public class JMSIncomingPort {
     private FilterChain unsecureFilterChain;
 
     public void start() {
-        simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
+        simpleMessageListenerContainer = createListenerContainer(receive, new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 LOGGER.trace("JMS-message recieved. Checking if the type is supported");
@@ -83,11 +83,11 @@ public class JMSIncomingPort {
                     correlationID = message.getJMSCorrelationID();
                     replyQueue = message.getJMSReplyTo();
                 } catch (JMSException e) {
-                    LOGGER.error("error when getting destination queue or correlationid from client message: {}", e);
+                    LOGGER.warn("error when getting destination queue or correlationid from client message: {}", e);
                     return;
                 }
                 if (replyQueue == null) {
-                    LOGGER.error("no replyTo destination specifyed could not send response");
+                    LOGGER.warn("no replyTo destination specifyed could not send response");
                     return;
                 }
                 new JmsTemplate(connectionFactory).convertAndSend(replyQueue, result, new MessagePostProcessor() {
@@ -152,5 +152,9 @@ public class JMSIncomingPort {
 
     public void setUnsecureFilterChain(FilterChain unsecureFilterChain) {
         this.unsecureFilterChain = unsecureFilterChain;
+    }
+
+    public void setReceive(String receive) {
+        this.receive = receive;
     }
 }
