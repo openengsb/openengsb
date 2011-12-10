@@ -48,7 +48,7 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
-    private String receive;
+    private String receive = "receive";
 
     /*
      * TODO OPENENGSB-1575 this property is kind of a hack and should be
