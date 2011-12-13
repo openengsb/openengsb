@@ -316,6 +316,12 @@ public class TestClient extends BasePage {
                             Constants.EXTERNAL_CONNECTOR_PROXY));
                     }
                 });
+                item.add(new Link<DomainProvider>("json.view.messages", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        LOGGER.info("json.view.messages was clicked");
+                    }
+                });                
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                     .getDescription())));
 
