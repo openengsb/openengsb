@@ -36,7 +36,6 @@ import org.openengsb.core.common.util.ModelUtils;
  */
 @Deprecated
 public class EKBService implements EngineeringKnowledgeBaseService {
-    private ModelFactory modelFactory;
     private QueryInterface queryInterface;
 
     @Override
@@ -77,7 +76,7 @@ public class EKBService implements EngineeringKnowledgeBaseService {
     }
 
     public void setModelFactory(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
+        // nothing to do here any more
     }
 
     public void setQueryInterface(QueryInterface queryInterface) {

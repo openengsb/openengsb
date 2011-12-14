@@ -26,7 +26,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * gives an implementation for the ModelFactory interface of the EKB. Is able to proxy an OpenEngSBModel interface
+ * 
+ * Deprecated. Use ModelUtils in the framework common bundle instead (same function names)
  */
+@Deprecated
 public class ModelFactoryService implements ModelFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelFactoryService.class);
 
