@@ -20,19 +20,22 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.openengsb.core.common.AbstractDataRow;
+
 import com.google.common.base.Objects;
 
 /**
  * Holds a single value of a property. The type must be a class with a String-only-constructor that can be used to
  * instantiate the original instance with a previous result of the type's toString-method.
- *
+ * 
  * The value is saved as string.
- *
+ * 
  * To support multiple values (Collections, Arrays) {@link EntryValue} is used as a wrapper
  */
+@SuppressWarnings("serial")
 @Table(name = "ENTRY_VALUE_ELEMENT")
 @Entity
-public class EntryElement {
+public class EntryElement extends AbstractDataRow {
 
     @Column(name = "TYPE", nullable = false)
     private String type;

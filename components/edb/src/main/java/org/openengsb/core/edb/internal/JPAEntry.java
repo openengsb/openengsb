@@ -20,12 +20,15 @@ package org.openengsb.core.edb.internal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.openengsb.core.common.AbstractDataRow;
+
 /**
  * A JPAEntry is assigned with JPAObjects. A JPAObject contains as many JPAEntries as it wants. So to say the JPAEntries
  * are concrete key/value pairs extending JPAObjects.
  */
+@SuppressWarnings("serial")
 @Entity
-public class JPAEntry {
+public class JPAEntry extends AbstractDataRow {
     @Column(name = "KEY")
     private String key;
     @Column(name = "VALUE")

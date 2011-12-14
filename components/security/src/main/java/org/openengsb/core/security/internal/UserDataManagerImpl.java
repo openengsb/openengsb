@@ -23,6 +23,9 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
@@ -210,7 +213,7 @@ public class UserDataManagerImpl implements UserDataManager {
         return Collections2.transform(permissionSets, new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
-                return input.getId();
+                return input.getName();
             }
         });
     }
@@ -239,7 +242,7 @@ public class UserDataManagerImpl implements UserDataManager {
         return Collections2.transform(parent.getPermissionSets(), new Function<PermissionSetData, String>() {
             @Override
             public String apply(PermissionSetData input) {
-                return input.getId();
+                return input.getName();
             }
         });
     }
@@ -316,7 +319,7 @@ public class UserDataManagerImpl implements UserDataManager {
     private Collection<Permission> getAllPermissionsFromSetData(PermissionSetData set) {
         Collection<Permission> result = Sets.newHashSet(getPermissionsFromSetData(set));
         for (PermissionSetData child : set.getPermissionSets()) {
-            result.addAll(getAllPermissionsFromPermissionSet(child.getId()));
+            result.addAll(getAllPermissionsFromPermissionSet(child.getName()));
         }
         return result;
     }
@@ -330,19 +333,34 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     private UserData doFindUser(String username) throws UserNotFoundException {
-        UserData found = entityManager.find(UserData.class, username);
-        if (found == null) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserData> query = cb.createQuery(UserData.class);
+        Root<UserData> from = query.from(UserData.class);
+        query.where(cb.equal(from.get("username"), username));
+        query.select(from);
+        try {
+            UserData found = entityManager.createQuery(query).getSingleResult();
+            return found;
+        } catch (Exception ex) {
             throw new UserNotFoundException("User with name " + username + " not found");
         }
-        return found;
     }
 
     private PermissionSetData doFindPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
-        PermissionSetData set = entityManager.find(PermissionSetData.class, permissionSet);
-        if (set == null) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PermissionSetData> query = cb.createQuery(PermissionSetData.class);
+        Root<PermissionSetData> from = query.from(PermissionSetData.class);
+        query.where(cb.equal(from.get("name"), permissionSet));
+        query.select(from);
+
+        try {
+            PermissionSetData found = entityManager.createQuery(query).getSingleResult();
+            return found;
+        } catch (Exception ex) {
             throw new PermissionSetNotFoundException("permissionSet " + permissionSet + " not found");
         }
-        return set;
     }
 
     public void setEntityManager(EntityManager entityManager) {
