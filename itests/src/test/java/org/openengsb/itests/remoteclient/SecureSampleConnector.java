@@ -53,11 +53,11 @@ public final class SecureSampleConnector {
     private static final String registerMessage =
         ""
                 + "{\n"
-                + "  \"authenticationData\" : {\n"
-                + "    \"className\" : \"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo\",\n"
+                + "  \"principal\" : \"admin\",\n"
+                + "  \"credentials\" : {\n"
+                + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\",\n"
                 + "    \"data\" : {\n"
-                + "      \"username\" : \"admin\",\n"
-                + "      \"password\" : \"password\"\n"
+                + "      \"value\" : \"password\"\n"
                 + "    },\n"
                 + "    \"binaryData\" : {\n"
                 + "    }\n"
@@ -66,6 +66,7 @@ public final class SecureSampleConnector {
                 + "    \"methodCall\" : {\n"
                 + "      \"classes\" : [ \"org.openengsb.core.api.model.ConnectorId\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
                 + "      \"methodName\" : \"create\",\n"
+                + "      \"realClassImplementation\" : [ \"org.openengsb.core.api.model.ConnectorId\", \"org.openengsb.core.api.model.ConnectorDescription\" ],\n"
                 + "      \"args\" : [ {\n"
                 + "        \"domainType\" : \"example\",\n"
                 + "        \"connectorType\" : \"external-connector-proxy\",\n"
@@ -81,52 +82,45 @@ public final class SecureSampleConnector {
                 + "      } ],\n"
                 + "      \"metaData\" : {\n"
                 + "        \"serviceId\" : \"connectorManager\"\n"
-                + "      },\n"
-                + "      \"realClassImplementation\" : [ \"org.openengsb.core.api.model.ConnectorId\", \"org.openengsb.core.api.model.ConnectorDescription\" ]\n"
+                + "      }\n"
                 + "    },\n"
-                + "    \"callId\" : \"876e6ba5-716b-4e98-953f-ba51235f7a0e\",\n"
+                + "    \"callId\" : \"1d075f48-53ee-427a-ae8a-8e9d5b6db229\",\n"
                 + "    \"answer\" : false,\n"
                 + "    \"destination\" : null\n"
                 + "  },\n"
-                + "  \"timestamp\" : 1321403370228\n"
+                + "  \"timestamp\" : 1322173854513\n"
                 + "}\n";
 
     private static final String unregisterMessage = ""
                 + "{\n"
-                + "  \"authenticationData\" : {\n"
-                + "    \"className\" : \"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo\",\n"
+                + "  \"principal\" : \"admin\",\n"
+                + "  \"credentials\" : {\n"
+                + "    \"className\" : \"org.openengsb.connector.usernamepassword.Password\",\n"
                 + "    \"data\" : {\n"
-                + "      \"username\" : \"admin\",\n"
-                + "      \"password\" : \"password\"\n"
+                + "      \"value\" : \"password\"\n"
                 + "    },\n"
                 + "    \"binaryData\" : {\n"
                 + "    }\n"
                 + "  },\n"
-                + "   \"message\":{\n"
-                + "      \"methodCall\":{\n"
-                + "         \"classes\":[\n"
-                + "            \"org.openengsb.core.api.model.ConnectorId\"\n"
-                + "         ],\n"
-                + "         \"methodName\":\"delete\",\n"
-                + "         \"args\":[\n"
-                + "            {\n"
-                + "               \"domainType\":\"example\",\n"
-                + "               \"connectorType\":\"external-connector-proxy\",\n"
-                + "               \"instanceId\":\"example-remote\"\n"
-                + "            }\n"
-                + "         ],\n"
-                + "         \"metaData\":{\n"
-                + "            \"serviceId\":\"connectorManager\"\n"
-                + "         },\n"
-                + "         \"realClassImplementation\":[\n"
-                + "            \"org.openengsb.core.api.model.ConnectorId\"\n"
-                + "         ]\n"
-                + "      },\n"
-                + "      \"callId\":\"62589499-58ba-41b9-9594-c9f34883dff1\",\n"
-                + "      \"answer\":false,\n"
-                + "      \"destination\":null\n"
-                + "   },\n"
-                + "   \"timestamp\":1321399068682\n"
+                + "  \"message\" : {\n"
+                + "    \"methodCall\" : {\n"
+                + "      \"classes\" : [ \"org.openengsb.core.api.model.ConnectorId\" ],\n"
+                + "      \"methodName\" : \"delete\",\n"
+                + "      \"realClassImplementation\" : [ \"org.openengsb.core.api.model.ConnectorId\" ],\n"
+                + "      \"args\" : [ {\n"
+                + "        \"domainType\" : \"example\",\n"
+                + "        \"connectorType\" : \"external-connector-proxy\",\n"
+                + "        \"instanceId\" : \"example-remote\"\n"
+                + "      } ],\n"
+                + "      \"metaData\" : {\n"
+                + "        \"serviceId\" : \"connectorManager\"\n"
+                + "      }\n"
+                + "    },\n"
+                + "    \"callId\" : \"963718b8-07bf-4478-af12-b28bd47248b1\",\n"
+                + "    \"answer\" : false,\n"
+                + "    \"destination\" : null\n"
+                + "  },\n"
+                + "  \"timestamp\" : 1322174540600\n"
                 + "}\n";
 
     static final Logger LOGGER = LoggerFactory.getLogger(SecureSampleConnector.class);
@@ -178,7 +172,7 @@ public final class SecureSampleConnector {
         System.out.println(writeValueAsString);
     }
 
-    public static void createUnregister(String[] args) throws JsonGenerationException,
+    public static void main(String[] args) throws JsonGenerationException,
         JsonMappingException, IOException {
 
         ConnectorId connectorId = new ConnectorId("example", "external-connector-proxy", "example-remote");
@@ -188,8 +182,10 @@ public final class SecureSampleConnector {
         metaData.put("serviceId", "connectorManager");
         methodCall.setMetaData(metaData);
         MethodCallRequest methodCallRequest = new MethodCallRequest(methodCall, false);
-        SecureRequest create = SecureRequest.create(methodCallRequest, null, null);
-        String writeValueAsString = new ObjectMapper().writeValueAsString(create);
+        BeanDescription auth = BeanDescription.fromObject(new Password("password"));
+        SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
+        ObjectMapper mapper = new ObjectMapper();
+        String writeValueAsString = mapper.defaultPrettyPrintingWriter().writeValueAsString(create);
         System.out.println(writeValueAsString);
     }
 }

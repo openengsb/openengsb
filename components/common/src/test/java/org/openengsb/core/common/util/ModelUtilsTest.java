@@ -20,15 +20,17 @@ package org.openengsb.core.common.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 public class ModelUtilsTest {
-    
+
     @Test
     public void testSetterAndGetterWithStringObject_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
@@ -103,14 +105,18 @@ public class ModelUtilsTest {
         boolean stringEntry3 = false;
 
         for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("list0") && e.getValue().equals("string1")) {
-                stringEntry1 = true;
-            }
-            if (e.getKey().equals("list1") && e.getValue().equals("string2")) {
-                stringEntry2 = true;
-            }
-            if (e.getKey().equals("list2") && e.getValue().equals("string3")) {
-                stringEntry3 = true;
+            if (e.getKey().equals("list")) {
+                @SuppressWarnings("unchecked")
+                List<String> list = (List<String>) e.getValue();
+                for (String elem : list) {
+                    if (elem.equals("string1")) {
+                        stringEntry1 = true;
+                    } else if (elem.equals("string2")) {
+                        stringEntry2 = true;
+                    } else if (elem.equals("string3")) {
+                        stringEntry3 = true;
+                    }
+                }
             }
         }
 
@@ -128,7 +134,7 @@ public class ModelUtilsTest {
         boolean enumEntry = false;
 
         for (OpenEngSBModelEntry e : model.getOpenEngSBModelEntries()) {
-            if (e.getKey().equals("enumeration") && e.getValue().equals("A")) {
+            if (e.getKey().equals("enumeration") && e.getValue().equals(enumeration)) {
                 enumEntry = true;
             }
         }
@@ -142,8 +148,8 @@ public class ModelUtilsTest {
 
         List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
 
-        // 8 because the model define 8 fields
-        assertThat(entries.size(), is(8));
+        // 9 because the model define 9 fields
+        assertThat(entries.size(), is(9));
     }
 
     @Test
@@ -186,6 +192,61 @@ public class ModelUtilsTest {
 
         assertThat(tailEntry, is(true));
         assertThat(tailAway, is(true));
+    }
+
+    @Test
+    public void testFileConversion_shouldWork() {
+        File f =
+            new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "testfile.txt");
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setFile(f);
+
+        boolean fileWrapper = false;
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals("file") && entry.getType().equals(FileWrapper.class)) {
+                fileWrapper = true;
+            }
+        }
+
+        TestModel model2 =
+            (TestModel) ModelUtils.createModelObject(TestModel.class, entries.toArray(new OpenEngSBModelEntry[0]));
+
+        File newFile = model2.getFile();
+
+        assertThat(newFile.exists(), is(true));
+        assertThat(newFile.getName(), is("testfile.txt"));
+        assertThat(fileWrapper, is(true));
+    }
+
+    @Test
+    public void testDirectoryConversion_shouldWork() {
+        File f =
+            new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "testfolder");
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setFile(f);
+
+        boolean fileWrapper = false;
+        List<OpenEngSBModelEntry> entries = model.getOpenEngSBModelEntries();
+
+        for (OpenEngSBModelEntry entry : entries) {
+            if (entry.getKey().equals("file") && entry.getType().equals(FileWrapper.class)) {
+                fileWrapper = true;
+            }
+        }
+
+        TestModel model2 =
+            (TestModel) ModelUtils.createModelObject(TestModel.class, entries.toArray(new OpenEngSBModelEntry[0]));
+
+        File newFile = model2.getFile();
+
+        assertThat(newFile.exists(), is(true));
+        assertThat(newFile.getName(), is("testfolder"));
+        List<String> filenames = Arrays.asList(newFile.list());
+        assertThat(filenames.contains("test.txt"), is(true));
+        assertThat(filenames.contains("test2.txt"), is(true));
+        assertThat(fileWrapper, is(true));
     }
 
 }

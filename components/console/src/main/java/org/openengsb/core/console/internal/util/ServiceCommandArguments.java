@@ -15,32 +15,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.console.internal.util;
 
-import java.util.List;
-
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
-
-public interface TestModel extends OpenEngSBModel {
-    void setName(String name);
-
-    String getName();
-
-    @OpenEngSBModelId
-    void setEdbId(String edbId);
-
-    String getEdbId();
-
-    void setSubModel(SubModel subModel);
-
-    SubModel getSubModel();
-
-    void setSubs(List<SubModel> subs);
-
-    List<SubModel> getSubs();
-    
-    void setIds(List<Integer> ids);
-    
-    List<Integer> getIds();
+public enum ServiceCommandArguments {
+    LIST,
+    CREATE,
+    UPDATE,
+    DELETE
 }

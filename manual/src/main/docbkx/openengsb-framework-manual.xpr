@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="13.0">
+<project version="13.1">
     <meta>
         <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
-    <projectTree name="newProject.xpr">
+    <projectTree name="openengsb-framework-manual.xpr">
         <folder path="developer/"/>
         <folder path="domains/"/>
         <folder path="howto/"/>
@@ -12,6 +12,6 @@
         <folder path="resources/"/>
         <folder path="ui/"/>
         <folder path="user/"/>
-        <file name="openengsb-manual.xml"/>
+        <file name="openengsb-framework-manual.xml"/>
     </projectTree>
 </project>

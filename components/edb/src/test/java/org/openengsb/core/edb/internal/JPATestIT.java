@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
@@ -41,13 +41,14 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.common.util.ModelUtils;
 
 public class JPATestIT {
     private static JPADatabase db;
     private static Utils utils;
 
-    @BeforeClass
-    public static void initDB() {
+    @Before
+    public void initDB() {
         utils = new Utils();
         db = new JPADatabase();
         try {
@@ -58,8 +59,8 @@ public class JPATestIT {
         }
     }
 
-    @AfterClass
-    public static void closeDB() {
+    @After
+    public void closeDB() {
         db.close();
     }
 
@@ -410,7 +411,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
         enrichEDBEvent(event);
@@ -420,7 +421,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -438,7 +439,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBBatchEvent_shouldWork() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("batchevent/1");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -454,7 +455,7 @@ public class JPATestIT {
         EDBBatchEvent e = new EDBBatchEvent();
         enrichEDBEvent(e);
         e.addModelUpdate(model);
-        TestModel model2 = new TestModel();
+        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
 
@@ -482,7 +483,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
         EDBDeleteEvent event = new EDBDeleteEvent(model);
         db.processEDBDeleteEvent(event);
@@ -490,7 +491,7 @@ public class JPATestIT {
 
     @Test
     public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/2");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -521,7 +522,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/3");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -553,7 +554,7 @@ public class JPATestIT {
 
     @Test(expected = EDBException.class)
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/4");
         EDBInsertEvent event = new EDBInsertEvent(model);
@@ -569,11 +570,54 @@ public class JPATestIT {
     }
 
     @Test
+    public void testCreationOfEDBObjectsAreCorrect_shouldWork() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setName("creationtest1");
+        model.setEdbId("creationtest2");
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub.setEdbId("testSub/111");
+        sub.setName("sub");
+        model.setSubModel(sub);
+
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub1.setEdbId("testSub/222");
+        sub1.setName("sub1");
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
+        sub2.setEdbId("testSub/333");
+        sub2.setName("sub2");
+
+        model.setSubs(Arrays.asList(sub1, sub2));
+        model.setIds(Arrays.asList(1, 2, 3, 4));
+
+        EDBInsertEvent event = new EDBInsertEvent(model);
+        enrichEDBEvent(event);
+
+        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "creationtest3", event, 1);
+        
+        EDBObject edbObject = edbobjects.get(edbobjects.size() - 1);
+                
+        assertThat(edbObject.get("edbVersion").toString(), is("1"));        
+        assertThat(edbObject.get("subModel").toString(), is("testdomain/testconnector/testSub/111"));
+        assertThat(edbObject.get("subs0").toString(), is("testdomain/testconnector/testSub/222"));
+        assertThat(edbObject.get("subs1").toString(), is("testdomain/testconnector/testSub/333"));
+        assertThat(edbObject.get("connectorId").toString(), is("testconnector"));
+        assertThat(edbObject.get("instanceId").toString(), is("testinstance"));
+        assertThat(edbObject.get("domainId").toString(), is("testdomain"));
+        assertThat(edbObject.get("name").toString(), is("creationtest1"));
+        assertThat(edbObject.get("edbId").toString(), is("creationtest2"));
+        assertThat(edbObject.get("oid").toString(), is("creationtest3"));        
+        assertThat(edbObject.get("ids0").toString(), is("1"));
+        assertThat(edbObject.get("ids1").toString(), is("2"));
+        assertThat(edbObject.get("ids2").toString(), is("3"));
+        assertThat(edbObject.get("ids3").toString(), is("4"));
+    }
+
+    @Test
     public void testSupportOfSimpleSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/1");
-        SubModel sub = new SubModel();
+        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
         sub.setEdbId("testSub/2");
         sub.setName("sub");
         model.setSubModel(sub);
@@ -586,19 +630,19 @@ public class JPATestIT {
         EDBObject subObject = db.getObject("testdomain/testconnector/testSub/2");
 
         assertThat(subObject, notNullValue());
-        assertThat((String) mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
+        assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
     }
 
     @Test
     public void testSupportOfListOfSubModels_shouldWork() {
-        TestModel model = new TestModel();
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("testSub/3");
 
-        SubModel sub1 = new SubModel();
+        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub1.setEdbId("testSub/4");
         sub1.setName("sub1");
-        SubModel sub2 = new SubModel();
+        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
         sub2.setEdbId("testSub/5");
         sub2.setName("sub2");
 
@@ -614,8 +658,8 @@ public class JPATestIT {
 
         assertThat(subObject1, notNullValue());
         assertThat(subObject2, notNullValue());
-        assertThat((String) mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat((String) mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
+        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
 
     @Test

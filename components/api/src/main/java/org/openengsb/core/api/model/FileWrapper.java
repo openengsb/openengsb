@@ -15,32 +15,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.api.model;
 
-import java.util.List;
+/**
+ * The FileWrapper class is needed for the proper sending of File objects (with Jason).
+ */
+public class FileWrapper {
+    private String filename;
+    private byte[] content;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+    public String getFilename() {
+        return filename;
+    }
 
-public interface TestModel extends OpenEngSBModel {
-    void setName(String name);
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
-    String getName();
+    public byte[] getContent() {
+        return content;
+    }
 
-    @OpenEngSBModelId
-    void setEdbId(String edbId);
-
-    String getEdbId();
-
-    void setSubModel(SubModel subModel);
-
-    SubModel getSubModel();
-
-    void setSubs(List<SubModel> subs);
-
-    List<SubModel> getSubs();
-    
-    void setIds(List<Integer> ids);
-    
-    List<Integer> getIds();
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
 }
+
