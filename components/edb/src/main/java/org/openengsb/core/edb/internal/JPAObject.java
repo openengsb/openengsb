@@ -29,13 +29,15 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.common.AbstractDataRow;
 
+@SuppressWarnings("serial")
 @Entity
 /**
  * this defines a jpa object in the database. The correlation to the EDBObject is that
  * the JPAObject can be converted to an EDBObject.
  */
-public class JPAObject {
+public class JPAObject extends AbstractDataRow {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JPAEntry> entries;
     @Column(name = "TIME")
