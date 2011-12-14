@@ -41,6 +41,7 @@ import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuth
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -67,6 +68,10 @@ import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.security.annotation.SecurityAttributes;
+import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -319,7 +324,8 @@ public class TestClient extends BasePage {
                 item.add(new Link<DomainProvider>("json.view.messages", item.getModel()) {
                     @Override
                     public void onClick() {
-                        LOGGER.info("json.view.messages was clicked");
+                        LOGGER.info("json.view.messages was clicked");                                          
+                        displayJSONMessages(getModelObject().getDomainInterface());                                             
                     }
                 });                
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
@@ -353,6 +359,55 @@ public class TestClient extends BasePage {
                 });
             }
         };
+    }   
+    
+    private void displayJSONMessages(Class<? extends Domain>  domainInterface){
+        
+        String result = "";
+        
+        // get all corresponding services
+        List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+        ArrayList<ServiceId> domainServices = new ArrayList<>();
+        ArrayList<MethodId> domainMethods = new ArrayList<>();
+
+        for (Domain serviceReference : domainEndpoints) {
+            String id = serviceReference.getInstanceId();                          
+            if (id != null) {
+                
+                result += id;
+                
+                ServiceId serviceId = new ServiceId();
+                serviceId.setServiceId(id);
+                serviceId.setServiceClass(domainInterface.getName());               
+                domainServices.add(serviceId);
+                
+                //get all corresponding methods
+                List<Method> methods = getServiceMethods(serviceId);
+                result += " {";
+                for (Method m : methods) {
+                    MethodId methodId = new MethodId(m);
+                    domainMethods.add(methodId);
+                    result += m.getName()+" ; ";
+                    
+                    //generate JSON
+                    MethodCall dummyMethodCall = new MethodCall();
+                    dummyMethodCall.setService(serviceId);
+                    dummyMethodCall.setMethod(methodId);                
+                    
+                    result += generateJSONMessages(dummyMethodCall);
+                    
+                }   
+                result += "}\n";
+            }
+        }                        
+              
+        setResponsePage(new JsonMethodCallMarshalOutput(result));
+
+    }
+    
+    private String generateJSONMessages(MethodCall methodCall){
+        String jsonMSG = "";
+        return jsonMSG;
     }
 
     public TestClient(ServiceId jumpToService) {
