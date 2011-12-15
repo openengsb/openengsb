@@ -31,6 +31,7 @@ import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResult.ReturnType;
 import org.openengsb.core.api.remote.MethodResultMessage;
+import org.openengsb.core.common.util.JsonUtils;
 
 /**
  * This filter takes a {@link MethodCallRequest} and serializes it to JSON. The String s then passed on to the next
@@ -56,7 +57,7 @@ public class JsonOutgoingMethodCallMarshalFilter extends
 
     @Override
     public MethodResultMessage doFilter(MethodCallRequest input, Map<String, Object> metadata) throws FilterException {
-        ObjectMapper objectMapper = createObjectMapper();
+        ObjectMapper objectMapper = JsonUtils.createObjectMapperWithIntroSpectors();
         MethodResultMessage resultMessage;
         try {
             String jsonString = objectMapper.writeValueAsString(input);
@@ -88,17 +89,6 @@ public class JsonOutgoingMethodCallMarshalFilter extends
     public void setNext(FilterAction next) throws FilterConfigurationException {
         checkNextInputAndOutputTypes(next, String.class, String.class);
         this.next = next;
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector primaryIntrospector = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector introspector =
-            new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
-        mapper.getDeserializationConfig().withAnnotationIntrospector(introspector);
-        mapper.getSerializationConfig().withAnnotationIntrospector(introspector);
-        return mapper;
     }
 
 }
