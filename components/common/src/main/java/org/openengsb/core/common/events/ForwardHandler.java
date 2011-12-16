@@ -79,7 +79,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     private void checkMethod(Method method) {
-         if (method.getParameterTypes().length == 0) {
+        if (method.getParameterTypes().length != 1) {
             throw new EventProxyException(
                 "Event proxy can only handle methods named raiseEvent where the first parameter is of type Event, "
                         + "but encountered invocation of method raiseEvent without parameter. Method: " + method);
