@@ -406,7 +406,7 @@ public class TestClient extends BasePage {
             }
         }                        
               
-        setResponsePage(new JsonMethodCallMarshalOutput(result));
+        //setResponsePage(new JsonMethodCallMarshalOutput(result));
 
     }
     
