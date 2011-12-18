@@ -19,7 +19,6 @@ package org.openengsb.core.console.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,9 +42,6 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 
 /**
  *
@@ -69,8 +65,8 @@ public class ServicesHelper {
         this.osgiUtilsService.setBundleContext(bundleContext);
         wiringService = osgiUtilsService.getService(org.openengsb.core.api.WiringService.class);
         serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
-        CommandProcessor commandProcessor = osgiUtilsService.getService(org.apache.felix.service.command
-                .CommandProcessor.class);
+        CommandProcessor commandProcessor = osgiUtilsService
+            .getService(org.apache.felix.service.command.CommandProcessor.class);
         commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         keyboard = commandSession.getKeyboard();
     }
@@ -91,8 +87,8 @@ public class ServicesHelper {
                     public List<String> call() throws Exception {
                         List<String> formatedOutput = new ArrayList<String>();
                         formatedOutput.add(OutputStreamFormater
-                                .formatValues(domainProvider.getName().getString(defaultLocale),
-                                        domainProvider.getDescription().getString(defaultLocale)));
+                            .formatValues(domainProvider.getName().getString(defaultLocale),
+                                domainProvider.getDescription().getString(defaultLocale)));
                         for (Domain serviceReference : domainEndpoints) {
                             String id = serviceReference.getInstanceId();
                             AliveState aliveState = serviceReference.getAliveState();
@@ -127,8 +123,8 @@ public class ServicesHelper {
     }
 
     public Map<DomainProvider, List<? extends Domain>> getDomainsAndEndpoints() {
-        Map<DomainProvider, List<? extends Domain>>
-                domainsAndEndpoints = new HashMap<DomainProvider, List<? extends Domain>>();
+        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints
+            = new HashMap<DomainProvider, List<? extends Domain>>();
         List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
 
@@ -144,10 +140,10 @@ public class ServicesHelper {
      * delete a service identified by its id
      */
     public void deleteService(final String id) {
-        OutputStreamFormater.printValue("Do you really want to delete the connector (Y/n): ");
+        OutputStreamFormater.printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
         try {
-            int read = keyboard.read();
-            if ('Y' == ((char) read)) {
+            int input = keyboard.read();
+            if ('Y' == (char ) input) {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
@@ -156,12 +152,13 @@ public class ServicesHelper {
                         return null;
                     }
                 });
-
+                OutputStreamFormater.printValue(String.format("Service: %s successfully deleted", id));
             }
         } catch (ExecutionException e) {
             System.err.println("Could not delete service");
         } catch (IOException e) {
-            e.printStackTrace();  //TODO error handling
+            System.err.println("Unexpected Error");
+            e.printStackTrace();
         }
     }
 

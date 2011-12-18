@@ -36,7 +36,6 @@ public class ServiceCommands extends OsgiCommandSupport {
     private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
-
         try {
             ServiceCommandArguments arguments = retrieveArgumentOrDefault();
             switch (arguments) {
@@ -53,7 +52,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     serviceHelper.deleteService(id);
                     break;
                 default:
-                    serviceHelper.listRunningServices();
+                    System.err.println("Invalid Argument");
                     break;
             }
         } catch (IllegalArgumentException ex) {
