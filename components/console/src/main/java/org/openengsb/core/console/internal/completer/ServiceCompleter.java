@@ -17,6 +17,7 @@
 
 package org.openengsb.core.console.internal.completer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.karaf.shell.console.Completer;
@@ -34,26 +35,26 @@ import static org.openengsb.core.console.internal.util.ServiceCommandArguments.U
  */
 public class ServiceCompleter implements Completer {
 
+    private ServiceCommandArguments lastCommand;
     private ServicesHelper servicesHelper;
+    private List<String> params;
 
     public ServiceCompleter(ServicesHelper helper) {
         this.servicesHelper = helper;
+        this.params = createPossibilities();
     }
 
-    /**
-     * @param buffer     it's the beginning string typed by the user
-     * @param cursor     it's the position of the cursor
-     * @param candidates the list of completions proposed to the user
-     */
-    public int complete(String buffer, int cursor, List<String> candidates) {
+    @Override
+    public int complete(String buffer, int cursor, List candidates) {
 
-        StringsCompleter delegate = new  StringsCompleter();
-        if (buffer == null) {
-            delegate = printStandardCommands(delegate);
+        StringsCompleter delegate = new StringsCompleter(createPossibilities(), false);
+        if (buffer == null || delegate == null && lastCommand == null) {
+            printStandardCommands(delegate);
         } else {
             try {
-                ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(buffer.toUpperCase());
-                switch (arguments) {
+                ServiceCommandArguments argument = ServiceCommandArguments.valueOf(buffer.toUpperCase());
+                lastCommand = argument;
+                switch (argument) {
                     case LIST:
                         return delegate.complete(buffer, cursor, candidates);
                     case CREATE:
@@ -63,26 +64,66 @@ public class ServiceCompleter implements Completer {
                         // TODO: see OPENENGSB-2282
                         break;
                     case DELETE:
-                        candidates.add("eins");
-                        candidates.add("zwei");
-                        candidates.add("drei");
+                        List<String> runningServiceIds = servicesHelper.getRunningServiceIds();
+                        //delegate = new StringsCompleter(runningServiceIds);
                         return delegate.complete(buffer, cursor, candidates);
                     default:
                         break;
                 }
             } catch (IllegalArgumentException ex) {
-                delegate = printStandardCommands(delegate);
+                if (lastCommand != null) {
+                    List<String> runningServiceIds = servicesHelper.getRunningServiceIds();
+                    delegate = new StringsCompleter(runningServiceIds);
+                    lastCommand = null;
+                    delegate.complete(buffer, cursor, candidates);
+                } else {
+                    printStandardCommands(delegate);
+                }
             }
         }
-        return delegate.complete(buffer, cursor, candidates);
+        servicesHelper.getKeyboard();
+        return delegate.complete(buffer, cursor, params);
     }
 
-    private StringsCompleter printStandardCommands(StringsCompleter delegate) {
+    private List<String> createPossibilities() {
+        List<String> runningServiceIds = servicesHelper.getRunningServiceIds();
+        List<String> possabilities = new ArrayList<String>();
+        List<ServiceCommandArguments> arguments = new ArrayList<ServiceCommandArguments>();
+        arguments.add(LIST);
+        arguments.add(DELETE);
+        arguments.add(UPDATE);
+        arguments.add(CREATE);
+        for (ServiceCommandArguments argument : arguments) {
+            switch (argument) {
+                case CREATE:
+                    break;
+                case UPDATE:
+                    for (String serviceID : runningServiceIds) {
+                        possabilities.add(String.format("%s %s", UPDATE.toString(), serviceID));
+                    }
+                    break;
+                case DELETE:
+                    for (String serviceID : runningServiceIds) {
+                        possabilities.add(String.format("%s %s", DELETE.toString(), serviceID));
+                    }
+                    break;
+                default:
+                    possabilities.add(String.format("%s", LIST.toString()));
+                    break;
+            }
+        }
+
+        return possabilities;
+    }
+
+    private void printStandardCommands(StringsCompleter delegate) {
         delegate.getStrings().add(LIST.toString().toLowerCase());
         delegate.getStrings().add(CREATE.toString().toLowerCase());
         delegate.getStrings().add(UPDATE.toString().toLowerCase());
         delegate.getStrings().add(DELETE.toString().toLowerCase());
-        return delegate;
     }
 
+    public List<String> getParams() {
+        return params;
+    }
 }

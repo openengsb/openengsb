@@ -17,6 +17,9 @@
 
 package org.openengsb.core.console.internal.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +30,8 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.service.command.CommandSession;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
@@ -38,6 +43,9 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 
 /**
  *
@@ -48,6 +56,8 @@ public class ServicesHelper {
     private DefaultOsgiUtilsService osgiUtilsService;
     private WiringService wiringService;
     private ConnectorManager serviceManager;
+    private InputStream keyboard;
+    private CommandSession commandSession;
 
 
     public ServicesHelper() {
@@ -59,6 +69,10 @@ public class ServicesHelper {
         this.osgiUtilsService.setBundleContext(bundleContext);
         wiringService = osgiUtilsService.getService(org.openengsb.core.api.WiringService.class);
         serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
+        CommandProcessor commandProcessor = osgiUtilsService.getService(org.apache.felix.service.command
+                .CommandProcessor.class);
+        commandSession = commandProcessor.createSession(System.in, System.err, System.out);
+        keyboard = commandSession.getKeyboard();
     }
 
     /**
@@ -130,18 +144,52 @@ public class ServicesHelper {
      * delete a service identified by its id
      */
     public void deleteService(final String id) {
+        OutputStreamFormater.printValue("Do you really want to delete the connector (Y/n): ");
         try {
-            SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            int read = keyboard.read();
+            if ('Y' == ((char) read)) {
+                SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        ConnectorId fullId = ConnectorId.fromFullId(id);
+                        serviceManager.delete(fullId);
+                        return null;
+                    }
+                });
+
+            }
+        } catch (ExecutionException e) {
+            System.err.println("Could not delete service");
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO error handling
+        }
+    }
+
+    /**
+     * returns a list of all ids
+     */
+    public List<String> getRunningServiceIds() {
+        final List<Domain> runningServices = getRunningServices();
+        List<String> result = new ArrayList<String>();
+
+        try {
+            result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
                 @Override
-                public Object call() throws Exception {
-                    ConnectorId fullId = ConnectorId.fromFullId(id);
-                    serviceManager.delete(fullId);
-                    return null;
+                public List<String> call() throws Exception {
+                    List<String> ids = new ArrayList<String>();
+                    for (Domain d : runningServices) {
+                        String id = d.getInstanceId();
+                        if (id != null) {
+                            ids.add(id);
+                        }
+                    }
+                    return ids;
                 }
             });
         } catch (ExecutionException e) {
-            System.err.println("Could not delete service");
+            //ignore
         }
+        return result;
     }
 
     public void setOsgiUtilsService(DefaultOsgiUtilsService osgiUtilsService) {
@@ -150,5 +198,13 @@ public class ServicesHelper {
 
     public void setWiringService(WiringService wiringService) {
         this.wiringService = wiringService;
+    }
+
+    public InputStream getKeyboard() {
+        return keyboard;
+    }
+
+    public CommandSession getCommandSession() {
+        return commandSession;
     }
 }
