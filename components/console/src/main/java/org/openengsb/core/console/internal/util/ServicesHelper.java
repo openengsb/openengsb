@@ -143,7 +143,7 @@ public class ServicesHelper {
         OutputStreamFormater.printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
         try {
             int input = keyboard.read();
-            if ('Y' == (char ) input) {
+            if ('Y' == (char) input) {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {

@@ -21,7 +21,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +79,7 @@ public class ServicesHelperTest {
         WiringService wiringServiceMock = mock(WiringService.class);
         when(osgiServiceMock.getService(WiringService.class)).thenReturn(wiringServiceMock);
         when(wiringServiceMock.getDomainEndpoints(NullDomain.class, "*")).thenAnswer(new Answer<List<? extends
-                Domain>>() {
+            Domain>>() {
             @Override
             public List<? extends Domain> answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return domainEndpoints;

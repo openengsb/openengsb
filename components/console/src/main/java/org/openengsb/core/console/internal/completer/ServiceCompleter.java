@@ -17,6 +17,11 @@
 
 package org.openengsb.core.console.internal.completer;
 
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
+import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
+
 import java.util.List;
 
 import org.apache.felix.service.command.CommandSession;
@@ -24,11 +29,6 @@ import org.apache.karaf.shell.console.Completer;
 import org.apache.karaf.shell.console.completer.StringsCompleter;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
-
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.CREATE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.DELETE;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.LIST;
-import static org.openengsb.core.console.internal.util.ServiceCommandArguments.UPDATE;
 
 /**
  * this completer helps the user to know which input is expected

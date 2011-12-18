@@ -33,6 +33,7 @@ import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4TestRunner.class)
@@ -105,6 +106,33 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         assertTrue(contains(result, "Example Domain",
             "This domain is provided as an example for all developers. It should not be used in production."));
     }
+
+    @Test
+    public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
+        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+        PrintStream out = new PrintStream(outputStreamHelper);
+        CommandSession cs = cp.createSession(System.in, out, System.err);
+
+        Bundle b = getInstalledBundle("org.openengsb.framework.console");
+        b.start();
+        cs.execute("openengsb:service list");
+
+        List<String> result = outputStreamHelper.getResult();
+        assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+
+        cs.execute("openengsb:service delete authentication+composite-connector+root-authenticator");
+        cs.execute("Y");
+
+        cs.execute("openengsb:service list");
+        cs.close();
+
+        result = outputStreamHelper.getResult();
+        assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+
+    }
+
 
     private boolean contains(List<String> list, String value, String value2) {
         for (String s : list) {
