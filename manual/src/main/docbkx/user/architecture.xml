@@ -140,7 +140,7 @@
     changed.</para>
 
     <para>The connection between the tools and the EDB is done through the EngineeringDatabaseService provided
-    by the core/edb bundle. This service gets a datasource (database) from the infrastructure/jpa bundle.
+    by the core/edb bundle. This service gets a datasource (database) from the "infrastructure/jpa" bundle.
     The EngineeringDatabaseService is implemented with JPA, that means that every database which support
     JPA can be used as database backend for the EDB.
     As standard database backend was the H2 database chosen.
