@@ -44,43 +44,45 @@
             (supported databases listet <link
                 xlink:href="http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html"
                 >here</link>), the procedure of changing is rather simple. You have to change the
-            properties for the database connection of the infrastructure/jpa bundle. This is done by
+            properties for the database connection of the "infrastructure/jpa" bundle. This is done by
             changing the config file "org.openengsb.infrastructure.jpa.cfg". This file is in the
             "assembly/src/main/filtered-resources/etc" folder. This file has following entries:
             <programlisting>
-    driverClassName=[here shall be the name of your driver class name, 
+                  driverClassName=[here shall be the name of your driver class name, 
                      example: org.h2.jdbcx.JdbcDataSource]
-    url=[here shall be the url to the used database file, example: jdbc:h2:openengsb]
-    username=[here shall be the username for authentication at the database]
-    password=[here shall be the password for authentication at the database]
-    </programlisting>
+                  url=[here shall be the url to the used database file, example: jdbc:h2:openengsb]
+                  username=[here shall be the username for authentication at the database]
+                  password=[here shall be the password for authentication at the database]
+            </programlisting>
             After changing of this file, you have to assure that the driver which shall be used by
             the datasource is loaded at runtime. For that you have to load the database driver
             before the connection to the database is established. Your database bundle dependency
             should be added to the "parents/shared/pom.xml" file. A dependency entry for the h2
             database looks like this (the h2.version is defined as property in the same
-            file:<programlisting>
-     &lt;dependency>
-       &lt;groupId>com.h2database&lt;/groupId>
-       &lt;artifactId>h2&lt;/artifactId>
-       &lt;version>${h2.version}&lt;/version>
-     &lt;/dependency>
-    </programlisting>
+            file:
+            <programlisting>
+              &lt;dependency>
+                 &lt;groupId>com.h2database&lt;/groupId>
+                 &lt;artifactId>h2&lt;/artifactId>
+                 &lt;version>${h2.version}&lt;/version>
+              &lt;/dependency>
+            </programlisting>
             After you added the dependency, you have to make sure the database is loaded before the
             database connection is established. For that just replace following code line in the
             file "assembly/src/main/filtered-resources/features.xml" with the new database driver
             bundle (as you can see you only have to copy and paste the values of the dependency):
             <programlisting>
-     &lt;bundle>mvn:com.h2database/h2/${h2.version}&lt;/bundle>
-   </programlisting>
+               &lt;bundle>mvn:com.h2database/h2/${h2.version}&lt;/bundle>
+            </programlisting>
             After this steps, you are done and the EDB uses now the new database as persistence
-            backend. </para>
+            backend. 
+        </para>
     </section>
     <section>
         <title>Use not openJPA compatible database</title>
         <para>
             If you want to replace the standard database with another non openjpa supported database you will have
-            to change first the datasource like descriped in the previous section. After that you have to write your own
+            to change first the datasource like described in the previous section. After that you have to write your own
             bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
             commands and port it for the new database and replace the standard EngineeringDatabaseService.
         </para>
