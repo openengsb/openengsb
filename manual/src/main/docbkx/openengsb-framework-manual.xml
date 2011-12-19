@@ -62,6 +62,7 @@
     <xi:include href="howto/howtoInteractRemotely.xml"/>
     <xi:include href="howto/howtoCombineServices.xml"/>
     <xi:include href="howto/howtoIntegrateServices.xml"/>
+    <xi:include href="howto/howtoChangeEDBDatabaseBackend.xml"/>
   </part>
   <part xml:id="user.manual">
     <title>OpenEngSB Framework</title>
