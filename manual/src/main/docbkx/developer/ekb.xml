@@ -26,8 +26,8 @@
     
     <title>Engineering Knowledge Base - EKB</title>
     <para>
-        The EKB as it is now is at the very beginning of its development, so there is not much to write here for now.
-        The most important thing which is provided by the EKB now is the QueryService.
+        The EKB, as it is now, is at the very beginning of its development, so there is not much to write here for now.
+        The most important thing which is provided by the EKB at the moment is the QueryService.
     </para>
     
     <section>
@@ -45,9 +45,9 @@
     <section>
         <title>Query Service</title>
         <para>
-            This service which is already provided by the EKB bundle has the task to load models from the EDB for
+            This service, which is already provided by the EKB bundle, has the task to load models from the EDB for
             the user and transform the so got data from the EDB directly in an OpenEngSBModel so that the user can
-            start his work with the models without anything he has to worry about the transformation of EDB data to
+            start his work with the models without taking notice of the transformations of EDB data to
             models.
         </para>
         <para>
