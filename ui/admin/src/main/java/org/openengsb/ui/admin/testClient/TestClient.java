@@ -215,7 +215,8 @@ public class TestClient extends BasePage {
         methodList.setOutputMarkupId(true);
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
-            protected void onUpdate(AjaxRequestTarget target) {
+            protected void onUpdate(AjaxRequestTarget target) {                        
+                
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }
@@ -275,6 +276,7 @@ public class TestClient extends BasePage {
                     call.setService(service);
                     populateMethodList();
                     updateModifyButtons(service);
+                    jsonButton.setEnabled(true);
                 } catch (ClassCastException ex) {
                     LOGGER.info("clicked on not ServiceId node");
                     methodList.setChoices(new ArrayList<MethodId>());
@@ -388,23 +390,41 @@ public class TestClient extends BasePage {
     }   
     
     private void displayJSONMessages(){
-            
-            ServiceId serviceId = call.getService();
-            MethodId mid = call.getMethod();  
-            if(mid == null){
-                info("Methode wählen");
-                return;
-            }
-            
-            MethodCallRequest mcr = new MethodCallRequest(new org.openengsb.core.api.remote.MethodCall(mid.getName(),mid.getArgumentTypesAsClasses()));
-            
-            String result = "";
-            try {
-                result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(mcr);
-                //result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(new MethodCallRequest(new MethodCall()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        ServiceId serviceId = call.getService();
+        MethodId mid = call.getMethod();  
+        if(mid == null){
+            info("Methode wählen");
+            return;
+        }
+
+        /*Object service;
+        try {
+            service = getService(call.getService());
+        } catch (OsgiServiceNotAvailableException e1) {
+            handleExceptionWithFeedback(e1);
+            return;
+        }
+        Method m;
+        try {
+            m = getMethodOfService(service,call.getMethod());
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException(ex);
+        }    
+        if(m == null){
+            return;
+        }   */         
+
+        MethodCallRequest mcr = new MethodCallRequest(new org.openengsb.core.api.remote.MethodCall(mid.getName(),call.getArgumentsAsArray()));
+        //org.openengsb.core.api.remote.MethodCall rmc = new org.openengsb.core.api.remote.MethodCall(m.getName(),call.getArgumentsAsArray());
+        //MethodCallRequest mcr = new MethodCallRequest(rmc);
+        
+        String result = "";
+        try {
+            result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(mcr);
+            //result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(new MethodCallRequest(new MethodCall()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
             
             // get all corresponding services
             /*List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
@@ -534,8 +554,7 @@ public class TestClient extends BasePage {
         }
     }
 
-    private Method returnMethodOfCall(Object service) throws NoSuchMethodException{
-        MethodId mid = call.getMethod();
+    private Method getMethodOfService(Object service, MethodId mid) throws NoSuchMethodException{
         Method m;
         if (mid == null) {
             String s = new StringResourceModel("serviceError", this, null).getString();
@@ -556,7 +575,7 @@ public class TestClient extends BasePage {
         }
         Method m;
         try {
-            m = returnMethodOfCall(service);
+            m = getMethodOfService(service,call.getMethod());
         } catch (NoSuchMethodException ex) {
             throw new IllegalArgumentException(ex);
         }    
@@ -651,12 +670,10 @@ public class TestClient extends BasePage {
         WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
-            jsonButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
         }
         error("No service found for domain: " + connectorInterface.getName());
         submitButton.setEnabled(false);
-        jsonButton.setEnabled(false);
         return new ArrayList<Method>();
     }
 
