@@ -17,6 +17,7 @@
 
 package org.openengsb.ui.admin.testClient;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,7 +40,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -73,6 +73,7 @@ import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -125,6 +126,8 @@ public class TestClient extends BasePage {
     private AjaxButton deleteButton;
 
     private AjaxButton submitButton;
+    
+    private AjaxButton jsonButton;
 
     @SuppressWarnings("serial")
     private IModel<? extends List<? extends DomainProvider>> domainProvider =
@@ -241,6 +244,24 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+        
+        jsonButton = new IndicatingAjaxButton("jsonButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(feedbackPanel);
+                
+                displayJSONMessages();
+                
+                call.getArguments().clear();
+                argumentList.removeAll();
+
+                call.setMethod(null);
+                populateMethodList();
+
+                target.addComponent(methodList);
+                target.addComponent(argumentListContainer);
+            }
+        };
 
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
@@ -260,11 +281,13 @@ public class TestClient extends BasePage {
                     editButton.setEnabled(false);
                     deleteButton.setEnabled(false);
                     submitButton.setEnabled(false);
+                    jsonButton.setEnabled(false);
                 }
                 target.addComponent(methodList);
                 target.addComponent(editButton);
                 target.addComponent(deleteButton);
                 target.addComponent(submitButton);
+                target.addComponent(jsonButton);
                 target.addComponent(feedbackPanel);
             }
         };
@@ -274,10 +297,15 @@ public class TestClient extends BasePage {
 
         submitButton.setOutputMarkupId(true);
         submitButton.setEnabled(false);
+        
+        jsonButton.setOutputMarkupId(true);
+        jsonButton.setEnabled(false);
+        
 
         form.add(submitButton);
         form.add(editButton);
         form.add(deleteButton);
+        form.add(jsonButton);
 
         return form;
     }
@@ -325,14 +353,7 @@ public class TestClient extends BasePage {
                         setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
                             Constants.EXTERNAL_CONNECTOR_PROXY));
                     }
-                });
-                item.add(new Link<DomainProvider>("json.view.messages", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        LOGGER.info("json.view.messages was clicked");                                          
-                        displayJSONMessages(getModelObject().getDomainInterface());                                             
-                    }
-                });                
+                });            
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                     .getDescription())));
 
@@ -366,54 +387,67 @@ public class TestClient extends BasePage {
         };
     }   
     
-    private void displayJSONMessages(Class<? extends Domain>  domainInterface){
-        
-        String result = "";
-        
-        // get all corresponding services
-        List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
-        ArrayList<ServiceId> domainServices = new ArrayList<>();
-        ArrayList<MethodId> domainMethods = new ArrayList<>();
-
-        for (Domain serviceReference : domainEndpoints) {
-            String id = serviceReference.getInstanceId();                          
-            if (id != null) {
-                
-                result += id;
-                
-                ServiceId serviceId = new ServiceId();
-                serviceId.setServiceId(id);
-                serviceId.setServiceClass(domainInterface.getName());               
-                domainServices.add(serviceId);
-                
-                //get all corresponding methods
-                List<Method> methods = getServiceMethods(serviceId);
-                result += " {";
-                for (Method m : methods) {
-                    MethodId methodId = new MethodId(m);
-                    domainMethods.add(methodId);
-                    result += m.getName()+" ; ";
-                    
-                    //generate JSON
-                    MethodCall dummyMethodCall = new MethodCall();
-                    dummyMethodCall.setService(serviceId);
-                    dummyMethodCall.setMethod(methodId);                
-                    
-                    result += generateJSONMessages(dummyMethodCall);
-                    
-                }   
-                result += "}\n";
+    private void displayJSONMessages(){
+            
+            ServiceId serviceId = call.getService();
+            MethodId mid = call.getMethod();  
+            if(mid == null){
+                info("Methode wählen");
+                return;
             }
-        }                        
-              
-        //setResponsePage(new JsonMethodCallMarshalOutput(result));
+            
+            MethodCallRequest mcr = new MethodCallRequest(new org.openengsb.core.api.remote.MethodCall(mid.getName(),mid.getArgumentTypesAsClasses()));
+            
+            String result = "";
+            try {
+                result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(mcr);
+                //result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(new MethodCallRequest(new MethodCall()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            
+            // get all corresponding services
+            /*List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+            ArrayList<ServiceId> domainServices = new ArrayList<>();
+            ArrayList<MethodId> domainMethods = new ArrayList<>();
 
+            for (Domain serviceReference : domainEndpoints) {
+                String id = serviceReference.getInstanceId();                          
+                if (id != null) {
+                    
+                    result += id;
+                    
+                    ServiceId serviceId = new ServiceId();
+                    serviceId.setServiceId(id);
+                    serviceId.setServiceClass(domainInterface.getName());               
+                    domainServices.add(serviceId);
+                    
+                    //get all corresponding methods
+                    List<Method> methods = getServiceMethods(serviceId);
+                    result += " {";
+                    for (Method m : methods) {
+                        MethodId methodId = new MethodId(m);
+                        domainMethods.add(methodId);
+                        result += m.getName()+" ; ";
+                        
+                        //generate JSON
+                        MethodCall dummyMethodCall = new MethodCall();
+                        dummyMethodCall.setService(serviceId);
+                        dummyMethodCall.setMethod(methodId);                
+                        
+                        result += generateJSONMessages(dummyMethodCall);
+                        
+                    }   
+                    result += "}\n";
+                }
+            }                        
+                  
+            //setResponsePage(new JsonMethodCallMarshalOutput(result));
+            */
+            
+            info("JSON Message: "+result);
     }
-    
-    private String generateJSONMessages(MethodCall methodCall){
-        String jsonMSG = "";
-        return jsonMSG;
-    }
+   
 
     public TestClient(ServiceId jumpToService) {
         this();
@@ -500,7 +534,19 @@ public class TestClient extends BasePage {
         }
     }
 
-    protected void performCall() {
+    private Method returnMethodOfCall(Object service) throws NoSuchMethodException{
+        MethodId mid = call.getMethod();
+        Method m;
+        if (mid == null) {
+            String s = new StringResourceModel("serviceError", this, null).getString();
+            error(s);
+            return null;
+        }
+        m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
+        return m;
+    }
+    
+    protected void performCall() {     
         Object service;
         try {
             service = getService(call.getService());
@@ -508,18 +554,16 @@ public class TestClient extends BasePage {
             handleExceptionWithFeedback(e1);
             return;
         }
-        MethodId mid = call.getMethod();
         Method m;
-        if (mid == null) {
-            String s = new StringResourceModel("serviceError", this, null).getString();
-            error(s);
+        try {
+            m = returnMethodOfCall(service);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException(ex);
+        }    
+        if(m == null){
             return;
         }
-        try {
-            m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-        }
+        
         try {
             Object result = m.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
@@ -607,10 +651,12 @@ public class TestClient extends BasePage {
         WiringService wireingService = OpenEngSBCoreServices.getWiringService();
         if (wireingService.isConnectorCurrentlyPresent((Class<? extends Domain>) connectorInterface)) {
             submitButton.setEnabled(true);
+            jsonButton.setEnabled(true);
             return Arrays.asList(connectorInterface.getMethods());
         }
         error("No service found for domain: " + connectorInterface.getName());
         submitButton.setEnabled(false);
+        jsonButton.setEnabled(false);
         return new ArrayList<Method>();
     }
 
