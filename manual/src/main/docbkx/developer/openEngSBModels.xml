@@ -27,7 +27,7 @@
     <title>OpenEngSBModels</title>
     <para>
         The OpenEngSBModels are a core concept for the whole semantic part of the OpenEngSB. They are needed to enable the 
-        persisting of domain model objects into the EDB, the easier working with such models, the possibility to send models
+        persisting of domain models into the EDB, the easier working with such models, the possibility to send models
         via remote and many other things which are complex in the background, but should hide the whole complexity from the
         user.
     </para>
@@ -37,8 +37,8 @@
         <para>
             The idea behind the concept of the OpenEngSBModels or domain models is corelated to the domain/connector structure
             of the OpenEngSB. Models should represent the objects used by a domain in an abstract manner (e.g. the model "Issue"
-            in the issue domain). Since such models are defined on the domain level, all connectors which belongs to a specific
-            domain uses the models defined by this domain. In that way every connector to a specific domain "speaks the same
+            in the issue domain). Since such models are defined on the domain level. All connectors, which belong to a specific
+            domain, use the models defined by this domain. In that way every connector of a specific domain "speaks the same
             language".
         </para>
     </section>
@@ -55,15 +55,15 @@
             round to ensure correct behaviour of this models.
         </para>
         <para>
-            But how does a model look like in reality? Since an OpenEngSBModel is only an interface, we need a mechanism to work
-            in an efficient way with such objects. The way we choose was to create for every model a proxy, which simulates the
+            But how to work only with interfaces? Since an OpenEngSBModel is only an interface, we need a mechanism to work
+            in an efficient way with such objects. The way we choose was to create a static model proxy class, which simulates the
             implementation of a model. The class which enables this, is the ModelUtils class which can be found in the "core/common"
             bundle.
         </para>
         <para>
             Every OpenEngSBModel object has three defined functions: getOpenEngSBModelEntries, addOpenEngSBModelEntry and deletOpenEngSBModelEntry.
-            Whenever getOpenEngSBModelEntries is called, the model transform itself into a list of key/value pairs, which have as
-            an addition the type of the value saved. This mechanism is used for easier saving of models to the EDB and also to transfer
+            Whenever getOpenEngSBModelEntries is called, the model transform itself into a list of key/value pairs, where every entry have 
+            in addition the type of the value saved. This mechanism is used for easier saving of models to the EDB and also to transfer
             a model to a different machine. Knowing this, it is an easy guess to suggest what the other both functions are supposed to do.
         </para>
     </section>
@@ -85,8 +85,8 @@
             If such a FileWrapper would be accessed by a getter of a file object, the ModelUtils does the conversion work of the
             FileWrapper to the file object for you. So this feature is completely transparent for the normal user. Note that the
             conversion of a file object to a FileWrapper and the other way round has only to be done if getOpenEngSBModelEntries
-            is called. For now this is only at two points: when a model has to be saved into the EDB or when a model is sent via
-            remote.
+            is called. For now this is only the case at two points: when a model has to be saved into the EDB or when a model is 
+            sent via remote.
         </para>
     </section>
     <section>

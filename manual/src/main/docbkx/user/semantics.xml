@@ -49,11 +49,11 @@
             is called "OpenEngSBModel". To work with this interface, we provide a Utils class, (ModelUtils) which is 
             able to proxy the interface and gives you the feeling like you work with a normal class object. Such 
             domain models can be sent via events(EDBInsertEvent, EDBUpdateEvent, EDBDeleteEvent and EDBBatchEvent) 
-            to the EDB, where they will be saved, updated or deleted. This events can be thrown frin every connector 
-            that AbstractOpenEngSBConnectorService extends, which shall be done by all connector implementations.
+            to the EDB, where they will be saved, updated or deleted. This events can be thrown from every connector 
+            that extends "AbstractOpenEngSBConnectorService", which shall be done by all connector implementations.
         </para>
         <para>
-            An OpenEngSBModel consists only of getter and setter methods. This methods describes which fields the
+            An OpenEngSBModel consists only of getter and setter pairs. This methods describe which fields the
             model have. Field types which are supported until now are: simple types, Strings, Date, OpenEngSBModel, 
             Lists and Files. Files are a special case, but it is possible to send models with File objects remotly
             and the File which is represented by the File object will be available at the remote machine as a local
@@ -61,8 +61,9 @@
         </para>
         <para>
             Every OpenEngSBModel can define an id for itself. This id can be used for easier finding of domain models
-            when they are saved in the EDB. Such an id can easily be defined by setting a special annotation over the
-            getter which defines the id for the object. This annotation is called "OpenEngSBModelId".
+            and to enable the versioning possibility when they are saved in the EDB. Such an id can easily be defined 
+            by setting a special annotation over the setter which defines the id for the object. This annotation is 
+            called "OpenEngSBModelId".
         </para>
     </section>
     <section>
