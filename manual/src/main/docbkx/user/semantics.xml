@@ -26,7 +26,8 @@
     
     <title>Semantics in the OpenEngSB</title>
     
-    <para>One of the core concepts of the OpenEngSB is the correct handling of domain models, versionize
+    <para>
+        One of the core concepts of the OpenEngSB is the correct handling of domain models, versionize
         them and perform model transformations on such models so that they can be easily used by tools
         which connect to the OpenEngSB.
     </para>
@@ -48,7 +49,8 @@
             is called "OpenEngSBModel". To work with this interface, we provide a Utils class, (ModelUtils) which is 
             able to proxy the interface and gives you the feeling like you work with a normal class object. Such 
             domain models can be sent via events(EDBInsertEvent, EDBUpdateEvent, EDBDeleteEvent and EDBBatchEvent) 
-            to the EDB, where they will be saved, updated or deleted.
+            to the EDB, where they will be saved, updated or deleted. This events can be thrown frin every connector 
+            that AbstractOpenEngSBConnectorService extends, which shall be done by all connector implementations.
         </para>
         <para>
             An OpenEngSBModel consists only of getter and setter methods. This methods describes which fields the

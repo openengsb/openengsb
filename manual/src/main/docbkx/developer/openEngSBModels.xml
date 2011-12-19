@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<chapter xml:id="developer.models" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+    
+    <title>OpenEngSBModels</title>
+    <para>
+        The OpenEngSBModels are a core concept for the whole semantic part of the OpenEngSB. They are needed to enable the 
+        persisting of domain model objects into the EDB, the easier working with such models, the possibility to send models
+        via remote and many other things which are complex in the background, but should hide the whole complexity from the
+        user.
+    </para>
+    
+    <section>
+        <title>Motivation</title>
+        <para>
+            The idea behind the concept of the OpenEngSBModels or domain models is corelated to the domain/connector structure
+            of the OpenEngSB. Models should represent the objects used by a domain in an abstract manner (e.g. the model "Issue"
+            in the issue domain). Since such models are defined on the domain level, all connectors which belongs to a specific
+            domain uses the models defined by this domain. In that way every connector to a specific domain "speaks the same
+            language".
+        </para>
+    </section>
+    <section>
+        <title>Structure of a model</title>
+        <para>
+            What is a little bit different from the normal approach to develop and design such domain models is, that in the
+            OpenEngSB all domain models are interfaces. This interfaces have to extend the interface "OpenEngSBModel" which
+            is defined in the "core/api" bundle. Which advantage this brings will be explained later on in this chapter.
+        </para>
+        <para>
+            Another important thing is the structure of such a model interface. Every domain model or OpenEngSBModel interface
+            contains only getter and setter pairs. It is important that every getter has a equivalent setter and the other way
+            round to ensure correct behaviour of this models.
+        </para>
+        <para>
+            But how does a model look like in reality? Since an OpenEngSBModel is only an interface, we need a mechanism to work
+            in an efficient way with such objects. The way we choose was to create for every model a proxy, which simulates the
+            implementation of a model. The class which enables this, is the ModelUtils class which can be found in the "core/common"
+            bundle.
+        </para>
+        <para>
+            Every OpenEngSBModel object has three defined functions: getOpenEngSBModelEntries, addOpenEngSBModelEntry and deletOpenEngSBModelEntry.
+            Whenever getOpenEngSBModelEntries is called, the model transform itself into a list of key/value pairs, which have as
+            an addition the type of the value saved. This mechanism is used for easier saving of models to the EDB and also to transfer
+            a model to a different machine. Knowing this, it is an easy guess to suggest what the other both functions are supposed to do.
+        </para>
+    </section>
+    <section>
+        <title>Supported field types</title>
+        <para>
+            In the actual version of the OpenEngSBModels, the models are able to work with primitive types, strings, dates, lists,
+            models and files. All this objects can be set and got through the interface and can also be persisted in the EDB (see
+            the chapter about the EDB for more details).
+        </para>
+        <para>
+            Special case in the supported field types are file objects. They are quite tricky, especially if the models shall be
+            transfered to another machine. The behaviour of the models are like this: Whenever a model have to transform itself
+            to a list of OpenEngSBModelEntry, the model is aware of file objects. If it finds a file object, it creates a 
+            FileWrapper object out of it. A FileWrapper object contains the name of the file and a byte array which holds the 
+            zip compressed content of the file object.
+        </para>
+        <para>
+            If such a FileWrapper would be accessed by a getter of a file object, the ModelUtils does the conversion work of the
+            FileWrapper to the file object for you. So this feature is completely transparent for the normal user. Note that the
+            conversion of a file object to a FileWrapper and the other way round has only to be done if getOpenEngSBModelEntries
+            is called. For now this is only at two points: when a model has to be saved into the EDB or when a model is sent via
+            remote.
+        </para>
+    </section>
+    <section>
+        <title>Model Ids</title>
+        <para>
+            For easier maintaining and faster finding of models (and also to enable the versioning possibility), the user is able 
+            to define a field to be id of a model. Important point to consider here is that this id has to be unique for a 
+            connector of a domain (this is because the id will be enlarged with the domain id and the connector id).
+        </para>
+        <para>
+            To define a field to be the id of the model you simply have to add an annotation to the corresponding setter. The 
+            annotation is called OpenEngSBModelId. If no id is defined for a model and this model has to be inserted into the
+            EDB, the EDB just take an arbitrary id to save the model.
+        </para>
+    </section>
+
+</chapter>
