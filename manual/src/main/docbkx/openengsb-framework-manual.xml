@@ -75,6 +75,7 @@
     </partintro>
     <xi:include href="user/quickstart.xml"/>
     <xi:include href="user/architecture.xml"/>
+    <xi:include href="user/semantics.xml"/>
     <xi:include href="user/context.xml"/>
     <xi:include href="user/persistence.xml"/>
     <xi:include href="user/security.xml"/>
