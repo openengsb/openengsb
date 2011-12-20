@@ -34,14 +34,22 @@
     <section>
         <title>Motivation</title>
         <para>
-            The EDB concept was introduced with the idea to build a central persisting unit for all domain
-            models of all domains. This central approach offers some interesting advantages, like the central
-            management of the versioning possibility and a single point where, in the future, model 
-            transformations can be done before models are returned to the user. This model transformation 
-            topic is on of the points, the EKB has to take care of, which is strong corelated to the EDB.
+            The EDB concept was introduced with the idea to build a central persisting unit for the domain
+            models of all domains. This central approach offers some interesting advantages, like for example: 
+        </para>
+        <itemizedlist>
+            <listitem>easy to change</listitem>
+            <listitem>easy data maintainence</listitem>
+            <listitem>single point of versioning configuration</listitem>
+            <listitem>central instance where model transformations can take place</listitem>
+        </itemizedlist>
+        <para>
+            Model transformation is the out of the scope of the EDB and will be covered
+            by the EKB.
         </para>
         <para>
-            Another big feature the EDB brings is a build-in conflict checker. Whenever someone tries to
+            Another important feature of the EDB are build-in conflict checkers. Until now, there is only
+            one implementation which is based on version numbers. Whenever someone tries to
             save something into the EDB with the wrong version, the conflict checker tells the user that
             a conflict has been found and that he has to checkout the newest version of the model before
             he can save the model.
@@ -50,15 +58,14 @@
     <section>
         <title>Structure</title>
         <para>
-            The EDB is an openJPA based implementation of a central database supplier in a service orientated
-            architecture which also have the additional functionality to versionize data which is saved into
-            the EDB if desired.
+            The EDB is a JPA based implementation of a central database supplier in service orientated
+            architectures, which also have the additional functionality to version data. Currently we are
+            using OpenJPA as JPA implementation.
         </para>
         <para>
-            Since the EDB simulates the functionality of a scm system, the structure of the tables in the EDB 
-            is no big surprise. They consist of objects which have a list of key/value pairs bound to them. 
-            Also there exist a commit table, where you can check which user in which context have done which 
-            changes to the EDB.
+            Since the EDB simulates the functionality of a scm system, the structures of the tables in the EDB 
+            are no big surprise. They consist of objects which have a list of key/value pairs bound to them. 
+            Also there exist a commit table, with which the EDB is able to keep track of all meta-data of changes.
         </para>
     </section>
     <section>
@@ -69,10 +76,10 @@
             many details of the saving procedure like the automatically load from where the event is coming
             and with this, an automatic event enhancement. Also the conflict check is started through such an event.
             In future the EDB has to be used directly without events to easier enable the possibility to use the EDB 
-            functionality in workflows.
+            functionality in workflows(<link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2431">Jira-ISSUE</link>).
         </para>
         <para>
-            The loading of models from the EDB is in principle possible, but should always be done through the QueryService
+            The loading of models from the EDB is in conceptionally possible, but should always be done through the QueryService
             of the EKB bundle, since this service does the automatic transformation work of elements from the EDB to an
             OpenEngSBModel. See the detailed explanation of the EKB for more informations.
         </para>
@@ -86,7 +93,7 @@
         </para>
         <para>
             In the future there should be more possibilities for conflict detections been found. But for the start, this
-            conflict detection is enough.
+            conflict detection is enough(<link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2432">Jira-ISSUE</link>).
         </para>
     </section>
     

@@ -41,7 +41,7 @@
         </para>
         <para>
             This domain models can be saved and versionized with the help of the OpenEngSB and two core components,
-            namly the EDB(Engineering Database) and the EKB(Engineering Knowledge base). This two components will
+            namly the EDB(Engineering Database) and the EKB(Engineering Knowledge base). Those two components will
             be explained in more detail in the contributor manual.
         </para>
         <para>
@@ -53,7 +53,7 @@
             that extends "AbstractOpenEngSBConnectorService", which shall be done by all connector implementations.
         </para>
         <para>
-            An OpenEngSBModel consists only of getter and setter pairs. This methods describe which fields the
+            An OpenEngSBModel consists only of getter and setter pairs. Those methods describe which fields the
             model have. Field types which are supported until now are: simple types, Strings, Date, OpenEngSBModel, 
             Lists and Files. Files are a special case, but it is possible to send models with File objects remotly
             and the File which is represented by the File object will be available at the remote machine as a local
