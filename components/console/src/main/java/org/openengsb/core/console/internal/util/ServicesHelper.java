@@ -139,10 +139,13 @@ public class ServicesHelper {
     /**
      * delete a service identified by its id
      */
-    public void deleteService(final String id) {
-        OutputStreamFormater.printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
+    public void deleteService(final String id, boolean force) {
+        if (!force) {
+            OutputStreamFormater
+                .printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
+        }
         try {
-            int input = keyboard.read();
+            int input = force ? 'Y' : keyboard.read();
             if ('Y' == (char) input) {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override

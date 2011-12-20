@@ -17,6 +17,9 @@
 
 package org.openengsb.itests.exam;
 
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.PrintStream;
 import java.util.List;
 
@@ -32,9 +35,6 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -82,7 +82,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         List<String> result = outputStreamHelper.getResult();
         assertTrue(contains(result, "AuditingDomain", "Domain to auditing tools in the OpenEngSB system."));
         assertTrue(contains(result, "Example Domain",
-            "This domain is provided as an example for all developers. It should not be used in production."));
+                "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         assertTrue(contains(result, "auditing+memoryauditing+auditing-root", "ONLINE"));
         assertTrue(contains(result, "authorization+composite-connector+root-authorizer", "ONLINE"));
         assertTrue(contains(result, "Example Domain",
-            "This domain is provided as an example for all developers. It should not be used in production."));
+                "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
     @Test
@@ -112,23 +112,17 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 
         OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+
         PrintStream out = new PrintStream(outputStreamHelper);
         CommandSession cs = cp.createSession(System.in, out, System.err);
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
-        cs.execute("openengsb:service list");
-
-        List<String> result = outputStreamHelper.getResult();
-        assertTrue(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
-
-        cs.execute("openengsb:service delete authentication+composite-connector+root-authenticator");
-        cs.execute("Y");
-
+        cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
         cs.execute("openengsb:service list");
         cs.close();
 
-        result = outputStreamHelper.getResult();
+        List<String> result = outputStreamHelper.getResult();
         assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
 
     }
