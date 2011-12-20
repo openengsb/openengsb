@@ -26,10 +26,9 @@
     
     <title>OpenEngSBModels</title>
     <para>
-        The OpenEngSBModels are a core concept for the whole semantic part of the OpenEngSB. They are needed to enable the 
-        persisting of domain models into the EDB, the easier working with such models, the possibility to send models
-        via remote and many other things which are complex in the background, but should hide the whole complexity from the
-        user.
+        The OpenEngSBModels are the base concept for the whole semantic part of the OpenEngSB. They are needed to enable the 
+        persisting of domain models into the EDB. Also they give the OpenEngSB the possibility to send models via remote and 
+        to hide complexity from the user.
     </para>
     
     <section>
@@ -57,26 +56,27 @@
         <para>
             But how to work only with interfaces? Since an OpenEngSBModel is only an interface, we need a mechanism to work
             in an efficient way with such objects. The way we choose was to create a static model proxy class, which simulates the
-            implementation of a model. The class which enables this, is the ModelUtils class which can be found in the "core/common"
+            implementation of a model. The class enabling this, is the ModelUtils class which can be found in the "core/common"
             bundle.
         </para>
         <para>
             Every OpenEngSBModel object has three defined functions: getOpenEngSBModelEntries, addOpenEngSBModelEntry and deletOpenEngSBModelEntry.
             Whenever getOpenEngSBModelEntries is called, the model transform itself into a list of key/value pairs, where every entry have 
             in addition the type of the value saved. This mechanism is used for easier saving of models to the EDB and also to transfer
-            a model to a different machine. Knowing this, it is an easy guess to suggest what the other both functions are supposed to do.
+            a model to a different machine. With the addOpenEngSBModelEntry you can add additional entries which are not part of the model
+            definition itself to the model. And finally with the removeOpenEngSBModelEntry you can manually remove an entry which has been 
+            inserted manually through addOpenEngSBModelEntry.
         </para>
     </section>
     <section>
         <title>Supported field types</title>
         <para>
-            In the actual version of the OpenEngSBModels, the models are able to work with primitive types, strings, dates, lists,
-            models and files. All this objects can be set and got through the interface and can also be persisted in the EDB (see
-            the chapter about the EDB for more details).
+            Currently the models are able to work with primitive types, strings, dates, lists, models and files. All those objects can 
+            be set and got through the interface and can also be persisted in the EDB (see the chapter about the EDB for more details).
         </para>
         <para>
             Special case in the supported field types are file objects. They are quite tricky, especially if the models shall be
-            transfered to another machine. The behaviour of the models are like this: Whenever a model have to transform itself
+            transfered to another machine. The behaviour of the models are: Whenever a model have to transform itself
             to a list of OpenEngSBModelEntry, the model is aware of file objects. If it finds a file object, it creates a 
             FileWrapper object out of it. A FileWrapper object contains the name of the file and a byte array which holds the 
             zip compressed content of the file object.
@@ -93,7 +93,7 @@
         <title>Model Ids</title>
         <para>
             For easier maintaining and faster finding of models (and also to enable the versioning possibility), the user is able 
-            to define a field to be id of a model. Important point to consider here is that this id has to be unique for a 
+            to define a field to be the id of a model. An important point to consider here is that this id has to be unique for a 
             connector of a domain (this is because the id will be enlarged with the domain id and the connector id).
         </para>
         <para>
