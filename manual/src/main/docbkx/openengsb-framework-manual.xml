@@ -128,20 +128,6 @@
     <xi:include href="domains/contact/domain.xml"/>
     <xi:include href="domains/multi-domain/connectors.xml"/>
   </part>
-  <part xml:id="contributor.manual">
-    <title>OpenEngSB Contributor Detail Informations</title>
-    <partintro>
-      <para>
-        This part gives an introduction to more detailed concepts of the OpenEngSB which should
-        be interesting for contributors which should have a deeper view on specialised topics of
-        this project. This part is also interesting for users which want to have a deeper insight
-        what is happening in the background of the OpenEngSB magic.
-      </para>
-    </partintro>
-    <xi:include href="developer/openEngSBModel.xml"/>
-    <xi:include href="developer/edb.xml"/>
-    <xi:include href="developer/ekb.xml"/>
-  </part>
   <part xml:id="developer.manual">
     <title>OpenEngSB Commiters &amp; Contributors</title>
     <partintro>
@@ -150,6 +136,9 @@
         developed.</para>
       <para>The target audience of this part are contributors.</para>
     </partintro>
+    <xi:include href="developer/model.xml"/>
+    <xi:include href="developer/edb.xml"/>
+    <xi:include href="developer/ekb.xml"/>
     <xi:include href="developer/quickstart.xml"/>
     <xi:include href="developer/howto/internal.connector.xml"/>
     <xi:include href="developer/howto/internal.domain.xml"/>

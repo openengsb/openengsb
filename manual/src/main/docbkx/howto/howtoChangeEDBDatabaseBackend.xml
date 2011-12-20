@@ -39,14 +39,14 @@
         </para>
     </section>
     <section>
-        <title>Use openJPA compatible database</title>
+        <title>Use JPA compatible database</title>
         <para> If you want to replace the standard database with another openjpa supported database
             (supported databases listet <link
                 xlink:href="http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html"
                 >here</link>), the procedure of changing is rather simple. You have to change the
             properties for the database connection of the "infrastructure/jpa" bundle. This is done by
             changing the config file "org.openengsb.infrastructure.jpa.cfg". This file is in the
-            "assembly/src/main/filtered-resources/etc" folder. This file has following entries:
+            "assembly/src/main/filtered-resources/etc" folder. The file has the following entries:
             <programlisting>
                   driverClassName=[here shall be the name of your driver class name, 
                      example: org.h2.jdbcx.JdbcDataSource]
@@ -79,9 +79,9 @@
         </para>
     </section>
     <section>
-        <title>Use not openJPA compatible database</title>
+        <title>Use non JPA compatible database</title>
         <para>
-            If you want to replace the standard database with another non openjpa supported database you will have
+            If you want to replace the standard database with another non JPA supported database you will have
             to change first the datasource like described in the previous section. After that you have to write your own
             bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
             commands and port it for the new database and replace the standard EngineeringDatabaseService.
@@ -91,7 +91,7 @@
         <title>Appendix: Use no OSGI compatible database</title>
         <para>
             In this case you have to wrap the driver for the database. How to do that can be read in the developer
-            manual where the wrapping is explained.
+            manual where wrapping is explained.
         </para>
     </section>
 </chapter>
