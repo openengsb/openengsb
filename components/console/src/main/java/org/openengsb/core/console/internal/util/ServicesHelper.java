@@ -53,21 +53,20 @@ public class ServicesHelper {
     private WiringService wiringService;
     private ConnectorManager serviceManager;
     private InputStream keyboard;
-    private CommandSession commandSession;
+    private BundleContext bundleContext;
 
 
     public ServicesHelper() {
-
     }
 
-    public ServicesHelper(BundleContext bundleContext) {
+    public void init() {
         this.osgiUtilsService = new DefaultOsgiUtilsService();
         this.osgiUtilsService.setBundleContext(bundleContext);
         wiringService = osgiUtilsService.getService(org.openengsb.core.api.WiringService.class);
         serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
         CommandProcessor commandProcessor = osgiUtilsService
             .getService(org.apache.felix.service.command.CommandProcessor.class);
-        commandSession = commandProcessor.createSession(System.in, System.err, System.out);
+        CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         keyboard = commandSession.getKeyboard();
     }
 
@@ -137,15 +136,16 @@ public class ServicesHelper {
     }
 
     /**
-     * delete a service identified by its id
+     * delete a service identified by its id, if force is true, the user does not have to confirm
      */
     public void deleteService(final String id, boolean force) {
-        if (!force) {
-            OutputStreamFormater
-                .printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
-        }
         try {
-            int input = force ? 'Y' : keyboard.read();
+            int input = 'Y';
+            if (!force) {
+                OutputStreamFormater
+                    .printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
+                input = keyboard.read();
+            }
             if ('Y' == (char) input) {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
@@ -187,7 +187,8 @@ public class ServicesHelper {
                 }
             });
         } catch (ExecutionException e) {
-            //ignore
+            System.err.println("An error occurred during deleting the service");
+            e.printStackTrace();
         }
         return result;
     }
@@ -200,11 +201,12 @@ public class ServicesHelper {
         this.wiringService = wiringService;
     }
 
-    public InputStream getKeyboard() {
-        return keyboard;
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
     }
 
-    public CommandSession getCommandSession() {
-        return commandSession;
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }
