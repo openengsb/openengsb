@@ -17,27 +17,19 @@
     limitations under the License.
 
 -->
-
-<persistence  xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
-  <persistence-unit name="edb-test">
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="openengsb-enhancer">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>org.openengsb.core.common.AbstractDataRow</class>
-    <class>org.openengsb.core.edb.internal.JPACommit</class>
-    <class>org.openengsb.core.edb.internal.JPAObject</class>
-    <class>org.openengsb.core.edb.internal.JPAEntry</class>
+
+	<class>org.openengsb.core.common.AbstractDataRow</class>
+
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
-      <property name="openjpa.Log" value="slf4j"/>
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
-      <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/> 
-      <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/> 
-      <property name="openjpa.jdbc.SynchronizeMappings" 
-        value="buildSchema(SchemaAction='add,deleteTableContents',ForeignKeys=true)"/>
-      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
-      <property name="openjpa.DataCache" value="true"/>
-      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
-      <property name="openjpa.ConnectionRetainMode" value="always"/>
+      <property name="openjpa.Log" value="slf4j" />
+      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+      <property name="openjpa.RuntimeUnenhancedClasses" value="supported" />
     </properties>
   </persistence-unit>
 </persistence>

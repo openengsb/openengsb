@@ -29,12 +29,14 @@ import javax.persistence.InheritanceType;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBObject;
+import org.openengsb.core.common.AbstractDataRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class JPACommit implements EDBCommit {
+public class JPACommit extends AbstractDataRow implements EDBCommit {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPACommit.class);
 
     @Column(name = "COMMITER", length = 50)
