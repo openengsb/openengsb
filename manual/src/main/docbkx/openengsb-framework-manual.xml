@@ -139,7 +139,6 @@
     <xi:include href="developer/model.xml"/>
     <xi:include href="developer/edb.xml"/>
     <xi:include href="developer/ekb.xml"/>
-    <xi:include href="developer/quickstart.xml"/>
     <xi:include href="developer/howto/internal.connector.xml"/>
     <xi:include href="developer/howto/internal.domain.xml"/>
     <xi:include href="developer/wrapped.xml"/>
