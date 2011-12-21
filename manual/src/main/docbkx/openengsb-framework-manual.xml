@@ -134,16 +134,8 @@
         developed.</para>
       <para>The target audience of this part are contributors.</para>
     </partintro>
-    <xi:include href="developer/quickstart.xml"/>
     <xi:include href="developer/howto/internal.connector.xml"/>
     <xi:include href="developer/howto/internal.domain.xml"/>
     <xi:include href="developer/wrapped.xml"/>
-    <xi:include href="developer/release.xml"/>
-    <xi:include href="developer/admin.xml"/>
-    <xi:include href="developer/projectroles.xml"/>
-    <xi:include href="developer/codestyle.xml"/>
-    <xi:include href="developer/writing.code.xml"/>
-    <xi:include href="developer/recommended.eclipse.plugins.xml"/>
-    <xi:include href="developer/writing.documentation.xml"/>
   </part>
 </book>
