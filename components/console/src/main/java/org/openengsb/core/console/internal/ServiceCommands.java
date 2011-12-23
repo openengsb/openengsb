@@ -19,6 +19,7 @@ package org.openengsb.core.console.internal;
 
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
+import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
 import org.openengsb.core.console.internal.util.ServicesHelper;
@@ -27,15 +28,22 @@ import org.openengsb.core.console.internal.util.ServicesHelper;
 public class ServiceCommands extends OsgiCommandSupport {
 
     @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
-        required = false, multiValued = false)
+            required = false, multiValued = false)
     String arg = null;
+
+    @Argument(index = 1, name = "id", required = false, multiValued = false)
+    String id = null;
+
+    @Option(name = "-f", aliases = {"--force"}, description = "Force the command (true or false) ", required = false,
+            multiValued = false)
+    String force = "false";
 
     private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
-
         try {
             ServiceCommandArguments arguments = retrieveArgumentOrDefault();
+            boolean option = retrieveOption();
             switch (arguments) {
                 case LIST:
                     serviceHelper.listRunningServices();
@@ -47,7 +55,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     // TODO: see OPENENGSB-2282
                     break;
                 case DELETE:
-                    // TODO : see OPENENGSB-2281
+                    serviceHelper.deleteService(id, option);
                     break;
                 default:
                     System.err.println("Invalid Argument");
@@ -64,6 +72,10 @@ public class ServiceCommands extends OsgiCommandSupport {
             return ServiceCommandArguments.LIST;
         }
         return ServiceCommandArguments.valueOf(arg.toUpperCase());
+    }
+
+    private boolean retrieveOption() {
+        return Boolean.parseBoolean(this.force);
     }
 
     public ServicesHelper getServiceHelper() {

@@ -24,6 +24,7 @@ import static org.openengsb.core.console.internal.util.ServiceCommandArguments.U
 
 import java.util.List;
 
+import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.Completer;
 import org.apache.karaf.shell.console.completer.StringsCompleter;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
@@ -34,26 +35,29 @@ import org.openengsb.core.console.internal.util.ServicesHelper;
  */
 public class ServiceCompleter implements Completer {
 
+    private ServiceCommandArguments lastCommand;
     private ServicesHelper servicesHelper;
+    private CommandSession session;
 
     public ServiceCompleter(ServicesHelper helper) {
         this.servicesHelper = helper;
     }
 
-    /**
-     * @param buffer     it's the beginning string typed by the user
-     * @param cursor     it's the position of the cursor
-     * @param candidates the list of completions proposed to the user
-     */
+    @Override
     public int complete(String buffer, int cursor, List<String> candidates) {
 
         StringsCompleter delegate = new StringsCompleter();
-        if (buffer == null) {
-            delegate = printStandardCommands(delegate);
-        } else {
-            try {
-                ServiceCommandArguments arguments = ServiceCommandArguments.valueOf(buffer.toUpperCase());
-                switch (arguments) {
+        try {
+            if (buffer == null) {
+                if (lastCommand == null) {
+                    addStandardArguments(delegate);
+                } else {
+                    addIds(delegate);
+                    lastCommand = null;
+                }
+            } else {
+                lastCommand = ServiceCommandArguments.valueOf(buffer.toUpperCase());
+                switch (lastCommand) {
                     case LIST:
                         return delegate.complete(buffer, cursor, candidates);
                     case CREATE:
@@ -63,24 +67,36 @@ public class ServiceCompleter implements Completer {
                         // TODO: see OPENENGSB-2282
                         break;
                     case DELETE:
-                        //TODO : see OPENENGSB-2281
-                        break;
+                        lastCommand = DELETE;
+                        addIds(candidates);
+                        return new StringsCompleter().complete(buffer, cursor, candidates);
                     default:
                         break;
                 }
-            } catch (IllegalArgumentException ex) {
-                delegate = printStandardCommands(delegate);
+            }
+        } catch (IllegalArgumentException ex) {
+            if (lastCommand != null) {
+                addIds(delegate);
+                lastCommand = null;
+            } else {
+                addStandardArguments(delegate);
             }
         }
         return delegate.complete(buffer, cursor, candidates);
     }
 
-    private StringsCompleter printStandardCommands(StringsCompleter delegate) {
+    private void addStandardArguments(StringsCompleter delegate) {
         delegate.getStrings().add(LIST.toString().toLowerCase());
         delegate.getStrings().add(CREATE.toString().toLowerCase());
         delegate.getStrings().add(UPDATE.toString().toLowerCase());
         delegate.getStrings().add(DELETE.toString().toLowerCase());
-        return delegate;
     }
 
+    private void addIds(StringsCompleter delegate) {
+        delegate.getStrings().addAll(servicesHelper.getRunningServiceIds());
+    }
+
+    private void addIds(List<String> strings) {
+        strings.addAll(servicesHelper.getRunningServiceIds());
+    }
 }

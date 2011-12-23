@@ -54,6 +54,15 @@
             <command>openengsb:domains</command>
             - prints out all available domains
           </para>
+          <para>
+            <command>openengsb:service list</command>
+            - prints out all running services
+          </para>
+          <para>
+            <command>openengsb:service delete 'id' -f (true/false) </command>
+            - delete a service specified by its id
+            - -f (or --force) is an optional parameter to force the delete
+          </para>
         </listitem>
       </itemizedlist>
     </para>
