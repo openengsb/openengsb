@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<chapter xml:id="howto.supportedfield" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>How to add new field support for domain models</title>
+    
+    <section>
+        <title>Goal</title>
+        <para>
+            This tutorial explains how to create new supported field types for domain models. What a domain model is, can be
+            read in the user manual in the semantics section(<xref linkend="user.semantics" />). In this section is also explained
+            which fields are supported until now. This task is divided in two subtasks, where the second one is optional. The first
+            subtask provides the functionality that the model is working correctly with the new field type. The second subtask is
+            the possibility that this fields are also saved in the EDB and can be loaded from the EDB.
+        </para>
+    </section>
+    <section>
+        <title>Time to complete</title>
+        <para>
+            If you are already familiar with the OpenEngSB the first subtask will take about 45 minutes. The second subtask 
+            will take about another 45 minutes. If you are not familiar with the OpenEngSB please read this manual from the 
+            start or check the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.
+        </para>
+    </section>
+    <section>
+        <title>Prerequisites</title>
+        <para>
+            For information about how to get started as contributor to the OpenEngSB project and how to
+            get the current OpenEngSB source please read the contributor section of the manual: 
+            <xref linkend="developer.manual" />.
+        </para>
+    </section>
+    <section>
+        <title>Subtask 1 - Add model support</title>
+        <para>
+            All that have to be done is to add a new converter step to the ModelProxy class in the core common bundle. Step by
+            step:
+        </para>
+        <section>
+            <title>Create new converter step</title>
+            <para>
+                A converter step is a class which extends the interface ModelEntryConverterStep. A ModelEntryConverterStep 
+                interface consists of 4 methods. This methods are 2 match functions, which define if the given object can
+                be converted by one of the converter methods, which are the other 2 functions. The interface looks like this:
+            </para>
+            <programlisting>
+                public interface ModelEntryConverterStep {
+                   /**
+                    * Checks if the given object is suitable for converting work when "getOpenEngSBModelObjects" of the proxy is
+                    * called. (e.g. an OpenEngSBModel)
+                   */
+                   boolean matchForGetModelEntries(Object object);
+                   /**
+                    * Does the converting work for the proxy when "getOpenEngSBModelObjects" is called. (e.g. OpenEngSBModel ->
+                    * OpenEngSBModelWrapper)
+                   */
+                   Object convertForGetModelEntries(Object object);
+                   /**
+                    * Checks if the given object is suitable for converting work when a getter of the proxy is called. (e.g. an
+                    * OpenEngSBModelWrapper)
+                   */
+                   boolean matchForGetter(Object object);
+                   /**
+                    * Does the converting work for the proxy when a getter is called. (e.g. OpenEngSBModelWrapper ->
+                    * OpenEngSBModel)
+                   */
+                   Object convertForGetter(Object object);
+                }
+            </programlisting>
+            <para>
+                The first two functions define the converting functionality if getOpenEngSBModelObjects is called. (e.g. we used
+                this to convert a File object to a FileWrapper object).
+                The other two functions define the converting functionality if a coresponding getter method is called. (e.g. convert
+                FileWrapper object to File object.
+            </para>
+        </section>
+        <section>
+            <title>Add converter step</title>
+            <para>
+                To add the new converter step, you have to add the converter step to the list of converter steps in the method
+                "initializeModelConverterSteps" in the ModelProxyHandler class. Important: The DefaultConverterStep have to be
+                the last step in the converter step list.
+            </para>
+        </section>
+    </section>
+    <section>
+        <title>Subtask 2 - Add EDB support</title>
+        <para>
+            To accomplish this task, the EDB and the EKB has to be extended. WARNING: This step is currently under construction
+            and very likely to be changed soon. As example for this subtask, you can check how it was done with the File object.
+        </para>
+        <section>
+            <title>Extend EDB</title>
+            <para>
+                To extend the EDB, the method "convertSubModel" in the class JPADatabase of the EDB bundle has to be extended. In the 
+                part where every OpenEngSBModelEntry get analyzed, a new if statement has to be added, which does a special handling
+                if the new introduced wrapper class is the parameter. How this wrapper class is saved, is up to you. 
+            </para>
+        </section>
+        <section>
+            <title>Extend EKB</title>
+            <para>
+                To extend the EKB, you have to extend the method "getValueForProperty" of the QueryInterfaceService in the EKB bundle.
+                Again, here must also a new if statement been added, where the parameter type is checked for the new field object which
+                should be supported. If this statement fits, you have to undo the conversion which have you done in the "Extend EDB" part.
+            </para>
+        </section>
+    </section>
+</chapter>
