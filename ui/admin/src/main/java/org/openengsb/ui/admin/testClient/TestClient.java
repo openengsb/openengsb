@@ -24,8 +24,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -57,6 +59,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -66,11 +69,13 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
+import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
@@ -85,6 +90,7 @@ import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
+import org.openengsb.ui.common.util.MethodUtil;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
@@ -384,85 +390,78 @@ public class TestClient extends BasePage {
         };
     }   
     
+    /**
+     * Displays the corresponding message to the currently selected Method of the currently active Service in the "ServiceTree"
+     */
     private void displayJSONMessages(){
+        
+        String result = "";      
+        
+        //fetch current selected Service and Method ID
         ServiceId serviceId = call.getService();
         MethodId mid = call.getMethod();  
-        if(mid == null){
-            info("Methode wählen");
-            return;
-        }
-
-        /*Object service;
-        try {
-            service = getService(call.getService());
-        } catch (OsgiServiceNotAvailableException e1) {
-            handleExceptionWithFeedback(e1);
-            return;
-        }
-        Method m;
-        try {
-            m = getMethodOfService(service,call.getMethod());
-        } catch (NoSuchMethodException ex) {
-            throw new IllegalArgumentException(ex);
-        }    
-        if(m == null){
-            return;
-        }   */         
-
-        MethodCallRequest mcr = new MethodCallRequest(new org.openengsb.core.api.remote.MethodCall(mid.getName(),call.getArgumentsAsArray()));
-        //org.openengsb.core.api.remote.MethodCall rmc = new org.openengsb.core.api.remote.MethodCall(m.getName(),call.getArgumentsAsArray());
-        //MethodCallRequest mcr = new MethodCallRequest(rmc);
         
-        String result = "";
-        try {
-            result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(mcr);
-            //result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(new MethodCallRequest(new MethodCall()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        //Guard Block if no Method or Service is detected
+        if(serviceId == null){
+            String serviceNotSet = new StringResourceModel("json.view.ServiceNotSet", this, null).getString();
+            info(serviceNotSet);
+            return;
+        }        
+        if(mid == null){
+            String methodNotSet = new StringResourceModel("json.view.MethodNotSet", this, null).getString();
+            info(methodNotSet);
+            return;
         }
+        
+        //Construct a Standard MethodCall with of the selected Method
+        org.openengsb.core.api.remote.MethodCall mc = new org.openengsb.core.api.remote.MethodCall(mid.getName(),call.getArgumentsAsArray());
+        
+        //add nessecary metaData to the Message
+        Map<String,String> metaData = new HashMap<String,String>();
+        if(serviceId.getServiceId() == null){
+            metaData.put("serviceId", serviceId.getDomainName());
+        }else{
+            metaData.put("serviceId", serviceId.getServiceId());
+        }
+        metaData.put("contextId", this.getSessionContextId());
+        mc.setMetaData(metaData);
+        
+        //Wrap the MethodCall in a MethodCallRequest
+        MethodCallRequest mcr = new MethodCallRequest(mc,"randomCallId");
+        
+        //Wrap the MethodCallRequest in a SecureRequest, this adds the authentication block to the Message
+        BeanDescription auth = BeanDescription.fromObject(new Password("yourpassword"));
+        SecureRequest secureRequest = SecureRequest.create(mcr, "yourusername", auth);
+        
+        //Parse the constructed "dummy" request via an ObjectMapper to a JsonMessage String
+        try {
+            result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(secureRequest);            
+        } catch (IOException ex) {
+            handleExceptionWithFeedback(ex);
+        }
+        String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
+        
+        //filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
+        //TODO replace this with stable filter mechanism
+        String typeToReplace = ",\"type\":";
+        while(result.contains(typeToReplace)){
+            int posAfterType = result.indexOf(typeToReplace)+typeToReplace.length();
+            String firstPart = result.substring(0,result.indexOf(typeToReplace));
+            String lastPart = result.substring(posAfterType,result.length());
             
-            // get all corresponding services
-            /*List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
-            ArrayList<ServiceId> domainServices = new ArrayList<>();
-            ArrayList<MethodId> domainMethods = new ArrayList<>();
-
-            for (Domain serviceReference : domainEndpoints) {
-                String id = serviceReference.getInstanceId();                          
-                if (id != null) {
-                    
-                    result += id;
-                    
-                    ServiceId serviceId = new ServiceId();
-                    serviceId.setServiceId(id);
-                    serviceId.setServiceClass(domainInterface.getName());               
-                    domainServices.add(serviceId);
-                    
-                    //get all corresponding methods
-                    List<Method> methods = getServiceMethods(serviceId);
-                    result += " {";
-                    for (Method m : methods) {
-                        MethodId methodId = new MethodId(m);
-                        domainMethods.add(methodId);
-                        result += m.getName()+" ; ";
-                        
-                        //generate JSON
-                        MethodCall dummyMethodCall = new MethodCall();
-                        dummyMethodCall.setService(serviceId);
-                        dummyMethodCall.setMethod(methodId);                
-                        
-                        result += generateJSONMessages(dummyMethodCall);
-                        
-                    }   
-                    result += "}\n";
-                }
-            }                        
-                  
-            //setResponsePage(new JsonMethodCallMarshalOutput(result));
-            */
+            int endOfArgs = lastPart.indexOf("}]");
+            int firstSemicolon = lastPart.indexOf(",");
             
-            info("JSON Message: "+result);
-    }
-   
+            if(firstSemicolon < endOfArgs){
+                lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
+            }
+            result = firstPart + lastPart;
+        }
+        result = result.replaceAll(",\"processId\":null,\"origin\":null", "");
+        
+        //Display the JsonMessage with a given Prefix
+        info(jsonPrefix+" "+result);
+    }   
 
     public TestClient(ServiceId jumpToService) {
         this();
@@ -560,7 +559,7 @@ public class TestClient extends BasePage {
         return m;
     }
     
-    protected void performCall() {     
+    protected void performCall() {  
         Object service;
         try {
             service = getService(call.getService());
