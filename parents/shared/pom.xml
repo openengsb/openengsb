@@ -168,9 +168,6 @@
     <scripting.version>1.5.0</scripting.version>
     <xbean.blueprint.version>3.7</xbean.blueprint.version>
     <h2.version>1.3.160</h2.version>
-    <aries.jpa.version>0.3</aries.jpa.version>
-    <aries.jndi.version>0.3</aries.jndi.version>
-    <aries.transaction.version>0.3</aries.transaction.version>
   </properties>
 
   <dependencyManagement>
@@ -266,46 +263,6 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-web-console</artifactId>
         <version>${activemq.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.transaction</groupId>
-        <artifactId>org.apache.aries.transaction.blueprint</artifactId>
-        <version>${aries.transaction.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.transaction</groupId>
-        <artifactId>org.apache.aries.transaction.manager</artifactId>
-        <version>${aries.transaction.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.transaction</groupId>
-        <artifactId>org.apache.aries.transaction.wrappers</artifactId>
-        <version>${aries.transaction.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.jndi</groupId>
-        <artifactId>org.apache.aries.jndi</artifactId>
-        <version>${aries.jndi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.jpa</groupId>
-        <artifactId>org.apache.aries.jpa.api</artifactId>
-        <version>${aries.jpa.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.jpa</groupId>
-        <artifactId>org.apache.aries.jpa.container</artifactId>
-        <version>${aries.jpa.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.jpa</groupId>
-        <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
-        <version>${aries.jpa.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.aries.jpa</groupId>
-        <artifactId>org.apache.aries.jpa.container.context</artifactId>
-        <version>${aries.jpa.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>

@@ -57,6 +57,9 @@
     <feature>spring-web</feature>
     <feature>spring-dm</feature>
     <feature>war</feature>
+    <feature>transaction</feature>
+    <feature>jpa</feature>
+    <feature>jndi</feature>
 
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
@@ -126,16 +129,7 @@
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container.context/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
-	
     <!-- OpenEngSB ConfigPersistence Implementations -->
     <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
     <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
@@ -146,7 +140,6 @@
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
-		
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
