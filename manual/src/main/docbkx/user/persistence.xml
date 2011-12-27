@@ -50,7 +50,7 @@
     <para>
       Queries with the OpenEngSB persistence done via the 
       <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>.
-      Behind this service an easy query-by-example logic is used to retrieve your results. In some cases the comparision and storage can create some
+      Behind this service an easy query-by-example logic is used to retrieve your results. In some cases the comparison and storage can create some
       wired problems for your specific use cases. For those cases the 
       <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/IgnoreInQueries.java">IgnoreInQueries</link> annotation had
       been added. Using this annotation on getters in classes persisted via the
@@ -76,8 +76,8 @@
       <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/persistence/PersistenceService.java">persistence service</link>? The
       reason is quite simple. We do need to store configurations at various places. Options may be the file system, an object store or any other place.
       In addition configurations, when you e.g. store them to files, have to be quite specific about their types. Rule, for example, have to be stored
-      as simple strings, flows as xml files and connectors as key-value-pairs. Beeing so specific the implementations of the backends also have to be
-      specific. Besides, there are kind of regions. Examples are Rules, Flows, and various others. Bascially in you code you simply want to ask for
+      as simple strings, flows as xml files and connectors as key-value-pairs. Being so specific the implementations of the backends also have to be
+      specific. Besides, there are kind of regions. Examples are Rules, Flows, and various others. Basically in you code you simply want to ask for
       a configuration persister for rules and do not care if it is a file persister or something else. In addition rules could be persisted somewhere
       else than e.g. flows. Therefore those backends have to be configured separate for each type.
     </para>
@@ -94,10 +94,10 @@
       automatically.
     </para>
 
-    <para>Although it is quite simple to configure, change and consume and provide provide configurations it is mostly not a good idea to simply change
+    <para>Although it is quite simple to configure, change and consume and provide configurations it is mostly not a good idea to simply change
       the properties, backend or frontend if you're not exactly sure about what you're doing. You can easily take the wrong backend service which will not
       be able to persist e.g. a RuleConfiguration and throws exceptions. If you swtich the backend during the run everything stored in the old backend would
-      not be avialable in the new one. Within a client project mostly relay on using those services to read the properties and use the OpenEngSB to store them.
+      not be available in the new one. Within a client project mostly relay on using those services to read the properties and use the OpenEngSB to store them.
     </para>
 
     <para>Still the system can easily be extended to your own use. Typically you have to do the following steps to provide a new configuration service. First
@@ -114,11 +114,11 @@
 
     <section>
       <title>Context configuration persistence</title>
-      <para>The context configuration persistence follows the basic congiguation persistence scheme. In this case the backend 
+      <para>The context configuration persistence follows the basic configuration persistence scheme. In this case the backend 
         (<link xlink:href="${github}/core/services/src/main/java/org/openengsb/core/services/internal/ContextFilePersistenceService.java">ContextFilePersistenceService</link>)
         creates files for each context (basically empty files with filename &lt;contextId&gt;.context), the context service
         (<link xlink:href="${github}/core/services/src/main/java/org/openengsb/core/services/internal/ContextServiceImpl.java">ContexServiceImpl</link>)
-        requests a config persistcene service of type CONTEXT, is given the aforementioned one and uses it to persist its data.
+        requests a config persistence service of type CONTEXT, is given the aforementioned one and uses it to persist its data.
       </para>
     </section>
   </section>

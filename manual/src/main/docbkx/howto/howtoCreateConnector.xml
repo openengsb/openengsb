@@ -29,7 +29,7 @@
 
   <section>
     <title>Goal</title>
-	<para>This tutorial describes examplary for all connectors the implementation of an email connector. The email
+	<para>This tutorial describes exemplary for all connectors the implementation of an email connector. The email
     connector implements the interface of the <xref linkend="domains.notification.domain" />, which is already implemented
     in the OpenEngSB. Therefore, this tutorial describes the implementation of a connector for
     an already present domain.</para>
@@ -126,7 +126,7 @@ name: OpenEngSB :: Connector :: Email
   <section>
     <title>Step 2 - Add the dependencies</title>
     <para>Let's start with the dependencies. As the email connector will be based upon the javax mail
-    libraries, we need to include dependencies for the OSGI versions of these artifacts into the
+    libraries, we need to include dependencies for the OSGi versions of these artifacts into the
     pom file located at "/provision/pom.xml". So we add this dependency to the dependencies section:</para>
     <programlisting>
     <![CDATA[<dependency>

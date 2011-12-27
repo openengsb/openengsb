@@ -30,12 +30,12 @@
   in OSGi environments. They are used as regular jar files in the OpenEngSB. Nevertheless, the wrapping
   itself is not as painless. This chapter tries to explain the process in detail.</para>
 
-  <section xml:id="developer.wrapped.base">
+  <section xml:id="contributor.wrapped.base">
     <title>Create Wrapped Artifacts</title>
     <para>This chapter is a step by step guide on how to create a wrapped JAR.</para>
     <orderedlist>
       <listitem>
-        <para>In case that no osginized library is available in the public repositories a package has to be
+        <para>In case that no OSGi compatible library is available in the public repositories a package has to be
           created. Because of the simplicity of the process it should be done by hand. First of all create a folder 
           with the name of the project you like to wrap within openengsb/wrapped. Typically the groupId of
           the bundle to wrap is sufficient. For example, for a project wrapping all Wicket bundles the folder
@@ -91,7 +91,7 @@ OPENENGSB LICENSE
           configured here. For example all packages within the bundle-namespace are always exported. This is for most
           scenarios sufficient. In addition all dependencies found are automatically imported as required. This is
           generally not desired. Instead the parts of the library which have to be imported should be defined
-          separately. The following listing gives a short example how this OSGI specific part can look like. For a
+          separately. The following listing gives a short example how this OSGi specific part can look like. For a
           full list of possible commands see the <link
             xlink:href="http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html">maven-bundle-plugin
             documentation</link>.

@@ -26,7 +26,7 @@
 
   <title>Context Management</title>
 
-  <para>The context is one of the most important core concepts of the openengsb. It allows to reuse predefined
+  <para>The context is one of the most important core concepts of the OpenEngSB. It allows to reuse predefined
     workflows in several contexts. A context may often represent a project or subproject. So it is possible to execute
     the same workflow with the project-specific tool-instances and other metadata (like contact-information).</para>
 
@@ -70,11 +70,11 @@
       the context it is looked up in the "root"-context.</para>
 
     <para>In detail the wiring is handled via the service-properties. Services contain properties where the key is of
-      the format "location.&lt;contextid&gt;". The value is a list of "locations" represented by an array of strigns.
+      the format "location.&lt;contextid&gt;". The value is a list of "locations" represented by an array of strings.
       So a service may have several locations in several contexts.</para>
 
     <para>When a global variable is accessed during the execution of an action (from a process or rule), the
-      osgi-context is queried for the correspinding service. The service wired to this variable must have location
+      OSGi-context is queried for the corresponding service. The service wired to this variable must have location
       with the same name as the variable. The service is searched in the current context and the root-context. If no
       service is found, the action is stalled for 30 seconds. If there is still no service found an Exception is thrown.
       Internally this is handled using proxies. When the workflow service is started, all globals are populated with

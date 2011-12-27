@@ -45,7 +45,7 @@
   </section>
   <section>
     <title>Prerequisites</title>
-    <para>It is assumed you have basic knowledge of software development practices and you are able to set up auxiliary software (i.e. JDK 1.6) youself.</para>
+    <para>It is assumed you have basic knowledge of software development practices and you are able to set up auxiliary software (i.e. JDK 1.6) yourself.</para>
     <para>Warning: This section is likely to change in the near future, as the web UI as well as domains and connectors are subject to change.</para>
   </section>
   <section>
@@ -86,7 +86,7 @@
       <imageobject>
         <imagedata id="mvnversion" fileref="graphics/ci_mvnversion.png" width="400" format="png" align="center" />
       </imageobject>
-      <caption>check maven and jdk version</caption>
+      <caption>check maven and JDK version</caption>
     </mediaobject>
 
     <para>It turns out, we actually need a sample project before we can start developing and testing our CI tool. In this tutorial we will be using Apache Maven for project and source management and a small <command>Hello World</command> application written in Java. For this to work flawlessly we need JDK 1.6+ (<link xlink:href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">download</link>) and Maven 3+ (<link xlink:href="http://maven.apache.org/download.html">download</link>) to be set up on the computer.</para>
@@ -268,7 +268,7 @@ then
   <section>
     <title>Further Reading</title>
 
-    <para>There are a number of different HowTo's and tutorials in the online documentation. They describe different scenarios for <link xlink:href="#howto.setup">setup</link>, <link xlink:href="#howto.logging">connectors and domains</link> and <link xlink:href="#howto.contexteditor">event processing</link>. Also, the user manual contains additional information about the topics discussed and numerous OpenEngSB subprojects, i.e. <link xlink:href="http://opencit.openengsb.org">OpenCIT</link> and <link xlink:href="http://openticket.openengsb.org">OpenTicket</link>, can be used for reference.</para>
+    <para>There are a number of different HowTo's and tutorials in the online documentation. They describe different scenarios for <link xlink:href="#howto.setup">setup</link>, <link xlink:href="#howto.logging">connectors and domains</link> and <link xlink:href="#howto.contexteditor">event processing</link>. Also, the user manual contains additional information about the topics discussed and numerous OpenEngSB sub projects, i.e. <link xlink:href="http://opencit.openengsb.org">OpenCIT</link> and <link xlink:href="http://openticket.openengsb.org">OpenTicket</link>, can be used for reference.</para>
   </section>
 
 </chapter>
