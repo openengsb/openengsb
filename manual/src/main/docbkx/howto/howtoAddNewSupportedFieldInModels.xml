@@ -92,7 +92,7 @@
             <para>
                 The first two functions define the converting functionality if getOpenEngSBModelObjects is called. (e.g. we used
                 this to convert a File object to a FileWrapper object).
-                The other two functions define the converting functionality if a coresponding getter method is called. (e.g. convert
+                The other two functions define the converting functionality if a corresponding getter method is called. (e.g. convert
                 FileWrapper object to File object.
             </para>
         </section>

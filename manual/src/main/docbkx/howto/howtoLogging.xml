@@ -43,7 +43,7 @@
   </section>
 
   <section>
-    <title>Creating EMail Services</title>
+    <title>Creating E-Mail Services</title>
 
     <para>Create a new Email Notification Service by clicking the "New..." link for the Email Notification on the Test Client link.</para>
 
@@ -54,7 +54,7 @@
       <caption>test client</caption>
     </mediaobject>
 
-    <para>In the following view you have the possibility to configure the Notification Service. The following screen provides an example for a gmail account. Please use "test1" for the Service Id field.</para>
+    <para>In the following view you have the possibility to configure the Notification Service. The following screen provides an example for a Gmail account. Please use "test1" for the Service Id field.</para>
 
     <mediaobject>
       <imageobject>
@@ -111,7 +111,7 @@
 
     <para>Till now you've used the services directly. Now one of the OpenEngSB core concepts is presented: the Domains:</para>
  
-    <para>To send messages via domains, instead of directly via the connectors a default receiver for a specific project has to be set. A graphical user inteface for doing so is the "Context Page":</para>
+    <para>To send messages via domains, instead of directly via the connectors a default receiver for a specific project has to be set. A graphical user interface for doing so is the "Context Page":</para>
     
     <mediaobject>
       <imageobject>

@@ -89,7 +89,7 @@
       <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
       connector name. Therefore you will have to rename the resulting project (however if you use the
       <literal>genConnector</literal> mojo, this renaming will be performed automatically).
-      Do not forget to check that the new connector is included in the modules section of the domain parent pom.</para>
+      Do not forget to check that the new connector is included in the modules section of the domain parent pom xml file.</para>
     </section>
 
     <section>
@@ -134,7 +134,7 @@
       -- java
       |  -- org
       |     -- openengsb
-      |        -- domains
+      |        -- domain
       |           -- notification
       |              -- twitter
       |                 -- internal
