@@ -128,11 +128,7 @@
 
     <para>The newly created connector project should have the exact same structure as the following listing:</para>
 
-    <programlisting>-- pom.xml
--- NOTICE
--- LICENSE
--- CHANGELOG.md
--- etc
+    <programlisting>-- etc
    -- notice
       |  -- NOTICE.template
       |  -- license-mapping.xml
@@ -156,7 +152,11 @@
          |  -- l10n
          |     -- bundle_de.properties
          |     -- bundle.properties
-         |  -- bundle.info</programlisting>
+         |  -- bundle.info
+-- CHANGELOG.md
+-- LICENSE
+-- NOTICE
+-- pom.xml</programlisting>
 
     <para>The <literal>MyServiceConnector</literal> class implements the interface of the domain and thus is the
       communication link between the OpenEngSB and the connected tool. To give the OpenEngSB (and in the long run the
