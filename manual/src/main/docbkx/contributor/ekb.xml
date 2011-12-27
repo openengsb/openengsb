@@ -42,7 +42,7 @@
             checkers for the EDB and if possible automatic conflict solving.
         </para>
     </section>
-    <section  xml:id='developer.ekb.queryservice'>
+    <section  xml:id='contributor.ekb.queryservice'>
         <title>Query Service</title>
         <para>
             This service has the task to load models from the EDB. Since models are no real objects but

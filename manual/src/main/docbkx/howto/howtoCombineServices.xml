@@ -24,7 +24,7 @@
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
-  <title>HowTo - Combine mulitple connectors</title>
+  <title>HowTo - Combine multiple connectors</title>
   <para>It is possible to combine several connector-instances to one parent connector that appears to workflows like
     any other connector. For example you may want to have several notification-connectors in a workflow. It uses the
     location-placeholder "foo". So when the workflow expects the connector-instance at location "foo", you may want it
@@ -41,7 +41,7 @@
         <listitem>What should be returned as a result?</listitem>
       </itemizedlist>
       All this is specified by a CompositeStrategy. Strategy-implementations must implement the
-      CompositeConnectorStrategy interface and be registerd as OSGi-services exporting this interface. Also the service
+      CompositeConnectorStrategy interface and be registered as OSGi-services exporting this interface. Also the service
       must specify the "composite.strategy.name" property.
       The strategy is provided with a list of ServiceReferences, and the invocation parameters.
       The implementation can decide which services to resolve and to invoke.

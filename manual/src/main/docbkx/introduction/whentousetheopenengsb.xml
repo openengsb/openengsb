@@ -33,9 +33,9 @@
     <section>
         <title>The OpenEngSB as Base Environment</title>
         <para>OSGi is a very popular integration environment. Instead of delivering one big product the products get separated into
-        minor parts and deployed within a general envioronment. The problem with this concept is to get old, well known concepts
+        minor parts and deployed within a general environment. The problem with this concept is to get old, well known concepts
         up and running in the new environment. In addition tools such as PAX construct allow a better integration into Apache Maven, 
-        and extended OSGi runtimes, such as Karaf allow a richer and easier development. Neverthless, settting up such a system for 
+        and extended OSGi runtimes, such as Karaf allow a richer and easier development. Nevertheless, setting up such a system for 
         development means a lot of hard manual work. Using the OpenEngSB such systems can be setup within minutes.
         </para>
     </section>
@@ -53,13 +53,13 @@
         <title>Management Environment</title>
         <para>The OpenEngSB delivers a complete management and monitoring environment. While this environment can
         be added to your project standalone (similar to e.g. Tomcat management console) you also have the possibility to
-        completely integrate the OpenEngSB management enviornment into your Apache Wicket application.
+        completely integrate the OpenEngSB management environment into your Apache Wicket application.
         </para>
     </section>
 
     <section>
         <title>Simple Development and Distribution Management</title>
-        <para> While typical ESB have to be installed seperately from your application the OpenEngSB is delivered with your
+        <para> While typical ESB have to be installed separately from your application the OpenEngSB is delivered with your
         application. Develop your application in the OpenEngSB environment and scripts to embed your application into
         the OpenEngSB are provided. In addition easy blending allows to adapt the OpenEngSB visually to your needs and
         cooperate design.

@@ -79,7 +79,7 @@ attribute.smtpHost = smtp.testserver.com
     <section xml:id="user.deployers.connector.root">
       <title>Root services</title>
       <para>
-        Note, that root services (ie. connector services deployed from the "etc/" directory) are deployed with a lower
+        Note, that root services (i.e. connector services deployed from the "etc/" directory) are deployed with a lower
         service ranking.
         This is done so that normal services are preferred when matching services.
       </para>

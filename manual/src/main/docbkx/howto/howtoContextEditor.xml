@@ -26,7 +26,6 @@
 
   <title>HowTo - Events with the OpenEngSB (Using the logging service)</title>
 
-
   <section>
     <title>Goal</title>
       <para>This tutorial shows how the event system in the OpenEngSB can be used. Therefore a log and a domain connector are created and configured. The context system in the OpenEngSB is used to define which connectors should be used and a simple event is used starting a rule.</para>

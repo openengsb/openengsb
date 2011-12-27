@@ -64,7 +64,7 @@
           the JMS provider have to be set. When calling a remote connector the unique id of the remote service or
           connector has to be provided. This way the remote service can identify, load and call a certain service. If
           the call is not intended to go to another OPENENGSB, or the external service needs no identification of the
-          service to call the remote service id can be ommited.</para>
+          service to call the remote service id can be omitted.</para>
         <mediaobject>
           <imageobject>
             <imagedata id="create-proxy" fileref="graphics/create-proxy.png" format="png" width="400" align="center"/>
@@ -72,7 +72,7 @@
           <caption>Create Proxy</caption>
         </mediaobject>
         <para>After saving the proxy you should be able to test it via the TestClient page. Following is an example of
-          an unsecure call:</para>
+          an unsecured call:</para>
         <programlisting><![CDATA[{
   "authenticationData": {
     "className":"org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo",
