@@ -46,7 +46,7 @@
     together with the core system.</para>
     <para>For information about how to get started as contributor to the OpenEngSB project and how to
     get the current OpenEngSB source please read the contributor section of the manual: 
-    <xref linkend="developer.manual" />.</para>
+    <xref linkend="contributor.manual" />.</para>
   </section>
   <section>
     <title>Step 1 - Use the archetype</title>
