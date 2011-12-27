@@ -35,7 +35,7 @@
     <title>Prerequisites</title>
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
       <xref linkend="architecture.concept.tooldomains" /> is a good starting point. If there's already a matching domain for
-      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="developer.howto.internal.domain" />.</para>
+      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="contributor.howto.internal.domain" />.</para>
   </section>
 
   <section>
