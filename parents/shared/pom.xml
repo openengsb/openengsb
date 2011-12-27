@@ -218,6 +218,11 @@
         <version>${commons.jexl.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-manual-builder-resources</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
