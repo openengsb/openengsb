@@ -18,7 +18,7 @@
 
 -->
 
-<chapter xml:id="developer.remote" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="user.remote" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
@@ -33,7 +33,7 @@
     mechanism is stateless on its own. To realize stateful computations, either the filter(s) or the service must
     provide such functionality.</para>
 
-  <section xml:id="developer.remote.filters">
+  <section xml:id="user.remote.filters">
     <title>Filters</title>
     <para>Following the <ulink url="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">
       "Chain of Responsibility"-Pattern</ulink> the OpenEngSB uses Filters to modularize the processing and transport of
@@ -97,7 +97,7 @@
       element is replaced by an XMLMethodCallMarshalFilter. the RequestHandlerFilter is the same as in the jms-json-port.
     </para>
   </section>
-  <section xml:id="developer.remote.filterconfig">
+  <section xml:id="user.remote.filterconfig">
     <title>Configure a filterchain</title>
     <para>An instance of FilterChainElement may only be part of one FilterChain. In order to reuse FilterChainElements
       in other filterchains new instances must be created. This is because the instances of the filters may contain
@@ -132,7 +132,7 @@
       predecessor. Compatibility is checked when the create-method is invoked. In the above example this would be while
       processing the blueprint-file.</para>
   </section>
-  <section xml:id="developer.remote.customfilters">
+  <section xml:id="user.remote.customfilters">
     <title>Develop custom filters</title>
     <para>The filters provided by the openengsb only cover the the requirements for the ports that are provided by the
       openengsb itself. For custom ports, custom filter-classes may be required. <!-- TODO class-diagram --></para>
@@ -142,7 +142,7 @@
       during compilation. There are however abstract classes (with generic paremeters) that make it easier to implement
       new FilterChainElements</para>
   </section>
-  <section xml:id="developer.remote.incoming">
+  <section xml:id="user.remote.incoming">
     <title>Develop an incoming port</title>
     <para>Incoming ports receive messages and process them using a filterchain. There are no restrictions on how the
       implementation of the incoming port actually looks like. Typically an incoming port is an object that spawns a
@@ -162,7 +162,7 @@
     <para>Every filterchain should use make sure to pass the MethodCall to the RequestHandler in the and (using a
       RequestHandlerFilter.</para>
   </section>
-  <section xml:id="developer.remote.outgoing">
+  <section xml:id="user.remote.outgoing">
     <title>Develop an Outgoing port</title>
     <para>Outgoing port implementations must follow a few more guidelines than incoming ports, because the OpenEngSB
       needs to be aware of Outgoing ports present in the system in order to use them in other components (like
