@@ -24,7 +24,7 @@
     http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
     http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
     
-    <title>HowTo - Change EDB database backend</title>
+    <title>HowTo - Change EDB database back end</title>
     
     <section>
         <title>Goal</title>
@@ -33,14 +33,14 @@
     <section>
         <title>Time to Complete</title>
         <para>The time needed to perform this task depends heavily on which database you want to use instead of the standard H2 
-            database and on your experience with the OpenEngSB. This capter will list the different possibilities from the shortest
+            database and on your experience with the OpenEngSB. This chapter will list the different possibilities from the shortest
             time period needed to the most complex one. If you are not familiar with the OpenEngSB please read this manual from 
             the start or check the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.
         </para>
     </section>
     <section>
         <title>Use JPA compatible database</title>
-        <para> If you want to replace the standard database with another openjpa supported database
+        <para> If you want to replace the standard database with another JPA supported database
             (supported databases listet <link
                 xlink:href="http://openjpa.apache.org/builds/1.0.2/apache-openjpa-1.0.2/docs/manual/supported_databases.html"
                 >here</link>), the procedure of changing is rather simple. You have to change the
@@ -55,7 +55,7 @@
                   password=[here shall be the password for authentication at the database]
             </programlisting>
             After changing of this file, you have to assure that the driver which shall be used by
-            the datasource is loaded at runtime. For that you have to load the database driver
+            the data source is loaded at runtime. For that you have to load the database driver
             before the connection to the database is established. Your database bundle dependency
             should be added to the "parents/shared/pom.xml" file. A dependency entry for the h2
             database looks like this (the h2.version is defined as property in the same
@@ -82,13 +82,13 @@
         <title>Use non JPA compatible database</title>
         <para>
             If you want to replace the standard database with another non JPA supported database you will have
-            to change first the datasource like described in the previous section. After that you have to write your own
+            to change first the data source like described in the previous section. After that you have to write your own
             bundle that provides the EngineeringDatabaseService. In this case you also have to reproduce all SQL
             commands and port it for the new database and replace the standard EngineeringDatabaseService.
         </para>
     </section>
     <section>
-        <title>Appendix: Use no OSGI compatible database</title>
+        <title>Appendix: Use no OSGi compatible database</title>
         <para>
             In this case you have to wrap the driver for the database. How to do that can be read in the developer
             manual where wrapping is explained.

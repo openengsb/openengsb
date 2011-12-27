@@ -52,7 +52,7 @@
     <para>Access control is done on the service level. Core-services and connector-instances are all published as
       OSGi-services. Other services and components always reference these service instances. We use the approach of
       AOP to achieve security of these services. The openengsb.core.security-bundle publishes a service that serves as
-      a method-interceptor. When it is attached to a service every method call on the service is preceeded with an
+      a method-interceptor. When it is attached to a service every method call on the service is preceded with an
       authorization-check. </para>
 
     <para>A reference to the method-interceptor can be obtained by this line in the spring-context.xml

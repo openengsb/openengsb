@@ -134,12 +134,12 @@
   </section>
   <section xml:id="user.remote.customfilters">
     <title>Develop custom filters</title>
-    <para>The filters provided by the openengsb only cover the the requirements for the ports that are provided by the
-      openengsb itself. For custom ports, custom filter-classes may be required. <!-- TODO class-diagram --></para>
+    <para>The filters provided by the OpenEngSB only cover the the requirements for the ports that are provided by the
+      OpenEngSB itself. For custom ports, custom filter-classes may be required. <!-- TODO class-diagram --></para>
     <para>Filterclasses that are to be used at the end of a chain must implement the FilterAction-interface. In order
       to be usable anywhere in the filterchain the Classes must implement the FilterChainElement-interface. The
       interfaces do not use generic parameters because the benefit is really minimal as the information is erased
-      during compilation. There are however abstract classes (with generic paremeters) that make it easier to implement
+      during compilation. There are however abstract classes (with generic parameters) that make it easier to implement
       new FilterChainElements</para>
   </section>
   <section xml:id="user.remote.incoming">

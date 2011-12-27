@@ -43,7 +43,7 @@
     <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
       structure. The
       <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
-      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) simplifies
+      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plug-in) simplifies
       the creation of a domain.
     </para>
 
@@ -165,7 +165,7 @@
       <listitem>
         <para>Domain interface - This is the interface that connectors of that domain must implement. Operations that
           connectors should provide, are specified here. Events that are raised by this Domain in unexpected fashion 
-          (e.g new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
+          (e.g. new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
           classes it takes as an argument are used. If the Raise annotation is put on a method the events that 
           are specified through the annotation are raised in sequence upon a call.</para>
       </listitem>
@@ -199,7 +199,7 @@
     <title>Connectors</title>  
     <para>
       For information regarding the implementation of connectors for the newly created domain see 
-      <xref linkend="developer.howto.internal.connector" />. 
+      <xref linkend="contributor.howto.internal.connector" />. 
     </para>
   </section>
 
