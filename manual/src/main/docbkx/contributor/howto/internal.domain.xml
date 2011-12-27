@@ -29,7 +29,7 @@
   <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
     interface and common events and thereby defines how to interact with connectors for this domain. For a better 
     description of what a domain exactly consists of, take a look at the architecture guide 
-    <xref linkend="architecture" />.</para>
+    <xref linkend="user.architecture" />.</para>
 
   <section>
     <title>Prerequisites</title>
@@ -118,26 +118,33 @@
 
       <para>The newly created domain should have the exact same structure as the following listing:</para>
 
-      <programlisting>-- implementation
-|  -- pom.xml
-|  -- src
-|     -- main
-|     |  -- java
-|     |  -- org
-|     |     -- openengsb
-|     |        -- domains
-|     |           -- mydomain
-|     |              -- MyDomain.java
-|     |              -- MyDomainEvents.java
-|     |              -- MyDomainProvider.java
-|     -- resources
-|        -- META-INF
-|        |   -- spring
-|        |      -- mydomain-context.xml
-|        -- OSGI-INF
-|           -- l10n
-|              -- bundle_de.properties
-|              -- bundle.properties
+      <programlisting>--etc
+|  -- notice
+|     -- NOTICE.template
+|     -- license-mapping.xml
+-- src
+|  -- main
+|     -- filtered-resources
+|        -- features.xml
+|  -- java
+|     -- org
+|        -- openengsb
+|           -- domain
+|              -- [mydomain]
+|                 -- [MyDomain]Domain.java
+|                 -- [MyDomain]DomainEvents.java
+|                 -- [MyDomain]DomainProvider.java
+|  -- resources
+|     -- OSGI-INF
+|        -- blueprint
+|           -- [mydomain]-context.xml
+|        -- l10n
+|           -- bundle.properties
+|           -- bundle_de.properties
+|        -- bundle.info
+-- CHANGELOG.md
+-- LICENSE
+-- NOTICE
 -- pom.xml</programlisting>
 
       <para>The project contains stubs for the domain interface, the domain events interface and the domain provider
@@ -146,10 +153,14 @@
       <para>Although the generated domain does in effect nothing, you can already start the OpenEngSB for testing with
           <literal>mvn clean install openengsb:provision</literal> and the domain will be automatically be picked up and started.</para>
 
-      <para>The spring setup in the resources folder already contains the necessary setup for this domain to work in the
+      <para>The blueprint setup in the resources folder already contains the necessary setup for this domain to work in the
       OpenEngSB environment. Furthermore the default implementation proxies for the domain interface, which forwards all
       service calls to the default connector for the domain and the default implementation of the domain event interface, 
       which forwards all events to the workflow service of the OpenEngSB are configured.</para>
+      
+      <para>The features.xml file is needed since the domains are deployed as stand-alone bundles which can be loaded
+        into a running OpenEngSB instance. It defines which bundles in the OpenEngSB are needed for the domain bundle to
+        work correctly and defines which features are added when the bundle is loaded.</para>
 
       <para>Each OpenEngSB bundle (core, domain, connector) has been designed with localization in mind. The Maven
         Archetype already creates two <literal>bundle*.properties</literal> files, one for English (bundle.properties)
@@ -180,7 +191,7 @@
           that takes over most of the setup.</para>
       </listitem>
       <listitem>
-        <para>Spring context - There are three services, that must be registered with the OSGi service-environment. First,
+        <para>Blueprint context - There are three services, that must be registered with the OSGi service-environment. First,
           there is the Domain Provider. Moreover, the domain must provide a kind of connector itself since it
           must be able to handle service calls and redirect it to the default-connector specified in the current
           context. And finally the domain provides an event interface for its connectors which can be used by them to send
