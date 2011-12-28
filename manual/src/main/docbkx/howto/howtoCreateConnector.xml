@@ -66,12 +66,12 @@ Project Name (is OpenEngSB :: Connector :: Email):
     </programlisting>
     <para>Now the maven archetype is executed. It asks you to confirm the configuration:</para>
     <programlisting>groupId: org.openengsb.connector
-artifactId: openengsb-connector-email
+artifactId: org.openengsb.connector.email
 version: 1.1.0-SNAPSHOT
 package: org.openengsb.connector.email
 connectorName: Email
 connectorNameLC: email
-domainArtifactId: openengsb-domain-notification
+domainArtifactId: org.openengsb.domain.notification
 domainInterface: NotificationDomain
 domainPackage: org.openengsb.domain.notification
 name: OpenEngSB :: Connector :: Email
@@ -79,47 +79,27 @@ name: OpenEngSB :: Connector :: Email
     </programlisting>
     <para>A project named "email" is created with the following structure:</para>
     <programlisting>email
-|
-|---pom.xml
-|
-|---src
-     |
-     |---main
-          |
-          |---java
-          |     |
-          |     |---org
-          |          |
-          |          |---openengsb
-          |                  |
-          |                  |---connector
-          |                          |
-          |                          |---email
-          |                                |
-          |                                |---EmailServiceManager.java
-          |                                |
-          |                                |---internal
-          |                                       |
-          |                                       |---EmailServiceImpl.java
-          |                                       |
-          |                                       |---EmailServiceInstanceFactory.java
-          |
-          |---resources
-                  |
-                  |---META-INF
-                  |      |
-                  |      |---spring
-                  |             |
-                  |             |---email-context.xml
-                  |
-                  |---OSGI-INF
-                          |
-                          |---l10n
-                               |
-                               |---bundle.properties
-                               |
-                               |---bundle_de.properties
-    </programlisting>
+-- src
+|  -- main
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- connector
+|                 -- email
+|                    -- internal
+|                    |  -- EmailConnector.java
+|                    |  -- EmailConnectorProvider.java
+|                    |  -- EmailInstanceFactory.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- email-notification-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
+-- pom.xml</programlisting>
+      
     <para>All these artifacts will be covered during the implementation of the connector and explained in
     step 2 of this tutorial.</para>
   </section>
@@ -165,7 +145,7 @@ name: OpenEngSB :: Connector :: Email
   ...
      <deployURLs>
        ...
-       scan-bundle:mvn:org.openengsb.connector/openengsb-connector-email/${project.version},
+       scan-bundle:mvn:org.openengsb.connector/org.openengsb.connector.email/${project.version},
        ...
      </deployURLs>
 ...
@@ -411,9 +391,9 @@ public class EmailServiceInstanceFactory implements
     that all values are OK.</para>
   </section>
   <section>
-    <title>Step 5 - Spring Setup and Internationalization</title>
-    <para>The Maven archetype already created the spring setup for the email service at src/main/resources/META-INF/spring.
-      If properties or constructor arguments are needed for the service factory, they have to be defined in the spring
+    <title>Step 5 - Blueprint Setup and Internationalization</title>
+      <para>The Maven archetype already created the blueprint setup for the email service at src/main/resources/OSGI-INF/blueprint.
+      If properties or constructor arguments are needed for the service factory, they have to be defined in the blueprint
       setup here. In our case the mail abstraction has to be injected as constructor argument on the creation of the
       email service factory.</para>
     <para>With regards to internationalization it is necessary to add a name and a description for each property used in the
@@ -462,7 +442,7 @@ mvn openengsb:provision
     <para>Now you can use the OpenEngSB administration WebApp (available at 
       <link xlink:href="http://localhost:8090/openengsb">http://localhost:8090/openengsb</link>) to test your new 
       connector. For more information about how to use the WebApp see 
-      <link xlink:href="http://openengsb.org/howto/howto_logging.html">the How-to section</link>} of the the OpenEngSB homepage.</para>
+      <link xlink:href="http://openengsb.org/howto/howtoSimpleUsecase.html">the How-to section</link>} of the OpenEngSB homepage.</para>
   </section>
   
 </chapter>
