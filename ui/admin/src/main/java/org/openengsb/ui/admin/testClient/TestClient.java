@@ -496,6 +496,9 @@ public class TestClient extends BasePage {
             handleExceptionWithFeedback(e);
             return;
         }
+        if (call.getMethod() == null) {
+            return;
+        }
         Method m = findMethod(serviceObject.getClass(), call.getMethod());
         List<Argument> arguments = new ArrayList<Argument>();
         call.setArguments(arguments);
