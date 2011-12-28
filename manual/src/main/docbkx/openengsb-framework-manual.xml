@@ -48,24 +48,6 @@
     <xi:include href="introduction/whatisopenengsb.xml"/>
     <xi:include href="introduction/whentousetheopenengsb.xml"/>
   </part>
-  <part xml:id="tutorials.manual">
-    <title>Tutorials</title>
-    <partintro>
-      <para>This part contains tutorials for the OpenEngSB.</para>
-    </partintro>
-    <xi:include href="howto/howtoSetup.xml"/>
-    <xi:include href="howto/howtoAddConsoleCommands.xml"/>
-    <xi:include href="howto/howtoSimpleUsecase.xml"/>
-    <xi:include href="howto/howtoContextEditor.xml"/>
-    <xi:include href="howto/howtoCreateConnector.xml"/>
-    <xi:include href="howto/howtoCreateClientProject.xml"/>
-    <xi:include href="howto/howtoDefineModel.xml"/>
-    <xi:include href="howto/howtoInteractRemotely.xml"/>
-    <xi:include href="howto/howtoCombineServices.xml"/>
-    <xi:include href="howto/howtoIntegrateServices.xml"/>
-    <xi:include href="howto/howtoChangeEDBDatabaseBackend.xml"/>
-    <xi:include href="howto/howtoAddNewSupportedFieldInModels.xml"/>
-  </part>
   <part xml:id="user.manual">
     <title>OpenEngSB Framework</title>
     <partintro>
@@ -88,6 +70,15 @@
     <xi:include href="user/deployers.xml"/>
     <xi:include href="user/clients.xml"/>
     <xi:include href="user/platform.xml"/>
+    <xi:include href="user/howto/howtoSetup.xml"/>
+    <xi:include href="user/howto/howtoSimpleUsecase.xml"/>
+    <xi:include href="user/howto/howtoContextEditor.xml"/>
+    <xi:include href="user/howto/howtoCreateClientProject.xml"/>
+    <xi:include href="user/howto/howtoInteractRemotely.xml"/>
+    <xi:include href="user/howto/howtoCombineServices.xml"/>
+    <xi:include href="user/howto/howtoDefineModel.xml"/>
+    <xi:include href="user/howto/howtoIntegrateServices.xml"/>
+    <xi:include href="user/howto/howtoChangeEDBDatabaseBackend.xml"/>
   </part>
   <part xml:id="console.ui.manual">
     <title>Administration Console</title>
@@ -140,7 +131,6 @@
         what is happening in the background of the OpenEngSB magic.
       </para>
     </partintro>
-    <xi:include href="developer/wrapped.xml"/>
     <xi:include href="developer/release.xml"/>
     <xi:include href="developer/admin.xml"/>
     <xi:include href="developer/projectroles.xml"/>
@@ -148,11 +138,14 @@
     <xi:include href="developer/writing.code.xml"/>
     <xi:include href="developer/recommended.eclipse.plugins.xml"/>
     <xi:include href="developer/writing.documentation.xml"/>
-    <xi:include href="contributor/howto/internal.connector.xml"/>
-    <xi:include href="contributor/howto/internal.domain.xml"/>
     <xi:include href="contributor/wrapped.xml"/>
     <xi:include href="contributor/model.xml"/>
     <xi:include href="contributor/edb.xml"/>
     <xi:include href="contributor/ekb.xml"/>
+    <xi:include href="contributor/howto/internal.connector.xml"/>
+    <xi:include href="contributor/howto/internal.domain.xml"/>
+    <xi:include href="contributor/howto/howtoAddConsoleCommands.xml"/>
+    <xi:include href="contributor/howto/howtoCreateConnector.xml"/>
+    <xi:include href="contributor/howto/howtoAddNewSupportedFieldInModels.xml"/>
   </part>
 </book>
