@@ -64,7 +64,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="login" fileref="../graphics/setup_login.png" format="png" width="400" align="center" />
+        <imagedata xml:id="login" fileref="../graphics/setup_login.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>login</caption>
     </mediaobject>
@@ -73,7 +73,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="mainpage" fileref="../graphics/setup_mainpage.png" format="png" width="400" align="center" />
+        <imagedata xml:id="mainpage" fileref="../graphics/setup_mainpage.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>main page</caption>
     </mediaobject>
