@@ -25,8 +25,8 @@
   <properties>
     <java.min.mem>256M</java.min.mem>
     <java.max.mem>1024M</java.max.mem>
-    <java.min.perm>64M</java.min.perm>
-    <java.max.perm>128M</java.max.perm>
+    <java.min.perm>128M</java.min.perm>
+    <java.max.perm>256M</java.max.perm>
   </properties>
 
   <parent>
