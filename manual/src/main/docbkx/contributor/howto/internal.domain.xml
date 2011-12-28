@@ -118,33 +118,24 @@
 
       <para>The newly created domain should have the exact same structure as the following listing:</para>
 
-      <programlisting>--etc
-|  -- notice
-|     -- NOTICE.template
-|     -- license-mapping.xml
--- src
+      <programlisting>-- src
 |  -- main
-|     -- filtered-resources
-|        -- features.xml
-|  -- java
-|     -- org
-|        -- openengsb
-|           -- domain
-|              -- [mydomain]
-|                 -- [MyDomain]Domain.java
-|                 -- [MyDomain]DomainEvents.java
-|                 -- [MyDomain]DomainProvider.java
-|  -- resources
-|     -- OSGI-INF
-|        -- blueprint
-|           -- [mydomain]-context.xml
-|        -- l10n
-|           -- bundle.properties
-|           -- bundle_de.properties
-|        -- bundle.info
--- CHANGELOG.md
--- LICENSE
--- NOTICE
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- domain
+|                 -- [mydomain]
+|                    -- [MyDomain]Domain.java
+|                    -- [MyDomain]DomainEvents.java
+|                    -- [MyDomain]DomainProvider.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- [mydomain]-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
 -- pom.xml</programlisting>
 
       <para>The project contains stubs for the domain interface, the domain events interface and the domain provider
@@ -157,10 +148,6 @@
       OpenEngSB environment. Furthermore the default implementation proxies for the domain interface, which forwards all
       service calls to the default connector for the domain and the default implementation of the domain event interface, 
       which forwards all events to the workflow service of the OpenEngSB are configured.</para>
-      
-      <para>The features.xml file is needed since the domains are deployed as stand-alone bundles which can be loaded
-        into a running OpenEngSB instance. It defines which bundles in the OpenEngSB are needed for the domain bundle to
-        work correctly and defines which features are added when the bundle is loaded.</para>
 
       <para>Each OpenEngSB bundle (core, domain, connector) has been designed with localization in mind. The Maven
         Archetype already creates two <literal>bundle*.properties</literal> files, one for English (bundle.properties)

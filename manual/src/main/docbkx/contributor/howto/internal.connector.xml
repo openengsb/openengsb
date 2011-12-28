@@ -128,34 +128,25 @@
 
     <para>The newly created connector project should have the exact same structure as the following listing:</para>
 
-    <programlisting>-- etc
-   -- notice
-      |  -- NOTICE.template
-      |  -- license-mapping.xml
--- src
-   -- main
-      -- filtered-resources
-      |  -- features.xml
-      -- java
-      |  -- org
-      |     -- openengsb
-      |        -- connector
-      |           -- myservice
-      |              -- internal
-      |              |  -- MyServiceConnector.java
-      |              |  -- MyServiceConnectorProvider.java
-      |              |  -- MyServiceInstanceFactory.java
-      -- resources
-         -- OSGI-INF
-         |  -- blueprint
-         |     -- myservice-mydomain-context.xml
-         |  -- l10n
-         |     -- bundle_de.properties
-         |     -- bundle.properties
-         |  -- bundle.info
--- CHANGELOG.md
--- LICENSE
--- NOTICE
+    <programlisting>-- src
+|  -- main
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- connector
+|                 -- [myconnector]
+|                    -- internal
+|                    |  -- [MyConnector]Connector.java
+|                    |  -- [MyConnector]ConnectorProvider.java
+|                    |  -- [MyConnector]InstanceFactory.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- [myconnector]-[mydomain]-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
 -- pom.xml</programlisting>
 
     <para>The <literal>MyServiceConnector</literal> class implements the interface of the domain and thus is the
@@ -172,10 +163,6 @@
 
     <para>The blueprint setup in the resources folder contains the setup of the service manager. Additional bean setup and
     dependency injection can be configured there.</para>
-    
-    <para>The features.xml file is needed since the connectors are deployed as stand-alone bundles which can be loaded
-    into a running OpenEngSB instance. It defines which bundles in the OpenEngSB are needed for the connector bundle to
-    work correctly and defines which features are added when the bundle is loaded.</para>
 
     <para>The OpenEngSB has been designed with localization in mind. The Maven Archetype already generates two
         <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
@@ -189,7 +176,7 @@
     <title>Integrating the Connector into the OpenEngSB environment</title>
 
     <para>The connector provided is responsible for the integration of the connector into the OpenEngSB infrastructure. The correct
-    definition of this service is critical. Like already described, the features.xml file is needed that this task can be accomplished.</para>
+    definition of this service is critical.</para>
   </section>
 
 </chapter>
