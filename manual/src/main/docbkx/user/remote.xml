@@ -39,7 +39,7 @@
       "Chain of Responsibility"-Pattern</ulink> the OpenEngSB uses Filters to modularize the processing and transport of
       incoming and outgoing messages (see <xref linkend="filters.architecture" />). A filter is responsible for one (or more) specific
       transformation steps. Ideally a Filter should only represent a specific transformation step to increase
-      reusability.</para>
+      reuseability.</para>
     <figure id="filters.architecture">
       <title>How filters fit in the architecture</title>
       <imageobject>
