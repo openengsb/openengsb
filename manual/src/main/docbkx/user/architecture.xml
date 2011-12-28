@@ -30,7 +30,7 @@
 
   <para>The following graphic shows the architecture of the OpenEngSB. In the center we use a bus system
   to integrate different modules. In this case we do not use a classical Enterprise Service Bus (ESB), but rather the
-  OSGi service infrastructure via Spring-DM (<xref linkend="architecture.concept.esb" />). We are using <link xlink:href="http://karaf.apache.org">Apache Karaf</link> as the OSGi
+  OSGi service infrastructure via Apache Aries Blueprint-DM (<xref linkend="architecture.concept.esb" />). We are using <link xlink:href="http://karaf.apache.org">Apache Karaf</link> as the OSGi
   environment. Karaf is used in this case, instead of a most basic OSGi environment, such as 
   <link xlink:href="http://felix.apache.org">Apache Felix</link> or 
   <link xlink:href="http://www.eclipse.org">Eclipse Equinox</link> , because it supports us with additional features as 
@@ -71,7 +71,7 @@
  
   <section xml:id="architecture.concept.infrastructure">
     <title>OpenEngSB Infrastructure</title>
-    <para>While Apache Karaf provides a rich environment and functionality we're not done with it. Via the Spring-DM
+    <para>While Apache Karaf provides a rich environment and functionality we're not done with it. Via the Apache Aries Blueprint-DM
     extension mechanism, AOP and the OSGi listener model the OpenEngSB directly extends the environment to provide
     own commands for the console, fine grained security and a full grown workflow model. These extensions are optional
     and not required if you want to use the platform alone. Add or remove them as required for your use case.</para>
