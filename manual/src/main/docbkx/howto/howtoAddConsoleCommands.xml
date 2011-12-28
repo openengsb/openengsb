@@ -51,8 +51,8 @@
 
   <section>
     <title>Adding new commands</title>
-    <para>This section describes how to add a new commands. The project is located in core/console. To add a new
-      command not much is needed. For an finished example have a look at the
+    <para>This section describes how to add new commands. The project is located in core/console. To add a new
+      command not much is needed. For a finished example have a look at the
       class org.openengsb.core.console.OpenEngSBInfo.
       Here a short description:
       <programlisting>

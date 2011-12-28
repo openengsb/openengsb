@@ -26,7 +26,6 @@
 
   <title>HowTo - First steps with the OpenEngSB (Send mails via the OpenEngSB)</title>
 
-
   <section>
     <title>Goal</title>
       <para>This section describes a  "hello world" use-case for the notification domain using the email connector.</para>

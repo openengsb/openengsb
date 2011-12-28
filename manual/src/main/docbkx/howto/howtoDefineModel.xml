@@ -71,7 +71,7 @@
         </para>
         <programlisting>
             interface Appointment extends OpenEngSBModel {
-                 @OpenEngSBModel
+                 @OpenEngSBModelId
                  void setId(Integer id);
                  Integer getId();
                  
