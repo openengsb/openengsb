@@ -48,7 +48,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="testclient" fileref="../graphics/logging_testClient.png" format="png" width="400" align="center" />
+        <imagedata xml:id="testclient" fileref="../graphics/logging_testClient.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>test client</caption>
     </mediaobject>
@@ -57,7 +57,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="emailnotification" fileref="../graphics/logging_emailNot.png" format="png" width="400" align="center" />
+        <imagedata xml:id="emailnotification" fileref="../graphics/logging_emailNot.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>email notification</caption>
     </mediaobject>
@@ -70,7 +70,7 @@
   
     <mediaobject>
       <imageobject>
-        <imagedata id="overview" fileref="../graphics/logging_notificationOverview.png" format="png" width="400" align="center" />
+        <imagedata xml:id="overview" fileref="../graphics/logging_notificationOverview.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>overview</caption>
     </mediaobject>
@@ -84,7 +84,7 @@
   
     <mediaobject>
       <imageobject>
-        <imagedata id="notificationproperties" fileref="../graphics/logging_not.png" format="png" width="400" align="center" />
+        <imagedata xml:id="notificationproperties" fileref="../graphics/logging_not.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>notification properties</caption>
     </mediaobject>
@@ -94,7 +94,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="success" fileref="../graphics/logging_success.png" format="png" width="200" align="center" />
+        <imagedata xml:id="success" fileref="../graphics/logging_success.png" format="png" width="200" align="center" />
       </imageobject>
       <caption>success</caption>
     </mediaobject>
@@ -114,7 +114,7 @@
     
     <mediaobject>
       <imageobject>
-        <imagedata id="context" fileref="../graphics/logging_contextOverview.png" format="png" width="400" align="center" />
+        <imagedata xml:id="context" fileref="../graphics/logging_contextOverview.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>context</caption>
     </mediaobject>
