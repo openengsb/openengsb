@@ -58,7 +58,7 @@
         <para>You have to choose a global, because that is the object you want to get wired with a connector.
           A global variable is part of a rule allowing the workflow service to communicate with connectors 
           and other objects. More information you can find in the Chapter about
-          <link xlink:href="http://www.openengsb.org/docbook/developer.workflows.html">Workflows</link>.
+          <link xlink:href="http://www.openengsb.org/docbook/user.workflows.html">Workflows</link>.
         </para>
         <para>
           There are two possibilities to specify a global. Either you select one from the list or you write 
@@ -91,7 +91,7 @@
       <listitem>
         <para>You must select the contexts, where the wiring shall happen. You can select all but at least one 
           have to be selected. Information about what a context means can be found at the 
-          <link xlink:href="http://www.openengsb.org/docbook/developer.context.html">Context Management</link>.
+          <link xlink:href="http://www.openengsb.org/docbook/user.context.html">Context Management</link>.
         </para>
         <mediaobject>
           <alt>List of all available contexts, which can be selected.</alt>

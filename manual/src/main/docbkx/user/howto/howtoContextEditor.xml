@@ -26,7 +26,6 @@
 
   <title>HowTo - Events with the OpenEngSB (Using the logging service)</title>
 
-
   <section>
     <title>Goal</title>
       <para>This tutorial shows how the event system in the OpenEngSB can be used. Therefore a log and a domain connector are created and configured. The context system in the OpenEngSB is used to define which connectors should be used and a simple event is used starting a rule.</para>
@@ -49,7 +48,7 @@
   
     <mediaobject>
       <imageobject>
-        <imagedata id="loggingservice" fileref="graphics/context_loggingService.png" format="png" width="400" align="center" />
+        <imagedata id="loggingservice" fileref="../graphics/context_loggingService.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>logging service</caption>
     </mediaobject>
@@ -63,7 +62,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="contextoverview" fileref="graphics/context_contextOverview.png" format="png" width="400" align="center" />
+        <imagedata id="contextoverview" fileref="../graphics/context_contextOverview.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>context overview</caption>
     </mediaobject>
@@ -97,7 +96,7 @@ then
 
     <mediaobject>
       <imageobject>
-        <imagedata id="event" fileref="graphics/context_event.png" format="png" width="400" align="center" />
+        <imagedata id="event" fileref="../graphics/context_event.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>event</caption>
     </mediaobject>
@@ -117,7 +116,7 @@ then
 
     <mediaobject>
       <imageobject>
-        <imagedata id="output" fileref="graphics/context_loggingOutput.png" format="png" width="400" align="center" />
+        <imagedata id="output" fileref="../graphics/context_loggingOutput.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>output</caption>
     </mediaobject>

@@ -18,7 +18,7 @@
 
 -->
 
-<chapter xml:id="developer.howto.internal.domain" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="contributor.howto.internal.domain" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
@@ -29,7 +29,7 @@
   <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
     interface and common events and thereby defines how to interact with connectors for this domain. For a better 
     description of what a domain exactly consists of, take a look at the architecture guide 
-    <xref linkend="architecture" />.</para>
+    <xref linkend="user.architecture" />.</para>
 
   <section>
     <title>Prerequisites</title>
@@ -43,7 +43,7 @@
     <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
       structure. The
       <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
-      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) simplifies
+      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plug-in) simplifies
       the creation of a domain.
     </para>
 
@@ -118,26 +118,24 @@
 
       <para>The newly created domain should have the exact same structure as the following listing:</para>
 
-      <programlisting>-- implementation
-|  -- pom.xml
-|  -- src
-|     -- main
-|     |  -- java
-|     |  -- org
-|     |     -- openengsb
-|     |        -- domains
-|     |           -- mydomain
-|     |              -- MyDomain.java
-|     |              -- MyDomainEvents.java
-|     |              -- MyDomainProvider.java
-|     -- resources
-|        -- META-INF
-|        |   -- spring
-|        |      -- mydomain-context.xml
-|        -- OSGI-INF
-|           -- l10n
-|              -- bundle_de.properties
-|              -- bundle.properties
+      <programlisting>-- src
+|  -- main
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- domain
+|                 -- [mydomain]
+|                    -- [MyDomain]Domain.java
+|                    -- [MyDomain]DomainEvents.java
+|                    -- [MyDomain]DomainProvider.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- [mydomain]-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
 -- pom.xml</programlisting>
 
       <para>The project contains stubs for the domain interface, the domain events interface and the domain provider
@@ -146,7 +144,7 @@
       <para>Although the generated domain does in effect nothing, you can already start the OpenEngSB for testing with
           <literal>mvn clean install openengsb:provision</literal> and the domain will be automatically be picked up and started.</para>
 
-      <para>The spring setup in the resources folder already contains the necessary setup for this domain to work in the
+      <para>The blueprint setup in the resources folder already contains the necessary setup for this domain to work in the
       OpenEngSB environment. Furthermore the default implementation proxies for the domain interface, which forwards all
       service calls to the default connector for the domain and the default implementation of the domain event interface, 
       which forwards all events to the workflow service of the OpenEngSB are configured.</para>
@@ -165,7 +163,7 @@
       <listitem>
         <para>Domain interface - This is the interface that connectors of that domain must implement. Operations that
           connectors should provide, are specified here. Events that are raised by this Domain in unexpected fashion 
-          (e.g new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
+          (e.g. new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
           classes it takes as an argument are used. If the Raise annotation is put on a method the events that 
           are specified through the annotation are raised in sequence upon a call.</para>
       </listitem>
@@ -180,7 +178,7 @@
           that takes over most of the setup.</para>
       </listitem>
       <listitem>
-        <para>Spring context - There are three services, that must be registered with the OSGi service-environment. First,
+        <para>Blueprint context - There are three services, that must be registered with the OSGi service-environment. First,
           there is the Domain Provider. Moreover, the domain must provide a kind of connector itself since it
           must be able to handle service calls and redirect it to the default-connector specified in the current
           context. And finally the domain provides an event interface for its connectors which can be used by them to send
@@ -199,7 +197,7 @@
     <title>Connectors</title>  
     <para>
       For information regarding the implementation of connectors for the newly created domain see 
-      <xref linkend="developer.howto.internal.connector" />. 
+      <xref linkend="contributor.howto.internal.connector" />. 
     </para>
   </section>
 

@@ -18,14 +18,13 @@
 
 -->
 
-<chapter xml:id="howto.logging" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="howto.usecase" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>HowTo - First steps with the OpenEngSB (Send mails via the OpenEngSB)</title>
-
 
   <section>
     <title>Goal</title>
@@ -43,22 +42,22 @@
   </section>
 
   <section>
-    <title>Creating EMail Services</title>
+    <title>Creating E-Mail Services</title>
 
     <para>Create a new Email Notification Service by clicking the "New..." link for the Email Notification on the Test Client link.</para>
 
     <mediaobject>
       <imageobject>
-        <imagedata id="testclient" fileref="graphics/logging_testClient.png" format="png" width="400" align="center" />
+        <imagedata id="testclient" fileref="../graphics/logging_testClient.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>test client</caption>
     </mediaobject>
 
-    <para>In the following view you have the possibility to configure the Notification Service. The following screen provides an example for a gmail account. Please use "test1" for the Service Id field.</para>
+    <para>In the following view you have the possibility to configure the Notification Service. The following screen provides an example for a Gmail account. Please use "test1" for the Service Id field.</para>
 
     <mediaobject>
       <imageobject>
-        <imagedata id="emailnotification" fileref="graphics/logging_emailNot.png" format="png" width="400" align="center" />
+        <imagedata id="emailnotification" fileref="../graphics/logging_emailNot.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>email notification</caption>
     </mediaobject>
@@ -71,7 +70,7 @@
   
     <mediaobject>
       <imageobject>
-        <imagedata id="overview" fileref="graphics/logging_notificationOverview.png" format="png" width="400" align="center" />
+        <imagedata id="overview" fileref="../graphics/logging_notificationOverview.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>overview</caption>
     </mediaobject>
@@ -85,7 +84,7 @@
   
     <mediaobject>
       <imageobject>
-        <imagedata id="notificationproperties" fileref="graphics/logging_not.png" format="png" width="400" align="center" />
+        <imagedata id="notificationproperties" fileref="../graphics/logging_not.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>notification properties</caption>
     </mediaobject>
@@ -95,7 +94,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="success" fileref="graphics/logging_success.png" format="png" width="200" align="center" />
+        <imagedata id="success" fileref="../graphics/logging_success.png" format="png" width="200" align="center" />
       </imageobject>
       <caption>success</caption>
     </mediaobject>
@@ -111,11 +110,11 @@
 
     <para>Till now you've used the services directly. Now one of the OpenEngSB core concepts is presented: the Domains:</para>
  
-    <para>To send messages via domains, instead of directly via the connectors a default receiver for a specific project has to be set. A graphical user inteface for doing so is the "Context Page":</para>
+    <para>To send messages via domains, instead of directly via the connectors a default receiver for a specific project has to be set. A graphical user interface for doing so is the "Context Page":</para>
     
     <mediaobject>
       <imageobject>
-        <imagedata id="context" fileref="graphics/logging_contextOverview.png" format="png" width="400" align="center" />
+        <imagedata id="context" fileref="../graphics/logging_contextOverview.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>context</caption>
     </mediaobject>

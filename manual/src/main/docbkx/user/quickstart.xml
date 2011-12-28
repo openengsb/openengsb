@@ -32,7 +32,7 @@
 
     <section>
         <title>Writing new projects using the OpenEngSB</title>
-        <para>TBW</para>
+        <para>TBW(<link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2508">Jira-ISSUE</link>)</para>
     </section>
 
     <section>
@@ -69,7 +69,7 @@ public void foo() {
 }]]>
           </programlisting>         
         </para>
-        <para>The <emphasis>ServiceFactory</emphasis> has to supply a <emphasis>ServiceDescriptor</emphasis> that contains all attributes needed to instanciate the Connector.
+        <para>The <emphasis>ServiceFactory</emphasis> has to supply a <emphasis>ServiceDescriptor</emphasis> that contains all attributes needed to instantiate the Connector.
         In the methods <emphasis>createServiceInstance</emphasis> and <emphasis>updateServiceInstance</emphasis> use the provided attributes to create a new new instance or update your Connector. The methods <emphasis>updateValidation</emphasis> and <emphasis>createValidation</emphasis> should do the same but try to validate the provided attributes first and return a validation result.
         </para>
         <para>The generated ServiceManager usually does not have to be changed.</para>

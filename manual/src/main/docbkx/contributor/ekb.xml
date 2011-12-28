@@ -18,7 +18,7 @@
     
 -->
 
-<chapter xml:id="developer.ekb" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="contributor.ekb" version="5.0" xmlns="http://docbook.org/ns/docbook"
     xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
     http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
@@ -42,7 +42,7 @@
             checkers for the EDB and if possible automatic conflict solving.
         </para>
     </section>
-    <section  xml:id='developer.ekb.queryservice'>
+    <section  xml:id='contributor.ekb.queryservice'>
         <title>Query Service</title>
         <para>
             This service has the task to load models from the EDB. Since models are no real objects but

@@ -18,7 +18,7 @@
 
 -->
 
-<chapter xml:id="developer.plugins" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="user.plugins" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
@@ -28,9 +28,9 @@
 
   <para>Since tools are mostly neither developed for the OpenEngSB nor written in any way that they can be directly
     deployed in the OpenEngSB environment a way is required to connect via different programming languages than Java
-    and from multible protocols.</para>
+    and from multiple protocols.</para>
 
-  <section xml:id="developer.plugins.proxy">
+  <section xml:id="user.plugins.proxy">
     <title>Proxying</title>
     <para>The proxy mechanism allows for any method call to be intercepted.</para>
     <section>
@@ -38,9 +38,9 @@
       <para>The proxy mechanism allows to create proxies for any domain. To create a proxy you have to provide a
         port id, destination and service id to call on the remote service. A Port encapsulates the protocol that
         is used to call another service. There are an OutgoingPort and IncomingPort interface for respective purposes.
-        The port id is used to load the Port via OSGI. To include a Port in OPENENGSB it just has to be exported via OSGI.
+        The port id is used to load the Port via OSGi. To include a Port in OPENENGSB it just has to be exported via OSGi.
         The destination is a string that has to be correctly interpreted by the port to call the remote server.
-        The service id is added as metadata do identify the service that shold get called on the remote server. It may not
+        The service id is added as metadata do identify the service that should get called on the remote server. It may not
         be needed for certain implementations.</para>
       <para>The proxy calls the CallRouter which redirects the methodcall to the respective Port. Security is implemented
         in this layer.</para>

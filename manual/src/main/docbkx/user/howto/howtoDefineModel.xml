@@ -47,7 +47,7 @@
         <para>
             For information about how to get started as contributor to the OpenEngSB project and how to
             get the current OpenEngSB source please read the contributor section of the manual: 
-            <xref linkend="developer.manual" />.
+            <xref linkend="contributor.manual" />.
         </para>
     </section>
     <section>
@@ -71,7 +71,7 @@
         </para>
         <programlisting>
             interface Appointment extends OpenEngSBModel {
-                 @OpenEngSBModel
+                 @OpenEngSBModelId
                  void setId(Integer id);
                  Integer getId();
                  

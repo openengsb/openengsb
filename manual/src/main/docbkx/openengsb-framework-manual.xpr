@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="13.1">
+<project version="13.0">
     <meta>
         <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
     <projectTree name="openengsb-framework-manual.xpr">
-        <folder path="developer/"/>
+        <folder path="contributor/"/>
         <folder path="domains/"/>
-        <folder path="howto/"/>
         <folder path="introduction/"/>
         <folder path="resources/"/>
         <folder path="ui/"/>

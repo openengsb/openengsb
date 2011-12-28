@@ -20,12 +20,12 @@
 
 <chapter version="5.0"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
-  xml:id="developer.management" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xml:id="user.security" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Security in the OpenEngSB</title>
 
-  <section xml:id="developer.security.usermanagement">
+  <section xml:id="user.security.usermanagement">
     <title>Usermanagement</title>
 
     <para>The OpenEngSB has a central user management service, which can be used for example by an user interface.
@@ -46,13 +46,13 @@
     </para>
   </section>
 
-  <section xml:id="developer.security.access">
+  <section xml:id="user.security.access">
     <title>Access control</title>
 
     <para>Access control is done on the service level. Core-services and connector-instances are all published as
       OSGi-services. Other services and components always reference these service instances. We use the approach of
       AOP to achieve security of these services. The openengsb.core.security-bundle publishes a service that serves as
-      a method-interceptor. When it is attached to a service every method call on the service is preceeded with an
+      a method-interceptor. When it is attached to a service every method call on the service is preceded with an
       authorization-check. </para>
 
     <para>A reference to the method-interceptor can be obtained by this line in the spring-context.xml

@@ -18,7 +18,7 @@
 
 -->
 
-<chapter xml:id="developer.howto.internal.connector" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<chapter xml:id="contributor.howto.internal.connector" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
@@ -35,7 +35,7 @@
     <title>Prerequisites</title>
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
       <xref linkend="architecture.concept.tooldomains" /> is a good starting point. If there's already a matching domain for
-      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="developer.howto.internal.domain" />.</para>
+      this tool it is strongly recommended to use it. If the tool requires a new domain to be created relevant information can be found in <xref linkend="contributor.howto.internal.domain" />.</para>
   </section>
 
   <section>
@@ -44,7 +44,7 @@
     <para>To take burden off the developer of creating the initial boilerplate code and configuration, a Maven archetype
       is provided for creating the initial project structure. Furthermore we provide the
       <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>)
-      (or the <filename>etc/scripts/gen-connector.sh</filename> script, which wraps the invocation of the maven plugin)
+      (or the <filename>etc/scripts/gen-connector.sh</filename> script, which wraps the invocation of the maven plug-in)
       which simplifies the creation of a connector project from the archetype. It should be used for assisted creation
       of a new connector project.</para>
 
@@ -89,7 +89,7 @@
       <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
       connector name. Therefore you will have to rename the resulting project (however if you use the
       <literal>genConnector</literal> mojo, this renaming will be performed automatically).
-      Do not forget to check that the new connector is included in the modules section of the domain parent pom.</para>
+      Do not forget to check that the new connector is included in the modules section of the domain parent pom xml file.</para>
     </section>
 
     <section>
@@ -128,41 +128,40 @@
 
     <para>The newly created connector project should have the exact same structure as the following listing:</para>
 
-    <programlisting>-- pom.xml
--- src
-   -- main
-      -- java
-      |  -- org
-      |     -- openengsb
-      |        -- domains
-      |           -- notification
-      |              -- twitter
-      |                 -- internal
-      |                 |  -- MyServiceImpl.java
-      |                 |  -- MyServiceInstanceFactory.java
-      |                 -- MyServiceManager.java
-      -- resources
-         -- META-INF
-         |  -- spring
-         |     -- connector-context.xml
-         -- OSGI-INF
-            -- l10n
-               -- bundle_de.properties
-               -- bundle.properties</programlisting>
+    <programlisting>-- src
+|  -- main
+|     -- java
+|        -- org
+|           -- openengsb
+|              -- connector
+|                 -- [myconnector]
+|                    -- internal
+|                    |  -- [MyConnector]Connector.java
+|                    |  -- [MyConnector]ConnectorProvider.java
+|                    |  -- [MyConnector]InstanceFactory.java
+|     -- resources
+|        -- OSGI-INF
+|           -- blueprint
+|              -- [myconnector]-[mydomain]-context.xml
+|           -- l10n
+|              -- bundle.properties
+|              -- bundle_de.properties
+|           -- bundle.info
+-- pom.xml</programlisting>
 
-    <para>The <literal>MyServiceImpl</literal> class implements the interface of the domain and thus is the
+    <para>The <literal>MyServiceConnector</literal> class implements the interface of the domain and thus is the
       communication link between the OpenEngSB and the connected tool. To give the OpenEngSB (and in the long run the
       end user) enough information on how to configure a connector, the <literal>MyServiceInstanceFactory</literal>
       class provides the OpenEngSB with meta information for configuring and functionality for creating and updating a
-      connector instances. The <literal>MyServiceManager</literal> class connects connector instances with the
+      connector instances. The <literal>MyServiceConnectorProvider</literal> class connects connector instances with the
       underlying OSGi engine and OpenEngSB infrastructure. It exports instances as OSGi services and adds necessary meta
       information to each instance. Since the basic functionality is mostly similar for all service managers, the
-        <literal>MyServiceManager</literal> class extends a common base class
-      <literal>AbstractServiceManager</literal>. In addition the <literal>AbstractServiceManager</literal> also 
+      <literal>MyServiceConnectorProvider</literal> class extends a common base class
+      <literal>AbstractConnectorProvider</literal>. In addition the <literal>AbstractConnectorProvider</literal> also 
       persists the configuration of each connector, so that the connector instances can be restored after a system
       restart.</para>
 
-    <para>The spring setup in the resources folder contains the setup of the service manager. Additional bean setup and
+    <para>The blueprint setup in the resources folder contains the setup of the service manager. Additional bean setup and
     dependency injection can be configured there.</para>
 
     <para>The OpenEngSB has been designed with localization in mind. The Maven Archetype already generates two
@@ -176,7 +175,7 @@
   <section>
     <title>Integrating the Connector into the OpenEngSB environment</title>
 
-    <para>The service manager is responsible for the integration of the connector into the OpenEngSB infrastructure. The correct
+    <para>The connector provided is responsible for the integration of the connector into the OpenEngSB infrastructure. The correct
     definition of this service is critical.</para>
   </section>
 

@@ -49,7 +49,7 @@
         <para>
             For information about how to get started as contributor to the OpenEngSB project and how to
             get the current OpenEngSB source please read the contributor section of the manual: 
-            <xref linkend="developer.manual" />.
+            <xref linkend="contributor.manual" />.
         </para>
     </section>
     <section>
@@ -92,7 +92,7 @@
             <para>
                 The first two functions define the converting functionality if getOpenEngSBModelObjects is called. (e.g. we used
                 this to convert a File object to a FileWrapper object).
-                The other two functions define the converting functionality if a coresponding getter method is called. (e.g. convert
+                The other two functions define the converting functionality if a corresponding getter method is called. (e.g. convert
                 FileWrapper object to File object.
             </para>
         </section>
