@@ -31,7 +31,7 @@
     <!-- Dependency Versions -->
     <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2</repos.final>
-    <repos.current/>
+    <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
@@ -44,7 +44,7 @@
   <groupId>org.openengsb.framework</groupId>
   <artifactId>openengsb-framework-root</artifactId>
   <packaging>pom</packaging>
-  <version>2.2.2-SNAPSHOT</version>
+  <version>2.2.2</version>
   <name>OpenEngSB :: Framework :: Root</name>
 
   <description>
@@ -185,7 +185,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
+        <sitesubtype />
       </properties>
     </profile>
     <profile>
@@ -194,7 +194,7 @@
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
+        <sitesubtype />
       </properties>
     </profile>
     <profile>
@@ -206,7 +206,21 @@
         <sitesubtype>rc</sitesubtype>
       </properties>
     </profile>
-  </profiles>
+  <profile><id>80312a86-1754-4539-af1b-1de2e3b21a95</id><build><plugins><plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-release-plugin</artifactId>
+      <configuration>
+        <autoVersionSubmodules>true</autoVersionSubmodules>
+        <mavenExecutorId>forked-path</mavenExecutorId>
+        <useReleaseProfile>false</useReleaseProfile>
+        <pushChanges>false</pushChanges>
+        <arguments>-Psonatype-oss-release -DpushChanges=false</arguments>
+        <preparationGoals>clean install</preparationGoals>
+        <checkModificationExcludes>
+          <checkModificationExclude>pom.xml</checkModificationExclude>
+        </checkModificationExcludes>
+      </configuration>
+    </plugin></plugins><resources /></build><modules /></profile></profiles>
 
 </project>
 

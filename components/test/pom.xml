@@ -23,14 +23,14 @@
   <parent>
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.2</version>
     <relativePath>../../parents/framework</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.test</artifactId>
-  <version>2.2.2-SNAPSHOT</version>
+  <version>2.2.2</version>
 
   <name>OpenEngSB :: Framework :: Test </name>
 
