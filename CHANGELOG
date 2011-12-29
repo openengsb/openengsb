@@ -1,3 +1,27 @@
+openengsb-2.2.2 2011-12-29
+--------------------------------------------
+
+The second micro release of the OpenEngSB 2.2.x series contains 4 "direct" bug fixes and various indirect by upgrading various 
+dependencies. The direct fixes include the correction of "getOpenEngSBModelEntries" for lists; A nullpointer in the test client UI;
+ not enough perm space of the JRE. In addition we've upgraded Apache Karaf (2.2.5), OpenEngSB Root (28) and CXF (2.4.5) 
+ fixing various indirect bugs.
+
+### Details
+** Bug
+    * [OPENENGSB-2340] - getOpenEngSBModelEntries doesn't handle Lists and Submodels correctly
+    * [OPENENGSB-2341] - Warning about duplicated artifact in parents/shared
+    * [OPENENGSB-2464] - TestClient: DropdownMenu creates NullPointerException
+    * [OPENENGSB-2506] - Not enough perm-gen defined for real projects
+
+** Library Upgrade
+    * [OPENENGSB-2465] - Upgrade to karaf 2.2.5
+    * [OPENENGSB-2470] - Upgrade to root-28
+    * [OPENENGSB-2472] - Upgrade to cxf 2.4.5
+
+** Task
+    * [OPENENGSB-2337] - Release framework-2.2.2
+
+
 openengsb-2.2.1 2011-11-30
 --------------------------------------------
 
