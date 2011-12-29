@@ -6,7 +6,7 @@ dependencies. The direct fixes include the correction of "getOpenEngSBModelEntri
  not enough perm space of the JRE. In addition we've upgraded Apache Karaf (2.2.5), OpenEngSB Root (28) and CXF (2.4.5) 
  fixing various indirect bugs.
 
-### Details
+### Release Notes
 ** Bug
     * [OPENENGSB-2340] - getOpenEngSBModelEntries doesn't handle Lists and Submodels correctly
     * [OPENENGSB-2341] - Warning about duplicated artifact in parents/shared
@@ -20,6 +20,11 @@ dependencies. The direct fixes include the correction of "getOpenEngSBModelEntri
 
 ** Task
     * [OPENENGSB-2337] - Release framework-2.2.2
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 
 openengsb-2.2.1 2011-11-30
