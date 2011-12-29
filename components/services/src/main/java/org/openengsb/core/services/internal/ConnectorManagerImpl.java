@@ -48,29 +48,39 @@ public class ConnectorManagerImpl implements ConnectorManager {
     private ConfigPersistenceService configPersistence;
 
     public void init() {
-        Collection<ConnectorConfiguration> configs;
-        try {
-            Map<String, String> emptyMap = Collections.emptyMap();
-            configs = getConfigPersistence().load(emptyMap);
-        } catch (InvalidConfigurationException e) {
-            throw new IllegalStateException(e);
-        } catch (PersistenceException e) {
-            throw new IllegalStateException(e);
-        }
-        // FIXME Should be refactored when OPENENGSB-1931 is fixed
-        configs = Collections2.filter(configs, new Predicate<ConfigItem<?>>() {
+        new Thread() {
             @Override
-            public boolean apply(ConfigItem<?> input) {
-                return input instanceof ConnectorConfiguration;
+            public void run() {
+                try {
+                    Collection<ConnectorConfiguration> configs;
+                    try {
+                        Map<String, String> emptyMap = Collections.emptyMap();
+                        configs = getConfigPersistence().load(emptyMap);
+                    } catch (InvalidConfigurationException e) {
+                        throw new IllegalStateException(e);
+                    } catch (PersistenceException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    // FIXME Should be refactored when OPENENGSB-1931 is fixed
+                    configs = Collections2.filter(configs, new Predicate<ConfigItem<?>>() {
+                        @Override
+                        public boolean apply(ConfigItem<?> input) {
+                            return input instanceof ConnectorConfiguration;
+                        }
+                    });
+                    for (ConnectorConfiguration c : configs) {
+                        try {
+                            registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
+                        } catch (ConnectorValidationFailedException e) {
+                            throw new IllegalStateException(e);
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Exception while restoring connectors", e);
+                }
             }
-        });
-        for (ConnectorConfiguration c : configs) {
-            try {
-                registrationManager.updateRegistration(c.getConnectorId(), c.getContent());
-            } catch (ConnectorValidationFailedException e) {
-                throw new IllegalStateException(e);
-            }
-        }
+        }.start();
+
     }
 
     @Override

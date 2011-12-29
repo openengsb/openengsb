@@ -28,6 +28,9 @@ import org.apache.felix.service.command.CommandSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
 import org.ops4j.pax.exam.TestProbeBuilder;
@@ -95,6 +98,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
+        
+        waitForDefaultConnectors();
+        
         cs.execute("openengsb:service list");
         cs.close();
 
@@ -107,6 +113,12 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
                 "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
+	private void waitForDefaultConnectors() {
+		getOsgiService(AuditingDomain.class);
+        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
+	}
+
     @Test
     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -116,6 +128,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         PrintStream out = new PrintStream(outputStreamHelper);
         CommandSession cs = cp.createSession(System.in, out, System.err);
 
+        waitForDefaultConnectors();
+        
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
         cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
