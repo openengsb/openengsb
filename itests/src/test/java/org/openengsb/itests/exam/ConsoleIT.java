@@ -27,6 +27,7 @@ import org.apache.felix.service.command.CommandSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
 import org.ops4j.pax.exam.TestProbeBuilder;
@@ -75,6 +76,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
+        
+        waitForDefaultConnectors();
+        
         cs.execute("openengsb:service list");
         cs.close();
 
@@ -89,6 +93,10 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         assertTrue(contains(result, "Example Domain",
             "This domain is provided as an example for all developers. It should not be used in production."));
     }
+
+	private void waitForDefaultConnectors() {
+		getOsgiService(AuditingDomain.class);
+	}
 
     private boolean contains(List<String> list, String value, String value2) {
         for (String s : list) {
