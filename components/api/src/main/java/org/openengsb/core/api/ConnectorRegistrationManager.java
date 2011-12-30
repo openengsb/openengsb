@@ -26,7 +26,11 @@ import org.openengsb.core.api.model.ConnectorId;
  * It does not handle persistence.
  *
  * This class is meant to be used with {@link ConnectorManager} which handles the persistence.
+ * 
+ * @deprecated this class is not used internal. In addition it is not possible to reuse it anywhere anyhow. Therefore it
+ *             will be made internal in the next release and should not be used anywhere.
  */
+@Deprecated
 public interface ConnectorRegistrationManager extends OpenEngSBService {
 
     /**
