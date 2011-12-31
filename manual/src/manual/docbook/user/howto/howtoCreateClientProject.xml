@@ -137,7 +137,7 @@
       add a module called clientproject-ui the core features add this to the features.xml
     </para>
     <programlisting>
-      <bundle>mvn:org.openengsb.clientproject.ui/clientproject-ui-web$\{project.version\}/war</bundle></programlisting>
+      <![CDATA[<bundle>mvn:org.openengsb.clientproject.ui/clientproject-ui-web$\{project.version\}/war</bundle>]]></programlisting>
   </section>
   <section>
     <title>Step 5 - Start the Client-Project</title>
