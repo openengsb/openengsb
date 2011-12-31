@@ -101,24 +101,6 @@
     <xi:include href="docbook/ui/testclient.xml"/>
     <xi:include href="docbook/ui/wiring.xml"/>
   </part>
-  <part xml:id="domain.manual">
-    <title>OpenEngSB Available Domains &amp; Connectors</title>
-    <partintro>
-      <para>This part gives an overview about the domains and their functionality the OpenEngSB
-        supports out of the box. Furthermore each connector and necessary external tool
-        configuration is explained.</para>
-      <para>The target audience of this part are developers and contributors.</para>
-    </partintro>
-    <xi:include href="docbook/domains/notification/domain.xml"/>
-    <xi:include href="docbook/domains/scm/domain.xml"/>
-    <xi:include href="docbook/domains/issue/domain.xml"/>
-    <xi:include href="docbook/domains/report/domain.xml"/>
-    <xi:include href="docbook/domains/build/domain.xml"/>
-    <xi:include href="docbook/domains/deploy/domain.xml"/>
-    <xi:include href="docbook/domains/auditing/domain.xml"/>
-    <xi:include href="docbook/domains/appointment/domain.xml"/>
-    <xi:include href="docbook/domains/multi-domain/connectors.xml"/>
-  </part>
   <part xml:id="contributor.manual">
     <title>OpenEngSB Contributor Detail Informations</title>
     <partintro>
