@@ -4,7 +4,7 @@
         <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
-    <projectTree name="openengsb-docs-framework.xpr">
+    <projectTree name="openengsb-framework-manual.xpr">
       <folder path="docbook/contributor/"/>
       <folder path="docbook/domains/"/>
       <folder path="docbook/introduction/"/>
