@@ -53,7 +53,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="download" fileref="../graphics/ci_download.png" format="png" width="400" align="center" />
+        <imagedata id="download" fileref="graphics/ci_download.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>download openengsb</caption>
     </mediaobject>
@@ -62,7 +62,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="console" fileref="../graphics/ci_console.png" format="png" width="400" align="center" />
+        <imagedata id="console" fileref="graphics/ci_console.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>openengsb console</caption>
     </mediaobject>
@@ -71,7 +71,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="webui" fileref="../graphics/ci_webui.png" format="png" width="400" align="center" />
+        <imagedata id="webui" fileref="graphics/ci_webui.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>openengsb web UI</caption>
     </mediaobject>
@@ -84,7 +84,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="mvnversion" fileref="../graphics/ci_mvnversion.png" width="400" format="png" align="center" />
+        <imagedata id="mvnversion" fileref="graphics/ci_mvnversion.png" width="400" format="png" align="center" />
       </imageobject>
       <caption>check maven and JDK version</caption>
     </mediaobject>
@@ -93,7 +93,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="tutorial" fileref="../graphics/ci_tutorial.png" format="png" width="400" align="center" />
+        <imagedata id="tutorial" fileref="graphics/ci_tutorial.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>tutorial project package</caption>
     </mediaobject>
@@ -106,7 +106,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="login" fileref="../graphics/ci_login.png" format="png" width="400" align="center" />
+        <imagedata id="login" fileref="graphics/ci_login.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>login</caption>
     </mediaobject>
@@ -115,7 +115,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="testclient" fileref="../graphics/ci_testclient.png" width="400" format="png" align="center" />
+        <imagedata id="testclient" fileref="graphics/ci_testclient.png" width="400" format="png" align="center" />
       </imageobject>
       <caption>test client</caption>
     </mediaobject>
@@ -124,7 +124,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="feature" fileref="../graphics/ci_feature.png" format="png" width="400" align="center" />
+        <imagedata id="feature" fileref="graphics/ci_feature.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>install connector in console</caption>
     </mediaobject>
@@ -133,7 +133,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="newconnector" fileref="../graphics/ci_newconnector.png" width="400" format="png" align="center" />
+        <imagedata id="newconnector" fileref="graphics/ci_newconnector.png" width="400" format="png" align="center" />
       </imageobject>
       <caption>create new connector instance</caption>
     </mediaobject>
@@ -142,7 +142,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="buildconnector" fileref="../graphics/ci_buildconnector.png" format="png" width="400" align="center" />
+        <imagedata id="buildconnector" fileref="graphics/ci_buildconnector.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>setup build connector</caption>
     </mediaobject>
@@ -151,7 +151,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="buildtest" fileref="../graphics/ci_testbuilder.png" format="png" width="400" align="center" />
+        <imagedata id="buildtest" fileref="graphics/ci_testbuilder.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>test build connector</caption>
     </mediaobject>
@@ -160,7 +160,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="helloworld" fileref="../graphics/ci_helloworld.png" format="png" width="400" align="center" />
+        <imagedata id="helloworld" fileref="graphics/ci_helloworld.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>hello world</caption>
     </mediaobject>
@@ -177,7 +177,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="testconnector" fileref="../graphics/ci_testconnector.png" format="png" width="400" align="center" />
+        <imagedata id="testconnector" fileref="graphics/ci_testconnector.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>setup test connector instance</caption>
     </mediaobject>
@@ -186,7 +186,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="testtest" fileref="../graphics/ci_testtester.png" format="png" width="400" align="center" />
+        <imagedata id="testtest" fileref="graphics/ci_testtester.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>test test connector (yes, that's necessary)</caption>
     </mediaobject>
@@ -195,7 +195,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="sendevent" fileref="../graphics/ci_sendeventpage.png" format="png" width="400" align="center" />
+        <imagedata id="sendevent" fileref="graphics/ci_sendeventpage.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>send event page</caption>
     </mediaobject>
@@ -212,7 +212,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="ruleeditor" fileref="../graphics/ci_ruleeditor.png" format="png" width="400" align="center" />
+        <imagedata id="ruleeditor" fileref="graphics/ci_ruleeditor.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>rule base editor</caption>
     </mediaobject>
@@ -221,7 +221,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata id="buildrule" fileref="../graphics/ci_buildrule.png" format="png" width="400" align="center" />
+        <imagedata id="buildrule" fileref="graphics/ci_buildrule.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>build started rule</caption>
     </mediaobject>
@@ -253,7 +253,7 @@ then
 
     <mediaobject>
       <imageobject>
-        <imagedata id="consoleoutput" fileref="../graphics/ci_consoleoutput.png" format="png" width="400" align="center" />
+        <imagedata id="consoleoutput" fileref="graphics/ci_consoleoutput.png" format="png" width="400" align="center" />
       </imageobject>
       <caption>console output</caption>
     </mediaobject>

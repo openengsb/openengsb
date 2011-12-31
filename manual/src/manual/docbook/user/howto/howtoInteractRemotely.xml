@@ -53,7 +53,7 @@
           proxied and click New Proxy for that Domain.</para>
         <mediaobject>
           <imageobject>
-            <imagedata id="testclient" fileref="../graphics/testclient.png" format="png" width="300" align="center"/>
+            <imagedata id="testclient" fileref="graphics/testclient.png" format="png" width="300" align="center"/>
           </imageobject>
           <caption>Testclient new proxy link</caption>
         </mediaobject>
@@ -67,7 +67,7 @@
           service to call the remote service id can be omitted.</para>
         <mediaobject>
           <imageobject>
-            <imagedata id="create-proxy" fileref="../graphics/create-proxy.png" format="png" width="400" align="center"/>
+            <imagedata id="create-proxy" fileref="graphics/create-proxy.png" format="png" width="400" align="center"/>
           </imageobject>
           <caption>Create Proxy</caption>
         </mediaobject>
@@ -111,7 +111,7 @@
         </para>
         <mediaobject>
           <imageobject>
-            <imagedata id="call-proxy" fileref="../graphics/call-proxy.png" format="png" width="400" align="center"/>
+            <imagedata id="call-proxy" fileref="graphics/call-proxy.png" format="png" width="400" align="center"/>
           </imageobject>
           <caption>Test a proxy</caption>
         </mediaobject>
