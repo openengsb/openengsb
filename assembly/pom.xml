@@ -225,7 +225,7 @@
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
-            <descriptor>${project.basedir}/src/main/descriptors/bin.xml</descriptor>
+            <descriptor>${project.basedir}/src/descriptors/bin.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
