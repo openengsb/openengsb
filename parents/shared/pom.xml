@@ -162,7 +162,7 @@
     <odb.version>1.9.30.687</odb.version>
     <odb.wrapped.version>${odb.version}.w1</odb.wrapped.version>
     <junit.version>4.8.2</junit.version>
-    <commons.pool.version>1.5.6</commons.pool.version>
+    <commons.pool.version>1.5.7</commons.pool.version>
     <commons.jexl.version>2.0.1</commons.jexl.version>
     <openjpa.version>2.1.1</openjpa.version>
     <scripting.version>1.5.0</scripting.version>
