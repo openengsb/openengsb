@@ -34,7 +34,6 @@ This project includes:
   Apache Aries Proxy under The Apache Software License, Version 2.0
   Apache Aries Proxy Bundle under The Apache Software License, Version 2.0
   Apache Aries Proxy Implementation under The Apache Software License, Version 2.0
-  Apache Aries Transaction Blueprint under The Apache Software License, Version 2.0
   Apache Aries Unit Test Support under The Apache Software License, Version 2.0
   Apache Aries Util under The Apache Software License, Version 2.0
   Apache CXF Bundle Jar under The Apache Software License, Version 2.0
@@ -126,8 +125,9 @@ This project includes:
   Drools :: Core under The Apache Software License, Version 2.0
   EasyMock under MIT License
   Eclipse ECJ under Eclipse Public License v1.0
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
   Geronimo OSGi-enable spec bundle locator under The Apache Software License, Version 2.0
-  Guava (Google Common Libraries) under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   H2 Database Engine under The H2 License, Version 1.0
   Hamcrest All under BSD style
   HtmlUnit under Apache License, Version 2.0
