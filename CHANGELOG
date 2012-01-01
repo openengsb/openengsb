@@ -1,3 +1,104 @@
+openengsb-2.3.0 2012-01-01
+--------------------------------------------
+
+The third feature release of the OpenEngSB framework contains various bugfixes already included in the minor releases
+of the the 2.2.x series. In addition the ModelFactory and ConnectorRegistrationManager had been deprecated. Thos should
+no longer be used. In addition this release finally contains the updated documentation and also deploy them again. For
+new features the command line interface had been extended; The EKB model had been extended and minor enhancements for
+domain and connectors had been added. The most important upgrades where done to CXF (2.5.1), Active MQ (5.5.1), and 
+Karaf (2.2.5).
+
+### Details
+** Bug
+    * [OPENENGSB-2301] - JPATestIT does not close and reopen the database before each test
+    * [OPENENGSB-2314] - Exceptions in event-processing leave the workflow engine locked for other threads for eternity
+    * [OPENENGSB-2340] - getOpenEngSBModelEntries doesn't handle Lists and Submodels correctly
+    * [OPENENGSB-2341] - Warning about duplicated artifact in parents/shared
+    * [OPENENGSB-2464] - TestClient: DropdownMenu creates NullPointerException
+    * [OPENENGSB-2471] - Reboot of openengsb doesnt work
+    * [OPENENGSB-2506] - Not enough perm-gen defined for real projects
+    * [OPENENGSB-2524] - Various links and images are broken in manual
+    * [OPENENGSB-2526] - Non use of CDATA in program listing produces an error
+    * [OPENENGSB-2529] - Pdf generation does not find all images correctly
+
+** Deprecation
+    * [OPENENGSB-2372] - Deprecate ModelFactory of the EKB
+    * [OPENENGSB-2503] - deprecate ConnectorRegistrationManager
+
+** Improvement
+    * [OPENENGSB-1679] - Add base documentation about the concepts of the EDB/EKB
+    * [OPENENGSB-2311] - Add better deprication comments to console (public) classes
+    * [OPENENGSB-2312] - Allow openengsb:services command without params (list as default)
+    * [OPENENGSB-2342] - Do not reference artifact versions directly in the OEB code
+    * [OPENENGSB-2346] - Improve naming in openengsb-framework manual project (openengsb-framework-manual.xml/xpr)
+    * [OPENENGSB-2376] - Use CHANGELOG instead of CHANGELOG.md
+    * [OPENENGSB-2406] - ForwardHandler should also allow events not named raiseEvent
+    * [OPENENGSB-2407] - OpenEngSB EventForward should make clear that we want only one param (event) per raise method
+    * [OPENENGSB-2421] - move static content of the documentation to the homepage
+    * [OPENENGSB-2436] - Documentation restructuring
+    * [OPENENGSB-2469] - Use karaf features instead of defining own aries based features
+    * [OPENENGSB-2511] - Rename documentation package to openengsb-framework-manual
+    * [OPENENGSB-2522] - Move assembly descriptors into src/descriptors instead of src/main/descriptors
+
+** Library Upgrade
+    * [OPENENGSB-2251] - Upgrade to cxf 2.5.0
+    * [OPENENGSB-2285] - Upgrade amq to 5.5.1
+    * [OPENENGSB-2297] - Upgrade to openengsb-root 25
+    * [OPENENGSB-2310] - Upgrade to openengsb-root-26
+    * [OPENENGSB-2347] - Upgrade docbkx-maven-plugin to 2.0.13
+    * [OPENENGSB-2465] - Upgrade to karaf 2.2.5
+    * [OPENENGSB-2468] - Upgrade to cxf 2.5.1
+    * [OPENENGSB-2470] - Upgrade to root-28
+    * [OPENENGSB-2499] - Upgrade to openengsb-root-29
+    * [OPENENGSB-2530] - Upgrade to labs-paxexm-karaf 0.5.0
+    * [OPENENGSB-2531] - Upgrade to exam 2.3.0
+    * [OPENENGSB-2533] - Upgrade axiom to 1.2.12
+    * [OPENENGSB-2534] - Upgrade saaj impl to 1.3.9_2
+    * [OPENENGSB-2535] - Upgrade guava lib to 10.0.1
+    * [OPENENGSB-2536] - Upgrade jackson to 1.9.3
+    * [OPENENGSB-2537] - Upgrade commons IO to 2.1
+    * [OPENENGSB-2538] - Upgrade commons codec to 1.6
+    * [OPENENGSB-2539] - Upgrade to wsdl4j 1.6.2_5
+    * [OPENENGSB-2540] - Upgrade xmlbeans to 2.5.0_2
+    * [OPENENGSB-2541] - upgrade rhino to 1.7R2_2
+    * [OPENENGSB-2542] - Upgrade xml resolver to 1.2_4
+    * [OPENENGSB-2543] - Upgrade slf4j to 1.6.4
+    * [OPENENGSB-2544] - Upgrade xerces to 2.9.1_4
+    * [OPENENGSB-2545] - Upgrade bcel to 5.2_4
+    * [OPENENGSB-2546] - Upgrade xalan to 2.7.1_4
+    * [OPENENGSB-2547] - Upgrade oro to 2.0.8_5
+    * [OPENENGSB-2548] - Upgrade jdom to 1.1_4
+    * [OPENENGSB-2549] - Upgrade fastinfoset to 1.2.7_4
+    * [OPENENGSB-2550] - Upgrade commons-pool to 1.5.7
+    * [OPENENGSB-2551] - Upgrade h2 to 1.3.163
+    * [OPENENGSB-2552] - Upgrade woodstox to 4.1.2
+
+** New Feature
+    * [OPENENGSB-2075] - provide functionality from testclient via commandline
+    * [OPENENGSB-2279] - List running services via commandline
+    * [OPENENGSB-2281] - Create a new command to delete a service via command line
+    * [OPENENGSB-2339] - ModelWrapper shall be able to handle File Objects correctly
+    * [OPENENGSB-2377] - introduce OpenEngSBFileModel
+    * [OPENENGSB-2479] - Include openengsb-manual-builder-resources as dependency in parents/shared
+    * [OPENENGSB-2488] - Include openengsb-assembly-builder-resources as dependency in parents/shared
+    * [OPENENGSB-2489] - Add an easy method to allow domains configured with minimal pom setup
+    * [OPENENGSB-2490] - Add an easy method to allow connectors configured with minimal pom setup
+    * [OPENENGSB-2510] - Add creation and deployment of new manual structure
+
+** Task
+    * [OPENENGSB-2235] - Create base class for JPA entities
+    * [OPENENGSB-2273] - Release framework-2.3.0
+    * [OPENENGSB-2425] - Move resources from openengsb-framework to openengsb-manual-builder-resources
+    * [OPENENGSB-2523] - Add source distribution
+    * [OPENENGSB-2525] - Remove connector/domain docs from framework docs
+    * [OPENENGSB-2532] - Remove no longer required resources from manual
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+
+
 openengsb-2.2.0 2011-11-17
 --------------------------------------------
 
