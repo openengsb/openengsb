@@ -93,8 +93,8 @@
     <saaj.impl.version>1.3.9_2</saaj.impl.version>
     <htmlunit.version>2.8</htmlunit.version>
     <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
-    <guava.version>10.0</guava.version>
-    <guava.wrapped.version>10_1</guava.wrapped.version>
+    <guava.version>10.0.1</guava.version>
+    <guava.wrapped.version>10.0.1_1</guava.wrapped.version>
     <spring.osgi.version>1.2.1</spring.osgi.version>
     <spring.version>3.0.6.RELEASE</spring.version>
     <spring.security.version>3.0.7.RELEASE</spring.security.version>
