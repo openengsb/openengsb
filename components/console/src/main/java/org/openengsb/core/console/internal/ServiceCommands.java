@@ -49,7 +49,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     serviceHelper.listRunningServices();
                     break;
                 case CREATE:
-                    // TODO: see OPENENGSB-2280
+                    serviceHelper.createService(id, option);
                     break;
                 case UPDATE:
                     // TODO: see OPENENGSB-2282

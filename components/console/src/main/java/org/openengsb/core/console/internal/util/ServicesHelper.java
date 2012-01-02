@@ -19,6 +19,7 @@ package org.openengsb.core.console.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,15 +34,23 @@ import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.descriptor.AttributeDefinition;
+import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+
+import com.sun.org.apache.regexp.internal.RE;
 
 /**
  *
@@ -54,6 +63,7 @@ public class ServicesHelper {
     private ConnectorManager serviceManager;
     private InputStream keyboard;
     private BundleContext bundleContext;
+    private Map<String, DomainProvider> domainProviderMap;
 
 
     public ServicesHelper() {
@@ -124,8 +134,7 @@ public class ServicesHelper {
     public Map<DomainProvider, List<? extends Domain>> getDomainsAndEndpoints() {
         Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints
             = new HashMap<DomainProvider, List<? extends Domain>>();
-        List<DomainProvider> serviceList = osgiUtilsService.listServices(DomainProvider.class);
-        Collections.sort(serviceList, Comparators.forDomainProvider());
+        List<DomainProvider> serviceList = getDomainProvider();
 
         for (final DomainProvider domainProvider : serviceList) {
             Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
@@ -133,6 +142,22 @@ public class ServicesHelper {
             domainsAndEndpoints.put(domainProvider, domainEndpoints);
         }
         return domainsAndEndpoints;
+    }
+
+    public List<DomainProvider> getDomainProvider() {
+        List<DomainProvider> domainProvider = osgiUtilsService.listServices(DomainProvider.class);
+        Collections.sort(domainProvider, Comparators.forDomainProvider());
+        return domainProvider;
+    }
+
+    public List<String> getDomainProviderNames() {
+        List<String> names = new ArrayList<String>();
+        List<DomainProvider> domainProvider = getDomainProvider();
+        for (DomainProvider provider : domainProvider) {
+            String name = provider.getName().getString(Locale.getDefault());
+            names.add(name);
+        }
+        return names;
     }
 
     /**
@@ -171,7 +196,6 @@ public class ServicesHelper {
     public List<String> getRunningServiceIds() {
         final List<Domain> runningServices = getRunningServices();
         List<String> result = new ArrayList<String>();
-
         try {
             result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
                 @Override
@@ -193,6 +217,43 @@ public class ServicesHelper {
         return result;
     }
 
+    public void createService(String domainProviderName, boolean force) {
+        try {
+            String domainProviderId = "";
+            List<DomainProvider> domainProvider = getDomainProvider();
+            for (DomainProvider provider : domainProvider) {
+                if (provider.getName().getString(Locale.getDefault()).equals(domainProviderName)) {
+                    domainProviderId = provider.getId();
+                }
+            }
+
+            List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(ConnectorProvider.class,
+                String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
+
+            OutputStreamFormater.printValue("Please select the connector you want to create: ");
+            for (int i = 0; i < connectorProviders.size(); i++) {
+                ConnectorProvider connectorProvider = connectorProviders.get(i);
+                OutputStreamFormater
+                    .printTabbedValues(9, String.format("[%s]", i), connectorProvider.getName().getString
+                        (Locale.getDefault()));
+            }
+
+            int read = keyboard.read();
+            ConnectorProvider provider = connectorProviders.get(read);
+            ServiceDescriptor descriptor = provider.getDescriptor();
+
+            for (AttributeDefinition attributeDefinition : descriptor.getAttributes()) {
+                attributeDefinition.getDescription();
+            }
+            Map<String, String> attributeMap = new HashMap<String, String>();
+            Map<String, Object> properties = new HashMap<String, Object>();
+            ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO error handling
+        }
+    }
+
+
     public void setOsgiUtilsService(DefaultOsgiUtilsService osgiUtilsService) {
         this.osgiUtilsService = osgiUtilsService;
     }
@@ -209,4 +270,5 @@ public class ServicesHelper {
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
+
 }
