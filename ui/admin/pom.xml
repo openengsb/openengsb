@@ -212,6 +212,10 @@
       <artifactId>pax-wicket-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>org.odlabs.wiquery</artifactId>
+    </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
