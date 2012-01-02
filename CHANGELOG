@@ -1,3 +1,21 @@
+openengsb-2.3.1 2012-01-02
+--------------------------------------------
+
+This release is an "emergency" release reintroducing offline capabilities to the OpenEngSB Framework.
+
+### Details
+** Bug
+    * [OPENENGSB-2555] - new way of handling source distribution breaks exec-script
+    * [OPENENGSB-2559] - OpenEngSB does not start when used offline
+
+** Task
+    * [OPENENGSB-2553] - Release framework-2.3.1
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+
 openengsb-2.3.0 2012-01-01
 --------------------------------------------
 
