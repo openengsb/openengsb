@@ -53,8 +53,8 @@
     </config>
 
     <!-- Well, those are comming from karaf; as long as the karaf version is right that one is right too... -->
-    <feature>spring</feature>
-    <feature>spring-web</feature>
+    <feature version="${spring.version}">spring</feature>
+    <feature version="${spring.version}">spring-web</feature>
     <feature>spring-dm</feature>
     <feature>war</feature>
     <feature>transaction</feature>
