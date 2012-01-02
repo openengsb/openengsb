@@ -24,10 +24,10 @@
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
 cd $(dirname $0)/../..
-ZIPFILE=`ls assembly/target/openengsb-*.zip 2> /dev/null`
+ZIPFILE=`ls assembly/target/openengsb-framework*.zip | grep -v -- "-src" 2> /dev/null`
 if [ ! -e "$ZIPFILE" ]; then
 	mvn install -Dmaven.test.skip
-	ZIPFILE=`ls assembly/target/openengsb-*.zip 2> /dev/null`
+	ZIPFILE=`ls assembly/target/openengsb-framework*.zip | grep -v -- "-src" 2> /dev/null`
 fi
 DIRNAME=`echo $ZIPFILE | sed s/".zip$"//`
 if [ ! -e $DIRNAME ]; then
