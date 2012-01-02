@@ -23,14 +23,14 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-bundle-settings</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2-SNAPSHOT</version>
     <relativePath>../parents/bundle/</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
   <artifactId>openengsb-ui-parent</artifactId>
-  <version>2.3.1</version>
+  <version>2.3.2-SNAPSHOT</version>
 
   <name>OpenEngSB :: User Interface :: Parent</name>
 
@@ -63,52 +63,52 @@
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.api</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.common</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.services</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.workflow</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>org.openengsb.ui.api</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.ui</groupId>
         <artifactId>org.openengsb.ui.common</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>org.openengsb.domain.example</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.domain</groupId>
         <artifactId>org.openengsb.domain.auditing</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.security</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.framework</groupId>
         <artifactId>org.openengsb.framework.test</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
