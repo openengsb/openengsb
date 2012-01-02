@@ -173,6 +173,13 @@
                 <feature>config</feature>
                 <feature>management</feature>
                 <feature>wrapper</feature>
+                <feature>spring/${spring.version}</feature>
+                <feature>spring-web/${spring.version}</feature>
+                <feature>spring-dm</feature>
+                <feature>war</feature>
+                <feature>transaction</feature>
+                <feature>jpa</feature>
+                <feature>jndi</feature>
                 <!-- OpenEngSB Remoting -->
                 <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>
