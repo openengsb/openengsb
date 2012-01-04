@@ -76,6 +76,7 @@ public class ServiceCompleter implements Completer {
         } catch (IllegalArgumentException ex) {
             if (lastCommand != null) {
                 addCandidates(delegate, lastCommand);
+                lastCommand = null;
             } else {
                 addStandardArguments(delegate);
             }
@@ -93,7 +94,6 @@ public class ServiceCompleter implements Completer {
                 addDomains(delegate.getStrings());
                 break;
         }
-        lastCommand = null;
     }
 
     private void addStandardArguments(StringsCompleter delegate) {

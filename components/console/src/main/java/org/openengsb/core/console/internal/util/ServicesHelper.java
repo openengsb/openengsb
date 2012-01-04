@@ -19,7 +19,7 @@ package org.openengsb.core.console.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ import org.apache.felix.service.command.CommandSession;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
+import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
@@ -48,9 +49,6 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-
-import com.sun.org.apache.regexp.internal.RE;
 
 /**
  *
@@ -64,6 +62,7 @@ public class ServicesHelper {
     private InputStream keyboard;
     private BundleContext bundleContext;
     private Map<String, DomainProvider> domainProviderMap;
+    private PrintStream console;
 
 
     public ServicesHelper() {
@@ -78,6 +77,7 @@ public class ServicesHelper {
             .getService(org.apache.felix.service.command.CommandProcessor.class);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         keyboard = commandSession.getKeyboard();
+        console = commandSession.getConsole();
     }
 
     /**
@@ -218,39 +218,117 @@ public class ServicesHelper {
     }
 
     public void createService(String domainProviderName, boolean force) {
-        try {
-            String domainProviderId = "";
-            List<DomainProvider> domainProvider = getDomainProvider();
-            for (DomainProvider provider : domainProvider) {
-                if (provider.getName().getString(Locale.getDefault()).equals(domainProviderName)) {
-                    domainProviderId = provider.getId();
+        // get domain provider Id
+        String domainProviderId = "";
+        List<DomainProvider> domainProvider = getDomainProvider();
+        for (DomainProvider provider : domainProvider) {
+            if (provider.getName().getString(Locale.getDefault()).equals(domainProviderName)) {
+                domainProviderId = provider.getId();
+            }
+        }
+        // get the connector which should be created
+        ConnectorProvider connectorProvider = getConnectorToCreate(domainProviderId);
+
+        ServiceDescriptor descriptor = connectorProvider.getDescriptor();
+
+        OutputStreamFormater.printValue("Please enter an ID");
+        String id = readUserInput();
+
+
+        OutputStreamFormater.printValue(String.format("Please enter the attributes for %s, keep empty for default",
+            descriptor.getName().getString(Locale.getDefault())));
+
+        //get attributes for connector
+        Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes());
+        Map<String, Object> properties = new HashMap<String, Object>();
+
+
+        ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
+        ConnectorId idProvider = new ConnectorId(domainProviderId, connectorProvider.getId(), id);
+        if (force) {
+            serviceManager.forceCreate(idProvider, connectorDescription);
+        } else {
+            OutputStreamFormater.printValue("Do you want to create the connector with the following attributes:", "");
+            for (String key : attributeMap.keySet()) {
+                OutputStreamFormater.printValue(key, attributeMap.get(key));
+            }
+            OutputStreamFormater.printValue("Create connector: (Y/n)");
+            if (readUserInput().equals("Y")) {
+                try {
+                    serviceManager.create(idProvider, connectorDescription);
+                    OutputStreamFormater.printValue("Connector successfully created");
+                } catch (ConnectorValidationFailedException e) {
+                    e.printStackTrace();
+                    OutputStreamFormater.printValue("Connector validation failed, creation aborted");
                 }
             }
-
-            List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(ConnectorProvider.class,
-                String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
-
-            OutputStreamFormater.printValue("Please select the connector you want to create: ");
-            for (int i = 0; i < connectorProviders.size(); i++) {
-                ConnectorProvider connectorProvider = connectorProviders.get(i);
-                OutputStreamFormater
-                    .printTabbedValues(9, String.format("[%s]", i), connectorProvider.getName().getString
-                        (Locale.getDefault()));
-            }
-
-            int read = keyboard.read();
-            ConnectorProvider provider = connectorProviders.get(read);
-            ServiceDescriptor descriptor = provider.getDescriptor();
-
-            for (AttributeDefinition attributeDefinition : descriptor.getAttributes()) {
-                attributeDefinition.getDescription();
-            }
-            Map<String, String> attributeMap = new HashMap<String, String>();
-            Map<String, Object> properties = new HashMap<String, Object>();
-            ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO error handling
         }
+    }
+
+    private Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions) {
+        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        for (AttributeDefinition attributeDefinition : attributeDefinitions) {
+            String fieldName = attributeDefinition.getName().getString(Locale.getDefault());
+            String description = attributeDefinition.getDescription().getString(Locale.getDefault());
+            String defaultValue = attributeDefinition.getDefaultValue().getString(Locale.getDefault());
+            OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
+                description, defaultValue));
+            String userValue = readUserInput();
+            if (userValue.equals("") || userValue.endsWith("\n")) {
+                userValue = defaultValue;
+            }
+            attributeMap.put(fieldName, userValue);
+        }
+
+        return attributeMap;
+    }
+
+    private ConnectorProvider getConnectorToCreate(String domainProviderId) {
+        List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(ConnectorProvider.class,
+            String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
+        OutputStreamFormater.printValue("Please select the connector you want to create: ");
+        for (int i = 0; i < connectorProviders.size(); i++) {
+            ConnectorProvider connectorProvider = connectorProviders.get(i);
+            ServiceDescriptor descriptor = connectorProvider.getDescriptor();
+            OutputStreamFormater
+                .printTabbedValues(9, String.format("[%s] %s", i, descriptor.getName().getString(Locale
+                    .getDefault())), descriptor.getDescription().getString(Locale.getDefault()));
+        }
+        String positionString = readUserInput();
+        int pos;
+        try {
+            pos = Integer.parseInt(positionString);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid Input");
+            return null;
+        }
+        return connectorProviders.get(pos);
+    }
+
+    private String readUserInput() {
+        String positionString = "";
+        try {
+            int read = keyboard.read();
+            while (read != '\n') {
+                if (read == 127) {
+                    int lastPos = positionString.length() - 1;
+                    positionString = positionString.substring(0, lastPos >= 0 ? lastPos : 0);
+                    System.out.println("\n"+positionString);
+                    System.out.flush();
+                } else {
+                    char read1 = (char) read;
+                    System.out.print(read1);
+                    System.out.flush();
+                    positionString += read1;
+                }
+                read = keyboard.read();
+            }
+            OutputStreamFormater.printValue("\n");
+            System.out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return positionString;
     }
 
 
