@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.Event;
-
+// @extract-start AuditingDomain
 /**
  * The Auditing Domain provides means to audit certain events for later viewing.
  */
@@ -31,3 +31,5 @@ public interface AuditingDomain extends Domain {
 
     List<Event> getAllAudits();
 }
+// @extract-end
+

@@ -21,6 +21,7 @@
   <properties>
     <bundle.symbolicName>org.openengsb.domain.binarytransformation</bundle.symbolicName>
     <bundle.namespace>org.openengsb.domain.binarytransformation</bundle.namespace>
+    <domain.name>BinaryTransformationDomain</domain.name>
   </properties>
 
   <groupId>org.openengsb.domain</groupId>
@@ -48,21 +49,46 @@
   </scm>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*.info</include>
-        </includes>
-      </resource>
-    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
