@@ -1,3 +1,27 @@
+openengsb-2.3.2 2012-01-04
+--------------------------------------------
+
+This release contains 6 bug fixes ranging from some internal setups, over a configuration bug in the jetty-logging 
+configuration and the archetype configurations.
+
+### Details
+** Bug
+    * [OPENENGSB-2576] - Adapt domain/connector archetype to latest version
+    * [OPENENGSB-2578] - Oxygen project has the wrong files/folders referenced
+    * [OPENENGSB-2579] - Do NOT use tabs in code/src files
+    * [OPENENGSB-2580] - If the parent is a snapshot it could not be found in the current setup
+    * [OPENENGSB-2589] - Jetty log output is shown
+    * [OPENENGSB-2597] - Archetypes contain values specific for the openengsb alone
+
+** Task
+    * [OPENENGSB-2562] - Release framework-2.3.2
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+
+
 openengsb-2.3.1 2012-01-02
 --------------------------------------------
 
