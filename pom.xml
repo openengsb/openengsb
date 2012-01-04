@@ -184,59 +184,5 @@
     </repository>
   </repositories>
 
-  <profiles>
-    <profile>
-      <id>features</id>
-      <modules>
-        <module>features</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>nightly</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/master</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/master</github.raw>
-        <repos.current>${repos.snapshot}</repos.current>
-        <sitesubtype>nightly</sitesubtype>
-      </properties>
-    </profile>
-    <profile>
-      <id>milestone</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>milestone</sitesubtype>
-      </properties>
-    </profile>
-    <profile>
-      <id>final</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
-    </profile>
-    <profile>
-      <id>support</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
-    </profile>
-    <profile>
-      <id>rc</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>rc</sitesubtype>
-      </properties>
-    </profile>
-  </profiles>
-
 </project>
 
