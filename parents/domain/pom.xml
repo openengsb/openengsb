@@ -299,7 +299,7 @@
             <id>DomainEventsWsdl</id>
             <phase>process-classes</phase>
             <configuration>
-              <className>${bundle.namespace}.${domain.name}DomainEvents</className>
+              <className>${bundle.namespace}.${domain.name}Events</className>
               <genWsdl>true</genWsdl>
               <attachWsdl>false</attachWsdl>
             </configuration>
@@ -311,7 +311,7 @@
             <id>DomainWsdl</id>
             <phase>process-classes</phase>
             <configuration>
-              <className>${bundle.namespace}.${domain.name}Domain</className>
+              <className>${bundle.namespace}.${domain.name}</className>
               <genWsdl>true</genWsdl>
               <attachWsdl>false</attachWsdl>
             </configuration>
@@ -359,14 +359,14 @@
                     <classifier>features</classifier>
                   </artifact>
                   <artifact>
-                    <file>target/generated/wsdl/${domain.name}DomainEvents.wsdl</file>
+                    <file>target/generated/wsdl/${domain.name}Events.wsdl</file>
                     <type>wsdl</type>
-                    <classifier>${domain.name}DomainEvents</classifier>
+                    <classifier>${domain.name}Events</classifier>
                   </artifact>
                   <artifact>
-                    <file>target/generated/wsdl/${domain.name}Domain.wsdl</file>
+                    <file>target/generated/wsdl/${domain.name}.wsdl</file>
                     <type>wsdl</type>
-                    <classifier>${domain.name}Domain</classifier>
+                    <classifier>${domain.name}</classifier>
                   </artifact>
                 </artifacts>
               </configuration>
