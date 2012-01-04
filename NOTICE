@@ -139,10 +139,10 @@ This project includes:
   Jackson under The Apache Software License, Version 2.0
   jansi under The Apache Software License, Version 2.0
   JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
-  Java Architecture for XML Binding under CDDL 1.1 or GPL2 w/ CPE
   Java Rest Annotations under The Apache Software License, Version 2.0
   JavaMail 1.4 under The Apache Software License, Version 2.0
-  JAXB Reference Implementation under CDDL 1.1 or GPL2 w/ CPE
+  JAXB API bundle for GlassFish V3 under CDDL 1.1 or GPL2 w/ CPE
+  JAXB RI under CDDL 1.1 or GPL2 w/ CPE
   JAXB XJC under CDDL 1.1 or GPL2 w/ CPE
   jBPM :: Flow under The Apache Software License, Version 2.0
   jBPM :: Flow Builder under The Apache Software License, Version 2.0
