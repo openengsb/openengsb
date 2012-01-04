@@ -31,6 +31,7 @@
   <properties>
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
+    <domain.name>${domainInterface}</domain.name>
   </properties>
 
   <groupId>${groupId}</groupId>
@@ -79,6 +80,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
