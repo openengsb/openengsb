@@ -279,6 +279,49 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+        <version>${cxf.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-simple</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>AppointmentDomainEvents</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}DomainEvents</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>AppointmentDomain</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}Domain</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
         <executions>
@@ -314,6 +357,16 @@
                     <file>target/classes/features.xml</file>
                     <type>xml</type>
                     <classifier>features</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}DomainEvents.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}DomainEvents</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}Domain.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}AppointmentDomain</classifier>
                   </artifact>
                 </artifacts>
               </configuration>
