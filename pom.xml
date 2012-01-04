@@ -113,11 +113,23 @@
     <module>manual</module>
   </modules>
 
+  <inceptionYear>2009</inceptionYear>
+
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
+  </ciManagement>
 
   <build>
     <resources>
