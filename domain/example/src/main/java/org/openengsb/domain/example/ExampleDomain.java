@@ -24,6 +24,8 @@ import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
 import org.openengsb.domain.example.model.ExampleResponseModel;
 
+
+// @extract-start ExampleDomain
 /**
  * This is the interface of the example domain. Besides this functional interface, which has to be implemented by
  * connectors, this domain also provides the event interface {@link ExampleDomainEvents}, which can be used by
@@ -47,3 +49,4 @@ public interface ExampleDomain extends Domain {
         ONE, TWO, THREE
     }
 }
+// @extract-end

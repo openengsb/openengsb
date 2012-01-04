@@ -18,7 +18,9 @@
 package org.openengsb.domain.auditing;
 
 import org.openengsb.core.api.DomainEvents;
-
+// @extract-start AuditingDomainEvents
 public interface AuditingDomainEvents extends DomainEvents {
 
 }
+// @extract-end
+
