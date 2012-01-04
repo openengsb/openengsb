@@ -296,7 +296,7 @@
         </dependencies>
         <executions>
           <execution>
-            <id>AppointmentDomainEvents</id>
+            <id>DomainEventsWsdl</id>
             <phase>process-classes</phase>
             <configuration>
               <className>${bundle.namespace}.${domain.name}DomainEvents</className>
@@ -308,7 +308,7 @@
             </goals>
           </execution>
           <execution>
-            <id>AppointmentDomain</id>
+            <id>DomainWsdl</id>
             <phase>process-classes</phase>
             <configuration>
               <className>${bundle.namespace}.${domain.name}Domain</className>
@@ -366,7 +366,7 @@
                   <artifact>
                     <file>target/generated/wsdl/${domain.name}Domain.wsdl</file>
                     <type>wsdl</type>
-                    <classifier>${domain.name}AppointmentDomain</classifier>
+                    <classifier>${domain.name}Domain</classifier>
                   </artifact>
                 </artifacts>
               </configuration>
