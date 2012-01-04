@@ -31,7 +31,6 @@
   <properties>
     <bundle.symbolicName>${package}</bundle.symbolicName>
     <bundle.namespace>${package}</bundle.namespace>
-    <openengsb.compile.version>${openengsbVersion}</openengsb.compile.version>
   </properties>
 
   <groupId>${groupId}</groupId>
@@ -43,44 +42,50 @@
   <packaging>bundle</packaging>
 
   <description>Description of Domain</description>
+
+  <!-- Add the URL to your project here -->
   <url>http://www.openengsb.org</url>
-  <licenses>
+
+  <!-- Add the license you use here -->
+  <!--<licenses>
     <license>
       <name>Apache 2</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
-  </licenses>
+  </licenses>-->
 
-  <scm>
+  <!-- Add correct SCM data here -->
+  <!--<scm>
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
-  </scm>
+  </scm>-->
 
   <build>
-     <plugins>
-       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-         <artifactId>build-helper-maven-plugin</artifactId>
-       </plugin>
-     </plugins>
-   </build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
-
-   <dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>${openengsb.compile.version}</version>
+      <version>${openengsbVersion}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>${openengsb.compile.version}</version>
+      <version>${openengsbVersion}</version>
+      <scope>provided</scope>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
 </project>
+
