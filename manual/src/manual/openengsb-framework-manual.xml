@@ -79,6 +79,7 @@
     <xi:include href="docbook/user/howto/howtoDefineModel.xml"/>
     <xi:include href="docbook/user/howto/howtoIntegrateServices.xml"/>
     <xi:include href="docbook/user/howto/howtoChangeEDBDatabaseBackend.xml"/>
+    <xi:include href="docbook/user/howto/howtoTestRemotingWithHermes.xml"/>
   </part>
   <part xml:id="console.ui.manual">
     <title>Administration Console</title>
