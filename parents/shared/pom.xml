@@ -72,9 +72,6 @@
     <osgi.version>4.2.0</osgi.version>
 
     <!-- Library Versions -->
-    <docbkx.version>2.0.13</docbkx.version>
-    <docbkx.xml.version>5.0-all</docbkx.xml.version>
-    <jai.version>1.1.3</jai.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
     <jaxb.version>2.2.4</jaxb.version>
     <jaxb.wrapped.version>2.2.4_1</jaxb.wrapped.version>
