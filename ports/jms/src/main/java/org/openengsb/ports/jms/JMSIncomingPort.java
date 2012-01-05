@@ -51,8 +51,7 @@ public class JMSIncomingPort {
     private String receive = "receive";
 
     /*
-     * TODO OPENENGSB-1575 this property is kind of a hack and should be
-     * replaced by proper dynamic port configuration
+     * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
      */
     private FilterChain unsecureFilterChain;
 
@@ -80,7 +79,11 @@ public class JMSIncomingPort {
                 Destination replyQueue;
                 final String correlationID;
                 try {
-                    correlationID = message.getJMSCorrelationID();
+                    if (message.getJMSCorrelationID()  == null) {
+                        correlationID = message.getJMSMessageID();
+                    } else {
+                        correlationID = message.getJMSCorrelationID();
+                    }
                     replyQueue = message.getJMSReplyTo();
                 } catch (JMSException e) {
                     LOGGER.warn("error when getting destination queue or correlationid from client message: {}", e);
@@ -90,6 +93,7 @@ public class JMSIncomingPort {
                     LOGGER.warn("no replyTo destination specifyed could not send response");
                     return;
                 }
+
                 new JmsTemplate(connectionFactory).convertAndSend(replyQueue, result, new MessagePostProcessor() {
                     @Override
                     public Message postProcessMessage(Message message) throws JMSException {
@@ -108,7 +112,6 @@ public class JMSIncomingPort {
             }
 
         });
-
         simpleMessageListenerContainer.start();
     }
 
@@ -128,8 +131,7 @@ public class JMSIncomingPort {
     }
 
     /*
-     * TODO OPENENGSB-1575 this property is kind of a hack and should be
-     * replaced by proper dynamic port configuration
+     * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
      */
     private FilterChain getFilterChainToUse() {
         if (Boolean.getBoolean(DISABLE_ENCRYPTION)) {
@@ -157,4 +159,5 @@ public class JMSIncomingPort {
     public void setReceive(String receive) {
         this.receive = receive;
     }
+
 }

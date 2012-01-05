@@ -28,7 +28,6 @@ import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.jms.JMSException;
@@ -84,7 +83,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
         return combine(baseConfiguration(),
-                editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
+            editConfigurationFileExtend(FeaturesCfg.BOOT, ",openengsb-ports-jms,openengsb-connector-example"));
     }
 
     @Override
@@ -104,8 +103,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId = OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(
-                OutgoingPort.class, "jms-json", 60000);
+        OutgoingPort serviceWithId =
+            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
 
     }
@@ -173,12 +172,11 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
-        ExampleDomain osgiService = getOsgiService(ExampleDomain.class,
-                "(id=example+external-connector-proxy+example-remote)", 31000);
+        ExampleDomain osgiService =
+            getOsgiService(ExampleDomain.class, "(id=example+external-connector-proxy+example-remote)", 31000);
 
-        assertThat(
-                getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-                        "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), not(nullValue()));
         assertThat(osgiService, not(nullValue()));
 
         remoteConnector.getInvocationHistory().clear();
@@ -187,9 +185,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
 
         remoteConnector.stop();
         Thread.sleep(5000);
-        assertThat(
-                getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
-                        "(id=example+external-connector-proxy+example-remote)"), nullValue());
+        assertThat(getBundleContext().getServiceReferences(ExampleDomain.class.getName(),
+            "(id=example+external-connector-proxy+example-remote)"), nullValue());
     }
 
     @Test
@@ -198,7 +195,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("id", "test");
         properties.put(Constants.SERVICE_RANKING, -1);
-        properties.put("location.root", new String[] { "foo" });
+        properties.put("location.root", new String[]{ "foo" });
         getBundleContext().registerService(ExampleDomain.class.getName(), service, properties);
 
         JmsTemplate template = prepareActiveMqConnection();
@@ -231,9 +228,10 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 MessageConsumer consumer = session.createConsumer(tempQueue);
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
-                message.setJMSCorrelationID(UUID.randomUUID().toString());
                 producer.send(message);
                 TextMessage response = (TextMessage) consumer.receive(1000);
+                assertThat("server should set the value of the correltion ID to the value of the received message id",
+                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);
                 JmsUtils.closeMessageConsumer(consumer);
                 return response.getText();
@@ -243,7 +241,8 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
+        ActiveMQConnectionFactory cf =
+            new ActiveMQConnectionFactory("failover:(tcp://localhost:6549)?timeout=60000");
         JmsTemplate template = new JmsTemplate(cf);
         return template;
     }

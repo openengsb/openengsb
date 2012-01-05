@@ -18,6 +18,7 @@
 package org.openengsb.ports.jms;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
@@ -117,11 +118,13 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             + "Zb6jnKDAm+hxq1arRyaxL04ppTM/xRRS8DKJLrsAi0HhFzkcAwJAbiuQQyHSX2aZmm3V+46rdXCV"
             + "kBn32rncwf8xP23UoWRFo7tfsNJqfgT53vqOaBpil/FDdkjPk7PNrugvZx5syQJBAJjAEbG+Fu8P"
             + "axkqSjhYpDJJBwOopEa0JhxxB6vveb5XbN2HujAnAMUxtknLWFm/iyg2k+O0Cdhfh60hCTUIsr0C"
-            + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb" + "Ky/vHQD1rMM=";
+            + "QFT8w7k8/FfcAFl+ysJ2lSGpeKkt213QkHpAn2HvHRviVErKSHgEKh10Nf7pU3cgPwHDXNEuQ6Bb"
+            + "Ky/vHQD1rMM=";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final String METHOD_CALL = "" + "{"
+    private static final String METHOD_CALL = ""
+            + "{"
             + "  \"classes\":[\"java.lang.String\",\"java.lang.Integer\",\"org.openengsb.ports.jms.TestClass\"],"
             + "  \"methodName\":\"method\","
             + "  \"args\":[\"123\",5,{\"test\":\"test\"}],"
@@ -153,17 +156,29 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             + "}";
 
     private static final String XML_METHOD_CALL_REQUEST = ""
-            + "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" + "<MethodCallRequest>"
-            + "  <callId>123</callId>" + "  <answer>true</answer>" + "  <methodCall>"
+            + "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+            + "<MethodCallRequest>"
+            + "  <callId>123</callId>"
+            + "  <answer>true</answer>"
+            + "  <methodCall>"
             + "    <args xmlns:xs=\"http://www.w3.org/2001/XMLSchema\""
             + "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">123</args>"
             + "    <args xmlns:xs=\"http://www.w3.org/2001/XMLSchema\""
             + "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:int\">5</args>"
             + "    <args xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"testClass\">"
-            + "      <test>test</test>" + "    </args>" + "    <classes>java.lang.String</classes>"
-            + "    <classes>java.lang.Integer</classes>" + "    <classes>org.openengsb.ports.jms.TestClass</classes>"
-            + "    <metaData>" + "      <entry>" + "        <key>serviceId</key>" + "        <value>test</value>"
-            + "      </entry>" + "    </metaData>" + "    <methodName>method</methodName>" + "  </methodCall>"
+            + "      <test>test</test>"
+            + "    </args>"
+            + "    <classes>java.lang.String</classes>"
+            + "    <classes>java.lang.Integer</classes>"
+            + "    <classes>org.openengsb.ports.jms.TestClass</classes>"
+            + "    <metaData>"
+            + "      <entry>"
+            + "        <key>serviceId</key>"
+            + "        <value>test</value>"
+            + "      </entry>"
+            + "    </metaData>"
+            + "    <methodName>method</methodName>"
+            + "  </methodCall>"
             + "</MethodCallRequest>";
 
     private MethodCallRequest call;
@@ -209,7 +224,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         when(mock2.method(anyString(), anyInt(), any(TestClass.class))).thenReturn(new TestClass("test"));
 
         Map<String, String> metaData = Maps.newHashMap(ImmutableMap.of("serviceId", "test"));
-        MethodCall methodCall = new MethodCall("method", new Object[] { "123", 5, new TestClass("test"), }, metaData);
+        MethodCall methodCall = new MethodCall("method", new Object[]{ "123", 5, new TestClass("test"), }, metaData);
         call = new MethodCallRequest(methodCall, "123");
         call.setDestination("host?receive");
 
@@ -254,10 +269,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                 MessageConsumer consumer = session.createConsumer(tempQueue);
                 TextMessage message = session.createTextMessage(msg);
                 message.setJMSReplyTo(tempQueue);
-                message.setJMSCorrelationID("123");
                 producer.send(message);
                 TextMessage response = (TextMessage) consumer.receive(1000);
-
+                assertThat("server should set the value of the correltion ID to the value of the received message id",
+                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);
                 JmsUtils.closeMessageConsumer(consumer);
                 return response != null ? response.getText() : null;
@@ -272,8 +287,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         incomingPort.setFilterChain(secureChain);
         incomingPort.start();
 
-        SecretKey sessionKey = CipherUtils.generateKey(CipherUtils.DEFAULT_SYMMETRIC_ALGORITHM,
-                CipherUtils.DEFAULT_SYMMETRIC_KEYSIZE);
+        SecretKey sessionKey =
+            CipherUtils.generateKey(CipherUtils.DEFAULT_SYMMETRIC_ALGORITHM, CipherUtils.DEFAULT_SYMMETRIC_KEYSIZE);
 
         byte[] encryptedKey = CipherUtils.encrypt(sessionKey.getEncoded(), publicKey);
         byte[] encryptedContent = CipherUtils.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
@@ -286,8 +301,8 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         byte[] result = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
         SecureResponse result2 = OBJECT_MAPPER.readValue(result, SecureResponse.class);
         MethodResult methodResult = result2.getMessage().getResult();
-        Object realResultArg = OBJECT_MAPPER.convertValue(methodResult.getArg(),
-                Class.forName(methodResult.getClassName()));
+        Object realResultArg =
+            OBJECT_MAPPER.convertValue(methodResult.getArg(), Class.forName(methodResult.getClassName()));
         assertThat(realResultArg, equalTo((Object) new TestClass("test")));
     }
 
@@ -303,7 +318,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                         return new Authentication(user, credentials.toString());
                     }
                     throw new BadCredentialsException("username and password did not match");
-
                 }
             });
         MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();
@@ -312,9 +326,14 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         when(keySource.getPrivateKey()).thenReturn(privateKey);
         MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource, "AES");
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(EncryptedJsonMessageMarshaller.class, cipherFactory,
-                JsonSecureRequestMarshallerFilter.class, MessageVerifierFilter.class, authenticatorFactory,
-                WrapperFilter.class, new RequestMapperFilter(handler)));
+        factory.setFilters(Arrays.asList(
+            EncryptedJsonMessageMarshaller.class,
+            cipherFactory,
+            JsonSecureRequestMarshallerFilter.class,
+            MessageVerifierFilter.class,
+            authenticatorFactory,
+            WrapperFilter.class,
+            new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();
         return secureChain;
     }
@@ -322,8 +341,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     @Test(timeout = 5000)
     public void testPortWithXmlFormat_shouldWorkWithXmlFilterChain() throws InterruptedException, IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(XmlDecoderFilter.class, XmlMethodCallMarshalFilter.class,
-                new RequestMapperFilter(handler)));
+        factory.setFilters(Arrays.asList(
+            XmlDecoderFilter.class,
+            XmlMethodCallMarshalFilter.class,
+            new RequestMapperFilter(handler)));
         incomingPort.setFilterChain(factory.create());
         incomingPort.start();
 
