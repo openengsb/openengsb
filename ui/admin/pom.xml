@@ -213,7 +213,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb</groupId>
+      <groupId>org.openengsb.forks</groupId>
       <artifactId>org.odlabs.wiquery</artifactId>
     </dependency>
 

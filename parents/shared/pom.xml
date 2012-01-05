@@ -576,7 +576,7 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.openengsb</groupId>
+        <groupId>org.openengsb.forks</groupId>
         <artifactId>org.odlabs.wiquery</artifactId>
         <version>${wiquery.forked.version}</version>
       </dependency>
