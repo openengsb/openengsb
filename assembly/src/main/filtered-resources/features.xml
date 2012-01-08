@@ -140,6 +140,7 @@
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>

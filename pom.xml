@@ -76,6 +76,14 @@
     <module>components/api</module>
     <module>components/test</module>
     <module>components/common</module>
+    <module>components/console</module>
+    <module>components/edb</module>
+    <module>components/ekb</module>
+    <module>components/persistence</module>
+    <module>components/security</module>
+    <module>components/services</module>
+    <module>components/workflow</module>
+    <module>components/info</module>
     <!-- OpenEngSB Core Domain Modules -->
     <module>domain/auditing</module>
     <module>domain/example</module>
@@ -84,14 +92,6 @@
     <module>connector/memoryauditing</module>
     <module>connector/example</module>
     <module>connector/smooksbinarytransformation</module>
-    <!-- OpenEngSB UI Modules -->
-    <module>components/console</module>
-    <module>components/edb</module>
-    <module>components/ekb</module>
-    <module>components/persistence</module>
-    <module>components/security</module>
-    <module>components/services</module>
-    <module>components/workflow</module>
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
