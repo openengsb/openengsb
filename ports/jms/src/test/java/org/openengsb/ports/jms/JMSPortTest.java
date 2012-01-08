@@ -18,6 +18,7 @@
 package org.openengsb.ports.jms;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
@@ -40,6 +41,13 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.codec.binary.Base64;
@@ -83,7 +91,9 @@ import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.jms.support.JmsUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -234,20 +244,41 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     @Test(timeout = 10000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
-        factory.setFilters(Arrays.asList(
-            JsonMethodCallMarshalFilter.class,
-            new RequestMapperFilter(handler)));
+        factory.setFilters(Arrays.asList(JsonMethodCallMarshalFilter.class, new RequestMapperFilter(handler)));
         incomingPort.setFilterChain(factory.create());
         incomingPort.start();
 
-        jmsTemplate.convertAndSend("receive", METHOD_CALL_REQUEST);
-        String resultString = (String) jmsTemplate.receiveAndConvert("12345");
+        String resultString = sendWithTempQueue(METHOD_CALL_REQUEST);
+
         JsonNode resultMessage = OBJECT_MAPPER.readTree(resultString);
         JsonNode readTree = resultMessage.get("result");
         assertThat(readTree.get("className").toString(), equalTo("\"org.openengsb.ports.jms.TestClass\""));
         assertThat(readTree.get("metaData").toString(), equalTo("{\"serviceId\":\"test\"}"));
         assertThat(readTree.get("type").toString(), equalTo("\"Object\""));
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
+    }
+
+
+    private String sendWithTempQueue(final String msg) {
+        String resultString = jmsTemplate.execute(new SessionCallback<String>() {
+            @Override
+            public String doInJms(Session session) throws JMSException {
+                Queue queue = session.createQueue("receive");
+                MessageProducer producer = session.createProducer(queue);
+                TemporaryQueue tempQueue = session.createTemporaryQueue();
+                MessageConsumer consumer = session.createConsumer(tempQueue);
+                TextMessage message = session.createTextMessage(msg);
+                message.setJMSReplyTo(tempQueue);
+                producer.send(message);
+                TextMessage response = (TextMessage) consumer.receive(1000);
+                assertThat("server should set the value of the correltion ID to the value of the received message id",
+                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                JmsUtils.closeMessageProducer(producer);
+                JmsUtils.closeMessageConsumer(consumer);
+                return response != null ? response.getText() : null;
+            }
+        }, true);
+        return resultString;
     }
 
     @Test(timeout = 60000)
@@ -263,10 +294,10 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         byte[] encryptedContent = CipherUtils.encrypt(SECURE_METHOD_CALL.getBytes(), sessionKey);
 
         EncryptedMessage encryptedMessage = new EncryptedMessage(encryptedContent, encryptedKey);
-        String encryptedString = new ObjectMapper().writeValueAsString(encryptedMessage);
+        final String encryptedString = new ObjectMapper().writeValueAsString(encryptedMessage);
 
-        jmsTemplate.convertAndSend("receive", encryptedString);
-        String resultString = (String) jmsTemplate.receiveAndConvert("12345");
+        String resultString = sendWithTempQueue(encryptedString);
+
         byte[] result = CipherUtils.decrypt(Base64.decodeBase64(resultString), sessionKey);
         SecureResponse result2 = OBJECT_MAPPER.readValue(result, SecureResponse.class);
         MethodResult methodResult = result2.getMessage().getResult();
@@ -317,8 +348,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         incomingPort.setFilterChain(factory.create());
         incomingPort.start();
 
-        jmsTemplate.convertAndSend("receive", XML_METHOD_CALL_REQUEST);
-        String resultString = (String) jmsTemplate.receiveAndConvert("123");
+        String resultString = sendWithTempQueue(XML_METHOD_CALL_REQUEST);
 
         assertThat(resultString, containsString("<callId>123</callId>"));
         assertThat(resultString, containsString("<type>Object</type>"));

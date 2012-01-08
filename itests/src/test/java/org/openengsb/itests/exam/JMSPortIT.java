@@ -30,6 +30,13 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.crypto.SecretKey;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -64,6 +71,8 @@ import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.SessionCallback;
+import org.springframework.jms.support.JmsUtils;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -209,10 +218,26 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         assertThat(model.getResult(), is("successful"));
     }
 
-    private String sendMessage(JmsTemplate template, String encryptedMessage) {
-        template.convertAndSend("receive", encryptedMessage);
-        String result = (String) template.receiveAndConvert("12345");
-        return result;
+    private String sendMessage(final JmsTemplate template, final String msg) {
+        String resultString = template.execute(new SessionCallback<String>() {
+            @Override
+            public String doInJms(Session session) throws JMSException {
+                Queue queue = session.createQueue("receive");
+                MessageProducer producer = session.createProducer(queue);
+                TemporaryQueue tempQueue = session.createTemporaryQueue();
+                MessageConsumer consumer = session.createConsumer(tempQueue);
+                TextMessage message = session.createTextMessage(msg);
+                message.setJMSReplyTo(tempQueue);
+                producer.send(message);
+                TextMessage response = (TextMessage) consumer.receive(1000);
+                assertThat("server should set the value of the correltion ID to the value of the received message id",
+                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                JmsUtils.closeMessageProducer(producer);
+                JmsUtils.closeMessageConsumer(consumer);
+                return response.getText();
+            }
+        }, true);
+        return resultString;
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {

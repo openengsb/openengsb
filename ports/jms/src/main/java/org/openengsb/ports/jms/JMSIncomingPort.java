@@ -20,6 +20,7 @@ package org.openengsb.ports.jms;
 import java.util.HashMap;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -30,13 +31,12 @@ import org.openengsb.core.common.remote.FilterChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessagePostProcessor;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 public class JMSIncomingPort {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSIncomingPort.class);
-
-    private static final String RECEIVE = "receive";
 
     private static final String DISABLE_ENCRYPTION = "org.openengsb.jms.noencrypt";
 
@@ -48,7 +48,7 @@ public class JMSIncomingPort {
 
     private FilterChain filterChain;
 
-    private String receive;
+    private String receive = "receive";
 
     /*
      * TODO OPENENGSB-1575 this property is kind of a hack and should be replaced by proper dynamic port configuration
@@ -56,7 +56,7 @@ public class JMSIncomingPort {
     private FilterChain unsecureFilterChain;
 
     public void start() {
-        simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
+        simpleMessageListenerContainer = createListenerContainer(receive, new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 LOGGER.trace("JMS-message recieved. Checking if the type is supported");
@@ -68,29 +68,39 @@ public class JMSIncomingPort {
                 TextMessage textMessage = (TextMessage) message;
                 String textContent = extractTextFromMessage(textMessage);
                 HashMap<String, Object> metadata = new HashMap<String, Object>();
-                String result;
+                String result = null;
                 try {
                     LOGGER.debug("starting filterchain for incoming message");
                     result = (String) getFilterChainToUse().filter(textContent, metadata);
                 } catch (Exception e) {
-                    handleJmsReplyException(metadata, e);
+                    LOGGER.error("an error occured when processing the filterchain", e);
+                    result = ExceptionUtils.getStackTrace(e);
+                }
+                Destination replyQueue;
+                final String correlationID;
+                try {
+                    if (message.getJMSCorrelationID()  == null) {
+                        correlationID = message.getJMSMessageID();
+                    } else {
+                        correlationID = message.getJMSCorrelationID();
+                    }
+                    replyQueue = message.getJMSReplyTo();
+                } catch (JMSException e) {
+                    LOGGER.warn("error when getting destination queue or correlationid from client message: {}", e);
                     return;
                 }
-                String callId = (String) metadata.get("callId");
-                LOGGER.debug("filterchain processed OK, sending result to answer-queue ({})", callId);
-                if (metadata.containsKey("answer")) {
-                    new JmsTemplate(connectionFactory).convertAndSend(callId, result);
+                if (replyQueue == null) {
+                    LOGGER.warn("no replyTo destination specifyed could not send response");
+                    return;
                 }
-            }
 
-            private void handleJmsReplyException(HashMap<String, Object> metadata, Exception e) {
-                LOGGER.error("an error occured when processing the filterchain", e);
-                String callId = (String) metadata.get("callId");
-                if (callId != null) {
-                    LOGGER.info("callId could be extracted. Sending Exception-response to remote caller ({})",
-                        callId);
-                    new JmsTemplate(connectionFactory).convertAndSend(callId, ExceptionUtils.getStackTrace(e));
-                }
+                new JmsTemplate(connectionFactory).convertAndSend(replyQueue, result, new MessagePostProcessor() {
+                    @Override
+                    public Message postProcessMessage(Message message) throws JMSException {
+                        message.setJMSCorrelationID(correlationID);
+                        return message;
+                    }
+                });
             }
 
             private String extractTextFromMessage(TextMessage textMessage) {
@@ -107,6 +117,7 @@ public class JMSIncomingPort {
 
     private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
         SimpleMessageListenerContainer messageListenerContainer = factory.createMessageListenerContainer();
+        messageListenerContainer.setPubSubNoLocal(true);
         messageListenerContainer.setConnectionFactory(connectionFactory);
         messageListenerContainer.setDestinationName(destination);
         messageListenerContainer.setMessageListener(listener);
