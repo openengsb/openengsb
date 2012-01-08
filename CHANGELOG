@@ -1,3 +1,47 @@
+openengsb-2.4.0 2012-01-08
+--------------------------------------------
+
+This release was manly required for the addition of the easy WSDL build configuration for domains. In addition a feature
+had been added making the OpenEngSB version available easily via an http service at e.g. 
+localhost:8090/system/framework.version.info. The correlationId and replyQueue fields are now optionally supported if
+using JMS. In addition various minor enhancements to the documentation had been done and the build had been optimized 
+further. Various bugs in runtime (jetty, archetypes, offline usagage) had been fixed.
+
+### Details
+** Bug
+    * [OPENENGSB-2555] - new way of handling source distribution breaks exec-script
+    * [OPENENGSB-2559] - OpenEngSB does not start when used offline
+    * [OPENENGSB-2576] - Adapt domain/connector archetype to latest version
+    * [OPENENGSB-2578] - Oxygen project has the wrong files/folders referenced
+    * [OPENENGSB-2579] - Do NOT use tabs in code/src files
+    * [OPENENGSB-2580] - If the parent is a snapshot it could not be found in the current setup
+    * [OPENENGSB-2589] - Jetty log output is shown
+    * [OPENENGSB-2597] - Archetypes contain values specific for the openengsb alone
+
+** Improvement
+    * [OPENENGSB-2571] - Unify openengsb framework connectors/domains with "external" domains connectors
+    * [OPENENGSB-2573] - Include documentation about HermesJms into documentation explaining remoting
+    * [OPENENGSB-2584] - Include issuetracker, buildserver and inceptionYear from root
+    * [OPENENGSB-2590] - Configure releases via mvn release:prepare/perform again
+    * [OPENENGSB-2601] - Duplicated docbkx version in parents/shared and openengsb/root
+
+** Library Upgrade
+    * [OPENENGSB-2592] - Upgrade to openengsb-root-30
+
+** New Feature
+    * [OPENENGSB-2379] - support correlationID in JMS-port
+    * [OPENENGSB-2574] - Include easy configuration for wsdl for domains into the domain parent
+    * [OPENENGSB-2604] - Make openengsb version available via simple http service
+
+** Task
+    * [OPENENGSB-2512] - Release openengsb-framework 2.4.0
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+
+
 openengsb-2.3.0 2012-01-01
 --------------------------------------------
 
