@@ -187,6 +187,7 @@ This project includes:
   OpenEngSB :: Framework :: Console under Apache 2
   OpenEngSB :: Framework :: Engineering Database under Apache 2
   OpenEngSB :: Framework :: Engineering Knowledge Base under Apache 2
+  OpenEngSB :: Framework :: Info under Apache 2
   OpenEngSB :: Framework :: Integration Tests under Apache 2
   OpenEngSB :: Framework :: Parent under Apache 2
   OpenEngSB :: Framework :: Persistence Layer under Apache 2
@@ -253,6 +254,7 @@ This project includes:
   OPS4J Pax Tinybundles under ALv2
   OPS4J Pax Url - mvn: under ALv2
   OPS4J Pax Url - wrap: under ALv2
+  OPS4J Pax Web - Extender - Whiteboard under ALv2
   OPS4J Pax Wicket :: Service under ALv2
   OPS4J Pax Wicket :: Test Helper under ALv2
   org.osgi.compendium under Apache License, Version 2.0
