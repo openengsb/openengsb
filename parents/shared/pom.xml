@@ -59,6 +59,9 @@
     <!-- core versions -->
     <karaf.version>2.2.5</karaf.version>
     <felix.gogo.version>0.6.1</felix.gogo.version>
+    <pax.exam.version>2.3.0</pax.exam.version>
+    <pax.wicket.version>0.7.5</pax.wicket.version>
+    <pax.web.version>1.0.8</pax.web.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>3</openengsb.version.min>
     <openengsb.version.max>4</openengsb.version.max>
@@ -84,7 +87,6 @@
     <jaxws.api.version>1.1</jaxws.api.version>
     <jsr311.api.version>1.8.0</jsr311.api.version>
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
-    <pax.exam.version>2.3.0</pax.exam.version>
     <karaf.exam.version>0.5.0</karaf.exam.version>
     <saaj.api.version>1.8.0</saaj.api.version>
     <saaj.impl.version>1.3.9_2</saaj.impl.version>
@@ -98,7 +100,6 @@
     <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
     <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
     <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
-    <pax.wicket.version>0.7.5</pax.wicket.version>
     <jackson.version>1.9.3</jackson.version>
     <commons.collections.version>3.2.1</commons.collections.version>
     <commons.io.version>2.1</commons.io.version>
@@ -579,6 +580,52 @@
         <groupId>org.openengsb.forks</groupId>
         <artifactId>org.odlabs.wiquery</artifactId>
         <version>${wiquery.forked.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.web</groupId>
+        <artifactId>pax-web-extender-whiteboard</artifactId>
+        <version>${pax.web.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-auth-roles</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-datetime</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-devutils</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-extensions</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-jmx</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-velocity</artifactId>
+        <version>${wicket.version}</version>
+        <optional>true</optional>
+>>>>>>> 5c742e9... [OPENENGSB-2379] Add support to retrieve version information
       </dependency>
       <dependency>
         <groupId>org.apache.xmlrpc</groupId>
