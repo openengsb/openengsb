@@ -30,10 +30,16 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.crypto.SecretKey;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -41,9 +47,6 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.api.workflow.model.RuleBaseElementId;
-import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.JsonUtils;
@@ -61,9 +64,9 @@ import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.SessionCallback;
+import org.springframework.jms.support.JmsUtils;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -90,6 +93,18 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         String encryptedMessage = encryptMessage(secureRequest, sessionKey);
 
         String result = sendMessage(template, encryptedMessage);
+
+        verifyEncryptedResult(sessionKey, result);
+    }
+
+    @Test
+    public void startSimpleWorkflowWithReplyQeueu_ShouldReturn42() throws Exception {
+        JmsTemplate template = prepareActiveMqConnection();
+        String secureRequest = prepareRequest(METHOD_CALL_STRING, "admin", "password");
+        SecretKey sessionKey = generateSessionKey();
+        String encryptedMessage = encryptMessage(secureRequest, sessionKey);
+
+        String result = sendMessageWithCorrelationId(template, encryptedMessage);
 
         verifyEncryptedResult(sessionKey, result);
     }
@@ -184,7 +199,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         JsonUtils.convertResult(methodResult);
         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) methodResult.getResult().getArg();
         ExampleResponseModel model = (ExampleResponseModel) ModelUtils.generateModelOutOfWrapper(wrapper);
-        
+
         assertThat(decryptedResult.contains("successful"), is(true));
         assertThat(wrapper.getModelClass(), is(ExampleResponseModel.class.getName()));
         assertThat(model.getResult(), is("successful"));
@@ -194,6 +209,28 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         template.convertAndSend("receive", encryptedMessage);
         String result = (String) template.receiveAndConvert("12345");
         return result;
+    }
+
+    private String sendMessageWithCorrelationId(JmsTemplate template, final String encryptedMessage) {
+        String resultString = template.execute(new SessionCallback<String>() {
+            @Override
+            public String doInJms(Session session) throws JMSException {
+                Queue queue = session.createQueue("receive");
+                MessageProducer producer = session.createProducer(queue);
+                TemporaryQueue tempQueue = session.createTemporaryQueue();
+                MessageConsumer consumer = session.createConsumer(tempQueue);
+                TextMessage message = session.createTextMessage(encryptedMessage);
+                message.setJMSReplyTo(tempQueue);
+                producer.send(message);
+                TextMessage response = (TextMessage) consumer.receive(1000);
+                assertThat("server should set the value of the correltion ID to the value of the received message id",
+                    response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                JmsUtils.closeMessageProducer(producer);
+                JmsUtils.closeMessageConsumer(consumer);
+                return response.getText();
+            }
+        }, true);
+        return resultString;
     }
 
     private JmsTemplate prepareActiveMqConnection() throws IOException {
