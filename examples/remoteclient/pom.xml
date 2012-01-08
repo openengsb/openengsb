@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.openengsb.examples</groupId>
     <artifactId>openengsb-examples-parent</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
+    <version>2.4.0</version>
   </parent>
 
   <groupId>org.openengsb.examples</groupId>
   <artifactId>org.openengsb.examples.remoteclient</artifactId>
-  <version>2.4.0-SNAPSHOT</version>
+  <version>2.4.0</version>
   <packaging>jar</packaging>
 
   <name>OpenEngSB :: Examples :: Java Remote Client</name>
