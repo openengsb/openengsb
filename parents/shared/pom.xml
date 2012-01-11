@@ -582,7 +582,7 @@
         <artifactId>pax-web-extender-whiteboard</artifactId>
         <version>${pax.web.version}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
         <version>${wicket.version}</version>
@@ -621,7 +621,7 @@
         <artifactId>wicket-velocity</artifactId>
         <version>${wicket.version}</version>
         <optional>true</optional>
-      </dependency>
+      </dependency> -->
       <dependency>
         <groupId>org.apache.xmlrpc</groupId>
         <artifactId>xmlrpc-client</artifactId>
