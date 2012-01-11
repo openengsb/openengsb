@@ -59,6 +59,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
@@ -125,9 +126,7 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
     private AjaxButton deleteButton;
-
     private AjaxButton submitButton;
-    
     private AjaxButton jsonButton;
 
     @SuppressWarnings("serial")
@@ -389,34 +388,70 @@ public class TestClient extends BasePage {
             }
         };
     }   
+        
+    /**
+     * Returns the ID of the currently selected Service or null if none was selected
+     * @return the ID of the  currently selected Service or null if none was selected
+     */
+    private ServiceId fetchCurrentSelectService(){
+        return call.getService();
+    }
     
     /**
-     * Displays the corresponding message to the currently selected Method of the currently active Service in the "ServiceTree"
+     * Returns the ID of the currently selected Method or null if none was selected
+     * @return the ID of the  currently selected Method or null if none was selected
      */
-    private void displayJSONMessages(){
+    private MethodId fetchCurrentSelectMethod(){
+        return call.getMethod(); 
+    }
         
-        String result = "";      
-        
-        //fetch current selected Service and Method ID
-        ServiceId serviceId = call.getService();
-        MethodId mid = call.getMethod();  
-        
-        //Guard Block if no Method or Service is detected
-        if(serviceId == null){
-            String serviceNotSet = new StringResourceModel("json.view.ServiceNotSet", this, null).getString();
-            info(serviceNotSet);
-            return;
-        }        
-        if(mid == null){
-            String methodNotSet = new StringResourceModel("json.view.MethodNotSet", this, null).getString();
-            info(methodNotSet);
-            return;
+    /**
+     * Returns a Standard MethodCall with of the selected Method
+     * @param methodId Id of the refered Method
+     * @return a Standard MethodCall with of the selected Method
+     */
+    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId){
+        Class<?> []classes = methodId.getArgumentTypesAsClasses();
+        List classList = new ArrayList();
+        for(Class<?> clazz : classes) {
+            classList.add(clazz.getName());
         }
-        
-        //Construct a Standard MethodCall with of the selected Method
-        org.openengsb.core.api.remote.MethodCall mc = new org.openengsb.core.api.remote.MethodCall(mid.getName(),call.getArgumentsAsArray());
-        
-        //add nessecary metaData to the Message
+        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(),call.getArgumentsAsArray(),classList);
+
+    }
+
+    /**
+     * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
+     * Returns this MethodCallRequest.
+     * @param serviceId Id of the refered Service
+     * @param methodId  Id of the refered Method
+     * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
+     */
+    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId){
+        org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
+        realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
+        return new MethodCallRequest(realMethodCall,"randomCallId");
+    }
+    
+    /**
+     * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message 
+     * Returns this SecureRequest.
+     * @param serviceId Id of the refered Service
+     * @param methodId  Id of the refered Method
+     * @return a SecureRequest corresponding to the given ServiceId and MethodId
+     */
+    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId){
+        MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
+        BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
+        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+    }
+    
+    /**
+     * create nessecary MetaData for the Json Message
+     * @param serviceId to fetch the context Data of the message
+     * @return a Map with the nessecary MetaData for the Message
+     */
+    private Map<String,String> createMetaDataForMethodCallRequest(ServiceId serviceId){
         Map<String,String> metaData = new HashMap<String,String>();
         if(serviceId.getServiceId() == null){
             metaData.put("serviceId", serviceId.getDomainName());
@@ -424,30 +459,37 @@ public class TestClient extends BasePage {
             metaData.put("serviceId", serviceId.getServiceId());
         }
         metaData.put("contextId", this.getSessionContextId());
-        mc.setMetaData(metaData);
-        
-        //Wrap the MethodCall in a MethodCallRequest
-        MethodCallRequest mcr = new MethodCallRequest(mc,"randomCallId");
-        
-        //Wrap the MethodCallRequest in a SecureRequest, this adds the authentication block to the Message
-        BeanDescription auth = BeanDescription.fromObject(new Password("yourpassword"));
-        SecureRequest secureRequest = SecureRequest.create(mcr, "yourusername", auth);
-        
-        //Parse the constructed "dummy" request via an ObjectMapper to a JsonMessage String
+        return metaData;
+    }
+    
+    /**
+     * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
+     * @param secureRequest the request to parse to a JsonString
+     * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
+     */
+    private String parseRequestToJsonString(SecureRequest secureRequest){
+        String jsonResult = "";
         try {
-            result = JsonUtils.createObjectMapperWithIntroSpectors().writeValueAsString(secureRequest);            
+            jsonResult = JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false).writeValueAsString(secureRequest);            
         } catch (IOException ex) {
             handleExceptionWithFeedback(ex);
+            jsonResult = "";
         }
-        String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
-        
-        //filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
-        //TODO replace this with stable filter mechanism
+        return jsonResult;
+    }
+    
+    /**
+     * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
+     * TODO [Openengsb 1411] replace this with stable filter mechanism
+     * @param jsonMessage Message to filter
+     * @return the jsonMessage filtered from the unnessecary data
+     */
+    private String filterUnnessecaryArgumentsFromJsonMessage(String jsonMessage){
         String typeToReplace = ",\"type\":";
-        while(result.contains(typeToReplace)){
-            int posAfterType = result.indexOf(typeToReplace)+typeToReplace.length();
-            String firstPart = result.substring(0,result.indexOf(typeToReplace));
-            String lastPart = result.substring(posAfterType,result.length());
+        while(jsonMessage.contains(typeToReplace)){
+            int posAfterType = jsonMessage.indexOf(typeToReplace)+typeToReplace.length();
+            String firstPart = jsonMessage.substring(0,jsonMessage.indexOf(typeToReplace));
+            String lastPart = jsonMessage.substring(posAfterType,jsonMessage.length());
             
             int endOfArgs = lastPart.indexOf("}]");
             int firstSemicolon = lastPart.indexOf(",");
@@ -455,12 +497,32 @@ public class TestClient extends BasePage {
             if(firstSemicolon < endOfArgs){
                 lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
             }
-            result = firstPart + lastPart;
+            jsonMessage = firstPart + lastPart;
         }
-        result = result.replaceAll(",\"processId\":null,\"origin\":null", "");
-        
-        //Display the JsonMessage with a given Prefix
-        info(jsonPrefix+" "+result);
+        jsonMessage = jsonMessage.replaceAll(",\"processId\":null,\"origin\":null", "");
+        return jsonMessage;
+    }
+    
+    /**
+     * Displays the corresponding message to the currently selected Method of the currently active Service in the "ServiceTree"
+     */
+    private void displayJSONMessages(){   
+        ServiceId serviceId = fetchCurrentSelectService();
+        MethodId methodId = fetchCurrentSelectMethod();      
+        if(serviceId == null){
+            String serviceNotSet = new StringResourceModel("json.view.ServiceNotSet", this, null).getString();
+            info(serviceNotSet);
+            return;
+        }        
+        if(methodId == null){
+            String methodNotSet = new StringResourceModel("json.view.MethodNotSet", this, null).getString();
+            info(methodNotSet);
+            return;
+        }       
+        String jsonResult = parseRequestToJsonString(createSecureRequest(serviceId, methodId));
+        String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
+        jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
+        info(String.format("%s %s", jsonPrefix, jsonResult));
     }   
 
     public TestClient(ServiceId jumpToService) {
@@ -548,15 +610,15 @@ public class TestClient extends BasePage {
         }
     }
 
-    private Method getMethodOfService(Object service, MethodId mid) throws NoSuchMethodException{
-        Method m;
-        if (mid == null) {
-            String s = new StringResourceModel("serviceError", this, null).getString();
-            error(s);
+    private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException{
+        Method method;
+        if (methodId == null) {
+            String string = new StringResourceModel("serviceError", this, null).getString();
+            error(string);
             return null;
         }
-        m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
-        return m;
+        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+        return method;
     }
     
     protected void performCall() {  
@@ -567,20 +629,20 @@ public class TestClient extends BasePage {
             handleExceptionWithFeedback(e1);
             return;
         }
-        Method m;
+        Method method;
         try {
-            m = getMethodOfService(service,call.getMethod());
+            method = getMethodOfService(service,call.getMethod());
         } catch (NoSuchMethodException ex) {
             throw new IllegalArgumentException(ex);
         }    
-        if(m == null){
+        if(method == null){
             return;
         }
         
         try {
-            Object result = m.invoke(service, call.getArgumentsAsArray());
+            Object result = method.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
-            Class<?> returnType = m.getReturnType();
+            Class<?> returnType = method.getReturnType();
             if (returnType.equals(void.class)) {
                 return;
             }
