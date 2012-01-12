@@ -53,6 +53,9 @@
     </config>
 
     <!-- Well, those are comming from karaf; as long as the karaf version is right that one is right too... -->
+    <feature>karaf-framework</feature>
+    <feature>kar</feature>
+    <feature>eventadmin</feature>
     <feature version="${spring.version}">spring</feature>
     <feature version="${spring.version}">spring-web</feature>
     <feature>spring-dm</feature>

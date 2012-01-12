@@ -172,7 +172,9 @@
                 <!-- Missing Karaf Features -->
                 <feature>config</feature>
                 <feature>management</feature>
-                <feature>wrapper</feature>
+                <feature>karaf-framework</feature>
+                <feature>kar</feature>
+                <feature>eventadmin</feature>
                 <feature>spring/${spring.version}</feature>
                 <feature>spring-web/${spring.version}</feature>
                 <feature>spring-dm</feature>
