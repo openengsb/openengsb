@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>2.5.0-SNAPSHOT</version>
+    <version>2.4.1-SNAPSHOT</version>
     <relativePath>../../parents/domain/</relativePath>
   </parent>
 
@@ -36,7 +36,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domain</groupId>
   <artifactId>org.openengsb.domain.example</artifactId>
-  <version>2.5.0-SNAPSHOT</version>
+  <version>2.4.1-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Example</name>
 
@@ -133,13 +133,13 @@
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.api</artifactId>
-      <version>2.5.0-SNAPSHOT</version>
+      <version>2.4.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
-      <version>2.5.0-SNAPSHOT</version>
+      <version>2.4.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
