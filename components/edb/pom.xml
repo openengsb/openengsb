@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.openengsb.framework</groupId>
     <artifactId>openengsb-framework-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <relativePath>../../parents/framework</relativePath>
   </parent>
 
@@ -36,7 +36,7 @@
 
   <groupId>org.openengsb.framework</groupId>
   <artifactId>org.openengsb.framework.edb</artifactId>
-  <version>2.4.1</version>
+  <version>2.4.2-SNAPSHOT</version>
   <name>OpenEngSB :: Framework :: Engineering Database</name>
 
   <packaging>bundle</packaging>
