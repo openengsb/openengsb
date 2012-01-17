@@ -139,10 +139,10 @@ This project includes:
   Jackson under The Apache Software License, Version 2.0
   jansi under The Apache Software License, Version 2.0
   JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
+  Java Architecture for XML Binding under CDDL 1.1 or GPL2 w/ CPE
   Java Rest Annotations under The Apache Software License, Version 2.0
   JavaMail 1.4 under The Apache Software License, Version 2.0
-  JAXB API bundle for GlassFish V3 under CDDL 1.1 or GPL2 w/ CPE
-  JAXB RI under CDDL 1.1 or GPL2 w/ CPE
+  JAXB Reference Implementation under CDDL 1.1 or GPL2 w/ CPE
   JAXB XJC under CDDL 1.1 or GPL2 w/ CPE
   jBPM :: Flow under The Apache Software License, Version 2.0
   jBPM :: Flow Builder under The Apache Software License, Version 2.0
@@ -290,15 +290,11 @@ This project includes:
   spring-web under Apache License, Version 2.0
   Stax2 API under The BSD License
   Streaming API for XML (STAX API 1.0) under The Apache Software License, Version 2.0
-  Velocity under Apache License, Version 2.0
   Web Services Metadata 2.0 under The Apache Software License, Version 2.0
   Wicket under The Apache Software License, Version 2.0
   Wicket Auth Roles under The Apache Software License, Version 2.0
-  Wicket Date/Time under The Apache Software License, Version 2.0
   Wicket Development Utilities under The Apache Software License, Version 2.0
   Wicket Extensions under The Apache Software License, Version 2.0
-  Wicket JMX under The Apache Software License, Version 2.0
-  Wicket Velocity under The Apache Software License, Version 2.0
   Woodstox under The Apache Software License, Version 2.0
   WSDL4J under CPL
   WSS4J under The Apache Software License, Version 2.0
