@@ -1,3 +1,17 @@
+openengsb-2.4.1 2012-01-17
+--------------------------------------------
+
+This is a bugfix release fixing several issues that occured at runtime.
+
+** Bug
+    * [OPENENGSB-2608] - Typo in OpenEngSBFileModel
+    * [OPENENGSB-2683] - Not all features are started/downloaded for karaf/openengsb
+    * [OPENENGSB-2695] - switching context in UI yields internal error
+
+** Task
+    * [OPENENGSB-2669] - Release framework 2.4.1
+
+
 openengsb-2.4.0 2012-01-08
 --------------------------------------------
 
