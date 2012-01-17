@@ -44,7 +44,7 @@
   <groupId>org.openengsb.framework</groupId>
   <artifactId>openengsb-framework-root</artifactId>
   <packaging>pom</packaging>
-  <version>2.4.1-SNAPSHOT</version>
+  <version>2.4.1</version>
   <name>OpenEngSB :: Framework :: Root</name>
 
   <description>
