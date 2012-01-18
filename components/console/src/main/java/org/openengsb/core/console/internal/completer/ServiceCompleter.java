@@ -109,6 +109,6 @@ public class ServiceCompleter implements Completer {
 
 
     private void addServiceIds(Collection<String> strings) {
-        strings.addAll(servicesHelper.getRunningServiceIds());
+            strings.addAll(servicesHelper.getRunningServiceIds());
     }
 }

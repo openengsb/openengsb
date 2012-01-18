@@ -17,9 +17,6 @@
 
 package org.openengsb.core.console.internal.util;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,14 +24,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
@@ -89,30 +82,6 @@ public class ServicesHelperTest {
         serviceHelper = new ServicesHelper();
         serviceHelper.setOsgiUtilsService(osgiServiceMock);
         serviceHelper.setWiringService(wiringServiceMock);
-    }
-
-    @Test
-    public void testGetRunningServices() throws Exception {
-        List<Domain> runningServices = serviceHelper.getRunningServices();
-        assertTrue(runningServices.size() > 0);
-        for (Domain s : runningServices) {
-            assertThat(s.getAliveState(), is(AliveState.OFFLINE));
-            assertThat(s.getInstanceId(), is("id"));
-        }
-    }
-
-    @Test
-    public void testToGetDomainsAndEndpoints() {
-        Map<DomainProvider, List<? extends Domain>> domainProviders = serviceHelper.getDomainsAndEndpoints();
-        Set<DomainProvider> providers = domainProviders.keySet();
-        assertTrue(providers.size() > 0);
-        DomainProvider next = providers.iterator().next();
-        assertThat(next.getDomainInterface().getName(), is(NullDomain.class.getName()));
-        assertTrue(domainProviders.get(next).size() > 0);
-        for (Domain s : domainProviders.get(next)) {
-            assertThat(s.getAliveState(), is(AliveState.OFFLINE));
-            assertThat(s.getInstanceId(), is("id"));
-        }
     }
 
 }

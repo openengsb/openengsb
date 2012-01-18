@@ -19,7 +19,6 @@ package org.openengsb.core.console.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +48,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  *
@@ -61,8 +61,6 @@ public class ServicesHelper {
     private ConnectorManager serviceManager;
     private InputStream keyboard;
     private BundleContext bundleContext;
-    private Map<String, DomainProvider> domainProviderMap;
-    private PrintStream console;
 
 
     public ServicesHelper() {
@@ -77,68 +75,46 @@ public class ServicesHelper {
             .getService(org.apache.felix.service.command.CommandProcessor.class);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
         keyboard = commandSession.getKeyboard();
-        console = commandSession.getConsole();
     }
 
     /**
      * this method prints out all available services and their alive state
      */
     public void listRunningServices() {
-        final Locale defaultLocale = Locale.getDefault();
-        List<String> formatedOutput = new ArrayList<String>();
-        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints = getDomainsAndEndpoints();
-        Set<DomainProvider> domainProviders = domainsAndEndpoints.keySet();
-        for (final DomainProvider domainProvider : domainProviders) {
-            final List<? extends Domain> domainEndpoints = domainsAndEndpoints.get(domainProvider);
-            try {
-                formatedOutput.addAll(SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
+
+        try {
+            final List<String> formatedOutput =
+                SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
                     @Override
                     public List<String> call() throws Exception {
-                        List<String> formatedOutput = new ArrayList<String>();
-                        formatedOutput.add(OutputStreamFormater
-                            .formatValues(domainProvider.getName().getString(defaultLocale),
-                                domainProvider.getDescription().getString(defaultLocale)));
-                        for (Domain serviceReference : domainEndpoints) {
-                            String id = serviceReference.getInstanceId();
-                            AliveState aliveState = serviceReference.getAliveState();
-                            if (id != null) {
-                                formatedOutput.add(OutputStreamFormater.formatValues(9, id, aliveState.toString()));
-                            }
+                        List<String> tmp = new ArrayList<String>();
+
+                        List<ServiceReference> listServiceReferences =
+                            osgiUtilsService.listServiceReferences(Domain.class);
+                        for (ServiceReference ref : listServiceReferences) {
+                            Domain service = osgiUtilsService.getService(Domain.class, ref);
+                            tmp
+                                .add(String
+                                    .format("%s %s", ref.getProperty("id"), service.getAliveState().toString()));
                         }
-                        return formatedOutput;
+                        return tmp;
                     }
-                }));
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+                });
+            for (String s : formatedOutput) {
+                OutputStreamFormater.printValue(s);
             }
-        }
-        for (String s : formatedOutput) {
-            OutputStreamFormater.printValue(s);
+        } catch (ExecutionException e) {
         }
     }
 
 
-    /**
-     * returns all running services
-     */
-    public List<Domain> getRunningServices() {
-        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints = getDomainsAndEndpoints();
-        List<Domain> endpoints = new ArrayList<Domain>();
-        Set<DomainProvider> domainProviders = domainsAndEndpoints.keySet();
-        for (DomainProvider provider : domainProviders) {
-            endpoints.addAll(domainsAndEndpoints.get(provider));
-        }
-        return endpoints;
-    }
-
-    public Map<DomainProvider, List<? extends Domain>> getDomainsAndEndpoints() {
-        Map<DomainProvider, List<? extends Domain>> domainsAndEndpoints
-            = new HashMap<DomainProvider, List<? extends Domain>>();
+    public Map<DomainProvider, Domain> getDomainsAndEndpoints() {
+        Map<DomainProvider, Domain> domainsAndEndpoints = new HashMap<DomainProvider, Domain>();
         List<DomainProvider> serviceList = getDomainProvider();
 
         for (final DomainProvider domainProvider : serviceList) {
             Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
-            List<? extends Domain> domainEndpoints = wiringService.getDomainEndpoints(domainInterface, "*");
+            Domain domainEndpoints = osgiUtilsService.getService(domainInterface);
             domainsAndEndpoints.put(domainProvider, domainEndpoints);
         }
         return domainsAndEndpoints;
@@ -194,27 +170,36 @@ public class ServicesHelper {
      * returns a list of all ids
      */
     public List<String> getRunningServiceIds() {
-        final List<Domain> runningServices = getRunningServices();
+
+        List<ServiceReference> serviceReferences = osgiUtilsService.listServiceReferences(Domain.class);
+
         List<String> result = new ArrayList<String>();
-        try {
-            result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
-                @Override
-                public List<String> call() throws Exception {
-                    List<String> ids = new ArrayList<String>();
-                    for (Domain d : runningServices) {
-                        String id = d.getInstanceId();
-                        if (id != null) {
-                            ids.add(id);
-                        }
-                    }
-                    return ids;
-                }
-            });
-        } catch (ExecutionException e) {
-            System.err.println("An error occurred during deleting the service");
-            e.printStackTrace();
+        for (ServiceReference ref : serviceReferences) {
+            Domain service = osgiUtilsService.getService(Domain.class, ref);
+            result.add((String) ref.getProperty("id"));
         }
         return result;
+        //final List<Domain> runningServices = getRunningServices();
+        //List<String> result = new ArrayList<String>();
+        //try {
+        //    result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
+        //        @Override
+        //        public List<String> call() throws Exception {
+        //            List<String> ids = new ArrayList<String>();
+        //            for (Domain d : runningServices) {
+        //                String id = d.getInstanceId();
+        //                if (id != null) {
+        //                    ids.add(id);
+        //                }
+        //            }
+        //            return ids;
+        //        }
+        //    });
+        //} catch (ExecutionException e) {
+        //    System.err.println("An error occurred during deleting the service");
+        //    e.printStackTrace();
+        //}
+        //return result;
     }
 
     public void createService(String domainProviderName, boolean force) {
@@ -229,12 +214,11 @@ public class ServicesHelper {
         // get the connector which should be created
         ConnectorProvider connectorProvider = getConnectorToCreate(domainProviderId);
 
-        ServiceDescriptor descriptor = connectorProvider.getDescriptor();
 
         OutputStreamFormater.printValue("Please enter an ID");
         String id = readUserInput();
 
-
+        ServiceDescriptor descriptor = connectorProvider.getDescriptor();
         OutputStreamFormater.printValue(String.format("Please enter the attributes for %s, keep empty for default",
             descriptor.getName().getString(Locale.getDefault())));
 
@@ -242,13 +226,13 @@ public class ServicesHelper {
         Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes());
         Map<String, Object> properties = new HashMap<String, Object>();
 
-
         ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
         ConnectorId idProvider = new ConnectorId(domainProviderId, connectorProvider.getId(), id);
         if (force) {
             serviceManager.forceCreate(idProvider, connectorDescription);
         } else {
             OutputStreamFormater.printValue("Do you want to create the connector with the following attributes:", "");
+            OutputStreamFormater.printValue("Connector ID", id);
             for (String key : attributeMap.keySet()) {
                 OutputStreamFormater.printValue(key, attributeMap.get(key));
             }
@@ -271,16 +255,39 @@ public class ServicesHelper {
             String fieldName = attributeDefinition.getName().getString(Locale.getDefault());
             String description = attributeDefinition.getDescription().getString(Locale.getDefault());
             String defaultValue = attributeDefinition.getDefaultValue().getString(Locale.getDefault());
+
+            String userValue;
             OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
                 description, defaultValue));
-            String userValue = readUserInput();
-            if (userValue.equals("") || userValue.endsWith("\n")) {
+            if (!attributeDefinition.getOptions().isEmpty()) {
+                userValue = letUserChooseFromOption(attributeDefinition.getOptions());
+            } else {
+                userValue = readUserInput();
+            }
+            if ("".equals(userValue) || "\n".equals(userValue)) {
                 userValue = defaultValue;
             }
             attributeMap.put(fieldName, userValue);
         }
-
         return attributeMap;
+    }
+
+    private String letUserChooseFromOption(List<AttributeDefinition.Option> options) {
+        for (int i = 0; i < options.size(); i++) {
+            AttributeDefinition.Option option = options.get(i);
+            OutputStreamFormater
+                .printTabbedValues(9, String.format("[%s]", i), String.format("%s (%s)", option.getLabel().getString
+                    (Locale.getDefault()), option.getValue()));
+        }
+        String s = readUserInput();
+        int pos = 0;
+        try {
+            pos = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid Input");
+            return "";
+        }
+        return options.get(pos).getValue();
     }
 
     private ConnectorProvider getConnectorToCreate(String domainProviderId) {
@@ -310,10 +317,10 @@ public class ServicesHelper {
         try {
             int read = keyboard.read();
             while (read != '\n') {
-                if (read == 127) {
+                if (read == 127) { // backspace
                     int lastPos = positionString.length() - 1;
                     positionString = positionString.substring(0, lastPos >= 0 ? lastPos : 0);
-                    System.out.println("\n"+positionString);
+                    System.out.println(positionString);
                     System.out.flush();
                 } else {
                     char read1 = (char) read;
