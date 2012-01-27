@@ -60,7 +60,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
-import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -74,10 +73,8 @@ import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
-import org.openengsb.core.api.security.annotation.SecurityAttribute;
-import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecureRequest;
-import org.openengsb.core.api.security.model.SecurityAttributeEntry;
+import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.JsonUtils;
@@ -91,7 +88,6 @@ import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
-import org.openengsb.ui.common.util.MethodUtil;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
@@ -442,8 +438,8 @@ public class TestClient extends BasePage {
      */
     private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId){
         MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
-        BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
-        return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
+        BeanDescription beanDescription = BeanDescription.fromObject(new UsernamePasswordAuthenticationInfo("admin", "password"));
+        return SecureRequest.create(methodCallRequest,beanDescription);
     }
     
     /**
@@ -496,6 +492,8 @@ public class TestClient extends BasePage {
             
             if(firstSemicolon < endOfArgs){
                 lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
+            }else{
+                lastPart = lastPart.substring(lastPart.indexOf("}]"), lastPart.length());
             }
             jsonMessage = firstPart + lastPart;
         }
