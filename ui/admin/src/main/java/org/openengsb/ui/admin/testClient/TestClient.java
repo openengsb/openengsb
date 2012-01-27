@@ -90,7 +90,6 @@ import org.openengsb.ui.admin.model.ServiceId;
 import org.openengsb.ui.admin.organizeGlobalsPage.OrganizeGlobalsPage;
 import org.openengsb.ui.admin.organizeImportsPage.OrganizeImportsPage;
 import org.openengsb.ui.common.model.LocalizableStringModel;
-import org.openengsb.ui.common.util.MethodUtil;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import org.slf4j.Logger;
@@ -501,6 +500,8 @@ public class TestClient extends BasePage {
             
             if(firstSemicolon < endOfArgs){
                 lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
+            }else{
+                lastPart = lastPart.substring(lastPart.indexOf("}]"), lastPart.length());
             }
             jsonMessage = firstPart + lastPart;
         }
