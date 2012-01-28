@@ -40,6 +40,18 @@
     <ref component-id="queryInterfaceService"/>
   </service>
   
+  <!-- Persist Interface -->
+  <bean id="persistInterfaceService" class="org.openengsb.core.ekb.internal.PersistInterfaceService">
+    <property name="edbService" ref="edbService"/>
+  </bean>
+  
+  <service interface="org.openengsb.core.api.ekb.PersistInterface">
+    <service-properties>
+      <entry key="location.root" value="ekbPersistService" />
+    </service-properties>
+    <ref component-id="persistInterfaceService"/>
+  </service>
+  
   <!-- Model Registry -->
   <bean id="modelRegistryService" class="org.openengsb.core.ekb.internal.ModelRegistryService" />
   
