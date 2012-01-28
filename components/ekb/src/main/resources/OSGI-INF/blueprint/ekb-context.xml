@@ -21,6 +21,11 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
   
+  <!-- EDB Converter -->
+  <bean id="edbConverter" class="org.openengsb.core.ekb.internal.EDBConverter">
+    <property name="edbService" ref="edbService"/>
+  </bean>
+  
   <!-- Model Factory -->
   <bean id="modelFactoryService" class="org.openengsb.core.ekb.internal.ModelFactoryService" />
   
@@ -31,6 +36,7 @@
   <!-- Query Interface -->
   <bean id="queryInterfaceService" class="org.openengsb.core.ekb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
+    <property name="edbConverter" ref="edbConverter"/>
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.QueryInterface">
@@ -43,6 +49,7 @@
   <!-- Persist Interface -->
   <bean id="persistInterfaceService" class="org.openengsb.core.ekb.internal.PersistInterfaceService">
     <property name="edbService" ref="edbService"/>
+    <property name="edbConverter" ref="edbConverter"/>
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.PersistInterface">

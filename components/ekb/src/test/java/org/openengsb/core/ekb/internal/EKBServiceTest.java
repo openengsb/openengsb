@@ -76,6 +76,11 @@ public class EKBServiceTest {
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
 
         service.setEdbService(edbService);
+        
+        EDBConverter edbConverter = new EDBConverter();
+        edbConverter.setEdbService(edbService);
+        
+        service.setEdbConverter(edbConverter);
     }
 
     @Test
