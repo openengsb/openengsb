@@ -39,6 +39,7 @@ public class PersistInterfaceService implements PersistInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistInterfaceService.class);
 
     private EngineeringDatabaseService edbService;
+    private EDBConverter edbConverter;
     
     @Override
     public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
@@ -79,5 +80,9 @@ public class PersistInterfaceService implements PersistInterface {
     
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
+    }
+    
+    public void setEdbConverter(EDBConverter edbConverter) {
+        this.edbConverter = edbConverter;
     }
 }
