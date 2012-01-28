@@ -58,14 +58,17 @@ public class EDBConverter {
             List<EDBObject> objects) {
         List<T> models = new ArrayList<T>();
         for (EDBObject object : objects) {
-            models.add(convertEDBObjectToModel(model, object));
+            T instance = convertEDBObjectToModel(model, object);
+            if (instance != null) {
+                models.add(instance);
+            }
         }
         return models;
     }
-    
+
     /**
-     * Creates an instance of the given class object. If it is an OpenEngSBModel, a model is created,
-     * else this method tries to generate a new instance by calling the standard constructor.
+     * Creates an instance of the given class object. If it is an OpenEngSBModel, a model is created, else this method
+     * tries to generate a new instance by calling the standard constructor.
      */
     private Object createNewInstance(Class<?> model) {
         if (model.isInterface() && OpenEngSBModel.class.isAssignableFrom(model)) {
@@ -83,8 +86,8 @@ public class EDBConverter {
     }
 
     /**
-     * Converts an EDBObject to a model by analyzing the object and trying to call the corresponding
-     * setters of the model.
+     * Converts an EDBObject to a model by analyzing the object and trying to call the corresponding setters of the
+     * model.
      */
     private Object convertEDBObjectToUncheckedModel(Class<?> model, EDBObject object) {
         Object instance = createNewInstance(model);
