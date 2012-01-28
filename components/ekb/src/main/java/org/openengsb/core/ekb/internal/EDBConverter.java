@@ -43,11 +43,17 @@ public class EDBConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(EDBConverter.class);
     private EngineeringDatabaseService edbService;
 
+    /**
+     * Converts an EDBObject to a model of the given model type.
+     */
     @SuppressWarnings("unchecked")
     public <T extends OpenEngSBModel> T convertEDBObjectToModel(Class<T> model, EDBObject object) {
         return (T) convertEDBObjectToUncheckedModel(model, object);
     }
 
+    /**
+     * Converts a list of EDBObjects to a list of models of the given model type.
+     */
     public <T extends OpenEngSBModel> List<T> convertEDBObjectsToModelObjects(Class<T> model,
             List<EDBObject> objects) {
         List<T> models = new ArrayList<T>();
@@ -57,6 +63,10 @@ public class EDBConverter {
         return models;
     }
     
+    /**
+     * Creates an instance of the given class object. If it is an OpenEngSBModel, a model is created,
+     * else this method tries to generate a new instance by calling the standard constructor.
+     */
     private Object createNewInstance(Class<?> model) {
         if (model.isInterface() && OpenEngSBModel.class.isAssignableFrom(model)) {
             return ModelUtils.createModelObject(model);
@@ -72,6 +82,10 @@ public class EDBConverter {
         return null;
     }
 
+    /**
+     * Converts an EDBObject to a model by analyzing the object and trying to call the corresponding
+     * setters of the model.
+     */
     private Object convertEDBObjectToUncheckedModel(Class<?> model, EDBObject object) {
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
@@ -95,6 +109,9 @@ public class EDBConverter {
         }
     }
 
+    /**
+     * Invokes a setter method of the given object with the given parameter.
+     */
     private void invokeSetterMethod(Method setterMethod, Object instance, Object parameter) {
         try {
             setterMethod.invoke(instance, parameter);
@@ -111,6 +128,9 @@ public class EDBConverter {
         }
     }
 
+    /**
+     * Generate the value for a specific property of a model out of an EDBObject.
+     */
     private Object getValueForProperty(PropertyDescriptor propertyDescriptor, EDBObject object) {
         Method setterMethod = propertyDescriptor.getWriteMethod();
         String propertyName = propertyDescriptor.getName();
@@ -138,6 +158,9 @@ public class EDBConverter {
         return value;
     }
 
+    /**
+     * Get the type of the parameter of a setter.
+     */
     private Class<?> getGenericParameterClass(Method setterMethod) {
         Type t = setterMethod.getGenericParameterTypes()[0];
         ParameterizedType pType = (ParameterizedType) t;
@@ -145,6 +168,9 @@ public class EDBConverter {
         return clazz;
     }
 
+    /**
+     * Gets a list object out of an EDBObject.
+     */
     private Object getListValue(Class<?> type, String propertyName, EDBObject object) {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
@@ -165,6 +191,9 @@ public class EDBConverter {
         return temp;
     }
 
+    /**
+     * Gets an enum value out of an object.
+     */
     private Object getEnumValue(Class<?> type, Object value) {
         Object[] enumValues = type.getEnumConstants();
         for (Object enumValue : enumValues) {
