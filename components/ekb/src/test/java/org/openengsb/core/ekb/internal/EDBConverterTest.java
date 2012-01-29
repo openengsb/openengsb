@@ -34,6 +34,10 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
+/**
+ * The EDBConverter test file only tests the converting Model -> EDBObject since the other way round is tested by the
+ * QueryInterfaceService test file.
+ */
 public class EDBConverterTest {
     private EDBConverter converter;
 
