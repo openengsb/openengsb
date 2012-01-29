@@ -38,7 +38,7 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
-public class EKBServiceTest {
+public class QueryInterfaceServiceTest {
     private QueryInterfaceService service;
 
     @Before
