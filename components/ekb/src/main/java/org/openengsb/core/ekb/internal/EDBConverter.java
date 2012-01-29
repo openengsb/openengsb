@@ -211,4 +211,24 @@ public class EDBConverter {
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
+
+    /**
+     * Convert a list of models to a list of EDBObjects (the version retrieving is not considered here. This is done in
+     * the EDB directly).
+     */
+    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models) {
+        List<EDBObject> result = new ArrayList<EDBObject>();
+        for (OpenEngSBModel model : models) {
+            result.addAll(convertModelToEDBObject(model));
+        }
+        return result;
+    }
+
+    /**
+     * Converts an OpenEngSBModel object to an EDBObject (the version retrieving is not considered here. This is done in
+     * the EDB directly).
+     */
+    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model) {
+        return null;
+    }
 }

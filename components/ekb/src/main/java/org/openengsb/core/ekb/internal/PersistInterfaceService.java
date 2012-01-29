@@ -17,12 +17,14 @@
 
 package org.openengsb.core.ekb.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBInsertEvent;
+import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
@@ -32,56 +34,102 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the PersistInterface service. It's main responsibilities are the saving of models and the
- * sanity checks of these.
+ * Implementation of the PersistInterface service. It's main responsibilities are the saving of models and the sanity
+ * checks of these.
  */
 public class PersistInterfaceService implements PersistInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistInterfaceService.class);
 
     private EngineeringDatabaseService edbService;
     private EDBConverter edbConverter;
-    
+
     @Override
     public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException {
-        // TODO Auto-generated method stub
+        throws SanityCheckException, EDBException {
+        LOGGER.debug("Commit of models was called");
+        runPersistingLogic(inserts, updates, deletes, true, true);
+        LOGGER.debug("Commit of models was successful");
     }
 
     @Override
-    public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes) {
-        // TODO Auto-generated method stub
+    public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
+        throws EDBException {
+        LOGGER.debug("Force commit of models was called");
+        runPersistingLogic(inserts, updates, deletes, false, true);
+        LOGGER.debug("Force commit of models was successful");
     }
 
     @Override
     public void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException {
-        // TODO Auto-generated method stub
+        throws SanityCheckException, EDBException {
+        LOGGER.debug("Sanity checks of models was called");
+        runPersistingLogic(inserts, updates, deletes, true, false);
+        LOGGER.debug("Sanity checks of models passed successful");
+    }
+
+    /**
+     * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true and does the persisting
+     * of models if persist is set to true.
+     */
+    private void runPersistingLogic(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes, boolean check, boolean persist) throws SanityCheckException, EDBException {
+        if (check) {
+            performSanityChecks(inserts, updates, deletes);
+        }
+        if (persist) {
+            List<EDBObject> ins = edbConverter.convertModelsToEDBObjects(inserts);
+            List<EDBObject> upd = edbConverter.convertModelsToEDBObjects(updates);
+            List<EDBObject> del = edbConverter.convertModelsToEDBObjects(deletes);
+            performPersisting(ins, upd, del);
+        }
+    }
+
+    /**
+     * Performs the sanity checks of the given models.
+     */
+    private void performSanityChecks(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes) throws SanityCheckException {
+        // TODO: implement sanity check logic
+    }
+
+    /**
+     * Performs the persisting of the models into the EDB.
+     */
+    private void performPersisting(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException {
+        // TODO: implement the persisting of the objects
     }
 
     @Override
     public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
-        // TODO Auto-generated method stub
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        commit(models, null, null);
     }
 
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        // TODO Auto-generated method stub
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        commit(null, null, models);
     }
 
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        // TODO Auto-generated method stub
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        commit(null, models, null);
     }
 
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        // TODO Auto-generated method stub
+        commit(event.getInserts(), event.getUpdates(), event.getDeletions());
     }
-    
+
     public void setEdbService(EngineeringDatabaseService edbService) {
         this.edbService = edbService;
     }
-    
+
     public void setEdbConverter(EDBConverter edbConverter) {
         this.edbConverter = edbConverter;
     }
