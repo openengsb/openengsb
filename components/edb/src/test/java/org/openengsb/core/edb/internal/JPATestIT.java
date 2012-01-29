@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -593,10 +594,10 @@ public class JPATestIT {
         enrichEDBEvent(event);
 
         List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "creationtest3", event, 1);
-        
+
         EDBObject edbObject = edbobjects.get(edbobjects.size() - 1);
-                
-        assertThat(edbObject.get("edbVersion").toString(), is("1"));        
+
+        assertThat(edbObject.get("edbVersion").toString(), is("1"));
         assertThat(edbObject.get("subModel").toString(), is("testdomain/testconnector/testSub/111"));
         assertThat(edbObject.get("subs0").toString(), is("testdomain/testconnector/testSub/222"));
         assertThat(edbObject.get("subs1").toString(), is("testdomain/testconnector/testSub/333"));
@@ -605,7 +606,7 @@ public class JPATestIT {
         assertThat(edbObject.get("domainId").toString(), is("testdomain"));
         assertThat(edbObject.get("name").toString(), is("creationtest1"));
         assertThat(edbObject.get("edbId").toString(), is("creationtest2"));
-        assertThat(edbObject.get("oid").toString(), is("creationtest3"));        
+        assertThat(edbObject.get("oid").toString(), is("creationtest3"));
         assertThat(edbObject.get("ids0").toString(), is("1"));
         assertThat(edbObject.get("ids1").toString(), is("2"));
         assertThat(edbObject.get("ids2").toString(), is("3"));
@@ -877,5 +878,94 @@ public class JPATestIT {
         for (Long timestamp : timestamps) {
             assertThat(timestamp, greaterThan((long) 0));
         }
+    }
+
+    @Test
+    public void testCommitEDBObjectsInsert_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/insert/1");
+        object.put("bla", "blub");
+        List<EDBObject> inserts = new ArrayList<EDBObject>();
+        inserts.add(object);
+
+        db.commitEDBObjects(inserts, null, null);
+
+        object = db.getObject("/commit/test/insert/1");
+        assertThat(object.get("bla").toString(), is("blub"));
+        assertThat(Integer.parseInt(object.get(ModelConverterUtils.MODELVERSION).toString()), is(1));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsInsertDouble_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/insert/2");
+        List<EDBObject> inserts = new ArrayList<EDBObject>();
+        inserts.add(object);
+        
+        db.commitEDBObjects(inserts, null, null);
+        db.commitEDBObjects(inserts, null, null);
+    }
+    
+    @Test
+    public void testCommitEDBObjectsUpdate_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/update/1");
+        object.put("testkey", "testvalue");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        
+        db.commitEDBObjects(objects, null, null);
+        
+        EDBObject first = db.getObject("/commit/test/update/1");
+        
+        objects.clear();
+        object.put("testkey", "testvalue1");
+        objects.add(object);
+        
+        db.commitEDBObjects(null, objects, null);
+        
+        EDBObject second = db.getObject("/commit/test/update/1");
+        
+        assertThat(Integer.parseInt(first.get(ModelConverterUtils.MODELVERSION).toString()), is(1));
+        assertThat(first.get("testkey").toString(), is("testvalue"));
+        assertThat(Integer.parseInt(second.get(ModelConverterUtils.MODELVERSION).toString()), is(2));
+        assertThat(second.get("testkey").toString(), is("testvalue1"));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/update/2");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        object.put(ModelConverterUtils.MODELVERSION, 0);
+        db.commitEDBObjects(null, objects, null);
+    }
+    
+    @Test
+    public void testCommitEDBObjectsDelete_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/delete/1");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        db.commitEDBObjects(null, null, objects);
+        
+        EDBObject entry = db.getObject("/commit/test/delete/1");
+        assertThat(entry.isDeleted(), is(true));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsDeleteNonExisting_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/delete/2");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(null, null, objects);
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/delete/3");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        db.commitEDBObjects(null, null, objects);
+        db.commitEDBObjects(null, null, objects);
     }
 }
