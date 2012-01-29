@@ -97,7 +97,7 @@ public class PersistInterfaceService implements PersistInterface {
      */
     private void performPersisting(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException {
-        // TODO: implement the persisting of the objects
+        edbService.commitEDBObjects(inserts, updates, deletes);
     }
 
     @Override
