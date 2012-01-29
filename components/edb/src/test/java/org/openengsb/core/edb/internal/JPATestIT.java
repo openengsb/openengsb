@@ -433,7 +433,7 @@ public class JPATestIT {
         EDBObject obj = db.getObject("testdomain/testconnector/createevent/2");
 
         String name = (String) obj.get("name");
-        Integer version = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         assertThat(name, is("blub"));
         assertThat(version, is(1));
@@ -451,7 +451,7 @@ public class JPATestIT {
         EDBObject obj = db.getObject("testdomain/testconnector/batchevent/1");
 
         String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         model.setName("blab");
         EDBBatchEvent e = new EDBBatchEvent();
@@ -468,12 +468,12 @@ public class JPATestIT {
         obj = db.getObject("testdomain/testconnector/batchevent/1");
 
         String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         obj = db.getObject("testdomain/testconnector/batchevent/2");
 
         String name3 = (String) obj.get("name");
-        Integer version3 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version3 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         assertThat(name1, is("blub"));
         assertThat(version1, is(1));
@@ -503,7 +503,7 @@ public class JPATestIT {
         EDBObject obj = db.getObject("testdomain/testconnector/updateevent/2");
 
         String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         model.setName("blab");
 
@@ -514,7 +514,7 @@ public class JPATestIT {
         obj = db.getObject("testdomain/testconnector/updateevent/2");
 
         String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         assertThat(name1, is("blub"));
         assertThat(version1, is(1));
@@ -534,9 +534,9 @@ public class JPATestIT {
         EDBObject obj = db.getObject("testdomain/testconnector/updateevent/3");
 
         String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
         EDBUpdateEvent update = new EDBUpdateEvent(model);
         enrichEDBEvent(update);
@@ -546,7 +546,7 @@ public class JPATestIT {
         obj = db.getObject("testdomain/testconnector/updateevent/3");
 
         String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
+        Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         assertThat(name1, is("blub"));
         assertThat(version1, is(1));
@@ -564,7 +564,7 @@ public class JPATestIT {
         db.processEDBInsertEvent(event);
 
         model.setName("blab");
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));
+        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
         EDBUpdateEvent update = new EDBUpdateEvent(model);
         enrichEDBEvent(update);
