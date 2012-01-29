@@ -37,18 +37,19 @@ public interface PersistInterface {
      * check, the models are persisted.
      */
     void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException;
+        throws SanityCheckException, EDBException;
 
     /**
      * Persist the models without performing sanity checks of them.
      */
-    void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes);
+    void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
+        throws EDBException;
 
     /**
      * Only perform the sanity checks of the models.
      */
     void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException;
+        throws SanityCheckException, EDBException;
 
     /**
      * Processes an edb insert event. Here to provide backward compatibility.
