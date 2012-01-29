@@ -19,6 +19,7 @@ package org.openengsb.core.edb.internal;
 
 import java.util.UUID;
 
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -27,9 +28,6 @@ public final class ModelConverterUtils {
     
     private ModelConverterUtils() {
     }
-    
-    public static final String MODELVERSION = "edbVersion";
-    public static final String MODELID = "edbId";
     
     private static Object getOpenEngSBModelEntryValue(OpenEngSBModel model, String key) {
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
@@ -41,11 +39,11 @@ public final class ModelConverterUtils {
     }
     
     public static Integer getModelVersion(OpenEngSBModel model) {
-        return (Integer) getOpenEngSBModelEntryValue(model, MODELVERSION);
+        return (Integer) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_VERSION);
     }
     
     private static String getOpenEngSBModelId(OpenEngSBModel model) {
-        return (String) getOpenEngSBModelEntryValue(model, MODELID);
+        return (String) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_OID);
     }
     
     public static String createOID(OpenEngSBModel model, EDBEvent event) {
