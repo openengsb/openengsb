@@ -24,6 +24,7 @@ import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
@@ -36,20 +37,20 @@ public interface PersistInterface {
      * Does a sanity check over the models and the status of the EDB when this models are inserted. After passed sanity
      * check, the models are persisted.
      */
-    void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException, EDBException;
+    void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id) throws SanityCheckException, EDBException;
 
     /**
      * Persist the models without performing sanity checks of them.
      */
-    void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws EDBException;
+    void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id) throws EDBException;
 
     /**
      * Only perform the sanity checks of the models.
      */
-    void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
-        throws SanityCheckException, EDBException;
+    void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id) throws SanityCheckException, EDBException;
 
     /**
      * Processes an edb insert event. Here to provide backward compatibility.

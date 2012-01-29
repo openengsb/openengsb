@@ -29,8 +29,11 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.FileWrapper;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.common.model.FileConverterStep;
 import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
@@ -216,10 +219,10 @@ public class EDBConverter {
      * Convert a list of models to a list of EDBObjects (the version retrieving is not considered here. This is done in
      * the EDB directly).
      */
-    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models) {
+    public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorId id) {
         List<EDBObject> result = new ArrayList<EDBObject>();
         for (OpenEngSBModel model : models) {
-            result.addAll(convertModelToEDBObject(model));
+            result.addAll(convertModelToEDBObject(model, id));
         }
         return result;
     }
@@ -228,7 +231,65 @@ public class EDBConverter {
      * Converts an OpenEngSBModel object to an EDBObject (the version retrieving is not considered here. This is done in
      * the EDB directly).
      */
-    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model) {
-        return null;
+    public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, ConnectorId id) {
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        convertSubModel(model, objects, id);
+        return objects;
+    }
+
+    /**
+     * Recursive function to generate a list of EDBObjects out of a model object.
+     */
+    private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorId id) {
+        String oid = EDBConverterUtils.createOID(model, id.getDomainType(), id.getConnectorType());
+        EDBObject object = new EDBObject(oid);
+
+        for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getValue() == null) {
+                continue;
+            }
+            if (entry.getType().equals(FileWrapper.class)) {
+                FileWrapper wrapper = (FileWrapper) entry.getValue();
+                String content = Base64.encodeBase64String(wrapper.getContent());
+                object.put(entry.getKey(), content);
+                object.put(entry.getKey() + ".filename", wrapper.getFilename());
+            } else if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
+                OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
+                OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+                String subOid = convertSubModel(temp, objects, id);
+                object.put(entry.getKey(), subOid);
+            } else if (List.class.isAssignableFrom(entry.getType())) {
+                List<?> list = (List<?>) entry.getValue();
+                if (list == null || list.size() == 0) {
+                    continue;
+                }
+                if (list.get(0).getClass().equals(OpenEngSBModelWrapper.class)) {
+                    @SuppressWarnings("unchecked")
+                    List<OpenEngSBModelWrapper> subList = (List<OpenEngSBModelWrapper>) entry.getValue();
+                    if (subList == null) {
+                        continue;
+                    }
+                    for (int i = 0; i < subList.size(); i++) {
+                        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) subList.get(i);
+                        OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+                        String subOid = convertSubModel(temp, objects, id);
+                        object.put(entry.getKey() + i, subOid);
+                    }
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        object.put(entry.getKey() + i, list.get(i));
+                    }
+                }
+
+            } else {
+                object.put(entry.getKey(), entry.getValue());
+            }
+        }
+        object.put("domainId", id.getDomainType());
+        object.put("connectorId", id.getConnectorType());
+        object.put("instanceId", id.getInstanceId());
+
+        objects.add(object);
+        return oid;
     }
 }

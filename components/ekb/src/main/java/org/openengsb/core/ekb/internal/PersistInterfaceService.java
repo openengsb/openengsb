@@ -29,6 +29,7 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,42 +45,46 @@ public class PersistInterfaceService implements PersistInterface {
     private EDBConverter edbConverter;
 
     @Override
-    public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
+    public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id)
         throws SanityCheckException, EDBException {
         LOGGER.debug("Commit of models was called");
-        runPersistingLogic(inserts, updates, deletes, true, true);
+        runPersistingLogic(inserts, updates, deletes, true, true, id);
         LOGGER.debug("Commit of models was successful");
     }
 
     @Override
-    public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
+    public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id)
         throws EDBException {
         LOGGER.debug("Force commit of models was called");
-        runPersistingLogic(inserts, updates, deletes, false, true);
+        runPersistingLogic(inserts, updates, deletes, false, true, id);
         LOGGER.debug("Force commit of models was successful");
     }
 
     @Override
-    public void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes)
+    public void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id)
         throws SanityCheckException, EDBException {
         LOGGER.debug("Sanity checks of models was called");
-        runPersistingLogic(inserts, updates, deletes, true, false);
+        runPersistingLogic(inserts, updates, deletes, true, false, id);
         LOGGER.debug("Sanity checks of models passed successful");
     }
 
     /**
-     * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true and does the persisting
-     * of models if persist is set to true.
+     * Runs the logic of the PersistInterface. Does the sanity checks if check is set to true and does the persisting of
+     * models if persist is set to true.
      */
     private void runPersistingLogic(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
-            List<OpenEngSBModel> deletes, boolean check, boolean persist) throws SanityCheckException, EDBException {
+            List<OpenEngSBModel> deletes, boolean check, boolean persist, ConnectorId id) throws SanityCheckException,
+        EDBException {
         if (check) {
             performSanityChecks(inserts, updates, deletes);
         }
         if (persist) {
-            List<EDBObject> ins = edbConverter.convertModelsToEDBObjects(inserts);
-            List<EDBObject> upd = edbConverter.convertModelsToEDBObjects(updates);
-            List<EDBObject> del = edbConverter.convertModelsToEDBObjects(deletes);
+            List<EDBObject> ins = edbConverter.convertModelsToEDBObjects(inserts, id);
+            List<EDBObject> upd = edbConverter.convertModelsToEDBObjects(updates, id);
+            List<EDBObject> del = edbConverter.convertModelsToEDBObjects(deletes, id);
             performPersisting(ins, upd, del);
         }
     }
@@ -104,26 +109,27 @@ public class PersistInterfaceService implements PersistInterface {
     public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        commit(models, null, null);
+        commit(models, null, null, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        commit(null, null, models);
+        commit(null, null, models, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        commit(null, models, null);
+        commit(null, models, null, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        commit(event.getInserts(), event.getUpdates(), event.getDeletions());
+        commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
+            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
