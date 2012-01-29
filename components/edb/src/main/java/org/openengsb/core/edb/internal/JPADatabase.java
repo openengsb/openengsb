@@ -34,6 +34,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
@@ -423,7 +424,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             String oid = ModelConverterUtils.createOID(model, event);
             Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
             modelVersion++;
-            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(ModelConverterUtils.MODELVERSION, modelVersion,
+            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, modelVersion,
                 Integer.class));
             objects.addAll(convertModelToEDBObject(model, oid, event, modelVersion));
         }
@@ -524,7 +525,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         object.put("domainId", event.getDomainId());
         object.put("connectorId", event.getConnectorId());
         object.put("instanceId", event.getInstanceId());
-        object.put(ModelConverterUtils.MODELVERSION, modelVersion);
+        object.put(EDBConstants.MODEL_VERSION, modelVersion);
 
         objects.add(object);
         return oid;
@@ -617,7 +618,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             if (checkIfActiveOidExisting(oid)) {
                 throw new EDBException("The object under the oid " + oid + " is already existing");
             } else {
-                insert.put(ModelConverterUtils.MODELVERSION, 1);
+                insert.put(EDBConstants.MODEL_VERSION, 1);
             }
         }
     }
@@ -641,7 +642,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         for (EDBObject update : updates) {
             Integer modelVersion = investigateVersionAndCheckForConflict(update);
             modelVersion++;
-            update.put(ModelConverterUtils.MODELVERSION, modelVersion);
+            update.put(EDBConstants.MODEL_VERSION, modelVersion);
         }
     }
 
@@ -649,7 +650,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      * Investigates the version of an EDBObject and checks if a conflict can be found.
      */
     private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
-        Integer modelVersion = (Integer) newObject.get(ModelConverterUtils.MODELVERSION);
+        Integer modelVersion = (Integer) newObject.get(EDBConstants.MODEL_VERSION);
         String oid = newObject.getOID();
 
         if (modelVersion != null) {

@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
@@ -891,7 +892,7 @@ public class JPATestIT {
 
         object = db.getObject("/commit/test/insert/1");
         assertThat(object.get("bla").toString(), is("blub"));
-        assertThat(Integer.parseInt(object.get(ModelConverterUtils.MODELVERSION).toString()), is(1));
+        assertThat(Integer.parseInt(object.get(EDBConstants.MODEL_VERSION).toString()), is(1));
     }
     
     @Test(expected = EDBException.class)
@@ -923,9 +924,9 @@ public class JPATestIT {
         
         EDBObject second = db.getObject("/commit/test/update/1");
         
-        assertThat(Integer.parseInt(first.get(ModelConverterUtils.MODELVERSION).toString()), is(1));
+        assertThat(Integer.parseInt(first.get(EDBConstants.MODEL_VERSION).toString()), is(1));
         assertThat(first.get("testkey").toString(), is("testvalue"));
-        assertThat(Integer.parseInt(second.get(ModelConverterUtils.MODELVERSION).toString()), is(2));
+        assertThat(Integer.parseInt(second.get(EDBConstants.MODEL_VERSION).toString()), is(2));
         assertThat(second.get("testkey").toString(), is("testvalue1"));
     }
     
@@ -935,7 +936,7 @@ public class JPATestIT {
         List<EDBObject> objects = new ArrayList<EDBObject>();
         objects.add(object);
         db.commitEDBObjects(objects, null, null);
-        object.put(ModelConverterUtils.MODELVERSION, 0);
+        object.put(EDBConstants.MODEL_VERSION, 0);
         db.commitEDBObjects(null, objects, null);
     }
     

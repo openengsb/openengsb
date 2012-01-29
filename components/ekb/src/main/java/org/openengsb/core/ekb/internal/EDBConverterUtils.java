@@ -19,6 +19,7 @@ package org.openengsb.core.ekb.internal;
 
 import java.util.UUID;
 
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
@@ -30,9 +31,6 @@ public final class EDBConverterUtils {
 
     private EDBConverterUtils() {
     }
-
-    public static final String MODELVERSION = "edbVersion";
-    public static final String MODELID = "edbId";
 
     /**
      * Loads the entry with the given key of a given model.
@@ -50,14 +48,14 @@ public final class EDBConverterUtils {
      * Loads the version of a model if existing
      */
     public static Integer getModelVersion(OpenEngSBModel model) {
-        return (Integer) getOpenEngSBModelEntryValue(model, MODELVERSION);
+        return (Integer) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_VERSION);
     }
 
     /**
      * Loads the model id of a model if existing
      */
     private static String getOpenEngSBModelId(OpenEngSBModel model) {
-        return (String) getOpenEngSBModelEntryValue(model, MODELID);
+        return (String) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_OID);
     }
 
     /**
