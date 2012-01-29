@@ -34,6 +34,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
@@ -423,7 +424,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
             String oid = ModelConverterUtils.createOID(model, event);
             Integer modelVersion = investigateVersionAndCheckForConflict(model, oid);
             modelVersion++;
-            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(ModelConverterUtils.MODELVERSION, modelVersion,
+            model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, modelVersion,
                 Integer.class));
             objects.addAll(convertModelToEDBObject(model, oid, event, modelVersion));
         }
@@ -524,7 +525,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         object.put("domainId", event.getDomainId());
         object.put("connectorId", event.getConnectorId());
         object.put("instanceId", event.getInstanceId());
-        object.put(ModelConverterUtils.MODELVERSION, modelVersion);
+        object.put(EDBConstants.MODEL_VERSION, modelVersion);
 
         objects.add(object);
         return oid;
