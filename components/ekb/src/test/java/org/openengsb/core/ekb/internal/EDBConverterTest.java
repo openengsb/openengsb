@@ -17,17 +17,19 @@
 
 package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+import static org.mockito.Mockito.mock;
 
-public interface SubModel extends OpenEngSBModel {
+import org.junit.Before;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
+
+public class EDBConverterTest {
+    private EDBConverter converter;
     
-    @OpenEngSBModelId
-    void setId(String id);
-    
-    String getId();
-    
-    void setValue(String value);
-    
-    String getValue();
+    @Before
+    public void setUp() {
+        converter = new EDBConverter();
+        EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
+        
+        converter.setEdbService(edbService);
+    }
 }
