@@ -580,4 +580,112 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         this.entityManager = entityManager;
         dao = new DefaultJPADao(entityManager);
     }
+
+    @Override
+    public void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException {        
+        JPACommit commit = createCommit(getAuthenticatedUser(), getActualContextId());
+
+        if (inserts != null) {
+            checkInserts(inserts);
+            for (EDBObject object : inserts) {
+                commit.add(object);
+            }
+        }
+        if (deletes != null) {
+            checkDeletions(deletes);
+            for (EDBObject object : deletes) {
+                commit.delete(object.getOID());
+            }
+        }
+        if (updates != null) {
+            checkUpdates(updates);
+            for (EDBObject object : updates) {
+                commit.add(object);
+            }
+        }
+
+        this.commit(commit);
+    }
+
+    private void checkInserts(List<EDBObject> inserts) throws EDBException {
+        if (inserts == null) {
+            return;
+        }
+        for (EDBObject insert : inserts) {
+            String oid = insert.getOID();
+            if (checkIfActiveOidExisting(oid)) {
+                throw new EDBException("The object under the oid " + oid + " is already existing");
+            } else {
+                insert.put(ModelConverterUtils.MODELVERSION, 1);
+            }
+        }
+    }
+
+    private void checkDeletions(List<EDBObject> deletes) throws EDBException {
+        if (deletes == null) {
+            return;
+        }
+        for (EDBObject delete : deletes) {
+            String oid = delete.getOID();
+            if (!checkIfActiveOidExisting(oid)) {
+                throw new EDBException("The object under the oid " + oid + " is not existing or is already deleted");
+            }
+        }
+    }
+
+    private void checkUpdates(List<EDBObject> updates) throws EDBException {
+        if (updates == null) {
+            return;
+        }
+        for (EDBObject update : updates) {
+            Integer modelVersion = investigateVersionAndCheckForConflict(update);
+            modelVersion++;
+            update.put(ModelConverterUtils.MODELVERSION, modelVersion);
+        }
+    }
+
+    /**
+     * Investigates the version of an EDBObject and checks if a conflict can be found.
+     */
+    private Integer investigateVersionAndCheckForConflict(EDBObject newObject) throws EDBException {
+        Integer modelVersion = (Integer) newObject.get(ModelConverterUtils.MODELVERSION);
+        String oid = newObject.getOID();
+
+        if (modelVersion != null) {
+            Integer currentVersion = getVersionOfOid(oid);
+            if (!modelVersion.equals(currentVersion)) {
+                try {
+                    checkForConflict(newObject);
+                } catch (EDBException e) {
+                    LOGGER.info("conflict detected, user get informed");
+                    throw new EDBException("conflict was detected. There is a newer version of the model with the oid "
+                            + oid + " saved.");
+                }
+                modelVersion = currentVersion;
+            }
+        } else {
+            modelVersion = getVersionOfOid(oid);
+        }
+
+        return modelVersion;
+    }
+
+    /**
+     * Simple check mechanism if there is a conflict between a model which should be saved and the existing model, 
+     * based on the values which are in the EDB.
+     */
+    private void checkForConflict(EDBObject newObject) throws EDBException {
+        String oid = newObject.getOID();
+        EDBObject object = getObject(oid);
+        for (Map.Entry<String, Object> entry : newObject.entrySet()) {
+            Object value = object.get(entry.getKey());
+            if (value == null || !value.equals(entry.getValue())) {
+                LOGGER.debug("Conflict detected at key %s when comparing %s with %s", new Object[]{ entry.getKey(),
+                    entry.getValue(), value.toString() });
+                throw new EDBException("Conflict detected. Failure when comparing the values of the key "
+                        + entry.getKey());
+            }
+        }
+    }
 }

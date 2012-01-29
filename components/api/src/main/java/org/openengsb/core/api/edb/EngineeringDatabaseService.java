@@ -151,4 +151,11 @@ public interface EngineeringDatabaseService {
      * processes an edb batch event
      */
     void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
+
+    /**
+     * Tries to persist the changes given by the EDBObjects in one commit. Does also the conflict checking of the
+     * objects.
+     */
+    void commitEDBObjects(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
+        throws EDBException;
 }
