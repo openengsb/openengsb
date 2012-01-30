@@ -329,7 +329,7 @@ public class EDBIT extends AbstractExamTestHelper {
         edbService.processEDBUpdateEvent(update);
     }
 
-//    @Test
+    @Test
     public void testSupportOfSimpleSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -350,7 +350,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
     }
 
-//    @Test
+    @Test
     public void testSupportOfListOfSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
