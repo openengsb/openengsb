@@ -52,6 +52,7 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     private void forwardEvent(Event event) throws InvocationTargetException {
         if (EDBEvent.class.isAssignableFrom(event.getClass())) {
             LOGGER.info("Forwarding event to edb service");
