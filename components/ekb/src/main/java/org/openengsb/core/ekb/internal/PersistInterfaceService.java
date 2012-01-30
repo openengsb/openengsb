@@ -94,7 +94,7 @@ public class PersistInterfaceService implements PersistInterface {
      */
     private void performSanityChecks(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
             List<OpenEngSBModel> deletes) throws SanityCheckException {
-        // TODO: implement sanity check logic
+        // TODO: [OPENENGSB-2717] implement sanity check logic
     }
 
     /**
