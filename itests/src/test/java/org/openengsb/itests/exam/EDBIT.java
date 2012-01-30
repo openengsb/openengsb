@@ -139,6 +139,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testFileSaving_shouldWork() throws Exception {
         File f = new File("testfile.txt");
         FileWriter fw = new FileWriter(f);
@@ -170,6 +171,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
+    @SuppressWarnings("deprecation")
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
@@ -180,6 +182,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -198,6 +201,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testSendEDBBatchEvent_shouldWork() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -242,6 +246,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
+    @SuppressWarnings("deprecation")
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
@@ -250,6 +255,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -281,6 +287,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
+    @SuppressWarnings("deprecation")
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -313,6 +320,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
+    @SuppressWarnings("deprecation")
     public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -330,6 +338,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testSupportOfSimpleSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -351,6 +360,7 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testSupportOfListOfSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");

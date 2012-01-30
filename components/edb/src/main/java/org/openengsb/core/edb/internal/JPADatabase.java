@@ -328,24 +328,28 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return getStateOfLastCommitMatching(query);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
         initiatePersistInterface();
         persistInterface.processEDBInsertEvent(event);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         initiatePersistInterface();
         persistInterface.processEDBDeleteEvent(event);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         initiatePersistInterface();
         persistInterface.processEDBUpdateEvent(event);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
         initiatePersistInterface();

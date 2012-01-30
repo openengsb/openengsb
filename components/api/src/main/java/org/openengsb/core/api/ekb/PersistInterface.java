@@ -55,20 +55,24 @@ public interface PersistInterface {
     /**
      * Processes an edb insert event. Here to provide backward compatibility.
      */
+    @Deprecated
     void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
 
     /**
      * Processes an edb delete event. Here to provide backward compatibility.
      */
+    @Deprecated
     void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
 
     /**
      * Processes an edb update event. Here to provide backward compatibility.
      */
+    @Deprecated
     void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
 
     /**
      * Processes an edb batch event. Here to provide backward compatibility.
      */
+    @Deprecated
     void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
 }

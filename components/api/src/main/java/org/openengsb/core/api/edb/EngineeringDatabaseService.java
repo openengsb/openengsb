@@ -135,21 +135,25 @@ public interface EngineeringDatabaseService {
     /**
      * processes an edb insert event
      */
+    @Deprecated
     void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
 
     /**
      * processes an edb delete event
      */
+    @Deprecated
     void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
 
     /**
      * processes an edb update event
      */
+    @Deprecated
     void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
 
     /**
      * processes an edb batch event
      */
+    @Deprecated
     void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
 
     /**
