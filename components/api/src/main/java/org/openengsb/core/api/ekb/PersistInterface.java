@@ -19,11 +19,7 @@ package org.openengsb.core.api.ekb;
 
 import java.util.List;
 
-import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
@@ -51,28 +47,4 @@ public interface PersistInterface {
      */
     void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
             ConnectorId id) throws SanityCheckException, EDBException;
-
-    /**
-     * Processes an edb insert event. Here to provide backward compatibility.
-     */
-    @Deprecated
-    void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
-
-    /**
-     * Processes an edb delete event. Here to provide backward compatibility.
-     */
-    @Deprecated
-    void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
-
-    /**
-     * Processes an edb update event. Here to provide backward compatibility.
-     */
-    @Deprecated
-    void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
-
-    /**
-     * Processes an edb batch event. Here to provide backward compatibility.
-     */
-    @Deprecated
-    void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
 }

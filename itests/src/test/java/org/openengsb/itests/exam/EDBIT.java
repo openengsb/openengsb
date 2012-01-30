@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
+import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
@@ -171,25 +173,23 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    @SuppressWarnings("deprecation")
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        persist.processEDBInsertEvent(event);
-        persist.processEDBInsertEvent(event);
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(model);
+        persist.commit(models, null, null, getTestConnectorId());
+        persist.commit(models, null, null, getTestConnectorId());
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        persist.processEDBInsertEvent(event);
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(model);
+        persist.commit(models, null, null, getTestConnectorId());
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
 
@@ -387,6 +387,10 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(subObject2, notNullValue());
         assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
+    }
+    
+    private ConnectorId getTestConnectorId() {
+        return new ConnectorId("testdomain", "testconnector", "testinstance");
     }
 
     private void enrichEDBEvent(EDBEvent event) {

@@ -17,15 +17,10 @@
 
 package org.openengsb.core.ekb.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
@@ -103,33 +98,6 @@ public class PersistInterfaceService implements PersistInterface {
     private void performPersisting(List<EDBObject> inserts, List<EDBObject> updates, List<EDBObject> deletes)
         throws EDBException {
         edbService.commitEDBObjects(inserts, updates, deletes);
-    }
-
-    @Override
-    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        commit(models, null, null, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        commit(null, null, models, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        commit(null, models, null, new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
-            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     public void setEdbService(EngineeringDatabaseService edbService) {
