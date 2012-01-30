@@ -221,8 +221,10 @@ public class EDBConverter {
      */
     public List<EDBObject> convertModelsToEDBObjects(List<OpenEngSBModel> models, ConnectorId id) {
         List<EDBObject> result = new ArrayList<EDBObject>();
-        for (OpenEngSBModel model : models) {
-            result.addAll(convertModelToEDBObject(model, id));
+        if (models != null) {
+            for (OpenEngSBModel model : models) {
+                result.addAll(convertModelToEDBObject(model, id));
+            }
         }
         return result;
     }
@@ -233,7 +235,9 @@ public class EDBConverter {
      */
     public List<EDBObject> convertModelToEDBObject(OpenEngSBModel model, ConnectorId id) {
         List<EDBObject> objects = new ArrayList<EDBObject>();
-        convertSubModel(model, objects, id);
+        if (model != null) {
+            convertSubModel(model, objects, id);
+        }
         return objects;
     }
 
