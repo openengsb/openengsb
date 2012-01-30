@@ -100,7 +100,8 @@ public interface UserDataManager {
         NoSuchAttributeException;
 
     /**
-     * Sets the value of the given attribute. An attribute may contain multiple values (as a list).
+     * Sets the value of the given attribute. Previous values are overwritten.
+     * An attribute may contain multiple values (as a list).
      *
      * However the types of the values are restricted to:
      * <ul>
@@ -112,9 +113,8 @@ public interface UserDataManager {
      * the resulting list may contain any primitive type in its wrapped form or strings.
      *
      * If the attribute only has a single value, the list will only contain the one value.
-     *
+     * 
      * @throws UserNotFoundException if the user does not exist
-     * @throws NoSuchAttributeException if there is no attribute of that name associated with the user
      */
     void setUserAttribute(String username, String attributename, Object... value) throws UserNotFoundException;
 

@@ -85,14 +85,49 @@
   </build>
 
   <dependencies>
+<!--
     <dependency>
       <groupId>org.apache.directory.shared</groupId>
       <artifactId>shared-all</artifactId>
 	  <version>1.0.0-M8</version>
     </dependency>
+
+-->
+	<dependency>
+    	<groupId>org.apache.directory.server</groupId>
+	    <artifactId>apacheds-all</artifactId>
+	    <version>2.0.0-M3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.directory.server</groupId>
+		<artifactId>apacheds-server-integ</artifactId>
+		<version>2.0.0-M3</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.directory.server</groupId>
+		<artifactId>apacheds-core-integ</artifactId>
+		<version>2.0.0-M3</version>
+	</dependency>
+
+<!--	<dependency>
+		<groupId>org.apache.directory.server</groupId>
+		<artifactId>apacheds-core-annotations</artifactId>
+		<version>2.0.0-M3</version>
+	</dependency>
+-->			            
     <dependency>
       <groupId>org.openengsb.framework</groupId>
 	  <artifactId>org.openengsb.framework.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

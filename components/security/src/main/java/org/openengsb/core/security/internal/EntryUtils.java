@@ -87,6 +87,14 @@ public final class EntryUtils {
         }
         return valueElements;
     }
+    
+    /**
+     * converts an Object to an {@link EntryElement} so its Bean-data can be saved to the DB
+     */
+    public static EntryElement makeEntryElement(Object value) {
+        Class<?> type = ClassUtils.primitiveToWrapper(value.getClass());
+        return new EntryElement(type.getName(), value.toString());
+    }
 
     /**
      * Takes any bean Object and converts it to a Map of {@link EntryValue} so the beandata can be saved to the DB.
