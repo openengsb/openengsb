@@ -40,6 +40,8 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.ekb.PersistInterface;
+import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
@@ -328,32 +330,38 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return getStateOfLastCommitMatching(query);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.processEDBInsertEvent(event);
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        persistInterface.commit(models, null, null, 
+            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.processEDBDeleteEvent(event);
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        persistInterface.commit(null, null, models, 
+            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.processEDBUpdateEvent(event);
+        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
+        models.add(event.getModel());
+        persistInterface.commit(null, models, null, 
+            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.processEDBBatchEvent(event);
+        persistInterface.commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
+            new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
     /**
