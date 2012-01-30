@@ -211,10 +211,6 @@ public class EDBConverter {
         return value;
     }
 
-    public void setEdbService(EngineeringDatabaseService edbService) {
-        this.edbService = edbService;
-    }
-
     /**
      * Convert a list of models to a list of EDBObjects (the version retrieving is not considered here. This is done in
      * the EDB directly).
@@ -259,7 +255,8 @@ public class EDBConverter {
                 object.put(entry.getKey() + ".filename", wrapper.getFilename());
             } else if (entry.getType().equals(OpenEngSBModelWrapper.class)) {
                 OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) entry.getValue();
-                OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+                OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                    model.getClass().getClassLoader());
                 String subOid = convertSubModel(temp, objects, id);
                 object.put(entry.getKey(), subOid);
             } else if (List.class.isAssignableFrom(entry.getType())) {
@@ -275,7 +272,9 @@ public class EDBConverter {
                     }
                     for (int i = 0; i < subList.size(); i++) {
                         OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) subList.get(i);
-                        OpenEngSBModel temp = (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper);
+                        OpenEngSBModel temp =
+                            (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                                model.getClass().getClassLoader());
                         String subOid = convertSubModel(temp, objects, id);
                         object.put(entry.getKey() + i, subOid);
                     }
@@ -295,5 +294,9 @@ public class EDBConverter {
 
         objects.add(object);
         return oid;
+    }
+
+    public void setEdbService(EngineeringDatabaseService edbService) {
+        this.edbService = edbService;
     }
 }

@@ -73,7 +73,7 @@ public final class ModelUtils {
         ModelProxyHandler handler = new ModelProxyHandler(model, entries);
         return handler;
     }
-    
+
     /**
      * Generates an OpenEngSBModelWrapper out of a model. This construct is needed so that the sending of
      * OpenEngSBModels over remote can work properly
@@ -85,7 +85,7 @@ public final class ModelUtils {
         wrapper.setModelClass(clazz.getName());
         return wrapper;
     }
-    
+
     /**
      * Tries to generate a model of the given class out of a wrapper. If something went wrong (e.g. the model contained
      * in the wrapper is not of the class which is given as parameter) an illegal argument exception is thrown.
@@ -103,16 +103,24 @@ public final class ModelUtils {
         }
         throw new IllegalArgumentException("Wrapper doesn't contain a model of class" + clazz.getName());
     }
-    
+
     /**
      * Tries to generate a model out of an OpenEngSB model wrapper. Without casting, only generating. If the model class
      * can't be found, an illegal argument exception is thrown.
      */
     public static Object generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper) {
+        return generateModelOutOfWrapper(wrapper, ModelUtils.class.getClassLoader());
+    }
+
+    /**
+     * Tries to generate a model out of an OpenEngSB model wrapper. Uses the given class loader to load the model class.
+     * Needed by sub models which aren't exported (like in the ITests).
+     */
+    public static Object generateModelOutOfWrapper(OpenEngSBModelWrapper wrapper, ClassLoader parentClassLoader) {
         OpenEngSBModelEntry[] entries = wrapper.getEntries().toArray(new OpenEngSBModelEntry[0]);
         Class<?> clazz;
         try {
-            clazz = ModelUtils.class.getClassLoader().loadClass(wrapper.getModelClass());
+            clazz = parentClassLoader.loadClass(wrapper.getModelClass());
             return ModelUtils.createModelObject(clazz, entries);
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException("The class of the model can't be found", ex);
