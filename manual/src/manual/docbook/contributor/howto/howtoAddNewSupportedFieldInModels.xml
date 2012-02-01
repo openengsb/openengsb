@@ -108,23 +108,29 @@
     <section>
         <title>Subtask 2 - Add EDB support</title>
         <para>
-            To accomplish this task, the EDB and the EKB has to be extended. WARNING: This step is currently under construction
-            and very likely to be changed soon. As example for this subtask, you can check how it was done with the File object.
+            To accomplish this task, you have to extend the EDBConverter class in the EKB bundle. WARNING: This step is currently 
+            under construction and very likely to be changed soon. As example for this subtask, you can check how it was done 
+            with the File object.
+        </para>
+        <para>
+            In the EDBConverter, there are two functions which have to be extended. The first is needed for the conversion of
+            OpenEngSBModels to EDBObjects and the other one is needed for the conversion of EDBObjects to OpenEngSBModels.
         </para>
         <section>
-            <title>Extend EDB</title>
+            <title>OpenEngSBModels to EDBObjects</title>
             <para>
-                To extend the EDB, the method "convertSubModel" in the class JPADatabase of the EDB bundle has to be extended. In the 
-                part where every OpenEngSBModelEntry get analyzed, a new if statement has to be added, which does a special handling
-                if the new introduced wrapper class is the parameter. How this wrapper class is saved, is up to you. 
+                For this direction the method "convertSubModel" has to be extended. In the part where every OpenEngSBModelEntry get
+                analyzed, a new if statement has to be added, which does a special handling if the new introduced wrapper class is 
+                the parameter. How this wrapper class is saved, is up to you. 
             </para>
         </section>
         <section>
-            <title>Extend EKB</title>
+            <title>EDBObjects to OpenEngSBModels</title>
             <para>
-                To extend the EKB, you have to extend the method "getValueForProperty" of the QueryInterfaceService in the EKB bundle.
+                For this direction you have to extend the method "getValueForProperty".
                 Again, here must also a new if statement been added, where the parameter type is checked for the new field object which
-                should be supported. If this statement fits, you have to undo the conversion which have you done in the "Extend EDB" part.
+                should be supported. If this statement fits, you have to undo the conversion which have you done in the 
+                "OpenEngSBModels to EDBObjects" part.
             </para>
         </section>
     </section>

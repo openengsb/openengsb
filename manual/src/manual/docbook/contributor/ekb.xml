@@ -43,7 +43,7 @@
         </para>
     </section>
     <section  xml:id='contributor.ekb.queryservice'>
-        <title>Query Service</title>
+        <title>Query Interface</title>
         <para>
             This service has the task to load models from the EDB. Since models are no real objects but
             proxied interfaces, this service has to create a new model instance. This new model instance
@@ -56,6 +56,24 @@
             The query service provide a list of possibilities how to load models from the EDB (e.g. based on the model id or
             based on the key value pairs of the model).
         </para>            
+    </section>
+    <section xml:id='contributor.ekb.persistservice'>
+        <title>Persist Interface</title>
+        <para>
+            This service has the task to save models to the EDB. It transform models into an EDB readable format, append 
+            informations and forwards the objects to the EDB. The PersistInterface consist of three methods, namely "commit",
+            "forceCommit" and "check".
+        </para>
+        <para>
+            The "commit" function performs sanity checks on the models which shall be persisted. If they are successfully passed,
+            the models are forwarded to the EDB for persisting.
+        </para>
+        <para>
+            The "forceCommit" function forwards the models to the EDB without performing sanity checks.
+        </para>
+        <para>
+            The "check" function only performs the sanity checks and give back the result of the sanity checks.
+        </para>
     </section>
     
 </chapter>
