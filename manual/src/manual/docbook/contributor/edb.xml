@@ -81,6 +81,8 @@
             The saving of models to the EDB directly is conceptionally possible, but should always be done through the
             PersistenceInterface provided by the EKB bundle, since this service does the automatic transformation work of
             elements from OpenEngSBModel to EDB savable objects. See the detailed explanation of the EKB for more informations.
+            WARNING: There was another possibility, with which you could throw EDB*Events from connectors. This possibility is
+            no deprecated and should not be used any more.
         </para>
         <para>
             The loading of models from the EDB is conceptionally possible, but should always be done through the QueryInterface
