@@ -15,19 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.ekb.internal;
+package org.openengsb.core.api.edb;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
+/**
+ * Container for all constants used in the context of the EDB/EKB/Models.
+ */
+public final class EDBConstants {
 
-public interface SubModel extends OpenEngSBModel {
+    private EDBConstants() {
+        // this class should not be instantiated
+    }
     
-    @OpenEngSBModelId
-    void setId(String id);
+    /**
+     * Defines the string which represents the key for a model oid.
+     */
+    public static final String MODEL_OID = "edbId";
     
-    String getId();
-    
-    void setValue(String value);
-    
-    String getValue();
+    /**
+     * Defines the string which represents the key for the version a model.
+     */
+    public static final String MODEL_VERSION = "edbVersion";
 }

@@ -15,32 +15,27 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.api.ekb;
 
-import java.util.List;
-
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
-
-public interface TestModel extends OpenEngSBModel {
-    void setName(String name);
-
-    String getName();
-
-    @OpenEngSBModelId
-    void setEdbId(String edbId);
-
-    String getEdbId();
-
-    void setSubModel(SubModel subModel);
-
-    SubModel getSubModel();
-
-    void setSubs(List<SubModel> subs);
-
-    List<SubModel> getSubs();
+/**
+ * A sanity check exception is thrown, if a persist action to the EDB doesn't pass the sanity checks. 
+ */
+@SuppressWarnings("serial")
+public class SanityCheckException extends RuntimeException {
     
-    void setIds(List<Integer> ids);
+    public SanityCheckException() {
+        super();
+    }
+
+    public SanityCheckException(String message) {
+        super(message);
+    }
     
-    List<Integer> getIds();
+    public SanityCheckException(Throwable reason) {
+        super(reason);
+    }
+    
+    public SanityCheckException(String message, Throwable reason) {
+        super(message, reason);
+    }
 }

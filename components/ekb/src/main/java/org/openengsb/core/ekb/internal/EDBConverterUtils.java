@@ -15,22 +15,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.ekb.internal;
 
 import java.util.UUID;
 
-import org.openengsb.core.api.edb.EDBEvent;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
-public final class ModelConverterUtils {
-    
-    private ModelConverterUtils() {
+/**
+ * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: 
+ * EDBObjects <-> Models
+ */
+public final class EDBConverterUtils {
+
+    private EDBConverterUtils() {
     }
-    
-    public static final String MODELVERSION = "edbVersion";
-    public static final String MODELID = "edbId";
-    
+
+    /**
+     * Loads the entry with the given key of a given model.
+     */
     private static Object getOpenEngSBModelEntryValue(OpenEngSBModel model, String key) {
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             if (entry.getKey().equals(key)) {
@@ -39,18 +43,27 @@ public final class ModelConverterUtils {
         }
         return null;
     }
-    
+
+    /**
+     * Loads the version of a model if existing
+     */
     public static Integer getModelVersion(OpenEngSBModel model) {
-        return (Integer) getOpenEngSBModelEntryValue(model, MODELVERSION);
+        return (Integer) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_VERSION);
     }
-    
+
+    /**
+     * Loads the model id of a model if existing
+     */
     private static String getOpenEngSBModelId(OpenEngSBModel model) {
-        return (String) getOpenEngSBModelEntryValue(model, MODELID);
+        return (String) getOpenEngSBModelEntryValue(model, EDBConstants.MODEL_OID);
     }
-    
-    public static String createOID(OpenEngSBModel model, EDBEvent event) {
+
+    /**
+     * Creates the OID for a model
+     */
+    public static String createOID(OpenEngSBModel model, String domainId, String connectorId) {
         StringBuilder builder = new StringBuilder();
-        builder.append(createOIDPrefix(event));
+        builder.append(createOIDPrefix(domainId, connectorId));
         String modelId = getOpenEngSBModelId(model);
         if (modelId != null) {
             builder.append(modelId);
@@ -60,10 +73,13 @@ public final class ModelConverterUtils {
 
         return builder.toString();
     }
-    
-    private static String createOIDPrefix(EDBEvent event) {
+
+    /**
+     * Creates the OID prefix for a model
+     */
+    private static String createOIDPrefix(String domainId, String connectorId) {
         StringBuilder builder = new StringBuilder();
-        builder.append(event.getDomainId()).append("/").append(event.getConnectorId()).append("/");
+        builder.append(domainId).append("/").append(connectorId).append("/");
         return builder.toString();
     }
 

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -46,7 +47,8 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
         objects = new HashMap<String, OpenEngSBModelEntry>();
         fillModelWithNullValues(model);
         for (OpenEngSBModelEntry entry : entries) {
-            if (objects.containsKey(entry.getKey())) {
+            if (objects.containsKey(entry.getKey()) || entry.getKey().equals(EDBConstants.MODEL_OID)
+                    || entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
                 objects.put(entry.getKey(), entry);
             } else {
                 LOGGER.error("entry \"{}\" can not be set because the interface doesn't contain this field!",

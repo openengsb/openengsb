@@ -15,17 +15,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.edb.internal;
+package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import static org.mockito.Mockito.mock;
 
-public interface SubModel extends OpenEngSBModel {
+import org.junit.Before;
+import org.openengsb.core.api.edb.EngineeringDatabaseService;
 
-    void setName(String name);
-
-    String getName();
-
-    void setEdbId(String edbId);
-
-    String getEdbId();
+public class PersistInterfaceServiceTest {
+    private PersistInterfaceService service;
+    
+    @Before
+    public void setUp() {
+        this.service = new PersistInterfaceService();
+        EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
+        
+        service.setEdbService(edbService);
+        EDBConverter converter = new EDBConverter();
+        converter.setEdbService(edbService);
+        service.setEdbConverter(converter);
+    }
 }
