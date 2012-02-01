@@ -18,24 +18,34 @@
 package org.openengsb.core.api.ekb;
 
 /**
- * A sanity check exception is thrown, if a persist action to the EDB doesn't pass the sanity checks. 
+ * A sanity check exception is thrown, if a persist action to the EDB doesn't pass the sanity checks. It also contains
+ * the fitting sanity check report.
  */
 @SuppressWarnings("serial")
 public class SanityCheckException extends RuntimeException {
-    
-    public SanityCheckException() {
+    private SanityCheckReport report;
+
+    public SanityCheckException(SanityCheckReport report) {
         super();
+        this.report = report;
     }
 
-    public SanityCheckException(String message) {
+    public SanityCheckException(String message, SanityCheckReport report) {
         super(message);
+        this.report = report;
     }
-    
-    public SanityCheckException(Throwable reason) {
+
+    public SanityCheckException(Throwable reason, SanityCheckReport report) {
         super(reason);
+        this.report = report;
+    }
+
+    public SanityCheckException(String message, Throwable reason, SanityCheckReport report) {
+        super(message, reason);
+        this.report = report;
     }
     
-    public SanityCheckException(String message, Throwable reason) {
-        super(message, reason);
+    public SanityCheckReport getSanityCheckReport() {
+        return report;
     }
 }

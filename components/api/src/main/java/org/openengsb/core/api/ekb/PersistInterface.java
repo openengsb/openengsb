@@ -45,6 +45,6 @@ public interface PersistInterface {
     /**
      * Only perform the sanity checks of the models.
      */
-    void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id) throws SanityCheckException, EDBException;
+    SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+            ConnectorId id) throws EDBException;
 }

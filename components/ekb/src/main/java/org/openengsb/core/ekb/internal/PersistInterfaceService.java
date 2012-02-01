@@ -24,6 +24,7 @@ import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
+import org.openengsb.core.api.ekb.SanityCheckReport;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
@@ -58,12 +59,14 @@ public class PersistInterfaceService implements PersistInterface {
     }
 
     @Override
-    public void check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
+    public SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes,
             ConnectorId id)
         throws SanityCheckException, EDBException {
         LOGGER.debug("Sanity checks of models was called");
-        runPersistingLogic(inserts, updates, deletes, true, false, id);
+        SanityCheckReport report = performSanityChecks(inserts, updates, deletes);
         LOGGER.debug("Sanity checks of models passed successful");
+        return report;
     }
 
     /**
@@ -87,9 +90,10 @@ public class PersistInterfaceService implements PersistInterface {
     /**
      * Performs the sanity checks of the given models.
      */
-    private void performSanityChecks(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+    private SanityCheckReport performSanityChecks(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
             List<OpenEngSBModel> deletes) throws SanityCheckException {
         // TODO: [OPENENGSB-2717] implement sanity check logic
+        return null;
     }
 
     /**
