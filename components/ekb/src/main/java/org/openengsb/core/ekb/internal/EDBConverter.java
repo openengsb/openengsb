@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.ConnectorId;
@@ -243,7 +244,6 @@ public class EDBConverter {
     private String convertSubModel(OpenEngSBModel model, List<EDBObject> objects, ConnectorId id) {
         String oid = EDBConverterUtils.createOID(model, id.getDomainType(), id.getConnectorType());
         EDBObject object = new EDBObject(oid);
-
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
             if (entry.getValue() == null) {
                 continue;
@@ -288,10 +288,11 @@ public class EDBConverter {
                 object.put(entry.getKey(), entry.getValue());
             }
         }
+        Class<?> modelType = ModelUtils.getModelClassOfOpenEngSBModelObject(model.getClass());
+        object.put(EDBConstants.MODEL_TYPE, modelType.toString());
         object.put("domainId", id.getDomainType());
         object.put("connectorId", id.getConnectorType());
         object.put("instanceId", id.getInstanceId());
-
         objects.add(object);
         return oid;
     }
