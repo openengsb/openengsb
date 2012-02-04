@@ -45,7 +45,6 @@ public class EDBConverterTest {
     public void setUp() {
         converter = new EDBConverter();
         EngineeringDatabaseService edbService = mock(EngineeringDatabaseService.class);
-
         converter.setEdbService(edbService);
     }
 
@@ -72,6 +71,7 @@ public class EDBConverterTest {
         assertThat(object.get("instanceId").toString(), is("testinstance"));
         assertThat((ENUM) object.get("enumeration"), is(ENUM.A));
         assertThat((Date) object.get("date"), is(date));
+        assertThat((object.get(EDBConstants.MODEL_TYPE)).toString(), is(TestModel.class.toString()));
     }
 
     @Test
@@ -91,6 +91,7 @@ public class EDBConverterTest {
         assertThat(object.get("sub").toString(), is(EDBConverterUtils.createOID(sub, "testdomain", "testconnector")));
         EDBObject subObject = objects.get(0);
         assertThat(subObject.get("id").toString(), is("sub"));
+        assertThat((subObject.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
     }
 
     @Test
@@ -115,14 +116,16 @@ public class EDBConverterTest {
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
 
-        assertThat(object.get("subs0").toString(), 
+        assertThat(object.get("subs0").toString(),
             is(EDBConverterUtils.createOID(sub1, "testdomain", "testconnector")));
-        assertThat(object.get("subs1").toString(), 
+        assertThat(object.get("subs1").toString(),
             is(EDBConverterUtils.createOID(sub2, "testdomain", "testconnector")));
-        
+
         EDBObject subObject1 = objects.get(0);
         assertThat(subObject1.get("id").toString(), is("sub1"));
+        assertThat((subObject1.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
         EDBObject subObject2 = objects.get(1);
         assertThat(subObject2.get("id").toString(), is("sub2"));
+        assertThat((subObject2.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
     }
 }
