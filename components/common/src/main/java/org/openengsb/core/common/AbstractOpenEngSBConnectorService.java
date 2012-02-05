@@ -46,6 +46,10 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         super(instanceId);
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void sendEDBEvent(EDBEventType type, OpenEngSBModel model, DomainEvents events)
         throws EDBException {
         switch (type) {
@@ -69,32 +73,56 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         }
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void initiateEDBBatch() {
         batchEvent = new EDBBatchEvent();
         enrichEDBEvent(batchEvent);
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void addInsertModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
         batchEvent.addModelInsert(model);
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void addDeleteModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
         batchEvent.addModelDelete(model);
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void addUpdateModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
         batchEvent.addModelUpdate(model);
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     public void sendEDBBatchEvent(DomainEvents events) throws EDBException {
         checkEDBBatchEvent();
         events.raiseEvent(batchEvent);
         batchEvent = null;
     }
 
+    @Deprecated
+    /**
+     * DEPRECATED: use EKB PersistInterface instead!
+     */
     private void checkEDBBatchEvent() {
         if (batchEvent == null) {
             throw new EDBException("EDBBatchEvent wasn't initiated");
