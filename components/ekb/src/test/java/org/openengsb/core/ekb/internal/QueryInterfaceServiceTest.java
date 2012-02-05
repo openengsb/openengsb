@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
@@ -57,20 +58,38 @@ public class QueryInterfaceServiceTest {
         edbObject.put("sub", "suboid1");
         edbObject.put("subs0", "suboid2");
         edbObject.put("subs1", "suboid3");
+        edbObject.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
+        
+        EDBObject edbObjectImpl = new EDBObject("testoidimpl");
+        edbObjectImpl.put("id", "testid");
+        edbObjectImpl.put("date", new Date());
+        edbObjectImpl.put("name", "testname");
+        edbObjectImpl.put("enumeration", "A");
+        edbObjectImpl.put("list0", "blub");
+        edbObjectImpl.put("list1", "blab");
+        edbObjectImpl.put("list2", "blob");
+        edbObjectImpl.put("sub", "suboid1");
+        edbObjectImpl.put("subs0", "suboid2");
+        edbObjectImpl.put("subs1", "suboid3");
+        edbObjectImpl.put(EDBConstants.MODEL_TYPE, TestModel2.class.toString());
 
         EDBObject subObject1 = new EDBObject("suboid1");
         subObject1.put("id", "testid");
         subObject1.put("value", "testvalue");
+        subObject1.put(EDBConstants.MODEL_TYPE, SubModel.class.toString());
 
         EDBObject subObject2 = new EDBObject("suboid2");
         subObject2.put("id", "AAAAA");
         subObject2.put("value", "BBBBB");
+        subObject2.put(EDBConstants.MODEL_TYPE, SubModel.class.toString());
 
         EDBObject subObject3 = new EDBObject("suboid3");
         subObject3.put("id", "CCCCC");
         subObject3.put("value", "DDDDD");
+        subObject3.put(EDBConstants.MODEL_TYPE, SubModel.class.toString());
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
+        when(edbService.getObject("testoidimpl")).thenReturn(edbObjectImpl);
         when(edbService.getObject("suboid1")).thenReturn(subObject1);
         when(edbService.getObject("suboid2")).thenReturn(subObject2);
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
@@ -168,7 +187,7 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testGetModelWithImplementedClass_shouldWork() {
-        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         assertThat(model.getName(), is("testname"));
         assertThat(model.getId(), is("testid"));
@@ -178,7 +197,7 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testListAsParameterWithImplementedClass_shouldWork() {
-        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         List<String> testList = model.getList();
 
@@ -230,7 +249,7 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testComplexAsParameterWithImplementedClass_shouldWork() {
-        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         SubModel sub = model.getSub();
 
@@ -246,7 +265,7 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testListOfComplexAsParameterWithImplementedClass_shouldWork() {
-        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         List<SubModel> sub = model.getSubs();
 
@@ -286,7 +305,7 @@ public class QueryInterfaceServiceTest {
 
     @Test
     public void testInteractionWithEnumValuesWithRealImplementation_shouldWork() {
-        TestModel2 model = service.getModel(TestModel2.class, "testoid");
+        TestModel2 model = service.getModel(TestModel2.class, "testoidimpl");
 
         ENUM temp = model.getEnumeration();
         model.setEnumeration(ENUM.B);
@@ -324,5 +343,12 @@ public class QueryInterfaceServiceTest {
 
         assertThat(testExists, is(true));
         assertThat(testValue, nullValue());
+    }
+    
+    @Test
+    public void testLoadEDBObjectWithWrongModel_shouldReturnNull() {
+        // testoidimpl returns a TestModel2 object
+        TestModel model = service.getModel(TestModel.class, "testoidimpl");
+        assertThat(model, nullValue());
     }
 }
