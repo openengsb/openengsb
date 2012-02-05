@@ -90,10 +90,29 @@ public class EDBConverter {
     }
 
     /**
+     * Tests if an EDBObject has the correct model class in which it should be converted. Returns false
+     * if the model type is not fitting, returns true if the model type is fitting or model type is unknown.
+     */
+    private boolean checkEDBObjectModelType(EDBObject object, Class<?> model) {
+        String modelClass = object.getString(EDBConstants.MODEL_TYPE);
+        if (modelClass == null) {
+            LOGGER.warn(String.format("The EDBObject with the oid %s has no model type information."
+                    + "The resulting model may be a different model type than expected.", object.getOID()));
+        }
+        if (modelClass != null && !modelClass.equals(model.toString())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Converts an EDBObject to a model by analyzing the object and trying to call the corresponding setters of the
      * model.
      */
     private Object convertEDBObjectToUncheckedModel(Class<?> model, EDBObject object) {
+        if (!checkEDBObjectModelType(object, model)) {
+            return null;
+        }
         Object instance = createNewInstance(model);
         boolean nothingSet = true;
 
