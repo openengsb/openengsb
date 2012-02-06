@@ -163,6 +163,13 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
                 List<Object> temp = doListConversion(list, true);
                 objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
             }
+        } else if (Map.class.isAssignableFrom(entry.getType())) {
+            @SuppressWarnings("unchecked")
+            Map<Object, Object> map = (Map<Object, Object>) entry.getValue();
+            if (map.size() != 0) {
+                Map<Object, Object> temp = doMapConversion(map, true);
+                objects.put(propertyName, new OpenEngSBModelEntry(propertyName, temp, entry.getType()));
+            }
         } else {
             Object obj = doObjectConversion(entry.getValue(), true);
             objects.put(propertyName, new OpenEngSBModelEntry(propertyName, obj, obj.getClass()));
@@ -198,6 +205,15 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
                 List<Object> temp = doListConversion(list, false);
                 entries.add(new OpenEngSBModelEntry(entry.getKey(), temp, entry.getType()));
             }
+        } else if (Map.class.isAssignableFrom(entry.getType())) {
+            @SuppressWarnings("unchecked")
+            Map<Object, Object> map = (Map<Object, Object>) entry.getValue();
+            if (map.size() == 0) {
+                entries.add(entry);
+            } else {
+                Map<Object, Object> temp = doMapConversion(map, false);
+                entries.add(new OpenEngSBModelEntry(entry.getKey(), temp, entry.getType()));
+            }
         } else {
             Object obj = doObjectConversion(entry.getValue(), false);
             entries.add(new OpenEngSBModelEntry(entry.getKey(), obj, obj.getClass()));
@@ -223,6 +239,29 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
                 for (Object val : values) {
                     Object obj = forGetter ? step.convertForGetter(val) : step.convertForGetModelEntries(val);
                     temp.add(obj);
+                }
+                return temp;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Checks if a map of objects needs to be converted and does the converting work
+     */
+    private Map<Object, Object> doMapConversion(Map<Object, Object> values, boolean forGetter) {
+        Map<Object, Object> temp = new HashMap<Object, Object>();
+        for (ModelEntryConverterStep step : steps) {
+            Object key = values.keySet().iterator().next();
+            Object value = values.values().iterator().next();
+            if (forGetter ? step.matchForGetter(value) : step.matchForGetModelEntries(value)
+                    || forGetter ? step.matchForGetter(key) : step.matchForGetModelEntries(key)) {
+                for (Map.Entry<Object, Object> entry : values.entrySet()) {
+                    Object tempKey = entry.getKey();
+                    Object k = forGetter ? step.convertForGetter(tempKey) : step.convertForGetModelEntries(tempKey);
+                    Object val = entry.getValue();
+                    Object obj = forGetter ? step.convertForGetter(val) : step.convertForGetModelEntries(val);
+                    temp.put(k, obj);
                 }
                 return temp;
             }

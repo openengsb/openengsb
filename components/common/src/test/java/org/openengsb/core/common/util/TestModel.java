@@ -20,6 +20,7 @@ package org.openengsb.core.common.util;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
@@ -65,6 +66,10 @@ interface TestModel extends OpenEngSBModel {
     void setFile(File file);
     
     File getFile();
+    
+    Map<String, String> getMap();
+    
+    void setMap(Map<String, String> map);
 }
 
 enum ENUM {
