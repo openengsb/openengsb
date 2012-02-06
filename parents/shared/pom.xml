@@ -60,7 +60,7 @@
     <karaf.version>2.2.5</karaf.version>
     <felix.gogo.version>0.6.1</felix.gogo.version>
     <pax.exam.version>2.3.0</pax.exam.version>
-    <pax.wicket.version>0.7.5</pax.wicket.version>
+    <pax.wicket.version>0.8.0-SNAPSHOT</pax.wicket.version>
     <pax.web.version>1.0.8</pax.web.version>
     <!-- version range for externalized projects (connectors) -->
     <openengsb.version.min>3</openengsb.version.min>
@@ -566,13 +566,13 @@
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.wicket</groupId>
-        <artifactId>pax-wicket-service</artifactId>
+        <artifactId>org.ops4j.pax.wicket.service</artifactId>
         <version>${pax.wicket.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.ops4j.pax.wicket</groupId>
-        <artifactId>pax-wicket-test</artifactId>
+        <artifactId>org.ops4j.pax.wicket.test</artifactId>
         <version>${pax.wicket.version}</version>
         <scope>test</scope>
       </dependency>

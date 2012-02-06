@@ -59,7 +59,7 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     }
 
     protected void injectDependencies() {
-        InjectorHolder.getInjector().inject(this);
+        InjectorHolder.getInjector().inject(this, getClass());
     }
 
     @Override

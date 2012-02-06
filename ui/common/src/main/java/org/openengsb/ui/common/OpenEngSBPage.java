@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
  * time. In order for this page to work, a spring-bean of the class
- * 
+ *
  * @link{org.openengsb.core.common.context.ContextCurrentService must be available
  */
 public abstract class OpenEngSBPage extends WebPage {
@@ -40,7 +40,7 @@ public abstract class OpenEngSBPage extends WebPage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "contextCurrentService")
     private ContextCurrentService contextService;
 
     public OpenEngSBPage() {
@@ -82,7 +82,7 @@ public abstract class OpenEngSBPage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     * 
+     *
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

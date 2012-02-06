@@ -39,7 +39,7 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
     private List<Task> list;
 
     public TaskDataProvider() {
-        InjectorHolder.getInjector().inject(this);
+        InjectorHolder.getInjector().inject(this, TaskDataProvider.class);
         this.setSort("taskId", true);
     }
 

@@ -204,12 +204,12 @@
     <!--  Pax Wicket Dependencies -->
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-service</artifactId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-test</artifactId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

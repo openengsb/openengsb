@@ -263,7 +263,7 @@
     <details>
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
-    <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.wicket/org.ops4j.pax.wicket.service/${pax.wicket.version}</bundle>
     <bundle>mvn:org.openengsb.forks/org.odlabs.wiquery/${wiquery.forked.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/1.7R2_2</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.5.0_2</bundle>

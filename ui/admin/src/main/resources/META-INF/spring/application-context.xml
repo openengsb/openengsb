@@ -51,10 +51,8 @@
   <osgi:reference id="workflowConverter" interface="org.openengsb.core.api.workflow.WorkflowConverter" />
   <osgi:list id="validators" interface="org.openengsb.core.api.workflow.WorkflowValidator" />
 
-  <bean id="openengsbAppFactory" class="org.openengsb.ui.admin.WicketApplicationFactory" />
-
-  <wicket:application id="openengsbApplication" homepageClass="org.openengsb.ui.admin.index.Index"
-    mountPoint="openengsb" applicationName="openengsb" applicationFactory="openengsbAppFactory">
+  <wicket:application id="openengsbApplication" mountPoint="openengsb" applicationName="openengsb" 
+    class="org.openengsb.ui.admin.WicketApplication">
     <wicket:context-param>
       <wicket:param-name>configuration</wicket:param-name>
       <wicket:param-value>deployment</wicket:param-value>

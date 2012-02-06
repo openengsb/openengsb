@@ -26,15 +26,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
-import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 
 public class WicketApplication extends OpenEngSBWicketApplication {
-
-    private final ApplicationLifecycleListener lifecycleListener;
-
-    public WicketApplication(ApplicationLifecycleListener lifecycleListener) {
-        this.lifecycleListener = lifecycleListener;
-    }
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -47,17 +40,6 @@ public class WicketApplication extends OpenEngSBWicketApplication {
     }
 
     @Override
-    protected void addInjector() {
-        // a ComponentInitializationListener is set by pax-wicket
-    }
-
-    @Override
-    protected void init() {
-        lifecycleListener.onInit(this);
-        super.init();
-    }
-
-    @Override
     public Session newSession(Request request, Response response) {
         return new AdminWebSession(request);
     }
@@ -67,9 +49,4 @@ public class WicketApplication extends OpenEngSBWicketApplication {
         return AdminWebSession.class;
     }
 
-    @Override
-    protected void onDestroy() {
-        lifecycleListener.onDestroy(this);
-        super.onDestroy();
-    }
 }
