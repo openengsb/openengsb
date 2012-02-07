@@ -22,7 +22,7 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 
     <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/openengsb)</jta-data-source>
-
+    <class>org.openengsb.core.common.AbstractDataRow</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorConfigurationJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertyJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertiesWrapperJPAEntity</class>
@@ -39,7 +39,7 @@
 
   <persistence-unit name="connector-test">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    
+    <class>org.openengsb.core.common.AbstractDataRow</class>   
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorConfigurationJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertyJPAEntity</class>
     <class>org.openengsb.persistence.connector.jpabackend.ConnectorPropertiesWrapperJPAEntity</class>
@@ -47,7 +47,7 @@
 
     <properties>
       <property name="openjpa.Log" value="slf4j"/>
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:TEST;DB_CLOSE_DELAY=-1;USER=sa;PASSWORD=lala"/>
+      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:TEST;DB_CLOSE_DELAY=-1;USER=sa;PASSWORD=pwd"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
       <property name="openjpa.jdbc.DBDictionary" value="batchLimit=20000"/>      
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add,deleteTableContents',ForeignKeys=true)"/>

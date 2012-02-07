@@ -27,8 +27,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -39,15 +37,13 @@ import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ConnectorConfiguration;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.common.AbstractDataRow;
 
+@SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_CONFIGURATION")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "DOMAINTYPE", "CONNECTORTYPE", "INSTANCEID" }))
-public class ConnectorConfigurationJPAEntity {
+public class ConnectorConfigurationJPAEntity extends AbstractDataRow {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "CONFIG_ID")
-    private Long id;
     @Column(name = "DOMAINTYPE", nullable = false, length = 63)
     private String domainType;
     @Column(name = "CONNECTORTYPE", nullable = false, length = 63)
@@ -62,14 +58,6 @@ public class ConnectorConfigurationJPAEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKeyColumn(name = "PROP_KEY", length = 255)
     private Map<String, ConnectorPropertiesWrapperJPAEntity> properties;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getDomainType() {
         return domainType;

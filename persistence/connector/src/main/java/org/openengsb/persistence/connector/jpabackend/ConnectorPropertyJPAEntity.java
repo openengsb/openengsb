@@ -23,9 +23,11 @@ import javax.persistence.Entity;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.common.AbstractDataRow;
 
+@SuppressWarnings("serial")
 @Entity(name = "CONNECTOR_PROPERTY")
-public class ConnectorPropertyJPAEntity {
+public class ConnectorPropertyJPAEntity extends AbstractDataRow {
 
     @Column(name = "STRVALUE", nullable = false, length = 511)
     private String strValue;
