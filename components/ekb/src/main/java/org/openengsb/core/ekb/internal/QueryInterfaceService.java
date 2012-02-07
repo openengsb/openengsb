@@ -116,6 +116,8 @@ public class QueryInterfaceService implements QueryInterface {
         if (object.containsKey(propertyName + "0")) {
             Class<?> clazz = getGenericParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
+        } else if (value == null) {
+            return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
         } else if (parameterType.equals(File.class)) {
