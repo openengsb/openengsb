@@ -23,7 +23,9 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -127,5 +129,24 @@ public class EDBConverterTest {
         EDBObject subObject2 = objects.get(1);
         assertThat(subObject2.get("id").toString(), is("sub2"));
         assertThat((subObject2.get(EDBConstants.MODEL_TYPE)).toString(), is(SubModel.class.toString()));
+    }
+
+    @Test
+    public void testMapModelToEDBObjectConversion_shouldWork() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("keyA", "valueA");
+        map.put("keyB", "valueB");
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        model.setId("test");
+        model.setMap(map);
+        
+        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        
+        EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
+        
+        assertThat(object.get("map0.key").toString(), is("keyA"));
+        assertThat(object.get("map0.value").toString(), is("valueA"));
+        assertThat(object.get("map1.key").toString(), is("keyB"));
+        assertThat(object.get("map1.value").toString(), is("valueB"));
     }
 }
