@@ -71,8 +71,8 @@
     <section>
         <title>Supported field types</title>
         <para>
-            Currently the models are able to work with primitive types, strings, dates, lists, models and files. All those objects can 
-            be set and got through the interface and can also be persisted in the EDB (see the chapter about the EDB for more details).
+            Currently the models are able to work with primitive types, strings, dates, lists, maps, models and files. All those objects
+            can be set and got through the interface and can also be persisted in the EDB (see the chapter about the EDB for more details).
         </para>
         <para>
             Special case in the supported field types are file objects. They are quite tricky, especially if the models shall be
