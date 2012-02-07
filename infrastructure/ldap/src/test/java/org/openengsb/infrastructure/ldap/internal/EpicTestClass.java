@@ -7,7 +7,7 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.infrastructure.ldap.internal.model.LdapDao;
+import org.openengsb.infrastructure.ldap.internal.dao.LdapDao;
 
 public abstract class EpicTestClass {
     

@@ -239,7 +239,7 @@ public interface UserDataManager {
         throws PermissionSetNotFoundException;
 
     /**
-     * Adds a child permissionSet to a parent permissionSet
+     * Removes a child permissionSet from a parent permissionSet
      *
      * @throws PermissionSetNotFoundException if the parent permissionSet does not exist
      */

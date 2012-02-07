@@ -11,12 +11,15 @@ import java.util.List;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.directory.ldap.client.api.NetworkSchemaLoader;
+import org.apache.directory.shared.ldap.model.entry.Attribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.registries.Schema;
 import org.junit.After;
@@ -28,7 +31,7 @@ import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.infrastructure.ldap.internal.model.LdapDao;
+import org.openengsb.infrastructure.ldap.internal.dao.LdapDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,19 +80,6 @@ public class LdapUnitTest2 {
         return m;
     }
 
-    private static LdapConnection setupConnection() throws Exception{
-        LdapConnection c = new LdapNetworkConnection("localhost", 10389);
-
-        BindRequest bindRequest = new BindRequestImpl();
-        bindRequest.setName(new Dn("uid=admin,ou=system"));
-        bindRequest.setCredentials("secret");
-
-        c.setTimeOut(0);
-        c.connect();
-        c.bind(bindRequest);
-        return c;
-    }
-    
     private static LdapNetworkConnection setupNetworkConnection() throws Exception{
         LdapNetworkConnection c = new LdapNetworkConnection("localhost", 10389);
         
@@ -161,11 +151,20 @@ public class LdapUnitTest2 {
     
     @Test
     public void randomTest() throws Exception{
-        String description = "Horsepower MAX";
-        Permission p = new PermissionImpl(description);
-        userManager.createPermissionSet(testPermissionSetName, p);
-        assertThat(connection.exists(dnTestPermissionSet), is(true));
+        Entry entry = connection.lookup("openengsb-id=1,cn=testAttribute,ou=attributes,cn=testUser,ou=users,ou=userdata,dc=openengsb,dc=org");
+        for(AttributeType at : entry.getAttributeTypes()){
+            Attribute a = entry.get(at);
+            System.out.println(a);
+        }
     }
+    
+//    @Test
+//    public void randomTest() throws Exception{
+//        String description = "Horsepower MAX";
+//        Permission p = new PermissionImpl(description);
+//        userManager.createPermissionSet(testPermissionSetName, p);
+//        assertThat(connection.exists(dnTestPermissionSet), is(true));
+//    }
 
 
 

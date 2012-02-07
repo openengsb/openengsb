@@ -21,10 +21,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.infrastructure.ldap.internal.model.LdapDao;
+import org.openengsb.infrastructure.ldap.internal.dao.LdapDao;
+import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,14 +37,14 @@ public class LdapUnitTest {
 
     private static UserDataManager userManager;
     private static LdapConnection connection;
-    private static String testUserName = "testUser";
-    private static String testUserName2 = "testUser2";
-    private static String testCredentialsName = "password";
-    private static String testCredentialsName2 = "password";
-    private static String testAttributeName = "testAttribute";
-    private static String testAttributeName2 = "testAttribute2";
-    private Object[] testAttributeValue = new Object[] {new Boolean(true), new String("abc")};
-    private Object[] testAttributeValue2 = new Object[] {new String("xyz"), new Boolean(false)};
+    private static String userName = "testUser";
+    private static String userName2 = "testUser2";
+    private static String credentialsName = "password";
+    private static String credentialsName2 = "password";
+    private static String attributeName = "testAttribute";
+    private static String attributeName2 = "testAttribute2";
+    private Object[] attributeValue = new Object[] {new Boolean(true), new String("abc")};
+    private Object[] attributeValue2 = new Object[] {new String("xyz"), new Boolean(false)};
     private static Dn dnTestUser;
     private static Dn dnTestUser2;
     private static Dn dnTestCredentials;
@@ -50,7 +52,16 @@ public class LdapUnitTest {
     private static Dn dnTestAttribute;
     private static Dn dnTestAttribute2;
 
-
+    private static class PermissionImpl implements Permission{
+        private String description;
+        public PermissionImpl(String description){
+            this.description = description;
+        }
+        @Override
+        public String describe(){
+            return description;
+        }
+    };
 
     private static UserDataManager setupUserManager(){
         UserDataManagerLdapNEW m = new UserDataManagerLdapNEW();        
@@ -83,34 +94,27 @@ public class LdapUnitTest {
         c.bind(bindRequest);
         
         NetworkSchemaLoader nsl = new NetworkSchemaLoader(c);
-        
         c.loadSchema(nsl);
-        
-//        for(Schema s : nsl.getAllSchemas()){
-//            System.out.println(s);
-//        }
-        
+
         return c;
     }
 
     private static void setupTests() throws Exception{
         
-        dnTestUser = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUserName));
-        dnTestUser2 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", testUserName2));
+        dnTestUser = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", userName));
+        dnTestUser2 = new Dn(String.format("cn=%s,ou=users,ou=userdata,dc=openengsb,dc=org", userName2));
         Dn ou = new Dn(new Rdn("ou=attributes"),dnTestUser);
-        dnTestAttribute = new Dn(new Rdn(String.format("cn=%s", testAttributeName)),ou);
+        dnTestAttribute = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
         ou = new Dn(new Rdn("ou=attributes"),dnTestUser2);
-        dnTestAttribute2 = new Dn(new Rdn(String.format("cn=%s", testAttributeName)),ou);
+        dnTestAttribute2 = new Dn(new Rdn(String.format("cn=%s", attributeName)),ou);
         ou = new Dn(new Rdn("ou=credentials"),dnTestUser);
-        dnTestCredentials = new Dn(new Rdn(String.format("cn=%s", testCredentialsName)),ou);
+        dnTestCredentials = new Dn(new Rdn(String.format("cn=%s", credentialsName)),ou);
         ou = new Dn(new Rdn("ou=credentials"),dnTestUser2);
-        dnTestCredentials2 = new Dn(new Rdn(String.format("cn=%s", testCredentialsName)),ou);
+        dnTestCredentials2 = new Dn(new Rdn(String.format("cn=%s", credentialsName)),ou);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        //connection = setupConnection();
-        
         connection = setupNetworkConnection();
         userManager = setupUserManager();
         setupTests();
@@ -122,49 +126,166 @@ public class LdapUnitTest {
         connection.close();
     }
 
-    @Before
+    @Before //TODO make some resetServer() method or even better applyLdifs
     public void doBefore() throws Exception{
-        userManager.createUser(testUserName);
+        userManager.deleteUser(userName);
+        userManager.deleteUser(userName2);
+        ((UserDataManagerLdapNEW)userManager).getDao().deleteSubtreeExcludingRoot(SchemaConstants.ouGlobalPermissionSets());
+        userManager.createUser(userName);
     }
     
-    @After
-    public void doAfter() throws Exception{
-        userManager.deleteUser(testUserName);
-        userManager.deleteUser(testUserName2);
+
+    
+    /*--------------- credentials -----------------*/
+    
+    @Test
+    public void testSetUserCredentialsNullValue_shouldPersistNullValue() throws Exception{
+        assertThat(connection.exists(dnTestUser), is(true));
+        assertThat(connection.exists(dnTestCredentials), is(false));
+        userManager.setUserCredentials(userName, credentialsName, null);
+        assertThat(connection.exists(dnTestCredentials), is(true));
+        String returnedCredentials = userManager.getUserCredentials(userName, credentialsName);
+        assertThat(returnedCredentials, nullValue());
     }
     
     @Test
-    public void testSetAttribute_shouldPersistAttribute() throws Exception{
+    public void testSetUserCredentialsEmptyString_shouldPersistEmptyString() throws Exception{
+        String expectedValue = "";
         assertThat(connection.exists(dnTestUser), is(true));
+        assertThat(connection.exists(dnTestCredentials), is(false));
+        userManager.setUserCredentials(userName, credentialsName, expectedValue);
+        assertThat(connection.exists(dnTestCredentials), is(true));
+        String returnedCredentials = userManager.getUserCredentials(userName, credentialsName);
+        assertThat(returnedCredentials, is(expectedValue));
+    }
+    
+    @Test
+    public void testSetUserCredentials_shouldPersistCredentials() throws Exception{
+        String expectedValue = "abc";
+        assertThat(connection.exists(dnTestUser), is(true));
+        assertThat(connection.exists(dnTestCredentials), is(false));
+        userManager.setUserCredentials(userName, credentialsName, expectedValue);
+        assertThat(connection.exists(dnTestCredentials), is(true));
+        String returnedCredentials = userManager.getUserCredentials(userName, credentialsName);
+        assertThat(returnedCredentials, is(expectedValue));
+    }
+    
+    @Test
+    public void testSetExistingUserCredentials_shouldOverwrite() throws Exception{
+        String originalValue = "abc";
+        String newValue = "xyz";
+        userManager.setUserCredentials(userName, credentialsName, originalValue);
+        String returnedCredentials = userManager.getUserCredentials(userName, credentialsName);
+        assertThat(returnedCredentials, is(originalValue));
+        userManager.setUserCredentials(userName, credentialsName, newValue); //overwrite original value
+        returnedCredentials = userManager.getUserCredentials(userName, credentialsName);
+        assertThat(returnedCredentials, is(newValue));
+    }
+    
+    @Test(expected = UserNotFoundException.class)
+    public void testSetCredentialsForNonexistingUser_shouldThrowUserNotFoundException() throws Exception{
+        assertThat(connection.exists(dnTestUser2), is(false));
+        userManager.setUserCredentials(userName2, "randomName", "randomValue");
+    }
+    
+    /*--------------- attributes -----------------*/
+    
+    @Test
+    public void testSetUserAttribute_shouldAlsoPersistOrder() throws Exception {
+        Boolean value0 = true;
+        String value1 = "";
+        Integer value2 = 307708;
         
-        assertThat(dnTestAttribute.getName().equals("cn=testAttribute,ou=attributes,cn=testUser,ou=users,ou=userdata,dc=openengsb,dc=org"), is(true));
-        LOGGER.warn(dnTestAttribute.getName());
-        LOGGER.warn("12345678");
-        userManager.setUserAttribute(testUserName, testAttributeName, testAttributeValue);
-        assertThat(connection.exists(dnTestAttribute), is(true));//STRANGE!! does not work with Dn!
+        userManager.setUserAttribute(userName, attributeName, value0, value1, value2);
         assertThat(connection.exists(dnTestAttribute), is(true));
+        
+        List<Object> result = userManager.getUserAttribute(userName, attributeName);
+        assertThat((Boolean)result.get(0), is(value0));
+        assertThat((String)result.get(1), is(value1));
+        assertThat((Integer)result.get(2), is(value2));
     }
-
+    
+    /*--------------- permissions -----------------*/
+    
+    /*
+     * What to test:
+     * null description
+     * insertion order
+     * duplicates
+     * nonexisting permission set
+     * 
+     * */
+    
+    
     @Test
-    public void testCreateAndDeleteNewUser_shouldSucceed() throws Exception {
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.createUser(testUserName2);
-        assertThat(connection.exists(dnTestUser2), is(true));
-        userManager.deleteUser(testUserName2);
-        assertThat(connection.exists(dnTestUser2), is(false));
+    public void testCreatePermissionSet_shouldPersistSet() throws Exception{
+        String description = "le description";
+        String name = "SetA";
+        Permission p = new PermissionImpl(description);
+        
+        Dn permissionSetDn = SchemaConstants.globalPermissionSet(name);
+        
+        assertThat(connection.exists(permissionSetDn), is(false));
+        userManager.createPermissionSet(name, p);
+        assertThat(connection.exists(permissionSetDn), is(true));
     }
-
+    
     @Test
-    public void testDeleteNonExistingUser_shouldDoNothing() throws Exception {
-        assertThat(connection.exists(dnTestUser2), is(false));
-        userManager.deleteUser(testUserName2);
+    public void testAddPermissionSetToPermissionSet_shouldPersistSet() throws Exception{
+        String description = "le description";
+        Permission p = new PermissionImpl(description);
+        
+        String name = "SetA";
+        Dn permissionSetDn = SchemaConstants.globalPermissionSet(name);
+        
+        assertThat(connection.exists(permissionSetDn), is(false));
+        userManager.createPermissionSet(name, p);
+        assertThat(connection.exists(permissionSetDn), is(true));
+        
+        String name2 = "setB";
+        Dn permissionSet2Dn = SchemaConstants.globalPermissionSet(name2);
+        
+        assertThat(connection.exists(permissionSet2Dn), is(false));
+        userManager.createPermissionSet(name2, p);
+        assertThat(connection.exists(permissionSet2Dn), is(true));
+        
+        userManager.addPermissionSetToPermissionSet(name, name2);
+        
     }
 
-    @Test(expected = UserExistsException.class)
-    public void testCreateExistingUser_expectedUserExistsException() throws Exception {
-        assertThat(connection.exists(dnTestUser), is(true));
-        userManager.createUser(testUserName);
-    }
+//    @Test
+//    public void testCreateAndDeleteNewUser_shouldSucceed() throws Exception {
+//        assertThat(connection.exists(dnTestUser2), is(false));
+//        userManager.createUser(userName2);
+//        assertThat(connection.exists(dnTestUser2), is(true));
+//        userManager.deleteUser(userName2);
+//        assertThat(connection.exists(dnTestUser2), is(false));
+//    }
+//
+//    @Test
+//    public void testDeleteNonExistingUser_shouldDoNothing() throws Exception {
+//        assertThat(connection.exists(dnTestUser2), is(false));
+//        userManager.deleteUser(userName2);
+//    }
+//
+//    @Test(expected = UserExistsException.class)
+//    public void testCreateExistingUser_expectedUserExistsException() throws Exception {
+//        assertThat(connection.exists(dnTestUser), is(true));
+//        userManager.createUser(userName);
+//    }
+    
+//  @Test
+//  public void testSetAttribute_shouldPersistAttribute() throws Exception{
+//      assertThat(connection.exists(dnTestUser), is(true));
+//      
+//      assertThat(dnTestAttribute.getName().equals("cn=testAttribute,ou=attributes,cn=testUser,ou=users,ou=userdata,dc=openengsb,dc=org"), is(true));
+//      LOGGER.warn(dnTestAttribute.getName());
+//      LOGGER.warn("12345678");
+//      userManager.setUserAttribute(userName, attributeName, attributeValue);
+//      assertThat(connection.exists(dnTestAttribute), is(true));
+//      assertThat(connection.exists(dnTestAttribute), is(true));
+//  }
+    
     //
     //    @Test
     //    public void testGetAllUsers() throws Exception {
@@ -190,13 +311,6 @@ public class LdapUnitTest {
     //        assertThat(userList.size(), is(0));
     //    }
     //    
-        @Test
-        public void testSetCredentials_shouldPersistCredentials() throws Exception{
-            assertThat(connection.exists(dnTestUser), is(true));
-            assertThat(connection.exists(dnTestCredentials), is(false));
-            userManager.setUserCredentials(testUserName, testCredentialsName, "testpw");
-            assertThat(connection.exists(dnTestCredentials), is(true));
-        }
     //    
     //    
     //    @Test
@@ -213,11 +327,6 @@ public class LdapUnitTest {
     //    }
     //  
     //    
-        @Test(expected = UserNotFoundException.class)
-        public void testSetCredentials_expectedUserNotFoundException() throws Exception{
-            assertThat(connection.exists(dnTestUser2), is(false));
-            userManager.setUserCredentials(testUserName2, testCredentialsName2, "testpw");
-        }
     //    
     //    @Test
     //    public void testGetCredentials_shouldReturnExpectedValue() throws Exception{
@@ -266,73 +375,73 @@ public class LdapUnitTest {
         
 
         
-        //@Test
-        public void testSetAttribute_shouldUpdateExistingAttribute() throws Exception{
-            userManager.createUser(testUserName);
-            userManager.setUserAttribute(testUserName, testAttributeName, testAttributeValue);
-            assertThat(connection.exists(dnTestAttribute), is(true));
-            userManager.setUserAttribute(testUserName, testAttributeName, new Object[0]);
-            assertThat(connection.exists(dnTestAttribute), is(true));
-            List<Object> attribute = userManager.getUserAttribute(testUserName, testAttributeName);
-            assertThat(attribute, not(nullValue()));
-            assertThat(attribute, is(Collections.EMPTY_LIST));
-        }
-        
-        //@Test
-        public void testGetAttribute_shouldHaveCorrectType() throws Exception{
-            userManager.createUser(testUserName);
-            userManager.setUserAttribute(testUserName, testAttributeName, testAttributeValue);
-            List<Object> attribute = userManager.getUserAttribute(testUserName, testAttributeName);
-            assertThat(attribute, not(nullValue()));
-            assertThat(attribute.size(), is(2));
-            Object attribute0 = attribute.get(0);
-            assertThat(attribute0, is(testAttributeValue[0].getClass()));
-            assertThat((Boolean)attribute0, is(testAttributeValue[0]));
-            Object attribute1 = attribute.get(1);        
-            assertThat(attribute1, is(testAttributeValue[1].getClass()));
-            assertThat((String)attribute1, is(testAttributeValue[1]));
-        }
-        
-        @Test(expected = UserNotFoundException.class)
-        public void testSetAttribute_expectedUserNotFoundException() throws Exception{
-            assertThat(connection.exists(dnTestUser2), is(false));
-            userManager.setUserAttribute(testUserName2, testAttributeName, testAttributeValue);        
-        }
-        
-        @Test(expected = UserNotFoundException.class)
-        public void testRemoveAttribute_expectedUserNotFoundException() throws Exception{
-            LOGGER.warn("expect usernotfoundexception");
-            assertThat(connection.exists(dnTestUser.getName()), is(true));
-            userManager.deleteUser(testUserName);
-            assertThat(connection.exists(dnTestUser.getName()), is(false));
-            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
-            userManager.removeUserAttribute(testUserName, testAttributeName);
-            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
-            LOGGER.warn("test end");
-        }
-        
-        @Test
-        public void testRemoveAttribute_shouldDoNothingBecauseAttributeDoesNotExist() throws Exception{
-            LOGGER.warn("expect NOTHING");
-            userManager.createUser(testUserName2);
-            assertThat(connection.exists(dnTestUser2.getName()), is(true));
-            assertThat(connection.exists(dnTestAttribute2.getName()), is(false));
-            userManager.removeUserAttribute(testUserName2, testAttributeName2);
-            LOGGER.warn("test end");
-        }
-        
-        //@Test(expected = UserNotFoundException.class)
-        public void testGetAttribute_expectedUserNotFoundException() throws Exception{
-            assertThat(connection.exists(dnTestUser), is(false));
-            userManager.getUserAttribute(testUserName, testAttributeName);
-        }
-        
-        //@Test(expected = NoSuchAttributeException.class)
-        public void testGetAttribute_expectedNoSuchAttributeException() throws Exception{
-            userManager.createUser(testUserName);
-            assertThat(connection.exists(dnTestUser), is(true));
-            userManager.getUserAttribute(testUserName, testAttributeName);
-        }
+//        //@Test
+//        public void testSetAttribute_shouldUpdateExistingAttribute() throws Exception{
+//            userManager.createUser(userName);
+//            userManager.setUserAttribute(userName, attributeName, attributeValue);
+//            assertThat(connection.exists(dnTestAttribute), is(true));
+//            userManager.setUserAttribute(userName, attributeName, new Object[0]);
+//            assertThat(connection.exists(dnTestAttribute), is(true));
+//            List<Object> attribute = userManager.getUserAttribute(userName, attributeName);
+//            assertThat(attribute, not(nullValue()));
+//            assertThat(attribute, is(Collections.EMPTY_LIST));
+//        }
+//        
+//        //@Test
+//        public void testGetAttribute_shouldHaveCorrectType() throws Exception{
+//            userManager.createUser(userName);
+//            userManager.setUserAttribute(userName, attributeName, attributeValue);
+//            List<Object> attribute = userManager.getUserAttribute(userName, attributeName);
+//            assertThat(attribute, not(nullValue()));
+//            assertThat(attribute.size(), is(2));
+//            Object attribute0 = attribute.get(0);
+//            assertThat(attribute0, is(attributeValue[0].getClass()));
+//            assertThat((Boolean)attribute0, is(attributeValue[0]));
+//            Object attribute1 = attribute.get(1);        
+//            assertThat(attribute1, is(attributeValue[1].getClass()));
+//            assertThat((String)attribute1, is(attributeValue[1]));
+//        }
+//        
+//        @Test(expected = UserNotFoundException.class)
+//        public void testSetAttribute_expectedUserNotFoundException() throws Exception{
+//            assertThat(connection.exists(dnTestUser2), is(false));
+//            userManager.setUserAttribute(userName2, attributeName, attributeValue);        
+//        }
+//        
+//        @Test(expected = UserNotFoundException.class)
+//        public void testRemoveAttribute_expectedUserNotFoundException() throws Exception{
+//            LOGGER.warn("expect usernotfoundexception");
+//            assertThat(connection.exists(dnTestUser.getName()), is(true));
+//            userManager.deleteUser(userName);
+//            assertThat(connection.exists(dnTestUser.getName()), is(false));
+//            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
+//            userManager.removeUserAttribute(userName, attributeName);
+//            assertThat(connection.exists(dnTestAttribute.getName()), is(false));
+//            LOGGER.warn("test end");
+//        }
+//        
+//        @Test
+//        public void testRemoveAttribute_shouldDoNothingBecauseAttributeDoesNotExist() throws Exception{
+//            LOGGER.warn("expect NOTHING");
+//            userManager.createUser(userName2);
+//            assertThat(connection.exists(dnTestUser2.getName()), is(true));
+//            assertThat(connection.exists(dnTestAttribute2.getName()), is(false));
+//            userManager.removeUserAttribute(userName2, attributeName2);
+//            LOGGER.warn("test end");
+//        }
+//        
+//        //@Test(expected = UserNotFoundException.class)
+//        public void testGetAttribute_expectedUserNotFoundException() throws Exception{
+//            assertThat(connection.exists(dnTestUser), is(false));
+//            userManager.getUserAttribute(userName, attributeName);
+//        }
+//        
+//        //@Test(expected = NoSuchAttributeException.class)
+//        public void testGetAttribute_expectedNoSuchAttributeException() throws Exception{
+//            userManager.createUser(userName);
+//            assertThat(connection.exists(dnTestUser), is(true));
+//            userManager.getUserAttribute(userName, attributeName);
+//        }
         
     //    //TODO add test that checks sort order of retrieved attributes list
     //    //duplicates, null value, empty strings, insertion order
@@ -345,7 +454,7 @@ public class LdapUnitTest {
     //
     //        @Override
     //        public String describe() {
-    //            // TODO Auto-generated method stub
+    //            
     //            return null;
     //        }
     //        
@@ -355,7 +464,7 @@ public class LdapUnitTest {
     //
     //        @Override
     //        public String describe() {
-    //            // TODO Auto-generated method stub
+    //            
     //            return null;
     //        }
     //        
