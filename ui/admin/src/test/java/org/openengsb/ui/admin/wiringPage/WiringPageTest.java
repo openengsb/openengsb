@@ -99,7 +99,7 @@ public class WiringPageTest extends AbstractUITest {
         contextList.add("twotimes2");
         contextList.add("foo");
         ContextCurrentService contextService =
-            (ContextCurrentService) context.getBean(mock(ContextCurrentService.class).getClass().getName());
+            (ContextCurrentService) context.getBean("contextCurrentService");
         when(contextService.getAvailableContexts()).thenReturn(contextList);
         createConnectors();
         tester.getApplication().addComponentInstantiationListener(
