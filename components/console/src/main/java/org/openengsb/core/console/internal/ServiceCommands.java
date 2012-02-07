@@ -17,6 +17,9 @@
 
 package org.openengsb.core.console.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
@@ -27,17 +30,26 @@ import org.openengsb.core.console.internal.util.ServicesHelper;
 @Command(scope = "openengsb", name = "service", description = "Prints out the created OpenEngSB services.")
 public class ServiceCommands extends OsgiCommandSupport {
 
+    public static final String ATTRIBUTES_SEPARATOR = ";";
+    public static final String VALUE_SEPARATOR = ":";
+    public static final String CONNECTOR_TYPE = "type";
+
     @Argument(index = 0, name = "command", description = "The service command argument (CREATE, UPDATE, DELETE)",
-            required = false, multiValued = false)
+        required = false, multiValued = false)
     String arg = null;
 
     @Argument(index = 1, name = "id", required = false, multiValued = false)
     String id = null;
 
     @Option(name = "-f", aliases = {"--force"}, description = "Force the command (true or false) ", required = false,
-            multiValued = false)
+        multiValued = false)
     String force = "false";
 
+    //attributes for creating a service: has the format:
+    // <CONNECTOR_TYPE> VALUE_SEPARATOR <value> ATTRIBUTES_SEPARATOR <field1> VALUE_SEPARATOR <value1> ATTRIBUTES_SEPARATOR
+    // ...without the "<" sign and any whitespace
+    @Argument(index = 2, name = "attributes", required = false, multiValued = true)
+    String attributes = "";
     private ServicesHelper serviceHelper;
 
     protected Object doExecute() throws Exception {
@@ -49,7 +61,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     serviceHelper.listRunningServices();
                     break;
                 case CREATE:
-                    serviceHelper.createService(id, option);
+                    serviceHelper.createService(id, option, attributes);
                     break;
                 case UPDATE:
                     // TODO: see OPENENGSB-2282

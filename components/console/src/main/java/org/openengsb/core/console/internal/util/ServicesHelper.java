@@ -44,6 +44,7 @@ import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.console.internal.ServiceCommands;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -161,7 +162,7 @@ public class ServicesHelper {
     /**
      * crate a service for the given domain, if force is true, input is not verified
      */
-    public void createService(String domainProviderName, boolean force) {
+    public void createService(String domainProviderName, boolean force, String attributes) {
         // get domain provider Id
         String domainProviderId = "";
         List<DomainProvider> domainProvider = getDomainProvider();
@@ -171,18 +172,24 @@ public class ServicesHelper {
             }
         }
         // get the connector which should be created
-        ConnectorProvider connectorProvider = getConnectorToCreate(domainProviderId);
+        Map<String, String> attributesFromInput = split(attributes);
+        ConnectorProvider connectorProvider = getConnectorToCreate(domainProviderId,
+            attributesFromInput.get(ServiceCommands.CONNECTOR_TYPE));
 
-
-        OutputStreamFormater.printValue("Please enter an ID");
-        String id = readUserInput();
+        String id;
+        if (attributes == null || attributes.isEmpty() || !attributesFromInput.containsKey("id")) {
+            OutputStreamFormater.printValue("Please enter an ID");
+            id = readUserInput();
+        } else {
+            id = attributesFromInput.get("id");
+        }
 
         ServiceDescriptor descriptor = connectorProvider.getDescriptor();
         OutputStreamFormater.printValue(String.format("Please enter the attributes for %s, keep empty for default",
             descriptor.getName().getString(Locale.getDefault())));
 
         //get attributes for connector
-        Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes());
+        Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes(), attributesFromInput);
         Map<String, Object> properties = new HashMap<String, Object>();
 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
@@ -208,7 +215,23 @@ public class ServicesHelper {
         }
     }
 
-    private Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions) {
+    private Map<String, String> split(String attributes) {
+        Map<String, String> resultMap = new HashMap<String, String>();
+
+        String[] split = attributes.split(ServiceCommands.ATTRIBUTES_SEPARATOR);
+        for (String valueAndFields : split) {
+            String[] valueAndField = valueAndFields.split(ServiceCommands.VALUE_SEPARATOR);
+            if (valueAndField.length != 2) {
+                // TODO throw new exception
+            } else {
+                resultMap.put(valueAndField[0], valueAndField[1]);
+            }
+        }
+        return resultMap;
+    }
+
+    private Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
+                                                       Map<String, String> attributesFromInput) {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
             String fieldName = attributeDefinition.getName().getString(Locale.getDefault());
@@ -216,15 +239,19 @@ public class ServicesHelper {
             String defaultValue = attributeDefinition.getDefaultValue().getString(Locale.getDefault());
 
             String userValue;
-            OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
-                description, defaultValue));
-            if (!attributeDefinition.getOptions().isEmpty()) {
-                userValue = letUserChooseFromOption(attributeDefinition.getOptions());
+            if (attributesFromInput.containsKey(fieldName)) {
+                userValue = attributesFromInput.get(fieldName);
             } else {
-                userValue = readUserInput();
-            }
-            if ("".equals(userValue) || "\n".equals(userValue)) {
-                userValue = defaultValue;
+                OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
+                    description, defaultValue));
+                if (!attributeDefinition.getOptions().isEmpty()) {
+                    userValue = letUserChooseFromOption(attributeDefinition.getOptions());
+                } else {
+                    userValue = readUserInput();
+                }
+                if ("".equals(userValue) || "\n".equals(userValue)) {
+                    userValue = defaultValue;
+                }
             }
             attributeMap.put(fieldName, userValue);
         }
@@ -249,10 +276,18 @@ public class ServicesHelper {
         return options.get(pos).getValue();
     }
 
-    private ConnectorProvider getConnectorToCreate(String domainProviderId) {
+    private ConnectorProvider getConnectorToCreate(String domainProviderId, String connector) {
         List<ConnectorProvider> connectorProviders = osgiUtilsService.listServices(ConnectorProvider.class,
             String.format("(%s=%s)", Constants.DOMAIN_KEY, domainProviderId));
+
+        for (ConnectorProvider connectorProvider : connectorProviders) {
+            if (connector != null && connector.equals(connectorProvider.getId())) {
+                return connectorProvider;
+            }
+        }
+
         OutputStreamFormater.printValue("Please select the connector you want to create: ");
+        Collections.sort(connectorProviders, Comparators.forConnectorProvider());
         for (int i = 0; i < connectorProviders.size(); i++) {
             ConnectorProvider connectorProvider = connectorProviders.get(i);
             ServiceDescriptor descriptor = connectorProvider.getDescriptor();
