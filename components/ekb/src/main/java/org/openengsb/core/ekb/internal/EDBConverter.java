@@ -24,7 +24,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openengsb.core.api.edb.EDBConstants;
@@ -163,8 +165,11 @@ public class EDBConverter {
         Object value = object.get(propertyName);
         Class<?> parameterType = setterMethod.getParameterTypes()[0];
 
-        if (object.containsKey(propertyName + "0")) {
-            Class<?> clazz = getGenericParameterClass(setterMethod);
+        if (object.containsKey(propertyName + "0.key")) {
+            List<Class<?>> classes = getGenericMapParameterClasses(setterMethod);
+            value = getMapValue(classes.get(0), classes.get(1), propertyName, object);
+        } else if (object.containsKey(propertyName + "0")) {
+            Class<?> clazz = getGenericListParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
         } else if (value == null) {
             return null;
@@ -187,13 +192,27 @@ public class EDBConverter {
     }
 
     /**
-     * Get the type of the parameter of a setter.
+     * Get the type of the list parameter of a setter.
      */
-    private Class<?> getGenericParameterClass(Method setterMethod) {
+    private Class<?> getGenericListParameterClass(Method setterMethod) {
         Type t = setterMethod.getGenericParameterTypes()[0];
         ParameterizedType pType = (ParameterizedType) t;
         Class<?> clazz = (Class<?>) pType.getActualTypeArguments()[0];
         return clazz;
+    }
+
+    /**
+     * Get the type of the map parameter of a setter
+     */
+    private List<Class<?>> getGenericMapParameterClasses(Method setterMethod) {
+        Type t = setterMethod.getGenericParameterTypes()[0];
+        ParameterizedType pType = (ParameterizedType) t;
+        Class<?> keyClass = (Class<?>) pType.getActualTypeArguments()[0];
+        Class<?> valueClass = (Class<?>) pType.getActualTypeArguments()[1];
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        classes.add(keyClass);
+        classes.add(valueClass);
+        return classes;
     }
 
     /**
@@ -203,11 +222,9 @@ public class EDBConverter {
         List<Object> temp = new ArrayList<Object>();
         for (int i = 0;; i++) {
             Object obj;
-
             if (!object.containsKey(propertyName + i)) {
                 break;
             }
-
             if (OpenEngSBModel.class.isAssignableFrom(type)) {
                 obj = convertEDBObjectToUncheckedModel(type, edbService.getObject(object.getString(propertyName + i)));
             } else {
@@ -215,6 +232,32 @@ public class EDBConverter {
             }
 
             temp.add(obj);
+        }
+        return temp;
+    }
+
+    private Object getMapValue(Class<?> keyType, Class<?> valueType, String propertyName, EDBObject object) {
+        Map<Object, Object> temp = new HashMap<Object, Object>();
+        for (int i = 0;; i++) {
+            String keyProperty = propertyName + i + ".key";
+            String valueProperty = propertyName + i + ".value";
+            if (!object.containsKey(keyProperty)) {
+                break;
+            }
+            Object key;
+            Object value;
+            if (OpenEngSBModel.class.isAssignableFrom(keyType)) {
+                key = convertEDBObjectToUncheckedModel(keyType, edbService.getObject(object.getString(keyProperty)));
+            } else {
+                key = object.get(keyProperty);
+            }
+            if (OpenEngSBModel.class.isAssignableFrom(keyType)) {
+                value =
+                    convertEDBObjectToUncheckedModel(keyType, edbService.getObject(object.getString(valueProperty)));
+            } else {
+                value = object.get(valueProperty);
+            }
+            temp.put(key, value);
         }
         return temp;
     }
@@ -304,7 +347,46 @@ public class EDBConverter {
                         object.put(entry.getKey() + i, list.get(i));
                     }
                 }
+            } else if (Map.class.isAssignableFrom(entry.getType())) {
+                Map<?, ?> map = (Map<?, ?>) entry.getValue();
+                if (map == null || map.size() == 0) {
+                    continue;
+                }
+                Boolean keyIsModel = null;
+                Boolean valueIsModel = null;
+                int i = 0;
+                for (Map.Entry<?, ?> ent : map.entrySet()) {
+                    if (keyIsModel == null) {
+                        keyIsModel = ent.getKey().getClass().equals(OpenEngSBModelWrapper.class);
+                    }
+                    if (valueIsModel == null) {
+                        valueIsModel = ent.getValue().getClass().equals(OpenEngSBModelWrapper.class);
+                    }
+                    Object key;
+                    Object value;
+                    if (keyIsModel) {
+                        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) ent.getKey();
+                        OpenEngSBModel temp =
+                            (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                                model.getClass().getClassLoader());
+                        key = convertSubModel(temp, objects, id);
+                    } else {
+                        key = ent.getKey();
+                    }
+                    if (valueIsModel) {
+                        OpenEngSBModelWrapper wrapper = (OpenEngSBModelWrapper) ent.getValue();
+                        OpenEngSBModel temp =
+                            (OpenEngSBModel) ModelUtils.generateModelOutOfWrapper(wrapper,
+                                model.getClass().getClassLoader());
+                        value = convertSubModel(temp, objects, id);
+                    } else {
+                        value = ent.getValue();
+                    }
 
+                    object.put(entry.getKey() + i + ".key", key);
+                    object.put(entry.getKey() + i + ".value", value);
+                    i++;
+                }
             } else {
                 object.put(entry.getKey(), entry.getValue());
             }

@@ -72,6 +72,16 @@ public class QueryInterfaceServiceTest {
         edbObjectImpl.put("subs0", "suboid2");
         edbObjectImpl.put("subs1", "suboid3");
         edbObjectImpl.put(EDBConstants.MODEL_TYPE, TestModel2.class.toString());
+        
+        EDBObject mapTest = new EDBObject("mapoid");
+        mapTest.put("id", "testid");
+        mapTest.put("map0.key", "keyA");
+        mapTest.put("map0.value", "valueA");
+        mapTest.put("map1.key", "keyB");
+        mapTest.put("map1.value", "valueB");
+        mapTest.put("map2.key", "keyC");
+        mapTest.put("map2.value", "valueC");
+        mapTest.put(EDBConstants.MODEL_TYPE, TestModel.class.toString());
 
         EDBObject subObject1 = new EDBObject("suboid1");
         subObject1.put("id", "testid");
@@ -90,6 +100,7 @@ public class QueryInterfaceServiceTest {
 
         when(edbService.getObject("testoid")).thenReturn(edbObject);
         when(edbService.getObject("testoidimpl")).thenReturn(edbObjectImpl);
+        when(edbService.getObject("mapoid")).thenReturn(mapTest);
         when(edbService.getObject("suboid1")).thenReturn(subObject1);
         when(edbService.getObject("suboid2")).thenReturn(subObject2);
         when(edbService.getObject("suboid3")).thenReturn(subObject3);
@@ -350,5 +361,13 @@ public class QueryInterfaceServiceTest {
         // testoidimpl returns a TestModel2 object
         TestModel model = service.getModel(TestModel.class, "testoidimpl");
         assertThat(model, nullValue());
+    }
+    
+    @Test
+    public void testMapSupportOfProxiedInterface_shouldWork() {
+        TestModel model = service.getModel(TestModel.class, "mapoid");
+        assertThat(model.getMap().get("keyA").toString(), is("valueA"));
+        assertThat(model.getMap().get("keyB").toString(), is("valueB"));
+        assertThat(model.getMap().get("keyC").toString(), is("valueC"));
     }
 }
