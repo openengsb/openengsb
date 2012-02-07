@@ -90,8 +90,8 @@ public class EDBConverter {
     }
 
     /**
-     * Tests if an EDBObject has the correct model class in which it should be converted. Returns false
-     * if the model type is not fitting, returns true if the model type is fitting or model type is unknown.
+     * Tests if an EDBObject has the correct model class in which it should be converted. Returns false if the model
+     * type is not fitting, returns true if the model type is fitting or model type is unknown.
      */
     private boolean checkEDBObjectModelType(EDBObject object, Class<?> model) {
         String modelClass = object.getString(EDBConstants.MODEL_TYPE);
@@ -166,6 +166,8 @@ public class EDBConverter {
         if (object.containsKey(propertyName + "0")) {
             Class<?> clazz = getGenericParameterClass(setterMethod);
             value = getListValue(clazz, propertyName, object);
+        } else if (value == null) {
+            return null;
         } else if (OpenEngSBModel.class.isAssignableFrom(parameterType)) {
             value = convertEDBObjectToUncheckedModel(parameterType, edbService.getObject((String) value));
         } else if (parameterType.equals(File.class)) {
