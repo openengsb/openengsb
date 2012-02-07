@@ -25,20 +25,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
-import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.ConnectorDescription;
@@ -50,14 +47,10 @@ import org.openengsb.core.common.util.SecurityUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-/**
- *
- */
 public class ServicesHelper {
 
 
     private DefaultOsgiUtilsService osgiUtilsService;
-    private WiringService wiringService;
     private ConnectorManager serviceManager;
     private InputStream keyboard;
     private BundleContext bundleContext;
@@ -69,7 +62,6 @@ public class ServicesHelper {
     public void init() {
         this.osgiUtilsService = new DefaultOsgiUtilsService();
         this.osgiUtilsService.setBundleContext(bundleContext);
-        wiringService = osgiUtilsService.getService(org.openengsb.core.api.WiringService.class);
         serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
         CommandProcessor commandProcessor = osgiUtilsService
             .getService(org.apache.felix.service.command.CommandProcessor.class);
@@ -78,10 +70,9 @@ public class ServicesHelper {
     }
 
     /**
-     * this method prints out all available services and their alive state
+     * prints out all available services and their alive state
      */
     public void listRunningServices() {
-
         try {
             final List<String> formatedOutput =
                 SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
@@ -93,9 +84,7 @@ public class ServicesHelper {
                             osgiUtilsService.listServiceReferences(Domain.class);
                         for (ServiceReference ref : listServiceReferences) {
                             Domain service = osgiUtilsService.getService(Domain.class, ref);
-                            tmp
-                                .add(String
-                                    .format("%s %s", ref.getProperty("id"), service.getAliveState().toString()));
+                            tmp.add(String.format("%s %s", ref.getProperty("id"), service.getAliveState().toString()));
                         }
                         return tmp;
                     }
@@ -103,21 +92,10 @@ public class ServicesHelper {
             for (String s : formatedOutput) {
                 OutputStreamFormater.printValue(s);
             }
-        } catch (ExecutionException e) {
+        } catch (ExecutionException ex) {
+            ex.printStackTrace();
+            System.err.println("Could not get services");
         }
-    }
-
-
-    public Map<DomainProvider, Domain> getDomainsAndEndpoints() {
-        Map<DomainProvider, Domain> domainsAndEndpoints = new HashMap<DomainProvider, Domain>();
-        List<DomainProvider> serviceList = getDomainProvider();
-
-        for (final DomainProvider domainProvider : serviceList) {
-            Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
-            Domain domainEndpoints = osgiUtilsService.getService(domainInterface);
-            domainsAndEndpoints.put(domainProvider, domainEndpoints);
-        }
-        return domainsAndEndpoints;
     }
 
     public List<DomainProvider> getDomainProvider() {
@@ -159,49 +137,30 @@ public class ServicesHelper {
                 OutputStreamFormater.printValue(String.format("Service: %s successfully deleted", id));
             }
         } catch (ExecutionException e) {
+            e.printStackTrace();
             System.err.println("Could not delete service");
         } catch (IOException e) {
-            System.err.println("Unexpected Error");
             e.printStackTrace();
+            System.err.println("Unexpected Error");
         }
     }
 
     /**
-     * returns a list of all ids
+     * returns a list of all service ids
      */
     public List<String> getRunningServiceIds() {
-
         List<ServiceReference> serviceReferences = osgiUtilsService.listServiceReferences(Domain.class);
-
         List<String> result = new ArrayList<String>();
         for (ServiceReference ref : serviceReferences) {
-            Domain service = osgiUtilsService.getService(Domain.class, ref);
+            osgiUtilsService.getService(Domain.class, ref);
             result.add((String) ref.getProperty("id"));
         }
         return result;
-        //final List<Domain> runningServices = getRunningServices();
-        //List<String> result = new ArrayList<String>();
-        //try {
-        //    result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
-        //        @Override
-        //        public List<String> call() throws Exception {
-        //            List<String> ids = new ArrayList<String>();
-        //            for (Domain d : runningServices) {
-        //                String id = d.getInstanceId();
-        //                if (id != null) {
-        //                    ids.add(id);
-        //                }
-        //            }
-        //            return ids;
-        //        }
-        //    });
-        //} catch (ExecutionException e) {
-        //    System.err.println("An error occurred during deleting the service");
-        //    e.printStackTrace();
-        //}
-        //return result;
     }
 
+    /**
+     * crate a service for the given domain, if force is true, input is not verified
+     */
     public void createService(String domainProviderName, boolean force) {
         // get domain provider Id
         String domainProviderId = "";
@@ -280,7 +239,7 @@ public class ServicesHelper {
                     (Locale.getDefault()), option.getValue()));
         }
         String s = readUserInput();
-        int pos = 0;
+        int pos;
         try {
             pos = Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -342,11 +301,6 @@ public class ServicesHelper {
     public void setOsgiUtilsService(DefaultOsgiUtilsService osgiUtilsService) {
         this.osgiUtilsService = osgiUtilsService;
     }
-
-    public void setWiringService(WiringService wiringService) {
-        this.wiringService = wiringService;
-    }
-
 
     public BundleContext getBundleContext() {
         return bundleContext;

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.Domain;
@@ -81,7 +82,7 @@ public class ServicesHelperTest {
 
         serviceHelper = new ServicesHelper();
         serviceHelper.setOsgiUtilsService(osgiServiceMock);
-        serviceHelper.setWiringService(wiringServiceMock);
     }
+
 
 }
