@@ -100,7 +100,7 @@ public abstract class BasePage extends OpenEngSBPage {
     }
 
     private void initializeHeader() {
-        add(new HeaderTemplate("header", getHeaderMenuItem()));
+        add(new HeaderTemplate("header"));
     }
 
     private void initializeMenu() {

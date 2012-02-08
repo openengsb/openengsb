@@ -99,10 +99,18 @@ public class MenuTemplate extends Panel {
         add(MenuItems);
     }
     
+    /**
+     * get the name of the current active menu item
+     */
     public static String getActiveIndex() {
         return MenuTemplate.menuIndex;
     }
     
+    /**
+     * Adds a new item to main header navigation where the index defines the name of the index, which should be the
+     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
+     * should be displayed and authority defines who is authorized to see the link
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String iconName,
             String... authority) {

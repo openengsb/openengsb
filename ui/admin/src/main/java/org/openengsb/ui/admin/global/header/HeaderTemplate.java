@@ -17,37 +17,21 @@
 
 package org.openengsb.ui.admin.global.header;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
+import org.odlabs.wiquery.ui.dialog.Dialog;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.common.SecurityAttributeProviderImpl;
-import org.openengsb.ui.admin.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
-import org.openengsb.ui.admin.sendEventPage.SendEventPage;
-import org.openengsb.ui.admin.serviceListPage.ServiceListPage;
-import org.openengsb.ui.admin.taskOverview.TaskOverview;
-import org.openengsb.ui.admin.testClient.TestClient;
-import org.openengsb.ui.admin.userService.UserListPage;
-import org.openengsb.ui.admin.wiringPage.WiringPage;
-import org.openengsb.ui.admin.workflowEditor.WorkflowEditor;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -57,30 +41,29 @@ public class HeaderTemplate extends Panel {
     
 	
 	
-	/*
-	private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
-    private final ArrayList<String> avialableItems = new ArrayList<String>();
-
-    private static String menuIndex;
-
     @PaxWicketBean(name = "openengsbVersion")
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
-    @PaxWicketBean(name = "attributeStore")
-    private SecurityAttributeProviderImpl attributeStore;
-*/
-	
-    public HeaderTemplate(String id, String menuIndex) {
-        super(id);
+  //  @PaxWicketBean(name = "attributeStore")
+ //   private SecurityAttributeProviderImpl attributeStore;
 
-        baseInitialization(menuIndex);
+	
+    public HeaderTemplate(String id) {
+        super(id);
+        
+        final Dialog dialog = new Dialog("dialog");
+        add(dialog);
+        
+        baseInitialization();
         initializeTopMenu();
-  //      initializeMenu();
     }
 
-    private void baseInitialization(String menuIndex) {
-        /*
+    private void baseInitialization() {
+        
+    	/*
+    	 * Commented until language selector is finished
+    	 * 
     	add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
@@ -93,11 +76,14 @@ public class HeaderTemplate extends Panel {
                 getSession().setLocale(Locale.GERMAN);
             }
         });
+        
+        */
+        
+        
+    	BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
+    	homelink.add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+    	add(homelink);
 
-        HeaderTemplate.menuIndex = menuIndex;
-*/
-        add(new BookmarkablePageLink<Index>("logo", Index.class));
-/*
         if (openengsbVersion == null) {
             openengsbVersion = new OpenEngSBFallbackVersion();
         }
@@ -105,21 +91,9 @@ public class HeaderTemplate extends Panel {
             add(new Label("version", openengsbVersion.getVersionNumber()));
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
-        } */
+        }
     }
-/*
-    private void initMainMenuItems() {
-        addHeaderMenuItem("Index", Index.class, "index.title");
 
-        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
-        addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title");
-        addHeaderMenuItem("UserService", UserListPage.class, "userService.title", "ROLE_ADMIN");
-        addHeaderMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title");
-        addHeaderMenuItem("WiringPage", WiringPage.class, "wiring.title", "ROLE_ADMIN");
-    }
-	*/
     
     private void initializeTopMenu() {
     	Link<Object> link = new Link<Object>("logout") {
@@ -137,87 +111,4 @@ public class HeaderTemplate extends Panel {
         final Label projectLabel = new Label("currentProject",ContextHolder.get().getCurrentContextId());
         add(projectLabel);
     }
-    
-    /*
-    private void initializeMenu() {
-        
-    	initMainMenuItems();
-
-        if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
-            // update menu item to index, because page index is not found!
-            HeaderTemplate.menuIndex = "Index";
-        }
-
-        // generate main navigation
-        ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", menuItems) {
-            @Override
-            protected void populateItem(ListItem<HeaderMenuItem> item) {
-                HeaderMenuItem menuItem = item.getModelObject();
-                item.add(menuItem.getLink());
-
-                // set menu item to active
-                if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
-                    item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
-                        @Override
-                        public String getObject() {
-                            return "active";
-                        }
-                    }));
-                }
-            }
-        };
-
-        add(headerMenuItems);
-    }
-
-    /**
-     * get the name of the current active menu item
-     */
-    //public static String getActiveIndex() {
-    //    return HeaderTemplate.menuIndex;
-    //}
-
-    /**
-     * Adds a new item to main header navigation where the index defines the name of the index, which should be the
-     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
-     * should be displayed and authority defines who is authorized to see the link
-     */
-    /*
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey,
-            String... authority) {
-        StringResourceModel label = new StringResourceModel(langKey, this, null);
-        BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
-        addAuthorizationRoles(pageLabelLink, authority);
-        menuItems.add(new HeaderMenuItem(index, pageLabelLink));
-        avialableItems.add(index);
-    }
-
-    private void addAuthorizationRoles(BookmarkablePageLabelLink<?> pageLabelLink, String... authority) {
-        if (authority == null) {
-            return;
-        }
-        for (String a : authority) {
-            attributeStore.putAttribute(pageLabelLink, new SecurityAttributeEntry(a, "RENDER"));
-        }
-    }
-
-    private static class HeaderMenuItem implements Serializable {
-        private final String index;
-        private final BookmarkablePageLabelLink<? extends WebPage> link;
-
-        public HeaderMenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
-            this.index = index;
-            this.link = link;
-        }
-
-        public String getItemName() {
-            return index;
-        }
-
-        public BookmarkablePageLabelLink<? extends WebPage> getLink() {
-            return link;
-        }
-    } */
-
 }

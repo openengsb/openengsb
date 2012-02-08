@@ -27,12 +27,12 @@
 	    <div id="topHeader" class="unit size2of3 header" width="*">
 	      <div id="topLogo">
 	      	<a class="pageLogo" href="../../../../../../../../test/java/org/openengsb/ui/web/global/header" wicket:id="logo">
-	        	<img wicket:message="title:headerPage.title" alt="OpenEngSB logo" class="logoSmallSize" title="OpenEngSB Logo" src="openengsb/images/openengsb_medium_greyscale.png">
+	        	<img wicket:id="topImage" wicket:message="title:headerPage.title" alt="OpenEngSB logo" class="logoSmallSize" title="OpenEngSB Logo"  />
 	     	 </a>
 	     </div>
 	      <div id="topHeadline">
 	      	<span class="topH1">Open Engineering Service Bus</span><br />
-	      	<span class="topH2 quiet">Admin Console, Version 1.0.0</span>
+	      	<span class="topH2 quiet">Admin Console, Version</span><span class="topH2 quiet" wicket:id="version"></span>
 	      </div>
 	    </div>
 	    <div id="topMenu" class="unit size1of3 lastUnit right header">
@@ -50,6 +50,9 @@
 	    		<div class="tmc-right"></div>
 	    	</div>
 	    </div>
+	            <p wicket:id="dialog">
+                Hello world, yes we can !
+        </p>
     </div>
   </wicket:panel>
 </body>

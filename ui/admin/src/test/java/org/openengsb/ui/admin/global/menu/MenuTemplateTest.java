@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.admin.global.header;
+package org.openengsb.ui.admin.global.menu;
 
 import static org.mockito.Mockito.mock;
 
@@ -40,7 +40,7 @@ import org.openengsb.ui.admin.sendEventPage.SendEventPage;
 import org.openengsb.ui.admin.testClient.TestClient;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
-public class HeaderTemplateTest extends AbstractUITest {
+public class MenuTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
@@ -79,10 +79,9 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
         tester.startPage(page);
-        // return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
-    return false;
+        return MenuTemplate.getActiveIndex().equals(expectedIndexName);
     }
-
+    
     private void setupTestClientPage() {
         context.putBean(bundleContext);
         context.putBean(mock(ProxyFactory.class));
