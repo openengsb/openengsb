@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>OpenEngSB Manual</title>
+    <copyright>
+      <year>2009</year>
+      <year>2010</year>
+      <year>2011</year>
+      <holder>Austrian Association for Software Tool Integration (AASTI)</holder>
+    </copyright>
+    <subtitle>Version ${project.version}</subtitle>
+    <author>
+      <personname>
+        <firstname>Open Engineering Service Bus</firstname>
+        <surname>Development Team and Contributors</surname>
+      </personname>
+      <email>openengsb-dev at googlegroups.com</email>
+    </author>
+  </info>
+  <part xml:id="introduction.manual">
+    <title>Introduction</title>
+    <partintro>
+      <para>This parts provides general information to the project, the document, changelog and
+        similar data which fits neither in the framework description nor in the contributor
+        section.</para>
+      <para>The target audience of this part are developers, contributors and managers.</para>
+    </partintro>
+    <xi:include href="docbook/introduction/howtoread.xml"/>
+    <xi:include href="docbook/introduction/whatisopenengsb.xml"/>
+    <xi:include href="docbook/introduction/whentousetheopenengsb.xml"/>
+  </part>
+  <part xml:id="user.manual">
+    <title>OpenEngSB Framework</title>
+    <partintro>
+      <para> This part gives an introduction into the OpenEngSB project and explains its base usage
+        environment and the concepts, such as Domains, Connectors, Workflows and similar important
+        ideas. Furthermore this part covers installation, configuration and usage of the
+        administration interface to implement a tool environment according to your needs.</para>
+      <para>The target audience of this part are developers and contributors.</para>
+    </partintro>
+    <xi:include href="docbook/user/quickstart.xml"/>
+    <xi:include href="docbook/user/architecture.xml"/>
+    <xi:include href="docbook/user/semantics.xml"/>
+    <xi:include href="docbook/user/context.xml"/>
+    <xi:include href="docbook/user/persistence.xml"/>
+    <xi:include href="docbook/user/security.xml"/>
+    <xi:include href="docbook/user/workflows.xml"/>
+    <xi:include href="docbook/user/taskbox.xml"/>
+    <xi:include href="docbook/user/remote.xml"/>
+    <xi:include href="docbook/user/plugins.xml"/>
+    <xi:include href="docbook/user/deployers.xml"/>
+    <xi:include href="docbook/user/clients.xml"/>
+    <xi:include href="docbook/user/platform.xml"/>
+    <xi:include href="docbook/user/howto/howtoSetup.xml"/>
+    <xi:include href="docbook/user/howto/howtoSimpleUsecase.xml"/>
+    <xi:include href="docbook/user/howto/howtoContextEditor.xml"/>
+    <xi:include href="docbook/user/howto/howtoCreateClientProject.xml"/>
+    <xi:include href="docbook/user/howto/howtoInteractRemotely.xml"/>
+    <xi:include href="docbook/user/howto/howtoCombineServices.xml"/>
+    <xi:include href="docbook/user/howto/howtoDefineModel.xml"/>
+    <xi:include href="docbook/user/howto/howtoIntegrateServices.xml"/>
+    <xi:include href="docbook/user/howto/howtoChangeEDBDatabaseBackend.xml"/>
+    <xi:include href="docbook/user/howto/howtoTestRemotingWithHermes.xml"/>
+  </part>
+  <part xml:id="console.ui.manual">
+    <title>Administration Console</title>
+    <partintro>
+      <para> This part gives an introduction to the OpenEngSB Console . It shows the functionality
+        and gives an idea what the admin can change in the system and how this is done in the
+        console. </para>
+      <para>The target audience of this part are users and in special admins of the system.</para>
+    </partintro>
+    <xi:include href="docbook/ui/console.xml"/>
+  </part>
+  <part xml:id="web.ui.manual">
+    <title>Administration User Interface</title>
+    <partintro>
+      <para> This part gives an introduction to the OpenEngSB Administration user interface. It
+        shows the functionality and gives an idea what the admin can change in the system and how he
+        can perform this changes. </para>
+      <para>The target audience of this part are users and in special admins of the system.</para>
+    </partintro>
+    <xi:include href="docbook/ui/testclient.xml"/>
+    <xi:include href="docbook/ui/wiring.xml"/>
+  </part>
+  <part xml:id="contributor.manual">
+    <title>OpenEngSB Contributor Detail Informations</title>
+    <partintro>
+      <para>
+        This part gives an introduction to more detailed concepts of the OpenEngSB which should
+        be interesting for contributors which should have a deeper view on specialised topics of
+        this project. This part is also interesting for users which want to have a deeper insight
+        what is happening in the background of the OpenEngSB magic.
+      </para>
+    </partintro>
+    <xi:include href="docbook/contributor/wrapped.xml"/>
+    <xi:include href="docbook/contributor/model.xml"/>
+    <xi:include href="docbook/contributor/edb.xml"/>
+    <xi:include href="docbook/contributor/ekb.xml"/>
+    <xi:include href="docbook/contributor/howto/internal.connector.xml"/>
+    <xi:include href="docbook/contributor/howto/internal.domain.xml"/>
+    <xi:include href="docbook/contributor/howto/howtoAddConsoleCommands.xml"/>
+    <xi:include href="docbook/contributor/howto/howtoCreateConnector.xml"/>
+    <xi:include href="docbook/contributor/howto/howtoAddNewSupportedFieldInModels.xml"/>
+  </part>
+</book>
+

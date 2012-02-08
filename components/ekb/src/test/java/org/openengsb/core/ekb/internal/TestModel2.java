@@ -37,6 +37,7 @@ public class TestModel2 implements OpenEngSBModel {
     private ENUM enumeration;
     private List<String> list;
     private SubModel sub;
+    private String edbId;
 
     private List<SubModel> subs;
 
@@ -69,6 +70,14 @@ public class TestModel2 implements OpenEngSBModel {
 
     public String getId() {
         return id;
+    }
+    
+    public void setEdbId(String edbId) {
+        this.edbId = edbId;
+    }
+    
+    public String getEdbId() {
+        return edbId;
     }
 
     public void setDate(Date date) {

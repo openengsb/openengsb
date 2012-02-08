@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="13.1">
+    <meta>
+        <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
+        <options/>
+    </meta>
+    <projectTree name="openengsb-framework-manual.xpr">
+        <folder path="docbook/contributor/"/>
+        <folder path="docbook/introduction/"/>
+        <folder path="docbook/ui/"/>
+        <folder path="docbook/user/"/>
+        <file name="openengsb-framework-manual.xml"/>
+    </projectTree>
+</project>

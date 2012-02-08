@@ -39,7 +39,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.AbstractPermissionProvider;
 import org.openengsb.core.api.OsgiUtilsService;
@@ -103,42 +102,24 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    private static EntityManager entityManager;
+    private EntityManager entityManager;
 
     private UserDataManager userManager;
 
     private UserData testUser2;
     private UserData testUser3;
 
-    private static EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
     @Before
     public void setUp() throws Exception {
-        executeDelete("UserData", "PermissionData", "PermissionSetData", "EntryValue");
+        emf = Persistence.createEntityManagerFactory("security-test");
+        entityManager = emf.createEntityManager();
         setupUserManager();
         testUser2 = new UserData("testUser2");
         entityManager.persist(testUser2);
         testUser3 = new UserData("testUser3");
         entityManager.persist(testUser3);
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        emf = Persistence.createEntityManagerFactory("security-test");
-        setupPersistence();
-    }
-
-    private static void setupPersistence() {
-        entityManager = emf.createEntityManager();
-    }
-
-    private void executeDelete(String... query) {
-        entityManager.getTransaction().begin();
-        for (String q : query) {
-            // somehow fails after 3 tests ro so with JPQL-queries
-            entityManager.createQuery(String.format("DELETE FROM %s", q)).executeUpdate();
-        }
-        entityManager.getTransaction().commit();
     }
 
     private void setupUserManager() {

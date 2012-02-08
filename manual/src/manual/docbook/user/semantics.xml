@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="user.semantics" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+    
+    <title>Semantics in the OpenEngSB</title>
+    
+    <para>
+        One of the core concepts of the OpenEngSB is the correct handling of domain models, versionize
+        them and perform model transformations on such models so that they can be easily used by tools
+        which connect to the OpenEngSB.
+    </para>
+    
+    <section>
+        <title>Domain Models</title>
+        <para>
+            A domain model represents an abstraction of data a domain has to work with (e.g. Issue for issue
+            tracking systems). It capsulates all information which is needed for one information unit. Such
+            domain models are defined in the domains and can be used by connectors which use the domain.
+        </para>
+        <para>
+            This domain models can be saved and versionized with the help of the OpenEngSB and two core components,
+            namely the EDB(Engineering Database) and the EKB(Engineering Knowledge base). Those two components will
+            be explained in more detail in the contributor manual.
+        </para>
+        <para>
+            A domain model is represented as an interface. This interface has to extend a provided interface which
+            is called "OpenEngSBModel". To work with this interface, we provide a Utils class, (ModelUtils) which is 
+            able to proxy the interface and gives you the feeling like you work with a normal class object. Such 
+            domain models can be sent via events(EDBInsertEvent, EDBUpdateEvent, EDBDeleteEvent and EDBBatchEvent) 
+            to the EDB, where they will be saved, updated or deleted. This events can be thrown from every connector 
+            that extends "AbstractOpenEngSBConnectorService", which shall be done by all connector implementations.
+        </para>
+        <para>
+            An OpenEngSBModel consists only of getter and setter pairs. Those methods describe which fields the
+            model have. Field types which are supported until now are: simple types, Strings, Date, OpenEngSBModel, 
+            Lists and Files. Files are a special case, but it is possible to send models with File objects remotely
+            and the File which is represented by the File object will be available at the remote machine as a local
+            copy there.
+        </para>
+        <para>
+            Every OpenEngSBModel can define an id for itself. This id can be used for easier finding of domain models
+            and to enable the versioning possibility when they are saved in the EDB. Such an id can easily be defined 
+            by setting a special annotation over the setter which defines the id for the object. This annotation is 
+            called "OpenEngSBModelId".
+        </para>
+    </section>
+    <section>
+        <title>Load Domain Models</title>
+        <para>
+            Domain models can be loaded from the EDB through the EKB. The EKB bundle provides a service called QueryInterface.
+            This service provides all needed functionality to search and load models from the EDB. It also convert the elements
+            from the EDB to a new instance of the domain model you request.
+        </para>
+    </section>
+    <section>
+        <title>Model Transformation</title>
+        <para>
+            This feature is not yet implemented. There is currently research going on how to accomplish this task the best way.
+        </para>
+    </section>
+</chapter>

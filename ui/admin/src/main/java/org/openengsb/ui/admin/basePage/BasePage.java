@@ -130,7 +130,7 @@ public abstract class BasePage extends OpenEngSBPage {
 
             @Override
             protected void onModelChanged() {
-                setResponsePage(BasePage.class);
+                setResponsePage(BasePage.this.getClass());
             }
 
         };

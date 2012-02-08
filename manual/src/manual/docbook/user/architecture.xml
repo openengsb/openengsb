@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="user.architecture" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Architecture of the OpenEngSB</title>
+
+  <para>This chapter tries to give a short summary of the most important concepts in the OpenEngSB architecture.</para>
+
+  <para>The following graphic shows the architecture of the OpenEngSB. In the center we use a bus system
+  to integrate different modules. In this case we do not use a classical Enterprise Service Bus (ESB), but rather the
+  OSGi service infrastructure via Apache Aries Blueprint-DM (<xref linkend="architecture.concept.esb" />). We are using <link xlink:href="http://karaf.apache.org">Apache Karaf</link> as the OSGi
+  environment. Karaf is used in this case, instead of a most basic OSGi environment, such as 
+  <link xlink:href="http://felix.apache.org">Apache Felix</link> or 
+  <link xlink:href="http://www.eclipse.org">Eclipse Equinox</link> , because it supports us with additional features as 
+  extended console support and the feature definitions.
+  This base infrastructure, including all modifications required for the OpenEngSB is called the 
+  <xref linkend="architecture.concept.infrastructure" />. Within the OpenEngSB 
+  Infrastructure so called <xref linkend="architecture.concept.components" /> and 
+  <xref linkend="architecture.concept.tooldomains" /> are installed. Both
+  types are written in a JVM compatible language, including OSGi configuration files to run in the OpenEngSB 
+  Infrastructure. They are explained later within this chapter. Different tools running outside the OpenEngSB 
+  Infrastructure are called <xref linkend="architecture.concept.clienttools" /> or 
+  <xref linkend="architecture.concept.domaintools" />, depending on their usage scenario. 
+  To integrate and use them within the OpenEngSB so called 
+  <xref linkend="architecture.concept.connectors" /> are used. All of these concepts are explained 
+  within the next sections.</para>
+
+  <para>
+    <mediaobject>
+      <alt>Technical view of the OpenEngSB highlighting the most important concepts of the integration system.</alt>
+      <imageobject>
+        <imagedata fileref="graphics/extendedEngSB.png" format="png" width="450" align="center"/>
+      </imageobject>
+      <caption><para>Technical view of the OpenEngSB highlighting the most important concepts of the integration system</para></caption>
+    </mediaobject>
+  </para>
+
+  <section xml:id="architecture.concept.esb">
+    <title>OpenEngSB Enterprise Service Bus (ESB)</title>
+    <para>One of the principal concepts for the OpenEngSB development is (if possible) 
+    to use already existing and proven solutions rather than inventing new ones. In this manner the OpenEngSB is an 
+    extension to the ESB concept. Typical ESBs such as 
+    <link xlink:href="http://servicemix.apache.org">Apache Servicemix</link> or other JBI or ESB implementations 
+    always have the feeling to be huge and bloated. Complex integration patterns, messaging, huge configuration files
+    and similar concepts/problems lead to this feeling. And those feelings are right. They are bloated. The OpenEngsB
+    tries a different approach. Using Karaf as its base framework the environment is VERY lightweight. Depending on 
+    your use case you can use different configurations and packages out of the box.</para>
+  </section>
+ 
+  <section xml:id="architecture.concept.infrastructure">
+    <title>OpenEngSB Infrastructure</title>
+    <para>While Apache Karaf provides a rich environment and functionality we're not done with it. Via the Apache Aries Blueprint-DM
+    extension mechanism, AOP and the OSGi listener model the OpenEngSB directly extends the environment to provide
+    own commands for the console, fine grained security and a full grown workflow model. These extensions are optional
+    and not required if you want to use the platform alone. Add or remove them as required for your use case.</para>
+  </section>
+
+  <section xml:id="architecture.concept.components">
+    <title>OpenEngSB Components</title>
+    <para>These libraries are the OpenEngSB core. The core is responsible to provide the OpenEngSB infrastructure
+    as well as general services such as persistence, security and workflows. To provide best integration most of
+    these components are tied to the OpenEngSB ESB environment. Nevertheless, feel free to add or remove them
+    as required for your use case.</para>
+  </section>
+
+  <section xml:id="architecture.concept.tooldomains">
+    <title>OpenEngSB Tool Domains</title>
+    <para>Although each tool provider gives a personal touch to its product their design is driven by a specific 
+    purpose. For example, there are many different issue trackers available, each having its own advantages and 
+    disadvantages, but all of them can create issues, assign and delete them. Tool Domains are based on this idea 
+    and distill the common functionality for such a group of tools into one Tool Domain interface (and component).
+    Tool domains could be compared best to the concept of abstract classes in in object orientated programming 
+    languages. Similar to these, they can contain code, workflows, additional logic and data, but they are useless 
+    without a concrete implementation. Together with the ESB, the OpenEngSB infrastructure and the core components 
+    the tool domains finally result in the OpenEngSB.</para>
+  </section>
+
+  <section xml:id="architecture.concept.clienttools">
+    <title>Client Tools (Service Consumer)</title>
+    <para>Client Tools in the OpenEngSB concept are tools which do not provide any 
+    services, but consume services provided by Tool Domains and Core Components instead. A classical example from 
+    software engineering for a client tool is the Integrated Development Environment (IDE). Developer prefer to 
+    have the entire development environment, reaching from the tickets for a project to its build results, at
+    hand. On the other hand they do not need to provide any services.</para>
+  </section>
+
+  <section xml:id="architecture.concept.domaintools">
+    <title>Domain Tools (Service Provider)</title>
+    <para>Domain Tools (Service Provider) Domain Tools, compared to Client Tools, denote the other extreme of only 
+    providing services. Classically, single purpose server tools, like issue tracker or chat server, match the 
+    category of Domain Tools best. Most tools in (software+) engineering environments fit of course in both 
+    categories, but since there are significant technically differences between them they are 
+    described as two different component types.</para>
+  </section>
+
+  <section xml:id="architecture.concept.connectors">
+    <title>Domain- and Client Tool Connectors</title>
+    <para>Tool Connectors connect tools to the OpenEngSB environment. They implement the respective
+    Tool Domain interface. As Client Tool Connectors they provide a Client Tool with 
+    an access to the OpenEngSB services. Again, Domain- and Client Tool Connectors are mostly mixed up but 
+    separated because of their technical differences. Additionally it is worth mentioning that 
+    tools can be integrated with more than one connector. This allows one tool to act in many different domains. 
+    Apache Maven is an example for such multi-purpose tools, relevant for build, as well as test and deploy of Java 
+    projects.</para>
+  </section>
+
+</chapter>
+

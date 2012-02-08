@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,17 +32,11 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
-import org.openengsb.core.api.edb.EDBEvent;
+import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.common.util.ModelUtils;
 
 public class JPATestIT {
     private static JPADatabase db;
@@ -409,259 +404,6 @@ public class JPATestIT {
         db.commit(ci);
     }
 
-    @Test(expected = EDBException.class)
-    public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setEdbId("createevent/1");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-        db.processEDBInsertEvent(event);
-    }
-
-    @Test
-    public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("createevent/2");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject obj = db.getObject("testdomain/testconnector/createevent/2");
-
-        String name = (String) obj.get("name");
-        Integer version = Integer.parseInt((String) obj.get("edbVersion"));
-
-        assertThat(name, is("blub"));
-        assertThat(version, is(1));
-    }
-
-    @Test
-    public void testSendEDBBatchEvent_shouldWork() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("batchevent/1");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject obj = db.getObject("testdomain/testconnector/batchevent/1");
-
-        String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        model.setName("blab");
-        EDBBatchEvent e = new EDBBatchEvent();
-        enrichEDBEvent(e);
-        e.addModelUpdate(model);
-        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
-        model2.setName("blob");
-        model2.setEdbId("batchevent/2");
-
-        e.addModelInsert(model2);
-
-        db.processEDBBatchEvent(e);
-
-        obj = db.getObject("testdomain/testconnector/batchevent/1");
-
-        String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        obj = db.getObject("testdomain/testconnector/batchevent/2");
-
-        String name3 = (String) obj.get("name");
-        Integer version3 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        assertThat(name1, is("blub"));
-        assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
-        assertThat(version2, is(2));
-        assertThat(name3, is("blob"));
-        assertThat(version3, is(1));
-    }
-
-    @Test(expected = EDBException.class)
-    public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setEdbId("deleteevent/1");
-        EDBDeleteEvent event = new EDBDeleteEvent(model);
-        db.processEDBDeleteEvent(event);
-    }
-
-    @Test
-    public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("updateevent/2");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject obj = db.getObject("testdomain/testconnector/updateevent/2");
-
-        String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        model.setName("blab");
-
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        db.processEDBUpdateEvent(update);
-
-        obj = db.getObject("testdomain/testconnector/updateevent/2");
-
-        String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        assertThat(name1, is("blub"));
-        assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
-        assertThat(version2, is(2));
-    }
-
-    @Test(expected = EDBException.class)
-    public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("updateevent/3");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject obj = db.getObject("testdomain/testconnector/updateevent/3");
-
-        String name1 = (String) obj.get("name");
-        Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));
-
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        db.processEDBUpdateEvent(update);
-
-        // results in no conflict because the values are the same even if the version is different
-        obj = db.getObject("testdomain/testconnector/updateevent/3");
-
-        String name2 = (String) obj.get("name");
-        Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
-
-        assertThat(name1, is("blub"));
-        assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
-        assertThat(version2, is(2));
-    }
-
-    @Test(expected = EDBException.class)
-    public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("updateevent/4");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        model.setName("blab");
-        model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));
-
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        db.processEDBUpdateEvent(update);
-    }
-
-    @Test
-    public void testCreationOfEDBObjectsAreCorrect_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("creationtest1");
-        model.setEdbId("creationtest2");
-        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub.setEdbId("testSub/111");
-        sub.setName("sub");
-        model.setSubModel(sub);
-
-        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub1.setEdbId("testSub/222");
-        sub1.setName("sub1");
-        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub2.setEdbId("testSub/333");
-        sub2.setName("sub2");
-
-        model.setSubs(Arrays.asList(sub1, sub2));
-        model.setIds(Arrays.asList(1, 2, 3, 4));
-
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-
-        List<EDBObject> edbobjects = db.convertModelToEDBObject(model, "creationtest3", event, 1);
-        
-        EDBObject edbObject = edbobjects.get(edbobjects.size() - 1);
-                
-        assertThat(edbObject.get("edbVersion").toString(), is("1"));        
-        assertThat(edbObject.get("subModel").toString(), is("testdomain/testconnector/testSub/111"));
-        assertThat(edbObject.get("subs0").toString(), is("testdomain/testconnector/testSub/222"));
-        assertThat(edbObject.get("subs1").toString(), is("testdomain/testconnector/testSub/333"));
-        assertThat(edbObject.get("connectorId").toString(), is("testconnector"));
-        assertThat(edbObject.get("instanceId").toString(), is("testinstance"));
-        assertThat(edbObject.get("domainId").toString(), is("testdomain"));
-        assertThat(edbObject.get("name").toString(), is("creationtest1"));
-        assertThat(edbObject.get("edbId").toString(), is("creationtest2"));
-        assertThat(edbObject.get("oid").toString(), is("creationtest3"));        
-        assertThat(edbObject.get("ids0").toString(), is("1"));
-        assertThat(edbObject.get("ids1").toString(), is("2"));
-        assertThat(edbObject.get("ids2").toString(), is("3"));
-        assertThat(edbObject.get("ids3").toString(), is("4"));
-    }
-
-    @Test
-    public void testSupportOfSimpleSubModels_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("testSub/1");
-        SubModel sub = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub.setEdbId("testSub/2");
-        sub.setName("sub");
-        model.setSubModel(sub);
-
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject mainObject = db.getObject("testdomain/testconnector/testSub/1");
-        EDBObject subObject = db.getObject("testdomain/testconnector/testSub/2");
-
-        assertThat(subObject, notNullValue());
-        assertThat(mainObject.getString("subModel"), is("testdomain/testconnector/testSub/2"));
-    }
-
-    @Test
-    public void testSupportOfListOfSubModels_shouldWork() {
-        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
-        model.setName("blub");
-        model.setEdbId("testSub/3");
-
-        SubModel sub1 = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub1.setEdbId("testSub/4");
-        sub1.setName("sub1");
-        SubModel sub2 = ModelUtils.createEmptyModelObject(SubModel.class);
-        sub2.setEdbId("testSub/5");
-        sub2.setName("sub2");
-
-        model.setSubs(Arrays.asList(sub1, sub2));
-
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        db.processEDBInsertEvent(event);
-
-        EDBObject mainObject = db.getObject("testdomain/testconnector/testSub/3");
-        EDBObject subObject1 = db.getObject("testdomain/testconnector/testSub/4");
-        EDBObject subObject2 = db.getObject("testdomain/testconnector/testSub/5");
-
-        assertThat(subObject1, notNullValue());
-        assertThat(subObject2, notNullValue());
-        assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
-        assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
-    }
-
     @Test
     public void testQueryOfOldVersionShouldWork() {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
@@ -864,12 +606,6 @@ public class JPATestIT {
         assertThat(time3 > 0, is(true));
     }
 
-    private void enrichEDBEvent(EDBEvent event) {
-        event.setConnectorId("testconnector");
-        event.setDomainId("testdomain");
-        event.setInstanceId("testinstance");
-    }
-
     /**
      * iterates through the list of timestamps and checks if every timestamp is bigger than 0
      */
@@ -877,5 +613,94 @@ public class JPATestIT {
         for (Long timestamp : timestamps) {
             assertThat(timestamp, greaterThan((long) 0));
         }
+    }
+
+    @Test
+    public void testCommitEDBObjectsInsert_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/insert/1");
+        object.put("bla", "blub");
+        List<EDBObject> inserts = new ArrayList<EDBObject>();
+        inserts.add(object);
+
+        db.commitEDBObjects(inserts, null, null);
+
+        object = db.getObject("/commit/test/insert/1");
+        assertThat(object.get("bla").toString(), is("blub"));
+        assertThat(Integer.parseInt(object.get(EDBConstants.MODEL_VERSION).toString()), is(1));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsInsertDouble_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/insert/2");
+        List<EDBObject> inserts = new ArrayList<EDBObject>();
+        inserts.add(object);
+        
+        db.commitEDBObjects(inserts, null, null);
+        db.commitEDBObjects(inserts, null, null);
+    }
+    
+    @Test
+    public void testCommitEDBObjectsUpdate_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/update/1");
+        object.put("testkey", "testvalue");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        
+        db.commitEDBObjects(objects, null, null);
+        
+        EDBObject first = db.getObject("/commit/test/update/1");
+        
+        objects.clear();
+        object.put("testkey", "testvalue1");
+        objects.add(object);
+        
+        db.commitEDBObjects(null, objects, null);
+        
+        EDBObject second = db.getObject("/commit/test/update/1");
+        
+        assertThat(Integer.parseInt(first.get(EDBConstants.MODEL_VERSION).toString()), is(1));
+        assertThat(first.get("testkey").toString(), is("testvalue"));
+        assertThat(Integer.parseInt(second.get(EDBConstants.MODEL_VERSION).toString()), is(2));
+        assertThat(second.get("testkey").toString(), is("testvalue1"));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsUpdateVerstionConflict_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/update/2");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        object.put(EDBConstants.MODEL_VERSION, 0);
+        db.commitEDBObjects(null, objects, null);
+    }
+    
+    @Test
+    public void testCommitEDBObjectsDelete_shouldWork() {
+        EDBObject object = new EDBObject("/commit/test/delete/1");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        db.commitEDBObjects(null, null, objects);
+        
+        EDBObject entry = db.getObject("/commit/test/delete/1");
+        assertThat(entry.isDeleted(), is(true));
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsDeleteNonExisting_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/delete/2");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(null, null, objects);
+    }
+    
+    @Test(expected = EDBException.class)
+    public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() {
+        EDBObject object = new EDBObject("/commit/test/delete/3");
+        List<EDBObject> objects = new ArrayList<EDBObject>();
+        objects.add(object);
+        db.commitEDBObjects(objects, null, null);
+        db.commitEDBObjects(null, null, objects);
+        db.commitEDBObjects(null, null, objects);
     }
 }

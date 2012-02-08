@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.setup" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Setup OpenEngSB for development (First steps)</title>
+
+  <section>
+    <title>Goal</title>
+      <para>This section describes the setup process required for OpenEngSB development.</para>
+
+      <para>If you would like to view a use-case centric tutorial take a look at the continuous integration example.</para>
+  </section>
+
+  <section>
+    <title>Time to Complete</title>
+    <para>If you are already familiar with Java EE servers about 15 minutes. We will not be using advanced concepts, so you likely be able to continue with the tutorial even without it.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>It is assumed you have basic knowledge of system administration and you are able to set up auxiliary software (i.e. JDK 1.6) yourself.</para>
+  </section>
+
+  <section>
+    <title>Java Development Kit 6</title>
+
+    <para>First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set.
+  (<link xlink:href="http://java.sun.com/javase/downloads">Java download</link>).</para>
+    <para>Also, make sure that the java-command is available in the PATH-variable.</para>
+  </section>
+
+  <section>
+    <title>Getting OpenEngSB</title>
+
+    <para>Download the latest OpenEngSB release from <link xlink:href="http://openengsb.org/downloads.html">here</link>.</para>
+  </section>
+
+  <section>
+    <title>Installing OpenEngSB</title>
+
+    <para>Extract the archive, and run the openengsb-script (bin/openengsb.bat on windows, bin/openengsb otherwise). Click the following link to open the web interface in your browser <link xlink:href="http://localhost:8090/openengsb">http://localhost:8090/openengsb</link>.You should automatically be directed to a page asking for a login. The default login is "admin" with "password" as password.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata xml:id="login" fileref="graphics/setup_login.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>login</caption>
+    </mediaobject>
+
+    <para>If everything works fine you should be welcomed by the following page presenting you the currently installed domains:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata xml:id="mainpage" fileref="graphics/setup_mainpage.png" format="png" width="400" align="center" />
+      </imageobject>
+      <caption>main page</caption>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Setup required domains</title>
+
+    <para>OpenEngSB implements it's functionality in so called features. Each feature contains a number of OSGi bundles. While all features are distributed with the OpenEngSB not all of them are installed to speed up the startup. For the next section (First Steps) it is required to install additional features. Therefore open the console in which you've started the OpenEngSB and enter "list" which should output something like:</para>
+
+    <programlisting>
+<![CDATA[karaf@root> list
+START LEVEL 100 , List Threshold: 50
+   ID   State         Blueprint      Level  Name
+[  42] [Active     ] [Created     ] [   60] Apache Karaf :: Shell :: Service Wrapper (2.2)
+...
+[ 116] [Active     ] [            ] [   60] Jackson JSON processor (1.5.3)
+[ 165] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: API (Version)
+[ 166] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: Engineering Database (Version)
+[ 167] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: Engineering Knowledge Base (Version)
+[ 168] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: Common (Version)
+[ 169] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: Services (Version)
+[ 170] [Active     ] [Created     ] [   60] OpenEngSB :: Framework :: Persistence Layer (Version)
+...]]>
+    </programlisting>
+
+    <para>In order to install domains and connectors from other repositories you need to add the corresponding
+      feature-URLs. Note that in order to install a connector you need to install all domains it implements.</para>
+
+    <para>In order to install a domain first add the feature-repository using the command <code>features:addurl</code>.
+      When the URL has been added the domain can usually be installed using <code>features:install</code></para>
+
+    <programlisting>
+<![CDATA[root@openengsb>features:addurl mvn:org.openengsb.domain/org.openengsb.domain.notification/[domain version]/xml/features
+root@openengsb>features:install openengsb-domain-notification]]>
+    </programlisting>
+
+    <para>Note that domains and connectors are versioned independently of each other and the OpenEngSB.</para>
+
+  </section>
+
+  <section>
+    <title>First Steps</title>
+
+    <para>Now that the OpenEngSB is up and running (and all required bundles are installed) start with the first integration tutorial.</para>
+  </section>
+
+  <section>
+    <title>Shutdown OpenEngSB</title>
+
+    <para>To shutdown the OpenEngSB, go to the command-window and type <command>shutdown</command> or press <command>Ctrl+D</command></para>
+  </section>
+
+</chapter>
+

@@ -226,9 +226,8 @@
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
-
 
   </dependencies>
 

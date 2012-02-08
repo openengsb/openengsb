@@ -38,7 +38,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>26</version>
+    <version>30</version>
   </parent>
 
   <groupId>org.openengsb.framework</groupId>
@@ -76,6 +76,14 @@
     <module>components/api</module>
     <module>components/test</module>
     <module>components/common</module>
+    <module>components/console</module>
+    <module>components/edb</module>
+    <module>components/ekb</module>
+    <module>components/persistence</module>
+    <module>components/security</module>
+    <module>components/services</module>
+    <module>components/workflow</module>
+    <module>components/info</module>
     <!-- OpenEngSB Core Domain Modules -->
     <module>domain/auditing</module>
     <module>domain/example</module>
@@ -88,14 +96,6 @@
     <module>connector/usernamepassword</module>
     <module>connector/serviceacl</module>
     <module>connector/smooksbinarytransformation</module>
-    <!-- OpenEngSB UI Modules -->
-    <module>components/console</module>
-    <module>components/edb</module>
-    <module>components/ekb</module>
-    <module>components/persistence</module>
-    <module>components/security</module>
-    <module>components/services</module>
-    <module>components/workflow</module>
     <!-- OpenEngSB ConfigPersistence Modules -->
     <module>persistence/context</module>
     <module>persistence/connector</module>
@@ -113,15 +113,27 @@
     <module>loom</module>
     <!-- OpenEngSB Integration Test Modules -->
     <module>itests</module>
-	<!-- OpenEngSB Manual -->
-	<module>manual</module>
+    <!-- OpenEngSB Manual -->
+    <module>manual</module>
   </modules>
+
+  <inceptionYear>2009</inceptionYear>
 
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb-framework.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb-framework.git</developerConnection>
     <url>http://github.com/openengsb/openengsb-framework</url>
   </scm>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
+  </ciManagement>
 
   <build>
     <resources>
@@ -158,59 +170,19 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>features</id>
-      <modules>
-        <module>features</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>nightly</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/master</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/master</github.raw>
-        <repos.current>${repos.snapshot}</repos.current>
-        <sitesubtype>nightly</sitesubtype>
-      </properties>
-    </profile>
-    <profile>
-      <id>milestone</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>milestone</sitesubtype>
-      </properties>
-    </profile>
-    <profile>
-      <id>final</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
-    </profile>
-    <profile>
-      <id>support</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype/>
-      </properties>
-    </profile>
-    <profile>
-      <id>rc</id>
-      <properties>
-        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
-        <github.raw>https://github.com/openengsb/openengsb/raw/openengsb-${project.version}</github.raw>
-        <repos.current>${repos.final}</repos.current>
-        <sitesubtype>rc</sitesubtype>
-      </properties>
-    </profile>
-  </profiles>
+  <repositories>
+    <repository> <!-- OEB snapshots are deployed here -->
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>
 

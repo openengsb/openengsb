@@ -18,8 +18,10 @@
 package org.openengsb.domain.binarytransformation;
 
 import org.openengsb.core.api.DomainEvents;
-
+// @extract-start BinaryTransformationDomainEVents
 public interface BinaryTransformationDomainEvents extends DomainEvents {
 
     // TODO add your domain-specific methods here
 }
+// @extract-end
+

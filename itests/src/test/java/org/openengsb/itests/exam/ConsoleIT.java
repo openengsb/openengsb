@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
@@ -24,10 +25,12 @@ import java.util.List;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.util.OutputStreamFormater;
+import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.itests.util.OutputStreamHelper;
 import org.ops4j.pax.exam.TestProbeBuilder;
@@ -45,6 +48,25 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
         probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE, "*,org.apache.felix.service.*;status=provisional");
         return probe;
+    }
+
+    @Test
+    public void testToExecuteOpenEngSBInfoCommand() throws Exception {
+        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+        PrintStream out = new PrintStream(outputStreamHelper);
+        CommandSession cs = cp.createSession(System.in, out, System.err);
+
+        Bundle b = getInstalledBundle("org.openengsb.framework.console");
+        b.start();
+        cs.execute("openengsb:info");
+        cs.close();
+        List<String> result = outputStreamHelper.getResult();
+        assertTrue(contains(result, "OpenEngSB Framework Version", ""));
+        assertTrue(contains(result, "Karaf Version", ""));
+        assertTrue(contains(result, "OSGi Framework", ""));
+        assertTrue(contains(result, "Drools version", ""));
     }
 
     @Test
@@ -76,6 +98,9 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
 
         Bundle b = getInstalledBundle("org.openengsb.framework.console");
         b.start();
+        
+        waitForDefaultConnectors();
+        
         cs.execute("openengsb:service list");
         cs.close();
 
@@ -87,6 +112,35 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         assertTrue(contains(result, "Example Domain",
                 "This domain is provided as an example for all developers. It should not be used in production."));
     }
+
+	private void waitForDefaultConnectors() {
+		getOsgiService(AuditingDomain.class);
+        getOsgiService(AuthenticationDomain.class, "(id=authentication+composite-connector+root-authenticator)", 30000);
+        getOsgiService(AuthorizationDomain.class, "(id=authorization+composite-connector+root-authorizer)", 30000);
+	}
+
+    @Test
+    public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
+        CommandProcessor cp = getOsgiService(CommandProcessor.class);
+
+        OutputStreamHelper outputStreamHelper = new OutputStreamHelper();
+
+        PrintStream out = new PrintStream(outputStreamHelper);
+        CommandSession cs = cp.createSession(System.in, out, System.err);
+
+        waitForDefaultConnectors();
+        
+        Bundle b = getInstalledBundle("org.openengsb.framework.console");
+        b.start();
+        cs.execute("openengsb:service -f true delete authentication+composite-connector+root-authenticator ");
+        cs.execute("openengsb:service list");
+        cs.close();
+
+        List<String> result = outputStreamHelper.getResult();
+        assertFalse(contains(result, "authentication+composite-connector+root-authenticator", "ONLINE"));
+
+    }
+
 
     private boolean contains(List<String> list, String value, String value2) {
         for (String s : list) {

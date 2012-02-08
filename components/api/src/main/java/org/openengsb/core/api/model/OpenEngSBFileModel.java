@@ -26,5 +26,5 @@ public interface OpenEngSBFileModel extends OpenEngSBModel {
     
     File getFile();
 
-    void setFIle(File file);
+    void setFile(File file);
 }

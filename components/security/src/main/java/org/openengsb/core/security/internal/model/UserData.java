@@ -24,7 +24,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
@@ -32,18 +31,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.openengsb.core.common.AbstractDataRow;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
 /**
  * represents the data of a user (or other principal) identified with a unique username.
  */
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "USERDATA")
-public class UserData {
+public class UserData extends AbstractDataRow {
 
-    @Id
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
     @ElementCollection(fetch = FetchType.EAGER)

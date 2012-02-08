@@ -55,6 +55,10 @@
   <build>
     <resources>
       <resource>
+        <directory>src/manual</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
@@ -68,6 +72,275 @@
     </resources>
     <pluginManagement>
       <plugins>
+        <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generateDocSrc</id>
+            <goals>
+              <goal>extractSource</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourcePath>${project.basedir}/src/</sourcePath>
+              <targetPath>${project.basedir}/target/classes/docbook/snippets</targetPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Documentation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-manual-builder-resources</artifactId>
+                  <outputDirectory>${project.build.directory}/manual-resources</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-assembly-builder-resources</artifactId>
+                  <outputDirectory>${project.build.directory}/assembly-resources</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>html-single</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <xincludeSupported>true</xincludeSupported>
+              <chunkedOutput>false</chunkedOutput>
+              <htmlCustomization>${project.build.directory}/manual-resources/xsl/html.xsl</htmlCustomization>
+              <preProcess>
+                <delete dir="${basedir}/target/docbkx/html" />
+              </preProcess>
+              <postProcess>
+                <copy todir="${basedir}/target/docbkx/html">
+                  <fileset dir="${project.build.directory}/manual-resources">
+                    <include name="**/*.css" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                  <fileset dir="${project.build.directory}/classes">
+                    <exclude name="resources/**" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/manual/html-single">
+                  <fileset dir="${basedir}/target/docbkx/html">
+                    <include name="**/*" />
+                  </fileset>
+                </copy>
+              </postProcess>
+            </configuration>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>html-multi</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <xincludeSupported>true</xincludeSupported>
+              <chunkedOutput>true</chunkedOutput>
+              <htmlCustomization>${project.build.directory}/manual-resources/xsl/html_chunk.xsl</htmlCustomization>
+              <preProcess>
+                <delete dir="${basedir}/target/docbkx/html" />
+              </preProcess>
+              <postProcess>
+                <copy todir="${basedir}/target/docbkx/html">
+                  <fileset dir="${project.build.directory}/manual-resources">
+                    <include name="**/*.css" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                  <fileset dir="${project.build.directory}/classes/">
+                    <exclude name="resources/**" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/manual/html-multi">
+                  <fileset dir="${basedir}/target/docbkx/html">
+                    <include name="*/**" />
+                  </fileset>
+                </copy>
+                <copy todir="${basedir}/target/manual/html-multi">
+                  <fileset dir="${basedir}/target/docbkx/html/${project.artifactId}">
+                    <include name="**/*" />
+                  </fileset>
+                </copy>
+              </postProcess>
+            </configuration>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>pdf-single</id>
+            <goals>
+              <goal>generate-pdf</goal>
+            </goals>
+            <configuration>
+              <xincludeSupported>true</xincludeSupported>
+              <foCustomization>${project.build.directory}/manual-resources/xsl/fopdf.xsl</foCustomization>
+              <imgSrcPath>file:///${basedir}/target/classes/</imgSrcPath>
+              <postProcess>
+                <copy todir="${basedir}/target/manual/pdf">
+                  <fileset dir="${basedir}/target/docbkx/pdf">
+                    <include name="**/*.pdf" />
+                  </fileset>
+                </copy>
+              </postProcess>
+            </configuration>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>${docbkx.xml.version}</version>
+            <scope>runtime</scope>
+            <classifier>resources</classifier>
+            <type>zip</type>
+          </dependency>
+          <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>${jai.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jai_codec</artifactId>
+            <version>${jai.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <includes>${project.artifactId}.xml</includes>
+          <htmlStylesheet>css/html.css</htmlStylesheet>
+          <xincludeSupported>true</xincludeSupported>
+          <sourceDirectory>${basedir}/target/classes</sourceDirectory>
+          <!--<generatedSourceDirectory>${basedir}/target/classes</generatedSourceDirectory>-->
+          <useExtensions>1</useExtensions>
+          <highlightSource>1</highlightSource>
+          <highlightDefaultLanguage />
+          <calloutsExtension>1</calloutsExtension>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/src.xml</descriptor>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+            <descriptor>${project.basedir}/target/assembly-resources/manual.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+        <version>${cxf.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-simple</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>DomainEventsWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}Events</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>DomainWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>upload-manual</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>upload</goal>
+            </goals>
+            <configuration>
+              <fromDir>${basedir}/target/manual/</fromDir>
+              <includes>*/**</includes>
+              <url>scp://openengsb.org/</url>
+              <toDir>var/www/openengsb/manual/${project.artifactId}/v${project.version}/</toDir>
+              <serverId>OpenengsbWebServer</serverId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
@@ -84,6 +357,16 @@
                     <file>target/classes/features.xml</file>
                     <type>xml</type>
                     <classifier>features</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}Events.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}Events</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}</classifier>
                   </artifact>
                 </artifacts>
               </configuration>

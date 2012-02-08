@@ -25,8 +25,8 @@
   <properties>
     <java.min.mem>256M</java.min.mem>
     <java.max.mem>1024M</java.max.mem>
-    <java.min.perm>64M</java.min.perm>
-    <java.max.perm>128M</java.max.perm>
+    <java.min.perm>128M</java.min.perm>
+    <java.max.perm>256M</java.max.perm>
   </properties>
 
   <parent>
@@ -172,7 +172,16 @@
                 <!-- Missing Karaf Features -->
                 <feature>config</feature>
                 <feature>management</feature>
-                <feature>wrapper</feature>
+                <feature>karaf-framework</feature>
+                <feature>kar</feature>
+                <feature>eventadmin</feature>
+                <feature>spring/${spring.version}</feature>
+                <feature>spring-web/${spring.version}</feature>
+                <feature>spring-dm</feature>
+                <feature>war</feature>
+                <feature>transaction</feature>
+                <feature>jpa</feature>
+                <feature>jndi</feature>
                 <!-- OpenEngSB Remoting -->
                 <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>
@@ -222,19 +231,32 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <appendAssemblyId>false</appendAssemblyId>
-          <descriptors>
-            <descriptor>${project.basedir}/src/main/descriptors/bin.xml</descriptor>
-          </descriptors>
-        </configuration>
         <executions>
           <execution>
-            <id>assembly-openengsb</id>
+            <id>assembly-framework</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>${project.basedir}/src/descriptors/bin.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>assembly-others</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>true</appendAssemblyId>
+              <descriptors>
+                <descriptor>${project.basedir}/src/descriptors/src.xml</descriptor>
+              </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>

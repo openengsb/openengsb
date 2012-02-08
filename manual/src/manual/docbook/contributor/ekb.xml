@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.ekb" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+    
+    <title>Engineering Knowledge Base - EKB</title>
+    <para>
+        The EKB, as it is now, is at the very beginning of its development, so there is not much to write here for now.
+        The most important thing which is provided by the EKB at the moment is the <link linkend="developer.ekb.queryservice">QueryService</link>.
+    </para>
+    
+    <section>
+        <title>Motivation</title>
+        <para>
+            The main idea for the introduction of the EKB is the idea to provide automatic transformations of domain models
+            between tools and the OpenEngSB. But soon it was clear that this will not the only task the EKB should provide.
+        </para>
+        <para>
+            Some other things the EKB shall provide when it is finished will be the QueryInterface service which represents
+            the loading force of models from the EDB (this is already implemented), the possibility to provide better conflict
+            checkers for the EDB and if possible automatic conflict solving.
+        </para>
+    </section>
+    <section  xml:id='contributor.ekb.queryservice'>
+        <title>Query Interface</title>
+        <para>
+            This service has the task to load models from the EDB. Since models are no real objects but
+            proxied interfaces, this service has to create a new model instance. This new model instance
+            is initialised with the data which is loaded from the EDB. After all loaded data is inserted,
+            the user can start work with this model. All transformations are done in this service. The user
+            doesn't have to worry about that. In fact, he won't even notice that all this steps were 
+            necessary.
+        </para>
+        <para>
+            The query service provide a list of possibilities how to load models from the EDB (e.g. based on the model id or
+            based on the key value pairs of the model).
+        </para>            
+    </section>
+    <section xml:id='contributor.ekb.persistservice'>
+        <title>Persist Interface</title>
+        <para>
+            This service has the task to save models to the EDB. It transform models into an EDB readable format, append 
+            informations and forwards the objects to the EDB. The PersistInterface consist of three methods, namely "commit",
+            "forceCommit" and "check".
+        </para>
+        <para>
+            The "commit" function performs sanity checks on the models which shall be persisted. If they are successfully passed,
+            the models are forwarded to the EDB for persisting.
+        </para>
+        <para>
+            The "forceCommit" function forwards the models to the EDB without performing sanity checks.
+        </para>
+        <para>
+            The "check" function only performs the sanity checks and give back the result of the sanity checks.
+        </para>
+    </section>
+    
+</chapter>

@@ -31,15 +31,10 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
     @Override
     protected void init() {
         super.init();
-        addInjector();
         DomainAuthorizationStrategy strategy = new DomainAuthorizationStrategy();
-        InjectorHolder.getInjector().inject(strategy);
+        InjectorHolder.getInjector().inject(strategy, DomainAuthorizationStrategy.class);
         getSecuritySettings().setAuthorizationStrategy(strategy);
         getResourceSettings().setAddLastModifiedTimeToResourceReferenceUrl(true);
-    }
-
-    protected void addInjector() {
-
     }
 
     @Override

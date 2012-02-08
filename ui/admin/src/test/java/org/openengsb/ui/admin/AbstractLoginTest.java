@@ -17,16 +17,12 @@
 
 package org.openengsb.ui.admin;
 
-import static org.mockito.Mockito.mock;
-
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.MethodRule;
 import org.openengsb.core.test.rules.DedicatedThread;
-import org.ops4j.pax.wicket.api.ApplicationLifecycleListener;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
-
 
 public abstract class AbstractLoginTest extends AbstractUITest {
 
@@ -36,12 +32,9 @@ public abstract class AbstractLoginTest extends AbstractUITest {
     @Before
     public void setupLogin() throws Exception {
         mockAuthentication();
-        ApplicationLifecycleListener listener = mock(ApplicationLifecycleListener.class);
-        tester = new WicketTester(new WicketApplication(listener) {
-            @Override
-            protected void addInjector() {
-                addComponentInstantiationListener(new PaxWicketSpringBeanComponentInjector(this, context));
-            }
-        });
+        tester = new WicketTester(new WicketApplication());
+
+        tester.getApplication().addComponentInstantiationListener(
+            new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
 }

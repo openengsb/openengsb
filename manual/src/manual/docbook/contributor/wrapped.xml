@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="contributor.wrapped" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Prepare and use Non-OSGi Artifacts</title>
+
+  <para> Basically, wrapped JARs do not differ in any way from basic jars, besides that they are deployable
+  in OSGi environments. They are used as regular jar files in the OpenEngSB. Nevertheless, the wrapping
+  itself is not as painless. This chapter tries to explain the process in detail.</para>
+
+  <section xml:id="contributor.wrapped.base">
+    <title>Create Wrapped Artifacts</title>
+    <para>This chapter is a step by step guide on how to create a wrapped JAR.</para>
+    <orderedlist>
+      <listitem>
+        <para>In case that no OSGi compatible library is available in the public repositories a package has to be
+          created. Because of the simplicity of the process it should be done by hand. First of all create a folder 
+          with the name of the project you like to wrap within openengsb/wrapped. Typically the groupId of
+          the bundle to wrap is sufficient. For example, for a project wrapping all Wicket bundles the folder
+          org.apache.wicket is created.</para>
+      </listitem>
+      <listitem>
+        <para>As a next step add the newly created folder as a module to the openengsb/wrapped/pom.xml file in the module section.
+          For the formerly created Wicket project org.apache.wicket should be added to the module section.</para>
+      </listitem>
+      <listitem>
+        <para>Now create a pom.xml file in the newly created project folder.</para>
+      </listitem>
+      <listitem>
+        <para>The pom.xml contains the basic project information. As parent for the project the wrapped/pom.xml should
+          be used. Basically for every wrapped jar the project has the following structure: <programlisting language="xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!--
+OPENENGSB LICENSE
+-->
+<project>
+
+  <parent>
+    <groupId>org.openengsb.wrapped</groupId>
+    <artifactId>openengsb-wrapped</artifactId>
+    <version>1</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>wrapped_jar_group_id</bundle.symbolicName>
+    <wrapped.groupId>wrapped_jar_group_id</wrapped.groupId>
+    <wrapped.artifactId>wrapped_jar_artifact_id</wrapped.artifactId>
+    <wrapped.version>wrapped_jar_version</wrapped.version>
+    <bundle.namespace>${wrapped.groupId}</bundle.namespace>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${wrapped.groupId}</groupId>
+  <artifactId>${parent.groupId}.${wrapped.groupId}</artifactId>
+  <version>${wrapped.version}</version>
+
+  <name>${bundle.symbolicName}</name>
+
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <all_jars_which_should_be_embedded />
+  </dependencies>
+
+</project>]]></programlisting></para>
+      </listitem>
+      <listitem>
+        <para>Now add the OSGi specific statements for the maven-bundle-plugin. While the
+          default export and import are already handled in the root pom project specific settings have to be
+          configured here. For example all packages within the bundle-namespace are always exported. This is for most
+          scenarios sufficient. In addition all dependencies found are automatically imported as required. This is
+          generally not desired. Instead the parts of the library which have to be imported should be defined
+          separately. The following listing gives a short example how this OSGi specific part can look like. For a
+          full list of possible commands see the <link
+            xlink:href="http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html">maven-bundle-plugin
+            documentation</link>.
+          <programlisting language="xml">
+            <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <build>
+              ...
+               <plugins>
+                ...
+                <plugin>
+                  <groupId>org.apache.felix</groupId>
+                  <artifactId>maven-bundle-plugin</artifactId>
+                  <extensions>true</extensions>
+                  <configuration>
+                    <instructions>
+                      <Import-Package>sun.misc;resolution:=optional,
+                          javax.servlet;version="[2.5.0, 3.0.0)",
+                          *;resolution:=optional
+                      </Import-Package>
+                    </instructions>
+                  </configuration>
+                </plugin>
+              </plugins>
+            </build>
+            </project>]]>
+          </programlisting>
+        </para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>Tips and Tricks</title>
+    <para>Although the description above sounds quite simple (and wrapping bundles is simple mostly) still some nasty problems
+    can occur. This section summarizes good tips and ideas how to wrap bundles within the OpenEngSB.</para>
+    <itemizedlist>
+      <listitem>The best workflow to wrap a bundle is according to our experiences, to execute the previously described steps
+      and simply start the OpenEngSB (openengsb:provision). Either it works or creates a huge stack of exceptions with missing import
+      statements. Simply try to fulfill one problem, than start again till all references are resolved.</listitem>
+      <listitem>Embedding artifacts is nothing bad. Although it is recommended to use all references artifacts of a bundle
+      directly as OSGi components it can be such a pain sometimes. Some references are simply not required by any other bundle
+      or are too hard to port. In such cases feel free to directly embed the dependencies in the wrapped jar.</listitem>
+    </itemizedlist>
+  </section>
+
+</chapter>
+

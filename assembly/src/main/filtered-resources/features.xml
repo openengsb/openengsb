@@ -53,10 +53,16 @@
     </config>
 
     <!-- Well, those are comming from karaf; as long as the karaf version is right that one is right too... -->
-    <feature>spring</feature>
-    <feature>spring-web</feature>
+    <feature>karaf-framework</feature>
+    <feature>kar</feature>
+    <feature>eventadmin</feature>
+    <feature version="${spring.version}">spring</feature>
+    <feature version="${spring.version}">spring-web</feature>
     <feature>spring-dm</feature>
     <feature>war</feature>
+    <feature>transaction</feature>
+    <feature>jpa</feature>
+    <feature>jndi</feature>
 
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>
@@ -127,16 +133,7 @@
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/${servicemix.serp.version}</bundle>
     <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.api/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.blueprint.aries/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.jpa/org.apache.aries.jpa.container.context/${aries.jpa.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/${aries.transaction.version}</bundle>
-    <bundle>mvn:org.apache.aries.jndi/org.apache.aries.jndi/${aries.jndi.version}</bundle>
     <bundle>mvn:org.openengsb.infrastructure/org.openengsb.infrastructure.jpa/${project.version}</bundle>
-	
     <!-- OpenEngSB ConfigPersistence Implementations -->
     <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.context/${project.version}</bundle>
     <bundle>mvn:org.openengsb.persistence/org.openengsb.persistence.connector/${project.version}</bundle>
@@ -147,7 +144,7 @@
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.ekb/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.common/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.services/${project.version}</bundle>
-		
+    <bundle>mvn:org.openengsb.framework/org.openengsb.framework.info/${project.version}</bundle>
     <!-- OpenEngSB Feature Implementations -->
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.framework/org.openengsb.framework.security/${project.version}</bundle>
@@ -266,7 +263,10 @@
     <details>
       The core implementation, providing visual references and other common UI utils are provided by this feature.
     </details>
-    <bundle>mvn:org.ops4j.pax.wicket/pax-wicket-service/${pax.wicket.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.wicket/org.ops4j.pax.wicket.service/${pax.wicket.version}</bundle>
+    <bundle>mvn:org.openengsb.forks/org.odlabs.wiquery/${wiquery.forked.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.rhino/1.7R2_2</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.5.0_2</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.common/${project.version}</bundle>
   </feature>

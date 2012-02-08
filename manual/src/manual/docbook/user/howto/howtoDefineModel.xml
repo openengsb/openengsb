@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.definemodel" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>How to define a domain model</title>
+    
+    <section>
+        <title>Goal</title>
+        <para>
+            This tutorial explains how to define a domain model for a specific domain. What a domain model is, can be
+            read in the user manual in the semantics section(<xref linkend="user.semantics" />). The structure of a
+            domain model is an interface which extends the OpenEngSBModel.
+        </para>
+    </section>
+    <section>
+        <title>Time to complete</title>
+        <para>
+            If you are already familiar with the OpenEngSB about 10 minutes. If you are not familiar with the OpenEngSB 
+            please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage</link> 
+            for further information.
+        </para>
+    </section>
+    <section>
+        <title>Prerequisites</title>
+        <para>
+            For information about how to get started as contributor to the OpenEngSB project and how to
+            get the current OpenEngSB source please read the contributor section of the manual: 
+            <xref linkend="contributor.manual" />.
+        </para>
+    </section>
+    <section>
+        <title>Step 1 - Plan the structure of the model</title>
+        <para>
+            The first thing to do is to think about the structure of the model you need. Think about which informations
+            are needed and should be included. (e.g. if you want to create a domain model for an appointment domain, the
+            domain model will contain informations like start time, end time, title, ...).
+        </para>
+        <para>
+            Also give a think about if there exists a field which has the potential to be the id of a model. Such a field
+            has to be unique for a specific domain and connector combination. Such an id can be defined through an annotation
+            with the name OpenEngSBModel.
+        </para>
+    </section>
+    <section>
+        <title>Step 2 - Write the model</title>
+        <para>
+            Writing a model is quite simple. A domain model is an interface, which contains only pairs of getter and
+            setter methods. The method names define the internal names of the fields of the model. Example model:
+        </para>
+        <programlisting>
+            interface Appointment extends OpenEngSBModel {
+                 @OpenEngSBModelId
+                 void setId(Integer id);
+                 Integer getId();
+                 
+                 void setStartTime(Date startTime);
+                 Date getStartTime();
+                 
+                 void setEndTime(Date endTime);
+                 Date getEndTime();
+                 
+                 ...
+            }
+        </programlisting>
+        <para>
+            This model defines a part of a domain model for an appointment domain. In this model we also have defined
+            the id of the model, with the name id. You can see that through the set annotation.
+        </para>
+    </section>
+    <section>
+        <title>Step 3 - Add the model to a domain</title>
+        <para>
+            The last step is to add the model to the specific domain. For that you simply have to add the model
+            to the model package in the specific domain. Now the model is ready to use in the connectors for the
+            specific domain.
+        </para>
+    </section>
+    <section>
+        <title>Step 4 - Use the model</title>
+        <para>
+            The last step is to use the model. For that you have to use a util class which is placed in the core/common
+            bundle called ModelUtils. An instantiation of a model looks like this:
+        </para>
+        <programlisting>
+            Appointment appointment = ModelUtils.createEmptyModelObject(Appointment.class);
+        </programlisting>
+        <para>
+            After that you can use the appointment object like a normal instantiated object.
+        </para>
+    </section>
+
+</chapter>
