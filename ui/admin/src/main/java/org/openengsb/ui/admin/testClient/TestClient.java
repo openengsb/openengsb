@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -219,8 +219,8 @@ public class TestClient extends BasePage {
         methodList.setOutputMarkupId(true);
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
-            protected void onUpdate(AjaxRequestTarget target) {                        
-                
+            protected void onUpdate(AjaxRequestTarget target) {
+
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }
@@ -249,14 +249,14 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
-        
+
         jsonButton = new IndicatingAjaxButton("jsonButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 target.addComponent(feedbackPanel);
-                
+
                 displayJSONMessages();
-                
+
                 call.getArguments().clear();
                 argumentList.removeAll();
 
@@ -303,10 +303,9 @@ public class TestClient extends BasePage {
 
         submitButton.setOutputMarkupId(true);
         submitButton.setEnabled(false);
-        
+
         jsonButton.setOutputMarkupId(true);
         jsonButton.setEnabled(false);
-        
 
         form.add(submitButton);
         form.add(editButton);
@@ -359,7 +358,7 @@ public class TestClient extends BasePage {
                         setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
                             Constants.EXTERNAL_CONNECTOR_PROXY));
                     }
-                });            
+                });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                     .getDescription())));
 
@@ -391,116 +390,126 @@ public class TestClient extends BasePage {
                 });
             }
         };
-    }   
-        
+    }
+
     /**
      * Returns the ID of the currently selected Service or null if none was selected
-     * @return the ID of the  currently selected Service or null if none was selected
+     *
+     * @return the ID of the currently selected Service or null if none was selected
      */
-    private ServiceId fetchCurrentSelectService(){
+    private ServiceId fetchCurrentSelectService() {
         return call.getService();
     }
-    
+
     /**
      * Returns the ID of the currently selected Method or null if none was selected
-     * @return the ID of the  currently selected Method or null if none was selected
+     *
+     * @return the ID of the currently selected Method or null if none was selected
      */
-    private MethodId fetchCurrentSelectMethod(){
-        return call.getMethod(); 
+    private MethodId fetchCurrentSelectMethod() {
+        return call.getMethod();
     }
-        
+
     /**
      * Returns a Standard MethodCall with of the selected Method
+     *
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
-    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId){
-        Class<?> []classes = methodId.getArgumentTypesAsClasses();
+    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
+        Class<?>[] classes = methodId.getArgumentTypesAsClasses();
         List classList = new ArrayList();
-        for(Class<?> clazz : classes) {
+        for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
         }
-        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(),call.getArgumentsAsArray(),classList);
+        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray(), classList);
 
     }
 
     /**
      * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
      * Returns this MethodCallRequest.
+     *
      * @param serviceId Id of the refered Service
-     * @param methodId  Id of the refered Method
+     * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
      */
-    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId){
+    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId) {
         org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
         realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
-        return new MethodCallRequest(realMethodCall,"randomCallId");
+        return new MethodCallRequest(realMethodCall, "randomCallId");
     }
-    
+
     /**
-     * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message 
+     * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message
      * Returns this SecureRequest.
+     *
      * @param serviceId Id of the refered Service
-     * @param methodId  Id of the refered Method
+     * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
      */
-    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId){
+    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId) {
         MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
         BeanDescription beanDescription = BeanDescription.fromObject(new Password("yourpassword"));
         return SecureRequest.create(methodCallRequest, "yourusername", beanDescription);
     }
-    
+
     /**
      * create nessecary MetaData for the Json Message
+     *
      * @param serviceId to fetch the context Data of the message
      * @return a Map with the nessecary MetaData for the Message
      */
-    private Map<String,String> createMetaDataForMethodCallRequest(ServiceId serviceId){
-        Map<String,String> metaData = new HashMap<String,String>();
-        if(serviceId.getServiceId() == null){
+    private Map<String, String> createMetaDataForMethodCallRequest(ServiceId serviceId) {
+        Map<String, String> metaData = new HashMap<String, String>();
+        if (serviceId.getServiceId() == null) {
             metaData.put("serviceId", serviceId.getDomainName());
-        }else{
+        } else {
             metaData.put("serviceId", serviceId.getServiceId());
         }
-        metaData.put("contextId", this.getSessionContextId());
+        metaData.put("contextId", getSessionContextId());
         return metaData;
     }
-    
+
     /**
      * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
+     *
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
-    private String parseRequestToJsonString(SecureRequest secureRequest){
+    private String parseRequestToJsonString(SecureRequest secureRequest) {
         String jsonResult = "";
         try {
-            jsonResult = JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false).writeValueAsString(secureRequest);            
+            jsonResult =
+                JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false)
+                    .writeValueAsString(secureRequest);
         } catch (IOException ex) {
             handleExceptionWithFeedback(ex);
             jsonResult = "";
         }
         return jsonResult;
     }
-    
+
     /**
      * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
      * TODO [Openengsb 1411] replace this with stable filter mechanism
+     *
      * @param jsonMessage Message to filter
      * @return the jsonMessage filtered from the unnessecary data
      */
-    private String filterUnnessecaryArgumentsFromJsonMessage(String jsonMessage){
+    private String filterUnnessecaryArgumentsFromJsonMessage(String jsonMessage) {
         String typeToReplace = ",\"type\":";
-        while(jsonMessage.contains(typeToReplace)){
-            int posAfterType = jsonMessage.indexOf(typeToReplace)+typeToReplace.length();
-            String firstPart = jsonMessage.substring(0,jsonMessage.indexOf(typeToReplace));
-            String lastPart = jsonMessage.substring(posAfterType,jsonMessage.length());
-            
+        while (jsonMessage.contains(typeToReplace)) {
+            int posAfterType = jsonMessage.indexOf(typeToReplace) + typeToReplace.length();
+            String firstPart = jsonMessage.substring(0, jsonMessage.indexOf(typeToReplace));
+            String lastPart = jsonMessage.substring(posAfterType, jsonMessage.length());
+
             int endOfArgs = lastPart.indexOf("}]");
             int firstSemicolon = lastPart.indexOf(",");
-            
-            if(firstSemicolon < endOfArgs){
+
+            if (firstSemicolon < endOfArgs) {
                 lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
-            }else{
+            } else {
                 lastPart = lastPart.substring(lastPart.indexOf("}]"), lastPart.length());
             }
             jsonMessage = firstPart + lastPart;
@@ -508,28 +517,29 @@ public class TestClient extends BasePage {
         jsonMessage = jsonMessage.replaceAll(",\"processId\":null,\"origin\":null", "");
         return jsonMessage;
     }
-    
+
     /**
-     * Displays the corresponding message to the currently selected Method of the currently active Service in the "ServiceTree"
+     * Displays the corresponding message to the currently selected Method of the currently active Service in the
+     * "ServiceTree"
      */
-    private void displayJSONMessages(){   
+    private void displayJSONMessages() {
         ServiceId serviceId = fetchCurrentSelectService();
-        MethodId methodId = fetchCurrentSelectMethod();      
-        if(serviceId == null){
+        MethodId methodId = fetchCurrentSelectMethod();
+        if (serviceId == null) {
             String serviceNotSet = new StringResourceModel("json.view.ServiceNotSet", this, null).getString();
             info(serviceNotSet);
             return;
-        }        
-        if(methodId == null){
+        }
+        if (methodId == null) {
             String methodNotSet = new StringResourceModel("json.view.MethodNotSet", this, null).getString();
             info(methodNotSet);
             return;
-        }       
+        }
         String jsonResult = parseRequestToJsonString(createSecureRequest(serviceId, methodId));
         String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
         jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
         info(String.format("%s %s", jsonPrefix, jsonResult));
-    }   
+    }
 
     public TestClient(ServiceId jumpToService) {
         this();
@@ -616,7 +626,7 @@ public class TestClient extends BasePage {
         }
     }
 
-    private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException{
+    private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException {
         Method method;
         if (methodId == null) {
             String string = new StringResourceModel("serviceError", this, null).getString();
@@ -626,8 +636,8 @@ public class TestClient extends BasePage {
         method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
         return method;
     }
-    
-    protected void performCall() {  
+
+    protected void performCall() {
         Object service;
         try {
             service = getService(call.getService());
@@ -637,14 +647,14 @@ public class TestClient extends BasePage {
         }
         Method method;
         try {
-            method = getMethodOfService(service,call.getMethod());
+            method = getMethodOfService(service, call.getMethod());
         } catch (NoSuchMethodException ex) {
             throw new IllegalArgumentException(ex);
-        }    
-        if(method == null){
+        }
+        if (method == null) {
             return;
         }
-        
+
         try {
             Object result = method.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
