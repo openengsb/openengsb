@@ -39,10 +39,10 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.LogLevel;
-import org.openengsb.domain.example.model.ExampleRequestModel;
-import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.domain.example.ExampleRequestModel;
+import org.openengsb.domain.example.ExampleResponseModel;
+import org.openengsb.domain.example.LogEvent;
+import org.openengsb.domain.example.LogEvent.LogLevel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 

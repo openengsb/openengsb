@@ -22,10 +22,10 @@ import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.event.LogEvent.LogLevel;
-import org.openengsb.domain.example.model.ExampleRequestModel;
-import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.domain.example.ExampleRequestModel;
+import org.openengsb.domain.example.ExampleResponseModel;
+import org.openengsb.domain.example.LogEvent;
+import org.openengsb.domain.example.LogEvent.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

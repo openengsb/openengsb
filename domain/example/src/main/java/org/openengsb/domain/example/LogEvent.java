@@ -15,16 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.domain.example;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.Event;
 
-public interface ExampleRequestModel extends OpenEngSBModel {
-    Integer getId();
+public class LogEvent extends Event {
 
-    void setId(Integer id);
+    public static enum LogLevel {
+            INFO, WARN, ERROR, DEBUG
+    }
 
-    String getName();
+    private String message;
+    private LogLevel level;
 
-    void setName(String name);
+    public LogEvent() {
+        super("LogEvent");
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LogLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(LogLevel level) {
+        this.level = level;
+    }
 }

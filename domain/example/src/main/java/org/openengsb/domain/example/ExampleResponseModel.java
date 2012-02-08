@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.example.model;
+package org.openengsb.domain.example;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
