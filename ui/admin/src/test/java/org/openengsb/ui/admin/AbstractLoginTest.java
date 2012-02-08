@@ -17,19 +17,11 @@
 
 package org.openengsb.ui.admin;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.HttpSessionStore;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.session.ISessionStore;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.MethodRule;
 import org.openengsb.core.test.rules.DedicatedThread;
-import org.openengsb.ui.admin.index.Index;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 
 public abstract class AbstractLoginTest extends AbstractUITest {
@@ -40,22 +32,8 @@ public abstract class AbstractLoginTest extends AbstractUITest {
     @Before
     public void setupLogin() throws Exception {
         mockAuthentication();
-        tester = new WicketTester(new WebApplication() {
-            @Override
-            public Class<? extends Page> getHomePage() {
-                return Index.class;
-            }
+        tester = new WicketTester(new WicketApplication());
 
-            @Override
-            public Session newSession(Request request, Response response) {
-                return new AdminWebSession(request);
-            }
-
-            @Override
-            protected ISessionStore newSessionStore() {
-                return new HttpSessionStore(this);
-            }
-        });
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
     }
