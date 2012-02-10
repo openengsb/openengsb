@@ -8,3 +8,5 @@ org.openengsb.core.workflow.WorkflowHelper
 org.openengsb.core.workflow.OsgiHelper
 java.net.URI
 org.openengsb.core.api.workflow.model.RemoteEvent
+org.openengsb.core.common.util.ModelUtils
+org.openengsb.core.api.model.OpenEngSBModelEntry
