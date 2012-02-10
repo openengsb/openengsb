@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.edb.EDBConstants;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -68,33 +69,49 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
 
     @Override
     protected Object handleInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getName().equals("getOpenEngSBModelEntries")) {
+        String methodName = method.getName();
+        if (methodName.equals("getOpenEngSBModelEntries")) {
             LOGGER.debug("getOpenEngSBModelEntries was called");
             return handleGetOpenEngSBModelEntries();
-        } else if (method.getName().startsWith("set")) {
-            LOGGER.debug("setter method \"{}\" was called with parameter {}", method.getName(), args[0]);
+        } else if (methodName.startsWith("set")) {
+            LOGGER.debug("setter method \"{}\" was called with parameter {}", methodName, args[0]);
             handleSetMethod(method, args);
             return null;
-        } else if (method.getName().startsWith("get")) {
-            LOGGER.debug("called getter method \"{}\" was called", method.getName());
+        } else if (methodName.startsWith("get")) {
+            LOGGER.debug("called getter method \"{}\" was called", methodName);
             return handleGetMethod(method);
-        } else if (method.getName().equals("toString")) {
+        } else if (methodName.equals("toString")) {
             LOGGER.debug("toString() was called");
             return handleToString();
-        } else if (method.getName().equals("addOpenEngSBModelEntry")) {
+        } else if (methodName.equals("addOpenEngSBModelEntry")) {
             OpenEngSBModelEntry entry = (OpenEngSBModelEntry) args[0];
             LOGGER.debug("addOpenEngSBModelEntry was called with entry {} with the value {}", entry.getKey(),
                 entry.getValue());
             handleAddEntry(entry);
             return null;
-        } else if (method.getName().equals("removeOpenEngSBModelEntry")) {
+        } else if (methodName.equals("removeOpenEngSBModelEntry")) {
             LOGGER.debug("removeOpenEngSBModelEntry was called with key {} ", args[0]);
             handleRemoveEntry((String) args[0]);
             return null;
+        } else if (methodName.equals("equals")) {
+            LOGGER.debug("equals was called");
+            if (args[0] == null || !OpenEngSBModel.class.isAssignableFrom(args[0].getClass())) {
+                return false;
+            }
+            OpenEngSBModel otherModel = (OpenEngSBModel) args[0];
+            List<OpenEngSBModelEntry> thisEntries = handleGetOpenEngSBModelEntries();
+            List<OpenEngSBModelEntry> otherEntries = otherModel.getOpenEngSBModelEntries();
+            return thisEntries.equals(otherEntries);
+        } else if (methodName.equals("hashCode")) {
+            LOGGER.debug("hashCode was called");
+            return objects.hashCode();
         } else {
-            LOGGER.error("{} is only able to handle getters and setters", this.getClass().getSimpleName());
-            throw new IllegalArgumentException(this.getClass().getSimpleName()
-                    + " is only able to handle getters and setters");
+            StringBuilder builder = new StringBuilder();
+            builder.append("Unknown command \"").append(methodName).append(".");
+            builder.append(this.getClass().getSimpleName()).append(" is able to handle ");
+            builder.append("getters/setters/toString/equals/hashCode and the OpenEngSBModel functions ");
+            LOGGER.error(builder.toString());
+            throw new IllegalArgumentException(builder.toString());
         }
     }
 
@@ -113,7 +130,7 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     /**
-     * handle call of "toString"
+     * Handle call of "toString"
      */
     private String handleToString() {
         StringBuilder builder = new StringBuilder();
@@ -136,7 +153,9 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     private void handleSetMethod(Method method, Object[] args) throws Throwable {
         String propertyName = ModelUtils.getPropertyName(method);
         if (method.isAnnotationPresent(OpenEngSBModelId.class) && args[0] != null) {
-            objects.put("edbId", new OpenEngSBModelEntry("edbId", args[0].toString(), String.class));
+            OpenEngSBModelEntry entry = 
+                    new OpenEngSBModelEntry(EDBConstants.MODEL_OID, args[0].toString(), String.class);
+            objects.put(EDBConstants.MODEL_OID, entry);
         }
         Class<?> clasz = method.getParameterTypes()[0];
         objects.put(propertyName, new OpenEngSBModelEntry(propertyName, args[0], clasz));
@@ -179,7 +198,7 @@ public class ModelProxyHandler extends AbstractOpenEngSBInvocationHandler {
     /**
      * Handle call of "getOpenEngSBModelEntries"
      */
-    private Object handleGetOpenEngSBModelEntries() throws Throwable {
+    private List<OpenEngSBModelEntry> handleGetOpenEngSBModelEntries() throws Throwable {
         List<OpenEngSBModelEntry> entries = new ArrayList<OpenEngSBModelEntry>();
         for (OpenEngSBModelEntry entry : objects.values()) {
             if (entry.getValue() == null) {

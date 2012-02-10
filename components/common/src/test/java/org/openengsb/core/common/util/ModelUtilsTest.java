@@ -302,5 +302,38 @@ public class ModelUtilsTest {
         assertThat(filenames.contains("test2.txt"), is(true));
         assertThat(fileWrapper, is(true));
     }
+    
+    @Test
+    public void testEquals_shouldWork() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
+        
+        boolean compare1 = model.equals(model2);
+        model.setId("test");
+        boolean compare2 = model.equals(model2);
+        model2.setId("test");
+        boolean compare3 = model.equals(model2);
+        
+        assertThat(compare1, is(true));
+        assertThat(compare2, is(false));
+        assertThat(compare3, is(true));
+        assertThat(model.equals(null), is(false));
+    }
+    
+    @Test
+    public void testHashCode_shouldWork() {
+        TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
+        TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
+        
+        boolean compare1 = model.hashCode() == model2.hashCode();
+        model.setId("test");
+        boolean compare2 = model.hashCode() == model2.hashCode();
+        model2.setId("test");
+        boolean compare3 = model.hashCode() == model2.hashCode();
+        
+        assertThat(compare1, is(true));
+        assertThat(compare2, is(false));
+        assertThat(compare3, is(true));
+    }
 
 }
