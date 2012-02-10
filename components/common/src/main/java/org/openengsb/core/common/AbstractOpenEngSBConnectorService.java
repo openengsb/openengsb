@@ -28,6 +28,7 @@ import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.common.util.ModelUtils;
 
 /**
  * Base class for implementations of connector services. It also contains the method for sending EDB events to the EDB.
@@ -54,17 +55,20 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
         throws EDBException {
         switch (type) {
             case INSERT:
-                EDBInsertEvent create = new EDBInsertEvent(model);
+                EDBInsertEvent create = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+                create.setModel(model);
                 enrichEDBEvent(create);
                 events.raiseEvent(create);
                 break;
             case DELETE:
-                EDBDeleteEvent delete = new EDBDeleteEvent(model);
+                EDBDeleteEvent delete = ModelUtils.createEmptyModelObject(EDBDeleteEvent.class);
+                delete.setModel(model);
                 enrichEDBEvent(delete);
                 events.raiseEvent(delete);
                 break;
             case UPDATE:
-                EDBUpdateEvent update = new EDBUpdateEvent(model);
+                EDBUpdateEvent update = ModelUtils.createEmptyModelObject(EDBUpdateEvent.class);
+                update.setModel(model);
                 enrichEDBEvent(update);
                 events.raiseEvent(update);
                 break;
@@ -78,7 +82,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
      * DEPRECATED: use EKB PersistInterface instead!
      */
     public void initiateEDBBatch() {
-        batchEvent = new EDBBatchEvent();
+        batchEvent = ModelUtils.createEmptyModelObject(EDBBatchEvent.class);
         enrichEDBEvent(batchEvent);
     }
 
@@ -88,7 +92,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
      */
     public void addInsertModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelInsert(model);
+        batchEvent.getInserts().add(model);
     }
 
     @Deprecated
@@ -97,7 +101,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
      */
     public void addDeleteModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelDelete(model);
+        batchEvent.getDeletes().add(model);
     }
 
     @Deprecated
@@ -106,7 +110,7 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
      */
     public void addUpdateModelToBatch(OpenEngSBModel model) {
         checkEDBBatchEvent();
-        batchEvent.addModelUpdate(model);
+        batchEvent.getUpdates().add(model);
     }
 
     @Deprecated

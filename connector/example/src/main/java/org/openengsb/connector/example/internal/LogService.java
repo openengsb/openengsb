@@ -66,7 +66,7 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
     }
 
     private void raiseEvent(String message, LogLevel level) {
-        LogEvent event = new LogEvent();
+        LogEvent event = ModelUtils.createEmptyModelObject(LogEvent.class);
         event.setMessage(message);
         event.setLevel(level);
         domainEventInterface.raiseEvent(event);

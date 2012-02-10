@@ -360,7 +360,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
+        persistInterface.commit(event.getInserts(), event.getUpdates(), event.getDeletes(),
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 

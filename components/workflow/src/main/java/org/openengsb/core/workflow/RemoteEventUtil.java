@@ -20,10 +20,12 @@ package org.openengsb.core.workflow;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
+import org.openengsb.core.common.util.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -36,7 +38,10 @@ public final class RemoteEventUtil {
     }
 
     public static RemoteEvent wrapEvent(Event event) {
-        RemoteEvent result = new RemoteEvent(event.getClass().getName());
+        RemoteEvent result = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        result.setClassName(ModelUtils.getModelClassOfOpenEngSBModelObject(event.getClass()).getName());
+        result.setContextValues(new HashMap<String, String>());
+        result.setNestedEventProperties(new HashMap<String, String>());
         PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(event.getClass());
         Map<String, String> nestedEventProperties = result.getNestedEventProperties();
         for (PropertyDescriptor pd : propertyDescriptors) {

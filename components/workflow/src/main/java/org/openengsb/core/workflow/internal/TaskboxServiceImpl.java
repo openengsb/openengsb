@@ -28,6 +28,7 @@ import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.Task;
+import org.openengsb.core.common.util.ModelUtils;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,9 @@ public class TaskboxServiceImpl implements TaskboxService {
 
     @Override
     public synchronized void finishTask(Task task) throws WorkflowException {
-        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
+        InternalWorkflowEvent finishedEvent = ModelUtils.createEmptyModelObject(InternalWorkflowEvent.class);
+        finishedEvent.setName("TaskFinished");
+        finishedEvent.setProcessBag(task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
 
