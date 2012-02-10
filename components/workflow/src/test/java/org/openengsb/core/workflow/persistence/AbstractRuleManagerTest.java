@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.model.ExampleRequestModel;
@@ -111,7 +112,7 @@ public abstract class AbstractRuleManagerTest {
      * inserts an Event into the existing session and fires All rules
      */
     protected void executeTestSession() {
-        Event event = new Event();
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
         session.insert(event);
         session.fireAllRules();
     }

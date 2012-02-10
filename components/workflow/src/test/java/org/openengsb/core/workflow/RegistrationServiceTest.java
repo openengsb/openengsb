@@ -42,6 +42,7 @@ import org.openengsb.core.api.workflow.EventRegistrationService;
 import org.openengsb.core.api.workflow.model.RemoteEvent;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
@@ -97,7 +98,9 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testWrapRemoteEvent() throws Exception {
-        TestEvent event = new TestEvent(3L, "bla");
+        TestEvent event = ModelUtils.createEmptyModelObject(TestEvent.class);
+        event.setProcessId(3L);
+        event.setValue("bla");
         RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
         Map<String, String> properties = wrapEvent.getNestedEventProperties();
         assertThat(wrapEvent.getClassName(), is(TestEvent.class.getName()));
@@ -106,16 +109,23 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testRegisterEvent() throws Exception {
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        RemoteEvent reg = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        reg.setContextValues(new HashMap<String, String>());
+        reg.setNestedEventProperties(new HashMap<String, String>());
+        reg.setClassName(TestEvent.class.getName());
         reg.setProcessId(3L);
+        TestEvent test = ModelUtils.createEmptyModelObject(TestEvent.class);
         regService.registerEvent(reg, "testPort", "test://localhost");
-        service.processEvent(new TestEvent());
+        service.processEvent(test);
         verify(outgoingPort, timeout(5000)).send(any(MethodCallRequest.class));
     }
 
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        RemoteEvent reg = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        reg.setContextValues(new HashMap<String, String>());
+        reg.setNestedEventProperties(new HashMap<String, String>());
+        reg.setClassName(TestEvent.class.getName());
         int oldCount = manager.list(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", "test://localhost");
         assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
@@ -126,11 +136,14 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         CountDownLatch latch = new CountDownLatch(1);
         trackInvocations((DummyExampleDomain) domains.get("example"), latch).doSomething("it works");
 
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        RemoteEvent reg = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        reg.setContextValues(new HashMap<String, String>());
+        reg.setNestedEventProperties(new HashMap<String, String>());
+        reg.setClassName(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
-        service.processEvent(new TestEvent());
+        service.processEvent(ModelUtils.createEmptyModelObject(TestEvent.class));
         assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
 
         executorService.shutdown();
@@ -142,16 +155,20 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         CountDownLatch latch = new CountDownLatch(1);
         trackInvocations((DummyExampleDomain) domains.get("example"), latch).doSomething("it works");
 
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        RemoteEvent reg = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        reg.setContextValues(new HashMap<String, String>());
+        reg.setNestedEventProperties(new HashMap<String, String>());
+        reg.setClassName(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
-        RemoteEvent reg2 = new RemoteEvent(TestEvent.class.getName());
+        RemoteEvent reg2 = ModelUtils.createEmptyModelObject(RemoteEvent.class);
+        reg.setClassName(TestEvent.class.getName());
         Map<String, String> nestedEventProperties = new HashMap<String, String>();
         nestedEventProperties.put("value", "testValue");
         reg2.setNestedEventProperties(nestedEventProperties);
         regService.registerEvent(reg2, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
-        service.processEvent(new TestEvent());
+        service.processEvent(ModelUtils.createEmptyModelObject(TestEvent.class));
 
         assertThat(latch.await(5, TimeUnit.SECONDS), is(true));
 

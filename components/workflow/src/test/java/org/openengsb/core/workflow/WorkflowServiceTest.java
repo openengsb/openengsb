@@ -55,6 +55,7 @@ import org.openengsb.core.api.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.api.workflow.model.ProcessBag;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
@@ -73,20 +74,21 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testProcessEvent() throws Exception {
-        Event event = new Event();
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
         service.processEvent(event);
     }
 
     @Test
     public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
-        InternalWorkflowEvent event = new InternalWorkflowEvent();
+        InternalWorkflowEvent event = ModelUtils.createEmptyModelObject(InternalWorkflowEvent.class);
+        event.setProcessBag(new ProcessBag());
         event.getProcessBag().setProcessId("0");
         service.processEvent(event);
     }
 
     @Test
     public void testProcessEventTriggersHelloWorld() throws Exception {
-        Event event = new Event();
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
         service.processEvent(event);
         verify(notification, atLeast(1)).notify("Hello");
         verify((DummyExampleDomain) domains.get("example"), atLeast(1)).doSomething("Hello World");
@@ -95,7 +97,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testUseLog() throws Exception {
-        Event event = new Event("test-context");
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         verify(logService).doSomething("42");
     }
@@ -104,14 +107,16 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testUpdateRule() throws Exception {
         manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"21\");");
-        Event event = new Event("test-context");
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         verify(logService).doSomething("21");
     }
 
     @Test
     public void testUseLogContent() throws Exception {
-        Event event = new Event("test-context");
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
     }
@@ -124,7 +129,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         } catch (RuleBaseException e) {
             // expected
         }
-        Event event = new Event("test-context");
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
     }
@@ -137,7 +143,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         } catch (RuleBaseException e) {
             assertThat(e.getCause(), nullValue());
         }
-        Event event = new Event("test-context");
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
     }
@@ -165,45 +172,53 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
     }
 
-    @Test
+    @Test(timeout = 3000)
     public void testStartProcessWithEvents_shouldRunScriptNodes() throws Exception {
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setType(Event.class.getSimpleName());
+        TestEvent testEvent = ModelUtils.createEmptyModelObject(TestEvent.class);
+        testEvent.setType(Event.class.getSimpleName());
+
         long id = service.startFlow("floweventtest");
-        service.processEvent(new Event());
-        service.processEvent(new TestEvent());
+        service.processEvent(event);
+        service.processEvent(testEvent);
         service.waitForFlowToFinish(id);
         InOrder inOrder2 = inOrder(logService);
         inOrder2.verify(logService).doSomething("start testflow");
         inOrder2.verify(logService).doSomething("first event received");
     }
 
-    @Test
+    @Test(timeout = 3000)
     public void testStart2Processes_shouldOnlyTriggerSpecificEvents() throws Exception {
         long id1 = service.startFlow("floweventtest");
         long id2 = service.startFlow("floweventtest");
 
-        service.processEvent(new Event("event", id1));
-        service.processEvent(new TestEvent(id1));
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("event");
+        event.setProcessId(id1);
+        event.setType(Event.class.getSimpleName());
+
+        TestEvent testEvent = ModelUtils.createEmptyModelObject(TestEvent.class);
+        testEvent.setProcessId(id1);
+        testEvent.setType(Event.class.getSimpleName());
+        
+        service.processEvent(event);
+        service.processEvent(testEvent);
         service.waitForFlowToFinish(id1);
 
         assertThat(service.getRunningFlows(), hasItem(id2));
         assertThat(service.getRunningFlows(), not(hasItem(id1)));
     }
 
-    @Test
+    @Test(timeout = 3000)
     public void testCiWorkflow() throws Exception {
         long id = service.startFlow("ci");
-        service.processEvent(new Event() {
-            @Override
-            public String getType() {
-                return "BuildSuccess";
-            }
-        });
-        service.processEvent(new Event() {
-            @Override
-            public String getType() {
-                return "TestSuccess";
-            }
-        });
+        Event buildEvent = ModelUtils.createEmptyModelObject(Event.class);
+        buildEvent.setType("BuildSuccess");
+        service.processEvent(buildEvent);
+        Event testEvent = ModelUtils.createEmptyModelObject(Event.class);
+        testEvent.setType("TestSuccess");
+        service.processEvent(testEvent);
         service.waitForFlowToFinish(id);
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
@@ -237,58 +252,62 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     public void testStartWorkflowTriggeredByEvent() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n" + "  Event()\n" + "then\n"
                 + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
-        service.processEvent(new Event());
+        service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
         assertThat(service.getRunningFlows().isEmpty(), is(false));
     }
 
     @Test
     public void testRegisterWorkflowTrigger() throws Exception {
-        service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
-        service.processEvent(new Event());
-        service.processEvent(new Event("triggerEvent"));
+        Event triggerEvent = ModelUtils.createEmptyModelObject(Event.class);
+        triggerEvent.setName("triggerEvent");
+        service.registerFlowTriggerEvent(triggerEvent, "ci");
+        service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
+        service.processEvent(triggerEvent);
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
     @Test
     public void testRegisterWorkflowTriggerWithSubclass() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
+        NullEvent3 testEvent = ModelUtils.createEmptyModelObject(NullEvent3.class);
         testEvent.setName("triggerEvent");
         testEvent.setTestProperty("foo");
         testEvent.setTestStringProp("bar");
         testEvent.setTestBoolProp(true);
         testEvent.setTestIntProp(42);
         service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
+        service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
         service.processEvent(testEvent);
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
     @Test
     public void testRegisterWorkflowTriggerIgnoreNullFields() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
+        NullEvent3 testEvent = ModelUtils.createEmptyModelObject(NullEvent3.class);
         testEvent.setName("triggerEvent");
         service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
+        service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
         service.processEvent(testEvent);
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
     @Test
     public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed() throws Exception {
-        NullEvent3 testEvent = new NullEvent3();
+        NullEvent3 testEvent = ModelUtils.createEmptyModelObject(NullEvent3.class);
         testEvent.setName("triggerEvent");
         testEvent.setTestStringProp("bar");
         testEvent.setTestIntProp(42);
         service.registerFlowTriggerEvent(testEvent, "ci");
-        service.processEvent(new Event());
+        service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
         service.processEvent(testEvent);
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
     @Test(timeout = 3000)
     public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
-        service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
-        service.processEvent(new Event("triggerEvent"));
+        Event triggerEvent = ModelUtils.createEmptyModelObject(Event.class);
+        triggerEvent.setName("triggerEvent");
+        service.registerFlowTriggerEvent(triggerEvent, "flowStartedEvent");
+        service.processEvent(triggerEvent);
         for (Long id : service.getRunningFlows()) {
             service.waitForFlowToFinish(id);
         }
@@ -296,9 +315,10 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testIfEventIsRetracted() throws Exception {
-        Event event = new Event();
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
         service.processEvent(event);
-        event = new Event("test-context");
+        event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("test-context");
         service.processEvent(event);
         verify(logService, times(2)).doSomething("Hello World");
     }
@@ -326,8 +346,13 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
                 + "TestEvent(value == \"1\")\n"
                 + "then\n"
                 + "Thread.sleep(1000);");
-        Callable<Void> task = makeProcessEventTask(new TestEvent("1"));
-        Callable<Void> task2 = makeProcessEventTask(new TestEvent("0"));
+
+        TestEvent event1 = ModelUtils.createEmptyModelObject(TestEvent.class);
+        event1.setValue("1");
+        TestEvent event0 = ModelUtils.createEmptyModelObject(TestEvent.class);
+        event0.setValue("0");
+        Callable<Void> task = makeProcessEventTask(event1);
+        Callable<Void> task2 = makeProcessEventTask(event0);
         ExecutorService executor = Executors.newCachedThreadPool();
         Future<Void> future1 = executor.submit(task);
         Thread.sleep(300);
@@ -385,7 +410,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testWaitForFlowThatCannotFinish_shouldReturnFalse() throws Exception {
         Long pid = service.startFlow("floweventtest");
-        service.processEvent(new Event("FirstEvent"));
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("FirstEvent");
+        service.processEvent(event);
         service.startFlowInBackground("flowtest");
         boolean finished = service.waitForFlowToFinish(pid, 400);
         assertThat(finished, is(false));
@@ -410,7 +437,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
                 + "   NullDomain origin = (NullDomain) OsgiHelper.getResponseProxy(e, NullDomain.class);"
                 + "   origin.nullMethod(42);");
 
-        Event event = new Event();
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
         event.setOrigin("test-connector");
         service.processEvent(event);
         verify(nullDomainImpl).nullMethod(42);
@@ -425,7 +452,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
                 + "   String testxx = null;"
                 + "   testxx.toString();"); // provoke NPE
         try {
-            service.processEvent(new Event("evil"));
+            Event event = ModelUtils.createEmptyModelObject(Event.class);
+            event.setName("evil");
+            service.processEvent(event);
             fail("evil Event should trigger Exception");
         } catch (Exception e) {
             // expected
@@ -436,7 +465,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
             @Override
             public void run() {
                 try {
-                    service.processEvent(new Event()); // should work because the evil Event should have been removed
+                    // should work because the evil Event should have been removed
+                    service.processEvent(ModelUtils.createEmptyModelObject(Event.class));
                     completed.set(true);
                 } catch (Exception e) {
                     exceptionOccured.set(e);
@@ -461,7 +491,9 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
                 + "   String testxx = null;"
                 + "   testxx.toString();"); // provoke NPE
         try {
-            service.processEvent(new Event("evil"));
+            Event event = ModelUtils.createEmptyModelObject(Event.class);
+            event.setName("evil");
+            service.processEvent(event);
             fail("evil Event should trigger Exception");
         } catch (Exception e) {
             String exceptionString = new ObjectMapper().writeValueAsString(e);

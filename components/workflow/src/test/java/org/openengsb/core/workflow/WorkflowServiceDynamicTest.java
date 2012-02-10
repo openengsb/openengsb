@@ -37,6 +37,7 @@ import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
@@ -44,7 +45,7 @@ import org.osgi.framework.BundleContext;
 
 public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
-    private Event sampleEvent = new Event("42");
+    private Event sampleEvent = ModelUtils.createEmptyModelObject(Event.class);
 
     private class ProcessEventThread extends Thread {
         private Exception resultException;
@@ -69,6 +70,7 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        sampleEvent.setName("42");
         ContextHolder.get().setCurrentContextId("42");
         domains.put("example", DummyExampleDomain.class);
         example = mock(DummyExampleDomain.class);
@@ -95,7 +97,9 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         simulateServiceStart("example");
         simulateServiceStart("notification");
         simulateServiceStart("myservice");
-        workflowService.processEvent(new Event("42"));
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("42");
+        workflowService.processEvent(event);
 
         verify(example).doSomething(anyString());
     }
@@ -124,7 +128,9 @@ public class WorkflowServiceDynamicTest extends AbstractOsgiMockServiceTest {
         simulateServiceStart("notification");
         simulateServiceStart("myservice");
         setupWorkflowService();
-        workflowService.processEvent(new Event("42"));
+        Event event = ModelUtils.createEmptyModelObject(Event.class);
+        event.setName("42");
+        workflowService.processEvent(event);
 
         verify(example).doSomething(anyString());
     }

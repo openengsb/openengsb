@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.workflow.WorkflowService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.test.NullEvent;
 
 public class DomainProxyFactoryTest {
@@ -59,7 +60,7 @@ public class DomainProxyFactoryTest {
 
         TestInterface obj = (TestInterface) factory.getObject();
 
-        NullEvent event = new NullEvent();
+        NullEvent event = ModelUtils.createEmptyModelObject(NullEvent.class);
         obj.raiseEvent(event);
 
         Mockito.verify(workflowMock, Mockito.atLeastOnce()).processEvent(event);

@@ -34,6 +34,7 @@ import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.util.ModelUtils;
 
 public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
 
@@ -45,7 +46,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
     @Test
     public void testGetRules() throws Exception {
         createSession();
-        Event testEvent = new Event();
+        Event testEvent = ModelUtils.createEmptyModelObject(Event.class);
         session.insert(testEvent);
         session.fireAllRules();
     }
@@ -92,7 +93,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
         ruleManager.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
 
-        session.insert(new Event());
+        session.insert(ModelUtils.createEmptyModelObject(Event.class));
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("org.openengsb.test"));
     }
@@ -104,7 +105,7 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerTest {
             "when\n then example2.doSomething(\"\" + bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
-        session.insert(new Event());
+        session.insert(ModelUtils.createEmptyModelObject(Event.class));
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("bla"));
     }
