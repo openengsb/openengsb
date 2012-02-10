@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api.workflow.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,40 +24,52 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.openengsb.core.api.Event;
 
 @XmlRootElement
-public class RemoteEvent extends Event {
-    private String className;
-    private Map<String, String> nestedEventProperties = new HashMap<String, String>();
-    private Map<String, String> contextValues = new HashMap<String, String>();
-
-    public RemoteEvent() {
-    }
-
-    public RemoteEvent(String className) {
-        this.className = className;
-    }
-
-    public String getClassName() {
-        return this.className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public Map<String, String> getNestedEventProperties() {
-        return this.nestedEventProperties;
-    }
-
-    public void setNestedEventProperties(Map<String, String> nestedEventProperties) {
-        this.nestedEventProperties = nestedEventProperties;
-    }
-
-    public Map<String, String> getContextValues() {
-        return this.contextValues;
-    }
-
-    public void setContextValues(Map<String, String> contextValues) {
-        this.contextValues = contextValues;
-    }
+public interface RemoteEvent extends Event {
+    String getClassName();
+    
+    void setClassName(String className);
+    
+    Map<String, String> getNestedEventProperties();
+    
+    void setNestedEventProperties(Map<String, String> nestedEventProperties);
+    
+    Map<String, String> getContextValues();
+    
+    void setContextValues(Map<String, String> contextValues);
+    
+//    private String className;
+//    private Map<String, String> nestedEventProperties = new HashMap<String, String>();
+//    private Map<String, String> contextValues = new HashMap<String, String>();
+//
+//    public RemoteEvent() {
+//    }
+//
+//    public RemoteEvent(String className) {
+//        this.className = className;
+//    }
+//
+//    public String getClassName() {
+//        return this.className;
+//    }
+//
+//    public void setClassName(String className) {
+//        this.className = className;
+//    }
+//
+//    public Map<String, String> getNestedEventProperties() {
+//        return this.nestedEventProperties;
+//    }
+//
+//    public void setNestedEventProperties(Map<String, String> nestedEventProperties) {
+//        this.nestedEventProperties = nestedEventProperties;
+//    }
+//
+//    public Map<String, String> getContextValues() {
+//        return this.contextValues;
+//    }
+//
+//    public void setContextValues(Map<String, String> contextValues) {
+//        this.contextValues = contextValues;
+//    }
 
 }

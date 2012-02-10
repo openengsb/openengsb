@@ -19,14 +19,9 @@ package org.openengsb.core.test;
 
 import org.openengsb.core.api.Event;
 
-public class NullEvent2 extends Event {
-    private Object testProperty;
-
-    public Object getTestProperty() {
-        return testProperty;
-    }
-
-    public void setTestProperty(Object testProperty) {
-        this.testProperty = testProperty;
-    }
+public interface NullEvent2 extends Event {
+    
+    Object getTestProperty();
+    
+    void setTestProperty(Object testProperty);
 }

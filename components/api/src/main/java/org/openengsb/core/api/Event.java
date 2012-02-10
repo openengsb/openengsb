@@ -17,93 +17,107 @@
 
 package org.openengsb.core.api;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openengsb.core.api.model.OpenEngSBModel;
+
 @XmlRootElement
-public class Event {
-    private String name;
-    private Long processId;
-    private String origin;
+public interface Event extends OpenEngSBModel {
+    
+    String getName();
+    
+    void setName(String name);
+    
+    Long getProcessId();
+    
+    void setProcessId(Long processId);
+    
+    String getOrigin();
+    
+    void setOrigin(String origin);
+    
+    String getType();
+    
+    void setType(String type);
+    
 
-    public Event() {
-    }
-
-    public Event(String name) {
-        this.name = name;
-    }
-
-    public Event(Long processId) {
-        this.processId = processId;
-    }
-
-    public Event(String name, Long processId) {
-        this.name = name;
-        this.processId = processId;
-    }
-
-    /**
-     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
-     * name
-     */
-    public String getType() {
-        return this.getClass().getSimpleName();
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getProcessId() {
-        return this.processId;
-    }
-
-    public void setProcessId(Long processId) {
-        this.processId = processId;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
-    @Override
-    public String toString() {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            StringBuilder builder = new StringBuilder();
-            builder.append("Event Properties =>");
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                String name = propertyDescriptor.getName();
-                Object invoke = propertyDescriptor.getReadMethod().invoke(this);
-                builder.append(" " + name + ":" + invoke + ";");
-            }
-            return builder.toString();
-        } catch (IntrospectionException e) {
-            return returnSimpleEventString();
-        } catch (IllegalArgumentException e) {
-            return returnSimpleEventString();
-        } catch (IllegalAccessException e) {
-            return returnSimpleEventString();
-        } catch (InvocationTargetException e) {
-            return returnSimpleEventString();
-        }
-    }
-
-    private String returnSimpleEventString() {
-        return "Event Properties => class:" + this.getClass().toString();
-    }
+    // private String name;
+    // private Long processId;
+    // private String origin;
+    //
+    // public Event() {
+    // }
+    //
+    // public Event(String name) {
+    // this.name = name;
+    // }
+    //
+    // public Event(Long processId) {
+    // this.processId = processId;
+    // }
+    //
+    // public Event(String name, Long processId) {
+    // this.name = name;
+    // this.processId = processId;
+    // }
+    //
+    // /**
+    // * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
+    // * name
+    // */
+    // public String getType() {
+    // return this.getClass().getSimpleName();
+    // }
+    //
+    // public String getName() {
+    // return this.name;
+    // }
+    //
+    // public void setName(String name) {
+    // this.name = name;
+    // }
+    //
+    // public Long getProcessId() {
+    // return this.processId;
+    // }
+    //
+    // public void setProcessId(Long processId) {
+    // this.processId = processId;
+    // }
+    //
+    // public String getOrigin() {
+    // return origin;
+    // }
+    //
+    // public void setOrigin(String origin) {
+    // this.origin = origin;
+    // }
+    //
+    // @Override
+    // public String toString() {
+    // try {
+    // BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
+    // PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+    // StringBuilder builder = new StringBuilder();
+    // builder.append("Event Properties =>");
+    // for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+    // String name = propertyDescriptor.getName();
+    // Object invoke = propertyDescriptor.getReadMethod().invoke(this);
+    // builder.append(" " + name + ":" + invoke + ";");
+    // }
+    // return builder.toString();
+    // } catch (IntrospectionException e) {
+    // return returnSimpleEventString();
+    // } catch (IllegalArgumentException e) {
+    // return returnSimpleEventString();
+    // } catch (IllegalAccessException e) {
+    // return returnSimpleEventString();
+    // } catch (InvocationTargetException e) {
+    // return returnSimpleEventString();
+    // }
+    // }
+    //
+    // private String returnSimpleEventString() {
+    // return "Event Properties => class:" + this.getClass().toString();
+    // }
 }

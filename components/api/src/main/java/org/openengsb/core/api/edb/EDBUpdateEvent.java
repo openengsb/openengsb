@@ -22,15 +22,19 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 /**
  * Represents a update Event. Try to update an OpenEngSBModel object in the EDB.
  */
-public class EDBUpdateEvent extends EDBEvent {
+public interface EDBUpdateEvent extends EDBEvent {
 
-    private OpenEngSBModel model;
-
-    public EDBUpdateEvent(OpenEngSBModel model) {
-        this.model = model;
-    }
-
-    public OpenEngSBModel getModel() {
-        return model;
-    }
+    OpenEngSBModel getModel();
+    
+    void setModel(OpenEngSBModel model);
+    //
+    // private OpenEngSBModel model;
+    //
+    // public EDBUpdateEvent(OpenEngSBModel model) {
+    // this.model = model;
+    // }
+    //
+    // public OpenEngSBModel getModel() {
+    // return model;
+    // }
 }

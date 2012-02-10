@@ -17,36 +17,17 @@
 
 package org.openengsb.core.test;
 
-public class NullEvent3 extends NullEvent2 {
-
-    private String testStringProp;
-
-    private int testIntProp;
-
-    private boolean testBoolProp;
-
-    public String getTestStringProp() {
-        return testStringProp;
-    }
-
-    public void setTestStringProp(String testStringProp) {
-        this.testStringProp = testStringProp;
-    }
-
-    public int getTestIntProp() {
-        return testIntProp;
-    }
-
-    public void setTestIntProp(int testIntProp) {
-        this.testIntProp = testIntProp;
-    }
-
-    public boolean isTestBoolProp() {
-        return testBoolProp;
-    }
-
-    public void setTestBoolProp(boolean testBoolProp) {
-        this.testBoolProp = testBoolProp;
-    }
-
+public interface NullEvent3 extends NullEvent2 {
+    
+    String getTestStringProp();
+    
+    void setTestStringProp(String testStringProp);
+    
+    int getTestIntProp();
+    
+    void setTestIntProp(int testIntProp);
+    
+    boolean getTestBoolProp();
+    
+    void setTestBoolProp(boolean testBoolProp);
 }

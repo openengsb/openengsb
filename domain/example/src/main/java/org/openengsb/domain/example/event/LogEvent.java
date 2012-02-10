@@ -19,32 +19,17 @@ package org.openengsb.domain.example.event;
 
 import org.openengsb.core.api.Event;
 
-public class LogEvent extends Event {
+public interface LogEvent extends Event {
 
     public static enum LogLevel {
             INFO, WARN, ERROR, DEBUG
     }
-
-    private String message;
-    private LogLevel level;
-
-    public LogEvent() {
-        super("LogEvent");
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LogLevel getLevel() {
-        return level;
-    }
-
-    public void setLevel(LogLevel level) {
-        this.level = level;
-    }
+    
+    String getMessage();
+    
+    void setMessage(String message);
+    
+    LogLevel getLevel();
+    
+    void setLevel(LogLevel level);
 }

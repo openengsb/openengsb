@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api.edb;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
@@ -27,39 +26,53 @@ import org.openengsb.core.api.model.OpenEngSBModel;
  * is that it make it possible to do several inserts, updates and deletes in one commit of the EDB. If you use the other
  * three events, every event will be handled in an own EDB commit.
  */
-public class EDBBatchEvent extends EDBEvent {
-    private List<OpenEngSBModel> inserts;
-    private List<OpenEngSBModel> updates;
-    private List<OpenEngSBModel> deletes;
+public interface EDBBatchEvent extends EDBEvent {
+    
+    List<OpenEngSBModel> getInserts();
+    
+    void setInserts(List<OpenEngSBModel> inserts);
+    
+    List<OpenEngSBModel> getUpdates();
+    
+    void setUpdates(List<OpenEngSBModel> updates);
+    
+    List<OpenEngSBModel> getDeletes();
+    
+    void setDeletes(List<OpenEngSBModel> deletes);
+    
 
-    public EDBBatchEvent() {
-        inserts = new ArrayList<OpenEngSBModel>();
-        updates = new ArrayList<OpenEngSBModel>();
-        deletes = new ArrayList<OpenEngSBModel>();
-    }
-
-    public void addModelInsert(OpenEngSBModel model) {
-        inserts.add(model);
-    }
-
-    public void addModelUpdate(OpenEngSBModel model) {
-        updates.add(model);
-    }
-
-    public void addModelDelete(OpenEngSBModel model) {
-        deletes.add(model);
-    }
-
-    public List<OpenEngSBModel> getInserts() {
-        return inserts;
-    }
-
-    public List<OpenEngSBModel> getUpdates() {
-        return updates;
-    }
-
-    public List<OpenEngSBModel> getDeletions() {
-        return deletes;
-    }
+    // private List<OpenEngSBModel> inserts;
+    // private List<OpenEngSBModel> updates;
+    // private List<OpenEngSBModel> deletes;
+    //
+    // public EDBBatchEvent() {
+    // inserts = new ArrayList<OpenEngSBModel>();
+    // updates = new ArrayList<OpenEngSBModel>();
+    // deletes = new ArrayList<OpenEngSBModel>();
+    // }
+    //
+    // public void addModelInsert(OpenEngSBModel model) {
+    // inserts.add(model);
+    // }
+    //
+    // public void addModelUpdate(OpenEngSBModel model) {
+    // updates.add(model);
+    // }
+    //
+    // public void addModelDelete(OpenEngSBModel model) {
+    // deletes.add(model);
+    // }
+    //
+    // public List<OpenEngSBModel> getInserts() {
+    // return inserts;
+    // }
+    //
+    // public List<OpenEngSBModel> getUpdates() {
+    // return updates;
+    // }
+    //
+    // public List<OpenEngSBModel> getDeletions() {
+    // return deletes;
+    // }
 
 }

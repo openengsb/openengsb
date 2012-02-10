@@ -23,46 +23,55 @@ import org.openengsb.core.api.Event;
  * This event is used for internal workflow control actions like the completion of a human task. It contains a workflows
  * ProcessBag.
  */
-public class InternalWorkflowEvent extends Event {
-    private ProcessBag processBag;
-    private String type;
-
-    public InternalWorkflowEvent() {
-        this.processBag = new ProcessBag();
-    }
-
-    public InternalWorkflowEvent(String type) {
-        this.type = type;
-        this.processBag = new ProcessBag();
-    }
-
-    public InternalWorkflowEvent(ProcessBag processBag) {
-        this.processBag = processBag;
-    }
-
-    public InternalWorkflowEvent(String type, ProcessBag processBag) {
-        this.type = type;
-        this.processBag = processBag;
-    }
-
-    @Override
-    public String getType() {
-        if (type != null) {
-            return type;
-        } else {
-            return super.getType();
-        }
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setProcessBag(ProcessBag processBag) {
-        this.processBag = processBag;
-    }
-
-    public ProcessBag getProcessBag() {
-        return processBag;
-    }
+public interface InternalWorkflowEvent extends Event {
+    
+    ProcessBag getProcessBag();
+    
+    void setProcessBag(ProcessBag processBag);
+    
+    String getType();
+    
+    void setType(String type);
+    
+//    private ProcessBag processBag;
+//    private String type;
+//
+//    public InternalWorkflowEvent() {
+//        this.processBag = new ProcessBag();
+//    }
+//
+//    public InternalWorkflowEvent(String type) {
+//        this.type = type;
+//        this.processBag = new ProcessBag();
+//    }
+//
+//    public InternalWorkflowEvent(ProcessBag processBag) {
+//        this.processBag = processBag;
+//    }
+//
+//    public InternalWorkflowEvent(String type, ProcessBag processBag) {
+//        this.type = type;
+//        this.processBag = processBag;
+//    }
+//
+//    @Override
+//    public String getType() {
+//        if (type != null) {
+//            return type;
+//        } else {
+//            return super.getType();
+//        }
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
+//
+//    public void setProcessBag(ProcessBag processBag) {
+//        this.processBag = processBag;
+//    }
+//
+//    public ProcessBag getProcessBag() {
+//        return processBag;
+//    }
 }

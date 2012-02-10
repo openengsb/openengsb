@@ -18,51 +18,63 @@
 package org.openengsb.core.api.edb;
 
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.model.ConnectorId;
 
 /**
  * Interface for easier maintaining of the Events in the DomainEventsProxyFacory. Saves the domain id, connector id and
  * instance id so that the EDB is able to save this detail information.
  */
-public abstract class EDBEvent extends Event {
+public interface EDBEvent extends Event {
 
-    private String domainId;
-    private String connectorId;
-    private String instanceId;
+    String getDomainId();
     
-    /**
-     * parses a full connector id (format <domainType>+<connectorType>+<instanceId>) and sets the corresponding values
-     * in the event. Example: "scm+git+projectx-main-repo" 
-     */
-    public void parseConnectorId(String connectorId) {
-        ConnectorId id = ConnectorId.fromFullId(connectorId);
-        domainId = id.getDomainType();
-        connectorId = id.getConnectorType();
-        instanceId = id.getInstanceId();
-    }
+    void setDomainId(String domainId);
+    
+    String getConnectorId();
+    
+    void setConnectorId(String connectorId);
+    
+    String getInstanceId();
+    
+    void setInstanceId(String instanceId);
+    
 
-    public void setDomainId(String domainId) {
-        this.domainId = domainId;
-    }
-
-    public String getDomainId() {
-        return domainId;
-    }
-
-    public void setConnectorId(String connectorId) {
-        this.connectorId = connectorId;
-    }
-
-    public String getConnectorId() {
-        return connectorId;
-    }
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
-    }
-
-    public String getInstanceId() {
-        return instanceId;
-    }
+    // private String domainId;
+    // private String connectorId;
+    // private String instanceId;
+    //
+    // /**
+    // * parses a full connector id (format <domainType>+<connectorType>+<instanceId>) and sets the corresponding values
+    // * in the event. Example: "scm+git+projectx-main-repo"
+    // */
+    // public void parseConnectorId(String connectorId) {
+    // ConnectorId id = ConnectorId.fromFullId(connectorId);
+    // domainId = id.getDomainType();
+    // connectorId = id.getConnectorType();
+    // instanceId = id.getInstanceId();
+    // }
+    //
+    // public void setDomainId(String domainId) {
+    // this.domainId = domainId;
+    // }
+    //
+    // public String getDomainId() {
+    // return domainId;
+    // }
+    //
+    // public void setConnectorId(String connectorId) {
+    // this.connectorId = connectorId;
+    // }
+    //
+    // public String getConnectorId() {
+    // return connectorId;
+    // }
+    //
+    // public void setInstanceId(String instanceId) {
+    // this.instanceId = instanceId;
+    // }
+    //
+    // public String getInstanceId() {
+    // return instanceId;
+    // }
 
 }

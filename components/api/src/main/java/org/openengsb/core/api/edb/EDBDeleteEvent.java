@@ -23,17 +23,21 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 /**
  * Represents a delete Event. Try to delete an OpenEngSBModel object from the EDB.
  */
-public class EDBDeleteEvent extends EDBEvent {
-
-    private OpenEngSBModel model;
-
-    public EDBDeleteEvent(OpenEngSBModel model) {
-        this.model = model;
-    }
-
-    public OpenEngSBModel getModel() {
-        return model;
-    }
+public interface EDBDeleteEvent extends EDBEvent {
+    
+    OpenEngSBModel getModel();
+    
+    void setModel(OpenEngSBModel model);
+//
+//    private OpenEngSBModel model;
+//
+//    public EDBDeleteEvent(OpenEngSBModel model) {
+//        this.model = model;
+//    }
+//
+//    public OpenEngSBModel getModel() {
+//        return model;
+//    }
 
 }
 

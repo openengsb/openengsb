@@ -19,32 +19,36 @@ package org.openengsb.core.workflow.model;
 
 import org.openengsb.core.api.Event;
 
-public class TestEvent extends Event {
+public interface TestEvent extends Event {
 
-    private String value;
-
-    public TestEvent() {
-    }
-
-    public TestEvent(long processId) {
-        setProcessId(processId);
-    }
-
-    public TestEvent(String value) {
-        this.value = value;
-    }
-
-    public TestEvent(long processId, String value) {
-        super(processId);
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    String getValue();
+    
+    void setValue(String value);
+    
+//    private String value;
+//
+//    public TestEvent() {
+//    }
+//
+//    public TestEvent(long processId) {
+//        setProcessId(processId);
+//    }
+//
+//    public TestEvent(String value) {
+//        this.value = value;
+//    }
+//
+//    public TestEvent(long processId, String value) {
+//        super(processId);
+//        this.value = value;
+//    }
+//
+//    public String getValue() {
+//        return value;
+//    }
+//
+//    public void setValue(String value) {
+//        this.value = value;
+//    }
 
 }
