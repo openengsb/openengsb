@@ -150,6 +150,11 @@ public final class ModelUtils {
      */
     public static List<PropertyDescriptor> getPropertyDescriptorsForClass(Class<?> clasz) {
         List<PropertyDescriptor> properties = Lists.newArrayList();
+        for (Class<?> parent : clasz.getInterfaces()) {
+            if (!parent.equals(OpenEngSBModel.class)) {
+                properties.addAll(getPropertyDescriptorsForClass(parent));
+            }
+        }
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(clasz);
             for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
