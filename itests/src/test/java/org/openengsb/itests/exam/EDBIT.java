@@ -152,7 +152,8 @@ public class EDBIT extends AbstractExamTestHelper {
         TestFileModel model = ModelUtils.createEmptyModelObject(TestFileModel.class);
         model.setTestId("testId");
         model.setFile(f);
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         event.setConnectorId("testconnector");
         event.setDomainId("testdomain");
         event.setInstanceId("testinstance");
@@ -206,7 +207,8 @@ public class EDBIT extends AbstractExamTestHelper {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("batchevent/1");
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 
@@ -216,14 +218,14 @@ public class EDBIT extends AbstractExamTestHelper {
         Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         model.setName("blab");
-        EDBBatchEvent e = new EDBBatchEvent();
+        EDBBatchEvent e = ModelUtils.createEmptyModelObject(EDBBatchEvent.class);
         enrichEDBEvent(e);
-        e.addModelUpdate(model);
+        e.getUpdates().add(model);
         TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
 
-        e.addModelInsert(model2);
+        e.getInserts().add(model2);
 
         edbService.processEDBBatchEvent(e);
 
@@ -250,7 +252,8 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
-        EDBDeleteEvent event = new EDBDeleteEvent(model);
+        EDBDeleteEvent event = ModelUtils.createEmptyModelObject(EDBDeleteEvent.class);
+        event.setModel(model);
         edbService.processEDBDeleteEvent(event);
     }
 
@@ -260,7 +263,8 @@ public class EDBIT extends AbstractExamTestHelper {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/2");
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 
@@ -271,7 +275,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.setName("blab");
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
+        EDBUpdateEvent update = ModelUtils.createEmptyModelObject(EDBUpdateEvent.class);
+        update.setModel(model);
         enrichEDBEvent(update);
         edbService.processEDBUpdateEvent(update);
 
@@ -292,7 +297,8 @@ public class EDBIT extends AbstractExamTestHelper {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/3");
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 
@@ -303,7 +309,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
+        EDBUpdateEvent update = ModelUtils.createEmptyModelObject(EDBUpdateEvent.class);
+        update.setModel(model);
         enrichEDBEvent(update);
         edbService.processEDBUpdateEvent(update);
 
@@ -325,14 +332,16 @@ public class EDBIT extends AbstractExamTestHelper {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/4");
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 
         model.setName("blab");
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
+        EDBUpdateEvent update = ModelUtils.createEmptyModelObject(EDBUpdateEvent.class);
+        update.setModel(model);
         enrichEDBEvent(update);
         edbService.processEDBUpdateEvent(update);
     }
@@ -348,7 +357,8 @@ public class EDBIT extends AbstractExamTestHelper {
         sub.setName("sub");
         model.setSubModel(sub);
 
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 
@@ -375,7 +385,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.setSubs(Arrays.asList(sub1, sub2));
 
-        EDBInsertEvent event = new EDBInsertEvent(model);
+        EDBInsertEvent event = ModelUtils.createEmptyModelObject(EDBInsertEvent.class);
+        event.setModel(model);
         enrichEDBEvent(event);
         edbService.processEDBInsertEvent(event);
 

@@ -104,7 +104,7 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
         DummyLogDomain logService = new DummyLogDomain();
         getBundleContext().registerService(clazzes, logService, properties);
 
-        LogEvent e = new LogEvent();
+        LogEvent e = ModelUtils.createEmptyModelObject(LogEvent.class);
         e.setName("42");
         e.setLevel(LogLevel.INFO);
 
