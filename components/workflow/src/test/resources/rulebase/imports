@@ -12,3 +12,5 @@ org.openengsb.core.api.workflow.model.ProcessBag
 java.net.URI
 org.openengsb.core.api.workflow.model.RemoteEvent
 org.openengsb.core.api.context.ContextHolder
+org.openengsb.core.common.util.ModelUtils
+org.openengsb.core.api.model.OpenEngSBModelEntry

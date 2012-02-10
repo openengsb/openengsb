@@ -172,12 +172,12 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         }
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void testStartProcessWithEvents_shouldRunScriptNodes() throws Exception {
         Event event = ModelUtils.createEmptyModelObject(Event.class);
         event.setType(Event.class.getSimpleName());
         TestEvent testEvent = ModelUtils.createEmptyModelObject(TestEvent.class);
-        testEvent.setType(Event.class.getSimpleName());
+        testEvent.setType(TestEvent.class.getSimpleName());
 
         long id = service.startFlow("floweventtest");
         service.processEvent(event);
@@ -200,7 +200,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
         TestEvent testEvent = ModelUtils.createEmptyModelObject(TestEvent.class);
         testEvent.setProcessId(id1);
-        testEvent.setType(Event.class.getSimpleName());
+        testEvent.setType(TestEvent.class.getSimpleName());
         
         service.processEvent(event);
         service.processEvent(testEvent);

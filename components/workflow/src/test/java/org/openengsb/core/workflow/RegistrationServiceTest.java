@@ -161,7 +161,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         reg.setClassName(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         RemoteEvent reg2 = ModelUtils.createEmptyModelObject(RemoteEvent.class);
-        reg.setClassName(TestEvent.class.getName());
+        reg2.setClassName(TestEvent.class.getName());
         Map<String, String> nestedEventProperties = new HashMap<String, String>();
         nestedEventProperties.put("value", "testValue");
         reg2.setNestedEventProperties(nestedEventProperties);
