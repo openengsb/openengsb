@@ -25,6 +25,10 @@
   <link rel="stylesheet" type="text/css" href="openengsb/style/grids.css"/>
   <link rel="stylesheet" type="text/css" href="openengsb/style/blueprint/screen.css"/>
   <link rel="stylesheet" type="text/css" href="openengsb/style/style.css"/>
+  <link rel="stylesheet" type="text/css" href="openengsb/style/jquery.css"/>
+  <script type="text/javascript" src="openengsb/js/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="openengsb/js/jquery-ui-1.8.17.custom.min.js"></script>
+  <script type="text/javascript" src="openengsb/js/jqueryHelper.js"></script>
   <link rel="icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
   <link rel="shortcut icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -36,19 +40,23 @@
 	<div id="loginMaskContainer">
 	  <div class="line">  
         <div class="unit size1of2 background">
-       	  <div class="positionRelative"><img src="/openengsb/images/openengsb_small.png" /><h3 class="inline headerLabel quiet">Admin console</h3></div><br />
-          <p class="smalltext quiet"><wicket:message key="login.welcome"></wicket:message></p>
+       	  <div class="positionRelative">
+       	    <img wicket:id="topImage" class="logoSmallSize inline" />
+       	    <h3 class="inline headerLabel ligthBlue">Admin console</h3>
+       	  </div>
+       	  <br />
+          <p class="smalltext ligthBlue"><wicket:message key="login.welcome"></wicket:message><br /></p>
         </div>
         <div class="unit size1of2 lastUnit">
       	  <div class="loginForm">
       		  <h3 class="right quiet">Login</h3><br />
         	  <form wicket:id="loginForm">
         		  <div>
-          			  <label for="username" class="quiet"><wicket:message key="username"></wicket:message></label><br />
+          			  <label for="username" class="lightBlue"><wicket:message key="username"></wicket:message></label><br />
             		  <input type="text" wicket:id="username" /> 
             	  </div>
             	  <div>
-            		  <label for="password" class="quiet"><wicket:message key="password"></wicket:message></label><br />
+            		  <label for="password" class="lightBlue"><wicket:message key="password"></wicket:message></label><br />
             		  <input type="password" wicket:id="password" />
             	  </div>
             	  <div><br /><input type="submit" wicket:message="value:button.login,title:button.login" /></div>
@@ -62,6 +70,7 @@
           <wicket:message key="imprint"></wicket:message>
         </a>
   	  </div>
+  	  <div wicket:id="imprintDialogue" class="hidden"></div>
   	</div>
 </body>
 </html>

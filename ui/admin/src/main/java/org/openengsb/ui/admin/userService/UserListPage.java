@@ -18,8 +18,15 @@
 package org.openengsb.ui.admin.userService;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
+import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.ui.admin.basePage.BasePage;
+import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.openengsb.ui.common.usermanagement.UserListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
@@ -47,6 +54,23 @@ public class UserListPage extends BasePage {
         }
 
     }
+    
+    private final class EditPanel extends UserEditPanel {
+        private static final long serialVersionUID = -4646745795328499771L;
+
+        private EditPanel(String id) {
+            super(id);
+        }
+
+        public EditPanel(String id, String username) throws UserNotFoundException {
+            super(id, username);
+        }
+
+        @Override
+        protected void afterSubmit() {
+            setResponsePage(UserListPage.class);
+        }
+    }
 
     public UserListPage() {
         initContent();
@@ -59,7 +83,14 @@ public class UserListPage extends BasePage {
 
     private void initContent() {
         add(new MyUserListPanel("lazy"));
-
+        
+        EditPanel userEditor = new EditPanel("addUserDialogue");
+        userEditor.setOutputMarkupId(true);
+        add(userEditor);
+        
+        ExternalLink addUserLink = new ExternalLink("addUserLink","#");
+        addUserLink.add(new SimpleAttributeModifier("onClick","showModalDialogue('"+userEditor.getMarkupId()+"','addUser',false)"));
+        add(addUserLink);
     }
 
 }

@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebSession;
-import org.odlabs.wiquery.ui.dialog.Dialog;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
@@ -51,9 +50,6 @@ public class HeaderTemplate extends Panel {
 	
     public HeaderTemplate(String id) {
         super(id);
-        
-        final Dialog dialog = new Dialog("dialog");
-        add(dialog);
         
         baseInitialization();
         initializeTopMenu();

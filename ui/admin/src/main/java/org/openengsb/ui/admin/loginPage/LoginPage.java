@@ -18,23 +18,39 @@
 package org.openengsb.ui.admin.loginPage;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
+import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.model.UsernamePassword;
 import org.openengsb.ui.common.OpenEngSBPage;
+import org.openengsb.ui.common.imprint.ImprintPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
 public class LoginPage extends OpenEngSBPage{
     private UsernamePassword user = new UsernamePassword();
 
+    public final class ip extends ImprintPanel {
+
+		private static final long serialVersionUID = 1L;
+
+		public ip(String id) {
+			super(id);
+		}
+    	
+    }
+    
     public LoginPage() {
         initContent();
     }
@@ -65,7 +81,15 @@ public class LoginPage extends OpenEngSBPage{
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-        add(new BookmarkablePageLink<ImprintPage>("imprint", ImprintPage.class));
+        add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+        
+        ip imprintDialogue = new ip("imprintDialogue");
+        imprintDialogue.setOutputMarkupId(true);
+        add(imprintDialogue);
+        
+        ExternalLink addUserLink = new ExternalLink("imprint","#");
+        addUserLink.add(new SimpleAttributeModifier("onClick","showModalButtonCloseDialogue('"+imprintDialogue.getMarkupId()+"','Imprint',false,false,550,450)"));
+        add(addUserLink);
     }
 
     public LoginPage(PageParameters parameters) {

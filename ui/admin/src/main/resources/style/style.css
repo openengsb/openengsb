@@ -25,7 +25,10 @@ th {
 td {
 	font-color: #566672;
 	}
- 
+
+.hidden {
+	display:none;
+} 
 .inline {
  	display: inline;
  	}
@@ -33,6 +36,10 @@ td {
 .smalltext {
     font-size: 0.9em;
     line-height: 1.5em;
+}
+
+.ligthBlue {
+	color: #a3b2bf;
 }
 .positionRelative {
 	position: relative;
@@ -174,7 +181,7 @@ td {
 }
 
 #loginMaskContainer {
-	border: 2px solid #d9d9d9;
+	border: 2px solid #56738C;
 	width: 700px;
 	height: 220px;
 	position:absolute; 
@@ -184,17 +191,18 @@ td {
 	margin-top: -110px;
 }
 #loginMaskContainer .background{
-	background: #d9d9d9;
+	background: #56738C;
 	height: 100%;
 }
 #loginMaskContainer .unit{
 	padding: 10px;
+	height: 100%;
 }
 #loginMaskContainer input[type="text"], input[type="password"]{
 	height:25px;
 	width:300px;
-	border: 1px solid #d9d9d9;
-	color:red;
+	border: 1px solid ##56738C;
+	color:#56738C;
 }
 #loginMaskContainer form {
 	margin: 20px 0px 0px 0px;
@@ -242,6 +250,10 @@ h2 {
 
 h3 {
 	font-size: 1.1em;
+}
+
+h4 {
+	font-size: 0.9em;
 }
 
 hr {
