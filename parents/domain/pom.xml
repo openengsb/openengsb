@@ -279,9 +279,9 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-java2ws-plugin</artifactId>
-        <version>${cxf.version}</version>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <!--<version>${cxf.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -294,17 +294,17 @@
             <version>${cxf.version}</version>
           </dependency>
         </dependencies>
+		-->
         <executions>
           <execution>
             <id>DomainEventsWsdl</id>
             <phase>process-classes</phase>
             <configuration>
               <className>${bundle.namespace}.${domain.name}Events</className>
-              <genWsdl>true</genWsdl>
-              <attachWsdl>false</attachWsdl>
+			  <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}Events.wsdl</outputFileName>
             </configuration>
             <goals>
-              <goal>java2ws</goal>
+              <goal>java2wsdl</goal>
             </goals>
           </execution>
           <execution>
@@ -312,11 +312,10 @@
             <phase>process-classes</phase>
             <configuration>
               <className>${bundle.namespace}.${domain.name}</className>
-              <genWsdl>true</genWsdl>
-              <attachWsdl>false</attachWsdl>
+			  <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}.wsdl</outputFileName>
             </configuration>
             <goals>
-              <goal>java2ws</goal>
+              <goal>java2wsdl</goal>
             </goals>
           </execution>
         </executions>
