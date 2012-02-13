@@ -152,11 +152,6 @@
       <artifactId>spring-security-openid</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <scope>compile</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.openengsb.domain</groupId>
