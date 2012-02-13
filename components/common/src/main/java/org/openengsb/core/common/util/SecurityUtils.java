@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.security.model.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -34,7 +35,7 @@ public final class SecurityUtils {
 
     /**
      * Executes the given task with root-permissions. Use with care.
-     *
+     * 
      * @throws ExecutionException if an exception occurs during the execution of the task
      */
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
@@ -94,6 +95,14 @@ public final class SecurityUtils {
             }
         }
 
+    }
+
+    public static void bindAuthenticationToThread(Authentication authentication) {
+        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+    }
+
+    public static Authentication getCurrentThreadAuthentication() {
+        return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
     private SecurityUtils() {
