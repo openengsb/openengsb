@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the {@link AuthenticationInfo}
  * and tries to authenticate. If authentication was succesful, the filter-chain will proceed. The result of the next
  * filter is just passed through.
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -73,8 +73,7 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
                 serviceUtilsService.makeFilter(CredentialTypeProvider.class,
                     String.format("(credentialClass=%s)", className));
             Class<? extends Credentials> credentialType =
-                serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(
-                    className);
+                serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).load(className);
             authenticationManager
                 .authenticate(input.getPrincipal(), input.getCredentials().toObject(credentialType));
         } catch (AuthenticationException e) {

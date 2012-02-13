@@ -17,35 +17,18 @@
 
 package org.openengsb.core.api.security;
 
-import java.util.Collection;
+import org.openengsb.core.api.ClassloadingDelegate;
 
 /**
  * Provides other bundles means of delegated class loading of permission-types and detecting which credential-classes
  * are available.
- *
+ * 
  * Every bundle declaring specific credentials must export a service of this type to provide the declared
  * credential-type to management bundles (user management, UI, ...)
- *
+ * 
  * Services exporting this interface must also declare the "credentialClass"-property where all supported classes are
  * listed.
  */
-public interface CredentialTypeProvider {
-
-    /**
-     * loads the credential-type-class with the given name. This enables other bundles (e.g. persistence) to delegate
-     * loading the class to the declaring bundle, to avoid Dynamic-Import.
-     *
-     * All class-names must also be listed in the services' "credentialClass"-property, because it may be used to query
-     * for correct provider that is able to load a certain credential-class.
-     *
-     * @throws ClassNotFoundException if no credential-type with that name is defined by the providing bundle.
-     */
-    Class<? extends Credentials> getCredentialType(String name) throws ClassNotFoundException;
-
-    /**
-     * returns all credential-types supported by this Provider. This method may be used by user interfaces to list all
-     * available types of credentials and to instantiate them.
-     */
-    Collection<Class<? extends Credentials>> getSupportedCredentialTypes();
+public interface CredentialTypeProvider extends ClassloadingDelegate<Credentials> {
 
 }

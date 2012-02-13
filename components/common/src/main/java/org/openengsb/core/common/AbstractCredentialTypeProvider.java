@@ -14,17 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.common;
 
-package org.openengsb.connector.usernamepassword.internal;
+import org.openengsb.core.api.security.CredentialTypeProvider;
+import org.openengsb.core.api.security.Credentials;
 
-import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.common.AbstractCredentialTypeProvider;
+/**
+ * Helps to provide a Simple PermissionProvider.
+ * 
+ * Just derive this class and add all permission-classes to the super-call in the default-constructor
+ */
+public abstract class AbstractCredentialTypeProvider extends DefaultClassloadingDelegate<Credentials> implements
+        CredentialTypeProvider {
 
-public class PasswordCredentialTypeProvider extends AbstractCredentialTypeProvider {
-
-    @SuppressWarnings("unchecked")
-    public PasswordCredentialTypeProvider() {
-        super(Password.class);
+    public AbstractCredentialTypeProvider(Class<? extends Credentials>... classes) {
+        super(classes);
     }
 
 }

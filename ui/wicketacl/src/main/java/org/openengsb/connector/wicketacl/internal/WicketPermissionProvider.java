@@ -17,7 +17,7 @@
 package org.openengsb.connector.wicketacl.internal;
 
 import org.openengsb.connector.wicketacl.WicketPermission;
-import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.common.AbstractPermissionProvider;
 
 public class WicketPermissionProvider extends AbstractPermissionProvider {
 

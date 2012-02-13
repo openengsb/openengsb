@@ -168,7 +168,7 @@ public final class EntryUtils {
         Filter filter = utilService.makeFilter(PermissionProvider.class, String.format("(permissionClass=%s)", name));
         PermissionProvider provider =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(filter, PermissionProvider.class);
-        return provider.getPermissionClass(name);
+        return provider.load(name);
     }
 
     private static Map<String, Object> convertEntryMapToAttributeMap(Map<String, EntryValue> entryMap) {

@@ -82,7 +82,7 @@ public abstract class PermissionEditorPanel extends Panel {
                         OpenEngSBCoreServices.getServiceUtilsService().listServices(PermissionProvider.class);
                     List<Class<?>> result = Lists.newArrayList();
                     for (PermissionProvider p : providers) {
-                        result.addAll(p.getSupportedPermissionClasses());
+                        result.addAll(p.getSupportedTypes());
                     }
                     return result;
                 }

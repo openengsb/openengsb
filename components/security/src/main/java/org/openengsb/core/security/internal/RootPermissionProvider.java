@@ -16,7 +16,7 @@
  */
 package org.openengsb.core.security.internal;
 
-import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.common.AbstractPermissionProvider;
 import org.openengsb.core.security.internal.model.RootPermission;
 
 public class RootPermissionProvider extends AbstractPermissionProvider {

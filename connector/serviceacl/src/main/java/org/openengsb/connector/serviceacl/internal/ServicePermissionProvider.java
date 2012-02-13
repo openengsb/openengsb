@@ -17,10 +17,11 @@
 package org.openengsb.connector.serviceacl.internal;
 
 import org.openengsb.connector.serviceacl.ServicePermission;
-import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.common.AbstractPermissionProvider;
 
 public class ServicePermissionProvider extends AbstractPermissionProvider {
 
+    @SuppressWarnings("unchecked")
     public ServicePermissionProvider() {
         super(ServicePermission.class);
     }
