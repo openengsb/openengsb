@@ -102,4 +102,10 @@ public class ServicesHelperTest {
         List<String> runningServiceIds = serviceHelper.getRunningServiceIds();
         assertTrue(runningServiceIds.contains("dummyId"));
     }
+
+    @Test
+    public void testGetDomainProviderNames() {
+        List<String> domainProviderNames = serviceHelper.getDomainProviderNames();
+        assertTrue(domainProviderNames.contains("Dummy Name"));
+    }
 }
