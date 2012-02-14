@@ -153,7 +153,6 @@ public class ServicesHelper {
         List<ServiceReference> serviceReferences = osgiUtilsService.listServiceReferences(Domain.class);
         List<String> result = new ArrayList<String>();
         for (ServiceReference ref : serviceReferences) {
-            osgiUtilsService.getService(Domain.class, ref);
             result.add((String) ref.getProperty("id"));
         }
         return result;

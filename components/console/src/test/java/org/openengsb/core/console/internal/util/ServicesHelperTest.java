@@ -17,6 +17,7 @@
 
 package org.openengsb.core.console.internal.util;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,6 +37,7 @@ import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.osgi.framework.ServiceReference;
 
 public class ServicesHelperTest {
 
@@ -66,10 +68,21 @@ public class ServicesHelperTest {
         when(osgiServiceMock.listServices(DomainProvider.class)).thenAnswer(new Answer<List<DomainProvider>>() {
             @Override
             public List<DomainProvider> answer(InvocationOnMock invocationOnMock) throws Throwable {
-
                 return domainProviders;
             }
         });
+        final List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
+        ServiceReference serviceReferencesMock = mock(ServiceReference.class);
+        serviceReferences.add(serviceReferencesMock);
+        when(serviceReferencesMock.getProperty("id")).thenReturn("dummyId");
+
+        when(osgiServiceMock.listServiceReferences(Domain.class)).thenAnswer(new Answer<List<ServiceReference>>() {
+            @Override
+            public List<ServiceReference> answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return serviceReferences;
+            }
+        });
+
         WiringService wiringServiceMock = mock(WiringService.class);
         when(osgiServiceMock.getService(WiringService.class)).thenReturn(wiringServiceMock);
         when(wiringServiceMock.getDomainEndpoints(NullDomain.class, "*")).thenAnswer(new Answer<List<? extends
@@ -84,5 +97,9 @@ public class ServicesHelperTest {
         serviceHelper.setOsgiUtilsService(osgiServiceMock);
     }
 
-
+    @Test
+    public void testGetRunningServiceIds() throws Exception {
+        List<String> runningServiceIds = serviceHelper.getRunningServiceIds();
+        assertTrue(runningServiceIds.contains("dummyId"));
+    }
 }
