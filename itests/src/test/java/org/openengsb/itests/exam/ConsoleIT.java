@@ -52,7 +52,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         return probe;
     }
 
-    @Ignore
     @Test
     public void testToExecuteOpenEngSBInfoCommand() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -72,7 +71,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         assertTrue(contains(result, "Drools version", ""));
     }
 
-    @Ignore
     @Test
     public void testToExecuteOpenEngSBDomainInfoCommand() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -92,7 +90,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
                 "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
-    @Ignore
     @Test
     public void testToExecuteOpenEngSBServiceListCommand() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -118,7 +115,6 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
                 "This domain is provided as an example for all developers. It should not be used in production."));
     }
 
-    @Ignore
     @Test
     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
@@ -152,16 +148,10 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
         b.start();
 
         waitForDefaultConnectors();
-
-        String executeCommand = String.format("openengsb:service create AuditingDomain type:memoryauditing;id:testID");
-
+        System.out.println("starting  ");
+        String executeCommand = String.format("openengsb:service -f true create AuditingDomain type:memoryauditing " +
+            "id:testID attr:something");
         cs.execute(executeCommand);
-        PrintStream console = cs.getConsole();
-        console.print(0);
-        console.print("testID");
-        console.print("blub");
-        console.print("Y");
-
         cs.close();
 
         List<String> result = outputStreamHelper.getResult();

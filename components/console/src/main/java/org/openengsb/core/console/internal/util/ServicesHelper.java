@@ -162,7 +162,7 @@ public class ServicesHelper {
     /**
      * crate a service for the given domain, if force is true, input is not verified
      */
-    public void createService(String domainProviderName, boolean force, String attributes) {
+    public void createService(String domainProviderName, boolean force, Map<String, String> attributes) {
         // get domain provider Id
         String domainProviderId = "";
         List<DomainProvider> domainProvider = getDomainProvider();
@@ -172,16 +172,15 @@ public class ServicesHelper {
             }
         }
         // get the connector which should be created
-        Map<String, String> attributesFromInput = split(attributes);
-        ConnectorProvider connectorProvider = getConnectorToCreate(domainProviderId,
-            attributesFromInput.get(ServiceCommands.CONNECTOR_TYPE));
+        ConnectorProvider connectorProvider =
+            getConnectorToCreate(domainProviderId, attributes.get(ServiceCommands.CONNECTOR_TYPE));
 
         String id;
-        if (attributes == null || attributes.isEmpty() || !attributesFromInput.containsKey("id")) {
+        if (attributes.isEmpty() || !attributes.containsKey("id")) {
             OutputStreamFormater.printValue("Please enter an ID");
             id = readUserInput();
         } else {
-            id = attributesFromInput.get("id");
+            id = attributes.get("id");
         }
 
         ServiceDescriptor descriptor = connectorProvider.getDescriptor();
@@ -189,13 +188,14 @@ public class ServicesHelper {
             descriptor.getName().getString(Locale.getDefault())));
 
         //get attributes for connector
-        Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes(), attributesFromInput);
+        Map<String, String> attributeMap = getConnectorAttributes(descriptor.getAttributes(), attributes);
         Map<String, Object> properties = new HashMap<String, Object>();
 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
         ConnectorId idProvider = new ConnectorId(domainProviderId, connectorProvider.getId(), id);
         if (force) {
             serviceManager.forceCreate(idProvider, connectorDescription);
+            OutputStreamFormater.printValue("Connector successfully created");
         } else {
             OutputStreamFormater.printValue("Do you want to create the connector with the following attributes:", "");
             OutputStreamFormater.printValue("Connector ID", id);
@@ -215,21 +215,6 @@ public class ServicesHelper {
         }
     }
 
-    private Map<String, String> split(String attributes) {
-        Map<String, String> resultMap = new HashMap<String, String>();
-
-        String[] split = attributes.split(ServiceCommands.ATTRIBUTES_SEPARATOR);
-        for (String valueAndFields : split) {
-            String[] valueAndField = valueAndFields.split(ServiceCommands.VALUE_SEPARATOR);
-            if (valueAndField.length != 2) {
-                // TODO throw new exception
-            } else {
-                resultMap.put(valueAndField[0], valueAndField[1]);
-            }
-        }
-        return resultMap;
-    }
-
     private Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
                                                        Map<String, String> attributesFromInput) {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
@@ -239,8 +224,8 @@ public class ServicesHelper {
             String defaultValue = attributeDefinition.getDefaultValue().getString(Locale.getDefault());
 
             String userValue;
-            if (attributesFromInput.containsKey(fieldName)) {
-                userValue = attributesFromInput.get(fieldName);
+            if (attributesFromInput.containsKey(attributeDefinition.getId())) {
+                userValue = attributesFromInput.get(attributeDefinition.getId());
             } else {
                 OutputStreamFormater.printTabbedValues(9, String.format("\n%s", fieldName), String.format("%s (%s)",
                     description, defaultValue));
