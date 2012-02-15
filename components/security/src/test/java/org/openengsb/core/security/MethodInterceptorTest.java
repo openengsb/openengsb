@@ -22,9 +22,19 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.security.service.AccessDeniedException;
@@ -33,10 +43,6 @@ import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
@@ -48,6 +54,18 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     @Before
     public void setUp() throws Exception {
+        DefaultSecurityManager sm = new DefaultSecurityManager();
+        sm.setAuthenticator(new Authenticator() {
+            @Override
+            public AuthenticationInfo authenticate(AuthenticationToken authenticationToken)
+                throws AuthenticationException {
+                return new SimpleAuthenticationInfo(new SimplePrincipalCollection(authenticationToken.getPrincipal(),
+                    "openengsb"), authenticationToken.getCredentials());
+            }
+        });
+        SecurityUtils.setSecurityManager(sm);
+        ThreadContext.bind(sm);
+
         interceptor = new SecurityInterceptor();
         authorizer = mock(AuthorizationDomain.class);
         when(authorizer.checkAccess(eq("admin"), any(MethodInvocation.class))).thenReturn(Access.GRANTED);
@@ -78,8 +96,8 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     }
 
     private void authenticate(String user, String password) {
-        Authentication authentication =
-            new UsernamePasswordAuthenticationToken(user, password, new ArrayList<GrantedAuthority>());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Subject subject = SecurityUtils.getSubject();
+        subject.login(new UsernamePasswordToken(user, password));
+        System.out.println(subject.isAuthenticated());
     }
 }

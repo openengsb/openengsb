@@ -22,7 +22,6 @@ import java.util.concurrent.Executors;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityBundleActivator implements BundleActivator {
 
@@ -30,7 +29,6 @@ public class SecurityBundleActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
         executor.submit(new UserDataInitializer());
     }
 

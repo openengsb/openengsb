@@ -43,8 +43,6 @@ import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -86,12 +84,6 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
             wasCalled = true;
             return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         }
-    }
-
-    @Test
-    public void testCorrectContextHolderStrategy() throws Exception {
-        assertThat(SecurityContextHolder.getContextHolderStrategy().getClass().getSimpleName(),
-            is("InheritableThreadLocalSecurityContextHolderStrategy"));
     }
 
     @Test
@@ -165,7 +157,7 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
      * Ignored because security manager is commented in the moment.
      */
     @Ignore
-    @Test(expected = AccessDeniedException.class)
+    @Test(expected = Exception.class)
     public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
     }

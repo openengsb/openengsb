@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.common.util;
+package org.openengsb.core.security;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.shiro.util.ThreadContext;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.security.model.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * provides util-methods for security purposes
@@ -65,12 +65,12 @@ public final class SecurityUtils {
 
         @Override
         public ReturnType call() throws Exception {
-            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
+//            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             ContextHolder.get().setCurrentContextId(context);
             try {
                 return original.call();
             } finally {
-                SecurityContextHolder.clearContext();
+//                SecurityContextHolder.clearContext();
             }
         }
     }
@@ -86,23 +86,24 @@ public final class SecurityUtils {
 
         @Override
         public void run() {
-            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
+//            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             ContextHolder.get().setCurrentContextId(context);
             try {
                 original.run();
             } finally {
-                SecurityContextHolder.getContext().setAuthentication(null);
+//                SecurityContextHolder.getContext().setAuthentication(null);
             }
         }
 
     }
 
-    public static void bindAuthenticationToThread(Authentication authentication) {
-        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+    public static Object getAuthenticatedPrincipal() {
+        return ThreadContext.getSubject().getPrincipal();
     }
 
-    public static Authentication getCurrentThreadAuthentication() {
-        return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
+    @SuppressWarnings("unchecked")
+    public static List<Object> getAuthenticatedPrincipals() {
+        return ThreadContext.getSubject().getPrincipals().asList();
     }
 
     private SecurityUtils() {

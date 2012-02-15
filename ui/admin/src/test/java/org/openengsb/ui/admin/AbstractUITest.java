@@ -26,6 +26,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -90,6 +91,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected WiringService wiringService;
     protected ContextCurrentService contextCurrentService;
     protected UserDataManager userManager;
+    protected UsernamePasswordServiceImpl authConnector;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -168,7 +170,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
 
-        UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
+        authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticator", authConnector);
 
@@ -193,6 +195,12 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
         context.putBean("authorizer", instance);
+
+        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
+        WicketAuthenticator authenticator = new WicketAuthenticator();
+        authenticator.setAuthenticator(authConnector);
+        defaultWebSecurityManager.setAuthenticator(authenticator);
+        context.putBean("securityManager", defaultWebSecurityManager);
     }
 
 }

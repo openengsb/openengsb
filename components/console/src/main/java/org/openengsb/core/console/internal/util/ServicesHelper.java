@@ -40,7 +40,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
-import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.security.SecurityUtils;
 import org.osgi.framework.BundleContext;
 
 /**

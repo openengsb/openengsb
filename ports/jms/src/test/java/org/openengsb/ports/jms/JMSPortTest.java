@@ -89,13 +89,12 @@ import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.jms.support.JmsUtils;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -197,7 +196,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setup() {
         setupKeys();
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
         String num = UUID.randomUUID().toString();
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
         jmsTemplate = new JmsTemplate(connectionFactory);
@@ -317,7 +315,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                     if ("user".equals(user) && credentials.getValue().equals("password")) {
                         return new Authentication(user, credentials.toString());
                     }
-                    throw new BadCredentialsException("username and password did not match");
+                    throw new AuthenticationException("username and password did not match");
                 }
             });
         MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();

@@ -25,7 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.security.SecurityUtils;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class AuditingConfig {
