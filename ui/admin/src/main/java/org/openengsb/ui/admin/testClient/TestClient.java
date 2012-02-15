@@ -17,14 +17,17 @@
 
 package org.openengsb.ui.admin.testClient;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -56,6 +59,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.Constants;
@@ -65,10 +69,15 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.BeanDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.remote.MethodCallRequest;
+import org.openengsb.core.api.security.model.SecureRequest;
+import org.openengsb.core.api.security.model.UsernamePasswordAuthenticationInfo;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.ui.admin.basePage.BasePage;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
 import org.openengsb.ui.admin.methodArgumentPanel.MethodArgumentPanel;
@@ -113,8 +122,8 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
     private AjaxButton deleteButton;
-
     private AjaxButton submitButton;
+    private AjaxButton jsonButton;
 
     @SuppressWarnings("serial")
     private IModel<? extends List<? extends DomainProvider>> domainProvider =
@@ -202,7 +211,8 @@ public class TestClient extends BasePage {
         methodList.setOutputMarkupId(true);
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
-            protected void onUpdate(AjaxRequestTarget target) {
+            protected void onUpdate(AjaxRequestTarget target) {                        
+                
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }
@@ -231,6 +241,24 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+        
+        jsonButton = new IndicatingAjaxButton("jsonButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(feedbackPanel);
+                
+                displayJSONMessages();
+                
+                call.getArguments().clear();
+                argumentList.removeAll();
+
+                call.setMethod(null);
+                populateMethodList();
+
+                target.addComponent(methodList);
+                target.addComponent(argumentListContainer);
+            }
+        };
 
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
@@ -244,18 +272,21 @@ public class TestClient extends BasePage {
                     call.setService(service);
                     populateMethodList();
                     updateModifyButtons(service);
+                    jsonButton.setEnabled(true);
                 } catch (ClassCastException ex) {
                     LOGGER.info("clicked on not ServiceId node");
                     methodList.setChoices(new ArrayList<MethodId>());
                     editButton.setEnabled(false);
                     deleteButton.setEnabled(false);
                     submitButton.setEnabled(false);
+                    jsonButton.setEnabled(false);
                 }
                 target.addComponent(methodList);
                 target.addComponent(editButton);
                 target.addComponent(deleteButton);
                 target.addComponent(submitButton);
-                target.addComponent(feedbackPanel);                
+                target.addComponent(jsonButton);
+                target.addComponent(feedbackPanel);
             }
         };
         serviceList.setOutputMarkupId(true);
@@ -264,10 +295,15 @@ public class TestClient extends BasePage {
 
         submitButton.setOutputMarkupId(true);
         submitButton.setEnabled(false);
+        
+        jsonButton.setOutputMarkupId(true);
+        jsonButton.setEnabled(false);
+        
 
         form.add(submitButton);
         form.add(editButton);
         form.add(deleteButton);
+        form.add(jsonButton);
 
         return form;
     }
@@ -315,7 +351,7 @@ public class TestClient extends BasePage {
                         setResponsePage(new ConnectorEditorPage(getModelObject().getId(),
                             Constants.EXTERNAL_CONNECTOR_PROXY));
                     }
-                });
+                });            
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                     .getDescription())));
 
@@ -347,7 +383,145 @@ public class TestClient extends BasePage {
                 });
             }
         };
+    }   
+        
+    /**
+     * Returns the ID of the currently selected Service or null if none was selected
+     * @return the ID of the  currently selected Service or null if none was selected
+     */
+    private ServiceId fetchCurrentSelectService(){
+        return call.getService();
     }
+    
+    /**
+     * Returns the ID of the currently selected Method or null if none was selected
+     * @return the ID of the  currently selected Method or null if none was selected
+     */
+    private MethodId fetchCurrentSelectMethod(){
+        return call.getMethod(); 
+    }
+        
+    /**
+     * Returns a Standard MethodCall with of the selected Method
+     * @param methodId Id of the refered Method
+     * @return a Standard MethodCall with of the selected Method
+     */
+    private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId){
+        Class<?> []classes = methodId.getArgumentTypesAsClasses();
+        List classList = new ArrayList();
+        for(Class<?> clazz : classes) {
+            classList.add(clazz.getName());
+        }
+        return new org.openengsb.core.api.remote.MethodCall(methodId.getName(),call.getArgumentsAsArray(),classList);
+
+    }
+
+    /**
+     * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
+     * Returns this MethodCallRequest.
+     * @param serviceId Id of the refered Service
+     * @param methodId  Id of the refered Method
+     * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
+     */
+    private MethodCallRequest createMethodCallRequest(ServiceId serviceId, MethodId methodId){
+        org.openengsb.core.api.remote.MethodCall realMethodCall = createRealMethodCall(methodId);
+        realMethodCall.setMetaData(createMetaDataForMethodCallRequest(serviceId));
+        return new MethodCallRequest(realMethodCall,"randomCallId");
+    }
+    
+    /**
+     * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message 
+     * Returns this SecureRequest.
+     * @param serviceId Id of the refered Service
+     * @param methodId  Id of the refered Method
+     * @return a SecureRequest corresponding to the given ServiceId and MethodId
+     */
+    private SecureRequest createSecureRequest(ServiceId serviceId, MethodId methodId){
+        MethodCallRequest methodCallRequest = createMethodCallRequest(serviceId, methodId);
+        BeanDescription beanDescription = BeanDescription.fromObject(new UsernamePasswordAuthenticationInfo("admin", "password"));
+        return SecureRequest.create(methodCallRequest,beanDescription);
+    }
+    
+    /**
+     * create nessecary MetaData for the Json Message
+     * @param serviceId to fetch the context Data of the message
+     * @return a Map with the nessecary MetaData for the Message
+     */
+    private Map<String,String> createMetaDataForMethodCallRequest(ServiceId serviceId){
+        Map<String,String> metaData = new HashMap<String,String>();
+        if(serviceId.getServiceId() == null){
+            metaData.put("serviceId", serviceId.getDomainName());
+        }else{
+            metaData.put("serviceId", serviceId.getServiceId());
+        }
+        metaData.put("contextId", this.getSessionContextId());
+        return metaData;
+    }
+    
+    /**
+     * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
+     * @param secureRequest the request to parse to a JsonString
+     * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
+     */
+    private String parseRequestToJsonString(SecureRequest secureRequest){
+        String jsonResult = "";
+        try {
+            jsonResult = JsonUtils.createObjectMapperWithIntroSpectors().configure(Feature.FAIL_ON_EMPTY_BEANS, false).writeValueAsString(secureRequest);            
+        } catch (IOException ex) {
+            handleExceptionWithFeedback(ex);
+            jsonResult = "";
+        }
+        return jsonResult;
+    }
+    
+    /**
+     * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
+     * TODO [Openengsb 1411] replace this with stable filter mechanism
+     * @param jsonMessage Message to filter
+     * @return the jsonMessage filtered from the unnessecary data
+     */
+    private String filterUnnessecaryArgumentsFromJsonMessage(String jsonMessage){
+        String typeToReplace = ",\"type\":";
+        while(jsonMessage.contains(typeToReplace)){
+            int posAfterType = jsonMessage.indexOf(typeToReplace)+typeToReplace.length();
+            String firstPart = jsonMessage.substring(0,jsonMessage.indexOf(typeToReplace));
+            String lastPart = jsonMessage.substring(posAfterType,jsonMessage.length());
+            
+            int endOfArgs = lastPart.indexOf("}]");
+            int firstSemicolon = lastPart.indexOf(",");
+            
+            if(firstSemicolon < endOfArgs){
+                lastPart = lastPart.substring(lastPart.indexOf(","), lastPart.length());
+            }else{
+                lastPart = lastPart.substring(lastPart.indexOf("}]"), lastPart.length());
+            }
+            jsonMessage = firstPart + lastPart;
+        }
+        jsonMessage = jsonMessage.replaceAll(",\"processId\":null,\"origin\":null", "");
+        return jsonMessage;
+    }
+    
+    /**
+     * Displays the corresponding message to the currently selected Method of the currently active Service in the "ServiceTree"
+     */
+    private void displayJSONMessages(){   
+        ServiceId serviceId = fetchCurrentSelectService();
+        MethodId methodId = fetchCurrentSelectMethod();      
+        if(serviceId == null){
+            String serviceNotSet = new StringResourceModel("json.view.ServiceNotSet", this, null).getString();
+            info(serviceNotSet);
+            return;
+        }        
+        if(methodId == null){
+            String methodNotSet = new StringResourceModel("json.view.MethodNotSet", this, null).getString();
+            info(methodNotSet);
+            return;
+        }       
+        String jsonResult = parseRequestToJsonString(createSecureRequest(serviceId, methodId));
+        String jsonPrefix = new StringResourceModel("json.view.MessagePrefix", this, null).getString();
+        jsonResult = filterUnnessecaryArgumentsFromJsonMessage(jsonResult);
+        info(String.format("%s %s", jsonPrefix, jsonResult));
+    }   
 
     public TestClient(ServiceId jumpToService) {
         this();
@@ -434,7 +608,18 @@ public class TestClient extends BasePage {
         }
     }
 
-    protected void performCall() {
+    private Method getMethodOfService(Object service, MethodId methodId) throws NoSuchMethodException{
+        Method method;
+        if (methodId == null) {
+            String string = new StringResourceModel("serviceError", this, null).getString();
+            error(string);
+            return null;
+        }
+        method = service.getClass().getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+        return method;
+    }
+    
+    protected void performCall() {  
         Object service;
         try {
             service = getService(call.getService());
@@ -442,22 +627,20 @@ public class TestClient extends BasePage {
             handleExceptionWithFeedback(e1);
             return;
         }
-        MethodId mid = call.getMethod();
-        Method m;
-        if (mid == null) {
-            String s = new StringResourceModel("serviceError", this, null).getString();
-            error(s);
+        Method method;
+        try {
+            method = getMethodOfService(service,call.getMethod());
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException(ex);
+        }    
+        if(method == null){
             return;
         }
+        
         try {
-            m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-        }
-        try {
-            Object result = m.invoke(service, call.getArgumentsAsArray());
+            Object result = method.invoke(service, call.getArgumentsAsArray());
             info("Methodcall called successfully");
-            Class<?> returnType = m.getReturnType();
+            Class<?> returnType = method.getReturnType();
             if (returnType.equals(void.class)) {
                 return;
             }
