@@ -101,7 +101,7 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         taskOverviewPage = taskOverviewPage.getAnchorByText("Task-Overview").click();
         HtmlTable table = taskOverviewPage.getFirstByXPath("//table");
         assertTrue(table != null);
-        assertEquals(4, table.getRowCount());
+        assertEquals("Not all tasks found on page", 4, table.getRowCount());
         HtmlTableRow headerRow = table.getRow(0);
         assertTrue(headerRow.asText().contains("TaskId"));
         HtmlTableRow actionsRow = table.getRow(1);
