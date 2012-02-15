@@ -106,7 +106,6 @@ public class ServiceCommands extends OsgiCommandSupport {
         return resultMap;
     }
 
-
     public ServicesHelper getServiceHelper() {
         return serviceHelper;
     }
@@ -114,4 +113,6 @@ public class ServiceCommands extends OsgiCommandSupport {
     public void setServiceHelper(ServicesHelper serviceHelper) {
         this.serviceHelper = serviceHelper;
     }
+
+
 }

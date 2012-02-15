@@ -63,7 +63,7 @@ public class ServicesHelper {
     public void init() {
         this.osgiUtilsService = new DefaultOsgiUtilsService();
         this.osgiUtilsService.setBundleContext(bundleContext);
-        serviceManager = osgiUtilsService.getService(org.openengsb.core.api.ConnectorManager.class);
+        serviceManager = osgiUtilsService.getService(ConnectorManager.class);
         CommandProcessor commandProcessor = osgiUtilsService
             .getService(org.apache.felix.service.command.CommandProcessor.class);
         CommandSession commandSession = commandProcessor.createSession(System.in, System.err, System.out);
@@ -214,7 +214,7 @@ public class ServicesHelper {
         }
     }
 
-    private Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
+    protected Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
                                                        Map<String, String> attributesFromInput) {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
