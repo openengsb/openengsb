@@ -117,7 +117,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, *</Import-Package>
             <!--
               This import is required since the WS package relies heavily on reflection 
               and loading of calling classes at runtime

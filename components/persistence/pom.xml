@@ -85,7 +85,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, *</Import-Package>
             <!--
               The persistence service needs to load the stored classes to reaply the stored objects
               to the right classes again.
