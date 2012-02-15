@@ -225,6 +225,11 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <type>bundle</type>
+    </dependency>
   </dependencies>
 
 </project>

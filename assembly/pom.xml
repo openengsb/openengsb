@@ -80,6 +80,13 @@
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-features</artifactId>
+      <version>${shiro.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
   </dependencies>
 
   <build>
@@ -166,6 +173,7 @@
               <descriptors>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
                 <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>
@@ -182,6 +190,8 @@
                 <feature>transaction</feature>
                 <feature>jpa</feature>
                 <feature>jndi</feature>
+                <feature>shiro-core</feature>
+                <feature>shiro-web</feature>
                 <!-- OpenEngSB Remoting -->
                 <feature>openengsb-ports-jms</feature>
                 <feature>openengsb-ports-ws</feature>

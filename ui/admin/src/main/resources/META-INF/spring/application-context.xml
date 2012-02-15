@@ -68,14 +68,29 @@
     filter="(location.root=authentication-root)" />
 
   <osgi:reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+ 
+ 
+  <bean id="shiroFilterFactory" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <property name="securityManager" ref="securityManager" />
+  </bean>
 
-  <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory" init-method="register"
-    lazy-init="false">
+  <bean id="securityFilter" class="org.openengsb.ui.common.util.DelegatingSecurityFilterFactory"
+    init-method="register" lazy-init="false">
     <constructor-arg name="bundleContext" ref="bundleContext" />
     <constructor-arg name="applicationName" value="openengsb" />
     <constructor-arg name="priority" value="2" />
-    <property name="securityFilterChain" ref="springSecurityFilterChain" />
+    <property name="securityFilterChain" ref="shiroFilterFactory" />
   </bean>
+
+  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <property name="authenticator">
+      <bean class="org.openengsb.ui.admin.WicketAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
   <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
 

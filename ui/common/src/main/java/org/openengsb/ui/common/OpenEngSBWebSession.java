@@ -17,17 +17,16 @@
 
 package org.openengsb.ui.common;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
-import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Common class of sessions for use in OpenEngSB and client applications. It enforces authentication and builds the
@@ -50,14 +49,6 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
         }
     }
 
-    protected abstract AuthenticationDomain getAuthenticationManager();
-
-    protected void ensureDependenciesNotNull() {
-        if (getAuthenticationManager() == null) {
-            throw new IllegalStateException("AdminSession requires an authenticationManager.");
-        }
-    }
-
     protected void injectDependencies() {
         InjectorHolder.getInjector().inject(this, getClass());
     }
@@ -65,9 +56,10 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         try {
-            getAuthenticationManager().authenticate(username, new Password(password));
+            SecurityUtils.getSubject().login(new UsernamePasswordToken(username, password));
         } catch (AuthenticationException e) {
-            LOGGER.warn("unable to authenticate user", e);
+            LOGGER.error("Authentication failed");
+            LOGGER.info("Reason: ", e);
             return false;
         }
         return true;
@@ -76,7 +68,8 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public void signOut() {
         super.signOut();
-        SecurityContextHolder.clearContext();
+        SecurityUtils.getSubject().logout();
+        // SecurityContextHolder.clearContext();
     }
 
     @Override
