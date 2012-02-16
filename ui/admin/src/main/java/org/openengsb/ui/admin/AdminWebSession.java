@@ -19,20 +19,17 @@ package org.openengsb.ui.admin;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.wicket.Request;
 import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
 public class AdminWebSession extends OpenEngSBWebSession {
-
-    @PaxWicketBean(name = "securityManager")
-    private SecurityManager securityManager;
     
     public AdminWebSession(Request request) {
         super(request);
         injectDependencies();
-        SecurityUtils.setSecurityManager(securityManager);
     }
 
 }

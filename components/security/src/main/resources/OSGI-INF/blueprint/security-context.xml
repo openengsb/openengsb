@@ -124,7 +124,7 @@
     filter="(location.root=authentication-root)" activation="lazy" availability="optional" />
 
   <bean id="securityManager"
-    class="org.openengsb.core.security.internal.OpenEngSBSecurityManager">
+    class="org.openengsb.core.security.internal.OpenEngSBSecurityManager" init-method="init">
     <property name="authenticator">
       <bean
         class="org.openengsb.core.security.internal.OpenEngSBShiroAuthenticator">

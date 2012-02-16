@@ -62,7 +62,7 @@ public class ServiceListPanel extends Panel {
         }
     }
 
-    @PaxWicketBean
+    @PaxWicketBean(name="osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
     private class ServiceEntryListModel extends LoadableDetachableModel<List<ServiceEntry>> {

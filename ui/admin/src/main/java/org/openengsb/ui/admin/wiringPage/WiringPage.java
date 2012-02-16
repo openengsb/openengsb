@@ -76,16 +76,16 @@ import org.slf4j.LoggerFactory;
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private DropDownChoice<Class<? extends Domain>> domains;

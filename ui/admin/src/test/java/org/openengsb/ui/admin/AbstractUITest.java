@@ -58,6 +58,7 @@ import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
+import org.openengsb.core.security.internal.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;

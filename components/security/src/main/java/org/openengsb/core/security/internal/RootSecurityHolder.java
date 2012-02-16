@@ -45,7 +45,7 @@ public final class RootSecurityHolder {
     public static Subject getRootSubject() {
         return rootSubject;
     }
-    
+
     private RootSecurityHolder() {
     }
 }

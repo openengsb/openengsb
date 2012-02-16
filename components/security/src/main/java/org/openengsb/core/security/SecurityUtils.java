@@ -19,19 +19,16 @@ package org.openengsb.core.security;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.common.util.ContextAwareCallable;
+import org.openengsb.core.security.internal.RootSecurityHolder;
 
 /**
  * provides util-methods for security purposes
  */
 public final class SecurityUtils {
-
-    private static ExecutorService executor = Executors.newCachedThreadPool();
 
     /**
      * Executes the given task with root-permissions. Use with care.
@@ -40,35 +37,16 @@ public final class SecurityUtils {
      */
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
         throws ExecutionException {
-        // org.apache.shiro.SecurityUtils.getSubject().execute(callable)
-        Future<ReturnType> future = executor.submit(new RootCallable<ReturnType>(task));
-        try {
-            return future.get();
-        } catch (InterruptedException e) {
-            throw new ExecutionException(e);
-        }
-    }
-
-    static class RootCallable<ReturnType> implements Callable<ReturnType> {
-        private Callable<ReturnType> original;
-        private String context = ContextHolder.get().getCurrentContextId();
-
-        public RootCallable(Callable<ReturnType> original) {
-            this.original = original;
-        }
-
-        @Override
-        public ReturnType call() throws Exception {
-            ContextHolder.get().setCurrentContextId(context);
-            try {
-                return original.call();
-            } finally {
-            }
-        }
+        ContextAwareCallable<ReturnType> contextAwareCallable = new ContextAwareCallable<ReturnType>(task);
+        return RootSecurityHolder.getRootSubject().execute(contextAwareCallable);
     }
 
     public static Object getAuthenticatedPrincipal() {
-        return ThreadContext.getSubject().getPrincipal();
+        Subject subject = ThreadContext.getSubject();
+        if (subject == null) {
+            return null;
+        }
+        return subject.getPrincipal();
     }
 
     @SuppressWarnings("unchecked")
