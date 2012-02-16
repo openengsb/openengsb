@@ -14,7 +14,217 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ body {
+ 	font-family: Tahoma, Helvetica, sans-serif,"Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,Verdana;
+ 	}
+ 	
+th {
+	background: url("../images/th_seperator.png");
+	}
+td {
+	font-color: #566672;
+	}
 
+.hidden {
+	display:none;
+} 
+.inline {
+ 	display: inline;
+ 	}
+
+.smalltext {
+    font-size: 0.9em;
+    line-height: 1.5em;
+}
+
+.ligthBlue {
+	color: #a3b2bf;
+}
+.positionRelative {
+	position: relative;
+}
+.topH1 {
+    color: #FFFFFF;
+    font-size: 1.8em;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+}
+.topH2{
+    font-size: 1.3em;
+    font-weight: lighter;
+    line-height: 1.3em;
+    color: #DFEDF8;
+}
+.logoSmallSize {
+	width: 100px;
+	height: 65px;
+}
+.logoMediumSize {
+	width: 154px;
+	height: 100px;
+}
+
+.menuItem {
+	background-image: url("../images/menu_background.png");
+	width: 150px;
+	height: 32px;
+}
+
+.menuContainer {
+	background: url("/openengsb/images/menu_background.png");
+	width: 227px;
+}	
+
+.menuContainer ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.menuContainer li{
+	height: 25px;
+	margin: 0 0 10px 0;
+}
+
+.menuContainer li a{
+    color: #6D6D6F;
+    display: block;
+    font-size: 1.0em;
+    line-height: 0;
+    padding: 18px 0 10px 60px;
+    text-decoration: none;
+    width: 168px;
+}
+
+.menuContainer li a:hover{
+	background-color: #FFFFFF
+   	}
+
+.menuContainer .seperator {
+	background: url("/openengsb/images/menu_seperator.png") no-repeat center top;
+    height: 15px;
+    }
+
+.menuIcon {
+    height: 40px;
+    padding-left: 10px;
+    width: 40px;
+    display: inline;
+	
+}
+
+.header {
+	background-color: #56738C;
+	height: 85px;
+	}
+	
+#topHeader{
+	position:relative;
+	min-width: 550px;
+	}
+
+#topMenu {
+	}
+
+#topMenuContainer{
+	margin: 0px 40px 0px 0px;
+}
+
+#topMenuContainer div.tmc-left, div.tmc-center, div.tmc-right, div.tmc-seperator, #topMenuContainer a, span{
+	height: 29px;
+	display: inline;
+	float: left;
+	line-height: 25px;
+	color: white;
+	text-decoration: none;
+	font-size: 0.9em;
+}
+
+#topMenuContainer a, span{
+	padding: 0px 8px 0px 8px;
+}
+
+#topMenuContainer div.tmc-left {
+	background-image: url("/openengsb/images/topmenu_background_left.png");
+	width: 14px;
+}
+#topMenuContainer div.tmc-center {
+	background-image: url("/openengsb/images/topmenu_background_center.png");
+}
+#topMenuContainer div.tmc-right {
+	background-image: url("/openengsb/images/topmenu_background_right.png");
+	width: 14px;
+	margin: 0px; 0px; 5px; 0px;
+}
+#topMenuContainer div.tmc-seperator {
+	background-image: url("/openengsb/images/topmenu_background_seperator.png");
+	width: 2px;
+}
+
+#topLogo{
+	position: relative;
+	top: 10px;
+	left: 20px;
+	height: *;
+}
+
+#topHeadline {
+    left: 220px;
+    position: absolute;
+    top: 20px;
+}
+
+#tabBar {
+	background-image: url("/openengsb/images/tabbar_background.png");
+	height: 40px;
+}
+
+#loginMaskContainer {
+	border: 2px solid #56738C;
+	width: 700px;
+	height: 220px;
+	position:absolute; 
+	top: 50%;
+	left: 50%; 
+	margin-left:-350px; 
+	margin-top: -110px;
+}
+#loginMaskContainer .background{
+	background: #56738C;
+	height: 100%;
+}
+#loginMaskContainer .unit{
+	padding: 10px;
+	height: 100%;
+}
+#loginMaskContainer input[type="text"], input[type="password"]{
+	height:25px;
+	width:300px;
+	border: 1px solid ##56738C;
+	color:#56738C;
+}
+#loginMaskContainer form {
+	margin: 20px 0px 0px 0px;
+}
+#loginMaskContainer label {
+	font-size: 0.8em;
+}
+#loginMaskContainer .headerLabel {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
+#menu{
+}
+
+.mainArea{
+	padding: 15px 15px 15px 15px;
+	
+}
+
+/*
 body {
 	font-family: Calibri, Verdana, Tahoma, Arial;
 	font-size: 0.9em;
@@ -40,6 +250,10 @@ h2 {
 
 h3 {
 	font-size: 1.1em;
+}
+
+h4 {
+	font-size: 0.9em;
 }
 
 hr {
@@ -161,8 +375,9 @@ div.tabRowContent {
 	margin: 4px;
 	padding: 4px;
 }
-
+*/
 /* TAB PANEL STYLES */
+/*
 .tabpanel div.tab-row ul {
 	height: 20px;
 	margin: 0;
@@ -577,9 +792,9 @@ table.OverviewPanel td.filter-td select {
 	display: block;
 	width: 250px;
 }
-
+*/
 /* SERVICE LIST PANEL COLORS */
-
+/*
 #aliveStateOffline {
 color: red;
 }
@@ -591,3 +806,4 @@ color: green;
 #aliveStateOther {
 color: orange;
 }
+*/
