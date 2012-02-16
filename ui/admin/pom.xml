@@ -212,10 +212,6 @@
       <artifactId>org.ops4j.pax.wicket.test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb.forks</groupId>
-      <artifactId>org.odlabs.wiquery</artifactId>
-    </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
