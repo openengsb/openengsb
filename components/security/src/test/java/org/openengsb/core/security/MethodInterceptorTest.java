@@ -22,6 +22,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.Callable;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -31,13 +33,13 @@ import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.security.service.AccessDeniedException;
+import org.openengsb.core.security.internal.RootSecurityHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -54,6 +56,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     @Before
     public void setUp() throws Exception {
+        RootSecurityHolder.init();
         DefaultSecurityManager sm = new DefaultSecurityManager();
         sm.setAuthenticator(new Authenticator() {
             @Override
@@ -93,6 +96,18 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
         authenticate("admin", "adminpw");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
         service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    @Test
+    public void testInvokeMethodAsRoot() throws Exception {
+        authenticate(DEFAULT_USER, "password");
+        RootSecurityHolder.getRootSubject().execute(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service2.getTheAnswerToLifeTheUniverseAndEverything();
+                return null;
+            }
+        });
     }
 
     private void authenticate(String user, String password) {

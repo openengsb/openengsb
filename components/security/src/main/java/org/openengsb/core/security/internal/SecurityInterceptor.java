@@ -20,7 +20,6 @@ package org.openengsb.core.security.internal;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.openengsb.core.api.security.service.AccessDeniedException;
@@ -55,10 +54,11 @@ public class SecurityInterceptor implements MethodInterceptor {
             throw new AccessDeniedException("no authentication was found in context");
         }
 
-//        if (subject.getPrincipal() instanceof BundleAuthenticationToken) {
-//            // this action is executed in a root-context
-//            return mi.proceed();
-//        }
+        if (subject.getPrincipal().getClass().equals(Object.class)) {
+            // this action is executed in a root-context
+            return mi.proceed();
+        }
+
         String username = (String) subject.getPrincipal();
         Access decisionResult = authorizer.checkAccess(username, mi);
         if (decisionResult != Access.GRANTED) {

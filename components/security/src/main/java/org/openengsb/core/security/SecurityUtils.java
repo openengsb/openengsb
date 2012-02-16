@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.util.ThreadState;
 import org.openengsb.core.api.context.ContextHolder;
 
 /**
@@ -40,19 +41,13 @@ public final class SecurityUtils {
      */
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
         throws ExecutionException {
+        // org.apache.shiro.SecurityUtils.getSubject().execute(callable)
         Future<ReturnType> future = executor.submit(new RootCallable<ReturnType>(task));
         try {
             return future.get();
         } catch (InterruptedException e) {
             throw new ExecutionException(e);
         }
-    }
-
-    /**
-     * Executes the given task with root-permissions. Use with care.
-     */
-    public static void executeWithSystemPermissions(Runnable task) {
-        executor.execute(new RootRunnable(task));
     }
 
     static class RootCallable<ReturnType> implements Callable<ReturnType> {
@@ -65,36 +60,14 @@ public final class SecurityUtils {
 
         @Override
         public ReturnType call() throws Exception {
-//            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
+            // SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             ContextHolder.get().setCurrentContextId(context);
             try {
                 return original.call();
             } finally {
-//                SecurityContextHolder.clearContext();
+                // SecurityContextHolder.clearContext();
             }
         }
-    }
-
-    static class RootRunnable implements Runnable {
-
-        private Runnable original;
-        private String context = ContextHolder.get().getCurrentContextId();
-
-        public RootRunnable(Runnable original) {
-            this.original = original;
-        }
-
-        @Override
-        public void run() {
-//            SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
-            ContextHolder.get().setCurrentContextId(context);
-            try {
-                original.run();
-            } finally {
-//                SecurityContextHolder.getContext().setAuthentication(null);
-            }
-        }
-
     }
 
     public static Object getAuthenticatedPrincipal() {
