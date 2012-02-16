@@ -194,13 +194,13 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         long id = service.startFlow("ci");
         service.processEvent(new Event() {
             @Override
-            public String getType() {
+            public String returnType() {
                 return "BuildSuccess";
             }
         });
         service.processEvent(new Event() {
             @Override
-            public String getType() {
+            public String returnType() {
                 return "TestSuccess";
             }
         });

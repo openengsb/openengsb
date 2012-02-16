@@ -280,21 +280,7 @@
       </plugin>
       <plugin>
         <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
-        <!--<version>${cxf.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-simple</artifactId>
-            <version>${cxf.version}</version>
-          </dependency>
-        </dependencies>
-		-->
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>        
         <executions>
           <execution>
             <id>DomainEventsWsdl</id>
@@ -375,6 +361,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>
-

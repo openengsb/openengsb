@@ -116,7 +116,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
             if (processIds.isEmpty()) {
                 for (ProcessInstance p : session.getProcessInstances()) {
-                    p.signalEvent(event.getType(), event);
+                    p.signalEvent(event.returnType(), event);
                 }
             } else {
                 signalEventToProcesses(event, session, processIds);
@@ -137,7 +137,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             if (processInstance == null) {
                 LOGGER.warn("processInstance with ID {} not found, maybe it already terminated", pid);
             } else {
-                processInstance.signalEvent(event.getType(), event);
+                processInstance.signalEvent(event.returnType(), event);
             }
         }
     }

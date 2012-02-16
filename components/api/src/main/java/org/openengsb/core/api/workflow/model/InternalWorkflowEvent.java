@@ -46,11 +46,11 @@ public class InternalWorkflowEvent extends Event {
     }
 
     @Override
-    public String getType() {
+    public String returnType() {
         if (type != null) {
             return type;
         } else {
-            return super.getType();
+            return super.returnType();
         }
     }
 

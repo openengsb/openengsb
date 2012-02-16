@@ -51,7 +51,7 @@ public class Event {
      * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
      * name
      */
-    public String getType() {
+    public String returnType() {
         return this.getClass().getSimpleName();
     }
 
