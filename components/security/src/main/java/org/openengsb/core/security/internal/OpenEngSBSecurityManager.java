@@ -14,21 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.openengsb.core.security.internal.SimpleMethodInvocation;
+import java.util.Collection;
 
-public final class MethodInvocationUtils {
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 
-    public static MethodInvocation create(Object object, String methodName) {
-        return new SimpleMethodInvocation(object, methodName);
+public class OpenEngSBSecurityManager extends DefaultWebSecurityManager {
+
+    public OpenEngSBSecurityManager() {
+        super();
     }
 
-    public static MethodInvocation create(Object object, String methodName, Object... objects) {
-        return new SimpleMethodInvocation(object, methodName, objects);
+    public OpenEngSBSecurityManager(Collection<Realm> realms) {
+        super(realms);
+    }
+
+    public OpenEngSBSecurityManager(Realm singleRealm) {
+        super(singleRealm);
     }
     
-    private MethodInvocationUtils() {
+    public void init() {
+        SecurityUtils.setSecurityManager(this);
     }
+
 }

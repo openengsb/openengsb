@@ -19,12 +19,12 @@ package org.openengsb.ui.common;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
-import org.mockito.Mockito;
+import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.security.OpenEngSBAuthenticationToken;
 import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         try {
-            SecurityUtils.getSubject().login(new UsernamePasswordToken(username, password));
+            SecurityUtils.getSubject().login(new OpenEngSBAuthenticationToken(username, new Password(password)));
         } catch (AuthenticationException e) {
             LOGGER.error("Authentication failed");
             LOGGER.info("Reason: ", e);

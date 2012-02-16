@@ -214,6 +214,11 @@
       <artifactId>shiro-core</artifactId>
       <type>bundle</type>
     </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <type>bundle</type>
+    </dependency>
   </dependencies>
 
 </project>

@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.shiro.util.ThreadContext;
-import org.apache.shiro.util.ThreadState;
 import org.openengsb.core.api.context.ContextHolder;
 
 /**
@@ -60,12 +59,10 @@ public final class SecurityUtils {
 
         @Override
         public ReturnType call() throws Exception {
-            // SecurityContextHolder.getContext().setAuthentication(new BundleAuthenticationToken("", ""));
             ContextHolder.get().setCurrentContextId(context);
             try {
                 return original.call();
             } finally {
-                // SecurityContextHolder.clearContext();
             }
         }
     }

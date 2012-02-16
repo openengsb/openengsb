@@ -119,4 +119,25 @@
     <bean class="org.openengsb.core.security.internal.RootPermissionProvider" />
   </service>
 
+
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" activation="lazy" availability="optional" />
+
+  <bean id="securityManager"
+    class="org.openengsb.core.security.internal.OpenEngSBSecurityManager">
+    <property name="authenticator">
+      <bean
+        class="org.openengsb.core.security.internal.OpenEngSBShiroAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
+
+  <service ref="securityManager">
+    <interfaces>
+      <value>org.apache.shiro.mgt.SecurityManager</value>
+      <value>org.apache.shiro.web.mgt.WebSecurityManager</value>
+    </interfaces>
+  </service>
+
 </blueprint>

@@ -16,36 +16,32 @@
  */
 package org.openengsb.core.security.internal;
 
+import org.apache.shiro.authc.AbstractAuthenticator;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.support.DefaultSubjectContext;
+import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.api.security.model.Authentication;
+import org.openengsb.domain.authentication.AuthenticationDomain;
 
-public final class RootSecurityHolder {
+public class OpenEngSBShiroAuthenticator extends AbstractAuthenticator {
 
-    private static Subject rootSubject;
+    private AuthenticationDomain authenticator;
 
-    public static void init() {
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-        defaultSecurityManager.setAuthenticator(new Authenticator() {
-            @Override
-            public AuthenticationInfo authenticate(AuthenticationToken authenticationToken)
-                throws AuthenticationException {
-                return new SimpleAuthenticationInfo(new Object(), null, "openengsb");
-            }
-        });
-        Subject subject = defaultSecurityManager.createSubject(new DefaultSubjectContext());
-        rootSubject = defaultSecurityManager.login(subject, null);
+    @Override
+    protected AuthenticationInfo doAuthenticate(AuthenticationToken token) throws AuthenticationException {
+        try {
+            Authentication authenticate =
+                authenticator.authenticate(token.getPrincipal().toString(), (Credentials) token.getCredentials());
+            return new SimpleAuthenticationInfo(authenticate.getUsername(), authenticate.getCredentials(),
+                "openengsb");
+        } catch (org.openengsb.domain.authentication.AuthenticationException e) {
+            throw new AuthenticationException(e);
+        }
     }
 
-    public static Subject getRootSubject() {
-        return rootSubject;
-    }
-    
-    private RootSecurityHolder() {
+    public void setAuthenticator(AuthenticationDomain authenticator) {
+        this.authenticator = authenticator;
     }
 }

@@ -197,7 +197,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("authorizer", instance);
 
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        WicketAuthenticator authenticator = new WicketAuthenticator();
+        OpenEngSBShiroAuthenticator authenticator = new OpenEngSBShiroAuthenticator();
         authenticator.setAuthenticator(authConnector);
         defaultWebSecurityManager.setAuthenticator(authenticator);
         context.putBean("securityManager", defaultWebSecurityManager);

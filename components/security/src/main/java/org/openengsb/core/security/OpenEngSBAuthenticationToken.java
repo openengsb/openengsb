@@ -16,19 +16,32 @@
  */
 package org.openengsb.core.security;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.openengsb.core.security.internal.SimpleMethodInvocation;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.openengsb.core.api.security.Credentials;
 
-public final class MethodInvocationUtils {
+public class OpenEngSBAuthenticationToken implements AuthenticationToken {
 
-    public static MethodInvocation create(Object object, String methodName) {
-        return new SimpleMethodInvocation(object, methodName);
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3909132403539984150L;
+
+    private String username;
+    private Credentials credentials;
+
+    public OpenEngSBAuthenticationToken(String username, Credentials credentials) {
+        this.username = username;
+        this.credentials = credentials;
     }
 
-    public static MethodInvocation create(Object object, String methodName, Object... objects) {
-        return new SimpleMethodInvocation(object, methodName, objects);
+    @Override
+    public Object getPrincipal() {
+        return username;
     }
-    
-    private MethodInvocationUtils() {
+
+    @Override
+    public Object getCredentials() {
+        return credentials;
     }
+
 }
