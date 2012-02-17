@@ -25,7 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.security.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.auditing.AuditingDomain;
 
 public class AuditingConfig {
@@ -38,7 +38,7 @@ public class AuditingConfig {
 
     public void init() {
         try {
-            SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+            SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     ruleManager.addImport(AuditingDomain.class.getCanonicalName());

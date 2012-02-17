@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
-import org.openengsb.core.security.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -51,7 +51,7 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
 
     @After
     public void tearDown() throws Exception {
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 userManager.deleteUser("test");
@@ -62,7 +62,7 @@ public class UserManagementIT extends AbstractPreConfiguredExamTestHelper {
 
     @Test
     public void createUserAndLogin_shouldAuthenticateSuccessful() throws Exception {
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 userManager.createUser("test");

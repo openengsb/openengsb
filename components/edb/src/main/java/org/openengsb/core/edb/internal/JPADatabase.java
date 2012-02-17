@@ -45,7 +45,7 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
-import org.openengsb.core.security.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -378,7 +378,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      */
     private String getAuthenticatedUser() {
         // if JPADatabase is called via integration tests
-        String username = (String) SecurityUtils.getAuthenticatedPrincipal();
+        String username = (String) SecurityContext.getAuthenticatedPrincipal();
         if (username == null) {
             return "testuser";
         }

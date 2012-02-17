@@ -111,7 +111,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     public void testInvokeMethodAsRoot() throws Exception {
         authenticate(DEFAULT_USER, "password");
         ContextHolder.get().setCurrentContextId("foo");
-        org.openengsb.core.security.SecurityUtils.executeWithSystemPermissions(new Callable<Void>() {
+        org.openengsb.core.security.SecurityContext.executeWithSystemPermissions(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 service2.getTheAnswerToLifeTheUniverseAndEverything();

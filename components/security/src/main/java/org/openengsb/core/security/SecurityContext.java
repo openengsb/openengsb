@@ -28,7 +28,7 @@ import org.openengsb.core.security.internal.RootSecurityHolder;
 /**
  * provides util-methods for security purposes
  */
-public final class SecurityUtils {
+public final class SecurityContext {
 
     /**
      * Executes the given task with root-permissions. Use with care.
@@ -54,6 +54,6 @@ public final class SecurityUtils {
         return ThreadContext.getSubject().getPrincipals().asList();
     }
 
-    private SecurityUtils() {
+    private SecurityContext() {
     }
 }
