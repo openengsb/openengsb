@@ -17,11 +17,11 @@
 
 package org.openengsb.core.security;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -38,7 +38,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.concurrent.SubjectAwareExecutorService;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -47,7 +46,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.service.AccessDeniedException;
-import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.security.internal.RootSecurityHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
@@ -132,8 +130,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
                 return null;
             }
         };
-        ExecutorService executor =
-            ThreadLocalUtil.contextAwareExecutor(new SubjectAwareExecutorService(Executors.newSingleThreadExecutor()));
+        ExecutorService executor = SecurityContext.getSecurityContextAwareExecutor(Executors.newSingleThreadExecutor());
 
         // exec the task as admin
         authenticate("admin", "adminpw");

@@ -19,16 +19,48 @@ package org.openengsb.core.security;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.concurrent.SubjectAwareExecutorService;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.util.ContextAwareCallable;
+import org.openengsb.core.common.util.ContextAwareRunnable;
+import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.security.internal.RootSecurityHolder;
 
 /**
  * provides util-methods for security purposes
  */
 public final class SecurityContext {
+
+    public static void login(String username, Credentials credentials) {
+        OpenEngSBAuthenticationToken token = new OpenEngSBAuthenticationToken(username, credentials);
+        SecurityUtils.getSubject().login(token);
+    }
+
+    public static void logout() {
+        Subject subject = ThreadContext.getSubject();
+        if (subject == null) {
+            return;
+        }
+        subject.logout();
+    }
+
+    public static Object getAuthenticatedPrincipal() {
+        Subject subject = ThreadContext.getSubject();
+        if (subject == null) {
+            return null;
+        }
+        return subject.getPrincipal();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Object> getAllAuthenticatedPrincipals() {
+        return ThreadContext.getSubject().getPrincipals().asList();
+    }
 
     /**
      * Executes the given task with root-permissions. Use with care.
@@ -41,17 +73,17 @@ public final class SecurityContext {
         return RootSecurityHolder.getRootSubject().execute(contextAwareCallable);
     }
 
-    public static Object getAuthenticatedPrincipal() {
-        Subject subject = ThreadContext.getSubject();
-        if (subject == null) {
-            return null;
-        }
-        return subject.getPrincipal();
+    public static ExecutorService getSecurityContextAwareExecutor(ExecutorService original) {
+        SubjectAwareExecutorService subjectAwareExecutor = new SubjectAwareExecutorService(original);
+        return ThreadLocalUtil.contextAwareExecutor(subjectAwareExecutor);
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<Object> getAuthenticatedPrincipals() {
-        return ThreadContext.getSubject().getPrincipals().asList();
+    /**
+     * Executes the given task with root-permissions. Use with care.
+     */
+    public static void executeWithSystemPermissions(Runnable task) {
+        ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
+        RootSecurityHolder.getRootSubject().execute(contextAwaretask);
     }
 
     private SecurityContext() {
