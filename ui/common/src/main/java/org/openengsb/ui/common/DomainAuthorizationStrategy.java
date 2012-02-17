@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
@@ -29,6 +28,7 @@ import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
@@ -103,7 +103,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
 
     private static String getAuthenticatedUser() {
         // return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
-        Object principal = SecurityUtils.getSubject().getPrincipal();
+        Object principal = SecurityContext.getAuthenticatedPrincipal();
         if (principal == null) {
             return null;
         }
