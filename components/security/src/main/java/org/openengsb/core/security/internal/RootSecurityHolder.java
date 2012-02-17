@@ -16,6 +16,8 @@
  */
 package org.openengsb.core.security.internal;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -27,7 +29,7 @@ import org.apache.shiro.subject.support.DefaultSubjectContext;
 
 public final class RootSecurityHolder {
 
-    private static Subject rootSubject;
+    private static AtomicReference<Subject> rootSubject = new AtomicReference<Subject>();
 
     public static void init() {
         DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
@@ -39,11 +41,23 @@ public final class RootSecurityHolder {
             }
         });
         Subject subject = defaultSecurityManager.createSubject(new DefaultSubjectContext());
-        rootSubject = defaultSecurityManager.login(subject, null);
+        synchronized (rootSubject) {
+            rootSubject.set(defaultSecurityManager.login(subject, null));
+            rootSubject.notifyAll();
+        }
     }
 
     public static Subject getRootSubject() {
-        return rootSubject;
+        synchronized (rootSubject) {
+            if (rootSubject.get() == null) {
+                try {
+                    rootSubject.wait();
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return rootSubject.get();
+        }
     }
 
     private RootSecurityHolder() {
