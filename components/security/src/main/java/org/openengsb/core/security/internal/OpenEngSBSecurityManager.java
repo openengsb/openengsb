@@ -19,10 +19,10 @@ package org.openengsb.core.security.internal;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 
-public class OpenEngSBSecurityManager extends DefaultWebSecurityManager {
+public class OpenEngSBSecurityManager extends DefaultSecurityManager {
 
     public OpenEngSBSecurityManager() {
         super();

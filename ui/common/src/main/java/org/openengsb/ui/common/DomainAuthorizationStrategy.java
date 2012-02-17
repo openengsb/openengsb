@@ -90,7 +90,7 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (!hasSecurityAnnotation(componentClass)) {
             return true;
         }
-        
+
         String user = getAuthenticatedUser();
         if (user == null) {
             return false;

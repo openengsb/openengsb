@@ -142,7 +142,7 @@ public class TestClientTest extends AbstractUITest {
 
     @Before
     public void setupTest() throws Exception {
-        context.putBean(bundleContext);
+        context.putBean("blueprintBundleContext", bundleContext);
         context.putBean(mock(ProxyFactory.class));
     }
 
@@ -174,6 +174,7 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
+        tester.debugComponentTrees();
         tester.assertComponent("methodCallForm:serviceList:i:5:nodeComponent:contentLink", AjaxLink.class);
         Label serviceLabel =
             (Label) tester
@@ -621,7 +622,7 @@ public class TestClientTest extends AbstractUITest {
 
         int count =
             ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                    .getDefaultModelObject()).size();
+                        .getDefaultModelObject()).size();
         // get all domains
         tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {

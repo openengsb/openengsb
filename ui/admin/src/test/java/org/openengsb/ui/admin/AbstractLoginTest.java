@@ -34,7 +34,7 @@ import org.junit.rules.MethodRule;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.connector.usernamepassword.Password;
+import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.test.rules.DedicatedThread;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
@@ -47,19 +47,12 @@ public abstract class AbstractLoginTest extends AbstractUITest {
     protected Subject mockSubject;
     private SubjectThreadState threadState;
 
-    @Before
-    public void attachSubject()
-    {
-
-    }
-
     /**
      * Clear Shiro's thread local so that any subject mocking we've done during the test does not pollute subsequent
      * tests.
      */
     @After
-    public void detachSubject()
-    {
+    public void detachSubject() {
         this.threadState.clear();
     }
 
@@ -84,8 +77,7 @@ public abstract class AbstractLoginTest extends AbstractUITest {
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 AuthenticationToken t = (AuthenticationToken) invocation.getArguments()[0];
                 try {
-                    authConnector.authenticate(t.getPrincipal().toString(),
-                        new Password(new String((char[]) t.getCredentials())));
+                    authConnector.authenticate(t.getPrincipal().toString(), (Credentials) t.getCredentials());
                 } catch (AuthenticationException e) {
                     throw new org.apache.shiro.authc.AuthenticationException(e);
                 }

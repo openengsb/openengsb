@@ -14,24 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.ui.admin;
 
-package org.openengsb.core.security.filter;
+import java.util.Collection;
 
-import org.openengsb.core.api.remote.FilterChainElement;
-import org.openengsb.core.api.remote.FilterChainElementFactory;
-import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 
-public class MessageAuthenticatorFactory implements FilterChainElementFactory {
+public class OpenEngSBWebSecurityManager extends DefaultWebSecurityManager {
 
-    private AuthenticationDomain authenticationManager;
+    private static WebSecurityManager instance;
 
-    @Override
-    public FilterChainElement newInstance() throws FilterConfigurationException {
-        return new MessageAuthenticatorFilter(authenticationManager);
+    public OpenEngSBWebSecurityManager() {
     }
 
-    public void setAuthenticationManager(AuthenticationDomain authenticationManager) {
-        this.authenticationManager = authenticationManager;
+    public OpenEngSBWebSecurityManager(Collection<Realm> realms) {
+        super(realms);
     }
+
+    public OpenEngSBWebSecurityManager(Realm singleRealm) {
+        super(singleRealm);
+    }
+
+    public void init() {
+        instance = this;
+    }
+
+    public static WebSecurityManager get() {
+        return instance;
+    }
+
 }

@@ -50,7 +50,7 @@ public class SecurityInterceptor implements MethodInterceptor {
             return mi.proceed();
         }
         Subject subject = ThreadContext.getSubject();
-        if (!subject.isAuthenticated()) {
+        if (subject == null || !subject.isAuthenticated()) {
             throw new AccessDeniedException("no authentication was found in context");
         }
 

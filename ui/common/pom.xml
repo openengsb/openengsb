@@ -117,7 +117,10 @@
             <Import-Package>org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
-              net.sf.cglib.reflect;version="[2,3)", *
+              net.sf.cglib.reflect;version="[2,3)",
+              org.apache.shiro.subject,
+              org.apache.shiro.session.mgt,
+              *
             </Import-Package>
           </instructions>
         </configuration>

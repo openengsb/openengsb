@@ -18,18 +18,13 @@
 package org.openengsb.ui.admin.loginPage;
 
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.doAnswer;
 
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openengsb.ui.admin.AbstractLoginTest;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.index.Index;

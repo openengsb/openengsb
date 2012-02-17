@@ -41,13 +41,13 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Before;
+import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
@@ -239,11 +239,7 @@ public abstract class AbstractExamTestHelper {
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
         waitForUserDataInitializer();
-        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
-//        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
-//        SimplePrincipalCollection simplePrincipalCollection = new SimplePrincipalCollection(authentication.getUsername(), "openengsb");
-        SecurityUtils.getSubject().login(new UsernamePasswordToken(user, password));
-//        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+        SecurityContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {

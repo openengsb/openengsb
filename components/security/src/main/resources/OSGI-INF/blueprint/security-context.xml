@@ -127,7 +127,7 @@
     class="org.openengsb.core.security.internal.OpenEngSBSecurityManager" init-method="init">
     <property name="authenticator">
       <bean
-        class="org.openengsb.core.security.internal.OpenEngSBShiroAuthenticator">
+        class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
         <property name="authenticator" ref="authenticator" />
       </bean>
     </property>
@@ -136,7 +136,6 @@
   <service ref="securityManager">
     <interfaces>
       <value>org.apache.shiro.mgt.SecurityManager</value>
-      <value>org.apache.shiro.web.mgt.WebSecurityManager</value>
     </interfaces>
   </service>
 

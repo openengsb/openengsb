@@ -89,7 +89,7 @@
         </bean>
         <value>org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.MessageAuthenticatorFilter</value>
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
@@ -106,7 +106,7 @@
       <list>
         <value>org.openengsb.core.security.filter.JsonSecureRequestStringMarshallerFilter</value>
         <value>org.openengsb.core.security.filter.MessageVerifierFilter</value>
-        <ref component-id="authenticationFilterFactory" />
+        <value>org.openengsb.core.security.filter.MessageAuthenticatorFilter</value>
         <value>org.openengsb.core.security.filter.WrapperFilter</value>
         <value>org.openengsb.core.common.remote.EKBProxyIncomingFilter</value>
         <bean class="org.openengsb.core.common.remote.RequestMapperFilter">
@@ -116,11 +116,6 @@
     </property>
   </bean>
 
-  <bean id="authenticationFilterFactory" class="org.openengsb.core.security.filter.MessageAuthenticatorFactory">
-    <property name="authenticationManager" ref="authenticator" />
-  </bean>
-
-  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain" filter="(location.root=authentication-root)" />
   <reference id="openengsbBrokerConnectionFactory" interface="javax.jms.ConnectionFactory" />
   <reference id="requestHandler" interface="org.openengsb.core.api.remote.RequestHandler" />
   <reference id="privateKeySource" interface="org.openengsb.core.api.security.PrivateKeySource" />

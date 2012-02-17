@@ -26,7 +26,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -56,9 +55,9 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
-import org.openengsb.core.security.internal.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.model.RootPermission;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
@@ -105,10 +104,10 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
         List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
         context.putBean("openengsbVersionService", versionService);
-        context.putBean(OpenEngSBCoreServices.getWiringService());
+        context.putBean("wiringService", OpenEngSBCoreServices.getWiringService());
         OsgiUtilsService serviceUtilsService =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
-        context.putBean("serviceUtils", serviceUtilsService);
+        context.putBean("osgiUtilsService", serviceUtilsService);
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         registrationManager.setServiceUtils(serviceUtils);
@@ -129,7 +128,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
-        context.putBean(serviceManager);
+        context.putBean("serviceManager", serviceManager);
 
         userManager = new UserManagerStub();
         userManager.createUser("test");
@@ -154,6 +153,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         SecurityAttributeProvider attributeStore = new SecurityAttributeProviderImpl();
         context.putBean("attributeStore", attributeStore);
         context.putBean("attributeProviders", Collections.singletonList(attributeStore));
+
+//        context.putBean("wiringService", wiringService);
+//        context.putBean("ruleManager", mock(RuleManager.class));
     }
 
     @Override
@@ -196,12 +198,14 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
         context.putBean("authorizer", instance);
-
-        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        OpenEngSBShiroAuthenticator authenticator = new OpenEngSBShiroAuthenticator();
-        authenticator.setAuthenticator(authConnector);
-        defaultWebSecurityManager.setAuthenticator(authenticator);
-        context.putBean("securityManager", defaultWebSecurityManager);
+//
+//        context.putBean("securityManager", defaultWebSecurityManager);
+        
+        OpenEngSBWebSecurityManager openEngSBSecurityManager = new OpenEngSBWebSecurityManager();
+        OpenEngSBShiroAuthenticator openEngSBShiroAuthenticator = new OpenEngSBShiroAuthenticator();
+        openEngSBShiroAuthenticator.setAuthenticator(authConnector);
+        openEngSBSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
+        openEngSBSecurityManager.init();
     }
 
 }

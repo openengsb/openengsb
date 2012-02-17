@@ -40,6 +40,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.remote.OutgoingPort;
@@ -71,6 +72,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         waitForSiteToBeAvailable(WSDL_URL, MAX_SLEEP_TIME_IN_SECONDS);
     }
 
+    @Ignore
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
         OutgoingPort serviceWithId =
@@ -78,6 +80,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
         assertNotNull(serviceWithId);
     }
 
+    @Ignore
     @Test
     public void startSimpleWorkflow_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -92,7 +95,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
         verifyEncryptedResult(sessionKey, result);
     }
-
+    @Ignore
     @Test
     public void startSimpleWorkflowWithFilterMethohdCall_ShouldReturn42() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -107,7 +110,7 @@ public class WSPortIT extends AbstractRemoteTestHelper {
 
         verifyEncryptedResult(sessionKey, result);
     }
-
+    @Ignore
     @Test
     public void testSendMethodCallWithWrongAuthentication_shouldFail() throws Exception {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());

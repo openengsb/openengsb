@@ -72,5 +72,18 @@
   <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
 
   <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
+  
+<!--   org.openengsb.ui.admin.OpenEngSBWebSecurityManager -->
+  
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
+  
+  <bean id="webSecurityManager" class="org.openengsb.ui.admin.OpenEngSBWebSecurityManager" init-method="init">
+    <property name="authenticator">
+      <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
 
 </blueprint>
