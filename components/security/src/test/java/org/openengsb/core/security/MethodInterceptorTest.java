@@ -21,10 +21,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -32,13 +38,16 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.concurrent.SubjectAwareExecutorService;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.service.AccessDeniedException;
+import org.openengsb.core.common.util.ThreadLocalUtil;
 import org.openengsb.core.security.internal.RootSecurityHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
@@ -101,13 +110,46 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     @Test
     public void testInvokeMethodAsRoot() throws Exception {
         authenticate(DEFAULT_USER, "password");
-        RootSecurityHolder.getRootSubject().execute(new Callable<Void>() {
+        ContextHolder.get().setCurrentContextId("foo");
+        org.openengsb.core.security.SecurityUtils.executeWithSystemPermissions(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service2.getTheAnswerToLifeTheUniverseAndEverything();
+                if (ObjectUtils.notEqual(ContextHolder.get().getCurrentContextId(), "foo")) {
+                    throw new RuntimeException("context was not propagated correctly");
+                }
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void testInvokeInThreadPool() throws Exception {
+        Callable<Void> task = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 service2.getTheAnswerToLifeTheUniverseAndEverything();
                 return null;
             }
-        });
+        };
+        ExecutorService executor =
+            ThreadLocalUtil.contextAwareExecutor(new SubjectAwareExecutorService(Executors.newSingleThreadExecutor()));
+
+        // exec the task as admin
+        authenticate("admin", "adminpw");
+        Future<Void> result2 = executor.submit(task);
+        result2.get();
+        SecurityUtils.getSubject().logout();
+
+        // executing as normal user must fail
+        // the previously authenticated amdin-user must not be in the pooled thread anymore
+        Future<Void> result = executor.submit(task);
+        try {
+            result.get();
+            fail("expected ExecutionException");
+        } catch (ExecutionException e) {
+            // expected
+        }
     }
 
     private void authenticate(String user, String password) {
