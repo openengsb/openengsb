@@ -32,7 +32,7 @@ public interface BinaryTransformationDomain extends Domain {
      * creates a new BinaryTransformationProvider under given binaryId which uses the transformation configs to convert
      * between the binary format and the OpenEngSBModelEntries
      */
-    void register(String binaryId, Class<?> clasz, File... transformationConfigs);
+    void register(String binaryId, Class clasz, File... transformationConfigs);
 
     /**
      * deletes the BinaryTranforamtionProvider for the given binary id
