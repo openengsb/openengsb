@@ -192,18 +192,8 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testCiWorkflow() throws Exception {
         long id = service.startFlow("ci");
-        service.processEvent(new Event() {
-            @Override
-            public String returnType() {
-                return "BuildSuccess";
-            }
-        });
-        service.processEvent(new Event() {
-            @Override
-            public String returnType() {
-                return "TestSuccess";
-            }
-        });
+        service.processEvent(new Event() {});
+        service.processEvent(new Event() {});
         service.waitForFlowToFinish(id);
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
