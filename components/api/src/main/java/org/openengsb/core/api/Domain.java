@@ -17,7 +17,9 @@
 
 package org.openengsb.core.api;
 
+import java.util.Collection;
 import org.openengsb.core.api.security.annotation.Authenticated;
+import org.openengsb.core.api.xlink.XLinkIdentifier;
 
 /**
  * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
@@ -31,5 +33,13 @@ public interface Domain extends OpenEngSBService {
      */
     @Authenticated
     AliveState getAliveState();
+    
+
+    /**
+     * PushMethod to transfere potential Matches of modelObjects to the Clienttools.
+     * @param modelObjects Collection of potential Matches of modelObjects
+     * @param viewId Id of View to open Matches in
+     */
+    public void openXLinks(Collection<XLinkIdentifier> modelObjects, String viewId);
 
 }

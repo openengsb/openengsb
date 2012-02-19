@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<chapter version="5.0"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
+    xml:id="xlink.future_matter" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:ns="http://docbook.org/ns/docbook">
+    
+    <title>Future matter</title>
+    
+    <para>creation of entity 'mapper' which does the transformations</para>
+    <para>loading of central available data - matter of the tool</para>
+    <para>fallback options for failovers mentioned above</para>
+    <para>XLinking on one local client - matter of the tool (for example parsing the servlet
+        site to save one step of work)</para>
+    <para>What to do, if content of views is not covered by the associated identifier - matter
+        of the tool ( tool has to determine how to handle this)</para>
+</chapter>
