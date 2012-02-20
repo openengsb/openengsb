@@ -56,19 +56,20 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         .getLogger(ConnectorDeployerService.class);
 
     private ConnectorManager serviceManager;
-    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder()
-        .build(new CacheLoader<File, ConnectorFile>() {
+    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, ConnectorFile>() {
             @Override
             public ConnectorFile load(File key) throws Exception {
                 return new ConnectorFile(key);
             }
         });
 
-    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder()
-        .build(new CacheLoader<File, Semaphore>() {
+    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, Semaphore>() {
+            @Override
             public Semaphore load(File key) throws Exception {
                 return new Semaphore(1);
-            };
+            }
         });
 
     @Override

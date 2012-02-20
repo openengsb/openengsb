@@ -418,12 +418,11 @@ public class TestClient extends BasePage {
      */
     private org.openengsb.core.api.remote.MethodCall createRealMethodCall(MethodId methodId) {
         Class<?>[] classes = methodId.getArgumentTypesAsClasses();
-        List classList = new ArrayList();
+        List<String> classList = new ArrayList<String>();
         for (Class<?> clazz : classes) {
             classList.add(clazz.getName());
         }
         return new org.openengsb.core.api.remote.MethodCall(methodId.getName(), call.getArgumentsAsArray(), classList);
-
     }
 
     /**
