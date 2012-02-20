@@ -79,8 +79,8 @@
         <artifactId>wagon-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-java2ws-plugin</artifactId>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -144,6 +144,5 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
 </project>
 
