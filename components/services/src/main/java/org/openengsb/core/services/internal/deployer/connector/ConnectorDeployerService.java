@@ -45,9 +45,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.google.common.base.Function;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import com.google.common.collect.MapDifference;
-import com.google.common.collect.MapMaker;
 
 public class ConnectorDeployerService extends AbstractOpenEngSBService implements ArtifactInstaller {
 
@@ -57,19 +58,20 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService implement
 
     private AuthenticationManager authenticationManager;
     private ConnectorManager serviceManager;
-    private Map<File, ConnectorFile> oldConfigs = new MapMaker().makeComputingMap(new Function<File, ConnectorFile>() {
-        @Override
-        public ConnectorFile apply(File input) {
-            return new ConnectorFile(input);
-        }
-    });
-
-    private Map<File, Semaphore> updateSemaphores = new MapMaker()
-        .makeComputingMap(new Function<File, Semaphore>() {
+    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, ConnectorFile>() {
             @Override
-            public Semaphore apply(File input) {
+            public ConnectorFile load(File key) throws Exception {
+                return new ConnectorFile(key);
+            }
+        });
+
+    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, Semaphore>() {
+            @Override
+            public Semaphore load(File key) throws Exception {
                 return new Semaphore(1);
-            };
+            }
         });
 
     @Override
