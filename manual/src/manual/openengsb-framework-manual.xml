@@ -101,6 +101,7 @@
     </partintro>
     <xi:include href="docbook/ui/testclient.xml"/>
     <xi:include href="docbook/ui/wiring.xml"/>
+    <xi:include href="docbook/ui/transform.xml"/>
   </part>
   <part xml:id="contributor.manual">
     <title>OpenEngSB Contributor Detail Informations</title>
