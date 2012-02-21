@@ -18,8 +18,8 @@ package org.openengsb.core.common.internal;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.aries.blueprint.utils.BundleDelegatingClassLoader;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +27,8 @@ import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class DelegatedClassloaderManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DelegatedClassloaderManager.class);
 
-    private Map<Bundle, Collection<ServiceRegistration>> classLoaderServices = Maps.newHashMap();
+    private ConcurrentMap<Bundle, Collection<ServiceRegistration>> classLoaderServices = Maps.newConcurrentMap();
     private BundleContext bundleContext;
 
     public DelegatedClassloaderManager(BundleContext bundleContext) {
@@ -50,12 +52,39 @@ public class DelegatedClassloaderManager {
     }
 
     public void start() {
+        BundleListener bundleListener = new BundleListener() {
+            @Override
+            public void bundleChanged(BundleEvent event) {
+                if (event.getType() == BundleEvent.STOPPED) {
+                    handleBundleUninstall(event.getBundle());
+                } else if (event.getType() == BundleEvent.STARTED) {
+                    handleBundleInstall(event.getBundle());
+                }
+            }
+        };
+        bundleContext.addBundleListener(bundleListener);
         for (Bundle b : bundleContext.getBundles()) {
-            handleBundleStart(b);
+            if (b.getState() == Bundle.ACTIVE) {
+                handleBundleInstall(b);
+            }
         }
     }
 
-    private void handleBundleStart(Bundle b) {
+    protected synchronized void handleBundleUninstall(Bundle bundle) {
+        if (!classLoaderServices.containsKey(bundle)) {
+            LOGGER.warn("tried to unregister ClassloadingDelegate for unknown bundle");
+            return;
+        }
+        for (ServiceRegistration registration : classLoaderServices.get(bundle)) {
+            registration.unregister();
+        }
+    }
+
+    private synchronized void handleBundleInstall(Bundle b) {
+        if (classLoaderServices.containsKey(b)) {
+            LOGGER.warn("tried to register Classloader-delegate for already registered bundle");
+            return;
+        }
         String providesClasses = (String) b.getHeaders().get(Constants.PROVIDED_CLASSES);
         if (providesClasses == null) {
             return;
