@@ -45,7 +45,7 @@ public class SmooksBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
     }
 
     @Override
-    public void register(String binaryId, Class<?> clasz, File... transformationConfigs) {
+    public void register(String binaryId, @SuppressWarnings("rawtypes") Class clasz, File... transformationConfigs) {
         SmooksBinaryConverter conv = new SmooksBinaryConverter(clasz, transformationConfigs);
         converter.put(binaryId, conv);
         LOGGER.info("added new converter for the binary id {}", binaryId);
