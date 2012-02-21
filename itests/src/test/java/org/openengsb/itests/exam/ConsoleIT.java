@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
@@ -43,6 +44,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
@@ -128,8 +130,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
     public void testDeleteCommand_serviceShouldNotBeAvailableAfterwards() throws Exception {
         ConnectorManager connectorManager = getOsgiService(ConnectorManager.class);
         ConnectorDescription connectorDescription = new ConnectorDescription();
-        ImmutableMap<String, String> attributes =
-            ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)");
+        Map<String, String> attributes =
+            Maps.newHashMap(ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)"));
         connectorDescription.setAttributes(attributes);
 
         connectorManager.create(new ConnectorId("authentication", "composite-connector", "foo"), connectorDescription);
