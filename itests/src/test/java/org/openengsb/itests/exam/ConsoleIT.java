@@ -17,7 +17,7 @@
 
 package org.openengsb.itests.exam;
 
-import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.CommandSession;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
