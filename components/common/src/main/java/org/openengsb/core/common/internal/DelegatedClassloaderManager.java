@@ -51,71 +51,95 @@ public class DelegatedClassloaderManager {
 
     public void start() {
         for (Bundle b : bundleContext.getBundles()) {
-            String providesClasses = (String) b.getHeaders().get(Constants.PROVIDED_CLASSES);
-            if (providesClasses == null) {
-                continue;
-            }
-            Set<Class<?>> classes = Sets.newHashSet();
-            for (String className : StringUtils.split(providesClasses, ",")) {
-                try {
-                    classes.add(b.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    LOGGER.error(String.format(
-                        "Could not load class %s during initializing ClassloadingDelegate for %s", className,
-                        b.getSymbolicName()), e);
-                }
-            }
-
-            String providesParents = (String) b.getHeaders().get(Constants.PROVIDED_CLASSES_PARENTS);
-            if (providesParents == null) {
-                return;
-            }
-            String[] superClassNames = StringUtils.split(providesParents, ",");
-            Set<Class<?>> superClasses = Sets.newHashSet();
-            ClassLoader[] loaders = new ClassLoader[]
-            { new BundleDelegatingClassLoader(b), getClass().getClassLoader() };
-            for (String superClassName : superClassNames) {
-                Class<?> superClass = null;
-                ClassNotFoundException last = null;
-                for (ClassLoader l : loaders) {
-                    try {
-                        superClass = l.loadClass(superClassName);
-                    } catch (ClassNotFoundException e) {
-                        last = e;
-                    }
-                    if (superClass == null) {
-                        LOGGER.error(String.format(
-                            "Could not load class %s during initializing ClassloadingDelegate for %s", superClassName,
-                            b.getSymbolicName()), last);
-                    }
-                }
-                superClasses.add(superClass);
-            }
-
-            Collection<ServiceRegistration> bundleRegistrations = Lists.newLinkedList();
-            for (final Class<?> superClass : superClasses) {
-                Set<Class<?>> filtered = Sets.filter(classes, new Predicate<Class<?>>() {
-                    @Override
-                    public boolean apply(Class<?> input) {
-                        return superClass.isAssignableFrom(input);
-                    }
-                });
-                ClassloadingDelegate service = new ClassloadingDelegateImpl(filtered);
-                Collection<String> filteredNames = Collections2.transform(filtered, new Function<Class<?>, String>() {
-                    @Override
-                    public String apply(Class<?> input) {
-                        return input.getName();
-                    }
-                });
-                Hashtable<String, Object> properties = new Hashtable<String, Object>();
-                properties.put(Constants.PROVIDED_CLASSES_PARENTS_KEY, superClass.getName());
-                properties.put(Constants.PROVIDED_CLASSES_KEY, filteredNames);
-                ServiceRegistration registration =
-                    bundleContext.registerService(ClassloadingDelegate.class.getName(), service,
-                        properties);
-                bundleRegistrations.add(registration);
-            }
-            classLoaderServices.put(b, bundleRegistrations);
+            handleBundleStart(b);
         }
+    }
+
+    private void handleBundleStart(Bundle b) {
+        String providesClasses = (String) b.getHeaders().get(Constants.PROVIDED_CLASSES);
+        if (providesClasses == null) {
+            return;
+        }
+        Set<Class<?>> classes = getProvidedClasses(b, providesClasses);
+
+        String providesParents = (String) b.getHeaders().get(Constants.PROVIDED_CLASSES_PARENTS);
+        if (providesParents == null) {
+            return;
+        }
+        Set<Class<?>> superClasses = getProvidedParentClasses(b, providesParents);
+
+        createAllDelegates(b, classes, superClasses);
+    }
+
+    private Collection<ServiceRegistration> createAllDelegates(Bundle b, Set<Class<?>> classes,
+            Set<Class<?>> superClasses) {
+        Collection<ServiceRegistration> bundleRegistrations = Lists.newLinkedList();
+        for (final Class<?> superClass : superClasses) {
+            Set<Class<?>> filtered = Sets.filter(classes, new Predicate<Class<?>>() {
+                @Override
+                public boolean apply(Class<?> input) {
+                    return superClass.isAssignableFrom(input);
+                }
+            });
+            ServiceRegistration registration = doCreateDelegate(superClass, filtered);
+            bundleRegistrations.add(registration);
+        }
+        classLoaderServices.put(b, bundleRegistrations);
+        return bundleRegistrations;
+    }
+
+    private ServiceRegistration doCreateDelegate(final Class<?> superClass, Set<Class<?>> providedClasses) {
+        ClassloadingDelegate service = new ClassloadingDelegateImpl(providedClasses);
+        Collection<String> filteredNames = Collections2.transform(providedClasses, new Function<Class<?>, String>() {
+            @Override
+            public String apply(Class<?> input) {
+                return input.getName();
+            }
+        });
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(Constants.PROVIDED_CLASSES_PARENTS_KEY, superClass.getName());
+        properties.put(Constants.PROVIDED_CLASSES_KEY, filteredNames);
+        ServiceRegistration registration =
+            bundleContext.registerService(ClassloadingDelegate.class.getName(), service,
+                properties);
+        return registration;
+    }
+
+    private Set<Class<?>> getProvidedParentClasses(Bundle b, String providesParents) {
+        Set<Class<?>> superClasses = Sets.newHashSet();
+        for (String superClassName : StringUtils.split(providesParents, ",")) {
+            Class<?> superClass = null;
+            ClassNotFoundException last = null;
+            ClassLoader[] classloaders =
+                new ClassLoader[]{ new BundleDelegatingClassLoader(b), getClass().getClassLoader() };
+            for (ClassLoader l : classloaders) {
+                try {
+                    superClass = l.loadClass(superClassName);
+                } catch (ClassNotFoundException e) {
+                    last = e;
+                }
+                if (superClass == null) {
+                    LOGGER.error(String.format(
+                        "Could not load class %s during initializing ClassloadingDelegate for %s", superClassName,
+                        b.getSymbolicName()), last);
+                }
+            }
+            superClasses.add(superClass);
+        }
+        return superClasses;
+    }
+
+    private Set<Class<?>> getProvidedClasses(Bundle b, String providesClasses) {
+        Set<Class<?>> classes = Sets.newHashSet();
+        for (String className : StringUtils.split(providesClasses, ",")) {
+            try {
+                classes.add(b.loadClass(className));
+            } catch (ClassNotFoundException e) {
+                LOGGER.error(String.format(
+                    "Could not load class %s during initializing ClassloadingDelegate for %s", className,
+                    b.getSymbolicName()), e);
+            }
+        }
+        return classes;
     }
 }
