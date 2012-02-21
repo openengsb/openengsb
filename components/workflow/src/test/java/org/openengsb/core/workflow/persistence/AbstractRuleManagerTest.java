@@ -27,9 +27,9 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.domain.example.ExampleDomain;
-import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.domain.example.model.ExampleRequestModel;
-import org.openengsb.domain.example.model.ExampleResponseModel;
+import org.openengsb.domain.example.ExampleRequestModel;
+import org.openengsb.domain.example.ExampleResponseModel;
+import org.openengsb.domain.example.LogEvent;
 
 public abstract class AbstractRuleManagerTest {
     protected RuleManager ruleManager;
