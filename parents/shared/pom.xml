@@ -70,6 +70,7 @@
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
+    <maven.plugin.jar>2.4</maven.plugin.jar>
 
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
@@ -1299,6 +1300,11 @@
               <version>${jaxb.version}</version>
             </dependency>
           </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.plugin.jar}</version>
         </plugin>
       </plugins>
     </pluginManagement>
