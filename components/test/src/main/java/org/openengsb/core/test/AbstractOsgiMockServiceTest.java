@@ -196,6 +196,8 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 return this.getClass().getClassLoader().loadClass((String) invocation.getArguments()[0]);
             }
         });
+        
+        when(bundleContext.getBundles()).thenReturn(new Bundle[]{bundle});
     }
 
     public void clearRegistry() throws Exception {
