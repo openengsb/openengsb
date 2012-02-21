@@ -16,10 +16,11 @@
  */
 package org.openengsb.core.security.internal;
 
-import org.openengsb.core.common.AbstractPermissionProvider;
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.DefaultClassloadingDelegate;
 import org.openengsb.core.security.internal.model.RootPermission;
 
-public class RootPermissionProvider extends AbstractPermissionProvider {
+public class RootPermissionProvider extends DefaultClassloadingDelegate<Permission> {
 
     public RootPermissionProvider() {
         super(RootPermission.class);

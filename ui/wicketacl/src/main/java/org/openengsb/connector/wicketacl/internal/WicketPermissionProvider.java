@@ -17,10 +17,12 @@
 package org.openengsb.connector.wicketacl.internal;
 
 import org.openengsb.connector.wicketacl.WicketPermission;
-import org.openengsb.core.common.AbstractPermissionProvider;
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.DefaultClassloadingDelegate;
 
-public class WicketPermissionProvider extends AbstractPermissionProvider {
+public class WicketPermissionProvider extends DefaultClassloadingDelegate<Permission> {
 
+    @SuppressWarnings("unchecked")
     public WicketPermissionProvider() {
         super(WicketPermission.class);
     }

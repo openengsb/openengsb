@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.security.PermissionProvider;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
@@ -78,10 +78,11 @@ public abstract class PermissionEditorPanel extends Panel {
 
                 @Override
                 protected List<Class<?>> load() {
-                    List<PermissionProvider> providers =
-                        OpenEngSBCoreServices.getServiceUtilsService().listServices(PermissionProvider.class);
+                    List<ClassloadingDelegate> providers =
+                        OpenEngSBCoreServices.getServiceUtilsService().listServices(ClassloadingDelegate.class,
+                            "(permissionClass=*)");
                     List<Class<?>> result = Lists.newArrayList();
-                    for (PermissionProvider p : providers) {
+                    for (ClassloadingDelegate p : providers) {
                         result.addAll(p.getSupportedTypes());
                     }
                     return result;

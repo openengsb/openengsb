@@ -40,12 +40,12 @@ import javax.persistence.Persistence;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.core.common.AbstractPermissionProvider;
+import org.openengsb.core.common.DefaultClassloadingDelegate;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.model.UserData;
@@ -146,9 +146,9 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("permissionClass", TestPermission.class.getName());
-        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
-        };
-        registerService(permissionProvider, props, PermissionProvider.class);
+        ClassloadingDelegate<Permission> permissionProvider =
+            new DefaultClassloadingDelegate<Permission>(TestPermission.class);
+        registerService(permissionProvider, props, ClassloadingDelegate.class);
 
     }
 

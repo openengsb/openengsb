@@ -17,9 +17,10 @@
 package org.openengsb.connector.serviceacl.internal;
 
 import org.openengsb.connector.serviceacl.ServicePermission;
-import org.openengsb.core.common.AbstractPermissionProvider;
+import org.openengsb.core.api.security.model.Permission;
+import org.openengsb.core.common.DefaultClassloadingDelegate;
 
-public class ServicePermissionProvider extends AbstractPermissionProvider {
+public class ServicePermissionProvider extends DefaultClassloadingDelegate<Permission> {
 
     @SuppressWarnings("unchecked")
     public ServicePermissionProvider() {

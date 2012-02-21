@@ -19,11 +19,11 @@ package org.openengsb.core.security.filter;
 
 import java.util.Map;
 
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -70,10 +70,10 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
             String className = input.getCredentials().getClassName();
             OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
             Filter filter =
-                serviceUtilsService.makeFilter(CredentialTypeProvider.class,
+                serviceUtilsService.makeFilter(ClassloadingDelegate.class,
                     String.format("(credentialClass=%s)", className));
             Class<? extends Credentials> credentialType =
-                serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).load(className);
+                serviceUtilsService.getOsgiServiceProxy(filter, ClassloadingDelegate.class).load(className);
             authenticationManager
                 .authenticate(input.getPrincipal(), input.getCredentials().toObject(credentialType));
         } catch (AuthenticationException e) {

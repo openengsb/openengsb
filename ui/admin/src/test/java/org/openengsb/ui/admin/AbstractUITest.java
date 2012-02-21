@@ -32,6 +32,7 @@ import org.openengsb.connector.usernamepassword.internal.UsernamePasswordService
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
 import org.openengsb.connector.wicketacl.internal.WicketPermissionProvider;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -44,7 +45,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
@@ -144,7 +144,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> wicketProviderProps = new Hashtable<String, Object>();
         wicketProviderProps.put("permissionClass", WicketPermission.class.getName());
         WicketPermissionProvider wicketPermissionProvider = new WicketPermissionProvider();
-        registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
+        registerService(wicketPermissionProvider, wicketProviderProps, ClassloadingDelegate.class);
 
         context.putBean("permissionProviders", Arrays.asList(wicketPermissionProvider));
 

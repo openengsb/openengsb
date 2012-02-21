@@ -59,13 +59,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.RequestHandler;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
@@ -233,7 +233,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         methodReturn = new MethodResultMessage(result, "123");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("credentialClass", Password.class.getName());
-        registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
+        registerService(new PasswordCredentialTypeProvider(), props, ClassloadingDelegate.class);
     }
 
     private void setupKeys() {

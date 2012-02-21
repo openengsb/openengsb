@@ -111,7 +111,7 @@
     </bean>
   </service>
 
-  <service interface="org.openengsb.core.api.security.PermissionProvider">
+  <service interface="org.openengsb.core.api.ClassloadingDelegate">
     <service-properties>
       <entry key="connector" value="root" />
       <entry key="permissionClass" value="org.openengsb.core.security.internal.model.RootPermission" />
