@@ -57,6 +57,9 @@
   <reference-list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
+
+  <reference-list id="permissionProviders" interface="org.openengsb.core.api.ClassloadingDelegate"
+    filter="(providedClassParent=org.openengsb.core.api.security.model.Permission)" />
   
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
   

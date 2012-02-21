@@ -14,36 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.common;
+package org.openengsb.core.common.internal;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.ClassloadingDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
 /**
  * Helps to provide a Simple Delegated class-loading provider, configurable as a bean.
  */
-@Deprecated
-public class DefaultClassloadingDelegate<T> implements ClassloadingDelegate {
+public class ClassloadingDelegateImpl implements ClassloadingDelegate {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultClassloadingDelegate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassloadingDelegateImpl.class);
 
     protected Map<String, Class<?>> supported;
 
-    public DefaultClassloadingDelegate(Class<? extends T>... classes) {
-        Map<String, Class<?>> supported = Maps.newHashMap();
-        for (Class<?> clazz : classes) {
-            supported.put(clazz.getName(), clazz);
-        }
-        this.supported = Collections.unmodifiableMap(supported);
+    public ClassloadingDelegateImpl(Collection<Class<?>> classes) {
+        setClasses(classes);
     }
 
     @Override
@@ -60,19 +53,10 @@ public class DefaultClassloadingDelegate<T> implements ClassloadingDelegate {
         return supported.values();
     }
 
-    @SuppressWarnings("unchecked")
-    public void setClasses(List<String> classnames) {
-        /* Classes should all be resolvable by the bundles module class loader */
+    protected void setClasses(Collection<Class<?>> classnames) {
         Map<String, Class<?>> supported = Maps.newHashMap();
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        for (String name : classnames) {
-            Class<? extends T> clazz;
-            try {
-                clazz = (Class<? extends T>) classLoader.loadClass(name);
-            } catch (ClassNotFoundException e) {
-                throw Throwables.propagate(e);
-            }
-            supported.put(name, clazz);
+        for (Class<?> clazz : classnames) {
+            supported.put(clazz.getName(), clazz);
         }
         this.supported = Collections.unmodifiableMap(supported);
     }

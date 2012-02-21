@@ -25,7 +25,7 @@ import java.util.Collection;
  * Services exporting this interface must also declare the "providesClass"-property where all supported classes are
  * listed.
  */
-public interface ClassloadingDelegate<T> {
+public interface ClassloadingDelegate {
 
     /**
      * loads the type-class with the given name. This enables other bundles (e.g. persistence) to delegate loading the
@@ -36,12 +36,12 @@ public interface ClassloadingDelegate<T> {
      * 
      * @throws ClassNotFoundException if no type with that name is defined by the providing bundle.
      */
-    Class<? extends T> load(String classname) throws ClassNotFoundException;
+    Class<?> load(String classname) throws ClassNotFoundException;
 
     /**
      * returns all classes supported by this provider. This method may be used by user interfaces to list all available
      * types and to instantiate them.
      */
-    Collection<Class<? extends T>> getSupportedTypes();
+    Collection<Class<?>> getSupportedTypes();
 
 }

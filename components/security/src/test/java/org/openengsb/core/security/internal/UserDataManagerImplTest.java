@@ -146,7 +146,7 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("permissionClass", TestPermission.class.getName());
-        ClassloadingDelegate<Permission> permissionProvider =
+        ClassloadingDelegate permissionProvider =
             new DefaultClassloadingDelegate<Permission>(TestPermission.class);
         registerService(permissionProvider, props, ClassloadingDelegate.class);
 

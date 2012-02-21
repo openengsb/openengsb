@@ -60,6 +60,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
 import org.openengsb.core.api.ClassloadingDelegate;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
@@ -232,7 +233,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         result.setMetaData(metaData);
         methodReturn = new MethodResultMessage(result, "123");
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("credentialClass", Password.class.getName());
+        props.put(Constants.PROVIDED_CLASSES_KEY, Password.class.getName());
         registerService(new PasswordCredentialTypeProvider(), props, ClassloadingDelegate.class);
     }
 
