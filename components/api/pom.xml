@@ -120,7 +120,14 @@
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
-   </dependencies>
+    <dependency>
+      <groupId>org.openengsb.framework</groupId>
+      <artifactId>org.openengsb.framework.common</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+      <type>bundle</type>
+    </dependency>
+  </dependencies>
 
 </project>
 

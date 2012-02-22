@@ -18,19 +18,24 @@
 package org.openengsb.core.api.xlink;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.api.model.OpenEngSBModelId;
 
 /**
- * Modelclass for the general XLinkModel Identifiers. Extend to ad fields for domainspecific identifiers.
+ * Modelclass for the XLinkURL definitions. To be used to transfere the Linkstrukture to the CLienttools.
+ * May also be filled by actual values and automates the creation of valid XLinks.
  */
-public interface XLinkIdentifier extends OpenEngSBModel{
+public interface XLinkUrl extends OpenEngSBModel{
     
     /**
-     * Id of XLinkIdentifier Instance. Must be included in xlink-urls in order to fetch this instance.
+     * ModelobjectIdentifier, containing the Fields to append to the URL as Parameters. 
      */
-    @OpenEngSBModelId
-    public String getIdentifierId();
+    public XLinkIdentifier getIdentifier();
+    
+    public void setIdentifier(XLinkIdentifier identifier);
+    /**
+     * URL to the Registry´s HTTP-Servlet without the Identifier Fields as Parameters
+     */
+    public String getUrl();
 
-    public void setIdentifierId(String identifierId);
-
+    public void setUrl(String url);
+    
 }

@@ -15,26 +15,20 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink.exception;
+package org.openengsb.core.api.xlink;
 
 /**
- * This exception is thrown, if during the Processing of a XLinkIdentifierField an error occurs.
- * @see org.openengsb.core.api.xlink.XLinkIdentifierField
- * @author Christoph Prybila <christoph@prybila.at>
+ * Identifier for Object Oriented Sourcecode
  */
-public class XLinkFieldException extends Exception {
-
-    /**
-     * Creates a new instance of <code>XLinkFieldException</code> without detail message.
-     */
-    public XLinkFieldException() {
-    }
-
-    /**
-     * Constructs an instance of <code>XLinkFieldException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public XLinkFieldException(String msg) {
-        super(msg);
-    }
+public interface ExampleObjectOrientedIdentifier extends XLinkIdentifier{
+    
+    public String getOOMethodName();
+    public void setOOMethodName(String ooMethod);
+    
+    public String getOOClassName();
+    public void setOOClassName(String ooClass);
+            
+    public String getOOPackageName();
+    public void setOOPackageName(String ooPackage);    
+            
 }

@@ -1,29 +1,27 @@
-/*
- *  Copyright (C) 2012 Christoph Prybila <christoph@prybila.at>
- * 
- *  This file is part of TMSimulator.
- *  A program created to demonstrate Turing Machines.
- * 
- *  TMSimulator is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- * 
- *  TMSimulator is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser Public License for more details.
- * 
- *  You should have received a copy of the GNU Lesser Public License
- *  along with TMSimulator.  If not, see <http://www.gnu.org/licenses/>.
- * 
+/**
+ * Licensed to the Austrian Association for Software Tool Integration (AASTI)
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership. The AASTI licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.openengsb.core.api.xlink;
 
+import java.util.List;
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
+
 /**
- * Static util class for xlink, containing utilFunctions and xlink definition fields.
- * Creation Date: 19.02.2012
- * @author Christoph Prybila <christoph@prybila.at>
+ * Static util class for xlink, containing xlink definition fields and methods for Linkcreation
  */
 public class XLinkUtils {
     
@@ -37,11 +35,58 @@ public class XLinkUtils {
     public static final String XLINK_IDENTIFIER_METADATA = "metadataId";         
     
     /**
-     * Returns the IdentifierId as IdentifierField
-     * @param identifierId to wrap into a field
-     * @return the IdentifierId as IdentifierField
+     * Return the Link to the Registry´s HTTP-Servlet containing the complete Modelobject´s Identifier. 
+     * The fields of the Identifier are transportet as GET paramteters.
+     * Every IdentifierField which is null is set with placeholder value like '$$KeyValue$$'. 
+     * e.g. a field with the value null and the key 'Project' results in 'Project=$$Project$$'
      */
-    public static XLinkIdentifierField returnIdentifierIdAsField(Object identifierId){
-        return new XLinkIdentifierField(XLINK_IDENTIFIER_KEY, "Id of XLinkIdentifier Instance.", identifierId, identifierId.getClass(), true);
+    public static String returnXLinkUrl(XLinkUrl xLinkUrl){
+        String completeUrl = xLinkUrl.getUrl();       
+        if(completeUrl == null)return null;
+        
+        List<OpenEngSBModelEntry> entries = xLinkUrl.getIdentifier().getOpenEngSBModelEntries();
+        
+
+        
+        for(OpenEngSBModelEntry entry : entries){
+            if(xLinkUrl.getUrl().equals(completeUrl)){
+                completeUrl+="?";
+            }else{
+                completeUrl+="&";
+            }      
+            
+            completeUrl += entry.getKey()+"=";
+            if(entry.getValue() == null){
+                completeUrl += "$$"+entry.getKey()+"$$";
+            }else{
+                completeUrl += entry.getValue();
+            }
+        }
+        
+        return completeUrl;
     }
+    
+    /**
+     * Returns true if the xLinkUrl´s identifier is duly completed
+     * @return true if the xLinkUrl´s identifier is duly completed
+     */
+    public static boolean isUrlDulyCompleted(XLinkUrl xLinkUrl){
+        return isIdentifierDulyCompleted(xLinkUrl.getIdentifier());
+    }
+    
+    /**
+     * Returns true if the XLink Identifier is duly completed
+     * @return true if the XLink Identifier is duly completed
+     */
+    public static boolean isIdentifierDulyCompleted(XLinkIdentifier xLinkIdentifier){
+        boolean ok = true;
+        for(OpenEngSBModelEntry entry  : xLinkIdentifier.getOpenEngSBModelEntries()){
+            if(entry.getValue() == null){
+                ok = false;
+                break;
+            }
+        }
+        return ok;
+    }    
+    
 }
