@@ -29,7 +29,7 @@ public class SecurityBundleActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        RootSecurityHolder.init();
+        RootSubjectHolder.init();
         executor.submit(new UserDataInitializer());
     }
 

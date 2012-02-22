@@ -67,7 +67,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
-import org.openengsb.core.security.internal.RootSecurityHolder;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
@@ -97,7 +97,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        RootSecurityHolder.init();
+        RootSubjectHolder.init();
     }
 
     @Before

@@ -27,7 +27,7 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
 
-public final class RootSecurityHolder {
+public final class RootSubjectHolder {
 
     private static AtomicReference<Subject> rootSubject = new AtomicReference<Subject>();
 
@@ -60,6 +60,6 @@ public final class RootSecurityHolder {
         }
     }
 
-    private RootSecurityHolder() {
+    private RootSubjectHolder() {
     }
 }

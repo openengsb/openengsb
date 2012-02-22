@@ -29,7 +29,7 @@ import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.util.ContextAwareCallable;
 import org.openengsb.core.common.util.ContextAwareRunnable;
 import org.openengsb.core.common.util.ThreadLocalUtil;
-import org.openengsb.core.security.internal.RootSecurityHolder;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 
 /**
  * provides util-methods for security purposes
@@ -70,7 +70,7 @@ public final class SecurityContext {
     public static <ReturnType> ReturnType executeWithSystemPermissions(Callable<ReturnType> task)
         throws ExecutionException {
         ContextAwareCallable<ReturnType> contextAwareCallable = new ContextAwareCallable<ReturnType>(task);
-        return RootSecurityHolder.getRootSubject().execute(contextAwareCallable);
+        return RootSubjectHolder.getRootSubject().execute(contextAwareCallable);
     }
 
     public static ExecutorService getSecurityContextAwareExecutor(ExecutorService original) {
@@ -83,7 +83,7 @@ public final class SecurityContext {
      */
     public static void executeWithSystemPermissions(Runnable task) {
         ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
-        RootSecurityHolder.getRootSubject().execute(contextAwaretask);
+        RootSubjectHolder.getRootSubject().execute(contextAwaretask);
     }
 
     private SecurityContext() {

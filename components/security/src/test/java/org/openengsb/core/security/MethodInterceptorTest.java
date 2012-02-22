@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.service.AccessDeniedException;
-import org.openengsb.core.security.internal.RootSecurityHolder;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
@@ -63,7 +63,7 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
 
     @Before
     public void setUp() throws Exception {
-        RootSecurityHolder.init();
+        RootSubjectHolder.init();
         DefaultSecurityManager sm = new DefaultSecurityManager();
         sm.setAuthenticator(new Authenticator() {
             @Override
