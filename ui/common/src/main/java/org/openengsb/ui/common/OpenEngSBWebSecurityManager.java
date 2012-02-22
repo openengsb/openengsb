@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.ui.admin;
+package org.openengsb.ui.common;
 
 import java.util.Collection;
 

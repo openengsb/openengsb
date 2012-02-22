@@ -61,10 +61,6 @@
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
 
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
- 
-<!--  <bean id="shiroFilterFactory" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean"  factory-method="getObject">
-    <property name="securityManager" ref="securityManager" />
-  </bean>-->
 
   <wicket:filter id="shiroFilter" filterClass="org.apache.shiro.web.servlet.ShiroFilter" priority="2"
     applicationName="openengsb" />
@@ -72,18 +68,5 @@
   <bean id="attributeStore" class="org.openengsb.core.common.SecurityAttributeProviderImpl" />
 
   <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeStore" />
-  
-<!--   org.openengsb.ui.admin.OpenEngSBWebSecurityManager -->
-  
-  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
-    filter="(location.root=authentication-root)" />
-  
-  <bean id="webSecurityManager" class="org.openengsb.ui.admin.OpenEngSBWebSecurityManager" init-method="init">
-    <property name="authenticator">
-      <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
-        <property name="authenticator" ref="authenticator" />
-      </bean>
-    </property>
-  </bean>
 
 </blueprint>

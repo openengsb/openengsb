@@ -17,6 +17,8 @@
 
 package org.openengsb.ui.common;
 
+import org.apache.shiro.web.env.DefaultWebEnvironment;
+import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
@@ -28,13 +30,21 @@ import org.ops4j.pax.wicket.api.InjectorHolder;
  */
 public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplication {
 
+  
     @Override
     protected void init() {
         super.init();
+        initWebEnvironment();
         DomainAuthorizationStrategy strategy = new DomainAuthorizationStrategy();
         InjectorHolder.getInjector().inject(strategy, DomainAuthorizationStrategy.class);
         getSecuritySettings().setAuthorizationStrategy(strategy);
         getResourceSettings().setAddLastModifiedTimeToResourceReferenceUrl(true);
+    }
+
+    private void initWebEnvironment() {
+        DefaultWebEnvironment environment = new DefaultWebEnvironment();
+        environment.setSecurityManager(OpenEngSBWebSecurityManager.get());
+        getServletContext().setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
     }
 
     @Override

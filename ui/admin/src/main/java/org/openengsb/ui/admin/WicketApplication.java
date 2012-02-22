@@ -17,8 +17,6 @@
 
 package org.openengsb.ui.admin;
 
-import org.apache.shiro.web.env.DefaultWebEnvironment;
-import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -33,9 +31,6 @@ public class WicketApplication extends OpenEngSBWicketApplication {
 
     @Override
     protected void init() {
-        DefaultWebEnvironment environment = new DefaultWebEnvironment();
-        environment.setSecurityManager(OpenEngSBWebSecurityManager.get());
-        getServletContext().setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
         super.init();
     }
 

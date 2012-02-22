@@ -37,9 +37,6 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 
-//    @PaxWicketBean(name = "webSecurityManager")
-//    private WebSecurityManager webSecurityManager;
-
     public OpenEngSBWebSession(Request request) {
         super(request);
     }
@@ -59,7 +56,6 @@ public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         try {
-//            ThreadContext.bind(webSecurityManager);
             SecurityContext.login(username, new Password(password));
         } catch (AuthenticationException e) {
             LOGGER.error("Authentication failed");
