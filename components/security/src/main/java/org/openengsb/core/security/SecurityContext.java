@@ -36,11 +36,17 @@ import org.openengsb.core.security.internal.RootSubjectHolder;
  */
 public final class SecurityContext {
 
+    /**
+     * Authenticate with the given username and credentials, and associated the subject with the current thread.
+     */
     public static void login(String username, Credentials credentials) {
         OpenEngSBAuthenticationToken token = new OpenEngSBAuthenticationToken(username, credentials);
         SecurityUtils.getSubject().login(token);
     }
 
+    /**
+     * Logout the subject that is authenticated in the current Thread.
+     */
     public static void logout() {
         Subject subject = ThreadContext.getSubject();
         if (subject == null) {
@@ -49,6 +55,9 @@ public final class SecurityContext {
         subject.logout();
     }
 
+    /**
+     * get the primary principal from the authenticated subject.
+     */
     public static Object getAuthenticatedPrincipal() {
         Subject subject = ThreadContext.getSubject();
         if (subject == null) {
@@ -57,9 +66,16 @@ public final class SecurityContext {
         return subject.getPrincipal();
     }
 
+    /**
+     * get a list of all principals associated with the currently authenticated subject.
+     */
     @SuppressWarnings("unchecked")
     public static List<Object> getAllAuthenticatedPrincipals() {
-        return ThreadContext.getSubject().getPrincipals().asList();
+        Subject subject = ThreadContext.getSubject();
+        if (subject == null) {
+            return null;
+        }
+        return subject.getPrincipals().asList();
     }
 
     /**
@@ -73,17 +89,21 @@ public final class SecurityContext {
         return RootSubjectHolder.getRootSubject().execute(contextAwareCallable);
     }
 
-    public static ExecutorService getSecurityContextAwareExecutor(ExecutorService original) {
-        SubjectAwareExecutorService subjectAwareExecutor = new SubjectAwareExecutorService(original);
-        return ThreadLocalUtil.contextAwareExecutor(subjectAwareExecutor);
-    }
-
     /**
      * Executes the given task with root-permissions. Use with care.
      */
     public static void executeWithSystemPermissions(Runnable task) {
         ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
         RootSubjectHolder.getRootSubject().execute(contextAwaretask);
+    }
+
+    /**
+     * Wrap the given executor so that it takes authentication-information and context are inherited to tasks when they
+     * are submitted.
+     */
+    public static ExecutorService getSecurityContextAwareExecutor(ExecutorService original) {
+        SubjectAwareExecutorService subjectAwareExecutor = new SubjectAwareExecutorService(original);
+        return ThreadLocalUtil.contextAwareExecutor(subjectAwareExecutor);
     }
 
     private SecurityContext() {
