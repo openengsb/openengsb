@@ -30,7 +30,6 @@ import org.ops4j.pax.wicket.api.InjectorHolder;
  */
 public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplication {
 
-  
     @Override
     protected void init() {
         super.init();
@@ -43,7 +42,9 @@ public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplica
 
     private void initWebEnvironment() {
         DefaultWebEnvironment environment = new DefaultWebEnvironment();
-        environment.setSecurityManager(OpenEngSBWebSecurityManager.get());
+        SecurityManagerHolder manager = new SecurityManagerHolder();
+        InjectorHolder.getInjector().inject(manager, SecurityManagerHolder.class);
+        environment.setSecurityManager(manager.getWebSecurityManager());
         getServletContext().setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
     }
 

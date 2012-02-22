@@ -63,7 +63,7 @@
   <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
     filter="(location.root=authentication-root)" />
   
-  <bean id="webSecurityManager" class="org.openengsb.ui.common.OpenEngSBWebSecurityManager" init-method="init">
+  <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
     <property name="authenticator">
       <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
         <property name="authenticator" ref="authenticator" />

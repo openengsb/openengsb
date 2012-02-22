@@ -120,6 +120,7 @@
               net.sf.cglib.reflect;version="[2,3)",
               org.apache.shiro.subject,
               org.apache.shiro.session.mgt,
+              org.apache.shiro.authz,
               *
             </Import-Package>
           </instructions>

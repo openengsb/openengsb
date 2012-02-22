@@ -68,7 +68,7 @@ import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
-import org.openengsb.ui.common.OpenEngSBWebSecurityManager;
+import org.openengsb.ui.common.SecurityManagerHolder;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
@@ -202,7 +202,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 //
 //        context.putBean("securityManager", defaultWebSecurityManager);
         
-        OpenEngSBWebSecurityManager openEngSBSecurityManager = new OpenEngSBWebSecurityManager();
+        SecurityManagerHolder openEngSBSecurityManager = new SecurityManagerHolder();
         OpenEngSBShiroAuthenticator openEngSBShiroAuthenticator = new OpenEngSBShiroAuthenticator();
         openEngSBShiroAuthenticator.setAuthenticator(authConnector);
         openEngSBSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);

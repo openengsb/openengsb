@@ -16,33 +16,20 @@
  */
 package org.openengsb.ui.common;
 
-import java.util.Collection;
-
-import org.apache.shiro.realm.Realm;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
-public class OpenEngSBWebSecurityManager extends DefaultWebSecurityManager {
+public class SecurityManagerHolder {
 
-    private static WebSecurityManager instance;
+    @PaxWicketBean(name = "webSecurityManager")
+    private WebSecurityManager webSecurityManager;
 
-    public OpenEngSBWebSecurityManager() {
+    public WebSecurityManager getWebSecurityManager() {
+        return webSecurityManager;
     }
 
-    public OpenEngSBWebSecurityManager(Collection<Realm> realms) {
-        super(realms);
-    }
-
-    public OpenEngSBWebSecurityManager(Realm singleRealm) {
-        super(singleRealm);
-    }
-
-    public void init() {
-        instance = this;
-    }
-
-    public static WebSecurityManager get() {
-        return instance;
+    public void setWebSecurityManager(WebSecurityManager webSecurityManager) {
+        this.webSecurityManager = webSecurityManager;
     }
 
 }
