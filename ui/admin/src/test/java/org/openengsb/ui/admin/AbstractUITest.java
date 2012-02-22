@@ -26,6 +26,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -68,7 +69,6 @@ import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
-import org.openengsb.ui.common.SecurityManagerHolder;
 import org.ops4j.pax.wicket.test.spring.ApplicationContextMock;
 import org.ops4j.pax.wicket.test.spring.PaxWicketSpringBeanComponentInjector;
 import org.osgi.framework.BundleContext;
@@ -199,14 +199,12 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
         context.putBean("authorizer", instance);
-//
-//        context.putBean("securityManager", defaultWebSecurityManager);
-        
-        SecurityManagerHolder openEngSBSecurityManager = new SecurityManagerHolder();
+
         OpenEngSBShiroAuthenticator openEngSBShiroAuthenticator = new OpenEngSBShiroAuthenticator();
         openEngSBShiroAuthenticator.setAuthenticator(authConnector);
-        openEngSBSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
-        openEngSBSecurityManager.init();
+        DefaultWebSecurityManager webSecurityManager = new DefaultWebSecurityManager();
+        webSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
+        context.putBean("webSecurityManager", webSecurityManager);
     }
 
 }
