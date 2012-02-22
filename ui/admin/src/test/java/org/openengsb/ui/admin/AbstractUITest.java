@@ -154,9 +154,6 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         SecurityAttributeProvider attributeStore = new SecurityAttributeProviderImpl();
         context.putBean("attributeStore", attributeStore);
         context.putBean("attributeProviders", Collections.singletonList(attributeStore));
-
-//        context.putBean("wiringService", wiringService);
-//        context.putBean("ruleManager", mock(RuleManager.class));
     }
 
     @Override
