@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.common.xlink;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
+import org.openengsb.core.api.xlink.XLinkIdentifier;
+import org.openengsb.core.api.xlink.XLinkUrl;
 
 /**
  * Static util class for xlink, containing xlink definition fields and methods for Linkcreation

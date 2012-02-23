@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.common.xlink;
+
+import org.openengsb.core.api.xlink.XLinkIdentifier;
 
 /**
  * Identifier for Object Oriented Sourcecode

@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.common.xlink;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
+import org.openengsb.core.api.xlink.XLinkUrl;
 import org.openengsb.core.common.util.ModelUtils;
 
 public class XLinkServerSideTest {
