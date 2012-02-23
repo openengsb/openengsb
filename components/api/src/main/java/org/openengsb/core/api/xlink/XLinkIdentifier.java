@@ -32,5 +32,9 @@ public interface XLinkIdentifier extends OpenEngSBModel{
     public String getIdentifierId();
 
     public void setIdentifierId(String identifierId);
+    
+    public String getValidTill();
+    
+    public void setValidTill(String till);
 
 }

@@ -17,6 +17,9 @@
 
 package org.openengsb.core.api.xlink;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
@@ -38,23 +41,22 @@ public class XLinkUtils {
      * Return the Link to the Registry´s HTTP-Servlet containing the complete Modelobject´s Identifier. 
      * The fields of the Identifier are transportet as GET paramteters.
      * Every IdentifierField which is null is set with placeholder value like '$$KeyValue$$'. 
-     * e.g. a field with the value null and the key 'Project' results in 'Project=$$Project$$'
+     * e.g. a field with the value null and the key 'Project' results in 'Project=$$Project$$'.
+     * Returns null if the XLinkUrls attributes are not set.
      */
     public static String returnXLinkUrl(XLinkUrl xLinkUrl){
         String completeUrl = xLinkUrl.getUrl();       
         if(completeUrl == null)return null;
-        
         List<OpenEngSBModelEntry> entries = xLinkUrl.getIdentifier().getOpenEngSBModelEntries();
-        
-
-        
         for(OpenEngSBModelEntry entry : entries){
+            if(entry.getValue() == null && containsPartnerField(entries,entry)){
+                continue;
+            } 
             if(xLinkUrl.getUrl().equals(completeUrl)){
                 completeUrl+="?";
             }else{
                 completeUrl+="&";
             }      
-            
             completeUrl += entry.getKey()+"=";
             if(entry.getValue() == null){
                 completeUrl += "$$"+entry.getKey()+"$$";
@@ -62,8 +64,37 @@ public class XLinkUtils {
                 completeUrl += entry.getValue();
             }
         }
-        
         return completeUrl;
+    }
+    
+    private static boolean containsPartnerField(List<OpenEngSBModelEntry> entries, OpenEngSBModelEntry entry){     
+        String key = entry.getKey();
+        String firstChar = key.substring(0, 1);
+        if(firstChar.matches("[A-Z]")){
+            firstChar = firstChar.toLowerCase();
+        }else{
+            firstChar = firstChar.toUpperCase();
+        }
+        String partnerKey = firstChar + key.substring(1,key.length());
+        return containsKey(entries,partnerKey);
+    }
+    
+    private static boolean containsKey(List<OpenEngSBModelEntry> entries, String key){
+    	boolean containsKey = false;
+    	for(OpenEngSBModelEntry entry : entries){
+    		if(entry.getKey().equals(key)){
+    			containsKey = true;
+    			break;
+    		}
+    	}
+    	return containsKey; 
+    }
+     
+    public static String returnValidTillTimeStamp(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 3);
+        Format formatter = new SimpleDateFormat("yyyyMMddkkmmss");
+        return formatter.format(calendar.getTime());
     }
     
     /**
@@ -78,10 +109,10 @@ public class XLinkUtils {
      * Returns true if the XLink Identifier is duly completed
      * @return true if the XLink Identifier is duly completed
      */
-    public static boolean isIdentifierDulyCompleted(XLinkIdentifier xLinkIdentifier){
+    private static boolean isIdentifierDulyCompleted(XLinkIdentifier xLinkIdentifier){
         boolean ok = true;
         for(OpenEngSBModelEntry entry  : xLinkIdentifier.getOpenEngSBModelEntries()){
-            if(entry.getValue() == null){
+            if(entry.getValue() == null && !containsPartnerField(xLinkIdentifier.getOpenEngSBModelEntries(),entry)){
                 ok = false;
                 break;
             }
