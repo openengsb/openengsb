@@ -161,7 +161,7 @@
     <junit.version>4.8.2</junit.version>
     <commons.pool.version>1.5.7</commons.pool.version>
     <commons.jexl.version>2.0.1</commons.jexl.version>
-    <openjpa.version>2.1.1</openjpa.version>
+    <openjpa.version>2.2.0</openjpa.version>
     <scripting.version>1.5.0</scripting.version>
     <xbean.blueprint.version>3.7</xbean.blueprint.version>
     <h2.version>1.3.163</h2.version>
