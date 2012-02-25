@@ -1,33 +1,16 @@
 package org.openengsb.infrastructure.ldap.internal;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.apache.directory.ldap.client.api.LdapConnection;
-import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
+import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Attribute;
-import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.model.entry.DefaultAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteRequest;
-import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.model.message.SearchScope;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.schema.AttributeType;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.model.schema.registries.DefaultSchema;
-import org.apache.directory.shared.ldap.model.schema.registries.Schema;
-import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.NoSuchAttributeException;
 import org.openengsb.core.api.security.service.NoSuchCredentialsException;
@@ -36,626 +19,506 @@ import org.openengsb.core.api.security.service.PermissionSetNotFoundException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
+import org.openengsb.core.common.util.CollectionUtilsExtended;
 import org.openengsb.core.security.internal.EntryUtils;
 import org.openengsb.core.security.internal.model.EntryElement;
+import org.openengsb.infrastructure.ldap.internal.model.EntryAlreadyExistsException;
+import org.openengsb.infrastructure.ldap.internal.model.EntryFactory;
+import org.openengsb.infrastructure.ldap.internal.model.MissingParentException;
+import org.openengsb.infrastructure.ldap.internal.model.NoSuchNodeException;
+import org.openengsb.infrastructure.ldap.internal.model.OrderFilter;
+import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ReflectionUtils;
+
+import com.google.common.collect.ComputationException;
+
 
 public class UserDataManagerLdap implements UserDataManager {
 
+    private LdapDao dao;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataManagerLdap.class);
 
-    /* use a schema manager with DNs! (why?)
-     * dc=openengsb,dc=org
-     * ou=users
-     */
-
-    /* IMPORTANT!! DO NOT DELETE!!
-     * IN ORDER TO STORE PASSWORDS IN PLAINTEXT, SET
-     * DN: ads-interceptorId=passwordHashingInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
-     * ads-enabled to FALSE (in apacheds). requires restart of server to take effect.
-     * 
-     * NOTE: correct copy-paste error in description of UserDataManager.setUserAttribute:
-     * 2nd exception is not thrown
-     * 
-     * check order when storing and retrieving lists of things!
-     * 
-     * */
-
-    private LdapConnection connection;
-    //private SchemaManager schemaManager;
-
-    private String dnUser = "uid=%s,ou=users,dc=openengsb,dc=org";
-    private String dnCredentials = "cn=%s,ou=credentials,uid=%s,ou=users,dc=openengsb,dc=org";
-    private String dnAttribute = "cn=%s,ou=attributes,uid=%s,ou=users,dc=openengsb,dc=org";
-    private String objectclass = "objectclass";
-
-    public UserDataManagerLdap(){
+    public void setLdapDao(LdapDao dao){
+        this.dao = dao;
     }
 
-    public void setConnection(LdapConnection connection) {
-        this.connection = connection;
+    public LdapDao getDao(){
+        return dao;
     }
 
-    public void loadSchemaManager(){
-        
-//        String openengsb = "openengsb";
-//        Schema openengsbSchema = new DefaultSchema(openengsb);
-//        
-//        try {
-//            
-//            connection.loadSchema();
-//            schemaManager = connection.getSchemaManager();
-//            
-//            
-//            
-//            AttributeType javaClassNameAttributeType = schemaManager.getAttributeType("javaClassName");
-//            
-//            System.out.println(javaClassNameAttributeType != null);
-//            System.out.println(javaClassNameAttributeType);
-//            
-//            AttributeType psav = schemaManager.getAttributeType("openengsb-permissionSetAttributeValue");
-//            
-//            System.out.println(psav != null);
-//            System.out.println(psav);
-//            
-//            List<Schema> enabledSchemas = schemaManager.getEnabled();
-//            
-//            System.out.println("enabled");
-//            for(Schema s : enabledSchemas){
-//                System.out.println(s);
-//            }
-//            
-//            List<Schema> disabledSchemas = schemaManager.getDisabled();
-//            
-//            System.out.println("disabled");
-//            for(Schema s : disabledSchemas){
-//                System.out.println(s);
-//            }
-//            
-//            
-//            
-//            
-////            SchemaLoader loader = schemaManager.getLoader();
-////            loader.addSchema(openengsbSchema);
-////            
-////            schemaManager.enable(openengsb);
-////            schemaManager.load(openengsb);
-////            
-////            schemaManager.loadAllEnabled();
-////            
-////            loader.loadAttributeTypes(openengsbSchema);
-////            loader.loadObjectClasses(openengsbSchema);
-//            
-////            Schema core = schemaManager.getLoadedSchema("core");
-////            LOGGER.warn(new Boolean(core.getContent().isEmpty()).toString());
-////            
-////            LOGGER.warn("loaded: " + new Boolean(schemaManager.isSchemaLoaded(openengsb)).toString());
-////            LOGGER.warn("enabled: " + new Boolean(schemaManager.isEnabled(openengsb)).toString());
-////            
-////            AttributeTypeRegistry registry = schemaManager.getAttributeTypeRegistry();
-////            registry.renameSchema(openengsb, "haha");
-////            
-////            LOGGER.warn("javaValue: " + new Boolean(registry.contains("javaValue")).toString());
-////            LOGGER.warn("javaClassName: " + new Boolean(registry.contains("javaClassName")).toString());
-////            LOGGER.warn("pd: " + new Boolean(registry.contains("pd")).toString());
-////            
-////            ObjectClassRegistry or = schemaManager.getObjectClassRegistry();
-////            
-////            
-////            LOGGER.warn("namedEntity: " + new Boolean(or.contains("namedEntity")).toString());
-////            LOGGER.warn("organizationalUnit: " + new Boolean(or.contains("organizationalUnit")).toString());
-////            LOGGER.warn("openengsbUser: " + new Boolean(registry.contains("openengsbUser")).toString());
-////            LOGGER.warn("userAttribute: " + new Boolean(registry.contains("userAttribute")).toString());
-////            
-////            for(Schema schema: schemaManager.getEnabled()){
-////                LOGGER.warn(schema.getSchemaName());
-////            }
-//            
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            throw new RuntimeException(e);
-//        }
+    @Override
+    public String getPermissionSetAttribute(String permissionSet, String attributename) throws PermissionSetNotFoundException, NoSuchAttributeException {
+        Dn dn = SchemaConstants.globalPermissionSetAttribute(permissionSet, attributename);
+        Entry entry;
+        try {
+            entry = dao.lookup(dn);
+        } catch (NoSuchNodeException e) {
+            throw new NoSuchAttributeException(attributename);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
+        return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
     }
 
-    
-    private void storeSorted(Entry entry){
-        
+    @Override
+    public void setPermissionSetAttribute(String permissionSet, String attributename, String value) throws PermissionSetNotFoundException {
+        Dn parent = SchemaConstants.ouGlobalPermissionSetAttributes(permissionSet);
+        Entry entry = EntryFactory.namedDescriptiveObject(attributename, value, parent);
+        try {
+            dao.storeOverwriteExisting(entry);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
     }
-    
-    
+
+    @Override
+    public Collection<String> getPermissionSetList() {
+        Dn parent = SchemaConstants.ouGlobalPermissionSets();
+        SearchCursor cursor = dao.searchOneLevel(parent);
+        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+    }
+
+    @Override
+    public Collection<String> getPermissionSetsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
+        Dn parent = SchemaConstants.ouGlobalPermissionSetChildren(permissionSet);
+        SearchCursor cursor;
+        try {
+            cursor = dao.searchOneLevel(parent);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
+        //TODO here we can also restore order!
+        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+    }
+
+    @Override
+    public Collection<String> getPermissionSetsFromUser(String username) throws UserNotFoundException {
+        Dn parent = SchemaConstants.ouUserPermissionSets(username);
+        SearchCursor cursor;
+        try {
+            cursor = dao.searchOneLevel(parent);
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException(username);
+        }
+        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
+    }
+
+    @Override
+    public void addPermissionSetToUser(String username, String... permissionSet) throws UserNotFoundException, PermissionSetNotFoundException {
+        Dn parent = SchemaConstants.ouUserPermissionSets(username);
+        try {
+            addPermissionSets(parent, permissionSet);
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException(username);
+        }
+    }
+
+    @Override
+    public void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet) throws PermissionSetNotFoundException {
+        Dn parent = SchemaConstants.ouGlobalPermissionSetChildren(permissionSetParent);
+        try {
+            addPermissionSets(parent, permissionSet);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSetParent);
+        }
+    }
+
+    private void addPermissionSets(Dn parent, String... permissionSet) throws MissingParentException {
+
+        for(String s : permissionSet){
+            if(!dao.exists(SchemaConstants.globalPermissionSet(s))){
+                throw new PermissionSetNotFoundException(s);
+            }
+        }
+
+        List<Entry> entries = new LinkedList<Entry>();
+        for(String s : permissionSet){ //done in separate loop to provide some atomicity
+            Entry entry = EntryFactory.namedObject(s, parent);
+            entries.add(entry);
+        }
+
+        String oldMaxId = updateMaxId(parent, permissionSet.length);
+        OrderFilter.addIds(entries, oldMaxId, false);
+        dao.storeOverwriteExisting(entries);
+    }
+
+    @Override
+    public void addPermissionToUser(String username, Permission... permissions) throws UserNotFoundException {
+        Dn parent = SchemaConstants.ouUserPermissionsDirect(username);
+        try {
+            addPermissions(parent, permissions);
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException(username);
+        }
+    }
+
+    @Override
+    public void addPermissionToSet(String permissionSet, Permission... permissions) throws PermissionSetNotFoundException {
+        Dn parent = SchemaConstants.ouGlobalPermissionsDirect(permissionSet);
+        try {
+            addPermissions(parent, permissions);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
+    }
+
+    private void addPermissions(Dn parent, Permission... permission) throws MissingParentException {
+        List<Entry> entries = new LinkedList<Entry>();
+        for(Permission p : permission){
+            Entry entry = EntryFactory.javaObject(p.getClass().getName(), p.describe(), parent);
+            entries.add(entry);
+        }
+        String maxId = updateMaxId(parent, permission.length);
+        OrderFilter.addIds(entries, maxId, true);
+        dao.storeSkipExisting(entries);
+    }
+
+    @Override
+    public void createPermissionSet(String permissionSet, Permission... permissions) throws PermissionSetAlreadyExistsException {
+
+        List<Entry> structure = globalPermissionSetStructure(permissionSet, permissions);
+        try {
+            dao.store(structure);
+        } catch (EntryAlreadyExistsException e) {
+            throw new PermissionSetAlreadyExistsException();
+        }
+    }
+
+    private List<Entry> globalPermissionSetStructure(String permissionSet, Permission... permissions){
+
+        List<Entry> entries = new LinkedList<Entry>();
+        List<Entry> permissionEntries = new LinkedList<Entry>();
+        Dn parent = SchemaConstants.ouGlobalPermissionSets();
+
+        Entry permissionSetEntry = EntryFactory.namedObject(permissionSet, parent);
+        Entry ouDirect = EntryFactory.organizationalUnit("direct", permissionSetEntry.getDn());
+        Entry ouChildrenSets = EntryFactory.organizationalUnit("childrenSets", permissionSetEntry.getDn());
+        Entry ouAttributes = EntryFactory.organizationalUnit("attributes", permissionSetEntry.getDn());
+
+        for(Permission p : permissions){
+            permissionEntries.add(EntryFactory.javaObject(p.getClass().getName(), p.describe(), ouDirect.getDn()));
+        }
+
+        OrderFilter.addIds(permissionEntries, true);
+        OrderFilter.makeContainerAware(ouDirect, String.valueOf(permissions.length));
+        OrderFilter.makeContainerAware(ouChildrenSets);
+
+        entries.add(permissionSetEntry);
+        entries.add(ouAttributes);
+        entries.add(ouDirect);
+        entries.add(ouChildrenSets);
+        entries.addAll(permissionEntries);
+
+        return entries;
+    }
+
+    @Override
+    public void removePermissionFromSet(String permissionSet, Permission... permission) throws PermissionSetNotFoundException {
+        Dn baseDn = SchemaConstants.ouGlobalPermissionsDirect(permissionSet);
+        try {
+            deletePermission(baseDn, permission);
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
+    }
+
+    @Override
+    public void removePermissionFromUser(String username, Permission... permission) throws UserNotFoundException {
+        Dn baseDn = SchemaConstants.ouUserPermissionsDirect(username);
+        try {
+            deletePermission(baseDn, permission);
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException(username);
+        }
+    }
+
+    private void deletePermission(Dn baseDn, Permission... permission) {
+        for(Permission p : permission){
+            //a permission is deleted if it's class and description matches
+            dao.deleteMatchingChildren(baseDn, String.format("(javaClassName=%s)(openengsb-string=%s)", p.getClass().getName(), p.describe()));
+        }
+    }
+
+    @Override
+    public void removePermissionSetFromPermissionSet(String permissionSetParent, String... permissionSet) throws PermissionSetNotFoundException {
+        for (String child : permissionSet) {
+            Dn baseDn = SchemaConstants.globalPermissionChild(permissionSetParent, child);
+            try {
+                dao.deleteSubtreeIncludingRoot(baseDn);
+            } catch (MissingParentException e) {
+                throw new PermissionSetNotFoundException(permissionSetParent);
+            } catch (NoSuchNodeException e) {
+                LOGGER.warn("permissionSet {} was to be deleted, but not found", child);
+            }
+        }
+    }
+
+    @Override
+    public void removePermissionSetFromUser(String username, String... permissionSet) throws UserNotFoundException {
+        for (String child : permissionSet) {
+            Dn baseDn = SchemaConstants.userPermissionSet(username, child);
+            try {
+                dao.deleteSubtreeIncludingRoot(baseDn);
+            } catch (MissingParentException e) {
+                throw new UserNotFoundException(username);
+            } catch (NoSuchNodeException e) {
+                LOGGER.warn("permissionSet {} was to be deleted, but not found", child);
+            }
+        }
+    }
+
+    //TODO make missing node exception superclass of missing parent exception. makes sense!
+
+    @Override
+    public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
+        SearchCursor cursor;
+        try {
+            cursor = dao.searchOneLevel(SchemaConstants.ouUserPermissionsDirect(username));
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
+        }
+        List<Entry> entries = OrderFilter.sortById(cursor);
+        return extractPermissions(entries);
+    }
+
+    private Collection<Permission> extractPermissions(List<Entry> entries){
+        Collection<Permission> permissions = new LinkedList<Permission>();
+        for(Entry entry : entries){
+            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
+            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+            Class<?> elementType;
+            try {
+                elementType = Class.forName(type);
+            } catch (ClassNotFoundException e) {
+                throw new ComputationException(e);
+            }
+            try {
+                Constructor<?> constructor = elementType.getConstructor(String.class);
+                permissions.add((Permission)constructor.newInstance(value));
+            } catch (Exception e) {
+                ReflectionUtils.handleReflectionException(e);
+                throw new ComputationException(e);
+            }
+        }
+        return permissions;
+    }
+
+    @Override
+    public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
+        //TODO improve performance by better query
+        return CollectionUtilsExtended.filterCollectionByClass(getPermissionsForUser(username), type);
+    }
+
+    @Override
+    public Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
+        SearchCursor cursor;
+        try {
+            cursor = dao.searchOneLevel(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
+        } catch (MissingParentException e) {
+            throw new PermissionSetNotFoundException(permissionSet);
+        }
+        List<Entry> entries = OrderFilter.sortById(cursor);
+        return extractPermissions(entries);
+    }
+
+    @Override
+    public Collection<Permission> getAllPermissionsForUser(String username) throws UserNotFoundException {
+        Collection<Permission> result = new HashSet<Permission>();
+        result.addAll(getPermissionsForUser(username));
+        for(String s : getPermissionSetsFromUser(username)){
+            result.addAll(getAllPermissionsFromPermissionSet(s));
+        }
+        return result;
+    }
+
+    @Override
+    public <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
+        //TODO improve performance by better query
+        return CollectionUtilsExtended.filterCollectionByClass(getPermissionsForUser(username), type);
+    }
+
+    //TODO note: this does not reflect insertion order because HashSet is used
+
+    @Override
+    public Collection<Permission> getAllPermissionsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
+        Collection<Permission> result = new HashSet<Permission>();
+        for(String s : getAllPermissionSetsFromPermissionSet(permissionSet)){
+            result.addAll(getPermissionsFromPermissionSet(s));
+        }
+        return result;
+    }
+
+    private Collection<String> getAllPermissionSetsFromPermissionSet(String permissionSet){
+        Collection<String> result = new HashSet<String>();
+        for(String s : getPermissionSetsFromPermissionSet(permissionSet)){
+            boolean b = result.addAll(getAllPermissionSetsFromPermissionSet(s));
+            if(!b){ //prevents circles
+                break;
+            }
+        }        
+        return result;
+    }
+
+
     @Override
     public Collection<String> getUserList() {
-        String baseDn = "ou=users,dc=openengsb,dc=org";
-        String filter = "(objectclass=openengsbUser)";
-        String attribute = "uid";
-        String username;
-        Dn dn;
-        EntryCursor entryCursor;
-        Collection<String> userList = new LinkedList<String>();
-
-        try {
-//            dn = new Dn(schemaManager, baseDn);
-            dn = new Dn(baseDn);
-            entryCursor = connection.search(dn, filter, SearchScope.ONELEVEL, attribute); 
-            while (entryCursor.next()) {
-                username = entryCursor.get().get(attribute).getString();
-                userList.add(username);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return userList;
-    }
-
-    private AddRequest buildAddRequestUser(String username) throws LdapException{
-
-        String dn = String.format(dnUser, username);
-
-        Object[] attributes = new String[] {
-                objectclass, "top",
-                objectclass, "openengsbUser",
-                "uid", username};
-        
-//        Entry entry = new DefaultEntry(schemaManager, dn, attributes);
-        Entry entry = new DefaultEntry(dn, attributes);
-        return new AddRequestImpl().setEntry(entry);
+        SearchCursor cursor = dao.searchOneLevel(SchemaConstants.ouUsers());
+        return LdapUtils.extractFirstValueOfAttribute(cursor, SchemaConstants.cnAttribute);
     }
 
     @Override
     public void createUser(String username) throws UserExistsException {
-
-        ResultResponse response;
-        LdapResult result;
-
+        List<Entry> userStructure = userStructure(username);
         try {
-            response = connection.add(buildAddRequestUser(username));
-        } catch (LdapException e) {
-            throw new RuntimeException(e);
-        }
-
-        result = response.getLdapResult();
-
-        if(result.getResultCode() == ResultCodeEnum.ENTRY_ALREADY_EXISTS){
+            dao.store(userStructure);
+        } catch (EntryAlreadyExistsException e) {
             throw new UserExistsException();
-        }else if(result.getResultCode() != ResultCodeEnum.SUCCESS){
-            throw new RuntimeException(result.getDiagnosticMessage());
-        } else {
-            String[] children = new String[] {"credentials", "attributes", "permissions"};
-            for(String child: children){
-                try {
-                    connection.add(buildAddRequestUserChild(child, username));
-                } catch (LdapException e) {
-                    LOGGER.warn("inconsistent state possible.");
-                    throw new RuntimeException(e);
-                }    
-            }
         }
-    }
-
-    private AddRequest buildAddRequestUserChild(String ou, String username) throws LdapException{
-
-        String dn = String.format("ou=%s,%s", ou, String.format(dnUser, username));
-
-        Object[] attributes = new String[] {
-                objectclass, "top",
-                objectclass, "organizationalUnit",
-                "ou", ou};
-
-        Entry entry = new DefaultEntry(dn, attributes);
-//        Entry entry = new DefaultEntry(schemaManager, dn, attributes);
-        return new AddRequestImpl().setEntry(entry);
     }
 
     @Override
     public void deleteUser(String username) {
-
-        LdapResult result;
-
         try {
-            Dn userDn = new Dn(String.format(dnUser, username));
-            result = deleteTree(userDn);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        if(result.getResultCode() == ResultCodeEnum.NO_SUCH_OBJECT){
-            LOGGER.warn("No such user, " + username);
-        }else if(result.getResultCode() != ResultCodeEnum.SUCCESS){
-            throw new RuntimeException(result.getDiagnosticMessage());
-        }
-    }
-
-    private AddRequest buildAddRequestCredentials(String username, String type, String value) throws LdapException{
-
-        String dn = String.format(dnCredentials, type, username);
-
-        Object[] attributes = new String[] {
-                objectclass, "top",
-                objectclass, "userCredentials",
-                objectclass, "namedEntity",
-                "cn", type,
-                "userPassword", value};
-
-        Entry entry = new DefaultEntry(dn, attributes);
-//        Entry entry = new DefaultEntry(schemaManager, dn, attributes);
-        return new AddRequestImpl().setEntry(entry);
-    }
-
-    private ModifyRequest buildModifyRequestCredentials(String username, String type, String value) throws LdapException{
-        Dn dn = new Dn(String.format(dnCredentials, type, username));
-//        Dn dn = new Dn(schemaManager, String.format(dnCredentials, type, username));
-        ModifyRequest modifyRequest = new ModifyRequestImpl();
-        modifyRequest.setName(dn);
-        return modifyRequest.replace("userPassword", value);
-    }
-
-    private DeleteRequest buildDeleteRequestCredentials(String username, String type) throws LdapException{
-        Dn dn = new Dn(String.format(dnCredentials, type, username));
-//        Dn dn = new Dn(schemaManager, String.format(dnCredentials, type, username));
-        return new DeleteRequestImpl().setName(dn);
-    }
-
-    @Override
-    public void setUserCredentials(String username, String type, String value) throws UserNotFoundException {
-
-        ResultResponse response;
-        LdapResult result;
-
-        try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            } else if (!connection.exists(String.format(dnCredentials, type, username))){
-                response = connection.add(buildAddRequestCredentials(username, type, value));
-            } else {
-                response = connection.modify(buildModifyRequestCredentials(username, type, value));
-            }
-        } catch (LdapException e) {
-            throw new RuntimeException(e);
-        }
-
-        result = response.getLdapResult();
-
-        if(result.getResultCode() != ResultCodeEnum.SUCCESS){
-            throw new RuntimeException(result.getDiagnosticMessage());
+            dao.deleteSubtreeIncludingRoot(SchemaConstants.user(username));
+        } catch (NoSuchNodeException e) {
+            LOGGER.warn("user {} was to be deleted, but not found", username);
         }
     }
 
     @Override
-    public String getUserCredentials(String username, String key) throws UserNotFoundException, NoSuchCredentialsException {
-        String credentialsDn = String.format(this.dnCredentials, key, username);
-        String userPassword = "userPassword";
+    public List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException, NoSuchAttributeException {
+        SearchCursor cursor;
         try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            }else if(!connection.exists(credentialsDn)){
-                throw new NoSuchCredentialsException();
-            }
-            return connection.lookup(credentialsDn, userPassword).get(userPassword).get().getString();
-        } catch (LdapException e) {
-            throw new RuntimeException(e);
+            cursor = dao.searchOneLevel(SchemaConstants.userAttribute(username, attributename));
+        } catch (NoSuchNodeException e) {
+            throw new NoSuchAttributeException();
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
         }
+        List<Entry> entries = OrderFilter.sortById(cursor);
+        return extractUserAttributeValues(entries);
     }
 
-    @Override
-    public void removeUserCredentials(String username, String type) throws UserNotFoundException {
-
-        ResultResponse response;
-        LdapResult result;
-
-        try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            }
-            response = connection.delete(buildDeleteRequestCredentials(username, type));
-        } catch (LdapException e) {
-            throw new RuntimeException(e);
+    private List<Object> extractUserAttributeValues(List<Entry> entries){
+        List<EntryElement> entryElements = new LinkedList<EntryElement>();
+        for(Entry entry : entries){
+            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
+            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+            entryElements.add(new EntryElement(type, value));
         }
-
-        result = response.getLdapResult();
-
-        if(result.getResultCode() == ResultCodeEnum.NO_SUCH_OBJECT){
-            LOGGER.warn("No such credentials, " +  type);
-        } else if(result.getResultCode() != ResultCodeEnum.SUCCESS){
-            throw new RuntimeException(result.getDiagnosticMessage());
-        }
+        return EntryUtils.convertAllEntryElementsToObject(entryElements);
     }
 
     @Override
     public void setUserAttribute(String username, String attributename, Object... value) throws UserNotFoundException {
 
-        String attNameDn = String.format(this.dnAttribute, attributename, username);
+        Entry attribute = EntryFactory.namedObject(attributename, SchemaConstants.ouUserAttributes(username));
+        List<Entry> attributeValues = new LinkedList<Entry>();
+
+        for(EntryElement e : EntryUtils.makeEntryElementList(value)){
+            Entry entry = EntryFactory.javaObject(e.getType(), e.getValue(), attribute.getDn());
+            attributeValues.add(entry);
+        }
+        OrderFilter.addIds(attributeValues, true);
 
         try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            } else {
-                AddRequest addRequest = buildAddRequestAttributeName(username, attributename);
-                LOGGER.warn("adding attribute NAME: " + addRequest.getEntryDn().getName());
-                ResultResponse response = connection.add(addRequest);
-                LOGGER.warn(response.getLdapResult().getResultCode().toString());
-                Dn dn = new Dn(attNameDn);
-//                Dn dn = new Dn(schemaManager, attNameDn);
-                deleteChildren(dn);
+            dao.storeOverwriteExisting(attribute);
+            for(Entry entry : attributeValues){
+                dao.storeSkipExisting(entry);
             }
-
-            for(int position = 0; position < value.length; position++){
-                
-                AddRequest addRequest = buildAddRequestAttributeValue(position, attNameDn, value[position]);
-                LOGGER.warn("adding attribute VALUE: " + addRequest.getEntryDn().getName());
-                ResultResponse response = connection.add(addRequest);
-                if(response.getLdapResult().getResultCode() != ResultCodeEnum.SUCCESS){
-                    throw new Exception(response.getLdapResult().getDiagnosticMessage());
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    private AddRequest buildAddRequestAttributeName(String username, String attributename) throws LdapException{
-
-        String dn = String.format(dnAttribute, attributename, username);
-
-        Object[] attributes = new String[] {
-                objectclass, "top",
-                objectclass, "namedEntity",
-                "cn", attributename};
-
-        return new AddRequestImpl().setEntry(new DefaultEntry(dn, attributes));
-//        return new AddRequestImpl().setEntry(new DefaultEntry(schemaManager, dn, attributes));
-    }
-
-    private AddRequest buildAddRequestAttributeValue(int position, String baseDn, Object value) throws LdapException{
-
-        LOGGER.warn("baseDn: " + baseDn);
-        LOGGER.warn(new Boolean(connection.exists(baseDn)).toString());
-        
-        EntryElement entryElement = EntryUtils.makeEntryElement(value);
-        String attValueDn = String.format("cn=%s,%s", position, baseDn);
-
-        LOGGER.warn("total dn: " + attValueDn);
-        LOGGER.warn(entryElement.toString());
-        LOGGER.warn("only the value: " + entryElement.getValue());
-        
-        Object[] attributes = new String[] {
-                objectclass, "top",
-                objectclass, "javaObject",
-                objectclass, "userAttribute",
-                objectclass, "namedEntity",
-                "cn", String.valueOf(position),
-                "javaClassName", entryElement.getType(),
-                "javaValue", entryElement.getValue()
-                };
-
-
-        
-        Entry entry = new DefaultEntry(attValueDn, attributes);
-//        Entry entry = new DefaultEntry(schemaManager, attValueDn, attributes);
-        return new AddRequestImpl().setEntry(entry);
-    }
-
-    private LdapResult deleteTree(Dn root) throws Exception{
-        
-        EntryCursor entryCursor = connection.search(root, "(objectclass=*)", SearchScope.ONELEVEL);
-
-        while(entryCursor.next()){
-            deleteTree(entryCursor.get().getDn());
-        }
-        
-        DeleteRequest deleteRequest = new DeleteRequestImpl();
-        deleteRequest.setName(root);
-        LOGGER.warn("deleting: " + root.getName());
-        return connection.delete(deleteRequest).getLdapResult();
-    }
-
-    private void deleteChildren(Dn root) throws Exception{
-        EntryCursor entryCursor = connection.search(root, "(objectclass=*)", SearchScope.ONELEVEL);
-        while (entryCursor.next()) {
-            deleteTree(entryCursor.get().getDn());
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException(username);
         }
     }
 
     @Override
     public void removeUserAttribute(String username, String attributename) throws UserNotFoundException {
-
-        String attDn = String.format(dnAttribute, attributename, username);
-        LdapResult result;
-
         try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            } else if(!connection.exists(attDn)){
-                LOGGER.warn("No such attribute, " +  attributename);
-                return;
-            } else {
-                Dn dn = new Dn(attDn);
-//                Dn dn = new Dn(schemaManager, attDn);
-                result = deleteTree(dn);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            dao.deleteSubtreeIncludingRoot(SchemaConstants.userAttribute(username, attributename));
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
+        } catch (NoSuchNodeException e) {
+            LOGGER.warn("attribute {} was to be deleted, but not found", attributename);
         }
-
-        if(result.getResultCode() == ResultCodeEnum.NO_SUCH_OBJECT){
-            LOGGER.warn("No such user, " + username);
-        }else if(result.getResultCode() != ResultCodeEnum.SUCCESS){
-            throw new RuntimeException(result.getDiagnosticMessage());
-        }
-    }
-
-    private List<Object> getAttribute(String dn) throws Exception{
-
-        SortedMap<Integer, EntryElement> entryElements = new TreeMap<Integer, EntryElement>();
-        String filter = "(objectclass=namedEntity)";
-        String cn = "cn";
-        String javaClassName = "javaClassName";
-        String javaValue = "javaValue";
-        EntryCursor entryCursor = connection.search(dn, filter, SearchScope.ONELEVEL, cn, javaClassName, javaValue);
-
-        while(entryCursor.next()){
-            Entry entry = entryCursor.get();
-            Integer position = Integer.valueOf(entry.get(cn).get().getString());
-            String type = entry.get(javaClassName).get().getString();
-            String value = entry.get(javaValue).get().getString();
-            EntryElement entryElement = new EntryElement(type, value);
-            entryElements.put(position, entryElement);
-        }
-
-        List<EntryElement> entryElementList = new LinkedList<EntryElement>(entryElements.values());
-        return EntryUtils.convertAllEntryElementsToObject(entryElementList);
     }
 
     @Override
-    public List<Object> getUserAttribute(String username, String attributename) throws UserNotFoundException, NoSuchAttributeException {
-
-        String attDn = String.format(dnAttribute, attributename, username);
-
+    public void removeUserCredentials(String username, String credentials) throws UserNotFoundException {
         try {
-            if(!connection.exists(String.format(dnUser, username))){
-                throw new UserNotFoundException();
-            }else if(!connection.exists(attDn)){
-                throw new NoSuchAttributeException();
-            }
-
-            return getAttribute(attDn);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            dao.deleteSubtreeIncludingRoot(SchemaConstants.userCredentials(username, credentials));
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
+        } catch (NoSuchNodeException e) {
+            LOGGER.warn("credentials {} was to be deleted, but not found", credentials);
         }
     }
 
     @Override
-    public void addPermissionToUser(String username, Permission... permission) throws UserNotFoundException {
-        /*
-         * adds an ordered list of permissions to the user -> getPermissionsForUser() should return the
-         * permission in the same order as they were presented here
-         * Unlike permissionSets, there is no point where a permission needs to be registered. Therefore
-         * no references need to be checked. 
-         * */
-        throw new UnsupportedOperationException();
-
+    public void setUserCredentials(String username, String credentialsType, String credentialsValue) throws UserNotFoundException {
+        Dn parent = SchemaConstants.ouUserCredentials(username);
+        Entry entry = EntryFactory.namedDescriptiveObject(credentialsType, credentialsValue, parent);
+        try {
+            dao.storeOverwriteExisting(entry);
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
-    public void addPermissionSetToPermissionSet(String permissionSetParent, String... permissionSet) throws PermissionSetNotFoundException {
-        /*
-         * Adds a node in the permissionSet tree. 
-         * */
-        throw new UnsupportedOperationException();
-
+    public String getUserCredentials(String username, String credentials) throws UserNotFoundException, NoSuchCredentialsException {
+        try {
+            Entry entry = dao.lookup(SchemaConstants.userCredentials(username, credentials));
+            return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+        } catch (NoSuchNodeException e) {
+            throw new NoSuchCredentialsException();
+        } catch (MissingParentException e) {
+            throw new UserNotFoundException();
+        }    
     }
 
-    @Override
-    public void addPermissionSetToUser(String arg0, String... arg1) throws UserNotFoundException, PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
+    private List<Entry> userStructure(String username) {
 
+        List<Entry> entries = new LinkedList<Entry>();
+
+        Entry entry = EntryFactory.namedObject(username, SchemaConstants.ouUsers());
+        Entry ouPermissions = EntryFactory.organizationalUnit("permissions", entry.getDn());
+        Entry ouDirectPermissions = EntryFactory.organizationalUnit("direct", ouPermissions.getDn());
+        Entry ouPermissionSets = EntryFactory.organizationalUnit("permissionSets", ouPermissions.getDn());
+
+        OrderFilter.makeContainerAware(ouDirectPermissions);
+        OrderFilter.makeContainerAware(ouPermissionSets);
+
+        entries.add(entry);
+        entries.add(ouPermissions);
+        entries.add(ouDirectPermissions);
+        entries.add(ouPermissionSets);
+        entries.add(EntryFactory.organizationalUnit("credentials", entry.getDn()));
+        entries.add(EntryFactory.organizationalUnit("attributes", entry.getDn()));
+
+        return entries;
     }
 
-    @Override
-    public void addPermissionToSet(String arg0, Permission... arg1) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-
+    /**
+     * @return the maxId before the update
+     */
+    private String updateMaxId(Dn containerDn, int additionalItems) {
+        String oldMaxId = lookupMaxId(containerDn);
+        String newMaxId = OrderFilter.calculateNewMaxId(oldMaxId, additionalItems);
+        setMaxId(containerDn, newMaxId);
+        return oldMaxId;
     }
 
-    @Override
-    public void createPermissionSet(String permissionSet, Permission... permission) throws PermissionSetAlreadyExistsException {
-        /*
-         * Creates a permissionSet granting the given Permissions. The permissions should be retrieved in the order they
-         * were presented. Requires List.
-         * */
-        throw new UnsupportedOperationException();
-
+    private void setMaxId(Dn containerDn, String maxId) {
+        Attribute attribute = new DefaultAttribute(OrderFilter.maxIdAttribute, maxId);
+        dao.modify(containerDn, attribute);
     }
 
-    @Override
-    public Collection<Permission> getAllPermissionsForUser(String arg0) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    /*
-     * B extends A. Permission with runtimetype B is inserted.
-     * Search filter with type A is applied. Return the permission?
-     * org.openengsb.core.common.util.CollectionUtilsExtended will
-     * take care of it.
-     * */
-    @Override
-    public <T extends Permission> Collection<T> getAllPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<Permission> getAllPermissionsFromPermissionSet(String arg0) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getPermissionSetAttribute(String arg0, String arg1) throws PermissionSetNotFoundException, NoSuchAttributeException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<String> getPermissionSetList() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<String> getPermissionSetsFromPermissionSet(String arg0) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<String> getPermissionSetsFromUser(String arg0) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<Permission> getPermissionsForUser(String arg0) throws UserNotFoundException {
-        /*
-         * Returns a collection of permissions. Set extends Collection. Still it should be a list
-         * which contains the permissions in the same order as they were added to the user.
-         * */
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<Permission> getPermissionsFromPermissionSet(String arg0) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void removePermissionFromSet(String arg0, Permission... arg1) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public void removePermissionFromUser(String arg0, Permission... arg1) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public void removePermissionSetFromPermissionSet(String arg0, String... arg1) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public void removePermissionSetFromUser(String arg0, String... arg1) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public void setPermissionSetAttribute(String arg0, String arg1, String arg2) throws PermissionSetNotFoundException {
-        throw new UnsupportedOperationException();
-
+    private String lookupMaxId(Dn containerDn) {
+        Entry entry = dao.lookup(containerDn);
+        return LdapUtils.extractFirstValueOfAttribute(entry, OrderFilter.maxIdAttribute);
     }
 
 }

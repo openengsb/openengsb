@@ -1,6 +1,6 @@
 package org.openengsb.infrastructure.ldap.internal.model;
 
-public class ObjectClassViolationException extends Exception {
+public class ObjectClassViolationException extends TreeModelException {
 
     private static final long serialVersionUID = 3329558001005307519L;
 

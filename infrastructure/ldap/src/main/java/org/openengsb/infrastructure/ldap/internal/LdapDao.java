@@ -1,6 +1,5 @@
-package org.openengsb.infrastructure.ldap.internal.dao;
+package org.openengsb.infrastructure.ldap.internal;
 
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,10 +7,8 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Attribute;
-import org.apache.directory.shared.ldap.model.entry.DefaultAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
@@ -24,17 +21,13 @@ import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchScope;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.EntryAlreadyExistsException;
-import org.openengsb.infrastructure.ldap.internal.MissingOrderException;
-import org.openengsb.infrastructure.ldap.internal.MissingParentException;
-import org.openengsb.infrastructure.ldap.internal.NoSuchNodeException;
-import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
-import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
+import org.openengsb.infrastructure.ldap.internal.model.EntryAlreadyExistsException;
+import org.openengsb.infrastructure.ldap.internal.model.MissingParentException;
+import org.openengsb.infrastructure.ldap.internal.model.NoSuchNodeException;
+import org.openengsb.infrastructure.ldap.internal.model.ObjectClassViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-//TODO move this into another package outside of SchemaConstants, entryFactory and TreeStructure. If no imports from there are necessary it's good job.
 public class LdapDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LdapDao.class);
@@ -56,9 +49,6 @@ public class LdapDao {
         return connection;
     }
 
-    /**
-     * @throws MissingParentException 
-     * */
     public void modify(Dn dn, Attribute... attributes) throws NoSuchNodeException, ObjectClassViolationException, MissingParentException {
         ModifyRequest modifyRequest = new ModifyRequestImpl();
         modifyRequest.setName(dn);
@@ -179,24 +169,14 @@ public class LdapDao {
     /**
      * Inserts a hierarchy of entries. If an entry already exists, the existing entry and
      * its entire subtree is deleted and the new entry including possible subtree is inserted.
-     * 
      * */
     public void storeOverwriteExisting(List<Entry> entries) throws MissingParentException {
         for(Entry entry : entries){
             try {
                 store(entry);
             } catch (EntryAlreadyExistsException e) {
-                Dn existing = e.getEntry().getDn();
-                try {
-                    deleteSubtreeIncludingRoot(existing);
-                } catch (NoSuchNodeException e2) {
-                    //TODO
-                }
-                try {
-                    store(entry);
-                } catch (EntryAlreadyExistsException e1) {
-                    throw new RuntimeException(e1);
-                }
+                deleteSubtreeIncludingRoot(e.getEntry().getDn());
+                store(entry);
             }
         }
     }
@@ -209,10 +189,10 @@ public class LdapDao {
     public SearchCursor searchOneLevel(Dn parent) throws NoSuchNodeException, MissingParentException{
 
         try {
-            if(!connection.exists(parent)){
-                throw new NoSuchNodeException(parent);
-            }else if(!connection.exists(parent.getParent())){
+            if(!connection.exists(parent.getParent())){
                 throw new MissingParentException(lastMatch(parent));
+            } else if(!connection.exists(parent)){
+                throw new NoSuchNodeException(parent);
             }
         } catch (LdapException e) {
             throw new RuntimeException(e);
@@ -231,13 +211,11 @@ public class LdapDao {
     }
 
     /**
-     * Deletes all direct children of baseDn which match searchFilter. Their subtrees
-     * are deleted as well, regardless of searchFilter.
-     * Deletes the baseDn and its entire subtree.<br>
+     * Deletes all direct children (and their subtrees) of baseDn matching searchFilter.
      * @throws NoSuchNodeException if baseDn does not exist
      * @throws MissingParentException if some node above baseDn does not exist
      * */
-    public void deleteSubtreeExcludingRoot(Dn baseDn, String searchFilter) throws MissingParentException, NoSuchNodeException {
+    public void deleteMatchingChildren(Dn baseDn, String searchFilter) {
 
         try {
             if(!connection.exists(baseDn.getParent())){
@@ -328,53 +306,6 @@ public class LdapDao {
         }
     }
 
-    private void setMaxId(Dn containerDn, String maxId) throws NoSuchNodeException, MissingOrderException, MissingParentException{
-        Attribute attribute = new DefaultAttribute(SchemaConstants.maxIdAttribute, maxId);
-        try {
-            modify(containerDn, attribute);
-        } catch (ObjectClassViolationException e) {
-            throw new MissingOrderException();
-        }
-    }
-
-    private String calculateNewMaxId(String oldMaxId, int additionalItems){
-        BigInteger a = new BigInteger(oldMaxId);
-        BigInteger b = new BigInteger(String.valueOf(additionalItems));
-        BigInteger c = a.add(b);
-        return c.toString();
-    }
-
-    /**
-     * @param containerDn the parent Dn of the entries to be added
-     * @param additionalItems
-     * @return the maxId before the update
-     * @throws NoSuchNodeException
-     * @throws MissingOrderException
-     * @throws MissingParentException
-     */
-    public String updateMaxId(Dn containerDn, int additionalItems) throws NoSuchNodeException, MissingOrderException, MissingParentException {
-        String oldMaxId = lookupMaxId(containerDn);
-        String newMaxId = calculateNewMaxId(oldMaxId, additionalItems);
-        setMaxId(containerDn, newMaxId);
-        return oldMaxId;
-    }
-
-    private String lookupMaxId(Dn containerDn) throws NoSuchNodeException, MissingOrderException, MissingParentException {
-
-        Entry entry = lookup(containerDn);
-        Attribute maxId = entry.get(SchemaConstants.maxIdAttribute);
-
-        if(maxId != null){
-            try {
-                return maxId.getString();
-            } catch (LdapInvalidAttributeValueException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            throw new MissingOrderException();
-        }
-    }
-
     public boolean exists(Dn dn){
         try {
             return connection.exists(dn);
@@ -416,6 +347,9 @@ public class LdapDao {
      * Iterates over the Dn from leaf to root and returns the first Dn that exists.
      * */
     private Dn lastMatch(final Dn dn){
+        if(dn == null){
+            throw new MissingParentException((Dn)null);
+        }
         try {
             if(connection.exists(dn)){
                 return dn;

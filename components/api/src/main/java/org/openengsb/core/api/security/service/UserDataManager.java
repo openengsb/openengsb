@@ -262,7 +262,7 @@ public interface UserDataManager {
     Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException;
 
     /**
-     * Retrieves all permissions the user is granted. This includes permissions recursively granted by associated
+     * Retrieves all permissions associated with the parent permissionSet. This includes permissions recursively granted by associated
      * PermissionSets. The result must also include all permissions granted by recursively all PermissionSets.
      *
      * @throws PermissionSetNotFoundException if the parent permissionSet does not exist

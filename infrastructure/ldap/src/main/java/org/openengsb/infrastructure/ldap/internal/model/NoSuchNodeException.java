@@ -1,8 +1,8 @@
-package org.openengsb.infrastructure.ldap.internal;
+package org.openengsb.infrastructure.ldap.internal.model;
 
 import org.apache.directory.shared.ldap.model.name.Dn;
 
-public class NoSuchNodeException extends Exception {
+public class NoSuchNodeException extends TreeModelException {
 
     private static final long serialVersionUID = 4929321966265341536L;
     
