@@ -49,6 +49,14 @@ public class LdapDao {
         return connection;
     }
 
+    /**
+     * Modifies the entry found under dn. The attributes are replaced.
+     * @param dn
+     * @param attributes
+     * @throws NoSuchNodeException
+     * @throws ObjectClassViolationException
+     * @throws MissingParentException
+     */
     public void modify(Dn dn, Attribute... attributes) throws NoSuchNodeException, ObjectClassViolationException, MissingParentException {
         ModifyRequest modifyRequest = new ModifyRequestImpl();
         modifyRequest.setName(dn);
@@ -115,8 +123,7 @@ public class LdapDao {
         try {
             store(entry);
         } catch (EntryAlreadyExistsException e) {
-            LOGGER.debug("entry already exists, doing nothing");
-            return;
+            LOGGER.debug("Entry already exists. Skipping.");
         }
     }
 

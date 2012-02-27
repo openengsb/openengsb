@@ -90,11 +90,19 @@
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-server-integ</artifactId>
       <version>2.0.0-M3</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-core-integ</artifactId>
       <version>2.0.0-M3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>ldap-client-test</artifactId>
+      <version>2.0.0-M3</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- <dependency> <groupId>org.apache.directory.server</groupId> <artifactId>apacheds-core-annotations</artifactId> 

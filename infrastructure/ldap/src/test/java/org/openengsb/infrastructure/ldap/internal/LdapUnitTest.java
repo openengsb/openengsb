@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.directory.ldap.client.api.LdapConnection;
@@ -42,23 +43,23 @@ public class LdapUnitTest {
     //private static String credentialsName2 = "password";
     private static String attributeName = "testAttribute";
     //private static String attributeName2 = "testAttribute2";
-//    private Object[] attributeValue = new Object[] {new Boolean(true), new String("abc")};
-//    private Object[] attributeValue2 = new Object[] {new String("xyz"), new Boolean(false)};
+    //    private Object[] attributeValue = new Object[] {new Boolean(true), new String("abc")};
+    //    private Object[] attributeValue2 = new Object[] {new String("xyz"), new Boolean(false)};
     private static Dn dnTestUser1;
     private static Dn dnTestUser2;
     private static Dn dnTestCredentials;
     //private static Dn dnTestCredentials2;
     private static Dn dnTestAttribute;
-  //  private static Dn dnTestAttribute2;
+    //  private static Dn dnTestAttribute2;
 
     private static class PermissionImpl implements Permission{
-        
+
         private String description;
-        
+
         public PermissionImpl(String description){
             this.description = description;
         }
-        
+
         @Override
         public String describe(){
             return description;
@@ -71,7 +72,7 @@ public class LdapUnitTest {
             }
             return false;
         }
-        
+
     };
 
     private static UserDataManager setupUserManager(){
@@ -80,18 +81,18 @@ public class LdapUnitTest {
         return m;
     }
 
-//    private static LdapConnection setupConnection() throws Exception{
-//        LdapConnection c = new LdapNetworkConnection("localhost", 10389);
-//
-//        BindRequest bindRequest = new BindRequestImpl();
-//        bindRequest.setName(new Dn("uid=admin,ou=system"));
-//        bindRequest.setCredentials("secret");
-//
-//        c.setTimeOut(0);
-//        c.connect();
-//        c.bind(bindRequest);
-//        return c;
-//    }
+    //    private static LdapConnection setupConnection() throws Exception{
+    //        LdapConnection c = new LdapNetworkConnection("localhost", 10389);
+    //
+    //        BindRequest bindRequest = new BindRequestImpl();
+    //        bindRequest.setName(new Dn("uid=admin,ou=system"));
+    //        bindRequest.setCredentials("secret");
+    //
+    //        c.setTimeOut(0);
+    //        c.connect();
+    //        c.bind(bindRequest);
+    //        return c;
+    //    }
 
     private static LdapNetworkConnection setupNetworkConnection() throws Exception{
         LdapNetworkConnection c = new LdapNetworkConnection("localhost", 10389);
@@ -345,10 +346,11 @@ public class LdapUnitTest {
         String description = "hello";
         Permission permission = new PermissionImpl(description);
         userManager.addPermissionToUser(userName1, permission);
-        Collection<Permission> permissions = userManager.getPermissionsForUser(userName1);
-        assertThat(permissions.size(), is(1));
-        assertThat(permissions.contains(permission), is(true));
-    }    
+        Permission[] permissions = userManager.getPermissionsForUser(userName1).toArray(new Permission[0]);
+        assertThat(permissions.length, is(1));
+        assertThat(permissions[0], is(permission));
+        assertThat(permissions[0] instanceof PermissionImpl, is(true));
+    }
 
     //    @Test
     //    public void testCreateAndDeleteNewUser_shouldSucceed() throws Exception {
