@@ -17,13 +17,16 @@
 
 package org.openengsb.core.api;
 
+import java.util.HashMap;
+
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.XLinkTemplate;
 
 /**
  * Manages connector instances.
- *
+ * 
  * This class is responsible for creating new connector-instances as well as updating an deleting them. All instances
  * created with this service are persisted using {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
  */
@@ -33,23 +36,22 @@ public interface ConnectorManager {
      * creates a new connector instance with the given id and description. The new connectorDescription is validated
      * before the connector instance is created. In this validation-step only the combination of the attributes is
      * validated. Each valid is assumed to be valid by itself (e.g. number-attributes)
-     *
+     * 
      * The connector instance is then registered in the OSGi-registry and persisted using
      * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
-     *
+     * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void create(ConnectorId id, ConnectorDescription connectorDescription)
-        throws ConnectorValidationFailedException;
+    void create(ConnectorId id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException;
 
     /**
      * creates a new connector instance with the given id and description. It works similar to
      * {@link ConnectorManager#createService} but skips the validation step. However this method still assumes that each
      * attribute is valid by itself (e.g. number-attributes)
-     *
+     * 
      * The connector instance is then registered in the OSGi-registry and persisted using
      * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
-     *
+     * 
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
     void forceCreate(ConnectorId id, ConnectorDescription connectorDescription);
@@ -57,29 +59,28 @@ public interface ConnectorManager {
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
      * that attributes and properties that are not present in the new description are removed.
-     *
+     * 
      * If the attributes are invalid, the connector instance remains unchanged.
-     *
+     * 
      * @throws ConnectorValidationFailedException if the combination of the new attributes are not valid
      * @throws IllegalArgumentException if no connector instance with the given id is available
      */
-    void update(ConnectorId id, ConnectorDescription connectorDescription)
-        throws ConnectorValidationFailedException, IllegalArgumentException;
+    void update(ConnectorId id, ConnectorDescription connectorDescription) throws ConnectorValidationFailedException,
+        IllegalArgumentException;
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
      * that attributes and properties that are not present in the new description are removed.
-     *
+     * 
      * Unlike {@link ConnectorManager#update} this method skips the attribute validation before the update.
-     *
+     * 
      * @throws IllegalArgumentException if no connector instancewith the given id is available
      */
-    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription)
-        throws IllegalArgumentException;
+    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException;
 
     /**
      * Deletes the connector instance with the given {@code id}.
-     *
+     * 
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(ConnectorId id) throws PersistenceException;
@@ -89,4 +90,19 @@ public interface ConnectorManager {
      */
     ConnectorDescription getAttributeValues(ConnectorId id);
 
+    // @extract-start ConnectorManager
+    /**
+     * Registers the given Connector for XLinking. The Connector must provide the views it offers for XLink, represented
+     * as a HashMap of keyNames and short descriptions. The ConnectorDescription must contain an attribute named
+     * 'HostId' containing the Host-IP. This Id is used to identify the Host when the user calls the XLink HTTP-Servlet.
+     * Therefore the Host must not reach the HTTP-Servlet via a proxy. A XLinkTemplate is returned, it contains
+     * informations about how modelObjects are identified by XLink and how valid XLink-URLs are generated. The class
+     * 'XLinkUtils' in the commons package also provides examples of how to create XLink-URLs.
+     * 
+     * @see org.openengsb.core.api.xlink.XLinkTemplate
+     */
+    XLinkTemplate registerForXLink(ConnectorId id, ConnectorDescription connectorDescpription,
+            HashMap<String, String> availableViews);
+
+    // @extract-end
 }

@@ -19,9 +19,11 @@ package org.openengsb.connector.wicketacl.internal;
 
 import java.util.Collection;
 
+import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -130,6 +132,11 @@ public class WicketAclServiceImpl extends AbstractOpenEngSBConnectorService impl
 
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
+    }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

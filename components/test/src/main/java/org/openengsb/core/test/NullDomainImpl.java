@@ -17,8 +17,11 @@
 
 package org.openengsb.core.test;
 
+import java.util.List;
+
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.model.OpenEngSBModel;
 
 public class NullDomainImpl implements NullDomain, Connector {
 
@@ -81,6 +84,11 @@ public class NullDomainImpl implements NullDomain, Connector {
     @Override
     public String getConnectorId() {
         return null;
+    }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

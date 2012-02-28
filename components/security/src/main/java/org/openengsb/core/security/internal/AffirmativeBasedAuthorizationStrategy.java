@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractDelegateStrategy;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -71,6 +72,12 @@ public class AffirmativeBasedAuthorizationStrategy extends AbstractDelegateStrat
         public AliveState getAliveState() {
             return AliveState.ONLINE;
         }
+
+        @Override
+        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
     @Override

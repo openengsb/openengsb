@@ -17,7 +17,9 @@
 
 package org.openengsb.connector.example.internal;
 
+import java.util.List;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
@@ -103,5 +105,11 @@ public class LogService extends AbstractOpenEngSBConnectorService implements Exa
         ExampleResponseModel response = ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         return response;
     }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.auditing.AuditingDomain;
 
@@ -50,6 +51,11 @@ public class MemoryAuditingServiceImpl extends AbstractOpenEngSBConnectorService
     @Override
     public List<Event> getAllAudits() {
         return Collections.unmodifiableList(events);
+    }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -261,4 +261,5 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     public void setAttributeStore(SecurityAttributeProviderImpl attributeStore) {
         this.attributeStore = attributeStore;
     }
+
 }

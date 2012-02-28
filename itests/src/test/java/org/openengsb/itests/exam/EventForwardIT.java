@@ -17,6 +17,7 @@
 
 package org.openengsb.itests.exam;
 
+import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -32,6 +33,7 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
@@ -86,6 +88,12 @@ public class EventForwardIT extends AbstractPreConfiguredExamTestHelper {
             wasCalled = true;
             return ModelUtils.createEmptyModelObject(ExampleResponseModel.class);
         }
+
+        @Override
+        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
     @Test

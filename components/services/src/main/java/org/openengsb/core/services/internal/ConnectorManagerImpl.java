@@ -33,6 +33,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.xlink.XLinkTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,6 +232,11 @@ public class ConnectorManagerImpl implements ConnectorManager {
 
     public void setRegistrationManager(ConnectorRegistrationManager registrationManager) {
         this.registrationManager = registrationManager;
+    }
+
+    @Override
+    public XLinkTemplate registerForXLink(ConnectorId id, ConnectorDescription connectorDescpription, HashMap<String, String> availableViews) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

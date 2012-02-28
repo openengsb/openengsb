@@ -21,105 +21,59 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.core.api.xlink.XLinkIdentifier;
-import org.openengsb.core.api.xlink.XLinkUrl;
 
+import org.openengsb.core.api.xlink.XLinkTemplate;
+
+// @extract-start XLinkUtils
 /**
- * Static util class for xlink, containing xlink definition fields and methods for Linkcreation
+ * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
+ * and how valid XLink-Urls are generated.
  */
-public class XLinkUtils {
+public final class XLinkUtils {
     
-    /**Keyname of the identifierId*/
-    public static final String XLINK_IDENTIFIER_KEY = "identifierTemplateId";
-    /**Keyname of the projectId*/
-    public static final String XLINK_IDENTIFIER_PROJECT = "projectId";
-    /**Keyname of the version*/
-    public static final String XLINK_IDENTIFIER_VERSION = "versionId";    
-    /**Keyname of the metadata*/
-    public static final String XLINK_IDENTIFIER_METADATA = "metadataId";         
-    
+    private XLinkUtils() { 
+    }
+
+    /** Keyname of the ModelId */
+    public static final String XLINK_MODELID_KEY = "modelId";
+
+    /** Keyname of the ExpirationDate */
+    public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
+
     /**
-     * Return the Link to the Registry´s HTTP-Servlet containing the complete Modelobject´s Identifier. 
-     * The fields of the Identifier are transportet as GET paramteters.
-     * Every IdentifierField which is null is set with placeholder value like '$$KeyValue$$'. 
-     * e.g. a field with the value null and the key 'Project' results in 'Project=$$Project$$'.
-     * Returns null if the XLinkUrls attributes are not set.
+     * Demonstrates how a XLinkTemplate is prepared before it is transmitted to the client. Every baseUrl must contain
+     * the modelId and the expirationDate as GET-Paramters.
      */
-    public static String returnXLinkUrl(XLinkUrl xLinkUrl){
-        String completeUrl = xLinkUrl.getUrl();       
-        if(completeUrl == null)return null;
-        List<OpenEngSBModelEntry> entries = xLinkUrl.getIdentifier().getOpenEngSBModelEntries();
-        for(OpenEngSBModelEntry entry : entries){
-            if(entry.getValue() == null && containsPartnerField(entries,entry)){
-                continue;
-            } 
-            if(xLinkUrl.getUrl().equals(completeUrl)){
-                completeUrl+="?";
-            }else{
-                completeUrl+="&";
-            }      
-            completeUrl += entry.getKey()+"=";
-            if(entry.getValue() == null){
-                completeUrl += "$$"+entry.getKey()+"$$";
-            }else{
-                completeUrl += entry.getValue();
-            }
+    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String modelId, List<String> keyNames,
+            int expirationDays) {
+        servletUrl +=
+            "?" + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
+                    + getExpirationDate(expirationDays);
+        return new XLinkTemplate(servletUrl, keyNames);
+    }
+
+    /**
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate and a List of values, corresponding to
+     * the List of keyNames of the Template
+     */
+    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
+        String completeUrl = template.getBaseUrl();
+        List<String> keyNames = template.getKeyNames();
+        for (int i = 0; i < keyNames.size(); i++) {
+            completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
         }
         return completeUrl;
     }
-    
-    private static boolean containsPartnerField(List<OpenEngSBModelEntry> entries, OpenEngSBModelEntry entry){     
-        String key = entry.getKey();
-        String firstChar = key.substring(0, 1);
-        if(firstChar.matches("[A-Z]")){
-            firstChar = firstChar.toLowerCase();
-        }else{
-            firstChar = firstChar.toUpperCase();
-        }
-        String partnerKey = firstChar + key.substring(1,key.length());
-        return containsKey(entries,partnerKey);
-    }
-    
-    private static boolean containsKey(List<OpenEngSBModelEntry> entries, String key){
-    	boolean containsKey = false;
-    	for(OpenEngSBModelEntry entry : entries){
-    		if(entry.getKey().equals(key)){
-    			containsKey = true;
-    			break;
-    		}
-    	}
-    	return containsKey; 
-    }
-     
-    public static String returnValidTillTimeStamp(){
+
+    /**
+     * Returns a future Date-String in the format 'yyyyMMddkkmmss'.
+     */
+    private static String getExpirationDate(int futureDays) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
+        calendar.add(Calendar.DAY_OF_YEAR, futureDays);
         Format formatter = new SimpleDateFormat("yyyyMMddkkmmss");
         return formatter.format(calendar.getTime());
     }
-    
-    /**
-     * Returns true if the xLinkUrl´s identifier is duly completed
-     * @return true if the xLinkUrl´s identifier is duly completed
-     */
-    public static boolean isUrlDulyCompleted(XLinkUrl xLinkUrl){
-        return isIdentifierDulyCompleted(xLinkUrl.getIdentifier());
-    }
-    
-    /**
-     * Returns true if the XLink Identifier is duly completed
-     * @return true if the XLink Identifier is duly completed
-     */
-    private static boolean isIdentifierDulyCompleted(XLinkIdentifier xLinkIdentifier){
-        boolean ok = true;
-        for(OpenEngSBModelEntry entry  : xLinkIdentifier.getOpenEngSBModelEntries()){
-            if(entry.getValue() == null && !containsPartnerField(xLinkIdentifier.getOpenEngSBModelEntries(),entry)){
-                ok = false;
-                break;
-            }
-        }
-        return ok;
-    }    
-    
+
 }
+// @extract-end

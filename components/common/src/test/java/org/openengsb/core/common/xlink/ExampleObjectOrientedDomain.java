@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.xlink;
+package org.openengsb.core.common.xlink;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * Modelclass for the XLinkURL definitions. To be used to transfere the Linkstrukture to the CLienttools.
- * May also be filled by actual values and automates the creation of valid XLinks.
+ * Example modelObject for an ObjectOriented-Sourcecode Domain
  */
-public interface XLinkUrl extends OpenEngSBModel{
-    
-    /**
-     * ModelobjectIdentifier, containing the Fields to append to the URL as Parameters. 
-     */
-    public XLinkIdentifier getIdentifier();
-    
-    public void setIdentifier(XLinkIdentifier identifier);
-    /**
-     * URL to the Registry´s HTTP-Servlet without the Identifier Fields as Parameters
-     */
-    public String getUrl();
+public interface ExampleObjectOrientedDomain extends OpenEngSBModel {
 
-    public void setUrl(String url);
-    
+    String getOOMethodName();
+
+    void setOOMethodName(String ooMethod);
+
+    String getOOClassName();
+
+    void setOOClassName(String ooClass);
+
+    String getOOPackageName();
+
+    void setOOPackageName(String ooPackage);
+
 }

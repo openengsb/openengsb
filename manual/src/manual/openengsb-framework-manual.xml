@@ -80,6 +80,8 @@
     <xi:include href="docbook/user/howto/howtoIntegrateServices.xml"/>
     <xi:include href="docbook/user/howto/howtoChangeEDBDatabaseBackend.xml"/>
     <xi:include href="docbook/user/howto/howtoTestRemotingWithHermes.xml"/>
+    <xi:include href="docbook/user/xlink/concept.xml"/>
+    <xi:include href="docbook/user/xlink/integration.xml"/>
   </part>
   <part xml:id="console.ui.manual">
     <title>Administration Console</title>

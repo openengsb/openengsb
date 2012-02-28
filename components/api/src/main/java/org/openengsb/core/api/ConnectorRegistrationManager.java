@@ -17,10 +17,8 @@
 
 package org.openengsb.core.api;
 
-import java.util.HashMap;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.xlink.XLinkUrlTemplate;
 
 /**
  * Manages the registration of services for connector-instances at runtime.
@@ -40,16 +38,6 @@ public interface ConnectorRegistrationManager extends OpenEngSBService {
     void updateRegistration(ConnectorId id, ConnectorDescription connectorDescpription)
         throws ConnectorValidationFailedException;
     
-    /**
-     * Registers the given Connector for XLinking. The Connector must define the views he offers for XLink.
-     * Returns an appropriate XLinkUrlTemplate for the Connector.
-     * @param id
-     * @param connectorDescpription 
-     * @param availableViews HashMap containing ViewId, Viewdescription combinations
-     * @return an appropriate XLinkUrlTemplate for the Connector.
-     */
-    public XLinkUrlTemplate registerForXLink(ConnectorId id, ConnectorDescription connectorDescpription, HashMap<String,String> availableViews);
-
     /**
      * updates a the registration service instance. If no service with the given ID is registered a new registration is
      * created.

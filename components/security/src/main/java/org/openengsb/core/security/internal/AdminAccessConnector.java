@@ -18,7 +18,9 @@ package org.openengsb.core.security.internal;
 
 import java.util.Collection;
 
+import java.util.List;
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
@@ -70,5 +72,11 @@ public class AdminAccessConnector extends AbstractOpenEngSBService implements Au
     public AliveState getAliveState() {
         return AliveState.ONLINE;
     }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

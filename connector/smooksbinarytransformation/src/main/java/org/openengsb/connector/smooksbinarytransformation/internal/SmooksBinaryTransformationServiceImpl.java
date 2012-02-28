@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.api.AliveState;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.binarytransformation.BinaryTransformationDomain;
@@ -89,5 +90,11 @@ public class SmooksBinaryTransformationServiceImpl extends AbstractOpenEngSBConn
         LOGGER.debug("forwarding converting request to transconverterformer");
         return converter.get(binaryId).convertFromOpenEngSBModelEntries(entries);
     }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

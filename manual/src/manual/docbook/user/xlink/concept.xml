@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<chapter version="5.0"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
+    xml:id="xlink.concept" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:ns="http://docbook.org/ns/docbook">
+    <title>General Concept of XLink</title>
+    <para>This section introduces a concept to enable crossprogram linking in integrated frameworks
+        with, so called, XLinks. It highlights the required precodintions, the contained logical and
+        architectual components and the sequence of nessecary actions undertaken by the users and
+        the components to establish crossprogram linking. Crossprogram linking supports actors who
+        work on different, but semantically related, sets of data. In most cases this will occur
+        during cooperations of actors from different disciplines. We will start with a general
+        description of the concept and go further into details concerning the implementation into
+        the OpenEngSB framework as we proceed.</para>
+    <section xml:id="concept.assumptions">
+        <title>Preconditions and Assumptions</title>
+        <para>The most basic assumption is that data, which is used during everyday work, is
+            organized in projects and are therefore loosely semantically related. Every project may
+            consist of a variety of files with different content and datatypes. Actors from various
+            disciplines are working together on different projects, everyone with their appropriate
+            set of tools alias programs. A tool may offer different kinds of views on the data it is
+            working on, but it serves a certain general purpose. Bigger tools which serve multiple
+            purposes are treated as a suite of standalone tools, every single one with its own
+            purpose. Therefore it is assumed that tools work on data with a similar or related
+            structure. An actor may hold the whole dataset of a project or just subset of it. </para>
+    </section>
+    <section xml:id="concept.logical.components">
+        <title>Logical Components</title>
+        <para>Data of similar structure is grouped. In most cases tools work on data with one kind
+            of structure. In our concept such similar datastructure is represented by a, so called,
+                <emphasis role="bold">model</emphasis>. While a model is representing data of a
+            certain structure, it is also defining an appropriate <emphasis role="bold"
+                >identifier</emphasis> for this data. In that way, data which is represented by a
+            model, is divided through the model´s identifier, into instances of the model, called
+                <emphasis role="bold">modelobjects</emphasis>. The identifier of a model has to
+            ensure, that each modelobject is unique within the model. The structure of the
+            identifier of a model also defines the precision in which points of interest in the
+            content can be addressed. Since a datastructure may originate from another one, models
+            may be nested in each other. A link to a modelobject can now be established by its
+            identifier. Such link must be of the structure <emphasis role="bold"
+                >Project.Model.Version.Identifier</emphasis>. The 'version' part of the link,
+            represents the version of the model the identifier was created in.</para>
+        <example>
+            <title>An Example</title>
+            <para><emphasis role="italic">A programmer is working on a project. Part of the
+                    project´s data is java sourcecode. The programmer is working on the project with
+                    a java sourcecode editor. Now we define a model called 'OOSourecode'. As
+                    identifier we define a string with the structure 'package.classname.methodname'.
+                    This string is unique within the java sourcecode but also within every other
+                    object-oriented sourcecode. Therefore the java sourcecode editor is associated
+                    with the model 'OOSourecode' in the registry. The viewed sourcecode is now
+                    splitted (semantically) into modelobjects, each modelobject representing a
+                    single method within the sourcecode.</emphasis></para>
+        </example>
+        <para>Every tool offers different views on data but, as assumed, works on data with related
+            structure. Every tool organizes data, it is working on, in his own <emphasis role="bold"
+                >toolenviroment</emphasis>. This toolenviroment can be represented as a set of
+            key/value pairs, managed by the tool. To participate in crossprogram linking, a tool
+            must announce it´s participation and is associated with an appropriate model. During
+            this registration, the tool receives a <emphasis role="bold">XLinkTemplate</emphasis>
+            (will be discussed below).  Also every tool must be able to open or retrieve
+            modelobjects by their associated identifiers. </para>
+        <para>Now, to enable distributed linking between semantically related datapoints, a central
+            component, called <emphasis role="bold">registry</emphasis>, is needed. This registry
+            manages the association of tools to models and the <emphasis role="bold"
+                >mapping</emphasis> between modelobjects from different models. The nessecary tasks
+            fulfilled by this registry will be provided by the engineering knowledge base (ekb). A
+            mapping is achieved by <emphasis role="bold">transformation</emphasis> of model
+            identifiers from the format of the source-model to the format of the destination-model.
+            The transformation is done by an entity called <emphasis role="bold">mapper</emphasis>.
+            How the transformation between the various models is done, is future matter. The first
+            required input to calculate such a mapping, is a modelobject from the source-model,
+            represented by an identifier as showed above. This indicates that the source-model of
+            the modelobject can be determined. The second required input is the destination-model.
+            The generated output is a set of identifiers in the destination-model´s structure. They
+            represent <emphasis role="bold">potential matches</emphasis> to modelobjects which are
+            associated with the destination-model. If the generated identifiers correspond to some
+            real modelobjects a match was found and a link between different datapoints was made. It
+            may occur that no corresponding real modelobject can be found and linking fails.
+            Depending on the quality of the transformation, the quality of the structured data and
+            the degree of semantical relation a match is more likely to be found, or not. For
+            example, crossproject linking may technically be realised but wont be very effective
+            since the different datasets may be not semantical related at all. It is also possible
+            that there is no possible transformation between two models and no match can be
+            generated at all. Because of the different granularity and characteristics of
+            identifiers, one modelobject of a model may be associated with multiple modelobjects of
+            another model.</para>
+        <para>
+            <mediaobject>
+                <alt>XLink Concept</alt>
+                <imageobject>
+                    <imagedata fileref="graphics/LinkingConceptGraphic_V3.png" format="png"
+                        width="400" align="center"/>
+                </imageobject>
+                <caption>
+                    <para>XLink Concept <link xlink:href="graphics/LinkingConceptGraphic_V3.png">(click to enlarge)</link></para>
+                </caption>
+            </mediaobject>
+        </para>
+    </section>
+    <section xml:id="concept.architecture.components">
+        <title>Architectual Components</title>
+        <para>Here we will discuss the needed components and their actions to complete the
+            architecture.</para>
+        <para>Actors share <emphasis role="bold">XLinks</emphasis> of modelobjects via channels like
+            email, when they want to highlight points of interest for other actors. When an actor
+            receives a XLinks to a modelobject, he wants to open corresponding datapoints in his
+            tools and datasets. To make those XLinks easy to call from a wide range of programs,
+            they are realized as http-urls that points to the registry. The identifier which links
+            to the corresponding modelobject is added as a set of GET-Parameters. For example
+                <emphasis role="bold"
+                >http://urlToRegistry.suff?identifier-field1=someData&amp;identifier-field2=someData</emphasis>.
+            The registry must be able to receive such http-requests and act on them. Since the
+            dataset of projects is changed frequently, generated XLinks will expire after a few
+            days. This predicates on the fact that possible matches of generated XLinks will be less
+            likely the more the dataset has changed since its generation. Therefore XLinks are not
+            to used in wikis or documentation.</para>
+        <para>As mentioned, the <emphasis role="bold">registry</emphasis> must act as a central
+            component to all tools and must therefore be providing it´s services the whole time to
+            enable linking. Tools may be up and running or not. When an actor starts his client in
+            the integration framework, his installed tools must notify the registry if they will
+            participate in linking. During a registration, the registry associates the tool with an
+            appropriate model and the tool provides it´s host´s IP (this will be explained later
+            on). The tool must connect this model with it´s toolenviroment, which means that the
+            tool must adopt the model´s identfier structure. To create valid XLinks, the tool also
+            needs the registry-url. All this information will be transfered to the tool via a
+                <emphasis role="bold">XLinkTemplate</emphasis>, containing the <emphasis role="bold"
+                >registry-url</emphasis> and a <emphasis role="bold">list of keynames</emphasis>.
+            Those keynames are a subset of the keys in the specific toolenviroment. In this way a
+            tool can fetch the data, necessary to identify a modelobject, dynamically by the
+            instructions in the XLinkTemplate. When an actor clicks on a modelobject url, the
+            registry identifies the related tools of the Host via the IP of the http-request (since
+            every connector registered itself with it´s host´s IP). Here lies a great limitation
+            which will be addressed in future work, currently it is only possible to call this
+            registry-url without proxy, since this would change the IP of the http-request. Next the
+            registry  must read the information from this <emphasis role="bold"
+                >sourcelink</emphasis> and provide an <emphasis role="bold"
+                >user-interface</emphasis> which enables the actor to authenticate himself and to
+            choose a view in which he wants to open corresponding datapoints in his dataset. A
+            preselection can be made by filtering the tools and views to which no transformation can
+            be done. By determining the tool and view the actor also defines the <emphasis
+                role="bold">destination-model</emphasis>, because every tool is associated with a
+            model. This user-interface is best realized as <emphasis role="bold"
+                >http-servlet</emphasis>. After the actors selection, the given sourcelink is
+            transformed into the destination-model´s structure. Next the registry calls up the
+            selected tool and sends it the transformation results. Its up to the tool, how to open
+            existing corresponding datapoints. It may happen that no corresponding datapoints can be
+            found, in that case the actor must be informed. </para>
+        <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="graphics/sampleServlet_V2.png" format="png" width="400" align="center"/>
+                </imageobject>
+                <caption>Example MockUp of Servlet</caption>
+            </mediaobject>
+        </para>
+        <para><emphasis role="bold">Tools</emphasis> must be able to open the corresponding
+            datapoint to a defined modelobject and to retrieve the corresponding modelobject to a
+            defined datapoint. The retrieval of modelobject-links is a manually triggered action by
+            the Actor. Every tool and their views must enable the actor to extract the XLink of a
+            selected modelobject. The opening of a datapoint related to a given modelobject is an
+            automatically triggered action by the registry. For example, first the actor receives a
+            modelobject-link as an url via email, from a different actor, and clicks on it. He is
+            forwarded to the http-servlet. Next he will be asked to define the tool and view he
+            wants to open corresponding datapoints in, then the registry transforms the
+            modelobject-identifier into the destination-model´s identifier structure and last sends
+            the results to the tool, to trigger the opening of the corresponding datapoint. If no
+            corresponding datapoint can be found by the tool it must inform the actor that linking
+            failed.</para>
+        <ns:para>Note that this concept also enables the actor to jump locally between his installed
+            tool, but he has to take the same steps like an actor that received a XLink via mail.
+            Its up to each tool to make this local jumps easier for the actor.</ns:para>
+    </section>
+    <section xml:id="concept.sequence.actions">
+        <title>Example Sequence of Actions</title>
+        <para>
+            <orderedlist>
+                <listitem>
+                    <para>The actors Adam &amp; Eve start their clients, their tools register
+                        themselfes, provide their IP and get a XLinkTemplate assigned, which contain
+                        the servlet-url and information about their modelspecific identifier. </para>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="graphics/StepOne.png" format="png" 
+                                    width="400" align="center"/>
+                            </imageobject>
+                            <caption>Sequence of Actions: Step One</caption>
+                        </mediaobject>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Adam wants to mark a point of interest in his data for Eve and extracts
+                        its XLink (wrapped as a http-link).</para>
+                </listitem>
+                <listitem>
+                    <para>He sends the XLink and some meta information or request via email to Actor
+                        Eve.</para>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="graphics/StepTwoToThree.png" format="png" 
+                                    width="400" align="center"/>
+                            </imageobject>
+                            <caption>Sequence of Actions: Step Two to Three</caption>
+                        </mediaobject>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Actor Eve clicks on the link, the servlet of the registry is opened in her
+                        browser.</para>
+                </listitem>
+                <listitem>
+                    <para>Eve has to authenticate herself.</para>
+                </listitem>
+                <listitem>
+                    <para>A list of all installed tools and views is opened. For each view there is
+                        information displayed, if a transformation to destination-model can be done,
+                        or not.</para>
+                </listitem>
+                <listitem>
+                    <para>Actor Eve chooses one view.</para>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="graphics/StepFourToSeven.png" format="png" 
+                                    width="400" align="center"/>
+                            </imageobject>
+                            <caption>Sequence of Actions: Step Four to Seven</caption>
+                        </mediaobject>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The sourcelink is transformed by the mapper, potential matches are
+                        created.</para>
+                </listitem>
+                <listitem>
+                    <para>The potential matches are now transfered to the tool selected by
+                        Eve.</para>
+                </listitem>
+                <listitem>
+                    <para>This tool checks, if there are any corresponding local
+                        modelobjects.</para>
+                </listitem>
+                <listitem>
+                    <para>If one or more local modelobjects are found, a matching was made and they
+                        are displayed in the selected view.</para>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="graphics/StepEightToEleven.png" format="png" 
+                                    width="400" align="center"/>
+                            </imageobject>
+                            <caption>Sequence of Actions: Step Eight to Eleven</caption>
+                        </mediaobject>
+                    </para>
+                </listitem>
+            </orderedlist>
+        </para>
+    </section>
+    <section xml:id="concept.failover">
+        <title>Failover Actions</title>
+        <para>If one of the following situations occur, the user must be informed that crossprogram
+            linking has failed and the process is stopped. Other fallback options are future matter.<itemizedlist>
+                <listitem>
+                    <para>No match was found.</para>
+                </listitem>
+                <listitem>
+                    <para>The user has not the rights too view the associated files of the result
+                        XLinks.</para>
+                </listitem>
+                <listitem>
+                    <para>Matches where found, but the user has not the needed files to view them
+                        and the files are also not online available. </para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section xml:id="concept.registry.functions">
+        <title>Registry Function Summary</title>
+        <ns:para><emphasis role="bold">Nessecary Functions:</emphasis></ns:para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>Manages the identifiers of models.</para>
+                </listitem>
+                <listitem>
+                    <para>Associates tools with models during their registration, e.g. sends the a
+                        XLinkTemplate.</para>
+                </listitem>
+                <listitem>
+                    <para>Contains the mapper entity which creates mappings between modelobjects
+                        from different models. To calculate a mapping, the mapper needs two inputs,
+                        the sourcelink (with it´s source-model) and the destination-model. The
+                        sourcelink is transported via the http-link, the destination-model is
+                        manually chosen by the actor. The sourcelink is transformed in a set of
+                        potential links in the destination-model.</para>
+                </listitem>
+                <listitem>
+                    <para>An user-interface, which identifies the host´s tools via the IP of an
+                        incoming http-request and reads the containing sourcelink. Next it enables
+                        the actor to choose the response view. This user-interface is realized as a
+                        http-servlet. Tasks of this servlet are, to authenticate the user, to
+                        display all tools and views installed at the actor´s client and to give
+                        feedback if a potential link may be established. </para>
+                </listitem>
+                <listitem>
+                    <para>Call tools and sends them the transformed links.</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </section>
+    <section xml:id="concept.tool.functions">
+        <title>Tool Function Summary</title>
+        <ns:para><emphasis role="bold">Nessecary Functions:</emphasis></ns:para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>Registeres at startup, provides it´s IP and receives a XLinkTemplate. The
+                        received XLinkTemplate defines the structure of created and accepted
+                        XLinks.</para>
+                </listitem>
+                <listitem>
+                    <para>Must enable the user to extract a XLink to a selected modelobject.</para>
+                </listitem>
+                <listitem>
+                    <para>Must provide an interface to open one or more potential modelobjects,
+                        after the user selected a view in the registry-servlet. </para>
+                </listitem>
+                <listitem>
+                    <para>Must inform the actor about a failure during linking.</para>
+                </listitem>
+                <listitem>
+                    <para>Must determine fallback actions if the actor wants to extract XLinks to
+                        content that is not covered by the provided identifier.</para>
+                    <para>Example ObjectOrientedSourceCode: Identifier is the methodname, user
+                        selects part of the method´s documentation to generate an XLink, what to
+                        do?</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        <para><emphasis role="bold">Optional Functions:</emphasis></para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>Support local jumping between tool via XLink. Can be realized for example
+                        by parsing the servlet´s site and to provide the information about possible
+                        destination tools in a context menu.</para>
+                </listitem>
+                <listitem>
+                    <para>Enable the actor to reload central available data (for instance, data
+                        stored in SCMs), if the actors does not hold the relevant files to view
+                        matches.</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </section>
+</chapter>

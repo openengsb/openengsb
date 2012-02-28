@@ -33,6 +33,7 @@ import org.openengsb.core.api.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.api.descriptor.AttributeDefinition.Option;
 import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
@@ -84,6 +85,12 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
+
+        @Override
+        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
     public interface TestInterface2 extends Domain {
@@ -119,6 +126,12 @@ public class MethodUtilTest {
         public Object nullMethod(Object o, String b) {
             return null;
         }
+
+        @Override
+        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
     public static enum TestEnum {

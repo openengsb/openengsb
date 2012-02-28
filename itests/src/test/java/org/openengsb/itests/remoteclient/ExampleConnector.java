@@ -17,8 +17,10 @@
 
 package org.openengsb.itests.remoteclient;
 
+import java.util.List;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
@@ -67,5 +69,11 @@ public class ExampleConnector extends AbstractOpenEngSBConnectorService implemen
         response.setResult("success");
         return response;
     }
+
+    @Override
+    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }
