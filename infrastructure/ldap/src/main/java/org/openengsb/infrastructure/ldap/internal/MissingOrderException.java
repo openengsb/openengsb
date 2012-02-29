@@ -1,6 +1,6 @@
-package org.openengsb.infrastructure.ldap.internal.model;
+package org.openengsb.infrastructure.ldap.internal;
 
-public class MissingOrderException extends TreeModelException {
+public class MissingOrderException extends RuntimeException {
 
     private static final long serialVersionUID = 5956010048635023889L;
 

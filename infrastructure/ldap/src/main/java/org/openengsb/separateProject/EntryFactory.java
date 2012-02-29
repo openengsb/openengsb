@@ -1,10 +1,10 @@
-package org.openengsb.infrastructure.ldap.internal.model;
+package org.openengsb.separateProject;
 
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.LdapUtils;
+import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 /**
  * Builds entries for various nodes in the DIT. The returned entries have

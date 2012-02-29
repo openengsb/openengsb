@@ -2,9 +2,13 @@ package org.openengsb.infrastructure.ldap.internal;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+
 
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Attribute;
@@ -22,17 +26,21 @@ import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.util.CollectionUtilsExtended;
 import org.openengsb.core.security.internal.EntryUtils;
 import org.openengsb.core.security.internal.model.EntryElement;
-import org.openengsb.infrastructure.ldap.internal.model.EntryAlreadyExistsException;
-import org.openengsb.infrastructure.ldap.internal.model.EntryFactory;
-import org.openengsb.infrastructure.ldap.internal.model.MissingParentException;
-import org.openengsb.infrastructure.ldap.internal.model.NoSuchNodeException;
-import org.openengsb.infrastructure.ldap.internal.model.OrderFilter;
-import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
+import org.openengsb.core.security.internal.model.EntryValue;
+import org.openengsb.core.security.internal.model.PermissionData;
+import org.openengsb.core.security.util.PermissionUtils;
+import org.openengsb.infrastructure.ldap.internal.model.Node;
+import org.openengsb.infrastructure.ldap.util.LdapUtils;
+import org.openengsb.separateProject.EntryFactory;
+import org.openengsb.separateProject.OrderFilter;
+import org.openengsb.separateProject.SchemaConstants;
+import org.openengsb.separateProject.TreeStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import com.google.common.collect.ComputationException;
+import com.google.common.collect.Maps;
 
 
 public class UserDataManagerLdap implements UserDataManager {
@@ -55,10 +63,10 @@ public class UserDataManagerLdap implements UserDataManager {
         Entry entry;
         try {
             entry = dao.lookup(dn);
-        } catch (NoSuchNodeException e) {
-            throw new NoSuchAttributeException(attributename);
-        } catch (MissingParentException e) {
+        }  catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
+        }catch (NoSuchNodeException e) {
+            throw new NoSuchAttributeException(attributename);
         }
         return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
     }
@@ -142,14 +150,14 @@ public class UserDataManagerLdap implements UserDataManager {
 
         String oldMaxId = updateMaxId(parent, permissionSet.length);
         OrderFilter.addIds(entries, oldMaxId, false);
-        dao.storeOverwriteExisting(entries);
+        dao.storeSkipExisting(entries);
     }
 
     @Override
     public void addPermissionToUser(String username, Permission... permissions) throws UserNotFoundException {
         Dn parent = SchemaConstants.ouUserPermissionsDirect(username);
         try {
-            addPermissions(parent, permissions);
+            storePermissions(parent, permissions);
         } catch (MissingParentException e) {
             throw new UserNotFoundException(username);
         }
@@ -159,61 +167,78 @@ public class UserDataManagerLdap implements UserDataManager {
     public void addPermissionToSet(String permissionSet, Permission... permissions) throws PermissionSetNotFoundException {
         Dn parent = SchemaConstants.ouGlobalPermissionsDirect(permissionSet);
         try {
-            addPermissions(parent, permissions);
+            storePermissions(parent, permissions);
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
     }
 
-    private void addPermissions(Dn parent, Permission... permission) throws MissingParentException {
-        List<Entry> entries = new LinkedList<Entry>();
-        for(Permission p : permission){
-            Entry entry = EntryFactory.javaObject(p.getClass().getName(), p.describe(), parent);
-            entries.add(entry);
-        }
-        String maxId = updateMaxId(parent, permission.length);
-        OrderFilter.addIds(entries, maxId, true);
-        dao.storeSkipExisting(entries);
-    }
+//    private void addPermissions(Dn parent, Permission... permission) throws MissingParentException {
+//        List<Entry> entries = new LinkedList<Entry>();
+//        for(Permission p : permission){
+//            Entry entry = EntryFactory.javaObject(p.getClass().getName(), p.describe(), parent);
+//            entries.add(entry);
+//        }
+//        String maxId = updateMaxId(parent, permission.length);
+//        OrderFilter.addIds(entries, maxId, true);
+//        dao.storeSkipExisting(entries);
+//    }
 
     @Override
-    public void createPermissionSet(String permissionSet, Permission... permissions) throws PermissionSetAlreadyExistsException {
-
-        List<Entry> structure = globalPermissionSetStructure(permissionSet, permissions);
+    public void createPermissionSet(String permissionSet, Permission... permission) throws PermissionSetAlreadyExistsException {
+        List<Entry> permissionSetStructure = TreeStructure.globalPermissionSetStructure(permissionSet);
         try {
-            dao.store(structure);
+            dao.store(permissionSetStructure);
         } catch (EntryAlreadyExistsException e) {
             throw new PermissionSetAlreadyExistsException();
         }
+        storePermissions(SchemaConstants.ouGlobalPermissionsDirect(permissionSet), permission);
     }
-
-    private List<Entry> globalPermissionSetStructure(String permissionSet, Permission... permissions){
-
-        List<Entry> entries = new LinkedList<Entry>();
-        List<Entry> permissionEntries = new LinkedList<Entry>();
-        Dn parent = SchemaConstants.ouGlobalPermissionSets();
-
-        Entry permissionSetEntry = EntryFactory.namedObject(permissionSet, parent);
-        Entry ouDirect = EntryFactory.organizationalUnit("direct", permissionSetEntry.getDn());
-        Entry ouChildrenSets = EntryFactory.organizationalUnit("childrenSets", permissionSetEntry.getDn());
-        Entry ouAttributes = EntryFactory.organizationalUnit("attributes", permissionSetEntry.getDn());
-
-        for(Permission p : permissions){
-            permissionEntries.add(EntryFactory.javaObject(p.getClass().getName(), p.describe(), ouDirect.getDn()));
+    
+    private void storePermissions(Dn parent, Permission... permission) {
+        if(permission == null){
+            return;
         }
-
-        OrderFilter.addIds(permissionEntries, true);
-        OrderFilter.makeContainerAware(ouDirect, String.valueOf(permissions.length));
-        OrderFilter.makeContainerAware(ouChildrenSets);
-
-        entries.add(permissionSetEntry);
-        entries.add(ouAttributes);
-        entries.add(ouDirect);
-        entries.add(ouChildrenSets);
-        entries.addAll(permissionEntries);
-
-        return entries;
+        Collection<PermissionData> pd = new LinkedList<PermissionData>();
+        for (Permission p : permission) {
+            PermissionData data = PermissionUtils.convertPermissionToPermissionData(p);
+            pd.add(data);
+        }
+        String maxId = updateMaxId(parent, permission.length);
+        List<Entry> permissionStructure = TreeStructure.permissionStructure(pd, maxId, parent);
+        dao.store(permissionStructure);
     }
+
+
+
+
+    //    private List<Entry> globalPermissionSetStructure(String permissionSet, Permission... permissions){
+    //
+    //        List<Entry> entries = new LinkedList<Entry>();
+    //        List<Entry> permissionEntries = new LinkedList<Entry>();
+    //        Dn parent = SchemaConstants.ouGlobalPermissionSets();
+    //
+    //        Entry permissionSetEntry = EntryFactory.namedObject(permissionSet, parent);
+    //        Entry ouDirect = EntryFactory.organizationalUnit("direct", permissionSetEntry.getDn());
+    //        Entry ouChildrenSets = EntryFactory.organizationalUnit("childrenSets", permissionSetEntry.getDn());
+    //        Entry ouAttributes = EntryFactory.organizationalUnit("attributes", permissionSetEntry.getDn());
+    //
+    //        for(Permission p : permissions){
+    //            permissionEntries.add(EntryFactory.javaObject(p.getClass().getName(), p.describe(), ouDirect.getDn()));
+    //        }
+    //
+    //        OrderFilter.addIds(permissionEntries, true);
+    //        OrderFilter.makeContainerAware(ouDirect, String.valueOf(permissions.length));
+    //        OrderFilter.makeContainerAware(ouChildrenSets);
+    //
+    //        entries.add(permissionSetEntry);
+    //        entries.add(ouAttributes);
+    //        entries.add(ouDirect);
+    //        entries.add(ouChildrenSets);
+    //        entries.addAll(permissionEntries);
+    //
+    //        return entries;
+    //    }
 
     @Override
     public void removePermissionFromSet(String permissionSet, Permission... permission) throws PermissionSetNotFoundException {
@@ -272,39 +297,78 @@ public class UserDataManagerLdap implements UserDataManager {
 
     //TODO make missing node exception superclass of missing parent exception. makes sense!
 
+//    @Override
+//    public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
+//        SearchCursor cursor;
+//        try {
+//            cursor = dao.searchOneLevel(SchemaConstants.ouUserPermissionsDirect(username));
+//        } catch (MissingParentException e) {
+//            throw new UserNotFoundException();
+//        }
+//        List<Entry> entries = OrderFilter.sortById(cursor);
+//        return extractPermissions(entries);
+//    }
+    
     @Override
     public Collection<Permission> getPermissionsForUser(String username) throws UserNotFoundException {
-        SearchCursor cursor;
+        List<Node> nodes;
         try {
-            cursor = dao.searchOneLevel(SchemaConstants.ouUserPermissionsDirect(username));
+            nodes = dao.searchSubtreeNode(SchemaConstants.ouUserPermissionsDirect(username));
         } catch (MissingParentException e) {
             throw new UserNotFoundException();
         }
-        List<Entry> entries = OrderFilter.sortById(cursor);
-        return extractPermissions(entries);
+        return extractPermissionsFromNodes(nodes);
     }
 
-    private Collection<Permission> extractPermissions(List<Entry> entries){
-        Collection<Permission> permissions = new LinkedList<Permission>();
-        for(Entry entry : entries){
-            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
-            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
-            Class<?> elementType;
-            try {
-                elementType = Class.forName(type);
-            } catch (ClassNotFoundException e) {
-                throw new ComputationException(e);
+    private Collection<Permission> extractPermissionsFromNodes(List<Node> nodes){
+        Collection<PermissionData> permissionData = new LinkedList<PermissionData>();
+        OrderFilter.sortByIdNode(nodes);
+        for(Node permission : nodes){
+            Map<String, EntryValue> attributes = Maps.newHashMap();
+            for(Node property : permission.getChildren()){
+                
+                List<EntryElement> entryElements = new LinkedList<EntryElement>();
+                OrderFilter.sortByIdNode(property.getChildren());
+                for(Node propertyValue : property.getChildren()){
+                    EntryElement entryElement = new EntryElement();
+                    entryElement.setType(LdapUtils.extractFirstValueOfAttribute(propertyValue.getEntry(), SchemaConstants.javaClassNameAttribute));
+                    entryElement.setValue(LdapUtils.extractFirstValueOfAttribute(propertyValue.getEntry(), SchemaConstants.stringAttribute));
+                    entryElements.add(entryElement);
+                }
+                String key = LdapUtils.extractFirstValueOfAttribute(property.getEntry(), SchemaConstants.cnAttribute);
+                EntryValue entryValue = new EntryValue(key, entryElements);
+                attributes.put(key, entryValue); //TODO why need key 2x?
             }
-            try {
-                Constructor<?> constructor = elementType.getConstructor(String.class);
-                permissions.add((Permission)constructor.newInstance(value));
-            } catch (Exception e) {
-                ReflectionUtils.handleReflectionException(e);
-                throw new ComputationException(e);
-            }
+            String type = LdapUtils.extractFirstValueOfAttribute(permission.getEntry(), SchemaConstants.javaClassNameAttribute);
+            PermissionData data = new PermissionData();
+            data.setType(type);
+            data.setAttributes(attributes);
+            permissionData.add(data);
         }
-        return permissions;
+        return EntryUtils.convertAllBeanDataToObjects(permissionData);
     }
+
+//    private Collection<Permission> extractPermissions(List<Entry> entries){
+//        Collection<Permission> permissions = new LinkedList<Permission>();
+//        for(Entry entry : entries){
+//            String type = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.javaClassNameAttribute);
+//            String value = LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
+//            Class<?> elementType;
+//            try {
+//                elementType = Class.forName(type);
+//            } catch (ClassNotFoundException e) {
+//                throw new ComputationException(e);
+//            }
+//            try {
+//                Constructor<?> constructor = elementType.getConstructor(String.class);
+//                permissions.add((Permission)constructor.newInstance(value));
+//            } catch (Exception e) {
+//                ReflectionUtils.handleReflectionException(e);
+//                throw new ComputationException(e);
+//            }
+//        }
+//        return permissions;
+//    }
 
     @Override
     public <T extends Permission> Collection<T> getPermissionsForUser(String username, Class<T> type) throws UserNotFoundException {
@@ -314,14 +378,13 @@ public class UserDataManagerLdap implements UserDataManager {
 
     @Override
     public Collection<Permission> getPermissionsFromPermissionSet(String permissionSet) throws PermissionSetNotFoundException {
-        SearchCursor cursor;
+        List<Node> nodes;
         try {
-            cursor = dao.searchOneLevel(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
+            nodes = dao.searchSubtreeNode(SchemaConstants.ouGlobalPermissionsDirect(permissionSet));
         } catch (MissingParentException e) {
             throw new PermissionSetNotFoundException(permissionSet);
         }
-        List<Entry> entries = OrderFilter.sortById(cursor);
-        return extractPermissions(entries);
+        return extractPermissionsFromNodes(nodes);
     }
 
     @Override
@@ -393,10 +456,10 @@ public class UserDataManagerLdap implements UserDataManager {
         SearchCursor cursor;
         try {
             cursor = dao.searchOneLevel(SchemaConstants.userAttribute(username, attributename));
-        } catch (NoSuchNodeException e) {
-            throw new NoSuchAttributeException();
-        } catch (MissingParentException e) {
+        }  catch (MissingParentException e) {
             throw new UserNotFoundException();
+        }catch (NoSuchNodeException e) {
+            throw new NoSuchAttributeException();
         }
         List<Entry> entries = OrderFilter.sortById(cursor);
         return extractUserAttributeValues(entries);
@@ -472,10 +535,10 @@ public class UserDataManagerLdap implements UserDataManager {
         try {
             Entry entry = dao.lookup(SchemaConstants.userCredentials(username, credentials));
             return LdapUtils.extractFirstValueOfAttribute(entry, SchemaConstants.stringAttribute);
-        } catch (NoSuchNodeException e) {
-            throw new NoSuchCredentialsException();
         } catch (MissingParentException e) {
             throw new UserNotFoundException();
+        } catch (NoSuchNodeException e) {
+            throw new NoSuchCredentialsException();
         }    
     }
 
@@ -518,7 +581,7 @@ public class UserDataManagerLdap implements UserDataManager {
 
     private String lookupMaxId(Dn containerDn) {
         Entry entry = dao.lookup(containerDn);
-        return LdapUtils.extractFirstValueOfAttribute(entry, OrderFilter.maxIdAttribute);
+        return OrderFilter.getMaxId(entry);
     }
 
 }

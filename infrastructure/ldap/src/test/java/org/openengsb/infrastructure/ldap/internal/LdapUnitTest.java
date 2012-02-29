@@ -1,11 +1,14 @@
 package org.openengsb.infrastructure.ldap.internal;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,22 +19,33 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.openjpa.persistence.util.SourceCode.ACCESS;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.NoSuchAttributeException;
 import org.openengsb.core.api.security.service.NoSuchCredentialsException;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
-import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
+import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
+import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.openengsb.separateProject.SchemaConstants;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Objects;
 
-public class LdapUnitTest {
+
+public class LdapUnitTest extends AbstractOsgiMockServiceTest{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LdapUnitTest.class);
 
@@ -52,9 +66,17 @@ public class LdapUnitTest {
     private static Dn dnTestAttribute;
     //  private static Dn dnTestAttribute2;
 
-    private static class PermissionImpl implements Permission{
+    public static class PermissionImpl implements Permission{
 
         private String description;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
 
         public PermissionImpl(String description){
             this.description = description;
@@ -75,6 +97,52 @@ public class LdapUnitTest {
 
     };
 
+    public static class TestPermission implements Permission {
+        private String desiredResult;
+
+        public TestPermission() {
+        }
+
+        public TestPermission(Access desiredResult) {
+            super();
+            this.desiredResult = desiredResult.name();
+        }
+
+        @Override
+        public String describe() {
+            return "for testing purposes";
+        }
+
+        public String getDesiredResult() {
+            return desiredResult;
+        }
+
+        public void setDesiredResult(String desiredResult) {
+            this.desiredResult = desiredResult;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(desiredResult);
+        }
+
+        @Override
+        public String toString() {
+            return "TestPermission: " + desiredResult;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof LdapUnitTest.TestPermission)) {
+                return false;
+            }
+            final LdapUnitTest.TestPermission other = (LdapUnitTest.TestPermission) obj;
+            return Objects.equal(desiredResult, other.desiredResult);
+        }
+
+    }
+    
+    
     private static UserDataManager setupUserManager(){
         UserDataManagerLdap m = new UserDataManagerLdap();        
         m.setLdapDao(new LdapDao(connection));
@@ -315,15 +383,7 @@ public class LdapUnitTest {
      * */
 
 
-    @Test
-    public void testCreatePermissionSet_shouldPersistSet() throws Exception{
-        String permissionSetName = "SetA";
-        Dn permissionSetDn = new Dn("cn="+permissionSetName+",ou=permissionSets,ou=userdata,dc=openengsb,dc=org");
 
-        assertThat(connection.exists(permissionSetDn), is(false));
-        userManager.createPermissionSet(permissionSetName);
-        assertThat(connection.exists(permissionSetDn), is(true));
-    }
 
     @Test
     public void testAddPermissionSetToPermissionSet_shouldPersistChildrenSets() throws Exception{
@@ -340,18 +400,42 @@ public class LdapUnitTest {
         assertThat(connection.exists(hierarchyB), is(true));
         assertThat(connection.exists(hierarchyC), is(true));
     }
+
     //TODO test addpermissions for non existing user should throw exception
     @Test
     public void testGetPermissionsForUser_shouldReturnPermissions() throws Exception{
-        String description = "hello";
-        Permission permission = new PermissionImpl(description);
+        Permission permission = new TestPermission(Access.GRANTED);
         userManager.addPermissionToUser(userName1, permission);
-        Permission[] permissions = userManager.getPermissionsForUser(userName1).toArray(new Permission[0]);
-        assertThat(permissions.length, is(1));
-        assertThat(permissions[0], is(permission));
-        assertThat(permissions[0] instanceof PermissionImpl, is(true));
+        Collection<Permission> permissions = userManager.getPermissionsForUser(userName1);
+        assertThat(permissions, hasItem(permission));
+        assertThat(permissions.size(), is(1));
+    }
+    
+    @Test
+    public void testCreatePermissionSet_shouldPersistSet() throws Exception{
+        String set = "SetA";
+        Permission p1 = new TestPermission(Access.GRANTED);
+        Permission p2 = new TestPermission(Access.DENIED);
+        Permission[] permissions = new Permission[]{p1,p2};
+        userManager.createPermissionSet(set, permissions);
+        Collection<Permission> result = userManager.getPermissionsFromPermissionSet(set);
+        assertThat(result, hasItem(p1));
+        assertThat(result, hasItem(p2));
+        assertThat(result.size(), is(2));
     }
 
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("permissionClass", TestPermission.class.getName());
+        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class){};
+        registerService(permissionProvider, props, PermissionProvider.class);
+        DefaultOsgiUtilsService osgiServiceUtils = new DefaultOsgiUtilsService();
+        osgiServiceUtils.setBundleContext(bundleContext);
+        registerService(osgiServiceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
+        OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
+    }
+    
     //    @Test
     //    public void testCreateAndDeleteNewUser_shouldSucceed() throws Exception {
     //        assertThat(connection.exists(dnTestUser2), is(false));

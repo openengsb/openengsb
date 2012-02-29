@@ -1,8 +1,8 @@
-package org.openengsb.infrastructure.ldap.internal.model;
+package org.openengsb.infrastructure.ldap.internal;
 
 import org.apache.directory.shared.ldap.model.entry.Entry;
 
-public class EntryAlreadyExistsException extends TreeModelException {
+public class EntryAlreadyExistsException extends RuntimeException {
 
     private static final long serialVersionUID = -3355338506299992562L;
 

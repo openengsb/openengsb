@@ -1,8 +1,8 @@
-package org.openengsb.infrastructure.ldap.internal.model;
+package org.openengsb.separateProject;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.openengsb.infrastructure.ldap.internal.LdapUtils;
+import org.openengsb.infrastructure.ldap.util.LdapUtils;
 
 public class SchemaConstants {
 

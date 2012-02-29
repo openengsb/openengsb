@@ -1,4 +1,4 @@
-package org.openengsb.infrastructure.ldap.internal;
+package org.openengsb.infrastructure.ldap.util;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValu
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.openengsb.infrastructure.ldap.internal.model.ObjectClassViolationException;
-import org.openengsb.infrastructure.ldap.internal.model.SchemaConstants;
+import org.openengsb.infrastructure.ldap.internal.ObjectClassViolationException;
+import org.openengsb.separateProject.SchemaConstants;
 
 public class LdapUtils {
-    
+
     public static Dn concatDn(String rdnAttribute, String rdnValue, Dn basedn){
         try {
             Rdn rdn = new Rdn(rdnAttribute, rdnValue);
@@ -23,14 +23,30 @@ public class LdapUtils {
             throw new RuntimeException(e);
         }
     }
-    
+
+    public static String extractAttributeNoEmptyCheck(Entry entry, String attributeTye){
+        Attribute attribute = entry.get(attributeTye);
+        if(attribute == null){
+            return null;
+        }
+        try {
+            return attribute.getString();
+        } catch (LdapInvalidAttributeValueException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //TODO make more general method where it is optional if empty flag should be checked or not.
     //so far this method always checks it although it may also be used for attributes where empty flag is not allowed.
     public static String extractFirstValueOfAttribute(Entry entry, String attributeTye){
+
+        if(entry == null){
+            return null;
+        }
         
         Attribute attribute = entry.get(attributeTye);
         Attribute emptyFlagAttribute = entry.get(SchemaConstants.emptyFlagAttribute);
-        
+
         boolean empty = false;
         try {
             if(attribute != null){
@@ -56,5 +72,5 @@ public class LdapUtils {
         }
         return result;
     }
-    
+
 }
