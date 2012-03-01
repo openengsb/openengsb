@@ -347,6 +347,34 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>DomainEventsWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}Events</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}Events.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>DomainWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
         <executions>
