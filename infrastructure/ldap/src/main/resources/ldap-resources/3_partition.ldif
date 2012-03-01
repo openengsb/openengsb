@@ -1,0 +1,23 @@
+version: 1
+
+#this may also be created in studio when creating the partitionsuffix. See basic user guide.
+dn: dc=openengsb,dc=org
+objectClass: domain
+objectClass: top
+dc: openengsb
+
+dn: ou=userdata,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: userdata
+
+dn: ou=users,ou=userdata,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: users
+
+dn: ou=permissionSets,ou=userdata,dc=openengsb,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: permissionSets
+

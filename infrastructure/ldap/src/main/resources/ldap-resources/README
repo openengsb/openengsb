@@ -1,0 +1,10 @@
+Since the server needs to be restarted between the steps, it's not possible to place all the ldifs into 1 single file.
+
+1) import schema. I guess it makes sense if the attribute types already exist when creating the indices.
+better restart server. not sure if required but doesn't hurt.
+2) import ads-partitionId. Takes quite some time (~2 minutes). This also creates the indices.
+MUST restart server.
+3) import partition. Creates basic structure of partition.
+
+IMPORTANT:
+Indices must be configured before loading data into the server. Indices configured after loading entries into the server will NOT work properly unless they are built using the index builder command supplied with the ApacheDS tools command line program.

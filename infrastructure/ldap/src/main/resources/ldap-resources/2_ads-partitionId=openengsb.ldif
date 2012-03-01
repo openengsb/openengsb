@@ -1,0 +1,230 @@
+version: 1
+
+dn: ads-partitionId=openengsb,ou=partitions,ads-directoryServiceId=default,o
+ u=config
+objectclass: ads-jdbmPartition
+objectclass: ads-base
+objectclass: ads-partition
+objectclass: top
+ads-partitionid: openengsb
+ads-partitionsuffix: dc=openengsb,dc=org
+ads-enabled: TRUE
+ads-indexes: apacheRdn
+ads-indexes: apacheSubLevel
+ads-indexes: apachePresence
+ads-indexes: apacheOneLevel
+ads-indexes: apacheOneAlias
+ads-indexes: apacheSubAlias
+ads-indexes: apacheAlias
+ads-indexes: entryUUID
+ads-indexes: entryCSN
+ads-indexes: dc
+ads-indexes: krb5PrincipalName
+ads-indexes: objectClass
+ads-indexes: ou
+ads-indexes: uid
+ads-indexes: cn
+ads-indexes: javaClassName
+ads-indexes: org-openengsb-uuid
+ads-indexes: org-openengsb-string
+ads-indexes: org-openengsb-emptyFlag
+ads-jdbmpartitionoptimizerenabled: TRUE
+ads-partitioncachesize: 100
+ads-partitionsynconwrite: TRUE
+
+dn: ou=indexes,ads-partitionId=openengsb,ou=partitions,ads-directoryServiceI
+ d=default,ou=config
+objectclass: organizationalUnit
+objectclass: top
+ou: indexes
+
+dn: ads-indexAttributeId=apacheRdn,ou=indexes,ads-partitionId=openengsb,ou=p
+ artitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheRdn
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apacheSubLevel,ou=indexes,ads-partitionId=openengsb
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheSubLevel
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apachePresence,ou=indexes,ads-partitionId=openengsb
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apachePresence
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apacheOneLevel,ou=indexes,ads-partitionId=openengsb
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheOneLevel
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apacheOneAlias,ou=indexes,ads-partitionId=openengsb
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheOneAlias
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apacheSubAlias,ou=indexes,ads-partitionId=openengsb
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheSubAlias
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=apacheAlias,ou=indexes,ads-partitionId=openengsb,ou
+ =partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: apacheAlias
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=dc,ou=indexes,ads-partitionId=openengsb,ou=partitio
+ ns,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: dc
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=krb5PrincipalName,ou=indexes,ads-partitionId=openen
+ gsb,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: krb5PrincipalName
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=objectClass,ou=indexes,ads-partitionId=openengsb,ou
+ =partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: objectClass
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=entryUUID,ou=indexes,ads-partitionId=openengsb,ou=p
+ artitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: entryUUID
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=entryCSN,ou=indexes,ads-partitionId=openengsb,ou=pa
+ rtitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: entryCSN
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=ou,ou=indexes,ads-partitionId=openengsb,ou=partitio
+ ns,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: ou
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=uid,ou=indexes,ads-partitionId=openengsb,ou=partiti
+ ons,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: uid
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=org-openengsb-uuid,ou=indexes,ads-partitionId=opene
+ ngsb,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: org-openengsb-uuid
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=org-openengsb-string,ou=indexes,ads-partitionId=ope
+ nengsb,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: org-openengsb-string
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=org-openengsb-emptyFlag,ou=indexes,ads-partitionId=
+ openengsb,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: org-openengsb-emptyFlag
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=cn,ou=indexes,ads-partitionId=openengsb,ou=partitio
+ ns,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: cn
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
+dn: ads-indexAttributeId=javaClassName,ou=indexes,ads-partitionId=openengsb,
+ ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: ads-index
+objectclass: ads-base
+objectclass: ads-jdbmIndex
+objectclass: top
+ads-indexattributeid: javaClassName
+ads-enabled: TRUE
+ads-indexcachesize: 100
+
