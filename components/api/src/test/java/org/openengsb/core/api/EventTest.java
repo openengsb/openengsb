@@ -31,8 +31,7 @@ public class EventTest {
         Event event = new TestEvent("test");
         String eventString = event.toString();
         assertThat(eventString, containsString("class:" + event.getClass()));
-        assertThat(eventString, containsString("int:5;"));
-        assertThat(eventString, containsString("type:TestEvent;"));
+        assertThat(eventString, containsString("int:5;"));        
         assertThat(eventString, containsString("name:test"));
     }
 

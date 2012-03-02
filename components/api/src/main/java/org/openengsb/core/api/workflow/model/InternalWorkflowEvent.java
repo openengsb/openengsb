@@ -45,12 +45,11 @@ public class InternalWorkflowEvent extends Event {
         this.processBag = processBag;
     }
 
-    @Override
     public String getType() {
         if (type != null) {
             return type;
         } else {
-            return super.getType();
+            return super.getClass().getSimpleName();
         }
     }
 
