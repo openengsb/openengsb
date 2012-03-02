@@ -24,37 +24,56 @@ import java.util.List;
 
 import org.junit.Test;
 
+import org.openengsb.core.api.xlink.XLinkRegisteredTools;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 
-// @extract-start XLinkUtilsTest
 public class XLinkUtilsTest {
 
+    // @extract-start XLinkUtilsTestConfigs
+
     private String servletUrl = "http://openengsb.org/registryServlet.html";
+    private String projectId = "ExampleProject";
+    private String version = "1.0";
     private String modelId = "OOSourceCodeDomainId";
     private int expiresInDays = 3;
     private List<String> identifierKeyNames = Arrays.asList("methodName", "className", "packageName");
+    private List<XLinkRegisteredTools> registeredTools = null;
+    private String connectorId = "exampleConnectorId";
+    private String viewId = "exampleViewId";
 
+    // @extract-end
+
+    // @extract-start XLinkUtilsTestPrepareTemplate
     @Test
     public void testPrepareXLinkTemplate() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, modelId, identifierKeyNames, expiresInDays);
-        // xLinkTemplate.getBaseUrl() =
-        // http://openengsb.org/registryServlet.html?modelId=OOSourceCodeDomain&expirationDate=20120302121927
+            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+                registeredTools);
+
+        // baseUrl =
+        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636
 
         assertTrue(xLinkTemplate.getBaseUrl().contains(XLinkUtils.XLINK_MODELID_KEY + "=" + modelId));
         assertTrue(xLinkTemplate.getKeyNames().contains("methodName"));
     }
 
+    // @extract-end
+
+    // @extract-start XLinkUtilsTestGenerateValidXLinkUrl
     @Test
     public void testGenerateValidXLinkUrl() {
         XLinkTemplate xLinkTemplate =
-            XLinkUtils.prepareXLinkTemplate(servletUrl, modelId, identifierKeyNames, expiresInDays);
+            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+                registeredTools);
         List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
 
         String xLinkUrl = XLinkUtils.generateValidXLinkUrl(xLinkTemplate, values);
+
         // xLinkUrl =
-        // http://openengsb.org/registryServlet.html?modelId=OOSourceCodeDomain&expirationDate=20120302121927&
-        // methodName=testMethod&className=testClass&packageName=testPackage
+        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636&methodName=testMethod
+        // &className=testClass&packageName=testPackage
 
         assertTrue(xLinkUrl.contains("methodName=testMethod"));
         assertTrue(xLinkUrl.contains("className=testClass"));
@@ -62,5 +81,26 @@ public class XLinkUtilsTest {
 
     }
 
+    // @extract-end
+
+    // @extract-start XLinkUtilsTestGenerateValidXLinkUrlLocalSwitching
+    @Test
+    public void testGenerateValidXLinkUrlForLocalSwitching() {
+        XLinkTemplate xLinkTemplate =
+            XLinkUtils.prepareXLinkTemplate(servletUrl, projectId, version, modelId, identifierKeyNames, expiresInDays,
+                registeredTools);
+        List<String> values = Arrays.asList("testMethod", "testClass", "testPackage");
+        String xLinkUrl = XLinkUtils.generateValidXLinkUrlForLocalSwitching(xLinkTemplate, values, connectorId, viewId);
+
+        // xLinkUrl =
+        // http://openengsb.org/registryServlet.html?projectId=ExampleProject&versionId=1.0
+        // &modelId=OOSourceCodeDomainId&expirationDate=20120305181636&methodName=testMethod
+        // &className=testClass&packageName=testPackage&connectorID=exampleConnectorId&viewId=exampleViewId
+
+        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_CONNECTORID_KEY + "=" + connectorId));
+        assertTrue(xLinkUrl.contains(XLinkUtils.XLINK_VIEW_KEY + "=" + viewId));
+
+    }
+    // @extract-end
+
 }
-// @extract-end

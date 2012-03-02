@@ -17,7 +17,7 @@
 
 package org.openengsb.core.workflow.persistence;
 
-import java.util.List;
+
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
@@ -106,10 +105,6 @@ public abstract class AbstractRuleManagerTest {
                 return null;
             }
 
-            @Override
-            public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
 
         };
         session.setGlobal("example2", exampleService);

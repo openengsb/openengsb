@@ -17,7 +17,6 @@
 
 package org.openengsb.core.api.descriptor;
 
-import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -35,7 +34,6 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.l10n.StringLocalizer;
-import org.openengsb.core.api.model.OpenEngSBModel;
 
 public class ServiceDescriptorTest {
 
@@ -111,11 +109,6 @@ public class ServiceDescriptorTest {
             return null;
         }
 
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
 
     }
 
@@ -128,11 +121,6 @@ public class ServiceDescriptorTest {
         @Override
         public String getInstanceId() {
             return null;
-        }
-
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
     }

@@ -74,7 +74,6 @@ import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.model.ConnectorId;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -129,11 +128,6 @@ public class TestClientTest extends AbstractUITest {
         @Override
         public String getConnectorId() {
             return null;
-        }
-
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
     }

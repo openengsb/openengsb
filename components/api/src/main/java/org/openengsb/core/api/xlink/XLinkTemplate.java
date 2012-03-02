@@ -19,33 +19,84 @@ package org.openengsb.core.api.xlink;
 
 import java.util.List;
 
-// @extract-start XLinkTemplate
+
 /**
  * Modelclass for the XLinkTemplate definitions. Transfered to each Tool that participates in XLinking. Defines the
- * baseURL to the XLink HTTP-Servlet and a list of Keynames used to identify modelObjects. To create valid XLink-URLs,
- * the KeyNames with their values must be concatenated to the baseURL as GET-Parameters.
+ * baseURL to the XLink HTTP-Servlet, a list of Keynames used to identify modelObjects and a List of all other 
+ * currently registered tools from the same host. This information is used to support local switching between
+ * tools. To create valid XLink-URLs, the KeyNames with their values must be concatenated to the baseURL as 
+ * GET-Parameters.
  */
 public class XLinkTemplate {
-
+    
+    // @extract-start XLinkTemplate
     /**
-     * URL to the Registry´s HTTP-Servlet without the IdentifierÂ´s fields. Already contains the modelId of the
+     * URL to the Registry´s HTTP-Servlet without the Identifier´s fields. Already contains the modelId of the
      * sourceModel and the expirationDate of the Link as GET-Parameters. XLink-URLs expire after a certain amount of
      * days.
      */
     String baseUrl;
 
     /**
-     * List containing keynames that determine how single modelObjects are identified. Must be concatenated to the
-     * baseUrl as GET-Parameters.
+     * List containing keynames that determine how single modelObjects are identified. Must be concatenated with 
+     * their values to the baseUrl as GET-Parameters. The keyNames correspond to existing keys in the 
+     * toolenviroment.
      */
     List<String> keyNames;
+    
+    /**
+     * List of all other currently registered tools from the same host. This information is used to support 
+     * local switching between tools.
+     */
+    List<XLinkRegisteredTools> registeredTools;
+    
+    /**
+     * Keyname of the connectorId, which is to be used for local switching.
+     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     */
+    String connectorIdKeyName;
+    
+    /**
+     * Keyname of the viewId, which is to be used for local switching.
+     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     */    
+    String viewIdKeyName;
+    
+    // @extract-end
 
     public XLinkTemplate() {
     }
 
-    public XLinkTemplate(String baseUrl, List<String> keyNames) {
+    public XLinkTemplate(String baseUrl, List<String> keyNames, List<XLinkRegisteredTools> registeredTools, String connectorIdKeyName, String viewIdKeyName) {
         this.baseUrl = baseUrl;
         this.keyNames = keyNames;
+        this.registeredTools = registeredTools;
+        this.connectorIdKeyName = connectorIdKeyName;
+        this.viewIdKeyName = viewIdKeyName;
+    }
+
+    /**
+     * Keyname of the connectorId, which is to be used for local switching.
+     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     */    
+    public String getConnectorIdKeyName() {
+        return connectorIdKeyName;
+    }
+
+    public void setConnectorIdKeyName(String connectorIdKeyName) {
+        this.connectorIdKeyName = connectorIdKeyName;
+    }
+
+    /**
+     * Keyname of the viewId, which is to be used for local switching.
+     * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
+     */        
+    public String getViewIdKeyName() {
+        return viewIdKeyName;
+    }
+
+    public void setViewIdKeyName(String viewIdKeyName) {
+        this.viewIdKeyName = viewIdKeyName;
     }
 
     /**
@@ -71,5 +122,17 @@ public class XLinkTemplate {
         this.keyNames = keyNames;
     }
 
+    /**
+     * List of all other currently registered tools from the same host. This information can be used to support 
+     * local switching between tools.
+     */    
+    public List<XLinkRegisteredTools> getRegisteredTools() {
+        return registeredTools;
+    }
+
+    public void setRegisteredTools(List<XLinkRegisteredTools> registeredTools) {
+        this.registeredTools = registeredTools;
+    }
+
 }
-// @extract-end
+

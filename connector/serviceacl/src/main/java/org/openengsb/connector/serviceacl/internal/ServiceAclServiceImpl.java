@@ -28,7 +28,6 @@ import org.apache.commons.lang.ClassUtils;
 import org.openengsb.connector.serviceacl.ServicePermission;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.Anonymous;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
@@ -214,9 +213,5 @@ public class ServiceAclServiceImpl extends AbstractOpenEngSBConnectorService imp
         this.attributeProviders = attributeProviders;
     }
 
-    @Override
-    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }

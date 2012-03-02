@@ -17,9 +17,7 @@
 
 package org.openengsb.core.api;
 
-import java.util.List;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.annotation.Authenticated;
 
 /**
@@ -35,12 +33,4 @@ public interface Domain extends OpenEngSBService {
     @Authenticated
     AliveState getAliveState();
 
-    // @extract-start Domain    
-    /**
-     * PushMethod to transfere a List of potential Matches, of modelObjects, to the Clienttool. Also defines the Id of
-     * View to open Matches in. The transfered matches are instances of the Clienttools model.
-     */
-    void openXLinks(List<OpenEngSBModel> modelObjects, String viewId);
-
-    // @extract-end
 }

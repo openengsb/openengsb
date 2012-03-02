@@ -17,11 +17,10 @@
 
 package org.openengsb.connector.usernamepassword.internal;
 
-import java.util.List;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
@@ -74,11 +73,6 @@ public class UsernamePasswordServiceImpl extends AbstractOpenEngSBConnectorServi
 
     public void setUserManager(UserDataManager userManager) {
         this.userManager = userManager;
-    }
-
-    @Override
-    public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

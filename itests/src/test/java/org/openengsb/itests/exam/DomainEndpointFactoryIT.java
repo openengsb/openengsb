@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
@@ -75,11 +74,6 @@ public class DomainEndpointFactoryIT extends AbstractPreConfiguredExamTestHelper
         @Override
         public ExampleResponseModel doSomething(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
 

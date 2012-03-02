@@ -22,47 +22,58 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.openengsb.core.api.xlink.XLinkRegisteredTools;
 import org.openengsb.core.api.xlink.XLinkTemplate;
 
-// @extract-start XLinkUtils
 /**
  * Static util class for xlink, defining XLink keyNames and Examplemethods. Demonstrates how XLinkTemplates are prepared
  * and how valid XLink-Urls are generated.
  */
 public final class XLinkUtils {
-    
-    private XLinkUtils() { 
+
+    private XLinkUtils() {
     }
 
-    /** Keyname of the ModelId */
+    // @extract-start XLinkUtilsKeyDefs
+
+    /** Keyname of the ProjectId, mandatory GET-Parameter in XLinks */
+    public static final String XLINK_PROJECTID_KEY = "projectId";
+
+    /** Keyname of the ModelId, mandatoryGET-Parameter in XLinks */
     public static final String XLINK_MODELID_KEY = "modelId";
 
-    /** Keyname of the ExpirationDate */
+    /** Keyname of the Version, mandatory GET-Parameter in XLinks */
+    public static final String XLINK_VERSION_KEY = "versionId";
+
+    /** Keyname of the ExpirationDate, mandatory GET-Parameter in XLinks */
     public static final String XLINK_EXPIRATIONDATE_KEY = "expirationDate";
 
-    /**
-     * Demonstrates how a XLinkTemplate is prepared before it is transmitted to the client. Every baseUrl must contain
-     * the modelId and the expirationDate as GET-Paramters.
-     */
-    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String modelId, List<String> keyNames,
-            int expirationDays) {
-        servletUrl +=
-            "?" + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
-                    + getExpirationDate(expirationDays);
-        return new XLinkTemplate(servletUrl, keyNames);
-    }
+    /** Keyname of the ConnectorId, GET-Parameter in XLinks, only mandatory in local switching */
+    public static final String XLINK_CONNECTORID_KEY = "connectorID";
+
+    /** Keyname of the ViewId, GET-Parameter in XLinks, only mandatory in local switching */
+    public static final String XLINK_VIEW_KEY = "viewId";
+
+    /** Keyname of the HostId (e.g. the IP), use during the registration for XLink. */
+    public static final String XLINK_HOSTID_KEY = "HostId";
+
+    // @extract-end
+
+    // @extract-start XLinkUtilsPrepareTemplate
 
     /**
-     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate and a List of values, corresponding to
-     * the List of keyNames of the Template
+     * Demonstrates how the baseUrl of a XLinkTemplate is prepared before it is transmitted to the client. Every baseUrl
+     * must contain the projectId, modelId, itÃ‚Â´s version and the expirationDate as GET-Paramters, before it is
+     * transmited to the connector. The ConnectorId-Key and the ViewId-Key are also added to the Template to enable
+     * Local Switching.
      */
-    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
-        String completeUrl = template.getBaseUrl();
-        List<String> keyNames = template.getKeyNames();
-        for (int i = 0; i < keyNames.size(); i++) {
-            completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
-        }
-        return completeUrl;
+    public static XLinkTemplate prepareXLinkTemplate(String servletUrl, String projectId, String version,
+            String modelId, List<String> keyNames, int expirationDays, List<XLinkRegisteredTools> registeredTools) {
+        servletUrl +=
+            "?" + XLINK_PROJECTID_KEY + "=" + projectId + "&" + XLINK_VERSION_KEY + "=" + version + "&"
+                    + XLINK_MODELID_KEY + "=" + modelId + "&" + XLINK_EXPIRATIONDATE_KEY + "="
+                    + getExpirationDate(expirationDays);
+        return new XLinkTemplate(servletUrl, keyNames, registeredTools, XLINK_CONNECTORID_KEY, XLINK_VIEW_KEY);
     }
 
     /**
@@ -75,5 +86,39 @@ public final class XLinkUtils {
         return formatter.format(calendar.getTime());
     }
 
+    // @extract-end
+
+    // @extract-start XLinkUtilsGenerateValidXLinkUrl
+    /**
+     * Demonstrates how a valid XLink-Url is generated out of an XLinkTemplate and a List of values, corresponding to
+     * the List of keyNames of the Template. Depending on the contained Keys, the XLink is useable for local switching,
+     * or not.
+     */
+    public static String generateValidXLinkUrl(XLinkTemplate template, List<String> values) {
+        String completeUrl = template.getBaseUrl();
+        List<String> keyNames = template.getKeyNames();
+        for (int i = 0; i < keyNames.size(); i++) {
+            completeUrl += "&" + keyNames.get(i) + "=" + values.get(i);
+        }
+        return completeUrl;
+    }
+
+    // @extract-end
+
+    // @extract-start XLinkUtilsGenerateValidXLinkUrlForLocalSwitching
+    /**
+     * Demonstrates how a valid XLink-Url for a Local Switching is generated out of an XLinkTemplate, a List of values
+     * corresponding to the List of keyNames of the Template and the ConnectorId and the ViewId.
+     */
+    public static String generateValidXLinkUrlForLocalSwitching(XLinkTemplate template, List<String> values,
+            String connectorIdValue, String viewIdValue) {
+        String xLink = generateValidXLinkUrl(template, values);
+        xLink +=
+            "&" + template.getConnectorIdKeyName() + "=" + connectorIdValue + "&" + template.getViewIdKeyName() + "="
+                    + viewIdValue;
+        return xLink;
+    }
+
+    // @extract-end
+
 }
-// @extract-end

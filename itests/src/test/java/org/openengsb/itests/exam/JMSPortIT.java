@@ -17,14 +17,12 @@
 
 package org.openengsb.itests.exam;
 
-import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
@@ -282,10 +280,6 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
             return response;
         }
 
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
 
     }
 

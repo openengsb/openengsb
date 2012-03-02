@@ -17,7 +17,6 @@
 
 package org.openengsb.itests.exam;
 
-import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -31,7 +30,6 @@ import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.domain.example.ExampleDomain;
@@ -98,11 +96,6 @@ public class OsgiServiceUtilIT extends AbstractPreConfiguredExamTestHelper {
         @Override
         public ExampleResponseModel doSomething(ExampleRequestModel model) {
             throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
 

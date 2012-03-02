@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openengsb.core.api.AliveState;
-import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.common.AbstractDelegateStrategy;
@@ -99,10 +98,6 @@ public class DefaultAuthenticationProviderStrategy extends AbstractDelegateStrat
             });
         }
 
-        @Override
-        public void openXLinks(List<OpenEngSBModel> modelObjects, String viewId) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
 
     }
 
