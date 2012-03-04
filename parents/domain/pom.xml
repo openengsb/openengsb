@@ -358,7 +358,7 @@
               <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}Events.wsdl</outputFileName>
             </configuration>
             <goals>
-              <goal>java2ws</goal>
+              <goal>java2wsdl</goal>
             </goals>
           </execution>
           <execution>
