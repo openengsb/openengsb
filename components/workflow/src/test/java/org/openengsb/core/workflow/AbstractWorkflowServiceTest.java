@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -39,9 +40,9 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.services.internal.DefaultOutgoingPortUtilService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.workflow.internal.TaskboxServiceImpl;
 import org.openengsb.core.workflow.internal.TaskboxServiceInternalImpl;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
@@ -76,7 +77,8 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
     }
 
     private void setupTaskbox() {
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
+        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         TaskboxServiceImpl taskboxServiceImpl = new TaskboxServiceImpl();
         taskboxServiceImpl.setPersistenceManager(persistenceManager);
         taskboxServiceImpl.setBundleContext(bundleContext);

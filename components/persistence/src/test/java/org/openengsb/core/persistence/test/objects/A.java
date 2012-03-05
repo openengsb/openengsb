@@ -15,47 +15,57 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.model;
+package org.openengsb.core.persistence.test.objects;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
 
-public class ImportDeclaration implements Serializable {
+public class A implements Z, Serializable, SpecialActionsAfterSerialisation {
 
-    private static final long serialVersionUID = 4988417812120411259L;
+    private static final long serialVersionUID = 6358610617115942596L;
 
-    private String className;
+    private String blub;
+    private String additionalValue = null;
 
-    public ImportDeclaration(String className) {
-        this.className = className;
+    public A() {
     }
 
-    public ImportDeclaration() {
+    public A(String blub) {
+        this.blub = blub;
     }
 
-    public String getClassName() {
-        return className;
+    public String getBlub() {
+        return blub;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setBlub(String blub) {
+        this.blub = blub;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ImportDeclaration)) {
+        if (!(obj instanceof A)) {
             return false;
         }
-        if (className == null) {
+        if (blub == null) {
             return true;
         }
-        return className.equals(((ImportDeclaration) obj).className);
+        return blub.equals(((A) obj).blub);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(className).toHashCode();
+        return super.hashCode();
+    }
+
+    @Override
+    public void doSpecialActions() {
+        additionalValue = "lala";
+    }
+
+    public String getAdditionalValue() {
+        return additionalValue;
     }
 
 }

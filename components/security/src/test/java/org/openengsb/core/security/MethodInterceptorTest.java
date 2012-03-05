@@ -25,16 +25,18 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
+import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.security.model.ServiceAuthorizedList;
 import org.openengsb.core.api.security.model.User;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.MetadataSource;
 import org.openengsb.core.security.internal.UserManagerImpl;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
@@ -60,7 +62,7 @@ public class MethodInterceptorTest {
     private PersistenceService persistence;
     private DummyService service;
     private DummyService service2;
-    private DummyPersistenceManager persistenceManager;
+    private PersistenceManager persistenceManager;
     private BundleContext bundleContextMock;
 
     @Before
@@ -81,10 +83,13 @@ public class MethodInterceptorTest {
     }
 
     private void initPersistence() throws PersistenceException {
-        persistenceManager = new DummyPersistenceManager();
+        persistenceManager = new DefaultPersistenceManager();
+        ((DefaultPersistenceManager) persistenceManager)
+            .setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         bundleContextMock = mock(BundleContext.class);
         Bundle bundleMock = mock(Bundle.class);
         when(bundleContextMock.getBundle()).thenReturn(bundleMock);
+        when(bundleMock.getSymbolicName()).thenReturn(UUID.randomUUID().toString());
         persistence = persistenceManager.getPersistenceForBundle(bundleMock);
 
         List<GrantedAuthority> authorities =

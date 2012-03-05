@@ -655,11 +655,6 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.neodatis.odb</groupId>
-        <artifactId>neodatis-odb</artifactId>
-        <version>${odb.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.openengsb.labs.paxexam.karaf</groupId>
         <artifactId>paxexam-karaf-container</artifactId>
         <version>${karaf.exam.version}</version>
@@ -802,11 +797,6 @@
         <artifactId>net.sourceforge.htmlunit-all</artifactId>
         <version>${htmlunit.wrapped.version}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.wrapped</groupId>
-        <artifactId>org.neodatis.odb-all</artifactId>
-        <version>${odb.wrapped.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb.wrapped</groupId>

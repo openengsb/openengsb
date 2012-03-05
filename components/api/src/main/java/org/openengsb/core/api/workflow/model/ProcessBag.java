@@ -20,11 +20,14 @@ package org.openengsb.core.api.workflow.model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openengsb.core.api.persistence.IgnoreInQueries;
+import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
 import org.openengsb.core.api.workflow.ProcessBagException;
 
 /**
@@ -37,7 +40,7 @@ import org.openengsb.core.api.workflow.ProcessBagException;
  */
 @SuppressWarnings("serial")
 @XmlRootElement
-public class ProcessBag implements Serializable {
+public class ProcessBag implements Serializable, SpecialActionsAfterSerialisation {
     private String processId;
     private String context;
     private String user;
@@ -45,6 +48,48 @@ public class ProcessBag implements Serializable {
     private boolean empty = false;
 
     private Map<String, Object> properties;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ProcessBag)) {
+            return false;
+        }
+        ProcessBag rhs = (ProcessBag) obj;
+        boolean directValueResult =
+            (processId == null || processId.equals(rhs.processId)) && (context == null || context.equals(rhs.context))
+                    && (user == null || user.equals(rhs.user));
+        if (!directValueResult) {
+            return false;
+        }
+        if (properties == null || properties.size() == 0) {
+            return true;
+        }
+        Set<Entry<String, Object>> entrySet = properties.entrySet();
+        for (Entry<String, Object> entry : entrySet) {
+            if (entry.getValue() == null || entry.getValue().equals(rhs.properties.get(entry.getKey()))) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
+        hashCodeBuilder.append(processId).append(context).append(user).append(empty);
+        Set<Entry<String, Object>> entrySet = properties.entrySet();
+        for (Entry<String, Object> pair : entrySet) {
+            hashCodeBuilder.append(pair.getKey()).append(pair.getValue());
+        }
+        return hashCodeBuilder.toHashCode();
+    }
 
     public ProcessBag() {
         properties = new HashMap<String, Object>();
@@ -165,6 +210,11 @@ public class ProcessBag implements Serializable {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public void doSpecialActions() {
+        processIdLock = new Object();
     }
 
 }

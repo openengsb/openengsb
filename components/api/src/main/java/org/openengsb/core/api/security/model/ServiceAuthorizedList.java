@@ -17,11 +17,15 @@
 
 package org.openengsb.core.api.security.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public class ServiceAuthorizedList {
+public class ServiceAuthorizedList implements Serializable {
+
+    private static final long serialVersionUID = -6046543816651386055L;
+
     private String serviceId;
     private Collection<GrantedAuthority> authorities;
 
@@ -35,7 +39,7 @@ public class ServiceAuthorizedList {
     }
 
     public String getServiceId() {
-        return this.serviceId;
+        return serviceId;
     }
 
     public void setServiceId(String serviceId) {
@@ -43,11 +47,25 @@ public class ServiceAuthorizedList {
     }
 
     public Collection<GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return authorities;
     }
 
     public void setAuthorities(Collection<GrantedAuthority> authorities) {
         this.authorities = authorities;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ServiceAuthorizedList)) {
+            return false;
+        }
+        ServiceAuthorizedList other = (ServiceAuthorizedList) obj;
+        return serviceId == null || serviceId.equals(other.serviceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }
