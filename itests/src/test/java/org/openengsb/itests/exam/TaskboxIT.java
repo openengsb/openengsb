@@ -153,7 +153,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         Task task = taskboxService.getOpenTasks().get(0);
         Date date = new Date();
         task.addOrReplaceProperty("test", date);
-        assertEquals(task.getTaskType(), "step1");
+        assertEquals("step1", task.getTaskType());
 
         task.setName("test");
         taskboxService.updateTask(task);
@@ -163,8 +163,8 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         taskboxService.finishTask(task);
 
         task = taskboxService.getOpenTasks().get(0);
-        assertEquals(task.getProperty("test"), date);
-        assertEquals(task.getTaskType(), "step2");
+        assertEquals(date, task.getProperty("test"));
+        assertEquals("step2", task.getTaskType());
 
         taskboxService.finishTask(task);
         assertThat(taskboxService.getOpenTasks().size(), is(0));
