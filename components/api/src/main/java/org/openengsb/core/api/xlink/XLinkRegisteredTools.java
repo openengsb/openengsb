@@ -33,17 +33,17 @@ public class XLinkRegisteredTools {
     /**
      * Id of the connector, identifying the tool
      */
-    ConnectorId id;
+    private ConnectorId id;
     
     /**
      * Name of the tool, may be null
      */
-    String toolName;
+    private String toolName;
     
     /**
      * Views the tool offers for XLink, represented as keyNames and short descriptions
      */
-    HashMap<String, String> availableViews;
+    private HashMap<String, String> availableViews;
     
     // @extract-end
 

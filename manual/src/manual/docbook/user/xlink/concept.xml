@@ -310,13 +310,14 @@
             it benefits it´s actors. Note that local switching must only be supported by the
             outgoing tool, even though it would not be possible to switch back.</ns:para>
         <ns:para>To increase the Usability, the tool has to be able to reduce the nessecary
-            interaction by retrieving the information about other installed tools by itself and  by
-            sending a http-request to the registry that directly fires the transformation without
-            opening the http-servlet. The list of installed tools and the KeyFields for the
-            ConnectorId and the ViewId are transfered in the XLinkTemplate during the registration.
-            The list of installed tools is updated with an Event Method (see the implementation
-                <link xlink:href="#implementation.localswitch.information">here</link>).</ns:para>
-        <ns:para>To establish a http connection to the registry, an actor must authenticate himself.
+            interaction by retrieving the information about other installed tools by itself and by
+            sending an http-request to the registry that directly fires the transformation without
+            opening the http-servlet in a browser. The list of installed tools and the KeyFields for
+            the ConnectorId and the ViewId are transfered in the XLinkTemplate during the
+            registration. The list of installed tools is updated with an Event Method (see the
+            implementation <link xlink:href="#implementation.localswitch.information"
+            >here</link>).</ns:para>
+        <ns:para>To establish a http connection to the registry, an actor must authenticate.
             Therefore the tool must ask the actor to input his credentials, if required. In order to
             make XLinks useable for Local Switching they only require some extra information, so
             that they can skip the http-servlet for the actor´s input. In the http-servlet the actor
@@ -344,7 +345,7 @@
         <para>
             <orderedlist>
                 <listitem>
-                    <para>The actor Adam starts his client, his tools register themselfes, provide
+                    <para>The actor Adam starts his client, his tools register themselves, provide
                         their IP and get a XLinkTemplate assigned, which contain the servlet-url,
                         information about their modelspecific identifier, a list of local, already
                         registered, tools and the keyNames for the ConnectorId and ViewId. </para>
@@ -352,7 +353,7 @@
                 <listitem>
                     <para>During his work, Adam installes a new Tool that is integrated in OpenEngSB
                         and participates in XLinking. The list of installed tools is updated at each
-                        connector.</para>
+                        connector.onnectorId and the ViewId are transfered in </para>
                 </listitem>
                 <listitem>
                     <para>Adam works in Tool A on a bugfix and wants to view the related datapoint

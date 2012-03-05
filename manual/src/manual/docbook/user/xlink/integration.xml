@@ -127,9 +127,9 @@
                     <para>The identification of a certain host during a call to the registry´s
                         http-servlet is done via the IP of the http-request. This makes the use of
                         proxies impossible. Therefore an alternative host identification technique
-                        must be provided.<link
+                        must be provided <link
                             xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2777">(see
-                            on Jira)</link></para>
+                            on Jira)</link>.</para>
                 </listitem>
             </itemizedlist>
         </para>

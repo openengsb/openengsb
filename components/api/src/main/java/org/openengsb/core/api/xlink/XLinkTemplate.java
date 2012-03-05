@@ -35,39 +35,40 @@ public class XLinkTemplate {
      * sourceModel and the expirationDate of the Link as GET-Parameters. XLink-URLs expire after a certain amount of
      * days.
      */
-    String baseUrl;
+    private String baseUrl;
 
     /**
      * List containing keynames that determine how single modelObjects are identified. Must be concatenated with 
      * their values to the baseUrl as GET-Parameters. The keyNames correspond to existing keys in the 
      * toolenviroment.
      */
-    List<String> keyNames;
+    private List<String> keyNames;
     
     /**
      * List of all other currently registered tools from the same host. This information is used to support 
      * local switching between tools.
      */
-    List<XLinkRegisteredTools> registeredTools;
+    private List<XLinkRegisteredTools> registeredTools;
     
     /**
      * Keyname of the connectorId, which is to be used for local switching.
      * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
      */
-    String connectorIdKeyName;
+    private String connectorIdKeyName;
     
     /**
      * Keyname of the viewId, which is to be used for local switching.
      * Must be added, with corresponding value, to the baseUrl as GET-Paramter.
      */    
-    String viewIdKeyName;
+    private String viewIdKeyName;
     
     // @extract-end
 
     public XLinkTemplate() {
     }
 
-    public XLinkTemplate(String baseUrl, List<String> keyNames, List<XLinkRegisteredTools> registeredTools, String connectorIdKeyName, String viewIdKeyName) {
+    public XLinkTemplate(String baseUrl, List<String> keyNames, List<XLinkRegisteredTools> registeredTools, 
+            String connectorIdKeyName, String viewIdKeyName) {
         this.baseUrl = baseUrl;
         this.keyNames = keyNames;
         this.registeredTools = registeredTools;

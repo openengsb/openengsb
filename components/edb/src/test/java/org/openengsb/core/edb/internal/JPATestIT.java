@@ -317,7 +317,6 @@ public class JPATestIT {
         }
     }
 
-    @Ignore
     @SuppressWarnings("unchecked")
     @Test
     public void testDiff_shouldWork() throws Exception {
@@ -366,7 +365,6 @@ public class JPATestIT {
         assertThat(diffAc.getDifferenceCount(), is(1));
     }
 
-    @Ignore
     @Test
     public void testGetResurrectedOIDs_shouldWork() throws Exception {
         HashMap<String, Object> data1 = new HashMap<String, Object>();
@@ -526,7 +524,7 @@ public class JPATestIT {
         assertThat(result.size(), is(1));
     }
 
-    @Ignore
+
     @Test
     public void testQueryOfLastKnownVersionShouldWork() {
         HashMap<String, Object> data1v1 = new HashMap<String, Object>();
@@ -643,7 +641,6 @@ public class JPATestIT {
         db.commitEDBObjects(inserts, null, null);
     }
     
-    @Ignore
     @Test
     public void testCommitEDBObjectsUpdate_shouldWork() {
         EDBObject object = new EDBObject("/commit/test/update/1");
@@ -679,7 +676,6 @@ public class JPATestIT {
         db.commitEDBObjects(null, objects, null);
     }
     
-    @Ignore
     @Test
     public void testCommitEDBObjectsDelete_shouldWork() {
         EDBObject object = new EDBObject("/commit/test/delete/1");
@@ -700,7 +696,6 @@ public class JPATestIT {
         db.commitEDBObjects(null, null, objects);
     }
     
-    @Ignore
     @Test(expected = EDBException.class)
     public void testCommitEDBObjectsDeleteAlreadyDeleted_shouldThrowException() {
         EDBObject object = new EDBObject("/commit/test/delete/3");
