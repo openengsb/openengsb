@@ -27,8 +27,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@SuppressWarnings("serial")
 public class User implements CredentialsContainer, UserDetails {
+
+    private static final long serialVersionUID = -4422039385778330929L;
 
     private String password;
     private String username;
@@ -45,63 +46,71 @@ public class User implements CredentialsContainer, UserDetails {
 
         this.username = username;
         this.password = password;
-        this.enabled = true;
-        this.accountNonExpired = true;
-        this.credentialsNonExpired = true;
-        this.accountNonLocked = true;
+        enabled = true;
+        accountNonExpired = true;
+        credentialsNonExpired = true;
+        accountNonLocked = true;
         ArrayList<GrantedAuthority> authorities1 = new ArrayList<GrantedAuthority>();
         authorities1.add(new GrantedAuthorityImpl("ROLE_USER"));
-        this.authorities = Collections.unmodifiableList(authorities1);
+        authorities = Collections.unmodifiableList(authorities1);
     }
 
     public User(String username, String password, List<GrantedAuthority> auth) {
         this.username = username;
         this.password = password;
-        this.enabled = true;
-        this.accountNonExpired = true;
-        this.credentialsNonExpired = true;
-        this.accountNonLocked = true;
-        this.authorities = Collections.unmodifiableList(auth);
+        enabled = true;
+        accountNonExpired = true;
+        credentialsNonExpired = true;
+        accountNonLocked = true;
+        authorities = Collections.unmodifiableList(auth);
     }
 
     // User for searching in Database
 
     public User(String username) {
         this.username = username;
-        this.enabled = true;
-        this.accountNonExpired = true;
-        this.credentialsNonExpired = true;
-        this.accountNonLocked = true;
+        enabled = true;
+        accountNonExpired = true;
+        credentialsNonExpired = true;
+        accountNonLocked = true;
     }
 
+    @Override
     public Collection<GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public boolean isAccountNonExpired() {
         return accountNonExpired;
     }
 
+    @Override
     public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
+    @Override
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
 
+    @Override
     public void eraseCredentials() {
         password = null;
     }
@@ -115,7 +124,7 @@ public class User implements CredentialsContainer, UserDetails {
     public boolean equals(Object rhs) {
         if (rhs instanceof User) {
             if (username == null) {
-                return ((User) rhs).username == null;
+                return true;
             }
             return username.equals(((User) rhs).username);
         }
@@ -134,12 +143,12 @@ public class User implements CredentialsContainer, UserDetails {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString()).append(": ");
-        sb.append("Username: ").append(this.username).append("; ");
+        sb.append("Username: ").append(username).append("; ");
         sb.append("Password: [PROTECTED]; ");
-        sb.append("Enabled: ").append(this.enabled).append("; ");
-        sb.append("AccountNonExpired: ").append(this.accountNonExpired).append("; ");
-        sb.append("credentialsNonExpired: ").append(this.credentialsNonExpired).append("; ");
-        sb.append("AccountNonLocked: ").append(this.accountNonLocked).append("; ");
+        sb.append("Enabled: ").append(enabled).append("; ");
+        sb.append("AccountNonExpired: ").append(accountNonExpired).append("; ");
+        sb.append("credentialsNonExpired: ").append(credentialsNonExpired).append("; ");
+        sb.append("AccountNonLocked: ").append(accountNonLocked).append("; ");
 
         if (!authorities.isEmpty()) {
             sb.append("Granted Authorities: ");

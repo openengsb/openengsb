@@ -20,6 +20,7 @@ package org.openengsb.core.persistence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,19 +30,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceService;
+import org.openengsb.core.persistence.internal.DefaultObjectPersistenceBackend;
+import org.openengsb.core.persistence.internal.DefaultPersistenceIndex;
+import org.openengsb.core.persistence.internal.DefaultPersistenceService;
+import org.openengsb.core.persistence.test.util.FileHelper;
 
-public abstract class PersistenceServiceTest {
+public class PersistenceServiceTest {
 
     private PersistenceService persistence;
     private PersistenceTestBean beanA;
     private PersistenceTestBean beanB;
     private PersistenceTestBean beanC;
 
-    protected abstract PersistenceService createPersitenceService() throws Exception;
-
     @Before
     public void init() throws Exception {
-        persistence = createPersitenceService();
+        File tmpDir = FileHelper.createTempDirectory();
+        DefaultPersistenceIndex persistenceIndex =
+            new DefaultPersistenceIndex(tmpDir, new DefaultObjectPersistenceBackend());
+        persistence = new DefaultPersistenceService(tmpDir, new DefaultObjectPersistenceBackend(), persistenceIndex);
 
         beanA = new PersistenceTestBean("A", 1, null);
         beanA.setTestEnum(TestEnum.A);

@@ -15,24 +15,23 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.persistence;
+package org.openengsb.core.persistence.internal;
 
-@SuppressWarnings("serial")
-public class PersistenceException extends RuntimeException {
+import java.io.File;
 
-    public PersistenceException() {
-    }
+import org.openengsb.core.api.persistence.PersistenceException;
 
-    public PersistenceException(String message) {
-        super(message);
-    }
+/**
+ * Interface capsulating the read/write operations against the serialisation database.
+ */
+public interface ObjectPersistenceBackend {
+    /**
+     * Writes an object into the specified file
+     */
+    void writeDatabaseObject(Object obj, File file) throws PersistenceException;
 
-    public PersistenceException(Throwable cause) {
-        super(cause);
-    }
-
-    public PersistenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+    /**
+     * Reads an object from an specified file.
+     */
+    Object readDatabaseObject(File file) throws PersistenceException;
 }

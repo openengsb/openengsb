@@ -23,18 +23,18 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.mockito.Mockito;
 import org.openengsb.core.api.Event;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.openengsb.core.api.workflow.RuleBaseException;
 import org.openengsb.core.api.workflow.RuleManager;
-import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultObjectPersistenceBackend;
+import org.openengsb.core.persistence.internal.DefaultPersistenceIndex;
+import org.openengsb.core.persistence.internal.DefaultPersistenceService;
 import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,13 +57,13 @@ public final class PersistenceTestUtil {
     public static RuleManager getRuleManagerWithPersistenceService() throws PersistenceException, IOException,
         RuleBaseException {
         PersistenceRuleManager manager = new PersistenceRuleManager();
-        NeodatisPersistenceService persistence = createPersistence();
+        DefaultPersistenceService persistence = createPersistence();
         manager.setPersistence(persistence);
         manager.init();
         return manager;
     }
 
-    private static NeodatisPersistenceService createPersistence() throws PersistenceException, IOException {
+    private static DefaultPersistenceService createPersistence() throws PersistenceException, IOException {
         LOGGER.debug("creating persistence");
         final File dataFile = new File("data");
         FileUtils.deleteQuietly(dataFile);
@@ -72,14 +72,19 @@ public final class PersistenceTestUtil {
             LOGGER.debug("creating reference persistence");
             createReferencePersistence();
         }
-        FileUtils.copyFile(refData, dataFile);
-        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data", Mockito.mock(Bundle.class));
+        FileUtils.copyDirectory(refData, dataFile);
+        DefaultPersistenceService persistence =
+            new DefaultPersistenceService(new File("data"), new DefaultObjectPersistenceBackend(),
+                new DefaultPersistenceIndex(new File("data"), new DefaultObjectPersistenceBackend()));
         return persistence;
     }
 
     public static void createReferencePersistence() throws PersistenceException, IOException {
         FileUtils.deleteQuietly(new File("data.ref"));
-        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data.ref", Mockito.mock(Bundle.class));
+        new File("data.ref").mkdirs();
+        DefaultPersistenceService persistence =
+            new DefaultPersistenceService(new File("data.ref"), new DefaultObjectPersistenceBackend(),
+                new DefaultPersistenceIndex(new File("data.ref"), new DefaultObjectPersistenceBackend()));
         persistence.create(new ImportDeclaration(Event.class.getName()));
         readImports(persistence);
         readGlobals(persistence);

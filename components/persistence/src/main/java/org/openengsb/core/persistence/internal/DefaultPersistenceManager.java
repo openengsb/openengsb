@@ -21,23 +21,21 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neodatis.odb.OdbConfiguration;
 import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NeodatisPersistenceManager implements PersistenceManager {
+public class DefaultPersistenceManager implements PersistenceManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NeodatisPersistenceManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPersistenceManager.class);
 
     private String persistenceRootDir;
 
     private final Map<String, PersistenceService> persistenceServices = new HashMap<String, PersistenceService>();
 
-    public NeodatisPersistenceManager() {
-        OdbConfiguration.useMultiThread(true);
+    public DefaultPersistenceManager() {
     }
 
     @Override
@@ -47,7 +45,10 @@ public class NeodatisPersistenceManager implements PersistenceManager {
         if (persistenceServices.containsKey(dbFile)) {
             return persistenceServices.get(dbFile);
         }
-        PersistenceService bundleService = new NeodatisPersistenceService(dbFile, bundle);
+        new File(dbFile).mkdirs();
+        PersistenceService bundleService =
+            new DefaultPersistenceService(new File(dbFile), new DefaultObjectPersistenceBackend(bundle),
+                new DefaultPersistenceIndex(new File(dbFile), new DefaultObjectPersistenceBackend(bundle)));
         persistenceServices.put(dbFile, bundleService);
         return bundleService;
     }
