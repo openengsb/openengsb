@@ -56,15 +56,14 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -78,7 +77,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
