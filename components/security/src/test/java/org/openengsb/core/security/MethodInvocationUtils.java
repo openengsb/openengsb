@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.security;
 
-package org.openengsb.core.common.util;
+import org.aopalliance.intercept.MethodInvocation;
+import org.openengsb.core.security.internal.SimpleMethodInvocation;
 
+public final class MethodInvocationUtils {
 
-/**
- * wraps a {@link Runnable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
- */
-public class ContextAwareRunnable extends ContextAware implements Runnable {
-    private Runnable original;
-
-    public ContextAwareRunnable(Runnable original) {
-        this.original = original;
+    public static MethodInvocation create(Object object, String methodName) {
+        return new SimpleMethodInvocation(object, methodName);
     }
 
-    @Override
-    public void run() {
-        applyContext();
-        original.run();
+    public static MethodInvocation create(Object object, String methodName, Object... objects) {
+        return new SimpleMethodInvocation(object, methodName, objects);
+    }
+    
+    private MethodInvocationUtils() {
     }
 }

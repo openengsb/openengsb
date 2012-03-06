@@ -17,65 +17,52 @@
 
 package org.openengsb.core.services.internal;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ThreadLocalUT {
-
-    private ThreadLocal<String> local = new InheritableThreadLocal<String>();
-    private ExecutorService pool = Executors.newSingleThreadExecutor();
-
-    @Before
-    public void setUp() throws Exception {
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-    }
-
-    @Test
-    public void testPools() throws Exception {
-        local.set("a");
-        Authentication authentication = mock(Authentication.class);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        Callable<String> localCall = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                System.out.println(Thread.currentThread().getId());
-                return local.get();
-            }
-        };
-        Callable<Authentication> contextCall = new Callable<Authentication>() {
-            @Override
-            public Authentication call() throws Exception {
-                System.out.println(Thread.currentThread().getId());
-                return SecurityContextHolder.getContext().getAuthentication();
-            }
-        };
-        Future<String> local1 = pool.submit(localCall);
-        Future<Authentication> auth1 = pool.submit(contextCall);
-
-        assertThat(local1.get(), is(local.get()));
-        assertThat(auth1.get(), is(SecurityContextHolder.getContext().getAuthentication()));
-
-        local.set("a");
-        authentication = mock(Authentication.class);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        Future<String> local2 = pool.submit(localCall);
-        Future<Authentication> auth2 = pool.submit(contextCall);
-
-        assertThat(local2.get(), is(local.get()));
-        assertThat(auth2.get(), is(SecurityContextHolder.getContext().getAuthentication()));
-    }
+//
+//    private ThreadLocal<String> local = new InheritableThreadLocal<String>();
+//    private ExecutorService pool = Executors.newSingleThreadExecutor();
+//
+//    @Before
+//    public void setUp() throws Exception {
+//        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+//    }
+//
+//    @Test
+//    public void testPools() throws Exception {
+//        local.set("a");
+//        Authentication authentication = mock(Authentication.class);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        Callable<String> localCall = new Callable<String>() {
+//            @Override
+//            public String call() throws Exception {
+//                System.out.println(Thread.currentThread().getId());
+//                return local.get();
+//            }
+//        };
+//        Callable<Authentication> contextCall = new Callable<Authentication>() {
+//            @Override
+//            public Authentication call() throws Exception {
+//                System.out.println(Thread.currentThread().getId());
+//                return SecurityContextHolder.getContext().getAuthentication();
+//            }
+//        };
+//        Future<String> local1 = pool.submit(localCall);
+//        Future<Authentication> auth1 = pool.submit(contextCall);
+//
+//        assertThat(local1.get(), is(local.get()));
+//        assertThat(auth1.get(), is(SecurityContextHolder.getContext().getAuthentication()));
+//
+//        local.set("a");
+//        authentication = mock(Authentication.class);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        Future<String> local2 = pool.submit(localCall);
+//        Future<Authentication> auth2 = pool.submit(contextCall);
+//
+//        assertThat(local2.get(), is(local.get()));
+//        assertThat(auth2.get(), is(SecurityContextHolder.getContext().getAuthentication()));
+//    }
 
 }

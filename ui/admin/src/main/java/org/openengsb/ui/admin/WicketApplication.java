@@ -30,6 +30,11 @@ import org.openengsb.ui.common.OpenEngSBWicketApplication;
 public class WicketApplication extends OpenEngSBWicketApplication {
 
     @Override
+    protected void init() {
+        super.init();
+    }
+
+    @Override
     public Class<? extends Page> getHomePage() {
         return Index.class;
     }

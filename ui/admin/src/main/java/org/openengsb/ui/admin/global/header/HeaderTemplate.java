@@ -85,11 +85,13 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
-        if (openengsbVersion == null) {
-            openengsbVersion = new OpenEngSBFallbackVersion();
-        }
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
-            add(new Label("version", openengsbVersion.getVersionNumber()));
+            if (openengsbVersion == null) {
+                add(new Label("version", "UNKNOWN version"));
+            } else {
+                add(new Label("version", openengsbVersion.getVersionNumber()));
+            }
+            return;
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }

@@ -30,7 +30,7 @@ import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 @PaxWicketMountPoint(mountPoint = "rules")
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     public RuleEditorPage() {

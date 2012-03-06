@@ -40,7 +40,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
-import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -81,7 +81,7 @@ public class ServicesHelper {
         for (final DomainProvider domainProvider : domainProviders) {
             final List<? extends Domain> domainEndpoints = domainsAndEndpoints.get(domainProvider);
             try {
-                formatedOutput.addAll(SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
+                formatedOutput.addAll(SecurityContext.executeWithSystemPermissions(new Callable<List<String>>() {
                     @Override
                     public List<String> call() throws Exception {
                         List<String> formatedOutput = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class ServicesHelper {
                 input = keyboard.read();
             }
             if ('Y' == (char) input) {
-                SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
                         ConnectorId fullId = ConnectorId.fromFullId(id);
@@ -173,7 +173,7 @@ public class ServicesHelper {
         List<String> result = new ArrayList<String>();
 
         try {
-            result = SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
+            result = SecurityContext.executeWithSystemPermissions(new Callable<List<String>>() {
                 @Override
                 public List<String> call() throws Exception {
                     List<String> ids = new ArrayList<String>();

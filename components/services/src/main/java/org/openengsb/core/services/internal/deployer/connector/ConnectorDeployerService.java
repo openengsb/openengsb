@@ -36,7 +36,7 @@ import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -99,7 +99,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         }
         LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 serviceManager.create(configFile.getConnectorId(),
@@ -145,7 +145,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             throw e;
         }
 
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 serviceManager.update(connectorId, newDescription);
@@ -188,7 +188,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     public void uninstall(final File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")",
             artifact.getAbsolutePath());
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 String name = FilenameUtils.removeExtension(artifact.getName());

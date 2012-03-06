@@ -77,9 +77,9 @@ public class SendEventPageTest extends AbstractUITest {
         allAudits.add(event2);
 
         Mockito.when(domain.getAllAudits()).thenReturn(allAudits);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         context.putBean("eventService", eventService);
-        context.putBean("audit", domain);
+        context.putBean("auditing", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
@@ -171,6 +171,7 @@ public class SendEventPageTest extends AbstractUITest {
 
     @Test
     public void openSite_shouldShowAuditLog() {
+        tester.debugComponentTrees();
         tester.assertVisible("auditsContainer:audits");
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");

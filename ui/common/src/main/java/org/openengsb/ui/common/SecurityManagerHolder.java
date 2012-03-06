@@ -14,23 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.ui.common;
 
-package org.openengsb.core.common.util;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
+public class SecurityManagerHolder {
 
-/**
- * wraps a {@link Runnable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
- */
-public class ContextAwareRunnable extends ContextAware implements Runnable {
-    private Runnable original;
+    @PaxWicketBean(name = "webSecurityManager")
+    private WebSecurityManager webSecurityManager;
 
-    public ContextAwareRunnable(Runnable original) {
-        this.original = original;
+    public WebSecurityManager getWebSecurityManager() {
+        return webSecurityManager;
     }
 
-    @Override
-    public void run() {
-        applyContext();
-        original.run();
+    public void setWebSecurityManager(WebSecurityManager webSecurityManager) {
+        this.webSecurityManager = webSecurityManager;
     }
+
 }

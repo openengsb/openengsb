@@ -14,23 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.security;
 
-package org.openengsb.core.common.util;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.openengsb.core.api.security.Credentials;
 
+public class OpenEngSBAuthenticationToken implements AuthenticationToken {
 
-/**
- * wraps a {@link Runnable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
- */
-public class ContextAwareRunnable extends ContextAware implements Runnable {
-    private Runnable original;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3909132403539984150L;
 
-    public ContextAwareRunnable(Runnable original) {
-        this.original = original;
+    private String username;
+    private Credentials credentials;
+
+    public OpenEngSBAuthenticationToken(String username, Credentials credentials) {
+        this.username = username;
+        this.credentials = credentials;
     }
 
     @Override
-    public void run() {
-        applyContext();
-        original.run();
+    public Object getPrincipal() {
+        return username;
     }
+
+    @Override
+    public Object getCredentials() {
+        return credentials;
+    }
+
 }

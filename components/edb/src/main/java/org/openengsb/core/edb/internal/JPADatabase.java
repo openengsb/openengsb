@@ -45,9 +45,9 @@ import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
+import org.openengsb.core.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
@@ -154,7 +154,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      * enumeration for categorizing the transaction actions.
      */
     private enum UTXACTION {
-            BEGIN, COMMIT, ROLLBACK
+        BEGIN, COMMIT, ROLLBACK
     };
 
     @Override
@@ -335,7 +335,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(models, null, null, 
+        persistInterface.commit(models, null, null,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
@@ -344,7 +344,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, null, models, 
+        persistInterface.commit(null, null, models,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
@@ -353,7 +353,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, models, null, 
+        persistInterface.commit(null, models, null,
             new ConnectorId(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
     }
 
@@ -378,10 +378,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      */
     private String getAuthenticatedUser() {
         // if JPADatabase is called via integration tests
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        String username = (String) SecurityContext.getAuthenticatedPrincipal();
+        if (username == null) {
             return "testuser";
         }
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return username;
     }
 
     /**
