@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.openengsb.core.api.persistence.IgnoreInQueries;
 import org.openengsb.core.api.persistence.SpecialActionsAfterSerialisation;
 import org.openengsb.core.api.workflow.ProcessBagException;
 
@@ -203,7 +202,6 @@ public class ProcessBag implements Serializable, SpecialActionsAfterSerialisatio
     /*
      * need these for jackson
      */
-    @IgnoreInQueries
     public Map<String, Object> getProperties() {
         return properties;
     }
