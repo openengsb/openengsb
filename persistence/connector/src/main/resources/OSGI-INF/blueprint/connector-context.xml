@@ -20,9 +20,19 @@
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
-  xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
+  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0">
 
-  <!-- Allows us to use system properties as variables in this configuration file -->
-  <ext:property-placeholder placeholder-prefix="$[" placeholder-suffix="]" />
+  <bean id="connectorJPA" class="org.openengsb.persistence.connector.jpabackend.ConnectorJPAPersistenceBackendService">
+    <tx:transaction method="*" value="Required" />
+    <jpa:context property="entityManager" unitname="connector" />
+  </bean>
+
+  <service interface="org.openengsb.core.api.persistence.ConfigPersistenceBackendService">
+    <service-properties>
+      <entry key="backend.id" value="connector-jpa-persistence" />
+    </service-properties>
+    <ref component-id="connectorJPA" />
+  </service>
 
 </blueprint>
