@@ -20,7 +20,7 @@ package org.openengsb.core.api.ekb;
 import java.util.List;
 
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
@@ -34,17 +34,17 @@ public interface PersistInterface {
      * check, the models are persisted.
      */
     void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id) throws SanityCheckException, EDBException;
+            ConnectorDefinition id) throws SanityCheckException, EDBException;
 
     /**
      * Persist the models without performing sanity checks of them.
      */
     void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id) throws EDBException;
+            ConnectorDefinition id) throws EDBException;
 
     /**
      * Only perform the sanity checks of the models.
      */
     SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id) throws EDBException;
+            ConnectorDefinition id) throws EDBException;
 }

@@ -28,8 +28,8 @@ import org.apache.felix.service.command.CommandSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.OutputStreamFormater;
 import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.domain.authentication.AuthenticationDomain;
@@ -132,7 +132,8 @@ public class ConsoleIT extends AbstractPreConfiguredExamTestHelper {
             ImmutableMap.of("compositeStrategy", "authentication.provider", "queryString", "(foo=bar)");
         connectorDescription.setAttributes(attributes);
 
-        connectorManager.create(new ConnectorId("authentication", "composite-connector", "foo"), connectorDescription);
+        connectorManager.create(new ConnectorDefinition("authentication", "composite-connector", "foo"), 
+            connectorDescription);
 
         CommandProcessor cp = getOsgiService(CommandProcessor.class);
 

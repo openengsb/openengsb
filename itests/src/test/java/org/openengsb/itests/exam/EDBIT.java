@@ -47,7 +47,7 @@ import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
@@ -389,8 +389,8 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
     
-    private ConnectorId getTestConnectorId() {
-        return new ConnectorId("testdomain", "testconnector", "testinstance");
+    private ConnectorDefinition getTestConnectorId() {
+        return new ConnectorDefinition("testdomain", "testconnector", "testinstance");
     }
 
     private void enrichEDBEvent(EDBEvent event) {

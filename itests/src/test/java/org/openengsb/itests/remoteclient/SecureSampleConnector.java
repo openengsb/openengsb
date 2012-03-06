@@ -28,8 +28,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.model.BeanDescription;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
@@ -158,7 +158,7 @@ public final class SecureSampleConnector {
         attributes.put("destination", "tcp://127.0.0.1:6549?example-remote");
         attributes.put("serviceId", "example-remote");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
-        ConnectorId connectorId = new ConnectorId("example", "external-connector-proxy", "example-remote");
+        ConnectorDefinition connectorId = new ConnectorDefinition("example", "external-connector-proxy", "example-remote");
 
         MethodCall methodCall = new MethodCall("create", new Object[]{ connectorId, connectorDescription });
         Map<String, String> metaData = new HashMap<String, String>();
@@ -175,7 +175,8 @@ public final class SecureSampleConnector {
     public static void main(String[] args) throws JsonGenerationException,
         JsonMappingException, IOException {
 
-        ConnectorId connectorId = new ConnectorId("example", "external-connector-proxy", "example-remote");
+        ConnectorDefinition connectorId = 
+                new ConnectorDefinition("example", "external-connector-proxy", "example-remote");
 
         MethodCall methodCall = new MethodCall("delete", new Object[]{ connectorId });
         Map<String, String> metaData = new HashMap<String, String>();

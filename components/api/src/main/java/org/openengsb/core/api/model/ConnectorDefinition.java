@@ -30,42 +30,42 @@ import org.openengsb.core.api.Constants;
 /**
  * Representation of a unique identification of connector instances.
  *
- * A connector instance is identified by the name of the connector type, the name of the domain it represents and an
- * additional String-identifier
+ * A connector instance is identified by the name of the connector id, the id of the domain it represents and an
+ * additional instance id.
  *
  */
 @SuppressWarnings("serial")
 @XmlRootElement
-public class ConnectorId implements Serializable {
+public class ConnectorDefinition implements Serializable {
 
     private static final String CONNECTOR_ID_SEPARATOR = "+";
-    private String domainType;
-    private String connectorType;
+    private String domainId;
+    private String connectorId;
     private String instanceId;
 
-    public ConnectorId() {
+    public ConnectorDefinition() {
     }
 
-    public ConnectorId(String domainType, String connectorType, String instanceId) {
-        this.domainType = domainType;
-        this.connectorType = connectorType;
+    public ConnectorDefinition(String domainId, String connectorId, String instanceId) {
+        this.domainId = domainId;
+        this.connectorId = connectorId;
         this.instanceId = instanceId;
     }
 
-    public String getDomainType() {
-        return this.domainType;
+    public String getDomainId() {
+        return this.domainId;
     }
 
-    public void setDomainType(String domainType) {
-        this.domainType = domainType;
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
     }
 
-    public String getConnectorType() {
-        return this.connectorType;
+    public String getConnectorId() {
+        return this.connectorId;
     }
 
-    public void setConnectorType(String connectorType) {
-        this.connectorType = connectorType;
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
     }
 
     public String getInstanceId() {
@@ -82,8 +82,8 @@ public class ConnectorId implements Serializable {
      */
     public Map<String, String> toMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
-        metaData.put(Constants.DOMAIN_KEY, domainType);
-        metaData.put(Constants.CONNECTOR_KEY, connectorType);
+        metaData.put(Constants.DOMAIN_KEY, domainId);
+        metaData.put(Constants.CONNECTOR_KEY, connectorId);
         metaData.put(Constants.ID_KEY, instanceId);
         return metaData;
     }
@@ -92,8 +92,8 @@ public class ConnectorId implements Serializable {
      * parses a ConnectorId object from a Map-representation used in
      * {@link org.openengsb.core.api.persistence.ConfigPersistenceService}
      */
-    public static ConnectorId fromMetaData(Map<String, String> metaData) {
-        return new ConnectorId(metaData.get(Constants.DOMAIN_KEY), metaData.get(Constants.CONNECTOR_KEY),
+    public static ConnectorDefinition fromMetaData(Map<String, String> metaData) {
+        return new ConnectorDefinition(metaData.get(Constants.DOMAIN_KEY), metaData.get(Constants.CONNECTOR_KEY),
             metaData.get(Constants.ID_KEY));
     }
 
@@ -102,9 +102,9 @@ public class ConnectorId implements Serializable {
      *
      * A {@link UUID} is used as unique string-identifier.
      */
-    public static ConnectorId generate(String domainType, String connectorType) {
+    public static ConnectorDefinition generate(String domainId, String connectorId) {
         String instanceId = UUID.randomUUID().toString();
-        return new ConnectorId(domainType, connectorType, instanceId);
+        return new ConnectorDefinition(domainId, connectorId, instanceId);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ConnectorId implements Serializable {
      *
      * Example: "scm+git+projectx-main-repo"
      */
-    public static ConnectorId fromFullId(String fullId) {
+    public static ConnectorDefinition fromFullId(String fullId) {
         Scanner s = new Scanner(fullId);
         s.useDelimiter("\\+");
         String domain = s.next();
@@ -124,17 +124,17 @@ public class ConnectorId implements Serializable {
             s.useDelimiter("\\\n");
             instanceId += s.next();
         }
-        return new ConnectorId(domain, connector, instanceId);
+        return new ConnectorDefinition(domain, connector, instanceId);
     }
 
     /**
-     * returns a string-representation of the ConnectorId for use with the service-registry. It is also used as
+     * returns a string-representation of the ConnectorDefinition for use with the service-registry. It is also used as
      * instanceId returned by {@link org.openengsb.core.api.OpenEngSBService#getInstanceId()}
      *
-     * The resulting String can be parsed to a ConnectorId again using the {@link ConnectorId#parse} method
+     * The resulting String can be parsed to a ConnectorId again using the {@link ConnectorDefinition#parse} method
      */
     public String toFullID() {
-        return domainType + CONNECTOR_ID_SEPARATOR + connectorType + CONNECTOR_ID_SEPARATOR + instanceId;
+        return domainId + CONNECTOR_ID_SEPARATOR + connectorId + CONNECTOR_ID_SEPARATOR + instanceId;
     }
 
     @Override
@@ -146,8 +146,8 @@ public class ConnectorId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.connectorType == null) ? 0 : this.connectorType.hashCode());
-        result = prime * result + ((this.domainType == null) ? 0 : this.domainType.hashCode());
+        result = prime * result + ((this.connectorId == null) ? 0 : this.connectorId.hashCode());
+        result = prime * result + ((this.domainId == null) ? 0 : this.domainId.hashCode());
         result = prime * result + ((this.instanceId == null) ? 0 : this.instanceId.hashCode());
         return result;
     }
@@ -161,7 +161,7 @@ public class ConnectorId implements Serializable {
             return false;
         }
         if (getClass() == obj.getClass()) {
-            ConnectorId other = (ConnectorId) obj;
+            ConnectorDefinition other = (ConnectorDefinition) obj;
             return equals(other);
         }
         if (Map.class.isInstance(obj)) {
@@ -174,19 +174,19 @@ public class ConnectorId implements Serializable {
         return false;
     }
 
-    private boolean equals(ConnectorId other) {
-        if (this.connectorType == null) {
-            if (other.connectorType != null) {
+    private boolean equals(ConnectorDefinition other) {
+        if (this.connectorId == null) {
+            if (other.connectorId != null) {
                 return false;
             }
-        } else if (!this.connectorType.equals(other.connectorType)) {
+        } else if (!this.connectorId.equals(other.connectorId)) {
             return false;
         }
-        if (this.domainType == null) {
-            if (other.domainType != null) {
+        if (this.domainId == null) {
+            if (other.domainId != null) {
                 return false;
             }
-        } else if (!this.domainType.equals(other.domainType)) {
+        } else if (!this.domainId.equals(other.domainId)) {
             return false;
         }
         if (this.instanceId == null) {

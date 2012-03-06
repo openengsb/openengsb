@@ -69,7 +69,7 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.model.BeanDescription;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
@@ -184,7 +184,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("edit button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
+                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
                 setResponsePage(new ConnectorEditorPage(connectorId));
             }
         };
@@ -196,7 +196,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 LOGGER.info("delete button pressed");
                 String serviceId = call.getService().getServiceId();
-                ConnectorId connectorId = ConnectorId.fromFullId(serviceId);
+                ConnectorDefinition connectorId = ConnectorDefinition.fromFullId(serviceId);
                 try {
                     serviceManager.delete(connectorId);
                     info("service " + serviceId + " successfully deleted");

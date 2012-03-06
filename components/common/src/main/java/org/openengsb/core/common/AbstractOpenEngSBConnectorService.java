@@ -27,7 +27,7 @@ import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
@@ -160,8 +160,8 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
      * Returns the definition of a connector instance. It contains the domainId, the connectorId and the
      * instanceId.
      */
-    public ConnectorId getConnectorDefinition() {
-        ConnectorId id = new ConnectorId(domainId, connectorId, getInstanceId());
+    public ConnectorDefinition getConnectorDefinition() {
+        ConnectorDefinition id = new ConnectorDefinition(domainId, connectorId, getInstanceId());
         return id;
     }
 }

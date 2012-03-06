@@ -34,8 +34,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OpenEngSBService;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.core.common.util.MapAsDictionary;
@@ -71,8 +71,9 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     private BundleContext bundleContext;
     private SecurityAttributeProviderImpl attributeStore;
 
-    private Map<ConnectorId, ServiceRegistration> registrations = new HashMap<ConnectorId, ServiceRegistration>();
-    private Map<ConnectorId, Connector> instances = new HashMap<ConnectorId, Connector>();
+    private Map<ConnectorDefinition, ServiceRegistration> registrations =
+        new HashMap<ConnectorDefinition, ServiceRegistration>();
+    private Map<ConnectorDefinition, Connector> instances = new HashMap<ConnectorDefinition, Connector>();
 
     private MethodInterceptor securityInterceptor;
 
@@ -82,7 +83,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     @Override
-    public void updateRegistration(ConnectorId id, ConnectorDescription connectorDescription)
+    public void updateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
         if (!instances.containsKey(id)) {
             createService(id, connectorDescription);
@@ -97,7 +98,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     @Override
-    public void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescription) {
+    public void forceUpdateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescription) {
         if (!instances.containsKey(id)) {
             forceCreateService(id, connectorDescription);
         } else if (connectorDescription.getAttributes() == null) {
@@ -111,16 +112,16 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     };
 
     @Override
-    public void remove(ConnectorId id) {
+    public void remove(ConnectorDefinition id) {
         registrations.get(id).unregister();
         registrations.remove(id);
         // FIXME: [OPENENGSB-1809] clean way to shutdown the container
         instances.remove(id);
     }
 
-    private void createService(ConnectorId id, ConnectorDescription description)
+    private void createService(ConnectorDefinition id, ConnectorDescription description)
         throws ConnectorValidationFailedException {
-        DomainProvider domainProvider = getDomainProvider(id.getDomainType());
+        DomainProvider domainProvider = getDomainProvider(id.getDomainId());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
 
         Map<String, String> errors = factory.getValidationErrors(description.getAttributes());
@@ -131,8 +132,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         finishCreatingInstance(id, description, domainProvider, factory);
     }
 
-    private void forceCreateService(ConnectorId id, ConnectorDescription description) {
-        DomainProvider domainProvider = getDomainProvider(id.getDomainType());
+    private void forceCreateService(ConnectorDefinition id, ConnectorDescription description) {
+        DomainProvider domainProvider = getDomainProvider(id.getDomainId());
         ConnectorInstanceFactory factory = getConnectorFactory(id);
 
         Connector serviceInstance = factory.createNewInstance(id.toString());
@@ -141,7 +142,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         finishCreatingInstance(id, description, domainProvider, factory);
     }
 
-    private void finishCreatingInstance(ConnectorId id, ConnectorDescription description,
+    private void finishCreatingInstance(ConnectorDefinition id, ConnectorDescription description,
             DomainProvider domainProvider, ConnectorInstanceFactory factory) {
         Connector serviceInstance = factory.createNewInstance(id.toString());
         if (serviceInstance == null) {
@@ -149,8 +150,8 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         }
         factory.applyAttributes(serviceInstance, description.getAttributes());
 
-        serviceInstance.setDomainId(id.getDomainType());
-        serviceInstance.setConnectorId(id.getConnectorType());
+        serviceInstance.setDomainId(id.getDomainId());
+        serviceInstance.setConnectorId(id.getConnectorId());
 
         Class<?>[] clazzes = new Class<?>[]{
             OpenEngSBService.class,
@@ -164,7 +165,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         }
 
         Object secureInstance;
-        if (INTERCEPTOR_BLACKLIST.contains(id.getDomainType())) {
+        if (INTERCEPTOR_BLACKLIST.contains(id.getDomainId())) {
             LOGGER.info("not proxying service because domain is blacklisted: {} ", serviceInstance);
             secureInstance = serviceInstance;
         } else if (securityInterceptor == null) {
@@ -187,23 +188,23 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
     }
 
     private Map<String, Object> populatePropertiesWithRequiredAttributes(
-            final Map<String, Object> properties, ConnectorId id) {
+            final Map<String, Object> properties, ConnectorDefinition id) {
         Map<String, Object> result = new HashMap<String, Object>(properties);
         for (Entry<String, Object> entry : properties.entrySet()) {
             result.put(entry.getKey(), entry.getValue());
         }
-        result.put(Constants.DOMAIN_KEY, id.getDomainType());
-        result.put(Constants.CONNECTOR_KEY, id.getConnectorType());
+        result.put(Constants.DOMAIN_KEY, id.getDomainId());
+        result.put(Constants.CONNECTOR_KEY, id.getConnectorId());
         result.put(Constants.ID_KEY, id.toFullID());
         return result;
     }
 
-    private void forceUpdateAttributes(ConnectorId id, Map<String, String> attributes) {
+    private void forceUpdateAttributes(ConnectorDefinition id, Map<String, String> attributes) {
         ConnectorInstanceFactory factory = getConnectorFactory(id);
         factory.applyAttributes(instances.get(id), attributes);
     }
 
-    private void updateProperties(ConnectorId id, Map<String, Object> properties) {
+    private void updateProperties(ConnectorDefinition id, Map<String, Object> properties) {
         Map<String, Object> newProps = new HashMap<String, Object>(properties);
         ServiceRegistration registration = registrations.get(id);
         ServiceReference reference = registration.getReference();
@@ -218,7 +219,7 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         registration.setProperties(MapAsDictionary.wrap(newProps));
     }
 
-    private void updateAttributes(ConnectorId id, Map<String, String> attributes)
+    private void updateAttributes(ConnectorDefinition id, Map<String, String> attributes)
         throws ConnectorValidationFailedException {
         ConnectorInstanceFactory factory = getConnectorFactory(id);
         Map<String, String> validationErrors = factory.getValidationErrors(instances.get(id), attributes);
@@ -228,11 +229,11 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
         factory.applyAttributes(instances.get(id), attributes);
     }
 
-    protected ConnectorInstanceFactory getConnectorFactory(ConnectorId id) {
-        String connectorType = id.getConnectorType();
+    protected ConnectorInstanceFactory getConnectorFactory(ConnectorDefinition id) {
+        String connectorType = id.getConnectorId();
         Filter connectorFilter =
             serviceUtils.makeFilter(ConnectorInstanceFactory.class,
-                String.format("(&(%s=%s)(%s=%s))", Constants.DOMAIN_KEY, id.getDomainType(), Constants.CONNECTOR_KEY,
+                String.format("(&(%s=%s)(%s=%s))", Constants.DOMAIN_KEY, id.getDomainId(), Constants.CONNECTOR_KEY,
                     connectorType));
         ConnectorInstanceFactory service =
             serviceUtils.getOsgiServiceProxy(connectorFilter, ConnectorInstanceFactory.class);

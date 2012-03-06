@@ -58,8 +58,8 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextCurrentService;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -76,7 +76,7 @@ public class WiringPageTest extends AbstractUITest {
 
     private RuleManager ruleManager;
 
-    private ConnectorId testdomainConnectorId;
+    private ConnectorDefinition testdomainConnectorId;
     private final String globTest = "globTest";
     private final String anotherGlob = "anotherGlob";
     private Map<String, Object> startproperties;
@@ -393,7 +393,7 @@ public class WiringPageTest extends AbstractUITest {
         properties.put("location.twotimes1", globTest);
         properties.put("location.twotimes2", new Object[]{ "foo", globTest });
         startproperties = new HashMap<String, Object>(properties);
-        testdomainConnectorId = new ConnectorId("testdomain", "testconnector", "test-service");
+        testdomainConnectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
         serviceManager.create(testdomainConnectorId, new ConnectorDescription(attributes, properties));
     }
 

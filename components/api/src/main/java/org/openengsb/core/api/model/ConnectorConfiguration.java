@@ -37,13 +37,13 @@ public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
         super(metaData, content);
     }
 
-    public ConnectorConfiguration(ConnectorId id, ConnectorDescription content) {
+    public ConnectorConfiguration(ConnectorDefinition id, ConnectorDescription content) {
         this.metaData = id.toMetaData();
         this.content = content;
     }
 
-    public ConnectorId getConnectorId() {
-        return ConnectorId.fromMetaData(metaData);
+    public ConnectorDefinition getConnectorId() {
+        return ConnectorDefinition.fromMetaData(metaData);
     }
 
 }

@@ -32,7 +32,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -46,7 +46,7 @@ public class ConnectorFile {
     private static final String ATTRIBUTE = "attribute";
     private static final String LIST_DELIMITER = ",";
 
-    private ConnectorId connectorId;
+    private ConnectorDefinition connectorId;
     private ImmutableMap<String, String> attributes;
     private ImmutableMap<String, Object> properties;
 
@@ -71,7 +71,7 @@ public class ConnectorFile {
     }
 
     public ConnectorFile(File connectorFile) {
-        connectorId = ConnectorId.fromFullId(FilenameUtils.removeExtension(connectorFile.getName()));
+        connectorId = ConnectorDefinition.fromFullId(FilenameUtils.removeExtension(connectorFile.getName()));
         update(connectorFile);
     }
 
@@ -184,7 +184,7 @@ public class ConnectorFile {
         return directory.isDirectory() && directory.getName().equals("etc");
     }
 
-    public ConnectorId getConnectorId() {
+    public ConnectorDefinition getConnectorId() {
         return connectorId;
     }
 
