@@ -23,27 +23,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.openengsb.core.api.persistence.PersistenceException;
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.openengsb.core.api.security.model.ServiceAuthorizedList;
-import org.openengsb.core.api.security.model.User;
-import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
-import org.openengsb.core.security.internal.MetadataSource;
-import org.openengsb.core.security.internal.UserManagerImpl;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
