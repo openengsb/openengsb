@@ -92,9 +92,10 @@ public class TaskboxServiceImpl implements TaskboxService {
         InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
-
-        if (getTasksForExample(t).size() > 0) {
+        List<Task> old = getTasksForExample(t);
+        if (old.size() > 0) {
             try {
+                updateInRunningWorkflow(old.get(0), task);
                 persistence.delete(t);
             } catch (PersistenceException e) {
                 throw new WorkflowException(e);
@@ -125,7 +126,12 @@ public class TaskboxServiceImpl implements TaskboxService {
             return;
         }
         long id = Long.parseLong(oldTask.getProcessId());
-        ProcessBag bag = workflowService.getProcessBagForInstance(id);
+        ProcessBag bag = null;
+        try {
+            bag = workflowService.getProcessBagForInstance(id);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
         if (Objects.equal(oldTask, bag)) {
             bag.setProperties(task.getProperties());
         }

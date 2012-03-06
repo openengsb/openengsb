@@ -132,6 +132,7 @@ public class TaskboxServiceTest {
     @Test
     public void testFinishTask_shouldProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
+        task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
@@ -143,6 +144,7 @@ public class TaskboxServiceTest {
     @Test
     public void testFinishTaskTwice_shouldProcessEventOnlyOnce() throws PersistenceException, WorkflowException {
         Task task = new Task();
+        task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
@@ -160,6 +162,7 @@ public class TaskboxServiceTest {
     @Test
     public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
+        task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
@@ -177,6 +180,7 @@ public class TaskboxServiceTest {
     @Test
     public void testUpdateTask_shouldReturnUpdatedTask() throws PersistenceException {
         Task task = new Task();
+        task.setProcessId("1");
         List<Task> result = new ArrayList<Task>();
         result.add(task);
         when(persistenceService.query(any(Task.class))).thenReturn(result);
@@ -184,6 +188,7 @@ public class TaskboxServiceTest {
         Task newTask = Task.createTaskWithAllValuesSetToNull();
         newTask.setTaskId(task.getTaskId());
         newTask.setDescription("test");
+        newTask.setProcessId("1");
 
         service.updateTask(newTask);
         verify(persistenceService).update(task, newTask);
