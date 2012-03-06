@@ -15,24 +15,8 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.persistence;
+package org.openengsb.core.persistence.test.objects;
 
-@SuppressWarnings("serial")
-public class PersistenceException extends RuntimeException {
-
-    public PersistenceException() {
-    }
-
-    public PersistenceException(String message) {
-        super(message);
-    }
-
-    public PersistenceException(Throwable cause) {
-        super(cause);
-    }
-
-    public PersistenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface Z {
 
 }

@@ -15,25 +15,42 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.persistence.test.objects;
 
-import java.util.HashMap;
-import java.util.Map;
+public class B extends A implements Y {
 
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.osgi.framework.Bundle;
+    private static final long serialVersionUID = 118915009939752643L;
 
-public class DummyPersistenceManager implements PersistenceManager {
+    private String lala;
 
-    Map<Bundle, PersistenceService> services = new HashMap<Bundle, PersistenceService>();
-
-    @Override
-    public PersistenceService getPersistenceForBundle(Bundle bundle) {
-        if (!services.containsKey(bundle)) {
-            services.put(bundle, new DummyPersistence());
-        }
-        return services.get(bundle);
+    public B() {
     }
 
+    public B(String blub) {
+        super(blub);
+    }
+
+    public B(String blub, String lala) {
+        super(blub);
+        this.lala = lala;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof B)) {
+            return false;
+        }
+        if (lala == null) {
+            return true;
+        }
+        return lala.equals(((B) obj).lala);
+    };
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

@@ -28,8 +28,8 @@ public class CustomClassLoader extends ClassLoader {
 
     private Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
 
-    public CustomClassLoader(ClassLoader parent, Bundle bundle) {
-        super(parent);
+    public CustomClassLoader(Bundle bundle) {
+        super(Thread.currentThread().getContextClassLoader());
         this.bundle = bundle;
     }
 

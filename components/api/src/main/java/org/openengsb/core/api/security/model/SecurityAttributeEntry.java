@@ -56,4 +56,18 @@ public class SecurityAttributeEntry {
         return String.format("%s=%s", key, value);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ServiceAuthorizedList)) {
+            return false;
+        }
+        ServiceAuthorizedList other = (ServiceAuthorizedList) obj;
+        return serviceId == null || serviceId.equals(other.serviceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

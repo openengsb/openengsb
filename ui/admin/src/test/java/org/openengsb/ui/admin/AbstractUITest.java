@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -58,6 +59,7 @@ import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
@@ -113,7 +115,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         serviceManager.setRegistrationManager(registrationManager);
 
         CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
-        backend.setPersistenceManager(new DummyPersistenceManager());
+        DefaultPersistenceManager defaultPersistenceManager = new DefaultPersistenceManager();
+        defaultPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
+        backend.setPersistenceManager(defaultPersistenceManager);
         backend.setBundleContext(bundleContext);
         backend.init();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);

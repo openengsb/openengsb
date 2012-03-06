@@ -259,7 +259,7 @@ public abstract class AbstractExamTestHelper {
         String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
         boolean hold = true;
-        boolean debug = false;
+        boolean debug = true;
         InputStream paxLocalStream = ClassLoader.getSystemResourceAsStream("itests.local.properties");
         if (paxLocalStream != null) {
             Properties properties = new Properties();

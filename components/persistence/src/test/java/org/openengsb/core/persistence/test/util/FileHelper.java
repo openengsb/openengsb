@@ -15,24 +15,32 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.persistence;
+package org.openengsb.core.persistence.test.util;
 
-@SuppressWarnings("serial")
-public class PersistenceException extends RuntimeException {
+import java.io.File;
+import java.io.IOException;
 
-    public PersistenceException() {
+/**
+ * Helper test class to handle files.
+ */
+public final class FileHelper {
+
+    private FileHelper() {
+        // utility classes need no constructor
     }
 
-    public PersistenceException(String message) {
-        super(message);
-    }
-
-    public PersistenceException(Throwable cause) {
-        super(cause);
-    }
-
-    public PersistenceException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Creates a temporary directory
+     */
+    public static File createTempDirectory() throws IOException {
+        File temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+        if (!temp.delete()) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+        if (!temp.mkdir()) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+        return temp;
     }
 
 }

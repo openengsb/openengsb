@@ -157,12 +157,6 @@
       <artifactId>org.openengsb.domain.example</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
