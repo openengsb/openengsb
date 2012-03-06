@@ -22,8 +22,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Ignores fields in queries.
+ *
+ * @deprecated This special handling was only required in the old persistence implementation. Since you have full
+ *             control now over what you do using the equals method this annotation is no longer required and ignored
+ *             based on this release. You can release it without any problems.
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated
 public @interface IgnoreInQueries {
 
 }
