@@ -25,7 +25,7 @@ import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.SanityCheckException;
 import org.openengsb.core.api.ekb.SanityCheckReport;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class PersistInterfaceService implements PersistInterface {
 
     @Override
     public void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id)
+            ConnectorDefinition id)
         throws SanityCheckException, EDBException {
         LOGGER.debug("Commit of models was called");
         runPersistingLogic(inserts, updates, deletes, true, true, id);
@@ -51,7 +51,7 @@ public class PersistInterfaceService implements PersistInterface {
 
     @Override
     public void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorId id)
+            ConnectorDefinition id)
         throws EDBException {
         LOGGER.debug("Force commit of models was called");
         runPersistingLogic(inserts, updates, deletes, false, true, id);
@@ -61,7 +61,7 @@ public class PersistInterfaceService implements PersistInterface {
     @Override
     public SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
             List<OpenEngSBModel> deletes,
-            ConnectorId id)
+            ConnectorDefinition id)
         throws SanityCheckException, EDBException {
         LOGGER.debug("Sanity checks of models was called");
         SanityCheckReport report = performSanityChecks(inserts, updates, deletes);
@@ -74,8 +74,8 @@ public class PersistInterfaceService implements PersistInterface {
      * models if persist is set to true.
      */
     private void runPersistingLogic(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
-            List<OpenEngSBModel> deletes, boolean check, boolean persist, ConnectorId id) throws SanityCheckException,
-        EDBException {
+            List<OpenEngSBModel> deletes, boolean check, boolean persist, ConnectorDefinition id)
+        throws SanityCheckException, EDBException {
         if (check) {
             performSanityChecks(inserts, updates, deletes);
         }

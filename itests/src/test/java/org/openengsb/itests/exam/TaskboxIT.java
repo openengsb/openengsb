@@ -44,11 +44,13 @@ import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.api.workflow.model.Task;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 @RunWith(JUnit4TestRunner.class)
 // This one will run each test in it's own container (slower speed)
-// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
     private TaskboxService taskboxService;
     private WorkflowService workflowService;
@@ -151,7 +153,7 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         Task task = taskboxService.getOpenTasks().get(0);
         Date date = new Date();
         task.addOrReplaceProperty("test", date);
-        assertEquals(task.getTaskType(), "step1");
+        assertEquals("step1", task.getTaskType());
 
         task.setName("test");
         taskboxService.updateTask(task);
@@ -161,8 +163,8 @@ public class TaskboxIT extends AbstractPreConfiguredExamTestHelper {
         taskboxService.finishTask(task);
 
         task = taskboxService.getOpenTasks().get(0);
-        assertEquals(task.getProperty("test"), date);
-        assertEquals(task.getTaskType(), "step2");
+        assertEquals(date, task.getProperty("test"));
+        assertEquals("step2", task.getTaskType());
 
         taskboxService.finishTask(task);
         assertThat(taskboxService.getOpenTasks().size(), is(0));

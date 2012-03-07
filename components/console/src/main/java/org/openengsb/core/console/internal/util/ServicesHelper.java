@@ -36,7 +36,7 @@ import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.WiringService;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
@@ -150,7 +150,7 @@ public class ServicesHelper {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
-                        ConnectorId fullId = ConnectorId.fromFullId(id);
+                        ConnectorDefinition fullId = ConnectorDefinition.fromFullId(id);
                         serviceManager.delete(fullId);
                         return null;
                     }

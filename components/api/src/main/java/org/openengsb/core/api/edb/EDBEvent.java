@@ -18,7 +18,7 @@
 package org.openengsb.core.api.edb;
 
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 
 /**
  * Interface for easier maintaining of the Events in the DomainEventsProxyFacory. Saves the domain id, connector id and
@@ -35,9 +35,9 @@ public abstract class EDBEvent extends Event {
      * in the event. Example: "scm+git+projectx-main-repo" 
      */
     public void parseConnectorId(String connectorId) {
-        ConnectorId id = ConnectorId.fromFullId(connectorId);
-        domainId = id.getDomainType();
-        connectorId = id.getConnectorType();
+        ConnectorDefinition id = ConnectorDefinition.fromFullId(connectorId);
+        domainId = id.getDomainId();
+        connectorId = id.getConnectorId();
         instanceId = id.getInstanceId();
     }
 

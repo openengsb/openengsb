@@ -84,7 +84,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>javax.servlet;version="[2.5,3)",sun.reflect, *</Import-Package>
+            <Import-Package>javax.servlet;version="[2.5,3)", *</Import-Package>
             <!--
               This import is required since the WS package relies heavily on reflection and loading of 
               calling classes at runtime 

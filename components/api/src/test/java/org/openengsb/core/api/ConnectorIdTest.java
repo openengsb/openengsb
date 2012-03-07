@@ -23,50 +23,50 @@ import static org.junit.Assert.assertThat;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 
 public class ConnectorIdTest {
 
     @Test
     public void testParseConnectorId_shouldReturnCorrectId() throws Exception {
-        ConnectorId id = new ConnectorId("mydomain", "myconnector", "xxx");
+        ConnectorDefinition id = new ConnectorDefinition("mydomain", "myconnector", "xxx");
         String text = id.toString();
-        ConnectorId id2 = ConnectorId.fromFullId(text);
+        ConnectorDefinition id2 = ConnectorDefinition.fromFullId(text);
         assertThat(id2, is(id));
     }
 
     @Test
     public void testParseIdWithSpecial_shouldReturnCorrectId() throws Exception {
-        ConnectorId id = new ConnectorId("mydomain", "myconnector", "x+x-x");
+        ConnectorDefinition id = new ConnectorDefinition("mydomain", "myconnector", "x+x-x");
         String text = id.toString();
-        ConnectorId id2 = ConnectorId.fromFullId(text);
+        ConnectorDefinition id2 = ConnectorDefinition.fromFullId(text);
         assertThat(id2, is(id));
     }
 
     @Test
     public void testConnectorIdEqualsConnectorId_shouldBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
-        ConnectorId id2 = new ConnectorId("test", "testc", id1.getInstanceId());
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
+        ConnectorDefinition id2 = new ConnectorDefinition("test", "testc", id1.getInstanceId());
         assertThat(id1.equals(id2), is(true));
     }
 
     @Test
     public void testConnectorIdEqualsDifferentId_shouldNotBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
-        ConnectorId id2 = new ConnectorId("test", "testc", "not-equal");
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
+        ConnectorDefinition id2 = new ConnectorDefinition("test", "testc", "not-equal");
         assertThat(id1.equals(id2), is(false));
     }
 
     @Test
     public void testConnectorIdEqualsMetadata_shouldBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
         Map<String, String> metaData = id1.toMetaData();
         assertThat(id1.equals(metaData), is(true));
     }
 
     @Test
     public void testConnectorIdEqualsOtherMetadata_shouldNotBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
         Map<String, String> metaData = id1.toMetaData();
         metaData.put(Constants.CONNECTOR_KEY, "something-different");
         assertThat(id1.equals(metaData), is(false));
@@ -74,14 +74,14 @@ public class ConnectorIdTest {
 
     @Test
     public void testConnectorIdEqualsFullIdString_shouldBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
         String fullId = id1.toFullID();
         assertThat(id1.equals(fullId), is(true));
     }
 
     @Test
     public void testConnectorIdEqualsOtherString_shouldNotBeEqual() throws Exception {
-        ConnectorId id1 = ConnectorId.generate("test", "testc");
+        ConnectorDefinition id1 = ConnectorDefinition.generate("test", "testc");
         String otherId = id1.toFullID() + " ";
         assertThat(id1.equals(otherId), is(false));
     }

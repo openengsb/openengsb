@@ -221,14 +221,6 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
     </dependency>
-
-    <!-- Neodatis Dependencies -->
-    <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <optional>true</optional>
-    </dependency>
-
   </dependencies>
 
 </project>

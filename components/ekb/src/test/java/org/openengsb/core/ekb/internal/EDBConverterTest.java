@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.openengsb.core.api.edb.EDBConstants;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
@@ -59,7 +59,7 @@ public class EDBConverterTest {
         model.setEnumeration(ENUM.A);
         model.setName("testobject");
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorDefinition id = new ConnectorDefinition("testdomain", "testconnector", "testinstance");
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(0);
@@ -86,7 +86,7 @@ public class EDBConverterTest {
         sub.setValue("teststring");
         model.setSub(sub);
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorDefinition id = new ConnectorDefinition("testdomain", "testconnector", "testinstance");
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(1);
@@ -113,7 +113,7 @@ public class EDBConverterTest {
 
         model.setSubs(subs);
 
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorDefinition id = new ConnectorDefinition("testdomain", "testconnector", "testinstance");
 
         List<EDBObject> objects = converter.convertModelToEDBObject(model, id);
         EDBObject object = objects.get(2);
@@ -140,7 +140,7 @@ public class EDBConverterTest {
         model.setId("test");
         model.setMap(map);
         
-        ConnectorId id = new ConnectorId("testdomain", "testconnector", "testinstance");
+        ConnectorDefinition id = new ConnectorDefinition("testdomain", "testconnector", "testinstance");
         
         EDBObject object = converter.convertModelToEDBObject(model, id).get(0);
         

@@ -17,10 +17,16 @@
 
 package org.openengsb.core.workflow.model;
 
+import java.io.Serializable;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 
-public class RuleBaseElement {
+public class RuleBaseElement implements Serializable {
+
+    private static final long serialVersionUID = -4904033275614618650L;
+
     private String code;
     private RuleBaseElementType type;
     private String packageName;
@@ -81,4 +87,19 @@ public class RuleBaseElement {
         return String.format("%s %s[%s]", type, packageName, name);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof RuleBaseElement)) {
+            return false;
+        }
+        RuleBaseElement other = (RuleBaseElement) obj;
+        return (code == null || code.equals(other.code)) && (type == null || type.equals(other.type))
+                && (packageName == null || packageName.equals(other.packageName))
+                && (name == null || name.equals(other.name));
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(code).append(type).append(packageName).append(name).toHashCode();
+    }
 }

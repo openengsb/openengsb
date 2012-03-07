@@ -27,11 +27,13 @@ import java.util.ArrayList;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
+import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,6 +47,8 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     private DummyService service;
     private DummyService service2;
     private AuthorizationDomain authorizer;
+    private PersistenceManager persistenceManager;
+    private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {

@@ -81,7 +81,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, *</Import-Package>
             <!--
               The JMS infrastructure needs dynamic import for exporting the various cxf things.
             -->

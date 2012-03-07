@@ -15,25 +15,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.test;
+package org.openengsb.core.api.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
+/**
+ * Sometimes it's required to execute special actions after serialisation (e.g. in case of using transient). In that
+ * case that interface allows to reset such objects since the metohd is called directly after the object is regenerated.
+ */
+public interface SpecialActionsAfterSerialisation {
 
-import org.openengsb.core.api.persistence.PersistenceManager;
-import org.openengsb.core.api.persistence.PersistenceService;
-import org.osgi.framework.Bundle;
-
-public class DummyPersistenceManager implements PersistenceManager {
-
-    Map<Bundle, PersistenceService> services = new HashMap<Bundle, PersistenceService>();
-
-    @Override
-    public PersistenceService getPersistenceForBundle(Bundle bundle) {
-        if (!services.containsKey(bundle)) {
-            services.put(bundle, new DummyPersistence());
-        }
-        return services.get(bundle);
-    }
+    /**
+     * Execute anything required here.
+     */
+    void doSpecialActions();
 
 }

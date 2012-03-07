@@ -30,6 +30,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,15 +45,15 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.OsgiUtilsService;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
@@ -78,7 +79,8 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
     private void registerConfigPersistence() {
         final CorePersistenceServiceBackend<String> persistenceBackend = new CorePersistenceServiceBackend<String>();
-        DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager persistenceManager = new DefaultPersistenceManager();
+        persistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         persistenceBackend.setPersistenceManager(persistenceManager);
         persistenceBackend.setBundleContext(bundleContext);
         persistenceBackend.init();
@@ -104,7 +106,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.create(connectorId, connectorDescription);
 
         serviceUtils.getService("(foo=bar)", 100L);
@@ -118,7 +120,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.create(connectorId, connectorDescription);
 
         connectorDescription.getProperties().put("foo", "42");
@@ -138,7 +140,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         try {
             serviceManager.create(connectorId, connectorDescription);
             fail("Exception expected");
@@ -166,7 +168,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.forceCreate(connectorId, connectorDescription);
 
         try {
@@ -188,7 +190,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.create(connectorId, connectorDescription);
         serviceUtils.getService("(foo=bar)", 1L);
 
@@ -226,7 +228,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.create(connectorId, connectorDescription);
         serviceUtils.getService("(foo=bar)", 1L);
 
@@ -254,7 +256,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         properties.put("foo", "bar");
         ConnectorDescription connectorDescription = new ConnectorDescription(attributes, properties);
 
-        ConnectorId connectorId = ConnectorId.generate("test", "testc");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("test", "testc");
         serviceManager.create(connectorId, connectorDescription);
 
         serviceManager.delete(connectorId);

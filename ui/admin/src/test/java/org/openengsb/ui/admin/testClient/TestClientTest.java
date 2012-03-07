@@ -72,8 +72,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -207,7 +207,7 @@ public class TestClientTest extends AbstractUITest {
         MethodCall modelObject = form.getModelObject();
         ServiceId reference =
             new ServiceId(TestInterface.class.getName(),
-                new ConnectorId("testdomain", "testconnector", "test-service").toString());
+                new ConnectorDefinition("testdomain", "testconnector", "test-service").toString());
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -215,7 +215,7 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
+        ConnectorDefinition connectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
         ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
@@ -678,7 +678,7 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.create(new ConnectorId("testdomain", "testconnector", "test-service"),
+        serviceManager.create(new ConnectorDefinition("testdomain", "testconnector", "test-service"),
             new ConnectorDescription(
                 attributes, properties));
 

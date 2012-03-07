@@ -31,7 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
-import org.openengsb.core.api.model.ConnectorId;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.common.editor.ServiceEditorPanel;
@@ -44,21 +44,21 @@ public abstract class ServiceEditor extends Panel {
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private ServiceEditorPanel serviceEditorPanel;
-    protected Model<ConnectorId> idModel;
+    protected Model<ConnectorDefinition> idModel;
     private TextField<String> idfield;
     protected Map<String, Object> properties;
 
-    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+    public ServiceEditor(String id, ConnectorDefinition serviceId, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
-        idModel = new Model<ConnectorId>(serviceId);
+        idModel = new Model<ConnectorDefinition>(serviceId);
         createForm(attributes, attributeMap, properties);
         idfield.setEnabled(false);
     }
 
-    public ServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+    public ServiceEditor(String id, ConnectorDefinition serviceId, List<AttributeDefinition> attributes,
             Map<String, String> attributeMap, Map<String, Object> properties) {
         this(id, serviceId, attributes, attributeMap, properties, new DefaultPassingFormValidator());
     }
@@ -68,7 +68,7 @@ public abstract class ServiceEditor extends Panel {
         super(id);
         this.attributes = attributes;
         this.validator = validator;
-        idModel = new Model<ConnectorId>(ConnectorId.generate(domainType, connectorType));
+        idModel = new Model<ConnectorDefinition>(ConnectorDefinition.generate(domainType, connectorType));
         createForm(attributes, attributeMap, properties);
     }
 

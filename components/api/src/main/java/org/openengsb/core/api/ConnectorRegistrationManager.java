@@ -17,8 +17,8 @@
 
 package org.openengsb.core.api;
 
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 
 /**
  * Manages the registration of services for connector-instances at runtime.
@@ -35,7 +35,7 @@ public interface ConnectorRegistrationManager extends OpenEngSBService {
      *
      * @throws ConnectorValidationFailedException if the validation of the connector-attributes fails.
      */
-    void updateRegistration(ConnectorId id, ConnectorDescription connectorDescpription)
+    void updateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescpription)
         throws ConnectorValidationFailedException;
 
     /**
@@ -44,13 +44,13 @@ public interface ConnectorRegistrationManager extends OpenEngSBService {
      *
      * As opposed to {@link ConnectorRegistrationManager#updateRegistration} this method skips the validation-step.
      */
-    void forceUpdateRegistration(ConnectorId id, ConnectorDescription connectorDescpription);
+    void forceUpdateRegistration(ConnectorDefinition id, ConnectorDescription connectorDescpription);
 
     /**
      * Removes the connector instance with the given {@code id} from the service registry.
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void remove(ConnectorId id);
+    void remove(ConnectorDefinition id);
 
 }

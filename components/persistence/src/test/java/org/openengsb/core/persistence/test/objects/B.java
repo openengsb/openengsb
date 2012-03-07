@@ -15,15 +15,42 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.persistence;
+package org.openengsb.core.persistence.test.objects;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class B extends A implements Y {
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface IgnoreInQueries {
+    private static final long serialVersionUID = 118915009939752643L;
 
+    private String lala;
+
+    public B() {
+    }
+
+    public B(String blub) {
+        super(blub);
+    }
+
+    public B(String blub, String lala) {
+        super(blub);
+        this.lala = lala;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof B)) {
+            return false;
+        }
+        if (lala == null) {
+            return true;
+        }
+        return lala.equals(((B) obj).lala);
+    };
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

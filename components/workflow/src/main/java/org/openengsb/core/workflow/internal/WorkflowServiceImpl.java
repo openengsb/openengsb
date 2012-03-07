@@ -305,6 +305,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
         return !getRunningFlows().contains(id);
     }
 
+    @Override
+    public ProcessBag getProcessBagForInstance(long instanceId) {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance instance = session.getProcessInstance(instanceId);
+        if (instance == null || !(instance instanceof WorkflowProcessInstance)) {
+            throw new IllegalArgumentException("Process instance with id " + instanceId + " not found");
+        }
+        return (ProcessBag) ((WorkflowProcessInstance) instance).getVariable("processBag");
+    }
+
     public Collection<Long> getRunningFlows() throws WorkflowException {
         Collection<ProcessInstance> processInstances = getSessionForCurrentContext().getProcessInstances();
         Collection<Long> result = new HashSet<Long>();

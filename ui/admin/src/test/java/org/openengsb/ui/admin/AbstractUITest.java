@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -55,6 +56,7 @@ import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
@@ -62,7 +64,6 @@ import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -76,7 +77,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * abstract baseclass for OpenEngSB-UI-page-tests it creates a wicket-tester that handles the Dependency-injection via a
  * mocked ApplicationContext. Many required services are already mocked in placed in the ApplicationContext.
- * 
+ *
  * new beans can always be introduced by inserting them into the ApplicationContext represendted by the
  * "context"-variable
  */
@@ -113,7 +114,9 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         serviceManager.setRegistrationManager(registrationManager);
 
         CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
-        backend.setPersistenceManager(new DummyPersistenceManager());
+        DefaultPersistenceManager defaultPersistenceManager = new DefaultPersistenceManager();
+        defaultPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
+        backend.setPersistenceManager(defaultPersistenceManager);
         backend.setBundleContext(bundleContext);
         backend.init();
         DefaultConfigPersistenceService persistenceService = new DefaultConfigPersistenceService(backend);

@@ -17,8 +17,8 @@
 
 package org.openengsb.core.api;
 
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.PersistenceException;
 
 /**
@@ -39,7 +39,7 @@ public interface ConnectorManager {
      *
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void create(ConnectorId id, ConnectorDescription connectorDescription)
+    void create(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException;
 
     /**
@@ -52,7 +52,7 @@ public interface ConnectorManager {
      *
      * @throws ConnectorValidationFailedException if the attributes supplied with the connectorDescription are invalid
      */
-    void forceCreate(ConnectorId id, ConnectorDescription connectorDescription);
+    void forceCreate(ConnectorDefinition id, ConnectorDescription connectorDescription);
 
     /**
      * Updates an existing connector instance. The list of attributes and the properties are OVERWRITTEN. This means
@@ -63,7 +63,7 @@ public interface ConnectorManager {
      * @throws ConnectorValidationFailedException if the combination of the new attributes are not valid
      * @throws IllegalArgumentException if no connector instance with the given id is available
      */
-    void update(ConnectorId id, ConnectorDescription connectorDescription)
+    void update(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException, IllegalArgumentException;
 
     /**
@@ -74,7 +74,7 @@ public interface ConnectorManager {
      *
      * @throws IllegalArgumentException if no connector instancewith the given id is available
      */
-    void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription)
+    void forceUpdate(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws IllegalArgumentException;
 
     /**
@@ -82,11 +82,11 @@ public interface ConnectorManager {
      *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
-    void delete(ConnectorId id) throws PersistenceException;
+    void delete(ConnectorDefinition id) throws PersistenceException;
 
     /**
      * Returns the description for the specified connector instance.
      */
-    ConnectorDescription getAttributeValues(ConnectorId id);
+    ConnectorDescription getAttributeValues(ConnectorDefinition id);
 
 }

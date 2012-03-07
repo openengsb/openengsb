@@ -16,13 +16,15 @@
  */
 package org.openengsb.core.api.security.model;
 
+import java.io.Serializable;
+
 /**
  * represents a single attribute-entry.
  *
  * It can originate from a {@link org.openengsb.core.api.security.annotation.SecurityAttribute} annotation or be
  * provided by a {@link org.openengsb.core.api.security.SecurityAttributeProvider} at runtime.
  */
-public class SecurityAttributeEntry {
+public class SecurityAttributeEntry implements Serializable {
 
     private String key;
     private String value;
@@ -54,6 +56,20 @@ public class SecurityAttributeEntry {
     @Override
     public String toString() {
         return String.format("%s=%s", key, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SecurityAttributeEntry)) {
+            return false;
+        }
+        SecurityAttributeEntry rhs = (SecurityAttributeEntry) obj;
+        return (key == null || key.equals(rhs.key)) && (value == null || value.equals(rhs.value));
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }
