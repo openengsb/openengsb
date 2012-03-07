@@ -189,11 +189,17 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat(service.getRunningFlows(), not(hasItem(id1)));
     }
 
+    static class BuildSuccess extends Event {
+    }
+
+    static class TestSuccess extends Event {
+    }
+
     @Test
     public void testCiWorkflow() throws Exception {
         long id = service.startFlow("ci");
-        service.processEvent(new Event());
-        service.processEvent(new Event());
+        service.processEvent(new BuildSuccess());
+        service.processEvent(new TestSuccess());
         service.waitForFlowToFinish(id);
         verify((DummyReport) domains.get("report"), times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());

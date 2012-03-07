@@ -45,14 +45,6 @@ public class InternalWorkflowEvent extends Event {
         this.processBag = processBag;
     }
 
-    public String getType() {
-        if (type != null) {
-            return type;
-        } else {
-            return super.getClass().getSimpleName();
-        }
-    }
-
     public void setType(String type) {
         this.type = type;
     }
