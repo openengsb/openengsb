@@ -1,3 +1,39 @@
+openengsb-2.4.2 2012-03-08
+--------------------------------------------
+
+This bug-fix release fixed various minor bugs in the current EKB creation, WSDL handling,
+and various big problems (speed, handling, querying, ...) we had with neodatis by replacing
+the library using a simple serializable database as a backend now which works ways better
+than the full blown object database for the use cases. In addition this release contains
+various bug-fix related dependency upgrades; namely CXF (2.5.2), PaxExam Karaf (0.5.1),
+OpenEngSB Root (32) and Pax Wicket (0.7.6).
+
+** Bug
+    * [OPENENGSB-2712] - createEmptyModel with ModelEntries as parameter discard model oid and model version
+    * [OPENENGSB-2726] - Bug in the querying of models with submodels
+    * [OPENENGSB-2728] - Flat structure for example domain
+    * [OPENENGSB-2732] - Missing types in wsld generation
+    * [OPENENGSB-2735] - openengsb-framework 2.4.1 starts karaf twice
+    * [OPENENGSB-2736] - m2e-error in internal connector and domains
+    * [OPENENGSB-2747] - Change Class<?> to Class
+    * [OPENENGSB-2792] - Neodatis is incompatible to ASF release
+    * [OPENENGSB-2795] - Processbags in tasks operate on shared instances
+
+** Library Upgrade
+    * [OPENENGSB-2716] - Upgrade to cxf 2.5.2
+    * [OPENENGSB-2769] - Upgrade labs-paxexam-karaf to 0.5.1
+    * [OPENENGSB-2787] - Upgrade to openengsb-root-32
+    * [OPENENGSB-2790] - Upgrade to pax-wicket 0.7.6
+
+** Task
+    * [OPENENGSB-2750] - Release framework 2.4.2
+
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
+
+ 
 openengsb-2.4.1 2012-01-17
 --------------------------------------------
 
@@ -11,6 +47,10 @@ This is a bugfix release fixing several issues that occured at runtime.
 ** Task
     * [OPENENGSB-2669] - Release framework 2.4.1
 
+### Known Issues
+ * [OPENENGSB-1956] - activemq web console fails
+ * [OPENENGSB-2398] - Start script of openengsb does not work on windows.
+ * [OPENENGSB-2463] - TestClient: Inputfield for parameter is not displayed
 
 openengsb-2.4.0 2012-01-08
 --------------------------------------------
