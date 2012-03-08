@@ -22,17 +22,8 @@
       xml:lang="en">
       
 <wicket:head>
-  <link rel="stylesheet" type="text/css" href="openengsb/style/grids.css"/>
-  <link rel="stylesheet" type="text/css" href="openengsb/style/blueprint/screen.css"/>
-  <link rel="stylesheet" type="text/css" href="openengsb/style/style.css"/>
-  <link rel="stylesheet" type="text/css" href="openengsb/style/jquery.css"/>
-  <script type="text/javascript" src="openengsb/js/jquery-1.7.1.min.js"></script>
-  <script type="text/javascript" src="openengsb/js/jquery-ui-1.8.17.custom.min.js"></script>
-  <script type="text/javascript" src="openengsb/js/jqueryHelper.js"></script>
-  <link rel="icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
-  <link rel="shortcut icon" type="image/x-icon" href="openengsb/images/openengsb.ico" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenEngSB Login</title>
+  <title><wicket:message key="title"></wicket:message></title>
 </wicket:head>
 
 
@@ -49,7 +40,7 @@
         </div>
         <div class="unit size1of2 lastUnit">
       	  <div class="loginForm">
-      		  <h3 class="right quiet">Login</h3><br />
+      		  <h3 class="right quiet">Login</h3>
         	  <form wicket:id="loginForm">
         		  <div>
           			  <label for="username" class="lightBlue"><wicket:message key="username"></wicket:message></label><br />
@@ -59,16 +50,22 @@
             		  <label for="password" class="lightBlue"><wicket:message key="password"></wicket:message></label><br />
             		  <input type="password" wicket:id="password" />
             	  </div>
-            	  <div><br /><input type="submit" wicket:message="value:button.login,title:button.login" /></div>
+            	  <div><input type="submit" wicket:message="value:button.login,title:button.login" /></div>
           	  </form>
         	  <span wicket:id="feedback" />
       	  </div>
         </div>
   	  </div>
-  	  <div class="line center smalltext">
-  	    <a href="../" wicket:id="imprint">
-          <wicket:message key="imprint"></wicket:message>
-        </a>
+  	  <div class="line smalltext">
+  	  	<br />
+  	  	<div class="unit size 1of2">
+  	      <a href="../" wicket:id="imprint">
+            <wicket:message key="imprint"></wicket:message>
+          </a>
+        </div>
+        <div class="unit size 1of2 lastUnit">
+  	      
+        </div>
   	  </div>
   	  <div wicket:id="imprintDialogue" class="hidden"></div>
   	</div>

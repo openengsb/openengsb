@@ -20,12 +20,12 @@ package org.openengsb.ui.admin.global.menu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ResourceReference;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
@@ -61,14 +61,14 @@ public class MenuTemplate extends Panel {
     }
 	
     private void initMainMenuItems() {
-    	addMenuItem("Index", Index.class, "index.title","dashboard");
-        addMenuItem("TestClient", TestClient.class, "testclient.title",null);
-        addMenuItem("SendEventPage", SendEventPage.class, "sendevent.title",null);
-        addMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title",null);
-        addMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title",null);
-        addMenuItem("UserService", UserListPage.class, "userService.title", null, "ROLE_ADMIN");
-        addMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", null);
-        addMenuItem("WiringPage", WiringPage.class, "wiring.title", null, "ROLE_ADMIN");
+    	addMenuItem("Index", Index.class, "index.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
+    	addMenuItem("UserService", UserListPage.class, "userService.title", new ResourceReference(MenuTemplate.class,"userIcon.png"), "ROLE_ADMIN");
+        addMenuItem("TestClient", TestClient.class, "testclient.title",new ResourceReference(MenuTemplate.class,"testClientIcon.png"));
+        addMenuItem("SendEventPage", SendEventPage.class, "sendevent.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
+        addMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
+        addMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title",new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
+        addMenuItem("WorkflowEditor", WorkflowEditor.class, "workflowEditor.title", new ResourceReference(MenuTemplate.class,"dashboardIcon.png"));
+        addMenuItem("WiringPage", WiringPage.class, "wiring.title", new ResourceReference(MenuTemplate.class,"dashboardIcon.png"), "ROLE_ADMIN");
     }
 
     private void initMainMenu() {
@@ -84,15 +84,19 @@ public class MenuTemplate extends Panel {
             protected void populateItem(ListItem<MenuItem> item) {
                 MenuItem menuItem = item.getModelObject();
                 item.add(menuItem.getLink());
-
+                
+                String backgroundAttribute = "background:url('resources/"+menuItem.getIcon().getSharedResourceKey()+"') no-repeat scroll left center transparent;";
+                item.add(new SimpleAttributeModifier("style",backgroundAttribute));
+                
+                if(item.getIndex()==menuItems.size()-1) {
+                	item.add(new SimpleAttributeModifier("class","lastElement"));
+                }
+                
                 // set menu item to active
                 if (menuItem.getItemName().equals(MenuTemplate.getActiveIndex())) {
-                    item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
-                        @Override
-                        public String getObject() {
-                            return "active";
-                        }
-                    }));
+                    
+                	item.add(new SimpleAttributeModifier("class","activeElement"));
+                   
                 }
             }
         };
@@ -112,12 +116,12 @@ public class MenuTemplate extends Panel {
      * should be displayed and authority defines who is authorized to see the link
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String iconName,
+    public void addMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, ResourceReference icon,
             String... authority) {
 		StringResourceModel label = new StringResourceModel(langKey, this, null);
 	    BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
 	    addAuthorizationRoles(pageLabelLink, authority);
-	    menuItems.add(new MenuItem(index, pageLabelLink, iconName));
+	    menuItems.add(new MenuItem(index, pageLabelLink, icon));
 	    avialableItems.add(index);
 	}
 	
@@ -133,18 +137,19 @@ public class MenuTemplate extends Panel {
 	private static class MenuItem implements Serializable {
         private final String index;
         private final BookmarkablePageLabelLink<? extends WebPage> link;
-        private final String iconName;
+        private final ResourceReference icon;
 
-        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
+        @SuppressWarnings("unused")
+		public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
             this.index = index;
             this.link = link;
-            iconName=null;
+            icon=null;
         }
         
-        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, String iconName) {
+        public MenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link, ResourceReference icon) {
             this.index = index;
             this.link = link;
-            this.iconName = iconName;
+            this.icon = icon;
         }
 
         public String getItemName() {
@@ -155,8 +160,8 @@ public class MenuTemplate extends Panel {
             return link;
         }
         
-        public String getIconName() {
-        	return iconName;
+        public ResourceReference getIcon() {
+            return icon;
         }
     } 
 

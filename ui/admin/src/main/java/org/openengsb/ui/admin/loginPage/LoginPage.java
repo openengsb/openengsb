@@ -18,23 +18,25 @@
 package org.openengsb.ui.admin.loginPage;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.ui.admin.global.footer.imprintPage.ImprintPage;
-import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.model.UsernamePassword;
+import org.openengsb.ui.common.FavIconPackageResource;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.imprint.ImprintPanel;
+import org.openengsb.ui.common.resources.css.CommonCssLocator;
+import org.openengsb.ui.common.resources.images.CommonPictureLocator;
+import org.openengsb.ui.common.resources.js.CommonJsLocator;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
 @PaxWicketMountPoint(mountPoint = "login")
@@ -52,9 +54,20 @@ public class LoginPage extends OpenEngSBPage{
     }
     
     public LoginPage() {
-        initContent();
+        initHeader();
+    	initContent();
     }
 
+    private void initHeader() {
+    	add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryUi()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryHelper()));
+        add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator.getFavIcon()));
+    }
+    
     private void initContent() {
         @SuppressWarnings("serial")
         Form<UsernamePassword> loginForm = new Form<UsernamePassword>("loginForm") {
@@ -81,7 +94,10 @@ public class LoginPage extends OpenEngSBPage{
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-        add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+        //add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+        add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
+        
+        
         
         ip imprintDialogue = new ip("imprintDialogue");
         imprintDialogue.setOutputMarkupId(true);

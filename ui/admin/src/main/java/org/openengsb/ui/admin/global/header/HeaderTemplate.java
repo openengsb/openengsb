@@ -18,8 +18,10 @@
 package org.openengsb.ui.admin.global.header;
 
 import java.util.List;
+import java.util.Locale;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -28,11 +30,13 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextHolder;
+import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
 import org.openengsb.ui.api.OpenEngSBVersionService;
 import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.openengsb.ui.common.resources.images.CommonPictureLocator;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 @SuppressWarnings("serial")
@@ -44,9 +48,7 @@ public class HeaderTemplate extends Panel {
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
-  //  @PaxWicketBean(name = "attributeStore")
- //   private SecurityAttributeProviderImpl attributeStore;
-
+    
 	
     public HeaderTemplate(String id) {
         super(id);
@@ -57,27 +59,8 @@ public class HeaderTemplate extends Panel {
 
     private void baseInitialization() {
         
-    	/*
-    	 * Commented until language selector is finished
-    	 * 
-    	add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                getSession().setLocale(Locale.GERMAN);
-            }
-        });
-        
-        */
-        
-        
     	BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
-    	homelink.add(new Image("topImage", new ResourceReference(HeaderTemplate.class, "openengsb_medium_greyscale.png")));
+    	homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
     	add(homelink);
 
         if (openengsbVersion == null) {
@@ -106,5 +89,26 @@ public class HeaderTemplate extends Panel {
         
         final Label projectLabel = new Label("currentProject",ContextHolder.get().getCurrentContextId());
         add(projectLabel);
+        final Label languageLabel = new Label("currentLanguage",getSession().getLocale().getDisplayLanguage());
+        languageLabel.setOutputMarkupId(true);
+        add(languageLabel);
+        
+    	add(new AjaxFallbackLink<Object>("lang.en") {
+            @Override
+			public void onClick(AjaxRequestTarget target) {
+				getSession().setLocale(Locale.ENGLISH);
+				languageLabel.setDefaultModelObject(getSession().getLocale().getDisplayLanguage());
+				target.addComponent(getPage());
+			}
+        });
+    	
+    	add(new AjaxFallbackLink<Object>("lang.de") {
+            @Override
+			public void onClick(AjaxRequestTarget target) {
+				getSession().setLocale(Locale.GERMAN);
+				languageLabel.setDefaultModelObject(getSession().getLocale().getDisplayLanguage());
+				target.addComponent(getPage());
+			}
+        });
     }
 }

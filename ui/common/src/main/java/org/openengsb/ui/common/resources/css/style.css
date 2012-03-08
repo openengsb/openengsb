@@ -134,6 +134,10 @@ input[type=submit] {
  
 }
 
+.dataTable{
+	color:black;
+}
+
 
 .languageDropdownContainer {
  left: -1px;

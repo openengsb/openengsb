@@ -20,20 +20,21 @@ package org.openengsb.ui.admin.basePage;
 import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
 import org.openengsb.ui.admin.global.menu.MenuTemplate;
-import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
+import org.openengsb.ui.common.FavIconPackageResource;
 import org.openengsb.ui.common.OpenEngSBPage;
 import org.openengsb.ui.common.OpenEngSBWebSession;
+import org.openengsb.ui.common.resources.css.CommonCssLocator;
+import org.openengsb.ui.common.resources.images.CommonPictureLocator;
+import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
 @SuppressWarnings("serial")
 public abstract class BasePage extends OpenEngSBPage {
@@ -43,9 +44,20 @@ public abstract class BasePage extends OpenEngSBPage {
     if(((AuthenticatedWebSession) getSession()).isSignedIn()==false)
     	setResponsePage(LoginPage.class);
     else
+    		initHeader();
     		initCommonContent();
     }
 
+    private void initHeader() {
+    	add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getGridsCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getCommonCss()));
+        add(CSSPackageResource.getHeaderContribution(CommonCssLocator.getJqueryUiCss()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryJs()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryUi()));
+        add(JavascriptPackageResource.getHeaderContribution(CommonJsLocator.getJqueryHelper()));
+        add(FavIconPackageResource.getHeaderContribution(CommonPictureLocator.getFavIcon()));
+    }
+    
     private void initCommonContent() {
         initializeHeader();
         initializeMenu();

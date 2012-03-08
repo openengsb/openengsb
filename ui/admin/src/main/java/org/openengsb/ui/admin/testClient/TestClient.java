@@ -345,6 +345,7 @@ public class TestClient extends BasePage {
         return organize;
     }
 
+    
     @SuppressWarnings("serial")
     private ListView<DomainProvider> makeServiceList() {
         return new ListView<DomainProvider>("domains", domainProvider) {
@@ -391,7 +392,7 @@ public class TestClient extends BasePage {
             }
         };
     }
-
+	
     /**
      * Returns the ID of the currently selected Service or null if none was selected
      *
