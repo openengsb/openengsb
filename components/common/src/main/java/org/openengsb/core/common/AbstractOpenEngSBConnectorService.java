@@ -17,6 +17,8 @@
 
 package org.openengsb.core.common;
 
+import java.util.List;
+
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.DomainEvents;
 import org.openengsb.core.api.DomainMethodExecutionException;
@@ -27,7 +29,7 @@ import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.model.ConnectorDefinition;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
@@ -155,13 +157,24 @@ public abstract class AbstractOpenEngSBConnectorService extends AbstractOpenEngS
     public String getConnectorId() {
         return connectorId;
     }
-    
+
     /**
-     * Returns the definition of a connector instance. It contains the domainId, the connectorId and the
-     * instanceId.
+     * Generates an EKBCommit with the informations about the domain inserted. Also attaches the given models
+     * to the commit.
      */
-    public ConnectorDefinition getConnectorDefinition() {
-        ConnectorDefinition id = new ConnectorDefinition(domainId, connectorId, getInstanceId());
-        return id;
+    public EKBCommit createEKBCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates,
+            List<OpenEngSBModel> deletes) {
+        EKBCommit commit = createEKBCommit();
+        commit.addInserts(inserts).addUpdates(updates).addDeletes(deletes);
+        return commit;
+    }
+
+    /**
+     * Generates an EKBCommit with the informations about the domain inserted.
+     */
+    public EKBCommit createEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId(domainId).setConnectorId(connectorId);
+        commit.setInstanceId(instanceId);
+        return commit;
     }
 }

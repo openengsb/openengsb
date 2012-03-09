@@ -39,8 +39,8 @@ import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
@@ -154,7 +154,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      * enumeration for categorizing the transaction actions.
      */
     private enum UTXACTION {
-            BEGIN, COMMIT, ROLLBACK
+        BEGIN, COMMIT, ROLLBACK
     };
 
     @Override
@@ -335,8 +335,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(models, null, null, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
+        EKBCommit commit = new EKBCommit().addInserts(models).setDomainId(event.getDomainId());
+        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
+        persistInterface.commit(commit);
     }
 
     @Override
@@ -344,8 +345,9 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, null, models, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
+        EKBCommit commit = new EKBCommit().addDeletes(models).setDomainId(event.getDomainId());
+        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
+        persistInterface.commit(commit);
     }
 
     @Override
@@ -353,15 +355,18 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         initiatePersistInterface();
         List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
         models.add(event.getModel());
-        persistInterface.commit(null, models, null, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
+        EKBCommit commit = new EKBCommit().addUpdates(models).setDomainId(event.getDomainId());
+        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
+        persistInterface.commit(commit);
     }
 
     @Override
     public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
         initiatePersistInterface();
-        persistInterface.commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
+        EKBCommit commit = new EKBCommit().setDomainId(event.getDomainId()).setConnectorId(event.getConnectorId());
+        commit.addInserts(event.getInserts()).addUpdates(event.getUpdates()).addDeletes(event.getDeletions());
+        commit.setInstanceId(event.getInstanceId());
+        persistInterface.commit(commit);
     }
 
     /**

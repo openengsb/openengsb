@@ -15,29 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.ekb;
-
-import org.openengsb.core.api.edb.EDBException;
+package org.openengsb.core.ekb.internal;
 
 /**
- * The persist interface provides the functions to maintain the models of the EDB. This includes the conversion of
- * models and sanity checks of models.
+ * Helper class for easier working with the informations that define a connector: domainId, connectorId and instanceId.
  */
-public interface PersistInterface {
+public class ConnectorInformation {
+    private String domainId;
+    private String connectorId;
+    private String instanceId;
 
-    /**
-     * Does a sanity check of the EKBCommit and the status of the EDB when this models are changed. After passed sanity
-     * check, the models are persisted.
-     */
-    void commit(EKBCommit commit) throws SanityCheckException, EDBException;
+    public ConnectorInformation(String domainId, String connectorId, String instanceId) {
+        this.domainId = domainId;
+        this.connectorId = connectorId;
+        this.instanceId = instanceId;
+    }
 
-    /**
-     * Persist the changes of the EKBCommit without performing sanity checks of them.
-     */
-    void forceCommit(EKBCommit commit) throws EDBException;
+    public String getDomainId() {
+        return domainId;
+    }
 
-    /**
-     * Only perform the sanity checks of the EKBCommit.
-     */
-    SanityCheckReport check(EKBCommit commit) throws EDBException;
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
 }

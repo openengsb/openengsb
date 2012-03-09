@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,9 +44,9 @@ import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
@@ -176,10 +175,10 @@ public class EDBIT extends AbstractExamTestHelper {
     public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(model);
-        persist.commit(models, null, null, getTestConnectorId());
-        persist.commit(models, null, null, getTestConnectorId());
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        
+        persist.commit(commit);
+        persist.commit(commit);
     }
 
     @Test
@@ -187,9 +186,8 @@ public class EDBIT extends AbstractExamTestHelper {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(model);
-        persist.commit(models, null, null, getTestConnectorId());
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
 
@@ -389,8 +387,10 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
     
-    private ConnectorDefinition getTestConnectorId() {
-        return new ConnectorDefinition("testdomain", "testconnector", "testinstance");
+    private EKBCommit getTestEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
+        commit.setInstanceId("testinstance");
+        return commit;
     }
 
     private void enrichEDBEvent(EDBEvent event) {
