@@ -515,10 +515,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         String oid = newObject.getOID();
         EDBObject object = getObject(oid);
         for (Map.Entry<String, Object> entry : newObject.entrySet()) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                continue;
+            }
             Object value = object.get(entry.getKey());
             if (value == null || !value.equals(entry.getValue())) {
                 LOGGER.debug("Conflict detected at key %s when comparing %s with %s", new Object[]{ entry.getKey(),
-                    entry.getValue(), value.toString() });
+                    entry.getValue(), value == null ? "null" : value.toString() });
                 throw new EDBException("Conflict detected. Failure when comparing the values of the key "
                         + entry.getKey());
             }

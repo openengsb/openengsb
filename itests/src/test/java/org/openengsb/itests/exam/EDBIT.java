@@ -286,7 +286,7 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version2, is(2));
     }
 
-    @Test(expected = EDBException.class)
+    @Test
     @SuppressWarnings("deprecation")
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
@@ -298,9 +298,7 @@ public class EDBIT extends AbstractExamTestHelper {
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
 
-        String name1 = (String) obj.get("name");
         Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
-
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
         EDBUpdateEvent update = new EDBUpdateEvent(model);
@@ -309,13 +307,9 @@ public class EDBIT extends AbstractExamTestHelper {
 
         // results in no conflict because the values are the same even if the version is different
         obj = edbService.getObject("testdomain/testconnector/updateevent/3");
-
-        String name2 = (String) obj.get("name");
         Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
-        assertThat(name1, is("blub"));
         assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
         assertThat(version2, is(2));
     }
 
