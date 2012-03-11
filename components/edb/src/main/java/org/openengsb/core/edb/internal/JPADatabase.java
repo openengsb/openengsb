@@ -566,8 +566,14 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private void checkForConflict(OpenEngSBModel model, String oid) throws EDBException {
         EDBObject object = getObject(oid);
         for (OpenEngSBModelEntry entry : model.getOpenEngSBModelEntries()) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                continue;
+            }
             Object value = object.get(entry.getKey());
-            if (value == null || !value.equals(entry.getValue())) {
+            if (value == null && entry.getValue() == null) {
+                continue;
+            }
+            if (value == null && entry.getValue() != null || !value.equals(entry.getValue())) {
                 throw new EDBException();
             }
         }

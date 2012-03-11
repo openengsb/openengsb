@@ -520,7 +520,7 @@ public class JPATestIT {
         assertThat(version2, is(2));
     }
 
-    @Test(expected = EDBException.class)
+    @Test
     public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -530,8 +530,6 @@ public class JPATestIT {
         db.processEDBInsertEvent(event);
 
         EDBObject obj = db.getObject("testdomain/testconnector/updateevent/3");
-
-        String name1 = (String) obj.get("name");
         Integer version1 = Integer.parseInt((String) obj.get("edbVersion"));
 
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry("edbVersion", 0, Integer.class));
@@ -543,12 +541,9 @@ public class JPATestIT {
         // results in no conflict because the values are the same even if the version is different
         obj = db.getObject("testdomain/testconnector/updateevent/3");
 
-        String name2 = (String) obj.get("name");
         Integer version2 = Integer.parseInt((String) obj.get("edbVersion"));
 
-        assertThat(name1, is("blub"));
         assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
         assertThat(version2, is(2));
     }
 
