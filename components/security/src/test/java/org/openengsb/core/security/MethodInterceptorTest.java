@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.security.service.AccessDeniedException;
+import org.openengsb.core.security.internal.OpenEngSBAuthenticationToken;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;

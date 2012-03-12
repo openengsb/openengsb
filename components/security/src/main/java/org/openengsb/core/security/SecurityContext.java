@@ -30,6 +30,7 @@ import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.common.util.ContextAwareCallable;
 import org.openengsb.core.common.util.ContextAwareRunnable;
 import org.openengsb.core.common.util.ThreadLocalUtil;
+import org.openengsb.core.security.internal.OpenEngSBAuthenticationToken;
 import org.openengsb.core.security.internal.RootSubjectHolder;
 
 /**

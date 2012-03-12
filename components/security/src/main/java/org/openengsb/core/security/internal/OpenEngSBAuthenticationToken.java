@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.openengsb.core.api.security.Credentials;
