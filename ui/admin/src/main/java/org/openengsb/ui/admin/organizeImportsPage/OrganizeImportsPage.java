@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class OrganizeImportsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeImportsPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private String importName = "";

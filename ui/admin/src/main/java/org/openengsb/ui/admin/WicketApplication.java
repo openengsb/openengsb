@@ -25,9 +25,15 @@ import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
+import org.openengsb.ui.common.OpenEngSBWebSession;
 import org.openengsb.ui.common.OpenEngSBWicketApplication;
 
 public class WicketApplication extends OpenEngSBWicketApplication {
+
+    @Override
+    protected void init() {
+        super.init();
+    }
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -41,12 +47,12 @@ public class WicketApplication extends OpenEngSBWicketApplication {
 
     @Override
     public Session newSession(Request request, Response response) {
-        return new AdminWebSession(request);
+        return new OpenEngSBWebSession(request);
     }
 
     @Override
     protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
-        return AdminWebSession.class;
+        return OpenEngSBWebSession.class;
     }
 
 }

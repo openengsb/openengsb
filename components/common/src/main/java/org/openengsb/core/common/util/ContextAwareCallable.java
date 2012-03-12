@@ -23,7 +23,7 @@ import java.util.concurrent.Callable;
  * wraps a {@link Callable} in a ContextAware one, to ensure the important ThreadLocals have the correct values.
  *
  */
-class ContextAwareCallable<ReturnType> extends ContextAware implements Callable<ReturnType> {
+public class ContextAwareCallable<ReturnType> extends ContextAware implements Callable<ReturnType> {
     private Callable<ReturnType> original;
 
     public ContextAwareCallable(Callable<ReturnType> original) {

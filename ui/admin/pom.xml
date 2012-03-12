@@ -201,6 +201,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+    </dependency>
+
     <!--  Pax Wicket Dependencies -->
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>

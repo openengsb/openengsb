@@ -117,7 +117,11 @@
             <Import-Package>org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
-              net.sf.cglib.reflect;version="[2,3)", *
+              net.sf.cglib.reflect;version="[2,3)",
+              org.apache.shiro.subject,
+              org.apache.shiro.session.mgt,
+              org.apache.shiro.authz,
+              *
             </Import-Package>
           </instructions>
         </configuration>
@@ -127,36 +131,6 @@
 
   <dependencies>
     <!-- Spring Security Dependencies -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-aop</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-support</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-    </dependency>
 
     <!-- OpenEngSB Dependencies -->
     <dependency>

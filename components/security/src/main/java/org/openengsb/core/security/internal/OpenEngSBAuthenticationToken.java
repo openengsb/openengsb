@@ -14,29 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.security.internal;
 
-package org.openengsb.ui.admin;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.openengsb.core.api.security.Credentials;
 
-import org.apache.wicket.Request;
-import org.openengsb.domain.authentication.AuthenticationDomain;
-import org.openengsb.ui.common.OpenEngSBWebSession;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
+/**
+ * wraps OpenEngSB-specific authentication-data in a shiro-compatible {@link AuthenticationToken}
+ */
+public class OpenEngSBAuthenticationToken implements AuthenticationToken {
 
-@SuppressWarnings("serial")
-public class AdminWebSession extends OpenEngSBWebSession {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3909132403539984150L;
 
-    @PaxWicketBean(name = "authenticator")
-    private AuthenticationDomain authenticator;
+    private String username;
+    private Credentials credentials;
 
-    public AdminWebSession(Request request) {
-        super(request);
-        injectDependencies();
-        ensureDependenciesNotNull();
+    public OpenEngSBAuthenticationToken(String username, Credentials credentials) {
+        this.username = username;
+        this.credentials = credentials;
     }
 
     @Override
-    protected AuthenticationDomain getAuthenticationManager() {
-        return authenticator;
+    public Object getPrincipal() {
+        return username;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return credentials;
     }
 
 }

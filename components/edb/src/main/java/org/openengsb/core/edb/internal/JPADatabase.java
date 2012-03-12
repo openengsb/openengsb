@@ -37,9 +37,9 @@ import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
+import org.openengsb.core.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
@@ -326,10 +326,11 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      */
     private String getAuthenticatedUser() {
         // if JPADatabase is called via integration tests
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        String username = (String) SecurityContext.getAuthenticatedPrincipal();
+        if (username == null) {
             return "testuser";
         }
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return username;
     }
 
     /**

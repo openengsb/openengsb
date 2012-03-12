@@ -48,7 +48,6 @@ import org.openengsb.core.api.model.OpenEngSBModelWrapper;
 import org.openengsb.core.api.remote.MethodResultMessage;
 import org.openengsb.core.api.remote.OutgoingPort;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
@@ -90,13 +89,12 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        RuleManager rm = getOsgiService(RuleManager.class);
         addWorkflow("simpleFlow");
         String string = null;
         while (string == null) {
             // TODO OPENENGSB-2097 find a better way than an endless loop
             LOGGER.warn("checking for simpleFlow to be present");
-            string = rm.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
+            string = ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
             Thread.sleep(1000);
         }
     }
@@ -231,7 +229,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
                 producer.send(message);
                 TextMessage response = (TextMessage) consumer.receive(1000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
-                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                    response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);
                 JmsUtils.closeMessageConsumer(consumer);
                 return response.getText();

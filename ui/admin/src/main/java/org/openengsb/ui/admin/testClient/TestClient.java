@@ -104,16 +104,16 @@ public class TestClient extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClient.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "attributeStore")
     private SecurityAttributeProviderImpl attributeStore;
 
     private DropDownChoice<MethodId> methodList;
@@ -394,7 +394,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Service or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Service or null if none was selected
      */
     private ServiceId fetchCurrentSelectService() {
@@ -403,7 +403,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the ID of the currently selected Method or null if none was selected
-     *
+     * 
      * @return the ID of the currently selected Method or null if none was selected
      */
     private MethodId fetchCurrentSelectMethod() {
@@ -412,7 +412,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns a Standard MethodCall with of the selected Method
-     *
+     * 
      * @param methodId Id of the refered Method
      * @return a Standard MethodCall with of the selected Method
      */
@@ -428,7 +428,7 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCall and wraps the it in a MethodCallRequest with addiontal MetaData.<br/>
      * Returns this MethodCallRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a MethodCallRequest with MetaData corresponding to the given ServiceId and MethodId
@@ -442,7 +442,7 @@ public class TestClient extends BasePage {
     /**
      * Creates a MethodCallRequest and wraps it in a SecureRequest, this adds the authentication block to the Message
      * Returns this SecureRequest.
-     *
+     * 
      * @param serviceId Id of the refered Service
      * @param methodId Id of the refered Method
      * @return a SecureRequest corresponding to the given ServiceId and MethodId
@@ -455,7 +455,7 @@ public class TestClient extends BasePage {
 
     /**
      * create nessecary MetaData for the Json Message
-     *
+     * 
      * @param serviceId to fetch the context Data of the message
      * @return a Map with the nessecary MetaData for the Message
      */
@@ -472,7 +472,7 @@ public class TestClient extends BasePage {
 
     /**
      * Returns the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
-     *
+     * 
      * @param secureRequest the request to parse to a JsonString
      * @return the constructed SecureRequest, via an ObjectMapper, as a JsonMessage String
      */
@@ -492,7 +492,7 @@ public class TestClient extends BasePage {
     /**
      * filter (unwanted) metaData entries from the args list, this is a dirty hack and should be replaced if possible.
      * TODO [Openengsb 1411] replace this with stable filter mechanism
-     *
+     * 
      * @param jsonMessage Message to filter
      * @return the jsonMessage filtered from the unnessecary data
      */

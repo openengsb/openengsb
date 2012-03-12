@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class OrganizeGlobalsPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizeGlobalsPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private String globalName = "";

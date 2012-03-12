@@ -18,21 +18,17 @@
 package org.openengsb.core.common.util;
 
 import org.openengsb.core.api.context.ContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * keeps track of thread-locals important to the OpenEngSB context-aware threads can use this to initialize the context
  * properly in a new (or used) thread
  */
-abstract class ContextAware {
+public abstract class ContextAware {
 
     private String context = ContextHolder.get().getCurrentContextId();
-    private SecurityContext securityContext = SecurityContextHolder.getContext();
 
     protected void applyContext() {
         ContextHolder.get().setCurrentContextId(context);
-        SecurityContextHolder.setContext(securityContext);
     }
 
 }

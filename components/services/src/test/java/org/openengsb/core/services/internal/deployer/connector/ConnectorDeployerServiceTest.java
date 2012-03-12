@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -68,6 +69,7 @@ import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
@@ -93,6 +95,11 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private ConnectorInstanceFactory factory;
     private ConnectorDefinition testConnectorId;
     private DefaultConfigPersistenceService configPersistence;
+
+    @BeforeClass
+    public static void setUpClass() {
+        RootSubjectHolder.init();
+    }
 
     @Before
     public void setUp() throws Exception {
