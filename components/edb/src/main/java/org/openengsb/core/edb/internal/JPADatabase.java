@@ -30,19 +30,11 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.ekb.EKBCommit;
-import org.openengsb.core.api.ekb.PersistInterface;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
 import org.slf4j.Logger;
@@ -56,7 +48,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JPADao dao;
-    private PersistInterface persistInterface;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -328,54 +319,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         Map<String, Object> query = new HashMap<String, Object>();
         query.put(key, value);
         return getStateOfLastCommitMatching(query);
-    }
-
-    @Override
-    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        EKBCommit commit = new EKBCommit().addInserts(models).setDomainId(event.getDomainId());
-        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
-        persistInterface.commit(commit);
-    }
-
-    @Override
-    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        EKBCommit commit = new EKBCommit().addDeletes(models).setDomainId(event.getDomainId());
-        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
-        persistInterface.commit(commit);
-    }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        EKBCommit commit = new EKBCommit().addUpdates(models).setDomainId(event.getDomainId());
-        commit.setConnectorId(event.getConnectorId()).setInstanceId(event.getInstanceId());
-        persistInterface.commit(commit);
-    }
-
-    @Override
-    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        initiatePersistInterface();
-        EKBCommit commit = new EKBCommit().setDomainId(event.getDomainId()).setConnectorId(event.getConnectorId());
-        commit.addInserts(event.getInserts()).addUpdates(event.getUpdates()).addDeletes(event.getDeletions());
-        commit.setInstanceId(event.getInstanceId());
-        persistInterface.commit(commit);
-    }
-
-    /**
-     * A temporary solution until processEDB*Event is removed from the EDB interface.
-     */
-    private void initiatePersistInterface() {
-        if (persistInterface == null) {
-            persistInterface = OpenEngSBCoreServices.getServiceUtilsService().getService(PersistInterface.class);
-        }
     }
 
     /**

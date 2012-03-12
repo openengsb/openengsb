@@ -32,10 +32,6 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-
-  <bean class="org.openengsb.ui.common.util.MethodUtil">
-    <property name="ekbService" ref="ekbService" />
-  </bean>
   
    <service ref="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
     <service-properties>
@@ -52,7 +48,6 @@
 
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-  <reference id="ekbService" interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService" />
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)" />
   <reference-list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
