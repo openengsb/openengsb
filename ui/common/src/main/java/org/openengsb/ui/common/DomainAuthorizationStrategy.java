@@ -55,7 +55,6 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (hasSecurityAnnotation(arg0.getClass())) {
             attributeList.addAll(getSecurityAttributes(arg0.getClass()));
         }
-        // List<Object> copy = new ArrayList<Object>(attributeProviders);
 
         LOGGER.info(ArrayUtils.toString(attributeProviders.getClass().getInterfaces()));
 
@@ -102,7 +101,6 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
     }
 
     private static String getAuthenticatedUser() {
-        // return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
         Object principal = SecurityContext.getAuthenticatedPrincipal();
         if (principal == null) {
             return null;

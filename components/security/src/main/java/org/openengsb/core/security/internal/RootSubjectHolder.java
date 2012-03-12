@@ -27,6 +27,9 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
 
+/**
+ * Holds an instance of a {@link Subject} with system permissions, to be used for executing tasks with root-permissions.
+ */
 public final class RootSubjectHolder {
 
     private static AtomicReference<Subject> rootSubject = new AtomicReference<Subject>();

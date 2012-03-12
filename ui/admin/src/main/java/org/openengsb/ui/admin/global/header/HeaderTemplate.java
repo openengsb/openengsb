@@ -87,7 +87,7 @@ public class HeaderTemplate extends Panel {
         add(new BookmarkablePageLink<Index>("logo", Index.class));
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
-                add(new Label("version", "UNKNOWN version"));
+                add(new Label("version", new StringResourceModel("unknown.version", this, null)));
             } else {
                 add(new Label("version", openengsbVersion.getVersionNumber()));
             }

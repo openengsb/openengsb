@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * bridge to spring-security. Note: You must have an authenticationManager configured to start new sessions
  */
 @SuppressWarnings("serial")
-public abstract class OpenEngSBWebSession extends AuthenticatedWebSession {
+public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenEngSBWebSession.class);
 

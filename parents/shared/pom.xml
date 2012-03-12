@@ -936,13 +936,11 @@
         <groupId>org.apache.shiro</groupId>
         <artifactId>shiro-core</artifactId>
         <version>${shiro.version}</version>
-        <type>bundle</type>
       </dependency>
       <dependency>
         <groupId>org.apache.shiro</groupId>
         <artifactId>shiro-web</artifactId>
         <version>${shiro.version}</version>
-        <type>bundle</type>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -118,9 +118,6 @@
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
               net.sf.cglib.reflect;version="[2,3)",
-              org.apache.shiro.subject,
-              org.apache.shiro.session.mgt,
-              org.apache.shiro.authz,
               *
             </Import-Package>
           </instructions>
@@ -206,7 +203,6 @@
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
-      <type>bundle</type>
     </dependency>
   </dependencies>
 

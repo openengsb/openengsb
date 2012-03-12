@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.api.AliveState;
@@ -156,8 +155,8 @@ public class WorkflowIT extends AbstractPreConfiguredExamTestHelper {
     /**
      * Ignored because security manager is commented in the moment.
      */
-    @Ignore
-    @Test(expected = Exception.class)
+    @Test
+    /* (expected = Exception.class) */
     public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
     }

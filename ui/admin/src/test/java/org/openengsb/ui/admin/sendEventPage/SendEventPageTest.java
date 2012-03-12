@@ -171,7 +171,6 @@ public class SendEventPageTest extends AbstractUITest {
 
     @Test
     public void openSite_shouldShowAuditLog() {
-        tester.debugComponentTrees();
         tester.assertVisible("auditsContainer:audits");
         tester.assertVisible("auditsContainer:audits:0:audit");
         tester.assertVisible("auditsContainer:audits:1:audit");
