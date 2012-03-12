@@ -19,6 +19,9 @@ package org.openengsb.core.security;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.openengsb.core.api.security.Credentials;
 
+/**
+ * wraps OpenEngSB-specific authentication-data in a shiro-compatible {@link AuthenticationToken}
+ */
 public class OpenEngSBAuthenticationToken implements AuthenticationToken {
 
     /**

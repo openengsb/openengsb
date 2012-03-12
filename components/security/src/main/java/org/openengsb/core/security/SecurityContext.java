@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.concurrent.SubjectAwareExecutorService;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -37,15 +38,15 @@ import org.openengsb.core.security.internal.RootSubjectHolder;
 public final class SecurityContext {
 
     /**
-     * Authenticate with the given username and credentials, and associated the subject with the current thread.
+     * Wraps the given argument to a shiro- {@link org.apache.shiro.authc.AuthenticationToken} to authenticate.
      */
-    public static void login(String username, Credentials credentials) {
+    public static void login(String username, Credentials credentials) throws AuthenticationException {
         OpenEngSBAuthenticationToken token = new OpenEngSBAuthenticationToken(username, credentials);
         SecurityUtils.getSubject().login(token);
     }
 
     /**
-     * Logout the subject that is authenticated in the current Thread.
+     * Logout the current subject. The ThreadContext is emptied.
      */
     public static void logout() {
         Subject subject = ThreadContext.getSubject();
@@ -56,7 +57,7 @@ public final class SecurityContext {
     }
 
     /**
-     * get the primary principal from the authenticated subject.
+     * returns the authenticated user or null if no authentication was found.
      */
     public static Object getAuthenticatedPrincipal() {
         Subject subject = ThreadContext.getSubject();
@@ -67,7 +68,7 @@ public final class SecurityContext {
     }
 
     /**
-     * get a list of all principals associated with the currently authenticated subject.
+     * returns a list of principals of the currently authenticated subject.
      */
     @SuppressWarnings("unchecked")
     public static List<Object> getAllAuthenticatedPrincipals() {
@@ -90,7 +91,7 @@ public final class SecurityContext {
     }
 
     /**
-     * Executes the given task with root-permissions. Use with care.
+     * wraps an existing ExecutorService to handle context- and security-related threadlocal variables
      */
     public static void executeWithSystemPermissions(Runnable task) {
         ContextAwareRunnable contextAwaretask = new ContextAwareRunnable(task);
