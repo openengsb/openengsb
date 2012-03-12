@@ -29,10 +29,10 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.api.security.PermissionProvider;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.ui.common.editor.BeanEditorPanel;
 import org.openengsb.ui.common.usermanagement.PermissionInput.State;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +57,9 @@ public abstract class PermissionEditorPanel extends Panel {
 
     private UserInput user;
 
+    @PaxWicketBean(name = "permissionProviders")
+    private List<ClassloadingDelegate> permissionProviders;
+
     public PermissionEditorPanel(String id, UserInput user) {
         super(id);
         this.user = user;
@@ -78,11 +81,9 @@ public abstract class PermissionEditorPanel extends Panel {
 
                 @Override
                 protected List<Class<?>> load() {
-                    List<PermissionProvider> providers =
-                        OpenEngSBCoreServices.getServiceUtilsService().listServices(PermissionProvider.class);
                     List<Class<?>> result = Lists.newArrayList();
-                    for (PermissionProvider p : providers) {
-                        result.addAll(p.getSupportedPermissionClasses());
+                    for (ClassloadingDelegate p : permissionProviders) {
+                        result.addAll(p.getSupportedTypes());
                     }
                     return result;
                 }
@@ -130,4 +131,8 @@ public abstract class PermissionEditorPanel extends Panel {
     }
 
     protected abstract void afterSubmit(AjaxRequestTarget target, Form<?> form);
+
+    public void setPermissionProviders(List<ClassloadingDelegate> permissionProviders) {
+        this.permissionProviders = permissionProviders;
+    }
 }

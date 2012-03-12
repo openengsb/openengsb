@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -40,13 +41,14 @@ import javax.persistence.Persistence;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.api.AbstractPermissionProvider;
+import org.openengsb.core.api.ClassloadingDelegate;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.internal.ClassloadingDelegateImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.internal.model.UserData;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -145,10 +147,11 @@ public class UserDataManagerImplTest extends AbstractOsgiMockServiceTest {
                 new Class<?>[]{ UserDataManager.class }, invocationHandler);
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("permissionClass", TestPermission.class.getName());
-        PermissionProvider permissionProvider = new AbstractPermissionProvider(TestPermission.class) {
-        };
-        registerService(permissionProvider, props, PermissionProvider.class);
+        props.put(Constants.PROVIDED_CLASSES_KEY, TestPermission.class.getName());
+        List<Class<?>> permissionList = new ArrayList<Class<?>>();
+        permissionList.add(TestPermission.class); // Arrays.asList((Class<?>) TestPermission.class);
+        ClassloadingDelegate permissionProvider = new ClassloadingDelegateImpl(permissionList);
+        registerService(permissionProvider, props, ClassloadingDelegate.class);
 
     }
 

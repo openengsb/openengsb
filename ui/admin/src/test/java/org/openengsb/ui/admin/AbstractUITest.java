@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -32,7 +33,7 @@ import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
 import org.openengsb.connector.wicketacl.WicketPermission;
 import org.openengsb.connector.wicketacl.internal.WicketAclServiceImpl;
-import org.openengsb.connector.wicketacl.internal.WicketPermissionProvider;
+import org.openengsb.core.api.ClassloadingDelegate;
 import org.openengsb.core.api.CompositeConnectorStrategy;
 import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
@@ -45,13 +46,14 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.api.security.PermissionProvider;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
+import org.openengsb.core.api.security.model.Permission;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.security.service.UserExistsException;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.SecurityAttributeProviderImpl;
+import org.openengsb.core.common.internal.ClassloadingDelegateImpl;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
@@ -145,9 +147,14 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("userManager", userManager);
 
         Dictionary<String, Object> wicketProviderProps = new Hashtable<String, Object>();
-        wicketProviderProps.put("permissionClass", WicketPermission.class.getName());
-        WicketPermissionProvider wicketPermissionProvider = new WicketPermissionProvider();
-        registerService(wicketPermissionProvider, wicketProviderProps, PermissionProvider.class);
+        wicketProviderProps.put(Constants.PROVIDED_CLASSES_PARENTS_KEY, Permission.class.getName());
+        wicketProviderProps.put(Constants.PROVIDED_CLASSES_KEY, WicketPermission.class.getName());
+
+        Collection<Class<?>> arrayList = new ArrayList<Class<?>>();
+        arrayList.add(WicketPermission.class);
+
+        ClassloadingDelegate wicketPermissionProvider = new ClassloadingDelegateImpl(arrayList);
+        registerService(wicketPermissionProvider, wicketProviderProps, ClassloadingDelegate.class);
 
         context.putBean("permissionProviders", Arrays.asList(wicketPermissionProvider));
 

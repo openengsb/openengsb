@@ -102,6 +102,18 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Provided-Classes>org.openengsb.connector.serviceacl.ServicePermission</Provided-Classes>
+              <Provided-ClassesParents>org.openengsb.core.api.security.model.Permission</Provided-ClassesParents>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

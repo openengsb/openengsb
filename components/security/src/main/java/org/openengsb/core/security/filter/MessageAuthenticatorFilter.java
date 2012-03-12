@@ -19,11 +19,12 @@ package org.openengsb.core.security.filter;
 
 import java.util.Map;
 
+import org.openengsb.core.api.ClassloadingDelegate;
+import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.FilterAction;
 import org.openengsb.core.api.remote.FilterConfigurationException;
 import org.openengsb.core.api.remote.FilterException;
-import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
@@ -39,9 +40,9 @@ import org.slf4j.LoggerFactory;
  * This filter does no actual transformation. It takes a {@link SecureRequest} extracts the {@link AuthenticationInfo}
  * and tries to authenticate. If authentication was succesful, the filter-chain will proceed. The result of the next
  * filter is just passed through.
- *
+ * 
  * This filter is intended for incoming ports.
- *
+ * 
  * <code>
  * <pre>
  *      [SecureRequest]  > Filter > [SecureRequest]    > ...
@@ -70,11 +71,11 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
             String className = input.getCredentials().getClassName();
             OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
             Filter filter =
-                serviceUtilsService.makeFilter(CredentialTypeProvider.class,
-                    String.format("(credentialClass=%s)", className));
+                serviceUtilsService.makeFilter(ClassloadingDelegate.class,
+                    String.format("(%s=%s)", Constants.PROVIDED_CLASSES_KEY, className));
             Class<? extends Credentials> credentialType =
-                serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(
-                    className);
+                (Class<? extends Credentials>) serviceUtilsService.getOsgiServiceProxy(filter,
+                    ClassloadingDelegate.class).load(className);
             authenticationManager
                 .authenticate(input.getPrincipal(), input.getCredentials().toObject(credentialType));
         } catch (AuthenticationException e) {

@@ -25,6 +25,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
     private VirtualConnectorManager virtualConnectorManager;
+    private DelegatedClassloaderManager delegatedClassloaderManager;
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -33,6 +34,8 @@ public class Activator implements BundleActivator {
         OpenEngSBCoreServices.setOsgiServiceUtils(osgiServiceUtils);
         virtualConnectorManager = new VirtualConnectorManager(context, osgiServiceUtils);
         virtualConnectorManager.start();
+        delegatedClassloaderManager = new DelegatedClassloaderManager(context);
+        delegatedClassloaderManager.start();
     }
 
     @Override

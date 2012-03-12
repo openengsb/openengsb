@@ -18,10 +18,12 @@
 package org.openengsb.connector.usernamepassword.internal;
 
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.api.AbstractCredentialTypeProvider;
+import org.openengsb.core.api.security.Credentials;
+import org.openengsb.core.common.DefaultClassloadingDelegate;
 
-public class PasswordCredentialTypeProvider extends AbstractCredentialTypeProvider {
+public class PasswordCredentialTypeProvider extends DefaultClassloadingDelegate<Credentials> {
 
+    @SuppressWarnings("unchecked")
     public PasswordCredentialTypeProvider() {
         super(Password.class);
     }

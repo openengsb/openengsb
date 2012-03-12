@@ -89,6 +89,18 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Provided-Classes>org.openengsb.connector.usernamepassword.Password</Provided-Classes>
+              <Provided-ClassesParents>org.openengsb.core.api.security.Credentials</Provided-ClassesParents>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

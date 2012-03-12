@@ -61,6 +61,29 @@ public final class Constants {
      */
     public static final String EXTERNAL_CONNECTOR_PROXY = "external-connector-proxy";
 
+    /**
+     * Header element in MANIFEST that states which classes may be loaded using Classloader delegation
+     */
+    public static final String PROVIDED_CLASSES = "Provided-Classes";
+
+    /**
+     * Header element in MANIFEST that states which super-classes are used for registring and categorizing Classloader
+     * delegation
+     */
+    public static final String PROVIDED_CLASSES_PARENTS = "Provided-ClassesParents";
+
+    /**
+     * Element in service properties of Classloader-delegation-services that states which classes are supported for
+     * loading
+     */
+    public static final String PROVIDED_CLASSES_KEY = "providedClass";
+
+    /**
+     * Element in service properties of Classloader-delegation-services that states which category (by supertype) of
+     * classes this service allows to load
+     */
+    public static final String PROVIDED_CLASSES_PARENTS_KEY = "providedClassParent";
+
     private Constants() {
         // this class should not be instanciated.
     }
