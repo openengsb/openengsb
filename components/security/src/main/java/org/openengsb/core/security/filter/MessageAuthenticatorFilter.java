@@ -64,21 +64,26 @@ public class MessageAuthenticatorFilter extends AbstractFilterChainElement<Secur
     @Override
     protected SecureResponse doFilter(SecureRequest input, Map<String, Object> metaData) {
         LOGGER.debug("recieved authentication info: " + input.getPrincipal() + " " + input.getCredentials());
+
+        String className = input.getCredentials().getClassName();
+        OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
+        Filter filter =
+            serviceUtilsService.makeFilter(CredentialTypeProvider.class,
+                String.format("(credentialClass=%s)", className));
+        Class<? extends Credentials> credentialType;
         try {
-            String className = input.getCredentials().getClassName();
-            OsgiUtilsService serviceUtilsService = OpenEngSBCoreServices.getServiceUtilsService();
-            Filter filter =
-                serviceUtilsService.makeFilter(CredentialTypeProvider.class,
-                    String.format("(credentialClass=%s)", className));
-            Class<? extends Credentials> credentialType =
+            credentialType =
                 serviceUtilsService.getOsgiServiceProxy(filter, CredentialTypeProvider.class).getCredentialType(
                     className);
-            SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
-        } catch (AuthenticationException e) {
-            throw new FilterException(e);
         } catch (ClassNotFoundException e) {
             throw new FilterException(e);
         }
+        try {
+            SecurityContext.login(input.getPrincipal(), input.getCredentials().toObject(credentialType));
+        } catch (AuthenticationException e) {
+            throw new FilterException(e);
+        }
+
         LOGGER.debug("authenticated");
         return (SecureResponse) next.filter(input, metaData);
     }

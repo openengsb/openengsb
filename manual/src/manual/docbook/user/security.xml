@@ -32,17 +32,12 @@
       The service is designed to manage your users. You can create new user and save them to the persistence or retrieve,
       update and delete them. </para>
 
-    <para>The user management needs a back-end database, e.g. the central persistence service of the OpenEngSB.</para>
+    <para>The user management needs a back-end database. The provided default implementation uses JPA and an h2-database</para>
 
     <para>
       The interface of the
-      <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/security/UserManager.java">User manager</link>
-      supports basic CRUD mechanisms (create, retrieve, update, delete).
-      The <link xlink:href="${github}/core/api/src/main/java/org/openengsb/core/api/security/model/User.java">User</link>
-      is the used user model. It holds attributes like a password, username, if the user is enabled, or his account is expired or locked.
-      A user is identified by his username. So the username can not be changed.
-      Another attribute are the authorities. These are the roles granted to the user. These can be for example "ROLE_ADMIN" which defines the user as admin.
-      Depending on the roles, a user can have different rights. For the OpenEngSB-UI a user has to have at least the role "ROLE_USER" which is the default role.
+      <link xlink:href="${github}/components/api/src/main/java/org/openengsb/core/api/security/UserDataManager.java">User manager</link>
+      supports basic CRUD mechanisms (create, retrieve, update, delete). A user is identified by a unique username that cannot be changed.
     </para>
   </section>
 
@@ -50,19 +45,19 @@
     <title>Access control</title>
 
     <para>Access control is done on the service level. Core-services and connector-instances are all published as
-      OSGi-services. Other services and components always reference these service instances. We use the approach of
-      AOP to achieve security of these services. The openengsb.core.security-bundle publishes a service that serves as
+      OSGi-services. Other services and components always reference these service instances. We use AOP to provide
+      security for these services. The openengsb.core.security-bundle publishes a service that serves as
       a method-interceptor. When it is attached to a service every method call on the service is preceded with an
       authorization-check. </para>
 
-    <para>A reference to the method-interceptor can be obtained by this line in the spring-context.xml
-      <programlisting language="xml"><![CDATA[<osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />]]></programlisting>
+    <para>A reference to the method-interceptor can be obtained via blueprint using this line
+      <programlisting language="xml"><![CDATA[<reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />]]></programlisting>
       In order to attach it to an existing bean, one has to create a ProxyFactoryBean:
-      <programlisting language="xml"><![CDATA[<bean id="secureServiceManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+      <programlisting language="xml"><![CDATA[<bean id="secureServiceManager" class="org.openengsb.core.common.ProxyFactoryBean">
   <property name="proxyInterfaces">
     <value>other.ServiceInterface</value>
   </property>
-  <property name="interceptorNames">
+  <property name="advices">
     <list>
       <value>securityInterceptor</value>
     </list>
@@ -70,10 +65,9 @@
   <property name="target" ref="<realBean>" />
 </bean>]]></programlisting>
       When registering a service in code rather than in a spring context.xml this can be done as seen in the
-      <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/AbstractServiceManager.java">
+	  <link xlink:href="${github}/components/services/src/main/java/org/openengsb/core/services/internal/ConnectorManagerImpl.java">
         AbstractServiceManager</link>
       <programlisting language="java"><![CDATA[
-import org.springframework.aop.framework.ProxyFactory;
 //
 // ...
 //
@@ -96,15 +90,8 @@ OpenEngSBService securedService = (OpenEngSBService) factory.getProxy();]]></pro
   <section>
     <title>Authentication</title>
     <para>This chapter describes how to deal with security in internal bundles and client projects</para>
-    <para>For authentication the OpenEngSB provides an AuthenticationProvider as a service. It's obtainable via
-      blueprint. <programlisting><![CDATA[
-        <reference interface="org.springframework.security.authentication.AuthenticationManager" />]]>
-      </programlisting>
-      This service is able to authenticate users
-      (org.springframework.security.authentication.UsernamePasswordAuthenticationToken) and bundles
-      (org.openengsb.core.security.BundleAuthenticationToken). The use of the former is pretty obvious. The latter is
-      used for authentication for internal actions, that require elevated privilages. This authentication should be
-      used with caution, and never be exposed externally for security reasons.</para>
+    <para>The util-class org.openengsb.core.security.SecurityContext provides several methods for handling
+      authentication</para>
   </section>
 
 </chapter>
