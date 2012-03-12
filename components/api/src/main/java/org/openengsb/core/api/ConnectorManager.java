@@ -97,7 +97,8 @@ public interface ConnectorManager {
      * 'HostId' containing the Host-IP. This Id is used to identify the Host when the user calls the XLink HTTP-Servlet.
      * Therefore the Host must not reach the HTTP-Servlet via a proxy. A XLinkTemplate is returned, it contains
      * informations about how modelObjects are identified by XLink and how valid XLink-URLs are generated. The class
-     * 'XLinkUtils' in the commons package also provides examples of how to create XLink-URLs.
+     * 'XLinkUtils' in the commons package also provides examples of how to create XLink-URLs. Note that this function
+     * does not create a Connector, it must be called with an already registered Connector. 
      * 
      * @see org.openengsb.core.api.xlink.XLinkTemplate
      */
