@@ -41,6 +41,9 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
+import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.security.service.UserDataManager;
@@ -90,6 +93,7 @@ public abstract class AbstractExamTestHelper {
 
     @Before
     public void waitForRequiredTasks() throws Exception {
+        waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
             LOGGER.warn("waiting for auditing to finish init");
@@ -238,11 +242,19 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
-        waitForUserDataInitializer();
         SecurityContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {
+        SecurityManager sm = null;
+        while (sm == null) {
+            try {
+                sm = SecurityUtils.getSecurityManager();
+            } catch (UnavailableSecurityManagerException e) {
+                LOGGER.warn("waiting for security-manager to be set");
+                Thread.sleep(1000);
+            }
+        }
         UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
