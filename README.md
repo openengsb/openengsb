@@ -24,7 +24,7 @@ Now run "mvn eclipse:eclipse" and import the projects into Eclipse.
 If you simply want to run the openengsb locate the archive at "assembly/target/openengsb-framework-\<version\>.zip",
 extract it and execute "bin/openengsb" or "bin/openengsb.bat".
 
-If you like to inlcude all connectors/domains have a look at https://github.com/openengsb/openengsb
+If you like to include all connectors/domains have a look at https://github.com/openengsb/openengsb
 
 Scripts
 -------
