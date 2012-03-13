@@ -19,6 +19,8 @@ package org.openengsb.core.common.beans;
 
 import java.math.BigDecimal;
 
+import com.google.common.base.Objects;
+
 public class BeanWithComplexAttributes {
 
     private CustomStringClass value;
@@ -59,40 +61,16 @@ public class BeanWithComplexAttributes {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((number == null) ? 0 : number.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(number, value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof BeanWithComplexAttributes)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        BeanWithComplexAttributes other = (BeanWithComplexAttributes) obj;
-        if (number == null) {
-            if (other.number != null) {
-                return false;
-            }
-        } else if (!number.equals(other.number)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        BeanWithComplexAttributes other = (BeanWithComplexAttributes) o;
+        return Objects.equal(number, other.number) && Objects.equal(value, other.value);
     }
 
 }

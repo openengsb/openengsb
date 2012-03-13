@@ -22,6 +22,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.common.base.Objects;
+
 @SuppressWarnings("serial")
 @XmlType(propOrder = { "type", "packageName", "name" })
 public class RuleBaseElementId implements Serializable {
@@ -78,48 +80,17 @@ public class RuleBaseElementId implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.name == null ? 0 : this.name.hashCode());
-        result = prime * result + (this.packageName == null ? 0 : this.packageName.hashCode());
-        result = prime * result + (this.type == null ? 0 : this.type.hashCode());
-        return result;
+        return Objects.hashCode(name, packageName, type);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof RuleBaseElementId)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        RuleBaseElementId other = (RuleBaseElementId) obj;
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.packageName == null) {
-            if (other.packageName != null) {
-                return false;
-            }
-        } else if (!this.packageName.equals(other.packageName)) {
-            return false;
-        }
-        if (this.type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!this.type.equals(other.type)) {
-            return false;
-        }
-        return true;
+        RuleBaseElementId other = (RuleBaseElementId) o;
+        return Objects.equal(name, other.name) && Objects.equal(packageName, other.packageName)
+                && Objects.equal(type, other.type);
     }
 
     @Override

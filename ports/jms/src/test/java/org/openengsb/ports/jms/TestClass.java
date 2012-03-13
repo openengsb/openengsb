@@ -17,6 +17,8 @@
 
 package org.openengsb.ports.jms;
 
+import com.google.common.base.Objects;
+
 public class TestClass {
     String test;
 
@@ -37,32 +39,15 @@ public class TestClass {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (test == null ? 0 : test.hashCode());
-        return result;
+        return Objects.hashCode(test);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof TestClass)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        TestClass other = (TestClass) obj;
-        if (test == null) {
-            if (other.test != null) {
-                return false;
-            }
-        } else if (!test.equals(other.test)) {
-            return false;
-        }
-        return true;
+        TestClass other = (TestClass) o;
+        return Objects.equal(test, other.test);
     }
 }
-

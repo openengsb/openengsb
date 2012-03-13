@@ -19,6 +19,8 @@ package org.openengsb.ui.admin.model;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 @SuppressWarnings("serial")
 public class ServiceId implements Serializable {
     private String serviceClass;
@@ -73,48 +75,17 @@ public class ServiceId implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((domainName == null) ? 0 : domainName.hashCode());
-        result = prime * result + ((serviceClass == null) ? 0 : serviceClass.hashCode());
-        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
-        return result;
+        return Objects.hashCode(domainName, serviceClass, serviceId);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof ServiceId)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        ServiceId other = (ServiceId) obj;
-        if (domainName == null) {
-            if (other.domainName != null) {
-                return false;
-            }
-        } else if (!domainName.equals(other.domainName)) {
-            return false;
-        }
-        if (serviceClass == null) {
-            if (other.serviceClass != null) {
-                return false;
-            }
-        } else if (!serviceClass.equals(other.serviceClass)) {
-            return false;
-        }
-        if (serviceId == null) {
-            if (other.serviceId != null) {
-                return false;
-            }
-        } else if (!serviceId.equals(other.serviceId)) {
-            return false;
-        }
-        return true;
+        ServiceId other = (ServiceId) o;
+        return Objects.equal(domainName, other.domainName) && Objects.equal(serviceClass, other.serviceClass)
+                && Objects.equal(serviceId, other.serviceId);
     }
 
 }

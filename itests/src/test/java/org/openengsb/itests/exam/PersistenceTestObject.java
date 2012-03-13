@@ -19,14 +19,14 @@ package org.openengsb.itests.exam;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.ObjectUtils;
+import com.google.common.base.Objects;
 
 public class PersistenceTestObject implements Serializable {
 
     private static final long serialVersionUID = 490651433247221771L;
 
     private String string;
-    private Integer integer;
+    private final Integer integer;
 
     public PersistenceTestObject(String string, Integer integer) {
         this.string = string;
@@ -47,27 +47,16 @@ public class PersistenceTestObject implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (integer == null ? 0 : integer.hashCode());
-        result = prime * result + (string == null ? 0 : string.hashCode());
-        return result;
+        return Objects.hashCode(integer, string);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof PersistenceTestObject)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        PersistenceTestObject other = (PersistenceTestObject) obj;
-        return (string == null || ObjectUtils.equals(string, other.string))
-                && (integer == null || ObjectUtils.equals(integer, other.integer));
+        PersistenceTestObject other = (PersistenceTestObject) o;
+        return Objects.equal(integer, other.integer) && Objects.equal(string, other.string);
     }
 
 }

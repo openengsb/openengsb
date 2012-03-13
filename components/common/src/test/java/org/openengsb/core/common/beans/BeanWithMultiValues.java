@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.google.common.base.Objects;
+
 public class BeanWithMultiValues {
 
     private Long id;
@@ -71,48 +73,17 @@ public class BeanWithMultiValues {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((numbers == null) ? 0 : numbers.hashCode());
-        result = prime * result + ((strings == null) ? 0 : strings.hashCode());
-        return result;
+        return Objects.hashCode(id, numbers, strings);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof BeanWithMultiValues)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        BeanWithMultiValues other = (BeanWithMultiValues) obj;
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (numbers == null) {
-            if (other.numbers != null) {
-                return false;
-            }
-        } else if (!numbers.equals(other.numbers)) {
-            return false;
-        }
-        if (strings == null) {
-            if (other.strings != null) {
-                return false;
-            }
-        } else if (!strings.equals(other.strings)) {
-            return false;
-        }
-        return true;
+        BeanWithMultiValues other = (BeanWithMultiValues) o;
+        return Objects.equal(id, id) && Objects.equal(numbers, other.numbers)
+                && Objects.equal(strings, other.strings);
     }
 
 }

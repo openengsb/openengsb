@@ -19,12 +19,13 @@ package org.openengsb.core.api.remote;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.base.Objects;
 
 /**
  * Representation of a most general method call containing a {@link #methodName}, {@link #args} you want to give to the
@@ -115,52 +116,17 @@ public class MethodCall implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(args);
-        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
-        result = prime * result + ((metaData == null) ? 0 : metaData.hashCode());
-        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        return result;
+        return Objects.hashCode(classes, metaData, methodName);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof MethodCall)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MethodCall other = (MethodCall) obj;
-        if (!Arrays.equals(args, other.args)) {
-            return false;
-        }
-        if (classes == null) {
-            if (other.classes != null) {
-                return false;
-            }
-        } else if (!classes.equals(other.classes)) {
-            return false;
-        }
-        if (metaData == null) {
-            if (other.metaData != null) {
-                return false;
-            }
-        } else if (!metaData.equals(other.metaData)) {
-            return false;
-        }
-        if (methodName == null) {
-            if (other.methodName != null) {
-                return false;
-            }
-        } else if (!methodName.equals(other.methodName)) {
-            return false;
-        }
-        return true;
+        MethodCall other = (MethodCall) o;
+        return Objects.equal(classes, other.classes) && Objects.equal(metaData, other.metaData)
+                && Objects.equal(methodName, other.methodName);
     }
 
 }
