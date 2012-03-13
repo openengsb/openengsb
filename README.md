@@ -18,8 +18,10 @@
 How to build
 ==========================
 * Install JDK 6 or higher
+
   You can install either [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or
 [OpenJDK](http://openjdk.java.net/install/index.html) depending on the OS you use.
+
 * Install [Maven 3 or higher](http://maven.apache.org/download.html)
 
   Be sure to follow the provided [installation instructions](http://maven.apache.org/download.html#Installation)
@@ -39,6 +41,7 @@ How to build
 * Make sure that enough memory is available to maven during the build-process
 
   Therefore set the **MAVEN_OPTS** environment variable to *"-Xmx2048m -XX:MaxPermSize=512m"*.
+
 * Run **mvn install** from the project's root directory
 
   This might take some time depending on your internet connection and hardware configuration (maybe about 30 min)
