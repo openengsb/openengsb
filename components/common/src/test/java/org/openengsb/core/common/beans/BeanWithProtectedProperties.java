@@ -17,6 +17,8 @@
 
 package org.openengsb.core.common.beans;
 
+import com.google.common.base.Objects;
+
 public class BeanWithProtectedProperties {
 
     private String publicValue;
@@ -48,40 +50,17 @@ public class BeanWithProtectedProperties {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((privateValue == null) ? 0 : privateValue.hashCode());
-        result = prime * result + ((publicValue == null) ? 0 : publicValue.hashCode());
-        return result;
+        return Objects.hashCode(privateValue, publicValue);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof BeanWithProtectedProperties)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        BeanWithProtectedProperties other = (BeanWithProtectedProperties) obj;
-        if (privateValue == null) {
-            if (other.privateValue != null) {
-                return false;
-            }
-        } else if (!privateValue.equals(other.privateValue)) {
-            return false;
-        }
-        if (publicValue == null) {
-            if (other.publicValue != null) {
-                return false;
-            }
-        } else if (!publicValue.equals(other.publicValue)) {
-            return false;
-        }
-        return true;
+        BeanWithProtectedProperties other = (BeanWithProtectedProperties) o;
+        return Objects.equal(privateValue, other.privateValue)
+                && Objects.equal(publicValue, other.publicValue);
     }
 
 }

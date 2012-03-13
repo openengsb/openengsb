@@ -17,10 +17,12 @@
 
 package org.openengsb.core.common.beans;
 
+import com.google.common.base.Objects;
+
 public class CustomStringClass {
 
-    private String key;
-    private String value;
+    private final String key;
+    private final String value;
 
     public CustomStringClass(String kv) {
         String[] split = kv.split(":");
@@ -35,40 +37,16 @@ public class CustomStringClass {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(key, value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof CustomStringClass)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        CustomStringClass other = (CustomStringClass) obj;
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        CustomStringClass other = (CustomStringClass) o;
+        return Objects.equal(key, other.key) && Objects.equal(value, other.value);
     }
 
 }

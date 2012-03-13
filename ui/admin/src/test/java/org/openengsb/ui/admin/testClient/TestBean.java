@@ -17,7 +17,7 @@
 
 package org.openengsb.ui.admin.testClient;
 
-import org.apache.commons.lang.ObjectUtils;
+import com.google.common.base.Objects;
 
 public class TestBean {
     private String id;
@@ -50,20 +50,16 @@ public class TestBean {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ObjectUtils.hashCode(this.id);
-        result = prime * result + ObjectUtils.hashCode(this.name);
-        return result;
+        return Objects.hashCode(id, name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof TestBean)) {
+    public boolean equals(Object o) {
+        if (!(o instanceof TestBean)) {
             return false;
         }
-        TestBean other = (TestBean) obj;
-        return ObjectUtils.equals(this.id, other.id) && ObjectUtils.equals(this.name, other.name);
+        TestBean other = (TestBean) o;
+        return Objects.equal(id, other.id) && Objects.equal(name, other.name);
     }
 
 }

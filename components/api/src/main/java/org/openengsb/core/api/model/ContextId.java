@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Objects;
+
 /**
  * Representation of a unique identification of context instances.
  * 
@@ -31,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ContextId {
-    
+
     public static final String META_KEY_ID = "id";
 
     private String id;
@@ -70,50 +72,24 @@ public class ContextId {
     public String toString() {
         return "Context: " + getId();
     }
-    
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + this.id.hashCode();
-        return result;
+        return Objects.hashCode(id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof ContextId)) {
             return false;
         }
-        if (getClass() == obj.getClass()) {
-            ContextId other = (ContextId) obj;
-            return equals(other);
-        }
-        if (Map.class.isInstance(obj)) {
-            Map<?, ?> metadata = (Map<?, ?>) obj;
-            return toMetaData().equals(metadata);
-        }
-        if (obj instanceof String) {
-            return toString().equals(obj);
-        }
-        return false;
-    }
-
-    private boolean equals(ContextId other) {
-        if (this.id == null && other.id != null) {
-            return false;
-        }
-        if (!this.id.equals(other.id)) {
-            return false;
-        }
-        return true;
+        ContextId other = (ContextId) o;
+        return Objects.equal(id, other.id);
     }
 
     /***
-     * An empty map is treated as a wildcard for Context IDs in queries.
-     * This means that (where applicable), queries return all contexts in scope when provided with an empty map.  
+     * An empty map is treated as a wildcard for Context IDs in queries. This means that (where applicable), queries
+     * return all contexts in scope when provided with an empty map.
      */
     public static Map<String, String> getContextIdWildCard() {
         return Collections.emptyMap();

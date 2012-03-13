@@ -19,6 +19,8 @@ package org.openengsb.core.api.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Objects;
+
 /**
  * Simple Model Entry class. Every model entry has three fields: key, value and type. Key defines the id, value is the
  * value for the key and type defines the type of the value.
@@ -64,45 +66,16 @@ public class OpenEngSBModelEntry {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(key, type, value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
+    public boolean equals(Object o) {
+        if (!(o instanceof OpenEngSBModelEntry)) {
             return false;
         }
-        OpenEngSBModelEntry other = (OpenEngSBModelEntry) obj;
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        OpenEngSBModelEntry other = (OpenEngSBModelEntry) o;
+        return Objects.equal(key, other.key) && Objects.equal(type, other.type)
+                && Objects.equal(value, other.value);
     }
-
 }

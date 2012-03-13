@@ -19,6 +19,8 @@ package org.openengsb.connector.usernamepassword;
 
 import org.openengsb.core.api.security.Credentials;
 
+import com.google.common.base.Objects;
+
 public class Password implements Credentials {
     private String value;
 
@@ -43,32 +45,16 @@ public class Password implements Credentials {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hashCode(value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object o) {
+        if (!(o instanceof Password)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Password other = (Password) obj;
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        Password other = (Password) o;
+        return Objects.equal(value, other.value);
     }
 
 }
