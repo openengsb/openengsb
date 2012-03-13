@@ -35,7 +35,7 @@ How to build
 
   By default all external dependencies required for the build are downloaded to your home-directory
   ($HOME/.m2/repository or %HOME%\.m2\repository).
-  You can configure the path of this directory as by following the
+  You can configure the path of this directory as described in the
   [Maven Configuration Guide](http://maven.apache.org/guides/mini/guide-configuring-maven.html)
 
 * Make sure that enough memory is available to maven during the build-process
