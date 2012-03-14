@@ -42,8 +42,13 @@
 	    		  <span>Max Meier</span>
 	    		  <div class="tmc-seperator"></div>
 	    		  <span wicket:id="currentProject">Project</span>
+	    		  <span class="dropdown" onclick="toggleContainerBySlideing('availableContexts',100)">
+	    		    <ul id="availableContexts" class="contextDropdownContainer hidden">
+	    		    	<li wicket:id="availableContexts"><a wicket:id="availableContext"><span wicket:id="availableContextLabel">availableContext</span></a></li>
+	    		    </ul>
+	    		  </span>
 	    		  <div class="tmc-seperator"></div>
-	    		  <span class="dropdown" onclick="toggleContainerBySlideing('availableLanguages',500)">
+	    		  <span class="dropdown" onclick="toggleContainerBySlideing('availableLanguages',100)">
 	    		    <div wicket:id="currentLanguage">Language</div>
 	    		    <ul id="availableLanguages" class="languageDropdownContainer hidden">
 	    		      <li><a wicket:id="lang.en">English (EN)</a></li>

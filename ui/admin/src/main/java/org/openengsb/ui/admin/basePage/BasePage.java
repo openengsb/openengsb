@@ -17,13 +17,10 @@
 
 package org.openengsb.ui.admin.basePage;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.model.IModel;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.ui.admin.global.footer.footerTemplate.FooterTemplate;
 import org.openengsb.ui.admin.global.header.HeaderTemplate;
@@ -36,7 +33,6 @@ import org.openengsb.ui.common.resources.css.CommonCssLocator;
 import org.openengsb.ui.common.resources.images.CommonPictureLocator;
 import org.openengsb.ui.common.resources.js.CommonJsLocator;
 
-@SuppressWarnings("serial")
 public abstract class BasePage extends OpenEngSBPage {
 
     public BasePage() {
@@ -61,7 +57,6 @@ public abstract class BasePage extends OpenEngSBPage {
     private void initCommonContent() {
         initializeHeader();
         initializeMenu();
-        initializeLoginLogoutTemplate();
         initializeFooter();
     }
 
@@ -74,43 +69,6 @@ public abstract class BasePage extends OpenEngSBPage {
         add(new FooterTemplate("footer"));
     }
 
-    private void initializeLoginLogoutTemplate() {
-        /*
-    	Form<?> form = new Form<Object>("projectChoiceForm");
-        form.add(createProjectChoice());
-        add(form);
-        try {
-            form.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-
-
-        Link<Object> link = new Link<Object>("logout") {
-            @Override
-            public void onClick() {
-                boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
-                if (signedIn) {
-                    ((AuthenticatedWebSession) getSession()).signOut();
-                }
-                setResponsePage(signedIn ? Index.class : LoginPage.class);
-            }
-        };
-        add(link);
-
-        WebMarkupContainer container = new WebMarkupContainer("logintext");
-        link.add(container);
-        try {
-            container.setVisible(!((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-        container = new WebMarkupContainer("logouttext");
-        link.add(container);
-        try {
-            container.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        } */
-    }
-
     private void initializeHeader() {
         add(new HeaderTemplate("header"));
     }
@@ -119,36 +77,6 @@ public abstract class BasePage extends OpenEngSBPage {
         add(new MenuTemplate("menu",this.getMenuItem()));
     }
     
-    private Component createProjectChoice() {
-        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
-            @Override
-            public String getObject() {
-                return getSessionContextId();
-            }
-
-            @Override
-            public void setObject(String object) {
-                ContextHolder.get().setCurrentContextId(object);
-            }
-
-            @Override
-            public void detach() {
-            }
-        }, getAvailableContexts()) {
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-                return true;
-            }
-
-            @Override
-            protected void onModelChanged() {
-                setResponsePage(BasePage.this.getClass());
-            }
-
-        };
-        return dropDownChoice;
-    }
-
     /**
      * @return the class name, which should be the index in navigation bar
      * 

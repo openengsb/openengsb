@@ -20,17 +20,18 @@ package org.openengsb.ui.admin.global.header;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
+import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.common.SecurityAttributeProviderImpl;
 import org.openengsb.ui.admin.index.Index;
 import org.openengsb.ui.admin.loginPage.LoginPage;
 import org.openengsb.ui.admin.model.OpenEngSBFallbackVersion;
@@ -42,14 +43,13 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
     
-	
-	
     @PaxWicketBean(name = "openengsbVersion")
     private OpenEngSBFallbackVersion openengsbVersion;
     @PaxWicketBean(name = "openengsbVersionService")
     private List<OpenEngSBVersionService> openengsbVersionService;
+    @PaxWicketBean(name = "contextCurrentService")
+    private ContextCurrentService contextService;
     
-	
     public HeaderTemplate(String id) {
         super(id);
         
@@ -73,7 +73,6 @@ public class HeaderTemplate extends Panel {
         }
     }
 
-    
     private void initializeTopMenu() {
     	Link<Object> link = new Link<Object>("logout") {
     		@Override
@@ -87,27 +86,79 @@ public class HeaderTemplate extends Panel {
         };
         add(link);
         
-        final Label projectLabel = new Label("currentProject",ContextHolder.get().getCurrentContextId());
+        /***
+         * Adds the context choice list
+         */
+        final Label projectLabel = new Label("currentProject",new IModel<String>() {
+
+			@Override
+			public void detach() {
+			}
+
+			@Override
+			public String getObject() {
+				return ContextHolder.get().getCurrentContextId();
+			}
+
+			@Override
+			public void setObject(String object) {
+			}
+		});
         add(projectLabel);
-        final Label languageLabel = new Label("currentLanguage",getSession().getLocale().getDisplayLanguage());
+        ListView<String>avaliableContexts = new ListView<String>("availableContexts",contextService.getAvailableContexts()) {
+
+			@Override
+			protected void populateItem(ListItem<String> item) {
+				item.add(new Link<String>("availableContext",item.getModel()) {
+					
+					@Override
+					public void onClick() {
+						String obj = getModelObject();
+						ContextHolder.get().setCurrentContextId(obj);
+						setResponsePage(this.getPage());
+					}
+				}.add(new Label("availableContextLabel",item.getModelObject())));
+				
+			}
+        };
+        add(avaliableContexts);
+        
+        /***
+         * Adds the language choice list
+         */
+        final Label languageLabel = new Label("currentLanguage",new IModel<String>() {
+
+			@Override
+			public void detach() {
+			}
+
+			@Override
+			public String getObject() {
+				return getSession().getLocale().getDisplayLanguage();
+			}
+
+			@Override
+			public void setObject(String object) {
+			}
+		});
         languageLabel.setOutputMarkupId(true);
         add(languageLabel);
         
-    	add(new AjaxFallbackLink<Object>("lang.en") {
+    	add(new Link<Object>("lang.en") {
+            
             @Override
-			public void onClick(AjaxRequestTarget target) {
+			public void onClick() {
 				getSession().setLocale(Locale.ENGLISH);
-				languageLabel.setDefaultModelObject(getSession().getLocale().getDisplayLanguage());
-				target.addComponent(getPage());
+				setResponsePage(this.getPage());
 			}
         });
     	
-    	add(new AjaxFallbackLink<Object>("lang.de") {
-            @Override
-			public void onClick(AjaxRequestTarget target) {
+    	add(new Link<Object>("lang.de") {
+			
+    		@Override
+			public void onClick() {
 				getSession().setLocale(Locale.GERMAN);
-				languageLabel.setDefaultModelObject(getSession().getLocale().getDisplayLanguage());
-				target.addComponent(getPage());
+				setResponsePage(this.getPage());
 			}
         });
     }

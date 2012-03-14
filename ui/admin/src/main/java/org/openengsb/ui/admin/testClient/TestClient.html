@@ -38,27 +38,13 @@
       		<div class="unit size 4of6 lastUnit">
       			<span wicket:id="domain.description">[domain.description]</span>
       		</div>
-      	</div>
-      
-      
-        <ul wicket:id="domains">
-          <li>
-            <h3>
-              <span wicket:id="domain.name">[domain.name]</span>
-            </h3>           
-            <a href="TestClient.html#" wicket:id="proxy.create.new">
+      		
+      		
+      		<a href="TestClient.html#" wicket:id="proxy.create.new">
               <wicket:message key="proxy.create.new">[proxy.create.new]</wicket:message>
             </a>
-
-            <p>
-              <span wicket:id="domain.class">[domain.class]</span>
-            </p>
-
-            <p>
-              <span wicket:id="domain.description">[domain.description]</span>
-            </p>
-
-            <ul wicket:id="services">
+      		
+      		 <ul wicket:id="services">
               <li>
                 <h3>
                   <span wicket:id="service.name">[service.name]</span>
@@ -69,10 +55,11 @@
                 </h3>
               </li>
             </ul>
-
-          </li>
-        </ul>
-      </div>
+            
+      	</div>
+      
+      
+       </div>
       
       <form wicket:id="organizeForm">
         <input type="submit" wicket:id="globalsButton" wicket:message="value:organize.globals" />
