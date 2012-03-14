@@ -53,9 +53,8 @@ environments.
 To run the openengsb-framework distribution you need to extract the zip-archive and execute the corresponding
 startup-script in the distribution's bin-directory (openengsb.bat for Windows, openengsb for *nix OS).
 
-A distribution of the framework containing all domains and connectors that are developed and maintained by the
-OpenEngSB Team, have a look at https://github.com/openengsb/openengsb.
-
+To get started with domains and connectors that are already available, have a look at
+http://openengsb.org/index/download.html
 
 Scripts
 -------
