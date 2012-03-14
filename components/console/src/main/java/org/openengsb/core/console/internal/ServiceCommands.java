@@ -76,7 +76,7 @@ public class ServiceCommands extends OsgiCommandSupport {
                     break;
             }
         } catch (IllegalArgumentException ex) {
-            System.err.println("Invalid Argument");
+            System.err.println(String.format("An error occurred: %s", ex.getMessage()));
         }
         return null;
     }

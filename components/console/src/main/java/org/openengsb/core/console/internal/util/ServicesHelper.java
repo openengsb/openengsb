@@ -48,6 +48,7 @@ import org.openengsb.core.console.internal.ServiceCommands;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+
 public class ServicesHelper {
 
 
@@ -126,7 +127,7 @@ public class ServicesHelper {
                     .printValue(String.format("Do you really want to delete the connector: %s (Y/n): ", id));
                 input = keyboard.read();
             }
-            if ('Y' == (char) input) {
+            if ('n' != (char) input && 'N' != (char) input) {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
@@ -162,6 +163,11 @@ public class ServicesHelper {
      * crate a service for the given domain, if force is true, input is not verified
      */
     public void createService(String domainProviderName, boolean force, Map<String, String> attributes) {
+        // check if a domain has been chosen
+        if (domainProviderName == null || domainProviderName.isEmpty()) {
+            domainProviderName = selectDomainProvider();
+        }
+
         // get domain provider Id
         String domainProviderId = "";
         List<DomainProvider> domainProvider = getDomainProvider();
@@ -202,7 +208,7 @@ public class ServicesHelper {
                 OutputStreamFormater.printValue(key, attributeMap.get(key));
             }
             OutputStreamFormater.printValue("Create connector: (Y/n)");
-            if (readUserInput().equals("Y")) {
+            if (!readUserInput().equalsIgnoreCase("n")) {
                 try {
                     serviceManager.create(idProvider, connectorDescription);
                     OutputStreamFormater.printValue("Connector successfully created");
@@ -210,12 +216,33 @@ public class ServicesHelper {
                     e.printStackTrace();
                     OutputStreamFormater.printValue("Connector validation failed, creation aborted");
                 }
+            } else {
+                OutputStreamFormater.printValue("Creation aborted");
             }
         }
     }
 
+    private String selectDomainProvider() {
+        String selectedProvider = "";
+        List<String> domainProviderNames = getDomainProviderNames();
+        for (int i = 0; i < domainProviderNames.size(); i++) {
+            String provider = domainProviderNames.get(i);
+            OutputStreamFormater.printTabbedValues(
+                9, String.format("[%s]", i), String.format("%s", provider));
+        }
+        String s = readUserInput();
+        int pos;
+        try {
+            pos = Integer.parseInt(s);
+            selectedProvider = domainProviderNames.get(pos);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Invalid Input: %s", s));
+        }
+        return selectedProvider;
+    }
+
     protected Map<String, String> getConnectorAttributes(List<AttributeDefinition> attributeDefinitions,
-                                                       Map<String, String> attributesFromInput) {
+                                                         Map<String, String> attributesFromInput) {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
             String fieldName = attributeDefinition.getName().getString(Locale.getDefault());
@@ -254,8 +281,7 @@ public class ServicesHelper {
         try {
             pos = Integer.parseInt(s);
         } catch (NumberFormatException e) {
-            System.err.println("Invalid Input");
-            return "";
+            throw new IllegalArgumentException(String.format("Invalid input %s", s));
         }
         return options.get(pos).getValue();
     }
@@ -298,7 +324,7 @@ public class ServicesHelper {
                 if (read == 127) { // backspace
                     int lastPos = positionString.length() - 1;
                     positionString = positionString.substring(0, lastPos >= 0 ? lastPos : 0);
-                    System.out.println(positionString);
+                    System.out.println("\n" + positionString);
                     System.out.flush();
                 } else {
                     char read1 = (char) read;
