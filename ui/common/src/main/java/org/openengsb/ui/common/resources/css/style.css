@@ -145,6 +145,12 @@ input[type=submit] {
  top: 37px;
 }
 
+.contextDropdownContainer {
+ left: -33px;
+ position: absolute;
+ top: 37px;
+}
+
 .ligthBlue {
 	color: #a3b2bf;
 }
@@ -240,7 +246,7 @@ li.lastElement {
     right: 15px;
 }
 
-#topMenuContainer div.tmc-left, div.tmc-center, div.tmc-right, div.tmc-seperator, #topMenuContainer a, span{
+#topMenuContainer div.tmc-left, div.tmc-center, div.tmc-right, div.tmc-seperator, #topMenuContainer a, #topMenuContainer span{
 	height: 38px;
 	display: inline;
 	float: left;
