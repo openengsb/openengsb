@@ -22,6 +22,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
 
+  <repository>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</repository>
+
   <feature name="openengsb-framework" version="${project.version}" description="OpenEngSB Core Feature">
     <details>
       This feature starts all other features required such as spring and http. In addition the services for the
