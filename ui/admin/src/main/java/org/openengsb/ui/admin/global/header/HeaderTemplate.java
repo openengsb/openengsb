@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.core.api.context.ContextCurrentService;
 import org.openengsb.core.api.context.ContextHolder;
@@ -62,13 +63,6 @@ public class HeaderTemplate extends Panel {
     	BookmarkablePageLink<Index> homelink = new BookmarkablePageLink<Index>("logo", Index.class);
     	homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
     	add(homelink);
-
-
-
-
-
-
-        add(new BookmarkablePageLink<Index>("logo", Index.class));
 
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
             if (openengsbVersion == null) {
