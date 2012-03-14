@@ -19,8 +19,9 @@ How to build
 ==========================
 * Install JDK 6 or higher
 
-  You can install either [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or
-[OpenJDK](http://openjdk.java.net/install/index.html) depending on the OS you use.
+  You can install [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or
+  [OpenJDK](http://openjdk.java.net/install/index.html) depending on the OS you use.
+  Other JVM implementations should also work, but are untested.
 
 * Install [Maven 3 or higher](http://maven.apache.org/download.html)
 
