@@ -93,6 +93,8 @@ public class ServiceCompleter implements Completer {
             case UPDATE:
                 addDomains(delegate.getStrings());
                 break;
+            default:
+                break;
         }
     }
 
@@ -107,8 +109,7 @@ public class ServiceCompleter implements Completer {
         strings.addAll(servicesHelper.getDomainProviderNames());
     }
 
-
     private void addServiceIds(Collection<String> strings) {
-            strings.addAll(servicesHelper.getRunningServiceIds());
+        strings.addAll(servicesHelper.getRunningServiceIds());
     }
 }

@@ -302,8 +302,8 @@ public class ServicesHelper {
         for (int i = 0; i < options.size(); i++) {
             AttributeDefinition.Option option = options.get(i);
             OutputStreamFormater
-                .printTabbedValues(9, String.format("[%s]", i), String.format("%s (%s)", option.getLabel().getString
-                    (Locale.getDefault()), option.getValue()));
+                .printTabbedValues(9, String.format("[%s]", i), String.format("%s (%s)", option.getLabel()
+                    .getString(Locale.getDefault()), option.getValue()));
         }
         String s = readUserInput();
         int pos;

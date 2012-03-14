@@ -18,7 +18,6 @@
 package org.openengsb.core.common.util;
 
 import java.util.Comparator;
-import java.util.Locale;
 
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
@@ -35,7 +34,8 @@ public final class Comparators {
         return new DomainProviderComparator();
     }
     /**
-     * returns a comparator that compares connector providers by providing their id-values {@link DomainProvider#getId()}.
+     * returns a comparator that compares connector providers by providing their id-values
+     * {@link DomainProvider#getId()}.
      */
     public static Comparator<? super ConnectorProvider> forConnectorProvider() {
         return new ConnectorProviderComparator();

@@ -19,21 +19,16 @@ package org.openengsb.core.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.mockito.cglib.core.Local;
 import org.openengsb.core.api.ConnectorProvider;
 import org.openengsb.core.api.DomainProvider;
-import org.openengsb.core.api.l10n.LocalizableString;
 import org.openengsb.core.common.util.Comparators;
 
 public class ComparatorsTest {
