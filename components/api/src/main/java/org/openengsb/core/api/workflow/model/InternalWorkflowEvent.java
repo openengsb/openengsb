@@ -25,28 +25,13 @@ import org.openengsb.core.api.Event;
  */
 public class InternalWorkflowEvent extends Event {
     private ProcessBag processBag;
-    private String type;
 
     public InternalWorkflowEvent() {
         this.processBag = new ProcessBag();
     }
 
-    public InternalWorkflowEvent(String type) {
-        this.type = type;
-        this.processBag = new ProcessBag();
-    }
-
     public InternalWorkflowEvent(ProcessBag processBag) {
         this.processBag = processBag;
-    }
-
-    public InternalWorkflowEvent(String type, ProcessBag processBag) {
-        this.type = type;
-        this.processBag = processBag;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public void setProcessBag(ProcessBag processBag) {
