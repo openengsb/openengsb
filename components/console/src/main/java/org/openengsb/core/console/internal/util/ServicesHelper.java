@@ -119,8 +119,12 @@ public class ServicesHelper {
     /**
      * delete a service identified by its id, if force is true, the user does not have to confirm
      */
-    public void deleteService(final String id, boolean force) {
+    public void deleteService(String id, boolean force) {
         try {
+            if (id == null || id.isEmpty()) {
+                id = selectRunningService();
+            }
+            final String idFinal = id;
             int input = 'Y';
             if (!force) {
                 OutputStreamFormater
@@ -131,7 +135,7 @@ public class ServicesHelper {
                 SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
-                        ConnectorId fullId = ConnectorId.fromFullId(id);
+                        ConnectorId fullId = ConnectorId.fromFullId(idFinal);
                         serviceManager.delete(fullId);
                         return null;
                     }
@@ -145,6 +149,31 @@ public class ServicesHelper {
             e.printStackTrace();
             System.err.println("Unexpected Error");
         }
+    }
+
+    /**
+     * let the user chose one of the running services
+     *
+     * @return
+     */
+    private String selectRunningService() {
+        String selectedServiceId;
+        List<String> runningServiceIds = getRunningServiceIds();
+        for (int i = 0; i < runningServiceIds.size(); i++) {
+            String serviceId = runningServiceIds.get(i);
+            OutputStreamFormater.printTabbedValues(
+                9, String.format("[%s]", i), String.format("%s", serviceId));
+        }
+        String s = readUserInput();
+        int pos;
+        try {
+            pos = Integer.parseInt(s);
+            selectedServiceId = runningServiceIds.get(pos);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Invalid Input: %s", s));
+        }
+        return selectedServiceId;
+
     }
 
     /**
