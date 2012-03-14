@@ -38,6 +38,9 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,6 +62,7 @@ import org.openengsb.core.api.security.CredentialTypeProvider;
 import org.openengsb.core.api.security.Credentials;
 import org.openengsb.core.api.security.MessageVerificationFailedException;
 import org.openengsb.core.api.security.PrivateKeySource;
+import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecureRequest;
 import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.common.OpenEngSBCoreServices;
@@ -66,10 +70,11 @@ import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.RequestMapperFilter;
 import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
-import org.openengsb.core.security.filter.MessageAuthenticatorFactory;
+import org.openengsb.core.security.filter.MessageAuthenticatorFilter;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.security.internal.FileKeySource;
+import org.openengsb.core.security.internal.OpenEngSBSecurityManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
@@ -102,6 +107,12 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
 
     protected FilterChainFactory<SecureRequest, SecureResponse> filterTop;
 
+    @After
+    public void cleanupShiro() {
+        ThreadContext.unbindSecurityManager();
+        ThreadContext.unbindSubject();
+    }
+
     @Before
     public void setupInfrastructure() throws Exception {
         System.setProperty("karaf.home", dataFolder.getRoot().getAbsolutePath());
@@ -111,7 +122,15 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         privateKeySource = fileKeySource;
         requestHandler = mock(RequestHandler.class);
         authManager = mock(AuthenticationDomain.class);
-
+        when(authManager.authenticate(anyString(), any(Credentials.class))).thenAnswer(new Answer<Authentication>() {
+            @Override
+            public Authentication answer(InvocationOnMock invocation) throws Throwable {
+                String username = (String) invocation.getArguments()[0];
+                Credentials credentials = (Credentials) invocation.getArguments()[1];
+                return new Authentication(username, credentials);
+            }
+        });
+        setupSecurityManager();
         when(requestHandler.handleCall(any(MethodCall.class))).thenAnswer(new Answer<MethodResult>() {
             @Override
             public MethodResult answer(InvocationOnMock invocation) throws Throwable {
@@ -120,14 +139,11 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             }
         });
 
-        MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();
-        authenticatorFactory.setAuthenticationManager(authManager);
-
         FilterChainFactory<SecureRequest, SecureResponse> factory =
             new FilterChainFactory<SecureRequest, SecureResponse>(SecureRequest.class, SecureResponse.class);
         List<Object> filterFactories = new LinkedList<Object>();
         filterFactories.add(MessageVerifierFilter.class);
-        filterFactories.add(authenticatorFactory);
+        filterFactories.add(MessageAuthenticatorFilter.class);
         filterFactories.add(WrapperFilter.class);
         filterFactories.add(new RequestMapperFilter(requestHandler));
         factory.setFilters(filterFactories);
@@ -140,6 +156,14 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("credentialClass", Password.class.getName());
         registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
+    }
+
+    private void setupSecurityManager() {
+        OpenEngSBSecurityManager openEngSBSecurityManager = new OpenEngSBSecurityManager();
+        OpenEngSBShiroAuthenticator authenticator = new OpenEngSBShiroAuthenticator();
+        authenticator.setAuthenticator(authManager);
+        openEngSBSecurityManager.setAuthenticator(authenticator);
+        SecurityUtils.setSecurityManager(openEngSBSecurityManager);
     }
 
     protected abstract FilterAction getSecureRequestHandlerFilterChain() throws Exception;
@@ -181,7 +205,7 @@ public abstract class GenericSecurePortTest<EncodingType> extends AbstractOsgiMo
             processRequest(secureRequest);
             fail("Expected exception");
         } catch (FilterException e) {
-            assertThat(e.getCause(), is(AuthenticationException.class));
+            assertThat(e.getCause(), is(org.apache.shiro.authc.AuthenticationException.class));
         }
         verify(requestHandler, never()).handleCall(any(MethodCall.class));
     }

@@ -15,25 +15,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.api.edb;
+package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+import java.util.List;
 
+import org.openengsb.core.api.edb.EDBObject;
 
 /**
- * Represents a delete Event. Try to delete an OpenEngSBModel object from the EDB.
+ * A ConvertedCommit class is a helper class. It contains to EDBObjects converted models of an EKBCommit.
  */
-public class EDBDeleteEvent extends EDBEvent {
-
-    private OpenEngSBModel model;
-
-    public EDBDeleteEvent(OpenEngSBModel model) {
-        this.model = model;
+public class ConvertedCommit {
+    private List<EDBObject> inserts;
+    private List<EDBObject> updates;
+    private List<EDBObject> deletes;
+    
+    public List<EDBObject> getInserts() {
+        return inserts;
     }
-
-    public OpenEngSBModel getModel() {
-        return model;
+    public void setInserts(List<EDBObject> inserts) {
+        this.inserts = inserts;
     }
-
+    public List<EDBObject> getUpdates() {
+        return updates;
+    }
+    public void setUpdates(List<EDBObject> updates) {
+        this.updates = updates;
+    }
+    public List<EDBObject> getDeletes() {
+        return deletes;
+    }
+    public void setDeletes(List<EDBObject> deletes) {
+        this.deletes = deletes;
+    }
 }
-

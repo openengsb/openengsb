@@ -51,6 +51,12 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -82,20 +88,19 @@ import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
-import org.openengsb.core.security.filter.MessageAuthenticatorFactory;
+import org.openengsb.core.security.filter.MessageAuthenticatorFilter;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.filter.WrapperFilter;
 import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
+import org.openengsb.domain.authentication.AuthenticationException;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.jms.support.JmsUtils;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -197,7 +202,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     @Before
     public void setup() {
         setupKeys();
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
         String num = UUID.randomUUID().toString();
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
         jmsTemplate = new JmsTemplate(connectionFactory);
@@ -234,6 +238,16 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("credentialClass", Password.class.getName());
         registerService(new PasswordCredentialTypeProvider(), props, CredentialTypeProvider.class);
+        DefaultSecurityManager securityManager = new DefaultSecurityManager();
+        securityManager.setAuthenticator(new Authenticator() {
+            @Override
+            public AuthenticationInfo authenticate(AuthenticationToken authenticationToken)
+                throws org.apache.shiro.authc.AuthenticationException {
+                return new SimpleAuthenticationInfo(authenticationToken.getPrincipal(), authenticationToken
+                    .getCredentials(), "openengsb");
+            }
+        });
+        SecurityUtils.setSecurityManager(securityManager);
     }
 
     private void setupKeys() {
@@ -258,7 +272,6 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         assertThat(readTree.get("arg").toString(), equalTo("{\"test\":\"test\"}"));
     }
 
-
     private String sendWithTempQueue(final String msg) {
         String resultString = jmsTemplate.execute(new SessionCallback<String>() {
             @Override
@@ -272,7 +285,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                 producer.send(message);
                 TextMessage response = (TextMessage) consumer.receive(1000);
                 assertThat("server should set the value of the correltion ID to the value of the received message id",
-                        response.getJMSCorrelationID(), is(message.getJMSMessageID()));
+                    response.getJMSCorrelationID(), is(message.getJMSMessageID()));
                 JmsUtils.closeMessageProducer(producer);
                 JmsUtils.closeMessageConsumer(consumer);
                 return response != null ? response.getText() : null;
@@ -317,11 +330,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
                     if ("user".equals(user) && credentials.getValue().equals("password")) {
                         return new Authentication(user, credentials.toString());
                     }
-                    throw new BadCredentialsException("username and password did not match");
+                    throw new AuthenticationException("username and password did not match");
                 }
             });
-        MessageAuthenticatorFactory authenticatorFactory = new MessageAuthenticatorFactory();
-        authenticatorFactory.setAuthenticationManager(authenticationManager);
         PrivateKeySource keySource = mock(PrivateKeySource.class);
         when(keySource.getPrivateKey()).thenReturn(privateKey);
         MessageCryptoFilterFactory cipherFactory = new MessageCryptoFilterFactory(keySource, "AES");
@@ -331,7 +342,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             MessageVerifierFilter.class,
-            authenticatorFactory,
+            MessageAuthenticatorFilter.class,
             WrapperFilter.class,
             new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();

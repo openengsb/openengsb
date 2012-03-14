@@ -32,10 +32,6 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-
-  <bean class="org.openengsb.ui.common.util.MethodUtil">
-    <property name="ekbService" ref="ekbService" />
-  </bean>
   
    <service ref="webtaskboxService" interface="org.openengsb.ui.common.taskbox.WebTaskboxService">
     <service-properties>
@@ -52,13 +48,23 @@
 
   <reference id="taskboxService" interface="org.openengsb.core.api.workflow.TaskboxService" />
   <reference id="persistenceManager" interface="org.openengsb.core.api.persistence.PersistenceManager" />
-  <reference id="ekbService" interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService" />
   <reference id="authorizer" interface="org.openengsb.domain.authorization.AuthorizationDomain" filter="(location.root=authorization-root)" />
   <reference-list id="attributeProviders" interface="org.openengsb.core.api.security.SecurityAttributeProvider" />
   <reference id="contextCurrentService" interface="org.openengsb.core.api.context.ContextCurrentService" />
   <reference id="userManager" interface="org.openengsb.core.api.security.service.UserDataManager" />
   
   <wicket:autoPageMounter id="autoPageMounter" applicationName="openengsb" />
+  
+  <reference id="authenticator" interface="org.openengsb.domain.authentication.AuthenticationDomain"
+    filter="(location.root=authentication-root)" />
+  
+  <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <property name="authenticator">
+      <bean class="org.openengsb.core.security.OpenEngSBShiroAuthenticator">
+        <property name="authenticator" ref="authenticator" />
+      </bean>
+    </property>
+  </bean>
   
 </blueprint>
 

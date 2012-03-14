@@ -62,6 +62,9 @@
     <feature>transaction</feature>
     <feature>jpa</feature>
     <feature>jndi</feature>
+    <feature>shiro-core</feature>
+    <feature>shiro-web</feature>
+    <feature>shiro-spring</feature>
 
     <!-- Specs -->
     <bundle start-level="9">mvn:org.apache.geronimo.specs/geronimo-osgi-registry/${geronimo.registry.version}</bundle>

@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.security;
 
-package org.openengsb.core.api.edb;
+import org.aopalliance.intercept.MethodInvocation;
+import org.openengsb.core.security.internal.SimpleMethodInvocation;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+public final class MethodInvocationUtils {
 
-/**
- * Represents a update Event. Try to update an OpenEngSBModel object in the EDB.
- */
-public class EDBUpdateEvent extends EDBEvent {
-
-    private OpenEngSBModel model;
-
-    public EDBUpdateEvent(OpenEngSBModel model) {
-        this.model = model;
+    public static MethodInvocation create(Object object, String methodName) {
+        return new SimpleMethodInvocation(object, methodName);
     }
 
-    public OpenEngSBModel getModel() {
-        return model;
+    public static MethodInvocation create(Object object, String methodName, Object... objects) {
+        return new SimpleMethodInvocation(object, methodName, objects);
+    }
+    
+    private MethodInvocationUtils() {
     }
 }

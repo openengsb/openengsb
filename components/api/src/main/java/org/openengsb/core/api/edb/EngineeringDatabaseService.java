@@ -131,31 +131,6 @@ public interface EngineeringDatabaseService {
      * Convenience function, see getStateofLastCommitMatching(Map<String, Object> query)
      */
     List<EDBObject> getStateOfLastCommitMatching(String key, Object value) throws EDBException;
-
-    /**
-     * processes an edb insert event
-     */
-    @Deprecated
-    void processEDBInsertEvent(EDBInsertEvent event) throws EDBException;
-
-    /**
-     * processes an edb delete event
-     */
-    @Deprecated
-    void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException;
-
-    /**
-     * processes an edb update event
-     */
-    @Deprecated
-    void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException;
-
-    /**
-     * processes an edb batch event
-     */
-    @Deprecated
-    void processEDBBatchEvent(EDBBatchEvent event) throws EDBException;
-
     /**
      * Tries to persist the changes given by the EDBObjects in one commit. Does also the conflict checking of the
      * objects.

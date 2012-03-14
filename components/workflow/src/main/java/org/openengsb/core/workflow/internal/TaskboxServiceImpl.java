@@ -89,7 +89,7 @@ public class TaskboxServiceImpl implements TaskboxService {
 
     @Override
     public synchronized void finishTask(Task task) throws WorkflowException {
-        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
+        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent(task);
         Task t = Task.createTaskWithAllValuesSetToNull();
         t.setTaskId(task.getTaskId());
         List<Task> old = getTasksForExample(t);

@@ -28,26 +28,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
-import org.openengsb.core.api.edb.EDBEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
 import org.openengsb.core.api.edb.EngineeringDatabaseService;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.api.ekb.QueryInterface;
-import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.core.api.model.OpenEngSBModelId;
@@ -141,7 +135,6 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testFileSaving_shouldWork() throws Exception {
         File f = new File("testfile.txt");
         FileWriter fw = new FileWriter(f);
@@ -152,12 +145,10 @@ public class EDBIT extends AbstractExamTestHelper {
         TestFileModel model = ModelUtils.createEmptyModelObject(TestFileModel.class);
         model.setTestId("testId");
         model.setFile(f);
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        event.setConnectorId("testconnector");
-        event.setDomainId("testdomain");
-        event.setInstanceId("testinstance");
 
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
+
         TestFileModel result = query.getModel(TestFileModel.class, "testdomain/testconnector/testId");
 
         File newFile = result.getFile();
@@ -173,23 +164,22 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    public void testSendDoubleEDBCreateEvent_shouldThrowError() throws Exception {
+    public void testDoubleCommit_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("createevent/1");
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(model);
-        persist.commit(models, null, null, getTestConnectorId());
-        persist.commit(models, null, null, getTestConnectorId());
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+
+        persist.commit(commit);
+        persist.commit(commit);
     }
 
     @Test
-    public void testSendEDBCreateEvent_shouldSaveModel() throws Exception {
+    public void testEKBInsertCommit_shouldSaveModel() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("createevent/2");
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(model);
-        persist.commit(models, null, null, getTestConnectorId());
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/createevent/2");
 
@@ -201,14 +191,12 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    public void testSendEDBBatchEvent_shouldWork() throws Exception {
+    public void testEKBUpdateCommit_shouldWork() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("batchevent/1");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/batchevent/1");
 
@@ -216,16 +204,12 @@ public class EDBIT extends AbstractExamTestHelper {
         Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
         model.setName("blab");
-        EDBBatchEvent e = new EDBBatchEvent();
-        enrichEDBEvent(e);
-        e.addModelUpdate(model);
+        commit = getTestEKBCommit().addUpdate(model);
         TestModel model2 = ModelUtils.createEmptyModelObject(TestModel.class);
         model2.setName("blob");
         model2.setEdbId("batchevent/2");
-
-        e.addModelInsert(model2);
-
-        edbService.processEDBBatchEvent(e);
+        commit.addInsert(model2);
+        persist.commit(commit);
 
         obj = edbService.getObject("testdomain/testconnector/batchevent/1");
 
@@ -246,23 +230,20 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = EDBException.class)
-    @SuppressWarnings("deprecation")
-    public void testSendEDBDeleteEventWithNonExistingOid_shouldThrowError() throws Exception {
+    public void testEKBDeleteCommitWithNonExistingOid_shouldThrowError() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setEdbId("deleteevent/1");
-        EDBDeleteEvent event = new EDBDeleteEvent(model);
-        edbService.processEDBDeleteEvent(event);
+        EKBCommit commit = getTestEKBCommit().addDelete(model);
+        persist.commit(commit);
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    public void testSendEDBUpdateEvent_shouldUpdateModel() throws Exception {
+    public void testEKBUpdateCommit_shouldUpdateModel() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/2");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/2");
 
@@ -271,9 +252,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.setName("blab");
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        edbService.processEDBUpdateEvent(update);
+        commit = getTestEKBCommit().addUpdate(model);
+        persist.commit(commit);
 
         obj = edbService.getObject("testdomain/testconnector/updateevent/2");
 
@@ -286,59 +266,44 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(version2, is(2));
     }
 
-    @Test(expected = EDBException.class)
-    @SuppressWarnings("deprecation")
-    public void testSendEDBUpdateEvent_shouldResolveInNoConflict() throws Exception {
+    @Test
+    public void testEKBConflictCommitEvent_shouldResolveInNoConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/3");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject obj = edbService.getObject("testdomain/testconnector/updateevent/3");
-
-        String name1 = (String) obj.get("name");
         Integer version1 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
-
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
-
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        edbService.processEDBUpdateEvent(update);
+        commit = getTestEKBCommit().addUpdate(model);
+        persist.commit(commit);
 
         // results in no conflict because the values are the same even if the version is different
         obj = edbService.getObject("testdomain/testconnector/updateevent/3");
-
-        String name2 = (String) obj.get("name");
         Integer version2 = Integer.parseInt((String) obj.get(EDBConstants.MODEL_VERSION));
 
-        assertThat(name1, is("blub"));
         assertThat(version1, is(1));
-        assertThat(name2, is("blab"));
         assertThat(version2, is(2));
     }
 
     @Test(expected = EDBException.class)
-    @SuppressWarnings("deprecation")
-    public void testSendEDBUpdateEvent_shouldResolveInConflict() throws Exception {
+    public void testEKBConflictCommitEvent_shouldResolveInConflict() throws Exception {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
         model.setEdbId("updateevent/4");
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         model.setName("blab");
         model.addOpenEngSBModelEntry(new OpenEngSBModelEntry(EDBConstants.MODEL_VERSION, 0, Integer.class));
 
-        EDBUpdateEvent update = new EDBUpdateEvent(model);
-        enrichEDBEvent(update);
-        edbService.processEDBUpdateEvent(update);
+        commit = getTestEKBCommit().addUpdate(model);
+        persist.commit(commit);
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testSupportOfSimpleSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -348,9 +313,8 @@ public class EDBIT extends AbstractExamTestHelper {
         sub.setName("sub");
         model.setSubModel(sub);
 
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/1");
         EDBObject subObject = edbService.getObject("testdomain/testconnector/testSub/2");
@@ -360,7 +324,6 @@ public class EDBIT extends AbstractExamTestHelper {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testSupportOfListOfSubModels_shouldWork() {
         TestModel model = ModelUtils.createEmptyModelObject(TestModel.class);
         model.setName("blub");
@@ -375,9 +338,8 @@ public class EDBIT extends AbstractExamTestHelper {
 
         model.setSubs(Arrays.asList(sub1, sub2));
 
-        EDBInsertEvent event = new EDBInsertEvent(model);
-        enrichEDBEvent(event);
-        edbService.processEDBInsertEvent(event);
+        EKBCommit commit = getTestEKBCommit().addInsert(model);
+        persist.commit(commit);
 
         EDBObject mainObject = edbService.getObject("testdomain/testconnector/testSub/3");
         EDBObject subObject1 = edbService.getObject("testdomain/testconnector/testSub/4");
@@ -388,15 +350,11 @@ public class EDBIT extends AbstractExamTestHelper {
         assertThat(mainObject.getString("subs0"), is("testdomain/testconnector/testSub/4"));
         assertThat(mainObject.getString("subs1"), is("testdomain/testconnector/testSub/5"));
     }
-    
-    private ConnectorDefinition getTestConnectorId() {
-        return new ConnectorDefinition("testdomain", "testconnector", "testinstance");
-    }
 
-    private void enrichEDBEvent(EDBEvent event) {
-        event.setConnectorId("testconnector");
-        event.setDomainId("testdomain");
-        event.setInstanceId("testinstance");
+    private EKBCommit getTestEKBCommit() {
+        EKBCommit commit = new EKBCommit().setDomainId("testdomain").setConnectorId("testconnector");
+        commit.setInstanceId("testinstance");
+        return commit;
     }
 
     public interface TestModel extends OpenEngSBModel {

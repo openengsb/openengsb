@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.internal.UsernamePasswordServiceImpl;
@@ -57,6 +58,7 @@ import org.openengsb.core.common.virtual.CompositeConnectorProvider;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
 import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
+import org.openengsb.core.security.OpenEngSBShiroAuthenticator;
 import org.openengsb.core.security.internal.AdminAccessConnector;
 import org.openengsb.core.security.internal.AffirmativeBasedAuthorizationStrategy;
 import org.openengsb.core.security.internal.model.RootPermission;
@@ -91,6 +93,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
     protected WiringService wiringService;
     protected ContextCurrentService contextCurrentService;
     protected UserDataManager userManager;
+    protected UsernamePasswordServiceImpl authConnector;
 
     @Before
     public void makeContextMock() throws Exception {
@@ -103,10 +106,10 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
         context.putBean("openengsbVersion", new OpenEngSBFallbackVersion());
         List<OpenEngSBVersionService> versionService = new ArrayList<OpenEngSBVersionService>();
         context.putBean("openengsbVersionService", versionService);
-        context.putBean(OpenEngSBCoreServices.getWiringService());
+        context.putBean("wiringService", OpenEngSBCoreServices.getWiringService());
         OsgiUtilsService serviceUtilsService =
             OpenEngSBCoreServices.getServiceUtilsService().getOsgiServiceProxy(OsgiUtilsService.class);
-        context.putBean("serviceUtils", serviceUtilsService);
+        context.putBean("osgiUtilsService", serviceUtilsService);
         ConnectorRegistrationManagerImpl registrationManager = new ConnectorRegistrationManagerImpl();
         registrationManager.setBundleContext(bundleContext);
         registrationManager.setServiceUtils(serviceUtils);
@@ -129,7 +132,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
         this.registrationManager = registrationManager;
         this.serviceManager = serviceManager;
-        context.putBean(serviceManager);
+        context.putBean("serviceManager", serviceManager);
 
         userManager = new UserManagerStub();
         userManager.createUser("test");
@@ -171,7 +174,7 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
 
     protected void mockAuthentication() throws UserNotFoundException, UserExistsException {
 
-        UsernamePasswordServiceImpl authConnector = new UsernamePasswordServiceImpl();
+        authConnector = new UsernamePasswordServiceImpl();
         authConnector.setUserManager(userManager);
         context.putBean("authenticator", authConnector);
 
@@ -196,6 +199,12 @@ public class AbstractUITest extends AbstractOsgiMockServiceTest {
             ImmutableMap.of("compositeStrategy", "authorization", "queryString", "(location.root=authorization/*)"));
         registerServiceAtLocation(instance, "authorization-root", "root", AuthorizationDomain.class, Domain.class);
         context.putBean("authorizer", instance);
+
+        OpenEngSBShiroAuthenticator openEngSBShiroAuthenticator = new OpenEngSBShiroAuthenticator();
+        openEngSBShiroAuthenticator.setAuthenticator(authConnector);
+        DefaultWebSecurityManager webSecurityManager = new DefaultWebSecurityManager();
+        webSecurityManager.setAuthenticator(openEngSBShiroAuthenticator);
+        context.putBean("webSecurityManager", webSecurityManager);
     }
 
 }

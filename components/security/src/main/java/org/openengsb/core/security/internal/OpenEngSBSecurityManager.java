@@ -14,14 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.security.internal;
 
-package org.openengsb.core.api.edb;
+import java.util.Collection;
 
-/**
- * little enum for easier maintaining sending EDB CUD events
- */
-public enum EDBEventType {
-    INSERT,
-    UPDATE,
-    DELETE
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.realm.Realm;
+
+public class OpenEngSBSecurityManager extends DefaultSecurityManager {
+
+    public OpenEngSBSecurityManager() {
+        super();
+    }
+
+    public OpenEngSBSecurityManager(Collection<Realm> realms) {
+        super(realms);
+    }
+
+    public OpenEngSBSecurityManager(Realm singleRealm) {
+        super(singleRealm);
+    }
+    
+    public void init() {
+        SecurityUtils.setSecurityManager(this);
+    }
+
 }

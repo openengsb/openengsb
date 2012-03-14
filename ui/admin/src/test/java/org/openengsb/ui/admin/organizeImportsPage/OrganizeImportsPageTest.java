@@ -48,7 +48,7 @@ public class OrganizeImportsPageTest extends AbstractUITest {
     @Before
     public void init() throws RuleBaseException {
         ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
 
         imports = new ArrayList<String>();
         imports.add("aaaa.bbbb.ccc");

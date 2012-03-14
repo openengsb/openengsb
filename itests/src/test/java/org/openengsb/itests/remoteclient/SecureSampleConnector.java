@@ -185,7 +185,7 @@ public final class SecureSampleConnector {
         BeanDescription auth = BeanDescription.fromObject(new Password("password"));
         SecureRequest create = SecureRequest.create(methodCallRequest, "admin", auth);
         ObjectMapper mapper = new ObjectMapper();
-        String writeValueAsString = mapper.defaultPrettyPrintingWriter().writeValueAsString(create);
+        String writeValueAsString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(create);
         System.out.println(writeValueAsString);
     }
 }

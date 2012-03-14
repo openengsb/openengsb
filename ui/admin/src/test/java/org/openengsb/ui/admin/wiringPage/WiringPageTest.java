@@ -90,7 +90,7 @@ public class WiringPageTest extends AbstractUITest {
         when(ruleManager.listGlobals()).thenReturn(globals);
         when(ruleManager.getGlobalType(globTest)).thenReturn(globals.get(globTest));
         when(ruleManager.getGlobalType(anotherGlob)).thenReturn(globals.get(anotherGlob));
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         List<String> contextList = new ArrayList<String>();
         contextList.add("bar");
         contextList.add("one");

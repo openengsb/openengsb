@@ -20,12 +20,13 @@ package org.openengsb.core.ekb.internal;
 import java.util.UUID;
 
 import org.openengsb.core.api.edb.EDBConstants;
+import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.model.OpenEngSBModel;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
 
 /**
- * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: 
- * EDBObjects <-> Models
+ * The EDBConverterUtils class provides some functionalities which are often needed for the transformations: EDBObjects
+ * <-> Models
  */
 public final class EDBConverterUtils {
 
@@ -81,6 +82,17 @@ public final class EDBConverterUtils {
         StringBuilder builder = new StringBuilder();
         builder.append(domainId).append("/").append(connectorId).append("/");
         return builder.toString();
+    }
+
+    /**
+     * Gets the information about domain, connector and instance of an EKBCommit object and returns the corresponding
+     * ConnectorInformation object.
+     */
+    public static ConnectorInformation getConnectorInformationOfEKBCommit(EKBCommit commit) {
+        String domainId = commit.getDomainId();
+        String connectorId = commit.getConnectorId();
+        String instanceId = commit.getInstanceId();
+        return new ConnectorInformation(domainId, connectorId, instanceId);
     }
 
 }

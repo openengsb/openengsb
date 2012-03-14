@@ -671,6 +671,7 @@ public class JPATestIT {
         objects.add(object);
         db.commitEDBObjects(objects, null, null);
         object.put(EDBConstants.MODEL_VERSION, 0);
+        object.put("test", "test");
         db.commitEDBObjects(null, objects, null);
     }
     

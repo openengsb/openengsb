@@ -20,14 +20,13 @@ package org.openengsb.core.security.internal;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.openengsb.core.api.security.service.AccessDeniedException;
-import org.openengsb.core.common.util.BundleAuthenticationToken;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * This interceptor is used to enforce access control on services. Secure services are supposed to be advised with this
@@ -50,16 +49,17 @@ public class SecurityInterceptor implements MethodInterceptor {
             LOGGER.info("is Object-method; skipping");
             return mi.proceed();
         }
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        Subject subject = ThreadContext.getSubject();
+        if (subject == null || !subject.isAuthenticated()) {
             throw new AccessDeniedException("no authentication was found in context");
         }
-        if (authentication instanceof BundleAuthenticationToken) {
+
+        if (subject.getPrincipal().getClass().equals(Object.class)) {
             // this action is executed in a root-context
             return mi.proceed();
         }
-        String username = (String) authentication.getPrincipal();
+
+        String username = (String) subject.getPrincipal();
         Access decisionResult = authorizer.checkAccess(username, mi);
         if (decisionResult != Access.GRANTED) {
             LOGGER.warn("Access denied because result was {}", decisionResult);

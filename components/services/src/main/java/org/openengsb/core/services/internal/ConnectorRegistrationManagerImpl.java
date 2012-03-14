@@ -172,11 +172,13 @@ public class ConnectorRegistrationManagerImpl implements ConnectorRegistrationMa
             LOGGER.warn("security interceptor is not available yet");
             secureInstance = serviceInstance;
         } else {
+            // @extract-start register-secure-service-code
             ProxyFactory pfactory = new ProxyFactory();
             pfactory.setInterfaces(clazzes);
             pfactory.setTarget(serviceInstance);
             pfactory.addAdvice(securityInterceptor);
             secureInstance = pfactory.getProxy(this.getClass().getClassLoader());
+            // @extract-end
             attributeStore.replaceAttributes(serviceInstance, new SecurityAttributeEntry("name", id.toFullID()));
         }
 

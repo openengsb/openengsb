@@ -14,23 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.ui.common;
 
-package org.openengsb.core.api.edb;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 
-import org.openengsb.core.api.model.OpenEngSBModel;
+public class SecurityManagerHolder {
 
-/**
- * Represents a create Event. Try to insert an OpenEngSBModel object into the EDB.
- */
-public class EDBInsertEvent extends EDBEvent {
+    @PaxWicketBean(name = "webSecurityManager")
+    private WebSecurityManager webSecurityManager;
 
-    private OpenEngSBModel model;
-
-    public EDBInsertEvent(OpenEngSBModel model) {
-        this.model = model;
+    public WebSecurityManager getWebSecurityManager() {
+        return webSecurityManager;
     }
 
-    public OpenEngSBModel getModel() {
-        return model;
+    public void setWebSecurityManager(WebSecurityManager webSecurityManager) {
+        this.webSecurityManager = webSecurityManager;
     }
+
 }

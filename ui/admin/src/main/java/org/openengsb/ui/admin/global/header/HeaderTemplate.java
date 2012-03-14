@@ -63,11 +63,20 @@ public class HeaderTemplate extends Panel {
     	homelink.add(new Image("topImage", CommonPictureLocator.getGreyscaleLogo()));
     	add(homelink);
 
-        if (openengsbVersion == null) {
-            openengsbVersion = new OpenEngSBFallbackVersion();
-        }
+
+
+
+
+
+        add(new BookmarkablePageLink<Index>("logo", Index.class));
+
         if (openengsbVersionService == null || openengsbVersionService.size() == 0) {
-            add(new Label("version", openengsbVersion.getVersionNumber()));
+            if (openengsbVersion == null) {
+                add(new Label("version", new StringResourceModel("unknown.version", this, null)));
+            } else {
+                add(new Label("version", openengsbVersion.getVersionNumber()));
+            }
+            return;
         } else {
             add(new Label("version", openengsbVersionService.get(0).getOpenEngSBVersion()));
         }

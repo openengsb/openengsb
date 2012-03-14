@@ -85,10 +85,10 @@ public class WorkflowEditorTest extends AbstractUITest {
         registerService(workflowPersistence, props, ConfigPersistenceService.class);
         createWorkflowEditorService();
         ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
         context.putBean("validators", validators);
         workflowConverter = mock(WorkflowConverter.class);
-        context.putBean(workflowConverter);
+        context.putBean("workflowConverter", workflowConverter);
         tester.getApplication().addComponentInstantiationListener(
             new PaxWicketSpringBeanComponentInjector(tester.getApplication(), context));
         tester.startPage(new WorkflowEditor());

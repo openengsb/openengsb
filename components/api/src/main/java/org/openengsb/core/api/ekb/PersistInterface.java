@@ -17,34 +17,27 @@
 
 package org.openengsb.core.api.ekb;
 
-import java.util.List;
-
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.model.ConnectorDefinition;
-import org.openengsb.core.api.model.OpenEngSBModel;
 
 /**
- * The persist interface provides the functions to insert models into the EDB. This includes the conversion of models
- * and sanity checks of models.
+ * The persist interface provides the functions to maintain the models of the EDB. This includes the conversion of
+ * models and sanity checks of models.
  */
 public interface PersistInterface {
 
     /**
-     * Does a sanity check over the models and the status of the EDB when this models are inserted. After passed sanity
+     * Does a sanity check of the EKBCommit and the status of the EDB when this models are changed. After passed sanity
      * check, the models are persisted.
      */
-    void commit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorDefinition id) throws SanityCheckException, EDBException;
+    void commit(EKBCommit commit) throws SanityCheckException, EDBException;
 
     /**
-     * Persist the models without performing sanity checks of them.
+     * Persist the changes of the EKBCommit without performing sanity checks of them.
      */
-    void forceCommit(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorDefinition id) throws EDBException;
+    void forceCommit(EKBCommit commit) throws EDBException;
 
     /**
-     * Only perform the sanity checks of the models.
+     * Only perform the sanity checks of the EKBCommit.
      */
-    SanityCheckReport check(List<OpenEngSBModel> inserts, List<OpenEngSBModel> updates, List<OpenEngSBModel> deletes,
-            ConnectorDefinition id) throws EDBException;
+    SanityCheckReport check(EKBCommit commit) throws EDBException;
 }

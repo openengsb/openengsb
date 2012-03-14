@@ -15,23 +15,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.filter;
+package org.openengsb.core.ekb.internal;
 
-import org.openengsb.core.api.remote.FilterChainElement;
-import org.openengsb.core.api.remote.FilterChainElementFactory;
-import org.openengsb.core.api.remote.FilterConfigurationException;
-import org.openengsb.domain.authentication.AuthenticationDomain;
+/**
+ * Helper class for easier working with the informations that define a connector: domainId, connectorId and instanceId.
+ */
+public class ConnectorInformation {
+    private String domainId;
+    private String connectorId;
+    private String instanceId;
 
-public class MessageAuthenticatorFactory implements FilterChainElementFactory {
-
-    private AuthenticationDomain authenticationManager;
-
-    @Override
-    public FilterChainElement newInstance() throws FilterConfigurationException {
-        return new MessageAuthenticatorFilter(authenticationManager);
+    public ConnectorInformation(String domainId, String connectorId, String instanceId) {
+        this.domainId = domainId;
+        this.connectorId = connectorId;
+        this.instanceId = instanceId;
     }
 
-    public void setAuthenticationManager(AuthenticationDomain authenticationManager) {
-        this.authenticationManager = authenticationManager;
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
     }
 }

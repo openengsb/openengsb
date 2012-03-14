@@ -53,11 +53,11 @@ public class ConnectorEditorPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;
     private ServiceEditor editor;
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
     @SuppressWarnings("serial")

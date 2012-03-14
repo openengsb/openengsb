@@ -75,16 +75,16 @@ public class WorkflowEditor extends BasePage {
 
     private String name = "";
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "workflowEditorService")
     private WorkflowEditorService workflowEditorService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     RuleManager ruleManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "workflowConverter")
     WorkflowConverter workflowConverter;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "validators")
     List<WorkflowValidator> validators;
 
     @SuppressWarnings("unchecked")

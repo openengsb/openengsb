@@ -30,24 +30,16 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.edb.EDBBatchEvent;
 import org.openengsb.core.api.edb.EDBCommit;
 import org.openengsb.core.api.edb.EDBConstants;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
 import org.openengsb.core.api.edb.EDBLogEntry;
 import org.openengsb.core.api.edb.EDBObject;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.ekb.PersistInterface;
-import org.openengsb.core.api.model.ConnectorDefinition;
-import org.openengsb.core.api.model.OpenEngSBModel;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.edb.internal.dao.DefaultJPADao;
 import org.openengsb.core.edb.internal.dao.JPADao;
+import org.openengsb.core.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JPADatabase.class);
@@ -56,7 +48,6 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
     private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JPADao dao;
-    private PersistInterface persistInterface;
 
     /**
      * this is just for testing the JPADatabase. Should only be called in the corresponding test class.
@@ -154,7 +145,7 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
      * enumeration for categorizing the transaction actions.
      */
     private enum UTXACTION {
-            BEGIN, COMMIT, ROLLBACK
+        BEGIN, COMMIT, ROLLBACK
     };
 
     @Override
@@ -330,58 +321,16 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         return getStateOfLastCommitMatching(query);
     }
 
-    @Override
-    public void processEDBInsertEvent(EDBInsertEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        persistInterface.commit(models, null, null, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBDeleteEvent(EDBDeleteEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        persistInterface.commit(null, null, models, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBUpdateEvent(EDBUpdateEvent event) throws EDBException {
-        initiatePersistInterface();
-        List<OpenEngSBModel> models = new ArrayList<OpenEngSBModel>();
-        models.add(event.getModel());
-        persistInterface.commit(null, models, null, 
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    @Override
-    public void processEDBBatchEvent(EDBBatchEvent event) throws EDBException {
-        initiatePersistInterface();
-        persistInterface.commit(event.getInserts(), event.getUpdates(), event.getDeletions(),
-            new ConnectorDefinition(event.getDomainId(), event.getConnectorId(), event.getInstanceId()));
-    }
-
-    /**
-     * A temporary solution until processEDB*Event is removed from the EDB interface.
-     */
-    private void initiatePersistInterface() {
-        if (persistInterface == null) {
-            persistInterface = OpenEngSBCoreServices.getServiceUtilsService().getService(PersistInterface.class);
-        }
-    }
-
     /**
      * Returns the actual authenticated user. If this class is called from JUnit, the string "testuser" is returned.
      */
     private String getAuthenticatedUser() {
         // if JPADatabase is called via integration tests
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        String username = (String) SecurityContext.getAuthenticatedPrincipal();
+        if (username == null) {
             return "testuser";
         }
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return username;
     }
 
     /**
@@ -515,10 +464,13 @@ public class JPADatabase implements org.openengsb.core.api.edb.EngineeringDataba
         String oid = newObject.getOID();
         EDBObject object = getObject(oid);
         for (Map.Entry<String, Object> entry : newObject.entrySet()) {
+            if (entry.getKey().equals(EDBConstants.MODEL_VERSION)) {
+                continue;
+            }
             Object value = object.get(entry.getKey());
             if (value == null || !value.equals(entry.getValue())) {
                 LOGGER.debug("Conflict detected at key %s when comparing %s with %s", new Object[]{ entry.getKey(),
-                    entry.getValue(), value.toString() });
+                    entry.getValue(), value == null ? "null" : value.toString() });
                 throw new EDBException("Conflict detected. Failure when comparing the values of the key "
                         + entry.getKey());
             }
