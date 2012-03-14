@@ -118,13 +118,8 @@
         <configuration>
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
-              org.drools.event;
-              bundle-symbolic-name="org.drools.core",
+              org.drools.event;  bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.security.web.authentication,
-              org.springframework.security.authentication,
-              org.springframework.security.core.userdetails,
-              org.springframework.dao,
               org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",

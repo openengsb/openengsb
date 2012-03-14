@@ -93,10 +93,6 @@
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
     <!-- AspectJ -->
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
-    <!-- Spring Security -->
-    <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
     <!-- Drools -->
     <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
     <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
@@ -129,7 +125,6 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jsch/${jsch.wrapped.version}</bundle>
     <bundle>mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
     <bundle>mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
-    <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
 
     <!-- JPA Infrastructure -->
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix.dbcp.version}</bundle>
