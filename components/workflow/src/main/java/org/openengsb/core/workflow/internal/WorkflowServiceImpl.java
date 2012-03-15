@@ -116,7 +116,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
             if (processIds.isEmpty()) {
                 for (ProcessInstance p : session.getProcessInstances()) {
-                    p.signalEvent(event.getType(), event);
+                    p.signalEvent(event.getClass().getSimpleName(), event);
                 }
             } else {
                 signalEventToProcesses(event, session, processIds);
@@ -137,7 +137,7 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             if (processInstance == null) {
                 LOGGER.warn("processInstance with ID {} not found, maybe it already terminated", pid);
             } else {
-                processInstance.signalEvent(event.getType(), event);
+                processInstance.signalEvent(event.getClass().getSimpleName(), event);
             }
         }
     }
@@ -303,6 +303,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
             }
         }
         return !getRunningFlows().contains(id);
+    }
+
+    @Override
+    public ProcessBag getProcessBagForInstance(long instanceId) {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance instance = session.getProcessInstance(instanceId);
+        if (instance == null || !(instance instanceof WorkflowProcessInstance)) {
+            throw new IllegalArgumentException("Process instance with id " + instanceId + " not found");
+        }
+        return (ProcessBag) ((WorkflowProcessInstance) instance).getVariable("processBag");
     }
 
     public Collection<Long> getRunningFlows() throws WorkflowException {

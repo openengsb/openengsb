@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-
+// @extract-start BinaryTransformationDomain
 /**
  * defines all needed functions that a binary transformation provider factory should have.
  */
@@ -32,7 +32,7 @@ public interface BinaryTransformationDomain extends Domain {
      * creates a new BinaryTransformationProvider under given binaryId which uses the transformation configs to convert
      * between the binary format and the OpenEngSBModelEntries
      */
-    void register(String binaryId, Class<?> clasz, File... transformationConfigs);
+    void register(String binaryId, @SuppressWarnings("rawtypes") Class clasz, File... transformationConfigs);
 
     /**
      * deletes the BinaryTranforamtionProvider for the given binary id
@@ -56,3 +56,5 @@ public interface BinaryTransformationDomain extends Domain {
      */
     Object convertFromOpenEngSBModelEntries(String binaryId, List<OpenEngSBModelEntry> entries);
 }
+// @extract-end
+

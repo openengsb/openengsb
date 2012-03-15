@@ -18,12 +18,12 @@
 
 package org.openengsb.connector.smooksbinarytransformation.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;

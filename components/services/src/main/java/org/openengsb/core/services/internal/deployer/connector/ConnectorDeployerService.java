@@ -31,12 +31,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.openengsb.core.api.ConnectorManager;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.util.ConfigUtils;
 import org.openengsb.core.common.util.MergeException;
-import org.openengsb.core.common.util.SecurityUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.core.services.internal.deployer.connector.ConnectorFile.ChangeSet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -56,19 +56,20 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         .getLogger(ConnectorDeployerService.class);
 
     private ConnectorManager serviceManager;
-    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder()
-        .build(new CacheLoader<File, ConnectorFile>() {
+    private Cache<File, ConnectorFile> oldConfigs = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, ConnectorFile>() {
             @Override
             public ConnectorFile load(File key) throws Exception {
                 return new ConnectorFile(key);
             }
         });
 
-    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder()
-        .build(new CacheLoader<File, Semaphore>() {
+    private Cache<File, Semaphore> updateSemaphores = CacheBuilder.newBuilder().build(
+        new CacheLoader<File, Semaphore>() {
+            @Override
             public Semaphore load(File key) throws Exception {
                 return new Semaphore(1);
-            };
+            }
         });
 
     @Override
@@ -98,7 +99,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
         }
         LOGGER.info("Loading instance {}", configFile.getConnectorId());
 
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 serviceManager.create(configFile.getConnectorId(),
@@ -125,7 +126,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
 
     private void doUpdate(File artifact) throws Exception {
         ConnectorFile connectorFile = oldConfigs.get(artifact);
-        final ConnectorId connectorId = connectorFile.getConnectorId();
+        final ConnectorDefinition connectorId = connectorFile.getConnectorId();
         ConnectorDescription persistenceContent = serviceManager
             .getAttributeValues(connectorId);
         ChangeSet changes = connectorFile.getChanges(artifact);
@@ -144,7 +145,7 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
             throw e;
         }
 
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 serviceManager.update(connectorId, newDescription);
@@ -187,11 +188,11 @@ public class ConnectorDeployerService extends AbstractOpenEngSBService
     public void uninstall(final File artifact) throws Exception {
         LOGGER.debug("ConnectorDeployer.uninstall(\"{}\")",
             artifact.getAbsolutePath());
-        SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+        SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 String name = FilenameUtils.removeExtension(artifact.getName());
-                ConnectorId fullId = ConnectorId.fromFullId(name);
+                ConnectorDefinition fullId = ConnectorDefinition.fromFullId(name);
                 serviceManager.delete(fullId);
                 return null;
             }

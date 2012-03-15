@@ -47,8 +47,8 @@ import org.openengsb.core.api.OsgiServiceNotAvailableException;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.openengsb.ui.admin.AbstractUITest;
@@ -91,7 +91,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     public void testIfValuesOfAttributesAreShown() throws Exception {
-        ConnectorId connectorId = ConnectorId.generate("testdomain", "testconnector");
+        ConnectorDefinition connectorId = ConnectorDefinition.generate("testdomain", "testconnector");
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("a", "testValue");
         serviceManager.create(connectorId, new ConnectorDescription(attributes, null));
@@ -174,7 +174,7 @@ public class EditorPageTest extends AbstractUITest {
 
     @Test
     public void testEditService() throws Exception {
-        ConnectorId id = ConnectorId.generate("testdomain", "testconnector");
+        ConnectorDefinition id = ConnectorDefinition.generate("testdomain", "testconnector");
         Map<String, Object> props = new Hashtable<String, Object>();
         props.put("test", "val");
         serviceManager.create(id, new ConnectorDescription(null, props));

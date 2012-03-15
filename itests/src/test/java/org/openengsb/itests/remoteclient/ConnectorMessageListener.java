@@ -83,7 +83,7 @@ final class ConnectorMessageListener implements MessageListener {
         SecureResponse secureResponse = SecureResponse.create(methodResultMessage);
         String resultText;
         try {
-            resultText = MAPPER.defaultPrettyPrintingWriter().writeValueAsString(secureResponse);
+            resultText = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(secureResponse);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

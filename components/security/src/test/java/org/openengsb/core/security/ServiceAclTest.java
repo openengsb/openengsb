@@ -52,7 +52,6 @@ import org.openengsb.core.test.UserManagerStub;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.osgi.framework.BundleContext;
-import org.springframework.security.util.MethodInvocationUtils;
 
 public class ServiceAclTest extends AbstractOsgiMockServiceTest {
 

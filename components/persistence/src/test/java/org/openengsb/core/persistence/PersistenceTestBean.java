@@ -17,9 +17,13 @@
 
 package org.openengsb.core.persistence;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.ObjectUtils;
 
-public class PersistenceTestBean {
+public class PersistenceTestBean implements Serializable {
+
+    private static final long serialVersionUID = -5126010221726416100L;
 
     private String stringValue;
 
@@ -79,8 +83,9 @@ public class PersistenceTestBean {
             return false;
         }
         PersistenceTestBean other = (PersistenceTestBean) obj;
-        return ObjectUtils.equals(intValue, other.intValue)
-                && ObjectUtils.equals(stringValue, other.stringValue) && ObjectUtils.equals(testEnum, other.testEnum);
+        return (intValue == null || ObjectUtils.equals(intValue, other.intValue))
+                && (stringValue == null || ObjectUtils.equals(stringValue, other.stringValue))
+                && (testEnum == null || ObjectUtils.equals(testEnum, other.testEnum));
     }
 
     @Override

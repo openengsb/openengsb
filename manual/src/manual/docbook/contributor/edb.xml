@@ -71,15 +71,19 @@
     <section>
         <title>Usage</title>
         <para>
-            Until now, the saving/updating of models into/in the EDB is done through specific events which every
-            connector which implements the interface "OpenEngSBConnectorService" can throw. This events hide 
-            many details of the saving procedure like the automatically load from where the event is coming
-            and with this, an automatic event enhancement. Also the conflict check is started through such an event.
-            In future the EDB has to be used directly without events to easier enable the possibility to use the EDB 
-            functionality in workflows(<link xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB-2431">Jira-ISSUE</link>).
+            An important point to consider is, that the EDB isn't supposed to be used directly. Instead, the EKB
+            (Engineering KnowledgeBase) component provides two interfaces which shall be used to access the EDB
+            indirectly. The reason for that is, that the EKB handles the OpenEngSBModels, their transformations
+            and everything related to them. The EDB on the other hand is only the persistence used by the EKB in
+            the background.
         </para>
         <para>
-            The loading of models from the EDB is in conceptionally possible, but should always be done through the QueryService
+            The saving of models to the EDB directly is conceptionally possible, but should always be done through the
+            PersistenceInterface provided by the EKB bundle, since this service does the automatic transformation work of
+            elements from OpenEngSBModel to EDB savable objects. See the detailed explanation of the EKB for more informations.
+        </para>
+        <para>
+            The loading of models from the EDB is conceptionally possible, but should always be done through the QueryInterface
             of the EKB bundle, since this service does the automatic transformation work of elements from the EDB to an
             OpenEngSBModel. See the detailed explanation of the EKB for more informations.
         </para>

@@ -17,7 +17,14 @@
 
 package org.openengsb.core.workflow.model;
 
-public class GlobalDeclaration {
+import java.io.Serializable;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+public class GlobalDeclaration implements Serializable {
+
+    private static final long serialVersionUID = -389353004152522492L;
+
     private String className;
     private String variableName;
 
@@ -34,7 +41,7 @@ public class GlobalDeclaration {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
@@ -42,11 +49,25 @@ public class GlobalDeclaration {
     }
 
     public String getVariableName() {
-        return this.variableName;
+        return variableName;
     }
 
     public void setVariableName(String variableName) {
         this.variableName = variableName;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GlobalDeclaration)) {
+            return false;
+        }
+        GlobalDeclaration other = (GlobalDeclaration) obj;
+        return (className == null || className.equals(other.className))
+                && (variableName == null || variableName.equals(other.getVariableName()));
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(className).append(variableName).toHashCode();
+    }
 }

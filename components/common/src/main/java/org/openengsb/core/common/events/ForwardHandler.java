@@ -21,13 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.openengsb.core.api.Event;
-import org.openengsb.core.api.edb.EDBBatchEvent;
-import org.openengsb.core.api.edb.EDBDeleteEvent;
-import org.openengsb.core.api.edb.EDBEvent;
-import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.edb.EDBInsertEvent;
-import org.openengsb.core.api.edb.EDBUpdateEvent;
-import org.openengsb.core.api.edb.EngineeringDatabaseService;
 import org.openengsb.core.api.workflow.WorkflowException;
 import org.openengsb.core.api.workflow.WorkflowService;
 import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
@@ -38,7 +31,6 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ForwardHandler.class);
     private WorkflowService workflowService;
-    private EngineeringDatabaseService edbService;
 
     public ForwardHandler() {
         super(true);
@@ -53,28 +45,11 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
     }
 
     private void forwardEvent(Event event) throws InvocationTargetException {
-        if (EDBEvent.class.isAssignableFrom(event.getClass())) {
-            LOGGER.info("Forwarding event to edb service");
-            try {
-                if (event instanceof EDBInsertEvent) {
-                    edbService.processEDBInsertEvent((EDBInsertEvent) event);
-                } else if (event instanceof EDBDeleteEvent) {
-                    edbService.processEDBDeleteEvent((EDBDeleteEvent) event);
-                } else if (event instanceof EDBUpdateEvent) {
-                    edbService.processEDBUpdateEvent((EDBUpdateEvent) event);
-                } else if (event instanceof EDBBatchEvent) {
-                    edbService.processEDBBatchEvent((EDBBatchEvent) event);
-                }
-            } catch (EDBException e) {
-                throw new InvocationTargetException(e);
-            }
-        } else {
-            LOGGER.info("Forwarding event to workflow service");
-            try {
-                workflowService.processEvent(event);
-            } catch (WorkflowException e) {
-                throw new InvocationTargetException(e);
-            }
+        LOGGER.info("Forwarding event to workflow service");
+        try {
+            workflowService.processEvent(event);
+        } catch (WorkflowException e) {
+            throw new InvocationTargetException(e);
         }
     }
 
@@ -94,9 +69,4 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }
-
-    public void setEdbService(EngineeringDatabaseService edbService) {
-        this.edbService = edbService;
-    }
-
 }

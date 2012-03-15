@@ -68,17 +68,17 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEventPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "eventService")
     private WorkflowService eventService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "auditing")
     private AuditingDomain auditing;
 
     private RepeatingView fieldList;

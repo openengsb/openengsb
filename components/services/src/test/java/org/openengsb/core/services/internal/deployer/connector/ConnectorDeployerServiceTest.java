@@ -43,11 +43,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -58,19 +60,20 @@ import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.ConnectorManager;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.MergeException;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
+import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
+import org.openengsb.core.security.internal.RootSubjectHolder;
 import org.openengsb.core.services.internal.ConnectorManagerImpl;
 import org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl;
 import org.openengsb.core.services.internal.DefaultWiringService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
-import org.openengsb.core.test.DummyPersistenceManager;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.BundleContext;
@@ -90,8 +93,13 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
     private static final String TEST_FILE_NAME = "mydomain+aconnector+serviceid.connector";
     private String testConnectorData = "attribute.a-key=a-value";
     private ConnectorInstanceFactory factory;
-    private ConnectorId testConnectorId;
+    private ConnectorDefinition testConnectorId;
     private DefaultConfigPersistenceService configPersistence;
+
+    @BeforeClass
+    public static void setUpClass() {
+        RootSubjectHolder.init();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -116,11 +124,12 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         DefaultWiringService defaultWiringService = new DefaultWiringService();
         defaultWiringService.setBundleContext(bundleContext);
         registerServiceViaId(defaultWiringService, "wiring", WiringService.class);
-        testConnectorId = new ConnectorId("mydomain", "aconnector", "serviceid");
+        testConnectorId = new ConnectorDefinition("mydomain", "aconnector", "serviceid");
     }
 
     private void setupPersistence() {
-        DummyPersistenceManager dummyPersistenceManager = new DummyPersistenceManager();
+        DefaultPersistenceManager dummyPersistenceManager = new DefaultPersistenceManager();
+        dummyPersistenceManager.setPersistenceRootDir("target/" + UUID.randomUUID().toString());
         CorePersistenceServiceBackend<String> backend = new CorePersistenceServiceBackend<String>();
         backend.setBundleContext(bundleContext);
         backend.setPersistenceManager(dummyPersistenceManager);
@@ -373,7 +382,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDefinition id = new ConnectorDefinition("mydomain", "aconnector", "serviceid");
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
@@ -422,7 +431,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDefinition id = new ConnectorDefinition("mydomain", "aconnector", "serviceid");
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
@@ -464,7 +473,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
         File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);
-        ConnectorId id = new ConnectorId("mydomain", "aconnector", "serviceid");
+        ConnectorDefinition id = new ConnectorDefinition("mydomain", "aconnector", "serviceid");
         ConnectorDescription desc = serviceManager.getAttributeValues(id);
 
         Map<String, String> attributes = ImmutableMap.of("x", "new-persistence-value");
@@ -512,7 +521,7 @@ public class ConnectorDeployerServiceTest extends AbstractOsgiMockServiceTest {
                     return invocation.callRealMethod();
                 }
             })
-            .when(spy2).update(any(ConnectorId.class), any(ConnectorDescription.class));
+            .when(spy2).update(any(ConnectorDefinition.class), any(ConnectorDescription.class));
         final File connectorFile = temporaryFolder.newFile(TEST_FILE_NAME);
         FileUtils.writeLines(connectorFile, Arrays.asList("property.foo=bar", "attribute.x=original-file-value"));
         connectorDeployerService.install(connectorFile);

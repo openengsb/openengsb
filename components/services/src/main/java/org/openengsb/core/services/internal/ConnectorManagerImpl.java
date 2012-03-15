@@ -28,8 +28,8 @@ import org.openengsb.core.api.ConnectorRegistrationManager;
 import org.openengsb.core.api.ConnectorValidationFailedException;
 import org.openengsb.core.api.model.ConfigItem;
 import org.openengsb.core.api.model.ConnectorConfiguration;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
 import org.openengsb.core.api.persistence.InvalidConfigurationException;
 import org.openengsb.core.api.persistence.PersistenceException;
@@ -84,7 +84,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void create(ConnectorId id, ConnectorDescription connectorDescription)
+    public void create(ConnectorDefinition id, ConnectorDescription connectorDescription)
         throws ConnectorValidationFailedException {
         validateId(id);
         checkForExistingServices(id);
@@ -98,7 +98,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }
     }
 
-    private void addDefaultLocations(ConnectorId id, ConnectorDescription connectorDescription) {
+    private void addDefaultLocations(ConnectorDefinition id, ConnectorDescription connectorDescription) {
         Map<String, Object> properties = connectorDescription.getProperties();
         if (properties.get("location.root") != null) {
             return;
@@ -109,7 +109,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void forceCreate(ConnectorId id, ConnectorDescription connectorDescription) {
+    public void forceCreate(ConnectorDefinition id, ConnectorDescription connectorDescription) {
         validateId(id);
         checkForExistingServices(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
@@ -121,14 +121,14 @@ public class ConnectorManagerImpl implements ConnectorManager {
         }
     }
 
-    private void validateId(ConnectorId id) {
+    private void validateId(ConnectorDefinition id) {
         Preconditions.checkNotNull(id);
-        Preconditions.checkNotNull(id.getConnectorType());
-        Preconditions.checkNotNull(id.getDomainType());
+        Preconditions.checkNotNull(id.getConnectorId());
+        Preconditions.checkNotNull(id.getDomainId());
         Preconditions.checkNotNull(id.getInstanceId());
     }
 
-    private void checkForExistingServices(ConnectorId id) {
+    private void checkForExistingServices(ConnectorDefinition id) {
         try {
             List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
             if (!list.isEmpty()) {
@@ -140,7 +140,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void update(ConnectorId id, ConnectorDescription connectorDescpription)
+    public void update(ConnectorDefinition id, ConnectorDescription connectorDescpription)
         throws ConnectorValidationFailedException, IllegalArgumentException {
         validateId(id);
         ConnectorDescription old = getOldConfig(id);
@@ -154,7 +154,8 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void forceUpdate(ConnectorId id, ConnectorDescription connectorDescription) throws IllegalArgumentException {
+    public void forceUpdate(ConnectorDefinition id, ConnectorDescription connectorDescription)
+        throws IllegalArgumentException {
         validateId(id);
         ConnectorDescription old = getOldConfig(id);
         registrationManager.forceUpdateRegistration(id, connectorDescription);
@@ -182,7 +183,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
         return result;
     }
 
-    private ConnectorDescription getOldConfig(ConnectorId id) {
+    private ConnectorDescription getOldConfig(ConnectorDefinition id) {
         List<ConnectorConfiguration> list;
         try {
             list = getConfigPersistence().load(id.toMetaData());
@@ -199,13 +200,13 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public void delete(ConnectorId id) throws PersistenceException {
+    public void delete(ConnectorDefinition id) throws PersistenceException {
         registrationManager.remove(id);
         getConfigPersistence().remove(id.toMetaData());
     }
 
     @Override
-    public ConnectorDescription getAttributeValues(ConnectorId id) {
+    public ConnectorDescription getAttributeValues(ConnectorDefinition id) {
         try {
             List<ConnectorConfiguration> list = getConfigPersistence().load(id.toMetaData());
             if (list.isEmpty()) {

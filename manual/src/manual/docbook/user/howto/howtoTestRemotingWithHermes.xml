@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Austrian Association for Software Tool Integration (AASTI)
+    under one or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information regarding copyright
+    ownership. The AASTI licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="howto.remotetingWithHermes" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>HowTo - Test Remote Messaging using Hermes JMS</title>
+
+  <section>
+    <title>Preparation</title>
+    <para>Those sections shows what have to be done initally.</para>
+    <section>
+      <title>Preparing the Server</title>
+      <para> Before starting the server you have to edit the file OPENENGSB_HOME/etc/system.properties You will find the
+        lines:
+        <programlisting># Uncomment to disable encryption for jms-messages
+#org.openengsb.jms.noencrypt=true
+        
+# Uncomment to disable signature and timestamp verification for all remote requests
+#org.openengsb.security.noverify=true</programlisting>
+        Uncomment (or if not existing add) the lines
+        <programlisting>org.openengsb.jms.noencrypt=true 
+org.openengsb.security.noverify=true</programlisting>
+        This will enable you to send unencrypted messages to the server. </para>
+      <para> Now start the server and enter the following line:
+        <programlisting>features:install openengsb-ports-jms</programlisting> This will open the JMS port of the
+        OpenEngSb server, which is used to receive Json messages. </para>
+      <para><mediaobject>
+          <imageobject>
+            <imagedata xml:id="installationCheck" fileref="graphics/hermes_installCheck.png" format="png" width="400"
+              align="center"/>
+          </imageobject>
+          <caption>Installation Check</caption>
+        </mediaobject>
+      </para>
+    </section>
+    <section>
+      <title>Setup Hermes</title>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>Download the latest Hermes version from www.hermesjms.com </para>
+          </listitem>
+          <listitem>
+            <para>Download ActiveMQ from activemq.apache.org</para>
+          </listitem>
+          <listitem>
+            <para>Unpack ActiveMQ</para>
+          </listitem>
+          <listitem>
+            <para>Install and Open Hermes (it is better to have the OpenEngSb server already running at this
+              point)</para>
+          </listitem>
+          <listitem>
+            <para>Rightclick on the node “sessions” in the tree, go to New->New Session: </para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="addSession" fileref="graphics/hermes_addSession.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Add Session</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>In the First Dropdown, enter "ActiveMQ"</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="enterName" fileref="graphics/hermes_enterName.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Enter Name for Session</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Click on the Tab “Providers”</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="providerTab" fileref="graphics/hermes_providerTab.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Available Tabs</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Rightclick in the center of the "Classpath Groups" panel. Select "Add Group" and enter
+              "ActiveMQ".</para>
+          </listitem>
+          <listitem>
+            <para>Click on the new Group “ActiveMQ” and rightclick “Libary”, select “Add Jars”. Go to ActiveMQ_HOME/lib/
+              and select all contained jars. It should now look something like:</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="libraryList" fileref="graphics/hermes_libraryList.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>List of AMQ libraries</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>IMPORTANT – An alert message is prompted, select “Scan”</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="scanWarning" fileref="graphics/hermes_scan.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Checkbox during import of Libraries</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Close the window with “Ok”.</para>
+          </listitem>
+          <listitem>
+            <para>Open the "sessions" folder in the tree and rightclick "ActiveMQ", select "edit":</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="editSession" fileref="graphics/hermes_editSession.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Edit a session</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Select "ActiveMQ" in the "Loader" Dropdown (if you don't see the entry "ActiveMQ", then you probably
+              did not select "Scan" in the Alertmessage above):</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="loaderSelection" fileref="graphics/hermes_selectLoader.png" format="png"
+                    width="400" align="center"/>
+                </imageobject>
+                <caption>Select the previously configured loader.</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Select "org.apache.activemq.ActiveMQConnectionFactory" in the "Class" dropdown. Rightclick on
+              properties and select "Add Property". Select "brokerURL" as the property-name and enter
+              "tcp://localhost:6549" (this is the standard jms port of the OpenEngSb server, enter a different port if
+              you have changed it in your distribution. The Entry should now look something like:</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="completeEntry" fileref="graphics/hermes_completeEntry.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>The completely finished entry.</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Select “Ok” to close and save.</para>
+          </listitem>
+          <listitem>
+            <para>Rightclick on the node “ActiveMQ” in the sessions folder and select New -> Add Queue:</para>
+            <para><mediaobject>
+                <imageobject>
+                  <imagedata xml:id="addQueue" fileref="graphics/hermes_addQueue.png" format="png" width="400"
+                    align="center"/>
+                </imageobject>
+                <caption>Add a queue in hermes.</caption>
+              </mediaobject>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Click on the “Name” entry and enter “receive”, press ENTER to save your input (Hermes JMS is a little
+              buggy here). This the standard OpenEngSb-receive queue in this OpenEngSb-release. You must send all your
+              Json messages to this queue.</para>
+          </listitem>
+          <listitem>
+            <para>Select “Ok” to close and save.</para>
+          </listitem>
+          <listitem>
+            <para>Now you have to open the queue on which the response of your message will come back. In this
+              OpenEngSb-release, the response-queue has the same name as the "callId" of your message. Repeat the steps
+              above and use the "callId" of your message instead of "receive".</para>
+          </listitem>
+          <listitem>
+            <para>Now you are ready to send and receive Json Messages to the OpenEngSb-Server.</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+    </section>
+  </section>
+
+  <section>
+    <title>Send and Receive Messages</title>
+    <para>
+      <itemizedlist>
+        <listitem>
+          <para>Startup the OpenEngSb-Server before you Startup Hermes JMS (or else Hermes JMS might not recognise the
+            server).</para>
+        </listitem>
+        <listitem>
+          <para>Expand the node "ActiveMQ" in the folder "sessions" and rightclick on the "receive" queue. Select New ->
+            New Message</para>
+          <para><mediaobject>
+              <imageobject>
+                <imagedata xml:id="newMessage" fileref="graphics/hermes_newMessage.png" format="png" width="400"
+                  align="center"/>
+              </imageobject>
+              <caption>Create a new Message in Hermes.</caption>
+            </mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Switch to the "Payload" tab and paste your message into the textfield.</para>
+          <para><mediaobject>
+              <imageobject>
+                <imagedata xml:id="enterPayload" fileref="graphics/hermes_enterPayload.png" format="png" width="400"
+                  align="center"/>
+              </imageobject>
+              <caption>Configure a message for the OpenEngSB.</caption>
+            </mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Press "Send" to send your message, there is no further response or notification that the message was
+            sent. Press "Done" to close the window.</para>
+        </listitem>
+        <listitem>
+          <para>Now Doubleclick on the queue with your "callId", you should see your responses:</para>
+          <para><mediaobject>
+              <imageobject>
+                <imagedata xml:id="messageResponse" fileref="graphics/hermes_messageResponse.png" format="png"
+                  width="400" align="center"/>
+              </imageobject>
+              <caption>Retrieve a message response.</caption>
+            </mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>If you do not see a respone, then enter "display" in the console of your OpenEngSb server to view the
+            last logmessages. It is likely that you will see some Error-messages, concerning your Jsonmessage,
+            there.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>Have fun testing with Json. :-)</para>
+  </section>
+
+</chapter>

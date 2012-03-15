@@ -47,14 +47,6 @@ public class Event {
         this.processId = processId;
     }
 
-    /**
-     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
-     * name
-     */
-    public String getType() {
-        return this.getClass().getSimpleName();
-    }
-
     public String getName() {
         return this.name;
     }

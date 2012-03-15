@@ -38,13 +38,13 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.Comparators;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
-import org.openengsb.core.common.util.SecurityUtils;
 import org.openengsb.core.console.internal.ServiceCommands;
+import org.openengsb.core.security.SecurityContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -77,7 +77,7 @@ public class ServicesHelper {
     public void listRunningServices() {
         try {
             final List<String> formatedOutput =
-                SecurityUtils.executeWithSystemPermissions(new Callable<List<String>>() {
+                SecurityContext.executeWithSystemPermissions(new Callable<List<String>>() {
                     @Override
                     public List<String> call() throws Exception {
                         List<String> tmp = new ArrayList<String>();
@@ -86,7 +86,8 @@ public class ServicesHelper {
                             osgiUtilsService.listServiceReferences(Domain.class);
                         for (ServiceReference ref : listServiceReferences) {
                             Domain service = osgiUtilsService.getService(Domain.class, ref);
-                            tmp.add(String.format("%s %s", ref.getProperty("id"), service.getAliveState().toString()));
+                            tmp.add(OutputStreamFormater
+                                .formatValues(ref.getProperty("id").toString(), service.getAliveState().toString()));
                         }
                         return tmp;
                     }
@@ -132,10 +133,10 @@ public class ServicesHelper {
                 input = keyboard.read();
             }
             if ('n' != (char) input && 'N' != (char) input) {
-                SecurityUtils.executeWithSystemPermissions(new Callable<Object>() {
+                SecurityContext.executeWithSystemPermissions(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
-                        ConnectorId fullId = ConnectorId.fromFullId(idFinal);
+                        ConnectorDefinition fullId = ConnectorDefinition.fromFullId(idFinal);
                         serviceManager.delete(fullId);
                         return null;
                     }
@@ -226,7 +227,7 @@ public class ServicesHelper {
         Map<String, Object> properties = new HashMap<String, Object>();
 
         ConnectorDescription connectorDescription = new ConnectorDescription(attributeMap, properties);
-        ConnectorId idProvider = new ConnectorId(domainProviderId, connectorProvider.getId(), id);
+        ConnectorDefinition idProvider = new ConnectorDefinition(domainProviderId, connectorProvider.getId(), id);
         if (force) {
             serviceManager.forceCreate(idProvider, connectorDescription);
             OutputStreamFormater.printValue("Connector successfully created");

@@ -149,7 +149,7 @@ public class JMSOutgoingPortTest extends AbstractOsgiMockServiceTest {
 
         String destination =
             new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("message")
-                .get("callId").getValueAsText();
+                .get("callId").asText();
         assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
     }
 

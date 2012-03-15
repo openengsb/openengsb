@@ -128,4 +128,10 @@ public interface WorkflowService extends OpenEngSBService {
      */
     void cancelFlow(Long processInstanceId) throws WorkflowException;
 
+    /**
+     * returns the processbag used by the given instance.
+     * 
+     * @throws IllegalArgumentException if no instance with the given ID is running
+     */
+    ProcessBag getProcessBagForInstance(long instanceId);
 }

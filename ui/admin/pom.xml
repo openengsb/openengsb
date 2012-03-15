@@ -118,13 +118,8 @@
         <configuration>
           <instructions>
             <Import-Package>org.drools; bundle-symbolic-name="org.drools.core",
-              org.drools.event;
-              bundle-symbolic-name="org.drools.core",
+              org.drools.event; bundle-symbolic-name="org.drools.core",
               org.drools.rule, org.drools.compiler,
-              org.springframework.security.web.authentication,
-              org.springframework.security.authentication,
-              org.springframework.security.core.userdetails,
-              org.springframework.dao,
               org.ops4j.pax.wicket.util.proxy,
               net.sf.cglib.core;version="[2,3)",
               net.sf.cglib.proxy;version="[2,3)",
@@ -201,15 +196,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+    </dependency>
+
     <!--  Pax Wicket Dependencies -->
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-service</artifactId>
+      <artifactId>org.ops4j.pax.wicket.service</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.wicket</groupId>
-      <artifactId>pax-wicket-test</artifactId>
+      <artifactId>org.ops4j.pax.wicket.test</artifactId>
       <scope>test</scope>
     </dependency>
 

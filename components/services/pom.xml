@@ -131,17 +131,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.fileinstall</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.commands</artifactId>

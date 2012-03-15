@@ -21,16 +21,15 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
   
-  <!-- Model Factory -->
-  <bean id="modelFactoryService" class="org.openengsb.core.ekb.internal.ModelFactoryService" />
-  
-  <service interface="org.openengsb.core.api.ekb.ModelFactory">
-    <ref component-id="modelFactoryService"/>
-  </service>
+  <!-- EDB Converter -->
+  <bean id="edbConverter" class="org.openengsb.core.ekb.internal.EDBConverter">
+    <property name="edbService" ref="edbService"/>
+  </bean>
   
   <!-- Query Interface -->
   <bean id="queryInterfaceService" class="org.openengsb.core.ekb.internal.QueryInterfaceService">
     <property name="edbService" ref="edbService"/>
+    <property name="edbConverter" ref="edbConverter"/>
   </bean>
   
   <service interface="org.openengsb.core.api.ekb.QueryInterface">
@@ -38,6 +37,19 @@
       <entry key="location.root" value="ekbQueryService" />
     </service-properties>
     <ref component-id="queryInterfaceService"/>
+  </service>
+  
+  <!-- Persist Interface -->
+  <bean id="persistInterfaceService" class="org.openengsb.core.ekb.internal.PersistInterfaceService">
+    <property name="edbService" ref="edbService"/>
+    <property name="edbConverter" ref="edbConverter"/>
+  </bean>
+  
+  <service interface="org.openengsb.core.api.ekb.PersistInterface">
+    <service-properties>
+      <entry key="location.root" value="ekbPersistService" />
+    </service-properties>
+    <ref component-id="persistInterfaceService"/>
   </service>
   
   <!-- Model Registry -->
@@ -52,19 +64,6 @@
   
   <service interface="org.openengsb.core.api.ekb.TransformationEngine">
     <ref component-id="transformationEngineService"/>
-  </service>
-
-  <!-- EKB Service -->
-  <bean id="ekbServiceProvider" class="org.openengsb.core.ekb.internal.EKBService">
-    <property name="queryInterface" ref="queryInterfaceService"/>
-    <property name="modelFactory" ref="modelFactoryService"/>
-  </bean>
-
-  <service interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService">
-    <service-properties>
-      <entry key="location.root" value="ekbService" />
-    </service-properties>
-    <ref component-id="ekbServiceProvider" />
   </service>
   
   <!-- References to other bundles -->

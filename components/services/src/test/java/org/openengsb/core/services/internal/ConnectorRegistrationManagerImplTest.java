@@ -32,8 +32,8 @@ import org.openengsb.core.api.Connector;
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomainImpl;
@@ -67,12 +67,12 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
         propsDomainProvider.put("domain", "a");
         registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
-        ConnectorId connectorId = new ConnectorId("a", "a", "a");
+        ConnectorDefinition connectorId = new ConnectorDefinition("a", "a", "a");
         connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription(
             new HashMap<String, String>(), new HashMap<String, Object>()));
         connectorRegistrationManagerImpl.remove(connectorId);
-        connectorRegistrationManagerImpl.updateRegistration(new ConnectorId("a", "a", "a"), new ConnectorDescription(
-            new HashMap<String, String>(), new HashMap<String, Object>()));
+        connectorRegistrationManagerImpl.updateRegistration(new ConnectorDefinition("a", "a", "a"),
+            new ConnectorDescription(new HashMap<String, String>(), new HashMap<String, Object>()));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -97,7 +97,7 @@ public class ConnectorRegistrationManagerImplTest extends AbstractOsgiMockServic
         Dictionary<String, Object> propsDomainProvider = new Hashtable<String, Object>();
         propsDomainProvider.put("domain", "a");
         registerService(domainProviderMock, propsDomainProvider, DomainProvider.class);
-        ConnectorId connectorId = new ConnectorId("a", "a", "a");
+        ConnectorDefinition connectorId = new ConnectorDefinition("a", "a", "a");
         connectorRegistrationManagerImpl.updateRegistration(connectorId, new ConnectorDescription(
             new HashMap<String, String>(), new HashMap<String, Object>()));
     }

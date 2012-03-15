@@ -41,14 +41,16 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
+import org.apache.shiro.mgt.SecurityManager;
 import org.junit.Before;
 import org.openengsb.connector.usernamepassword.Password;
-import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.service.UserDataManager;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
-import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
@@ -67,7 +69,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
 
@@ -92,6 +93,7 @@ public abstract class AbstractExamTestHelper {
 
     @Before
     public void waitForRequiredTasks() throws Exception {
+        waitForUserDataInitializer();
         RuleManager rm = getOsgiService(RuleManager.class);
         while (rm.get(new RuleBaseElementId(RuleBaseElementType.Rule, "auditEvent")) == null) {
             LOGGER.warn("waiting for auditing to finish init");
@@ -240,13 +242,19 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected void authenticate(String user, String password) throws InterruptedException, AuthenticationException {
-        waitForUserDataInitializer();
-        AuthenticationDomain authenticationManager = getOsgiService(AuthenticationDomain.class, 20000);
-        Authentication authentication = authenticationManager.authenticate(user, new Password(password));
-        SecurityContextHolder.getContext().setAuthentication(SpringSecurityContextUtils.wrapToken(authentication));
+        SecurityContext.login(user, new Password(password));
     }
 
     protected void waitForUserDataInitializer() throws InterruptedException {
+        SecurityManager sm = null;
+        while (sm == null) {
+            try {
+                sm = SecurityUtils.getSecurityManager();
+            } catch (UnavailableSecurityManagerException e) {
+                LOGGER.warn("waiting for security-manager to be set");
+                Thread.sleep(1000);
+            }
+        }
         UserDataManager userDataManager = getOsgiService(UserDataManager.class, "(internal=true)", 20000);
         while (userDataManager.getUserList().isEmpty()) {
             LOGGER.warn("waiting for users to be initialized");
@@ -259,7 +267,7 @@ public abstract class AbstractExamTestHelper {
         String loglevel = LOG_LEVEL;
         String debugPort = Integer.toString(DEBUG_PORT);
         boolean hold = true;
-        boolean debug = false;
+        boolean debug = true;
         InputStream paxLocalStream = ClassLoader.getSystemResourceAsStream("itests.local.properties");
         if (paxLocalStream != null) {
             Properties properties = new Properties();

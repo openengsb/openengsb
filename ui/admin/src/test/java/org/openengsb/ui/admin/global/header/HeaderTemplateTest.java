@@ -44,7 +44,7 @@ public class HeaderTemplateTest extends AbstractUITest {
 
     @Before
     public void setup() {
-
+        context.putBean("ruleManager", mock(RuleManager.class));
     }
 
     @Test

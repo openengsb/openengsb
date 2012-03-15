@@ -19,15 +19,18 @@ package org.openengsb.core.ekb.internal;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelId;
 import org.openengsb.core.ekb.internal.TestModel2.ENUM;
 
 /**
  * little interface for testing the proxy functionality of the EKBServiceTest
  */
 interface TestModel extends OpenEngSBModel {
-        
+    
+    @OpenEngSBModelId
     void setId(String id);
     
     String getId();
@@ -61,4 +64,8 @@ interface TestModel extends OpenEngSBModel {
     void setSubs(List<SubModel> subs);
     
     List<SubModel> getSubs();
+    
+    void setMap(Map<String, String> map);
+    
+    Map<String, String> getMap();
 }

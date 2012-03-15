@@ -18,7 +18,8 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.domain</groupId>
@@ -30,6 +31,7 @@
   <properties>
     <bundle.symbolicName>org.openengsb.domain.example</bundle.symbolicName>
     <bundle.namespace>org.openengsb.domain.example</bundle.namespace>
+    <domain.name>ExampleDomain</domain.name>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -63,21 +65,69 @@
   </scm>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*.info</include>
-        </includes>
-      </resource>
-    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>${project.basedir}/target/assembly-resources/docbook.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-src-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/generated/wsdl/${domain.name}Events.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>${domain.name}Events</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/generated/wsdl/${domain.name}.wsdl</file>
+                  <type>wsdl</type>
+                  <classifier>${domain.name}</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>

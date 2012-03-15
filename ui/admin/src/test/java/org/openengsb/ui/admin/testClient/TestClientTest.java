@@ -72,8 +72,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.context.ContextHolder;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.l10n.PassThroughLocalizableString;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.remote.ProxyFactory;
 import org.openengsb.ui.admin.AbstractUITest;
 import org.openengsb.ui.admin.connectorEditorPage.ConnectorEditorPage;
@@ -142,7 +142,7 @@ public class TestClientTest extends AbstractUITest {
 
     @Before
     public void setupTest() throws Exception {
-        context.putBean(bundleContext);
+        context.putBean("blueprintBundleContext", bundleContext);
         context.putBean(mock(ProxyFactory.class));
     }
 
@@ -207,7 +207,7 @@ public class TestClientTest extends AbstractUITest {
         MethodCall modelObject = form.getModelObject();
         ServiceId reference =
             new ServiceId(TestInterface.class.getName(),
-                new ConnectorId("testdomain", "testconnector", "test-service").toString());
+                new ConnectorDefinition("testdomain", "testconnector", "test-service").toString());
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
@@ -215,7 +215,7 @@ public class TestClientTest extends AbstractUITest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ConnectorId connectorId = new ConnectorId("testdomain", "testconnector", "test-service");
+        ConnectorDefinition connectorId = new ConnectorDefinition("testdomain", "testconnector", "test-service");
         ServiceId reference = new ServiceId(TestInterface.class.getName(), connectorId.toString());
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:2:nodeComponent:contentLink:content", Label.class);
@@ -307,7 +307,6 @@ public class TestClientTest extends AbstractUITest {
 
         Assert.assertEquals(1, argList.size());
         Assert.assertEquals(BeanEditorPanel.class, argList.get("arg0panel:valueEditor").getClass());
-        tester.debugComponentTrees();
         RepeatingView panel = (RepeatingView) argList.get("arg0panel:valueEditor:fields");
         Assert.assertEquals(2, panel.size());
     }
@@ -321,7 +320,6 @@ public class TestClientTest extends AbstractUITest {
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
-        tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
@@ -333,14 +331,12 @@ public class TestClientTest extends AbstractUITest {
     @Test
     public void testPerformMethodCallOnDomain() throws Exception {
         setupAndStartTestClientPage();
-        tester.debugComponentTrees();
         RepeatingView argList =
             (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(2);
         setMethodInDropDown(0);
-        tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
@@ -376,7 +372,6 @@ public class TestClientTest extends AbstractUITest {
         setMethodInDropDown(3);
 
         String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
-        tester.debugComponentTrees();
         formTester.setValue(beanPanelPath + ":field", "42");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
@@ -387,7 +382,6 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink", true);
         tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 3) + ":nodeComponent:contentLink",
             "onclick");
@@ -478,7 +472,6 @@ public class TestClientTest extends AbstractUITest {
     @Test
     public void testListToCreateNewServices() throws Exception {
         setupAndStartTestClientPage();
-        tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
         Label domainName =
             (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.name");
@@ -487,7 +480,6 @@ public class TestClientTest extends AbstractUITest {
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.description");
         Label domainClass =
             (Label) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains:1:domain.class");
-        tester.debugComponentTrees();
         Label name =
             (Label) tester
                 .getComponentFromLastRenderedPage(
@@ -553,7 +545,6 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
         Assert.assertEquals(true, editButton.isEnabled());
@@ -581,7 +572,6 @@ public class TestClientTest extends AbstractUITest {
         if (!serviceListExpanded) {
             expandServiceListTree();
         }
-        tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:5:nodeComponent:contentLink", true);
         AjaxButton deleteButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:deleteButton");
         Assert.assertEquals(true, deleteButton.isEnabled());
@@ -621,9 +611,8 @@ public class TestClientTest extends AbstractUITest {
 
         int count =
             ((ArrayList) tester.getComponentFromLastRenderedPage("serviceManagementContainer:domains")
-                    .getDefaultModelObject()).size();
+                        .getDefaultModelObject()).size();
         // get all domains
-        tester.debugComponentTrees();
         for (int i = 0; i < count; i++) {
             Component label = tester
                 .getComponentFromLastRenderedPage("serviceManagementContainer:domains:" + i + ":domain.name");
@@ -678,7 +667,7 @@ public class TestClientTest extends AbstractUITest {
         attributes.put("value", "42");
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         properties.put("location.root", "domain/testdomain/default");
-        serviceManager.create(new ConnectorId("testdomain", "testconnector", "test-service"),
+        serviceManager.create(new ConnectorDefinition("testdomain", "testconnector", "test-service"),
             new ConnectorDescription(
                 attributes, properties));
 

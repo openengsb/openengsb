@@ -48,7 +48,7 @@ public class OrganizeGlobalsPageTest extends AbstractUITest {
     @Before
     public void init() throws RuleBaseException {
         ruleManager = mock(RuleManager.class);
-        context.putBean(ruleManager);
+        context.putBean("ruleManager", ruleManager);
 
         globals = new TreeMap<String, String>();
         globals.put("glob1", "aaaa.bbbb.ccc");

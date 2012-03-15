@@ -43,7 +43,7 @@
 
   <description>
     OpenEngSB Persistence Interfaces to be used by Domains and Services to store their data
-    and implementation of storing data in NeoDatis ODB.
+    and implementation of storing data in a simple serialisation database.
   </description>
 
   <url>http://www.openengsb.org</url>
@@ -85,7 +85,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, *</Import-Package>
             <!--
               The persistence service needs to load the stored classes to reaply the stored objects
               to the right classes again.
@@ -107,11 +106,6 @@
       <groupId>org.openengsb.framework</groupId>
       <artifactId>org.openengsb.framework.common</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.neodatis.odb</groupId>
-      <artifactId>neodatis-odb</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.openengsb.framework</groupId>

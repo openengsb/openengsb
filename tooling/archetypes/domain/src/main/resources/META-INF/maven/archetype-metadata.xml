@@ -69,6 +69,13 @@
         <include>pom.xml</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>src/manual</directory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 
 </archetype-descriptor>
+

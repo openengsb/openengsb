@@ -83,7 +83,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>sun.reflect, * </Import-Package>
             <!--
               The JMS Ports implementation requires to directly load/marshall received classes.
             -->

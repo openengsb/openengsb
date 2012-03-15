@@ -32,8 +32,8 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.descriptor.AttributeDefinition;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.validation.FormValidator;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -53,11 +53,11 @@ public class ConnectorEditorPage extends BasePage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectorEditorPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
     private ServiceDescriptor descriptor;
     private ServiceEditor editor;
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
     @SuppressWarnings("serial")
@@ -74,7 +74,7 @@ public class ConnectorEditorPage extends BasePage {
             this.attributeMap = attributeMap;
         }
 
-        private ConnectorServiceEditor(String id, ConnectorId serviceId, List<AttributeDefinition> attributes,
+        private ConnectorServiceEditor(String id, ConnectorDefinition serviceId, List<AttributeDefinition> attributes,
                 Map<String, String> attributeMap, Map<String, Object> properties, FormValidator validator) {
             super(id, serviceId, attributes, attributeMap, properties, validator);
             createMode = false;
@@ -133,10 +133,10 @@ public class ConnectorEditorPage extends BasePage {
         descriptor = connectorProvider.getDescriptor();
     }
 
-    public ConnectorEditorPage(ConnectorId id) {
-        retrieveDescriptor(id.getConnectorType());
+    public ConnectorEditorPage(ConnectorDefinition id) {
+        retrieveDescriptor(id.getConnectorId());
         // ConnectorDescription connectorDesc = serviceManager.getAttributeValues(id);
-        initEditor(id.getConnectorType());
+        initEditor(id.getConnectorId());
         createEditor(id);
     }
 
@@ -145,7 +145,7 @@ public class ConnectorEditorPage extends BasePage {
         String serviceId = parameters.getString("id");
         String domainType = parameters.getString("domainType");
         String connectorType = parameters.getString("connectorType");
-        ConnectorId connectorId = new ConnectorId(domainType, connectorType, serviceId);
+        ConnectorDefinition connectorId = new ConnectorDefinition(domainType, connectorType, serviceId);
         retrieveDescriptor(connectorType);
         initEditor(connectorType);
         createEditor(connectorId);
@@ -172,7 +172,7 @@ public class ConnectorEditorPage extends BasePage {
         add(editor);
     }
 
-    private void createEditor(final ConnectorId serviceId) {
+    private void createEditor(final ConnectorDefinition serviceId) {
         ConnectorDescription description = serviceManager.getAttributeValues(serviceId);
 
         editor =

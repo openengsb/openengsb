@@ -27,16 +27,14 @@ import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.openengsb.core.api.security.SecurityAttributeProvider;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.annotation.SecurityAttributes;
-import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.SecurityAttributeEntry;
-import org.openengsb.core.common.util.SpringSecurityContextUtils;
+import org.openengsb.core.security.SecurityContext;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
 import org.openengsb.ui.api.UIAction;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -57,11 +55,9 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (hasSecurityAnnotation(arg0.getClass())) {
             attributeList.addAll(getSecurityAttributes(arg0.getClass()));
         }
-        // List<Object> copy = new ArrayList<Object>(attributeProviders);
 
         LOGGER.info(ArrayUtils.toString(attributeProviders.getClass().getInterfaces()));
 
-        LOGGER.error(attributeProviders.toString());
         for (SecurityAttributeProvider p : attributeProviders) {
             Collection<SecurityAttributeEntry> runtimeAttributes = p.getAttribute(arg0);
             if (runtimeAttributes != null) {
@@ -73,11 +69,10 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
             return true;
         }
 
-        Authentication authentication = getAuthenticatedUser();
-        if (authentication == null) {
+        String user = getAuthenticatedUser();
+        if (user == null) {
             return false;
         }
-        String user = authentication.getUsername();
         UIAction secureAction =
             new UIAction(attributeList, arg1.getName(), ImmutableMap.of("component", (Object) arg0));
 
@@ -94,19 +89,23 @@ public class DomainAuthorizationStrategy implements IAuthorizationStrategy {
         if (!hasSecurityAnnotation(componentClass)) {
             return true;
         }
-        Authentication authentication = getAuthenticatedUser();
-        if (authentication == null) {
+
+        String user = getAuthenticatedUser();
+        if (user == null) {
             return false;
         }
-        String user = authentication.getUsername();
 
         LOGGER.trace("security-attribute-annotation present on {}", componentClass);
 
         return authorizer.checkAccess(user, new UIAction(getSecurityAttributes(componentClass))) == Access.GRANTED;
     }
 
-    private static Authentication getAuthenticatedUser() {
-        return SpringSecurityContextUtils.unwrapToken(SecurityContextHolder.getContext().getAuthentication());
+    private static String getAuthenticatedUser() {
+        Object principal = SecurityContext.getAuthenticatedPrincipal();
+        if (principal == null) {
+            return null;
+        }
+        return principal.toString();
     }
 
     private boolean hasSecurityAnnotation(Class<? extends Component> class1) {

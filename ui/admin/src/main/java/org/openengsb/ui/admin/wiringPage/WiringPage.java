@@ -59,8 +59,8 @@ import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.WiringService;
+import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
-import org.openengsb.core.api.model.ConnectorId;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.workflow.RuleManager;
 import org.openengsb.core.common.util.Comparators;
@@ -76,16 +76,16 @@ import org.slf4j.LoggerFactory;
 public class WiringPage extends BasePage {
     private static final Logger LOGGER = LoggerFactory.getLogger(WiringPage.class);
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "wiringService")
     private WiringService wiringService;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "osgiUtilsService")
     private OsgiUtilsService serviceUtils;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "serviceManager")
     private ConnectorManager serviceManager;
 
-    @PaxWicketBean
+    @PaxWicketBean(name = "ruleManager")
     private RuleManager ruleManager;
 
     private DropDownChoice<Class<? extends Domain>> domains;
@@ -189,11 +189,11 @@ public class WiringPage extends BasePage {
                     target.addComponent(feedbackPanel);
                     return;
                 }
-                ConnectorId connectorId = null;
+                ConnectorDefinition connectorId = null;
                 ConnectorDescription description = null;
                 try {
-                    connectorId = ConnectorId.fromFullId(instanceId);
-                    if (!typeOfGlobalAndServiceAreEqual(connectorId.getDomainType())) {
+                    connectorId = ConnectorDefinition.fromFullId(instanceId);
+                    if (!typeOfGlobalAndServiceAreEqual(connectorId.getDomainId())) {
                         target.addComponent(feedbackPanel);
                         return;
                     }
@@ -216,7 +216,7 @@ public class WiringPage extends BasePage {
         add(wiringForm);
     }
 
-    private void updateLocations(ConnectorId connectorId, ConnectorDescription description) throws Exception {
+    private void updateLocations(ConnectorDefinition connectorId, ConnectorDescription description) throws Exception {
         boolean updated = false;
         ValueMap vmap = new ValueMap();
         vmap.put("globalName", globalName);

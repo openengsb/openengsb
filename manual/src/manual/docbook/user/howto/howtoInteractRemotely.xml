@@ -219,6 +219,14 @@
         <para>The example can be downloaded <link xlink:href="${repos.example}-perl.zip">here</link></para>
       </section>
     </section>
+    <section>
+      <title>Alternatives for JMS</title>
+<para>In addition to providing a very general infrastructure we also support the specialities of the various protocols.
+  For JMS e.g. you've the possiblitiy to make use of the JmsCorrelationId and JmsReplyTo fields. If you set the
+  JMSReplyTo field messages will be returned there instead of to the callId. In addition, if you set a correlationId in
+  your message it will be set in the outgoing message too. Otherwise the messageID is now written into the correlationID
+field.</para>      
+    </section>
   </section>
   <section>
     <title>Using WS Proxing</title>

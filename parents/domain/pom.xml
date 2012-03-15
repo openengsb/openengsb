@@ -72,6 +72,31 @@
     </resources>
     <pluginManagement>
       <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.4,)</versionRange>
+                    <goals>
+                      <goal>unpack</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
         <plugin>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-maven-plugin</artifactId>
@@ -279,6 +304,77 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-java2ws-plugin</artifactId>
+        <version>${cxf.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-simple</artifactId>
+            <version>${cxf.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>DomainEventsWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}Events</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>DomainWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}</className>
+              <genWsdl>true</genWsdl>
+              <attachWsdl>false</attachWsdl>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.axis2</groupId>
+        <artifactId>axis2-java2wsdl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>DomainEventsWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}Events</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}Events.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2ws</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>DomainWsdl</id>
+            <phase>process-classes</phase>
+            <configuration>
+              <className>${bundle.namespace}.${domain.name}</className>
+              <outputFileName>${project.basedir}/target/generated/wsdl/${domain.name}.wsdl</outputFileName>
+            </configuration>
+            <goals>
+              <goal>java2wsdl</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
         <executions>
@@ -314,6 +410,16 @@
                     <file>target/classes/features.xml</file>
                     <type>xml</type>
                     <classifier>features</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}Events.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}Events</classifier>
+                  </artifact>
+                  <artifact>
+                    <file>target/generated/wsdl/${domain.name}.wsdl</file>
+                    <type>wsdl</type>
+                    <classifier>${domain.name}</classifier>
                   </artifact>
                 </artifacts>
               </configuration>

@@ -18,9 +18,11 @@
 package org.openengsb.core.ekb.internal;
 
 import org.openengsb.core.api.model.OpenEngSBModel;
+import org.openengsb.core.api.model.OpenEngSBModelId;
 
 public interface SubModel extends OpenEngSBModel {
     
+    @OpenEngSBModelId
     void setId(String id);
     
     String getId();
