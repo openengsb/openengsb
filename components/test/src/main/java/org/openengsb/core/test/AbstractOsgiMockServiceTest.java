@@ -123,15 +123,17 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                 }
                 Filter filter = FrameworkUtil.createFilter(filterString);
                 Collection<ServiceReference> result = new ArrayList<ServiceReference>();
-                for (Map.Entry<ServiceReference, Dictionary<String, Object>> entry : serviceReferences.entrySet()) {
-                    if (filter.match(entry.getValue())) {
-                        result.add(entry.getKey());
+                synchronized (serviceReferences) {
+                    for (Map.Entry<ServiceReference, Dictionary<String, Object>> entry : serviceReferences.entrySet()) {
+                        if (filter.match(entry.getValue())) {
+                            result.add(entry.getKey());
+                        }
                     }
+                    if (result.isEmpty()) {
+                        return null;
+                    }
+                    return result.toArray(new ServiceReference[result.size()]);
                 }
-                if (result.isEmpty()) {
-                    return null;
-                }
-                return result.toArray(new ServiceReference[result.size()]);
             }
         });
         /*
@@ -280,7 +282,9 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         LOGGER.info("registering service with ID: " + serviceId);
         props.put(Constants.SERVICE_ID, serviceId);
         services.put(serviceReference, service);
-        serviceReferences.put(serviceReference, props);
+        synchronized (serviceReference) {
+            serviceReferences.put(serviceReference, props);
+        }
         when(serviceReference.getProperty(anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -399,10 +403,12 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                services.remove(serviceReference);
-                Dictionary<String, Object> props = serviceReferences.remove(serviceReference);
-                updateServiceListeners(ServiceEvent.UNREGISTERING, serviceReference, props);
-                return null;
+                synchronized (serviceReferences) {
+                    services.remove(serviceReference);
+                    Dictionary<String, Object> props = serviceReferences.remove(serviceReference);
+                    updateServiceListeners(ServiceEvent.UNREGISTERING, serviceReference, props);
+                    return null;
+                }
             }
         }).when(result).unregister();
 
@@ -419,7 +425,9 @@ public abstract class AbstractOsgiMockServiceTest extends AbstractOpenEngSBTest 
                     String next = keys.nextElement();
                     newDict.put(next, arg.get(next));
                 }
-                serviceReferences.put(serviceReference, newDict);
+                synchronized (serviceReferences) {
+                    serviceReferences.put(serviceReference, newDict);
+                }
                 return null;
             }
         }).when(result).setProperties(any(Dictionary.class));
