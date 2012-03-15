@@ -60,7 +60,9 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
@@ -199,8 +201,13 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     @Before
     public void setup() {
+        System.setProperty("org.apache.activemq.default.directory.prefix",
+            tempFolder.getRoot().getAbsolutePath() + "/");
         setupKeys();
         String num = UUID.randomUUID().toString();
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost" + num);
@@ -255,7 +262,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         publicKey = CipherUtils.deserializePublicKey(Base64.decodeBase64(PUBLIC_KEY_64), "RSA");
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 100000)
     public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException, IOException {
         FilterChainFactory<String, String> factory = new FilterChainFactory<String, String>(String.class, String.class);
         factory.setFilters(Arrays.asList(JsonMethodCallMarshalFilter.class, new RequestMapperFilter(handler)));
