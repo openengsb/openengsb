@@ -479,7 +479,7 @@
             <itemizedlist>
                 <listitem>
                     <para>Support local jumping between tool via XLink. Can be realized with the
-                        described methods <link linkend="#concept.architecture.localJumps"
+                        described methods <link xlink:href="#concept.architecture.localJumps"
                             >here</link>.</para>
                 </listitem>
                 <listitem>

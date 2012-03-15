@@ -235,7 +235,7 @@ public class ConnectorManagerImpl implements ConnectorManager {
     }
 
     @Override
-    public XLinkTemplate registerForXLink(ConnectorId id, ConnectorDescription connectorDescpription, 
+    public XLinkTemplate registerForXLink(ConnectorId id, String hostId, 
         HashMap<String, String> availableViews) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

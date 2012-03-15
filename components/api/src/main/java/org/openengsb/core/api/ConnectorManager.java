@@ -93,8 +93,8 @@ public interface ConnectorManager {
     // @extract-start ConnectorManager
     /**
      * Registers the given Connector for XLinking. The Connector must provide the views it offers for XLink, represented
-     * as a HashMap of keyNames and short descriptions. The ConnectorDescription must contain an attribute named
-     * 'HostId' containing the Host-IP. This Id is used to identify the Host when the user calls the XLink HTTP-Servlet.
+     * as a HashMap of keyNames and short descriptions. The parameter named hostId must containing the Host-IP. 
+     * This Id is used to identify the Host when the user calls the XLink HTTP-Servlet.
      * Therefore the Host must not reach the HTTP-Servlet via a proxy. A XLinkTemplate is returned, it contains
      * informations about how modelObjects are identified by XLink and how valid XLink-URLs are generated. The class
      * 'XLinkUtils' in the commons package also provides examples of how to create XLink-URLs. Note that this function
@@ -102,7 +102,7 @@ public interface ConnectorManager {
      * 
      * @see org.openengsb.core.api.xlink.XLinkTemplate
      */
-    XLinkTemplate registerForXLink(ConnectorId id, ConnectorDescription connectorDescpription,
+    XLinkTemplate registerForXLink(ConnectorId id, String hostId,
             HashMap<String, String> availableViews);
 
     // @extract-end
