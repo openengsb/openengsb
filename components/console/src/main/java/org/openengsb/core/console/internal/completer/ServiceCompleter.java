@@ -24,7 +24,6 @@ import static org.openengsb.core.console.internal.util.ServiceCommandArguments.U
 
 import java.util.List;
 
-import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.console.Completer;
 import org.apache.karaf.shell.console.completer.StringsCompleter;
 import org.openengsb.core.console.internal.util.ServiceCommandArguments;
@@ -37,10 +36,9 @@ public class ServiceCompleter implements Completer {
 
     private ServiceCommandArguments lastCommand;
     private ServicesHelper servicesHelper;
-    private CommandSession session;
 
     public ServiceCompleter(ServicesHelper helper) {
-        this.servicesHelper = helper;
+        servicesHelper = helper;
     }
 
     @Override

@@ -20,11 +20,13 @@ import java.io.Serializable;
 
 /**
  * represents a single attribute-entry.
- *
+ * 
  * It can originate from a {@link org.openengsb.core.api.security.annotation.SecurityAttribute} annotation or be
  * provided by a {@link org.openengsb.core.api.security.SecurityAttributeProvider} at runtime.
  */
 public class SecurityAttributeEntry implements Serializable {
+
+    private static final long serialVersionUID = -6252235285809344951L;
 
     private String key;
     private String value;

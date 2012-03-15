@@ -126,7 +126,6 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
             try {
                 taskOverviewPage = webClient.getPage(PAGE_ENTRY_URL);
                 table = taskOverviewPage.getFirstByXPath("//table");
-                String full = table.asText();
                 taskOneRow = table.getRow(2);
                 taskTwoRow = table.getRow(3);
                 isRight =
