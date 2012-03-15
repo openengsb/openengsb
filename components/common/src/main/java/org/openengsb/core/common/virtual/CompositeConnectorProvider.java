@@ -19,12 +19,17 @@ package org.openengsb.core.common.virtual;
 
 import org.openengsb.core.api.ConnectorInstanceFactory;
 import org.openengsb.core.api.DomainProvider;
+import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.VirtualConnectorProvider;
 import org.openengsb.core.api.descriptor.ServiceDescriptor;
 import org.openengsb.core.api.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.AbstractConnectorProvider;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
+import org.osgi.framework.BundleContext;
 
 public class CompositeConnectorProvider extends AbstractConnectorProvider implements VirtualConnectorProvider {
+
+    private OsgiUtilsService utilsService;
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -44,7 +49,13 @@ public class CompositeConnectorProvider extends AbstractConnectorProvider implem
 
     @Override
     public ConnectorInstanceFactory createFactory(DomainProvider provider) {
-        return new CompositeConnectorFactory(provider);
+        return new CompositeConnectorFactory(provider, utilsService);
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        super.setBundleContext(bundleContext);
+        utilsService = new DefaultOsgiUtilsService(bundleContext);
     }
 
 }

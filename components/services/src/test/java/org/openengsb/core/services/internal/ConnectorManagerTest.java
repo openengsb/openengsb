@@ -44,11 +44,9 @@ import org.openengsb.core.api.Constants;
 import org.openengsb.core.api.Domain;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.model.ConnectorDefinition;
 import org.openengsb.core.api.model.ConnectorDescription;
 import org.openengsb.core.api.persistence.ConfigPersistenceService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.persistence.internal.CorePersistenceServiceBackend;
 import org.openengsb.core.persistence.internal.DefaultConfigPersistenceService;
@@ -56,7 +54,6 @@ import org.openengsb.core.persistence.internal.DefaultPersistenceManager;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
-import org.osgi.framework.BundleContext;
 
 public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
 
@@ -73,7 +70,7 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         registerConfigPersistence();
         serviceRegistrationManagerImpl = new ConnectorRegistrationManagerImpl();
         serviceRegistrationManagerImpl.setBundleContext(bundleContext);
-        serviceRegistrationManagerImpl.setServiceUtils(serviceUtils);
+        serviceUtils = new DefaultOsgiUtilsService(bundleContext);
         createServiceManager();
     }
 
@@ -296,13 +293,5 @@ public class ConnectorManagerTest extends AbstractOsgiMockServiceTest {
         Hashtable<String, Object> domainProviderProps = new Hashtable<String, Object>();
         domainProviderProps.put("domain", "test");
         registerService(domainProvider, domainProviderProps, DomainProvider.class);
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
     }
 }

@@ -20,6 +20,7 @@ package org.openengsb.core.security.internal;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -29,8 +30,10 @@ public class SecurityBundleActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
+        DefaultOsgiUtilsService utilsService = new DefaultOsgiUtilsService(context);
+        EntryUtils.setUtilsService(utilsService);
         RootSubjectHolder.init();
-        executor.submit(new UserDataInitializer());
+        executor.submit(new UserDataInitializer(utilsService));
     }
 
     @Override

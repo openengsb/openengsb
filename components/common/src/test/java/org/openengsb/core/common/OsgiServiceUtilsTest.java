@@ -17,8 +17,6 @@
 
 package org.openengsb.core.common;
 
-import java.util.Hashtable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.api.OsgiServiceNotAvailableException;
@@ -26,7 +24,6 @@ import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.test.NullDomain;
-import org.osgi.framework.BundleContext;
 
 public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
 
@@ -34,7 +31,7 @@ public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        utils = OpenEngSBCoreServices.getServiceUtilsService();
+        utils = new DefaultOsgiUtilsService(bundleContext);
     }
 
     @Test(expected = OsgiServiceNotAvailableException.class)
@@ -42,13 +39,4 @@ public class OsgiServiceUtilsTest extends AbstractOsgiMockServiceTest {
         NullDomain osgiServiceProxy = utils.getOsgiServiceProxy(NullDomain.class, 1);
         osgiServiceProxy.getAliveState();
     }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-    }
-
 }

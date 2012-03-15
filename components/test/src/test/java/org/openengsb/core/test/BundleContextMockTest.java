@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
@@ -63,10 +62,6 @@ public class BundleContextMockTest extends AbstractOsgiMockServiceTest {
         serviceTracker.open();
         serviceRegistration.unregister();
         assertNull(serviceTracker.getService());
-    }
-
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
     }
 
 }
