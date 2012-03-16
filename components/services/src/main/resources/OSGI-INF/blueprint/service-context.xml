@@ -55,7 +55,6 @@
 
   <bean class="org.openengsb.core.services.internal.ConnectorRegistrationManagerImpl" id="registrationManager">
     <property name="bundleContext" ref="blueprintBundleContext" />
-    <property name="serviceUtils" ref="serviceUtils" />
     <property name="securityInterceptor" ref="securityInterceptor" />
     <property name="attributeStore" ref="attributeProvider" />
   </bean>
@@ -65,7 +64,9 @@
   <service interface="org.openengsb.core.api.security.SecurityAttributeProvider" ref="attributeProvider" />
 
   <service interface="org.openengsb.core.api.remote.RequestHandler">
-    <bean class="org.openengsb.core.services.internal.RequestHandlerImpl" />
+    <bean class="org.openengsb.core.services.internal.RequestHandlerImpl">
+      <property name="utilsService" ref="utilsService" />
+    </bean>
   </service>
 
   <service interface="org.openengsb.core.api.WiringService">

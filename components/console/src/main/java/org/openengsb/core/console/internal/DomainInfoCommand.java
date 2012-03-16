@@ -26,15 +26,15 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.openengsb.core.api.DomainProvider;
 import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.common.util.Comparators;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.OutputStreamFormater;
-import org.osgi.framework.ServiceReference;
 
 @Command(scope = "openengsb", name = "domains", description = "Prints out the available OpenEngSB domains.")
 public class DomainInfoCommand extends OsgiCommandSupport {
 
+    @Override
     protected Object doExecute() throws Exception {
-        ServiceReference sr = getBundleContext().getServiceReference("org.openengsb.core.api.OsgiUtilsService");
-        OsgiUtilsService service = getService(OsgiUtilsService.class, sr);
+        OsgiUtilsService service = new DefaultOsgiUtilsService(getBundleContext());
         List<DomainProvider> serviceList = service.listServices(DomainProvider.class);
         Collections.sort(serviceList, Comparators.forDomainProvider());
         System.out.println("Services");
@@ -45,6 +45,5 @@ public class DomainInfoCommand extends OsgiCommandSupport {
 
         return null;
     }
-
 
 }

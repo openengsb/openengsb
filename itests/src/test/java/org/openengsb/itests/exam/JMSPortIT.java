@@ -51,7 +51,7 @@ import org.openengsb.core.api.security.model.SecureResponse;
 import org.openengsb.core.api.workflow.model.RuleBaseElementId;
 import org.openengsb.core.api.workflow.model.RuleBaseElementType;
 import org.openengsb.core.common.AbstractOpenEngSBService;
-import org.openengsb.core.common.OpenEngSBCoreServices;
+import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.common.util.JsonUtils;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.example.ExampleDomain;
@@ -78,6 +78,7 @@ import org.springframework.jms.support.JmsUtils;
 public class JMSPortIT extends AbstractRemoteTestHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSPortIT.class);
+    private DefaultOsgiUtilsService utilsService;
 
     @Configuration
     public Option[] additionalConfiguration() throws Exception {
@@ -97,12 +98,13 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
             string = ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, "simpleFlow"));
             Thread.sleep(1000);
         }
+
+        utilsService = new DefaultOsgiUtilsService(getBundleContext());
     }
 
     @Test
     public void jmsPort_shouldBeExportedWithCorrectId() throws Exception {
-        OutgoingPort serviceWithId =
-            OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+        OutgoingPort serviceWithId = utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
         assertNotNull(serviceWithId);
 
     }
@@ -166,7 +168,7 @@ public class JMSPortIT extends AbstractRemoteTestHelper {
         System.setProperty("org.openengsb.security.noverify", "true");
 
         // make sure jms is up and running
-        OpenEngSBCoreServices.getServiceUtilsService().getServiceWithId(OutgoingPort.class, "jms-json", 60000);
+        utilsService.getServiceWithId(OutgoingPort.class, "jms-json", 60000);
 
         SecureSampleConnector remoteConnector = new SecureSampleConnector();
         remoteConnector.start();
