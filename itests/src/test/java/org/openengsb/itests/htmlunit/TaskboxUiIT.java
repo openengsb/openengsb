@@ -41,8 +41,10 @@ import org.openengsb.itests.htmlunit.testpanel.TestTaskPanel;
 import org.openengsb.itests.util.AbstractPreConfiguredExamTestHelper;
 import org.openengsb.ui.common.taskbox.WebTaskboxService;
 import org.ops4j.pax.exam.TestProbeBuilder;
+import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
+import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Constants;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -54,7 +56,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
 @RunWith(JUnit4TestRunner.class)
-// @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
 
     private static final String CONTEXT = "it-taskbox";
@@ -199,7 +201,6 @@ public class TaskboxUiIT extends AbstractPreConfiguredExamTestHelper {
         assertNotNull("Table on Overviewpage not found", table);
 
         HtmlTableRow taskOneRow = table.getRow(2);
-
         taskOverviewPage = taskOneRow.getCell(0).getHtmlElementsByTagName("a").get(0).click();
         assertTrue("Testpanel was not found!", taskOverviewPage.asText().contains("I am a test message!"));
 
