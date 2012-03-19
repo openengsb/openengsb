@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
 
+    private static final long serialVersionUID = -3266886937355625087L;
+
     public static final String TYPE_ID = "CONNECTOR";
 
     public ConnectorConfiguration() {
@@ -38,7 +40,7 @@ public class ConnectorConfiguration extends ConfigItem<ConnectorDescription> {
     }
 
     public ConnectorConfiguration(ConnectorDefinition id, ConnectorDescription content) {
-        this.metaData = id.toMetaData();
+        metaData = id.toMetaData();
         this.content = content;
     }
 

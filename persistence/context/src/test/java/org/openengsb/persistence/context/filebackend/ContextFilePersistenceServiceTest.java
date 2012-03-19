@@ -132,6 +132,7 @@ public class ContextFilePersistenceServiceTest {
         return metaData;
     }
 
+    @SuppressWarnings("serial")
     private class UnknownConfigItem extends ConfigItem<Map<String, String>> {
     }
 
