@@ -18,11 +18,9 @@
 package org.openengsb.ui.admin.userService;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.api.security.annotation.SecurityAttribute;
 import org.openengsb.core.api.security.service.UserNotFoundException;
 import org.openengsb.ui.admin.basePage.BasePage;
@@ -30,12 +28,14 @@ import org.openengsb.ui.common.usermanagement.UserEditPanel;
 import org.openengsb.ui.common.usermanagement.UserListPanel;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 
-import com.google.common.collect.ImmutableMap;
 
 @SecurityAttribute(key = "org.openengsb.ui.component", value = "USER_ADMIN")
 @PaxWicketMountPoint(mountPoint = "users")
 public class UserListPage extends BasePage {
 
+	
+	Panel userDialogue;
+	
     private final class MyUserListPanel extends UserListPanel {
         private static final long serialVersionUID = 4561294480791309137L;
 
@@ -44,14 +44,28 @@ public class UserListPage extends BasePage {
         }
 
         @Override
-        protected void openCreatePage() {
-            setResponsePage(UserEditPage.class);
+        protected void openCreatePage(AjaxRequestTarget target) {
+	 
+        	EditPanel createUser = new EditPanel("userDialogue");  
+        	createUser.setOutputMarkupId(true);
+	        
+	        userDialogue.replaceWith(createUser);
+	        userDialogue=createUser;
+	        target.addComponent(userDialogue);
+	        target.appendJavascript("showModalDialogue('"+createUser.getMarkupId()+"','Create new user',false)");
         }
 
-        @Override
-        protected void openEditorPage(String user) {
-            setResponsePage(UserEditPage.class, new PageParameters(ImmutableMap.of("user", user)));
-        }
+		@Override
+		protected void openEditorPage(AjaxRequestTarget target, String user) {
+			
+			EditPanel editUser = new EditPanel("userDialogue",user);  
+	        editUser.setOutputMarkupId(true);
+	        
+	        userDialogue.replaceWith(editUser);
+	        userDialogue=editUser;
+	        target.addComponent(userDialogue);
+	        target.appendJavascript("showModalDialogue('"+editUser.getMarkupId()+"','Edit user: "+user+"',false)");
+		}
 
     }
     
@@ -67,7 +81,7 @@ public class UserListPage extends BasePage {
         }
 
         @Override
-        protected void afterSubmit() {
+        protected void afterSubmit() {        	
             setResponsePage(UserListPage.class);
         }
     }
@@ -82,15 +96,16 @@ public class UserListPage extends BasePage {
     }
 
     private void initContent() {
-        add(new MyUserListPanel("lazy"));
         
-        EditPanel userEditor = new EditPanel("addUserDialogue");
-        userEditor.setOutputMarkupId(true);
-        add(userEditor);
-        
-        ExternalLink addUserLink = new ExternalLink("addUserLink","#");
-        addUserLink.add(new SimpleAttributeModifier("onClick","showModalDialogue('"+userEditor.getMarkupId()+"','addUser',false)"));
-        add(addUserLink);
+    	add(new MyUserListPanel("lazy"));
+
+    	/**
+    	 * Panel for Modal Dialog for User add/edit form
+    	 */
+    	userDialogue = new EmptyPanel("userDialogue");
+    	userDialogue.setOutputMarkupId(true);
+    	add(userDialogue);
+    	
     }
 
 }
