@@ -45,7 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.core.api.context.ContextHolder;
-import org.openengsb.core.api.persistence.PersistenceManager;
 import org.openengsb.core.api.security.service.AccessDeniedException;
 import org.openengsb.core.security.internal.OpenEngSBAuthenticationToken;
 import org.openengsb.core.security.internal.RootSubjectHolder;
@@ -53,7 +52,6 @@ import org.openengsb.core.security.internal.SecurityInterceptor;
 import org.openengsb.core.test.AbstractOpenEngSBTest;
 import org.openengsb.domain.authorization.AuthorizationDomain;
 import org.openengsb.domain.authorization.AuthorizationDomain.Access;
-import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
 
 public class MethodInterceptorTest extends AbstractOpenEngSBTest {
@@ -63,8 +61,6 @@ public class MethodInterceptorTest extends AbstractOpenEngSBTest {
     private DummyService service;
     private DummyService service2;
     private AuthorizationDomain authorizer;
-    private PersistenceManager persistenceManager;
-    private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {

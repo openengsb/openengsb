@@ -22,6 +22,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
 
+  <repository>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</repository>
+
   <feature name="openengsb-framework" version="${project.version}" description="OpenEngSB Core Feature">
     <details>
       This feature starts all other features required such as spring and http. In addition the services for the
@@ -91,10 +93,6 @@
     <bundle start-level='20'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-xjc/${jaxb.wrapped.version}</bundle>
     <!-- AspectJ -->
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
-    <!-- Spring Security -->
-    <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
-    <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
     <!-- Drools -->
     <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
     <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
@@ -158,7 +156,6 @@
     <bundle>mvn:org.openengsb.domain/org.openengsb.domain.binarytransformation/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.usernamepassword/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.serviceacl/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/org.openengsb.connector.smooksbinarytransformation/${project.version}</bundle>
   </feature>
 
@@ -269,6 +266,7 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.5.0_2</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.api/${project.version}</bundle>
     <bundle>mvn:org.openengsb.ui/org.openengsb.ui.common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/org.openengsb.connector.wicketacl/${project.version}</bundle>
   </feature>
 
   <feature name="openengsb-ui-admin" version="${project.version}" description="OpenEngSB UI Administration">
