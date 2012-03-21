@@ -67,7 +67,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.connector.usernamepassword.Password;
 import org.openengsb.connector.usernamepassword.internal.PasswordCredentialTypeProvider;
-import org.openengsb.core.api.OsgiUtilsService;
 import org.openengsb.core.api.remote.MethodCall;
 import org.openengsb.core.api.remote.MethodCallRequest;
 import org.openengsb.core.api.remote.MethodResult;
@@ -79,7 +78,6 @@ import org.openengsb.core.api.security.PrivateKeySource;
 import org.openengsb.core.api.security.model.Authentication;
 import org.openengsb.core.api.security.model.EncryptedMessage;
 import org.openengsb.core.api.security.model.SecureResponse;
-import org.openengsb.core.common.OpenEngSBCoreServices;
 import org.openengsb.core.common.remote.FilterChain;
 import org.openengsb.core.common.remote.FilterChainFactory;
 import org.openengsb.core.common.remote.JsonMethodCallMarshalFilter;
@@ -90,7 +88,7 @@ import org.openengsb.core.common.util.CipherUtils;
 import org.openengsb.core.common.util.DefaultOsgiUtilsService;
 import org.openengsb.core.security.filter.EncryptedJsonMessageMarshaller;
 import org.openengsb.core.security.filter.JsonSecureRequestMarshallerFilter;
-import org.openengsb.core.security.filter.MessageAuthenticatorFilter;
+import org.openengsb.core.security.filter.MessageAuthenticatorFilterFactory;
 import org.openengsb.core.security.filter.MessageCryptoFilterFactory;
 import org.openengsb.core.security.filter.MessageVerifierFilter;
 import org.openengsb.core.security.filter.WrapperFilter;
@@ -98,7 +96,6 @@ import org.openengsb.core.services.internal.RequestHandlerImpl;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.domain.authentication.AuthenticationDomain;
 import org.openengsb.domain.authentication.AuthenticationException;
-import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -228,7 +225,9 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
         incomingPort = new JMSIncomingPort();
         incomingPort.setFactory(jmsTemplateFactory);
         incomingPort.setConnectionFactory(connectionFactory);
-        handler = new RequestHandlerImpl();
+        RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
+        requestHandlerImpl.setUtilsService(new DefaultOsgiUtilsService(bundleContext));
+        handler = requestHandlerImpl;
 
         TestInterface mock2 = mock(TestInterface.class);
         registerServiceViaId(mock2, "test", TestInterface.class);
@@ -349,7 +348,7 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
             cipherFactory,
             JsonSecureRequestMarshallerFilter.class,
             MessageVerifierFilter.class,
-            MessageAuthenticatorFilter.class,
+            new MessageAuthenticatorFilterFactory(new DefaultOsgiUtilsService(bundleContext)),
             WrapperFilter.class,
             new RequestMapperFilter(handler)));
         FilterChain secureChain = factory.create();
@@ -404,11 +403,4 @@ public class JMSPortTest extends AbstractOsgiMockServiceTest {
 
     }
 
-    @Override
-    protected void setBundleContext(BundleContext bundleContext) {
-        DefaultOsgiUtilsService serviceUtils = new DefaultOsgiUtilsService();
-        serviceUtils.setBundleContext(bundleContext);
-        registerService(serviceUtils, new Hashtable<String, Object>(), OsgiUtilsService.class);
-        OpenEngSBCoreServices.setOsgiServiceUtils(serviceUtils);
-    }
 }
