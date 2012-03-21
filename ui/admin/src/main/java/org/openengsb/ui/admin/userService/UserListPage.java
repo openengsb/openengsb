@@ -46,23 +46,22 @@ public class UserListPage extends BasePage {
         protected void openCreatePage(AjaxRequestTarget target) {
             EditPanel createUser = new EditPanel("userDialogue");  
             createUser.setOutputMarkupId(true);
-            userDialogue.setOutputMarkupPlaceholderTag(true);
             userDialogue.replaceWith(createUser);
             userDialogue = createUser;
             target.addComponent(userDialogue);
-            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','Create new user',false);");
+            target.appendJavascript("showModalDialogue('" + createUser.getMarkupId() + "','"
+                + getLocalizer().getString("add.user", this) + "',false);");
         }
 
         @Override
         protected void openEditorPage(AjaxRequestTarget target, String user) {
             EditPanel editUser = new EditPanel("userDialogue", user);  
             editUser.setOutputMarkupId(true);
-            userDialogue.setOutputMarkupPlaceholderTag(true);
             userDialogue.replaceWith(editUser);
             userDialogue = editUser;
             target.addComponent(userDialogue);
             target.appendJavascript("showModalDialogue('" + editUser.getMarkupId()
-                + "','Edit user: " + user + "',false);");
+                + "','" + getLocalizer().getString("edit.user", this) + ": " + user + "',false);");
         }
     }
     
@@ -97,7 +96,6 @@ public class UserListPage extends BasePage {
         //Panel for Modal Dialog for User add/edit form
         userDialogue = new EmptyPanel("userDialogue");
         userDialogue.setOutputMarkupId(true);
-        userDialogue.setOutputMarkupPlaceholderTag(true);
         add(userDialogue);
     }
 }

@@ -104,7 +104,7 @@ public class LoginPage extends OpenEngSBPage {
         ExternalLink addUserLink = new ExternalLink("imprint", "#");
         addUserLink.add(new SimpleAttributeModifier("onClick",
                 "showModalButtonCloseDialogue('" + imprintDialogue.getMarkupId() + "'"
-                + ",'Imprint',false,false,550,450)"));
+                + ",'" + getLocalizer().getString("imprint", this) + "',false,false,550,450)"));
         add(addUserLink);
     }
 
